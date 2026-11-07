@@ -73,6 +73,7 @@ import {
   type GameState,
   type QuestProgress,
 } from './state'
+import { logPlaytest } from './playtestLog'
 import { loadState, saveState } from './storage'
 
 const TICK_MS = 100
@@ -148,52 +149,114 @@ export function useGame() {
   }, [])
 
   const buy = useCallback((id: GeneratorId) => {
-    setState((s) => buyGenerator(s, id))
+    setState((s) => {
+      const next = buyGenerator(s, id)
+      if (next !== s) {
+        logPlaytest('upgrade', {
+          id,
+          level: next.owned[id] ?? 0,
+          kind: 'module',
+        })
+      }
+      return next
+    })
   }, [])
 
   const buyModuleBranch = useCallback((id: GeneratorId, kind: BranchKind) => {
-    setState((s) => buyBranch(s, id, kind))
+    setState((s) => {
+      const next = buyBranch(s, id, kind)
+      if (next !== s) {
+        logPlaytest('upgrade', { id, branch: kind, kind: 'branch' })
+      }
+      return next
+    })
   }, [])
 
   const buyMeta = useCallback((id: EmberUpgradeId) => {
-    setState((s) => buyEmberUpgrade(s, id))
+    setState((s) => {
+      const next = buyEmberUpgrade(s, id)
+      if (next !== s) {
+        logPlaytest('upgrade', { id, kind: 'ember' })
+      }
+      return next
+    })
   }, [])
 
   const prestige = useCallback(() => {
-    setState((s) => doPrestige(s))
+    setState((s) => {
+      const next = doPrestige(s)
+      if (next !== s) {
+        logPlaytest('prestige', {
+          run: next.prestiges,
+          embers: next.embers,
+        })
+      }
+      return next
+    })
   }, [])
 
   const purchaseTimeSkip = useCallback((id: TimeSkipId) => {
-    setState((s) => buyTimeSkip(s, id))
+    setState((s) => {
+      const next = buyTimeSkip(s, id)
+      if (next !== s) logPlaytest('shop_tap', { action: 'time_skip', id })
+      return next
+    })
   }, [])
 
   const purchaseCosmetic = useCallback((id: CosmeticId) => {
-    setState((s) => buyCosmetic(s, id))
+    setState((s) => {
+      const next = buyCosmetic(s, id)
+      if (next !== s) logPlaytest('shop_tap', { action: 'cosmetic', id })
+      return next
+    })
   }, [])
 
   const setEquippedCosmetic = useCallback((id: CosmeticId) => {
-    setState((s) => equipCosmetic(s, id))
+    setState((s) => {
+      const next = equipCosmetic(s, id)
+      if (next !== s) logPlaytest('shop_tap', { action: 'equip', id })
+      return next
+    })
   }, [])
 
   const purchaseClanBoost = useCallback(() => {
-    setState((s) => buyClanBoost(s))
+    setState((s) => {
+      const next = buyClanBoost(s)
+      if (next !== s) logPlaytest('shop_tap', { action: 'clan_boost' })
+      return next
+    })
   }, [])
 
   const purchasePack = useCallback((pack: ShopOfferDef) => {
-    setState((s) => mockBuyOffer(s, pack))
+    setState((s) => {
+      const next = mockBuyOffer(s, pack)
+      if (next !== s) logPlaytest('shop_tap', { action: 'pack', id: pack.id })
+      return next
+    })
   }, [])
 
   const purchaseOffer = useCallback((offer: ShopOfferDef) => {
-    setState((s) => mockBuyOffer(s, offer))
+    setState((s) => {
+      const next = mockBuyOffer(s, offer)
+      if (next !== s) {
+        logPlaytest('shop_tap', { action: 'offer', id: offer.id })
+      }
+      return next
+    })
   }, [])
 
   const purchaseYieldBoost = useCallback(() => {
-    setState((s) => buyYieldBoost(s))
+    setState((s) => {
+      const next = buyYieldBoost(s)
+      if (next !== s) logPlaytest('shop_tap', { action: 'yield_boost' })
+      return next
+    })
   }, [])
 
   const watchRewardedAd = useCallback(() => {
     setState((s) => {
       const result = claimRewardedAd(s)
+      if (result.ok) logPlaytest('shop_tap', { action: 'rewarded_ad' })
       return result.ok ? result.state : s
     })
   }, [])
@@ -225,8 +288,14 @@ export function useGame() {
   const dismissOffline = useCallback(() => {
     const amount = offlineGained ?? 0
     setOfflineGained(null)
+    if (amount > 0.01) {
+      logPlaytest('offline_claim', {
+        amount: Math.round(amount * 100) / 100,
+        awayMs: offlineAwayMs,
+      })
+    }
     setState((s) => claimOfflineReward(s, amount))
-  }, [offlineGained])
+  }, [offlineGained, offlineAwayMs])
 
   const mult = prestigeMultiplier(state.emberUpgrades)
   const levelMult = levelProductionMult(playerLevelOf(state))

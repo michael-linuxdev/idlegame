@@ -2426,6 +2426,39 @@
   box-shadow: inset 3px 0 0 var(--oc-bronze);
 }
 
+.nav-menu-playtest {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  margin-top: 0.25rem;
+  padding-top: 0.3rem;
+  border-top: 1px solid var(--oc-stroke);
+}
+
+.nav-menu-item.playtest-toggle .tab-label,
+.nav-menu-item.playtest-action .tab-label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.55rem;
+  width: 100%;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  font-size: 0.72rem;
+}
+
+.playtest-state,
+.playtest-count {
+  color: var(--oc-ink-muted);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.nav-menu-item.playtest-toggle.active .playtest-state {
+  color: var(--oc-ember);
+}
+
 @keyframes station-drift {
   from {
     opacity: 0.85;

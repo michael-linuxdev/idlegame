@@ -9,6 +9,7 @@ import {
 import { formatAsh, formatRate } from '../game/format'
 import { computeNextGoal } from '../game/nextGoal'
 import { xpFromOfflineClaim } from '../game/progression'
+import { logPlaytest } from '../game/playtestLog'
 import { playSfx } from '../game/sound'
 import { t } from '../i18n'
 import type { useGame } from '../game/useGame'
@@ -100,6 +101,7 @@ export function FortressMap({ game, highlightId }: Props) {
     if (playerLevel.level > prevLevel.current) {
       setLevelPulse(true)
       playSfx('level')
+      logPlaytest('level_up', { level: playerLevel.level })
       pushPop(`Level ${playerLevel.level}!`, 'upgrade')
       const timer = window.setTimeout(() => setLevelPulse(false), 900)
       prevLevel.current = playerLevel.level
@@ -126,6 +128,7 @@ export function FortressMap({ game, highlightId }: Props) {
     if (!tapReady) return
     const before = state.ash
     playSfx('tap')
+    logPlaytest('schub')
     rake()
     // Burst grant lands on next state tick; optimistic pop from ~45s rate
     const estimate = Math.max(rate * 45, 1)

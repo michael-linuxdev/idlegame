@@ -1,5 +1,7 @@
 import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
+import { logPlaytest } from '../game/playtestLog'
 import { t } from '../i18n'
+import { PlaytestLogControls } from './PlaytestLogControls'
 
 export type Tab = 'fortress' | 'prestige' | 'clan' | 'shop'
 
@@ -153,6 +155,14 @@ export function AppNav({ tab, ftueHighlight, onTabChange }: Props) {
     onTabChange(id)
   }
 
+  function toggleMenu() {
+    setMenuOpen((o) => {
+      const next = !o
+      if (next) logPlaytest('menu_open')
+      return next
+    })
+  }
+
   return (
     <nav
       className={`game-chrome${homeActive ? ' map-home' : ' panel-home'}`}
@@ -193,6 +203,7 @@ export function AppNav({ tab, ftueHighlight, onTabChange }: Props) {
               </button>
             )
           })}
+          <PlaytestLogControls />
         </div>
       ) : null}
 
@@ -213,7 +224,7 @@ export function AppNav({ tab, ftueHighlight, onTabChange }: Props) {
           aria-haspopup="menu"
           aria-expanded={menuOpen}
           aria-controls={menuOpen ? menuId : undefined}
-          onClick={() => setMenuOpen((o) => !o)}
+          onClick={toggleMenu}
         >
           <span className="tab-icon">
             <MenuGlyph open={menuOpen} />

@@ -14,6 +14,7 @@ Stand: 2026-11-07.
 - DE-UI; Bau-Map; echtes Idle; keine Energy-Walls; helle, lesbare UI.
 - Werbung nur rewarded/optional; Werbefrei-Kauf.
 - IAP **nur Stores**. Analytics später.
+- Opt-in **Playtest-Log** lokal (Menü → Export JSONL); Standard aus; kein Remote-Tracking.
 - Suchtfaktor/Retention aktiv steigern.
 - Balance playtesten; Multiplayer vorbereiten und bauen.
 

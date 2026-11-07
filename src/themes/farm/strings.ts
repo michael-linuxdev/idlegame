@@ -30,6 +30,14 @@ export const farmStrings = {
     unmuteAria: 'Soundeffekte einschalten',
   },
 
+  playtest: {
+    title: 'Playtest-Log',
+    on: 'An',
+    off: 'Aus',
+    export: 'Log exportieren',
+    clear: 'Log leeren',
+  },
+
   goal: {
     stripAria: 'Nächstes Ziel',
     upgradeTitle: (action: string, name: string) => `${action}: ${name}`,

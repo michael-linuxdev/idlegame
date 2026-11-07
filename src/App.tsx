@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { AppNav, type Tab } from './components/AppNav'
 import { ClanPanel } from './components/ClanPanel'
 import { FortressMap } from './components/FortressMap'
@@ -6,6 +6,7 @@ import { FtueCoach } from './components/FtueCoach'
 import { InstallPrompt } from './components/InstallPrompt'
 import { PrestigePanel } from './components/PrestigePanel'
 import { ShopPanel } from './components/ShopPanel'
+import { bootPlaytestLog, logPlaytest } from './game/playtestLog'
 import { useGame } from './game/useGame'
 import './App.css'
 
@@ -15,8 +16,17 @@ export default function App() {
   const [ftueHighlight, setFtueHighlight] = useState<string | null>(null)
   const [holdInstall, setHoldInstall] = useState(false)
 
+  useEffect(() => bootPlaytestLog(), [])
+
   const onFtueActiveChange = useCallback((hold: boolean) => {
     setHoldInstall(hold)
+  }, [])
+
+  const onTabChange = useCallback((next: Tab) => {
+    setTab((prev) => {
+      if (prev !== next) logPlaytest('tab_open', { tab: next })
+      return next
+    })
   }, [])
 
   return (
@@ -34,14 +44,14 @@ export default function App() {
 
       <FtueCoach
         game={game}
-        onTabChange={setTab}
+        onTabChange={onTabChange}
         onHighlightChange={setFtueHighlight}
         onFtueActiveChange={onFtueActiveChange}
       />
 
       <InstallPrompt holdForFtue={holdInstall} />
 
-      <AppNav tab={tab} ftueHighlight={ftueHighlight} onTabChange={setTab} />
+      <AppNav tab={tab} ftueHighlight={ftueHighlight} onTabChange={onTabChange} />
     </div>
   )
 }
