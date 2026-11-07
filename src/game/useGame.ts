@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   foundryDiscountMult,
-  TAP_BONUS_SECONDS,
   TAP_COOLDOWN_MS,
+  tapBonusSeconds,
   type EmberUpgradeId,
 } from './economy'
 import {
@@ -142,7 +142,7 @@ export function useGame() {
       const now = Date.now()
       if (s.lastTapAt > 0 && now - s.lastTapAt < TAP_COOLDOWN_MS) return s
       const rate = productionPerSecond(s, now)
-      const gained = Math.max(rate * TAP_BONUS_SECONDS, 1)
+      const gained = Math.max(rate * tapBonusSeconds(s.emberUpgrades), 1)
       return grantTapAsh(s, gained, now)
     })
   }, [])

@@ -1,4 +1,4 @@
-import { EMBER_SHOP } from '../game/economy'
+import { EMBER_SHOP, PRESTIGE_BRANCHES } from '../game/economy'
 import { formatAsh } from '../game/format'
 import { t } from '../i18n'
 import type { useGame } from '../game/useGame'
@@ -61,6 +61,26 @@ export function PrestigePanel({ game, highlight }: Props) {
             style={{ width: `${Math.min(100, prestigeProgress.ratio * 100)}%` }}
           />
         </div>
+
+        <div className="prestige-preview" aria-label="Prestige-Vorschau">
+          <div className="prestige-preview-card keep">
+            <p className="prestige-preview-label">{t.prestige.keepTitle}</p>
+            <ul className="prestige-preview-list">
+              {t.prestige.keepItems.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </div>
+          <div className="prestige-preview-card lose">
+            <p className="prestige-preview-label">{t.prestige.loseTitle}</p>
+            <ul className="prestige-preview-list">
+              {t.prestige.loseItems.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
         {!canPrestige && prestigeProgress.ratio < 0.05 ? (
           <p className="panel-empty">{t.prestige.emptyGate}</p>
         ) : null}
@@ -83,36 +103,50 @@ export function PrestigePanel({ game, highlight }: Props) {
       {state.embers <= 0 ? (
         <p className="panel-empty">{t.prestige.emptyShop}</p>
       ) : null}
-      <ul className="ember-shop">
-        {EMBER_SHOP.map((item) => {
-          const rank = state.emberUpgrades[item.id]
-          const maxed = rank >= item.maxRank
-          const cost = item.cost(rank)
-          const affordable = state.embers >= cost && !maxed
+
+      <div className="prestige-tree">
+        {PRESTIGE_BRANCHES.map((branch) => {
+          const items = EMBER_SHOP.filter((item) => item.branch === branch.id)
           return (
-            <li key={item.id} className="ember-shop-row">
-              <div className="ember-shop-info">
-                <div className="ember-shop-name">
-                  {item.name}{' '}
-                  <span className="ember-shop-rank">
-                    {rank}/{item.maxRank}
-                  </span>
-                </div>
-                <p className="ember-shop-blurb">{item.blurb}</p>
-                <p className="ember-shop-effect">{item.effectLabel(rank)}</p>
-              </div>
-              <button
-                type="button"
-                className="btn buy"
-                disabled={!affordable}
-                onClick={() => game.buyMeta(item.id)}
-              >
-                {maxed ? t.prestige.max : t.prestige.costCredits(cost)}
-              </button>
-            </li>
+            <section key={branch.id} className="prestige-branch" aria-labelledby={`branch-${branch.id}`}>
+              <h4 id={`branch-${branch.id}`} className="prestige-branch-title">
+                {branch.title}
+              </h4>
+              <p className="prestige-branch-blurb">{branch.blurb}</p>
+              <ul className="ember-shop">
+                {items.map((item) => {
+                  const rank = state.emberUpgrades[item.id]
+                  const maxed = rank >= item.maxRank
+                  const cost = item.cost(rank)
+                  const affordable = state.embers >= cost && !maxed
+                  return (
+                    <li key={item.id} className="ember-shop-row">
+                      <div className="ember-shop-info">
+                        <div className="ember-shop-name">
+                          {item.name}{' '}
+                          <span className="ember-shop-rank">
+                            {rank}/{item.maxRank}
+                          </span>
+                        </div>
+                        <p className="ember-shop-blurb">{item.blurb}</p>
+                        <p className="ember-shop-effect">{item.effectLabel(rank)}</p>
+                      </div>
+                      <button
+                        type="button"
+                        className="btn buy"
+                        disabled={!affordable}
+                        onClick={() => game.buyMeta(item.id)}
+                      >
+                        {maxed ? t.prestige.max : t.prestige.costCredits(cost)}
+                      </button>
+                    </li>
+                  )
+                })}
+              </ul>
+            </section>
           )
         })}
-      </ul>
+      </div>
     </section>
   )
 }
