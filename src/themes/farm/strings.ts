@@ -23,6 +23,33 @@ export const farmStrings = {
     shop: 'Shop',
   },
 
+  sound: {
+    mute: 'Ton aus',
+    unmute: 'Ton an',
+    muteAria: 'Soundeffekte stummschalten',
+    unmuteAria: 'Soundeffekte einschalten',
+  },
+
+  goal: {
+    stripAria: 'Nächstes Ziel',
+    upgradeTitle: (action: string, name: string) => `${action}: ${name}`,
+    upgradeDetail: (cost: string) => `${cost} Ertrag`,
+    unlockTitle: (name: string) => `Freischalten: ${name}`,
+    unlockAshLeft: (n: string) => `noch ${n} Ertrag`,
+    unlockLevel: (name: string, have: number, need: number) =>
+      `${name} ${have}/${need}`,
+    unlockPlayerLevel: (have: number, need: number) =>
+      `Level ${have}/${need}`,
+    levelTitle: (n: number) => `Nächstes Level ${n}`,
+    levelDetail: (into: number, need: number) => `${into}/${need} EP`,
+    prestigeTitle: 'Nächstes Prestige',
+    prestigeDetail: (left: string) => `noch ${left} Ertrag`,
+    prestigeReady: 'Prestige bereit',
+    prestigeReadyDetail: 'Münzen abholen',
+    ready: 'Bereit',
+    fallback: 'Hof aufbauen',
+  },
+
   resources: {
     compute: 'Ertrag',
     credits: 'Münzen',
@@ -89,6 +116,9 @@ export const farmStrings = {
     offlineAfter: 'Ertrag gebankt.',
     claim: 'Abholen',
     claimToast: 'Ertrag auf die Farm gebucht',
+    claimCelebrate: (amount: string, xp: number) =>
+      `+${amount} Ertrag · +${xp} EP gebucht`,
+    claimCelebrateShort: (amount: string) => `+${amount} Ertrag geerntet`,
     mapAria: 'Farm-Bau-Karte',
     mapHint: 'Modul tippen zum Online-Schalten oder Upgraden.',
     locked: 'Gesperrt',
@@ -392,7 +422,11 @@ export const farmStrings = {
     kicker: 'Tägliche Pflege',
     firstShift: 'Erste Schicht',
     streakNext: (n: number) => `Serie ${n} · nächster Tag`,
+    streakDotsAria: (n: number) => `Serie ${n} von 7 Tagen`,
+    comebackLabel: 'Willkommen zurück · Comeback-Bonus',
+    comebackMeta: 'Serie pausiert — Bonus für deine Rückkehr',
     claim: 'Abholen',
+    claimToast: 'Tägliche Pflege gebucht',
     rewardCompute: (amount: string) => `${amount} Ertrag`,
     rewardCredits: (n: number) => `${n} Münzen`,
     rewardObsidian: (n: number) => `${n} Samen`,

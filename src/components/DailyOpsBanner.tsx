@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { formatAsh } from '../game/format'
 import { t } from '../i18n'
 import type { useGame } from '../game/useGame'
@@ -6,12 +7,23 @@ type GameApi = ReturnType<typeof useGame>
 
 interface Props {
   game: GameApi
+  onClaimed?: () => void
 }
 
-/** Tägliche Ops — Anspruch auf Rechenleistung / Credits / Obsidian. Keine Energy-Walls. */
-export function DailyOpsBanner({ game }: Props) {
+/** Tägliche Pflege — Streak + Comeback. Keine Energy-Walls. */
+export function DailyOpsBanner({ game, onClaimed }: Props) {
   const { dailyReady, dailyPreview, state, claimDaily } = game
-  if (!dailyReady) return null
+  const [celebrate, setCelebrate] = useState(false)
+
+  if (!dailyReady && !celebrate) return null
+
+  if (celebrate) {
+    return (
+      <div className="claim-toast celebrate" role="status">
+        {t.daily.claimToast}
+      </div>
+    )
+  }
 
   const bits: string[] = []
   if (dailyPreview.compute > 0) {
@@ -24,22 +36,47 @@ export function DailyOpsBanner({ game }: Props) {
     bits.push(t.daily.rewardObsidian(dailyPreview.obsidian))
   }
 
+  const streak = state.dailyStreak
   const streakLabel =
-    state.dailyStreak > 0
-      ? t.daily.streakNext(state.dailyStreak)
-      : t.daily.firstShift
+    streak > 0 ? t.daily.streakNext(streak) : t.daily.firstShift
+  const comeback = dailyPreview.comeback === true
+  const displayStreak = Math.max(1, Math.min(7, (streak || 0) + 1))
+
+  function onClaim() {
+    claimDaily()
+    onClaimed?.()
+    setCelebrate(true)
+    window.setTimeout(() => setCelebrate(false), 1200)
+  }
 
   return (
-    <div className="banner daily-ops map-banner" role="status">
+    <div
+      className={`banner daily-ops map-banner${comeback ? ' comeback' : ''}`}
+      role="status"
+    >
       <div className="banner-copy">
         <p className="banner-kicker">{t.daily.kicker}</p>
         <p>
           <strong>{dailyPreview.label}</strong>
           <span className="banner-meta"> · {streakLabel}</span>
         </p>
+        {comeback ? (
+          <p className="banner-meta comeback-meta">{t.daily.comebackMeta}</p>
+        ) : null}
+        <div
+          className="streak-dots"
+          aria-label={t.daily.streakDotsAria(Math.min(7, streak || 0))}
+        >
+          {Array.from({ length: 7 }, (_, i) => (
+            <span
+              key={i}
+              className={`streak-dot${i < displayStreak ? ' on' : ''}`}
+            />
+          ))}
+        </div>
         <p className="banner-reward">{bits.join(' · ')}</p>
       </div>
-      <button type="button" className="btn buy" onClick={claimDaily}>
+      <button type="button" className="btn buy pulse-ready" onClick={onClaim}>
         {t.daily.claim}
       </button>
     </div>

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   GENERATORS,
   generatorRate,
@@ -7,12 +7,18 @@ import {
   type GeneratorId,
 } from '../game/generators'
 import { formatAsh, formatRate } from '../game/format'
+import { computeNextGoal } from '../game/nextGoal'
+import { xpFromOfflineClaim } from '../game/progression'
+import { playSfx } from '../game/sound'
 import { t } from '../i18n'
 import type { useGame } from '../game/useGame'
 import { activeTheme } from '../themes'
 import { BuildingSilhouette } from './BuildingSilhouette'
 import { DailyOpsBanner } from './DailyOpsBanner'
 import { EventBanner } from './EventBanner'
+import { FloatPops, type FloatPopItem } from './FloatPops'
+import { MuteToggle } from './MuteToggle'
+import { NextGoalStrip } from './NextGoalStrip'
 import { ProgressSheet } from './ProgressSheet'
 import { ThemeMapBackdrop } from './ThemeMapBackdrop'
 import { UpgradeSheet } from './UpgradeSheet'
@@ -23,6 +29,8 @@ interface Props {
   game: GameApi
   highlightId?: string | null
 }
+
+let popSeq = 0
 
 export function FortressMap({ game, highlightId }: Props) {
   const {
@@ -40,12 +48,43 @@ export function FortressMap({ game, highlightId }: Props) {
   const [selected, setSelected] = useState<GeneratorId | null>(null)
   const [progressOpen, setProgressOpen] = useState(false)
   const [tickFlash, setTickFlash] = useState(false)
-  const [claimFlash, setClaimFlash] = useState(false)
+  const [claimFlash, setClaimFlash] = useState<string | null>(null)
+  const [pops, setPops] = useState<FloatPopItem[]>([])
+  const [levelPulse, setLevelPulse] = useState(false)
   const prevAsh = useRef(state.ash)
+  const prevLevel = useRef(playerLevel.level)
   const totalMult = multiplier * levelMult * clanMult * eventMult
   const skinClass = equippedCosmetic?.accentClass ?? 'skin-steel'
   const bonusPct = ((levelMult - 1) * 100).toFixed(1)
   const questReady = game.questRows.some((q: { ready: boolean }) => q.ready)
+
+  const pushPop = useCallback((text: string, kind?: FloatPopItem['kind']) => {
+    const id = ++popSeq
+    setPops((list) => [...list.slice(-4), { id, text, kind }])
+  }, [])
+
+  const removePop = useCallback((id: number) => {
+    setPops((list) => list.filter((p) => p.id !== id))
+  }, [])
+
+  const nextGoal = useMemo(
+    () =>
+      computeNextGoal(state, {
+        playerLevel: playerLevel.level,
+        playerXpInto: playerLevel.intoLevel,
+        playerXpNeed: playerLevel.need,
+        playerXpRatio: playerLevel.ratio,
+        costOf: game.costOf,
+      }),
+    [
+      state,
+      playerLevel.level,
+      playerLevel.intoLevel,
+      playerLevel.need,
+      playerLevel.ratio,
+      game.costOf,
+    ],
+  )
 
   useEffect(() => {
     if (state.ash > prevAsh.current + 0.05) {
@@ -57,23 +96,76 @@ export function FortressMap({ game, highlightId }: Props) {
     prevAsh.current = state.ash
   }, [state.ash])
 
+  useEffect(() => {
+    if (playerLevel.level > prevLevel.current) {
+      setLevelPulse(true)
+      playSfx('level')
+      pushPop(`Level ${playerLevel.level}!`, 'upgrade')
+      const timer = window.setTimeout(() => setLevelPulse(false), 900)
+      prevLevel.current = playerLevel.level
+      return () => window.clearTimeout(timer)
+    }
+    prevLevel.current = playerLevel.level
+  }, [playerLevel.level, pushPop])
+
   function claimOffline() {
+    const amount = game.offlineGained ?? 0
+    const xp = xpFromOfflineClaim(amount)
     game.dismissOffline()
-    setClaimFlash(true)
-    window.setTimeout(() => setClaimFlash(false), 900)
+    playSfx('claim')
+    pushPop(`+${formatAsh(amount)}`, 'claim')
+    const toast =
+      xp > 0
+        ? t.hud.claimCelebrate(formatAsh(amount), xp)
+        : t.hud.claimCelebrateShort(formatAsh(amount))
+    setClaimFlash(toast)
+    window.setTimeout(() => setClaimFlash(null), 1600)
+  }
+
+  function onRake() {
+    if (!tapReady) return
+    const before = state.ash
+    playSfx('tap')
+    rake()
+    // Burst grant lands on next state tick; optimistic pop from ~45s rate
+    const estimate = Math.max(rate * 45, 1)
+    pushPop(`+${formatAsh(estimate)}`, 'gain')
+    void before
+  }
+
+  function onGoalActivate() {
+    if (nextGoal.kind === 'prestige') {
+      /* Prestige lives on its own tab — strip still shows pressure */
+      return
+    }
+    if (nextGoal.kind === 'level') {
+      setProgressOpen(true)
+      return
+    }
+    if (nextGoal.focusId) {
+      setSelected(nextGoal.focusId)
+    }
+  }
+
+  function onUpgradeBought(deltaCost: number) {
+    playSfx('upgrade')
+    pushPop(`−${formatAsh(deltaCost)}`, 'upgrade')
   }
 
   return (
     <section className="fortress-home" aria-labelledby="ash-heading">
       <header className="map-hud">
         <div className="map-hud-brand">
-          <p className="eyebrow">{t.eyebrow}</p>
+          <div className="map-hud-brand-row">
+            <p className="eyebrow">{t.eyebrow}</p>
+            <MuteToggle />
+          </div>
           <h1 id="ash-heading" className="brand wordmark">
             {t.brand}
           </h1>
           <button
             type="button"
-            className={`player-level-chip${questReady ? ' has-claim' : ''}`}
+            className={`player-level-chip${questReady ? ' has-claim' : ''}${levelPulse ? ' level-up' : ''}`}
             onClick={() => setProgressOpen(true)}
             aria-label={t.hud.playerLevelAria(
               playerLevel.level,
@@ -125,7 +217,7 @@ export function FortressMap({ game, highlightId }: Props) {
         <button
           type="button"
           className="btn rake"
-          onClick={rake}
+          onClick={onRake}
           disabled={!tapReady}
           title={tapReady ? t.hud.burstReadyTitle : t.hud.burstCoolingTitle}
         >
@@ -133,28 +225,45 @@ export function FortressMap({ game, highlightId }: Props) {
         </button>
       </header>
 
+      <NextGoalStrip goal={nextGoal} onActivate={onGoalActivate} />
+
+      <FloatPops items={pops} onDone={removePop} />
+
       {game.offlineGained != null ? (
         <div
-          className={`banner offline map-banner${highlightId === 'offline' ? ' ftue-target' : ''}`}
+          className={`banner offline map-banner celebrate${highlightId === 'offline' ? ' ftue-target' : ''}`}
           role="status"
         >
-          <p>
-            {t.hud.offlineBefore}{' '}
-            <strong>{formatAsh(game.offlineGained)}</strong> {t.hud.offlineAfter}
-          </p>
-          <button type="button" className="btn buy claim-cta" onClick={claimOffline}>
+          <div className="banner-copy">
+            <p className="banner-kicker">{t.hud.claim}</p>
+            <p>
+              {t.hud.offlineBefore}{' '}
+              <strong className="offline-amount">
+                {formatAsh(game.offlineGained)}
+              </strong>{' '}
+              {t.hud.offlineAfter}
+            </p>
+            <p className="banner-meta">
+              +{xpFromOfflineClaim(game.offlineGained)} {t.level.xp}
+            </p>
+          </div>
+          <button
+            type="button"
+            className="btn buy claim-cta pulse-ready"
+            onClick={claimOffline}
+          >
             {t.hud.claim}
           </button>
         </div>
       ) : null}
 
       {claimFlash ? (
-        <div className="claim-toast" role="status">
-          {t.hud.claimToast}
+        <div className="claim-toast celebrate" role="status">
+          {claimFlash}
         </div>
       ) : null}
 
-      <DailyOpsBanner game={game} />
+      <DailyOpsBanner game={game} onClaimed={() => playSfx('streak')} />
       <EventBanner game={game} />
 
       <div className={`fortress-stage ${skinClass} ${activeTheme.mapClass}`}>
@@ -233,6 +342,7 @@ export function FortressMap({ game, highlightId }: Props) {
           game={game}
           selectedId={selected}
           onClose={() => setSelected(null)}
+          onUpgraded={onUpgradeBought}
         />
       ) : null}
 
