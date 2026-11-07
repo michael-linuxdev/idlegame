@@ -79,13 +79,13 @@ export interface GeneratorDef {
 
 /**
  * Bau-Map content depth — ten fixed slots.
- * G1–G3 rates/costs/growth from economy.md; G4–G10 extend the same curve
- * (r0 ≈ ×6–7, C0 ≈ ×7, g −0.005…0.01, unlock ≈ ×6–8).
+ * Formulas R(n)/C(n) unchanged; knobs retuned in IG-31 balance pass.
  *
- * Feel polish (IG-19) — small early-game knobs only (documented):
- * - G2 unlock 250 → 200 Compute
- * - G2 C0 120 → 100
- * Formulas R(n)/C(n) unchanged.
+ * IG-31 targets (engaged, ~10s buy cadence): G2 ~3–5 min, G3 ~8–15 min,
+ * first prestige ~45–75 min. Prior ladder snowballed prestige in ~5–10 min.
+ *
+ * Ladder vs pre-pass: G2+ rates ≈ ×0.5, C0 ≈ ×1.5–2.5, g +0.03,
+ * unlock ash ≈ ×3–6 (G1 mild steepen only; Day-1 first upgrade still free).
  */
 export const GENERATORS: GeneratorDef[] = [
   {
@@ -96,8 +96,8 @@ export const GENERATORS: GeneratorDef[] = [
     slot: { left: '48%', top: '78%' },
     silhouette: 'power',
     baseRate: 1,
-    baseCost: 15,
-    costScale: 1.15,
+    baseCost: 20,
+    costScale: 1.18,
   },
   {
     id: 'ashForge',
@@ -106,10 +106,10 @@ export const GENERATORS: GeneratorDef[] = [
     blurb: t.modules.ashForge.blurb,
     slot: { left: '76%', top: '62%' },
     silhouette: 'cool',
-    baseRate: 8,
-    baseCost: 100,
-    costScale: 1.14,
-    unlock: { ashEarned: 200, requires: { id: 'emberPit', level: 10 } },
+    baseRate: 4,
+    baseCost: 150,
+    costScale: 1.17,
+    unlock: { ashEarned: 600, requires: { id: 'emberPit', level: 10 } },
   },
   {
     id: 'cinderBarracks',
@@ -118,10 +118,10 @@ export const GENERATORS: GeneratorDef[] = [
     blurb: t.modules.cinderBarracks.blurb,
     slot: { left: '50%', top: '48%' },
     silhouette: 'rack',
-    baseRate: 60,
-    baseCost: 900,
-    costScale: 1.13,
-    unlock: { ashEarned: 8_000, requires: { id: 'ashForge', level: 10 } },
+    baseRate: 25,
+    baseCost: 1_800,
+    costScale: 1.16,
+    unlock: { ashEarned: 50_000, requires: { id: 'ashForge', level: 10 } },
   },
   {
     id: 'cinderVault',
@@ -130,10 +130,10 @@ export const GENERATORS: GeneratorDef[] = [
     blurb: t.modules.cinderVault.blurb,
     slot: { left: '18%', top: '60%' },
     silhouette: 'uplink',
-    baseRate: 400,
-    baseCost: 12_000,
-    costScale: 1.12,
-    unlock: { ashEarned: 80_000, requires: { id: 'cinderBarracks', level: 10 } },
+    baseRate: 150,
+    baseCost: 25_000,
+    costScale: 1.15,
+    unlock: { ashEarned: 500_000, requires: { id: 'cinderBarracks', level: 10 } },
   },
   {
     id: 'ashWatch',
@@ -142,10 +142,10 @@ export const GENERATORS: GeneratorDef[] = [
     blurb: t.modules.ashWatch.blurb,
     slot: { left: '22%', top: '36%' },
     silhouette: 'relay',
-    baseRate: 2_500,
-    baseCost: 90_000,
-    costScale: 1.11,
-    unlock: { ashEarned: 600_000, requires: { id: 'cinderVault', level: 10 } },
+    baseRate: 900,
+    baseCost: 200_000,
+    costScale: 1.14,
+    unlock: { ashEarned: 4_000_000, requires: { id: 'cinderVault', level: 10 } },
   },
   {
     id: 'dominionKeep',
@@ -154,10 +154,10 @@ export const GENERATORS: GeneratorDef[] = [
     blurb: t.modules.dominionKeep.blurb,
     slot: { left: '58%', top: '28%' },
     silhouette: 'switch',
-    baseRate: 15_000,
-    baseCost: 750_000,
-    costScale: 1.1,
-    unlock: { ashEarned: 4_000_000, requires: { id: 'ashWatch', level: 10 } },
+    baseRate: 5_000,
+    baseCost: 1_500_000,
+    costScale: 1.13,
+    unlock: { ashEarned: 25_000_000, requires: { id: 'ashWatch', level: 10 } },
   },
   {
     id: 'batteryBank',
@@ -166,10 +166,10 @@ export const GENERATORS: GeneratorDef[] = [
     blurb: t.modules.batteryBank.blurb,
     slot: { left: '84%', top: '40%' },
     silhouette: 'battery',
-    baseRate: 90_000,
-    baseCost: 5_000_000,
-    costScale: 1.09,
-    unlock: { ashEarned: 25_000_000, requires: { id: 'dominionKeep', level: 10 } },
+    baseRate: 30_000,
+    baseCost: 12_000_000,
+    costScale: 1.12,
+    unlock: { ashEarned: 150_000_000, requires: { id: 'dominionKeep', level: 10 } },
   },
   {
     id: 'edgeCache',
@@ -178,10 +178,10 @@ export const GENERATORS: GeneratorDef[] = [
     blurb: t.modules.edgeCache.blurb,
     slot: { left: '36%', top: '22%' },
     silhouette: 'cache',
-    baseRate: 550_000,
-    baseCost: 40_000_000,
-    costScale: 1.085,
-    unlock: { ashEarned: 180_000_000, requires: { id: 'batteryBank', level: 10 } },
+    baseRate: 180_000,
+    baseCost: 90_000_000,
+    costScale: 1.115,
+    unlock: { ashEarned: 1_000_000_000, requires: { id: 'batteryBank', level: 10 } },
   },
   {
     id: 'quantumCooler',
@@ -190,11 +190,11 @@ export const GENERATORS: GeneratorDef[] = [
     blurb: t.modules.quantumCooler.blurb,
     slot: { left: '8%', top: '24%' },
     silhouette: 'quantum',
-    baseRate: 3_500_000,
-    baseCost: 280_000_000,
-    costScale: 1.08,
+    baseRate: 1_100_000,
+    baseCost: 700_000_000,
+    costScale: 1.11,
     unlock: {
-      ashEarned: 1_200_000_000,
+      ashEarned: 8_000_000_000,
       requires: { id: 'edgeCache', level: 10 },
     },
   },
@@ -205,11 +205,11 @@ export const GENERATORS: GeneratorDef[] = [
     blurb: t.modules.packetScrubber.blurb,
     slot: { left: '78%', top: '14%' },
     silhouette: 'scrub',
-    baseRate: 22_000_000,
-    baseCost: 2_000_000_000,
-    costScale: 1.075,
+    baseRate: 7_000_000,
+    baseCost: 5_000_000_000,
+    costScale: 1.105,
     unlock: {
-      ashEarned: 8_000_000_000,
+      ashEarned: 50_000_000_000,
       requires: { id: 'quantumCooler', level: 10 },
     },
   },

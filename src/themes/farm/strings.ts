@@ -468,7 +468,7 @@ export const farmStrings = {
     },
     unlockForge: {
       title: 'Pumpe online bringen',
-      body: 'Verdiene 200 Ertrag in diesem Lauf (oder Gewächshaus Lv 10), um die Nährstoffpumpe freizuschalten.',
+      body: 'Verdiene 600 Ertrag in diesem Lauf (oder Gewächshaus Lv 10), um die Nährstoffpumpe freizuschalten.',
       cta: 'Weiter',
     },
     visitClan: {
