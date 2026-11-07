@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
 import { t } from '../i18n'
 
 export type Tab = 'fortress' | 'prestige' | 'clan' | 'shop'
@@ -8,6 +8,8 @@ interface Props {
   ftueHighlight?: string | null
   onTabChange: (tab: Tab) => void
 }
+
+const SECONDARY: Tab[] = ['prestige', 'clan', 'shop']
 
 const ICONS: Record<Tab, ReactNode> = {
   fortress: (
@@ -93,27 +95,132 @@ const LABELS: Record<Tab, string> = {
   shop: t.nav.shop,
 }
 
-export function AppNav({ tab, ftueHighlight, onTabChange }: Props) {
-  const tabs: Tab[] = ['fortress', 'prestige', 'clan', 'shop']
+function MenuGlyph({ open }: { open: boolean }) {
   return (
-    <nav className="tab-bar tabs-4" aria-label={t.nav.ariaLabel}>
-      {tabs.map((id) => {
-        const active = tab === id
-        const ftue =
-          (id === 'prestige' && ftueHighlight === 'prestige') ||
-          (id === 'clan' && ftueHighlight === 'clan')
-        return (
-          <button
-            key={id}
-            type="button"
-            className={`tab${active ? ' active' : ''}${ftue ? ' ftue-tab' : ''}`}
-            onClick={() => onTabChange(id)}
-          >
-            <span className="tab-icon">{ICONS[id]}</span>
-            <span className="tab-label">{LABELS[id]}</span>
-          </button>
-        )
-      })}
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+      {open ? (
+        <path
+          d="M6 6l12 12M18 6L6 18"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.75"
+          strokeLinecap="round"
+        />
+      ) : (
+        <path
+          d="M5 7h14M5 12h14M5 17h14"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.75"
+          strokeLinecap="round"
+        />
+      )}
+    </svg>
+  )
+}
+
+export function AppNav({ tab, ftueHighlight, onTabChange }: Props) {
+  const [menuOpen, setMenuOpen] = useState(false)
+  const menuId = useId()
+  const menuRef = useRef<HTMLDivElement>(null)
+  const homeActive = tab === 'fortress'
+  const secondaryActive = !homeActive
+  const ftueMenu =
+    ftueHighlight === 'prestige' || ftueHighlight === 'clan'
+
+  useEffect(() => {
+    if (!menuOpen) return
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') setMenuOpen(false)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [menuOpen])
+
+  useEffect(() => {
+    if (!menuOpen) return
+    const first = menuRef.current?.querySelector<HTMLButtonElement>('button')
+    first?.focus()
+  }, [menuOpen])
+
+  function goHome() {
+    setMenuOpen(false)
+    onTabChange('fortress')
+  }
+
+  function pickSecondary(id: Tab) {
+    setMenuOpen(false)
+    onTabChange(id)
+  }
+
+  return (
+    <nav
+      className={`game-chrome${homeActive ? ' map-home' : ' panel-home'}`}
+      aria-label={t.nav.ariaLabel}
+    >
+      {menuOpen ? (
+        <button
+          type="button"
+          className="nav-menu-scrim"
+          aria-label={t.nav.menuClose}
+          onClick={() => setMenuOpen(false)}
+        />
+      ) : null}
+
+      {menuOpen ? (
+        <div
+          id={menuId}
+          ref={menuRef}
+          className="nav-menu"
+          role="menu"
+          aria-label={t.nav.menu}
+        >
+          {SECONDARY.map((id) => {
+            const active = tab === id
+            const ftue =
+              (id === 'prestige' && ftueHighlight === 'prestige') ||
+              (id === 'clan' && ftueHighlight === 'clan')
+            return (
+              <button
+                key={id}
+                type="button"
+                role="menuitem"
+                className={`nav-menu-item${active ? ' active' : ''}${ftue ? ' ftue-tab' : ''}`}
+                onClick={() => pickSecondary(id)}
+              >
+                <span className="tab-icon">{ICONS[id]}</span>
+                <span className="tab-label">{LABELS[id]}</span>
+              </button>
+            )
+          })}
+        </div>
+      ) : null}
+
+      <div className="game-chrome-bar">
+        <button
+          type="button"
+          className={`chrome-tab home${homeActive ? ' active' : ''}`}
+          aria-current={homeActive ? 'page' : undefined}
+          onClick={goHome}
+        >
+          <span className="tab-icon">{ICONS.fortress}</span>
+          <span className="tab-label">{LABELS.fortress}</span>
+        </button>
+
+        <button
+          type="button"
+          className={`chrome-tab menu${menuOpen || secondaryActive ? ' active' : ''}${ftueMenu ? ' ftue-tab' : ''}`}
+          aria-haspopup="menu"
+          aria-expanded={menuOpen}
+          aria-controls={menuOpen ? menuId : undefined}
+          onClick={() => setMenuOpen((o) => !o)}
+        >
+          <span className="tab-icon">
+            <MenuGlyph open={menuOpen} />
+          </span>
+          <span className="tab-label">{t.nav.menu}</span>
+        </button>
+      </div>
     </nav>
   )
 }

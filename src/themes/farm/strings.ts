@@ -19,6 +19,8 @@ export const farmStrings = {
     prestige: 'Prestige',
     clan: 'Clan',
     shop: 'Shop',
+    menu: 'Menü',
+    menuClose: 'Menü schließen',
   },
 
   sound: {
