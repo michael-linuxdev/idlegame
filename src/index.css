@@ -7,16 +7,19 @@
   --ad-bg-inset: #0a0908;
   --ad-stroke: #2e2a24;
   --ad-stroke-strong: #4a4338;
-  --ad-ink: #e8e0d4;
-  --ad-ink-muted: #9a9080;
-  --ad-ink-faint: #6b6458;
+  /* Primary bone — hard contrast on ash fields (≥ ~12:1 on deep) */
+  --ad-ink: #f2ebe0;
+  /* Secondary — still WCAG-ish on dark panels; not for must-read labels */
+  --ad-ink-muted: #c9bfb0;
+  /* Tertiary / disabled only — never building names, rates, HUD, buttons */
+  --ad-ink-faint: #8a8174;
   --ad-ember: #c45c2a;
   --ad-ember-hot: #e07838;
   --ad-ember-dim: #6e3218;
   --ad-bronze: #8a6a3d;
-  --ad-bronze-pale: #c4a574;
-  --ad-gain: #6f8f5a;
-  --ad-clan: #5a6e78;
+  --ad-bronze-pale: #d4b888;
+  --ad-gain: #8fad74;
+  --ad-clan: #8aa0ac;
   --ad-focus: #d4c4a8;
   --ad-target-min: 44px;
   --ad-font-display: 'Cinzel', 'Times New Roman', serif;

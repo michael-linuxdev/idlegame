@@ -65,25 +65,29 @@ export function FortressMap({ game }: Props) {
           {GENERATORS.map((def) => {
             const level = state.owned[def.id] ?? 0
             const selectedHere = selected === def.id
+            const buildingRate = level * def.baseRate * multiplier
             return (
               <button
                 key={def.id}
                 type="button"
                 className={`map-building${selectedHere ? ' selected' : ''}${level > 0 ? ' raised' : ''}`}
                 style={{ left: def.slot.left, top: def.slot.top }}
-                aria-label={`${def.name}, level ${level}. Tap to upgrade.`}
+                aria-label={`${def.name}, level ${level}, ${formatRate(buildingRate)}. Tap to upgrade.`}
                 onClick={() => setSelected(def.id)}
               >
                 <BuildingSilhouette kind={def.silhouette} level={level} />
                 <span className="map-building-label">
                   <span className="map-building-name">{def.name}</span>
-                  <span className="map-building-lvl">Lv {level}</span>
+                  <span className="map-building-meta">
+                    <span className="map-building-lvl">Lv {level}</span>
+                    <span className="map-building-rate">{formatRate(buildingRate)}</span>
+                  </span>
                 </span>
               </button>
             )
           })}
         </div>
-        <p className="map-hint muted">Tap a building to raise or upgrade it.</p>
+        <p className="map-hint">Tap a building to raise or upgrade it.</p>
       </div>
 
       {selected ? (
