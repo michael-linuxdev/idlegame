@@ -351,7 +351,21 @@
 }
 
 .map-grow-glow {
-  background: radial-gradient(ellipse at center, rgba(61, 139, 79, 0.35), transparent 70%);
+  background: radial-gradient(
+    ellipse at 50% 65%,
+    rgba(79, 168, 98, 0.42) 0%,
+    rgba(61, 139, 79, 0.22) 40%,
+    transparent 72%
+  );
+  animation: panel-breathe 9s ease-in-out infinite alternate;
+}
+
+.map-terrain-farm .map-tower-core {
+  opacity: 0.88;
+}
+
+.theme-map-farm .map-building.producing .map-building-label {
+  border-color: color-mix(in srgb, var(--oc-ember) 55%, var(--oc-stroke-strong));
 }
 
 .map-pollen {
@@ -1261,9 +1275,10 @@
 }
 
 .tab-bar.tabs-4 .tab {
-  font-size: 0.72rem;
-  letter-spacing: 0.06em;
-  padding: 0.85rem 0.1rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  padding: 0.45rem 0.1rem 0.55rem;
+  gap: 0.2rem;
 }
 
 .tab {
@@ -1278,6 +1293,26 @@
   font-weight: 600;
   padding: 0.85rem 0.25rem;
   min-height: var(--oc-target-min);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+}
+
+.tab-icon {
+  display: flex;
+  line-height: 0;
+  opacity: 0.85;
+}
+
+.tab.active .tab-icon {
+  opacity: 1;
+  color: var(--oc-ember);
+}
+
+.tab-label {
+  line-height: 1.1;
 }
 
 .tab:focus-visible {
@@ -1848,6 +1883,10 @@
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--oc-ember) 25%, transparent);
 }
 
+.player-level-chip.level-up {
+  animation: level-pop 0.55s ease-out;
+}
+
 .player-level-num {
   font-family: var(--oc-font-display);
   font-weight: 700;
@@ -2052,9 +2091,305 @@
   line-height: 1.25;
 }
 
+/* —— Retention / juice —— */
+
+.map-hud-brand-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.mute-toggle {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--oc-stroke);
+  border-radius: var(--oc-radius);
+  background: color-mix(in srgb, var(--oc-bg-raised) 90%, transparent);
+  color: var(--oc-ink-muted);
+  padding: 0;
+}
+
+.mute-toggle.muted {
+  color: var(--oc-warn);
+  border-color: color-mix(in srgb, var(--oc-warn) 45%, var(--oc-stroke));
+}
+
+.next-goal-strip {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    'kicker detail'
+    'title title'
+    'track track';
+  gap: 0.15rem 0.65rem;
+  margin: 0 1rem 0.55rem;
+  padding: 0.55rem 0.75rem 0.65rem;
+  text-align: left;
+  border: 1px solid var(--oc-stroke-strong);
+  border-radius: var(--oc-radius);
+  background: color-mix(in srgb, var(--oc-bg-raised) 94%, transparent);
+  box-shadow: 0 2px 10px rgba(40, 70, 40, 0.08);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  z-index: 4;
+}
+
+.next-goal-strip.ready {
+  border-color: var(--oc-ember);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--oc-ember) 22%, transparent);
+}
+
+.next-goal-kicker {
+  grid-area: kicker;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--oc-ink-muted);
+}
+
+.next-goal-title {
+  grid-area: title;
+  font-family: var(--oc-font-display);
+  font-weight: 700;
+  font-size: 0.98rem;
+  color: var(--oc-ink);
+}
+
+.next-goal-detail {
+  grid-area: detail;
+  justify-self: end;
+  align-self: center;
+  font-family: var(--oc-font-metric);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--oc-bronze);
+}
+
+.next-goal-track {
+  grid-area: track;
+  display: block;
+  height: 0.4rem;
+  margin-top: 0.25rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--oc-bg-inset) 80%, transparent);
+  overflow: hidden;
+}
+
+.next-goal-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #6a9a5a, var(--oc-ember-hot));
+  transition: width 280ms ease-out;
+}
+
+.next-goal-fill.pulse {
+  animation: bar-shine 1.4s ease-in-out infinite;
+}
+
+.float-pops {
+  pointer-events: none;
+  position: absolute;
+  left: 50%;
+  top: 7.5rem;
+  transform: translateX(-50%);
+  z-index: 12;
+  width: 0;
+  height: 0;
+}
+
+.float-pop {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translate(-50%, 0);
+  white-space: nowrap;
+  font-family: var(--oc-font-metric);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--oc-gain);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.65);
+  animation: float-rise 0.95s ease-out forwards;
+}
+
+.float-pop.kind-upgrade {
+  color: var(--oc-ember-dim);
+}
+
+.float-pop.kind-claim {
+  color: var(--oc-bronze);
+  font-size: 1.15rem;
+}
+
+.float-pop.leaving {
+  opacity: 0;
+}
+
+.banner.offline.celebrate,
+.banner.daily-ops.comeback {
+  background: color-mix(in srgb, var(--oc-ember) 14%, var(--oc-bg-raised));
+  border-color: color-mix(in srgb, var(--oc-ember) 50%, var(--oc-stroke));
+}
+
+.offline-amount {
+  font-family: var(--oc-font-metric);
+  font-size: 1.15em;
+  color: var(--oc-gain);
+}
+
+.comeback-meta {
+  color: var(--oc-ember-dim) !important;
+  font-weight: 600;
+}
+
+.streak-dots {
+  display: flex;
+  gap: 0.28rem;
+  margin: 0.35rem 0 0.15rem;
+}
+
+.streak-dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--oc-bg-inset) 90%, transparent);
+  border: 1px solid var(--oc-stroke);
+}
+
+.streak-dot.on {
+  background: var(--oc-ember);
+  border-color: var(--oc-ember-dim);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--oc-ember) 22%, transparent);
+}
+
+.claim-toast.celebrate {
+  animation: claim-pop 0.35s ease-out, claim-glow 1.2s ease-out;
+  font-size: 1rem;
+}
+
+.btn.pulse-ready:not(:disabled) {
+  animation: cta-pulse 1.8s ease-in-out infinite;
+}
+
+.btn.buy.just-bought {
+  animation: buy-flash 0.42s ease-out;
+}
+
+.sheet.upgrade-flash {
+  box-shadow:
+    0 -8px 24px rgba(40, 60, 80, 0.15),
+    0 0 0 2px color-mix(in srgb, var(--oc-ember) 35%, transparent);
+}
+
+.upgrade-afford-track {
+  height: 0.4rem;
+  margin: 0.35rem 0 0.75rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--oc-bg-inset) 80%, transparent);
+  overflow: hidden;
+  border: 1px solid var(--oc-stroke);
+}
+
+.upgrade-afford-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--oc-ice-pale), var(--oc-ember));
+  transition: width 220ms ease-out;
+}
+
+.upgrade-afford-fill.ready {
+  background: linear-gradient(90deg, var(--oc-ember), var(--oc-ember-hot));
+  animation: bar-shine 1.5s ease-in-out infinite;
+}
+
+.sheet-buy {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes float-rise {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 8px) scale(0.92);
+  }
+  18% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -36px) scale(1.05);
+  }
+}
+
+@keyframes level-pop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.04);
+    border-color: var(--oc-ember-hot);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes bar-shine {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.12);
+  }
+}
+
+@keyframes cta-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--oc-ember) 0%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--oc-ember) 22%, transparent);
+  }
+}
+
+@keyframes buy-flash {
+  0% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  35% {
+    transform: scale(1.03);
+    filter: brightness(1.12);
+  }
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+}
+
+@keyframes claim-glow {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--oc-gain) 35%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 10px transparent;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .map-haze,
   .map-forge-glow,
+  .map-grow-glow,
   .map-stars,
   .map-dust,
   .building-sil.lit .sil-led,
@@ -2070,13 +2405,21 @@
   .ftue-coach,
   .install-prompt,
   .ash-value.tick,
-  .claim-toast {
+  .claim-toast,
+  .float-pop,
+  .btn.pulse-ready,
+  .btn.buy.just-bought,
+  .next-goal-fill.pulse,
+  .upgrade-afford-fill.ready,
+  .player-level-chip.level-up {
     animation: none;
   }
 
   .map-skin-wash,
   .hud-metric-chip,
-  .player-level-fill {
+  .player-level-fill,
+  .next-goal-fill,
+  .upgrade-afford-fill {
     transition: none;
   }
 }

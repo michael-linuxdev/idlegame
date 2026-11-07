@@ -20,6 +20,7 @@ import {
 } from './generators'
 import {
   canClaimDaily,
+  isComebackClaim,
   nextStreakAfterClaim,
   rewardForStreak,
 } from './dailyOps'
@@ -446,7 +447,8 @@ export function claimDailyOps(state: GameState, now = Date.now()): GameState {
   if (!canClaimDaily(state.dailyClaimDay, now)) return state
   const streak = nextStreakAfterClaim(state.dailyClaimDay, state.dailyStreak, now)
   const rate = productionPerSecond(state, now)
-  const reward = rewardForStreak(Math.max(0, streak - 1), rate)
+  const comeback = isComebackClaim(state.dailyClaimDay, now)
+  const reward = rewardForStreak(Math.max(0, streak - 1), rate, { comeback })
   let next = syncEventWindow(syncClanBoost(state, now), now)
   next = withEventProgress(next, reward.compute, now)
   next = {

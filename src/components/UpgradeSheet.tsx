@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
   GENERATORS,
   generatorRate,
@@ -6,6 +7,7 @@ import {
 } from '../game/generators'
 import { efficiencyMult, type BranchKind } from '../game/branches'
 import { formatAsh, formatRate } from '../game/format'
+import { playSfx } from '../game/sound'
 import { t } from '../i18n'
 import type { useGame } from '../game/useGame'
 
@@ -15,10 +17,12 @@ interface Props {
   game: GameApi
   selectedId: GeneratorId
   onClose: () => void
+  onUpgraded?: (cost: number) => void
 }
 
-export function UpgradeSheet({ game, selectedId, onClose }: Props) {
+export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
   const def = GENERATORS.find((g) => g.id === selectedId)
+  const [flash, setFlash] = useState(false)
   if (!def) return null
 
   const owned = game.state.owned[def.id] ?? 0
@@ -32,15 +36,27 @@ export function UpgradeSheet({ game, selectedId, onClose }: Props) {
   const lineRate = generatorRate(def, owned) * lineMult * eff
   const nextRate = generatorRate(def, owned + 1) * lineMult * eff
   const milestoneNext = owned > 0 && (owned + 1) % 10 === 0
+  const affordRatio =
+    cost > 0 ? Math.min(1, game.state.ash / cost) : unlocked ? 1 : 0
 
   function buyBranch(kind: BranchKind) {
     game.buyModuleBranch(selectedId, kind)
+    playSfx('upgrade')
+  }
+
+  function buyUpgrade() {
+    if (!affordable) return
+    const paid = cost
+    game.buy(def!.id)
+    setFlash(true)
+    window.setTimeout(() => setFlash(false), 420)
+    onUpgraded?.(paid)
   }
 
   return (
     <div className="sheet-backdrop" role="presentation" onClick={onClose}>
       <div
-        className="sheet"
+        className={`sheet${flash ? ' upgrade-flash' : ''}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="upgrade-title"
@@ -66,6 +82,16 @@ export function UpgradeSheet({ game, selectedId, onClose }: Props) {
               {' · '}
               {t.upgrade.next} {formatRate(nextRate)}
             </p>
+            <div
+              className="upgrade-afford-track"
+              aria-hidden="true"
+              title={formatAsh(cost)}
+            >
+              <span
+                className={`upgrade-afford-fill${affordable ? ' ready' : ''}`}
+                style={{ width: `${Math.round(affordRatio * 100)}%` }}
+              />
+            </div>
             {milestoneNext ? (
               <p className="muted">{t.upgrade.milestone}</p>
             ) : null}
@@ -74,9 +100,9 @@ export function UpgradeSheet({ game, selectedId, onClose }: Props) {
             ) : null}
             <button
               type="button"
-              className="btn buy sheet-buy"
+              className={`btn buy sheet-buy${affordable ? ' pulse-ready' : ''}${flash ? ' just-bought' : ''}`}
               disabled={!affordable}
-              onClick={() => game.buy(def.id)}
+              onClick={buyUpgrade}
             >
               {t.upgrade.costLine(
                 owned === 0 ? t.upgrade.online : t.upgrade.upgrade,
