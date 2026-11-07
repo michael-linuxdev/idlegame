@@ -4476,3 +4476,126 @@
     transition: none;
   }
 }
+
+/* Pause CSS motion while the PWA/tab is backgrounded (class set in useGame). */
+html.tab-hidden .app-shell *,
+html.tab-hidden .app-shell *::before,
+html.tab-hidden .app-shell *::after {
+  animation-play-state: paused !important;
+}
+
+/*
+ * Thermal lite for phones (Safari iPhone 13 PWA overheated with continuous
+ * blur + SVG filter motion + 3D map transforms). Glass stays translucent via
+ * stronger fills — no live backdrop-filter compositing.
+ */
+@media (hover: none) and (pointer: coarse) {
+  .hud-chip,
+  .map-hud .next-goal-strip,
+  .app-main.map-mode .banner.map-banner,
+  .upgrade-hud,
+  .upgrade-hud-close,
+  .upgrade-hud-row,
+  .menu-fab,
+  .nav-menu {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .hud-chip,
+  .map-hud .next-goal-strip,
+  .app-main.map-mode .banner.map-banner {
+    background: color-mix(in srgb, var(--oc-bg-raised) 82%, transparent);
+  }
+
+  .upgrade-hud {
+    background: color-mix(in srgb, var(--oc-bg-raised) 86%, transparent);
+  }
+
+  .upgrade-hud-close,
+  .upgrade-hud-row {
+    background: color-mix(in srgb, var(--oc-bg-raised) 78%, transparent);
+  }
+
+  .menu-fab {
+    background: color-mix(in srgb, var(--oc-bg-raised) 92%, transparent);
+  }
+
+  .nav-menu {
+    background: color-mix(in srgb, var(--oc-bg-raised) 96%, transparent);
+  }
+
+  .fortress-map,
+  .theme-map-farm .fortress-map,
+  .theme-map-arcade .fortress-map,
+  .app-main.map-mode .fortress-map,
+  .app-main.map-mode .fortress-stage.theme-map-farm .fortress-map,
+  .app-main.map-mode .fortress-stage.theme-map-arcade .fortress-map {
+    transform: none;
+  }
+
+  .map-haze,
+  .map-forge-glow,
+  .map-grow-glow,
+  .map-neon-glow,
+  .map-stars,
+  .map-dust,
+  .map-arcade-neon-beams,
+  .map-arcade-marquee-glow,
+  .map-arcade-coin-glints,
+  .farm-yard-glow,
+  .farm-yard-haze,
+  .theme-map-farm .farm-led-dot,
+  .theme-map-farm .farm-pollen,
+  .arcade-neon-rail,
+  .arcade-ceiling-bulb,
+  .arcade-marquee-bulb,
+  .arcade-coin-glints,
+  .arcade-screen-glow,
+  .arcade-hall-glow,
+  .building-sil.lit .sil-led,
+  .building-sil.lit .sil-ping,
+  .building-sil.lit .sil-beam,
+  .building-sil.lit .sil-beam-flare,
+  .building-sil.lit .sil-ring,
+  .building-sil.lit .sil-fan-group,
+  .building-sil.lit .sil-neon-tube,
+  .building-sil.lit .sil-screen,
+  .building-sil.lit .sil-leaf,
+  .building-sil.lit .sil-wave,
+  .building-sil.sil-farm.lit .sil-led,
+  .building-sil.sil-farm.lit .sil-leaf,
+  .building-sil.producing .sil-particles,
+  .map-building.producing .map-building-rate,
+  .btn.pulse-ready,
+  .upgrade-hud-buy.pulse-ready,
+  .next-goal-fill.pulse,
+  .upgrade-afford-fill.ready {
+    animation: none !important;
+  }
+
+  .building-sil.producing .sil-particles,
+  .map-dust,
+  .theme-map-farm .farm-pollen {
+    display: none;
+  }
+
+  .building-sil.lit .sil-beam,
+  .building-sil.sil-farm.lit .sil-led.amber,
+  .building-sil.sil-farm.lit .sil-led.core,
+  .building-sil.sil-farm.lit .sil-led.ice,
+  .theme-map-arcade .building-sil.lit .sil-led.core,
+  .theme-map-arcade .building-sil.lit .sil-led.amber,
+  .theme-map-arcade .building-sil.lit .sil-led.ice,
+  .map-building .building-sil,
+  .theme-map-arcade .map-building.locked .building-sil {
+    filter: none;
+  }
+
+  .map-building,
+  .map-terrain,
+  .farm-yard-svg {
+    content-visibility: auto;
+    contain: layout paint style;
+  }
+}

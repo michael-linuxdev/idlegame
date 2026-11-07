@@ -116,14 +116,17 @@ export function FortressMap({ game, highlightId }: Props) {
   )
 
   useEffect(() => {
-    if (state.ash > prevAsh.current + 0.05) {
+    // Ignore passive economy ticks — flashing every 250ms forces layout/paint on iPhone.
+    const jump = state.ash - prevAsh.current
+    const meaningful = Math.max(rate * 1.25, 1)
+    if (jump > meaningful) {
       setTickFlash(true)
       const timer = window.setTimeout(() => setTickFlash(false), 280)
       prevAsh.current = state.ash
       return () => window.clearTimeout(timer)
     }
     prevAsh.current = state.ash
-  }, [state.ash])
+  }, [state.ash, rate])
 
   useEffect(() => {
     const surprise = state.lastSurprise

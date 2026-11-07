@@ -82,7 +82,10 @@ import {
 import { logPlaytest } from './playtestLog'
 import { loadState, saveState } from './storage'
 
-const TICK_MS = 100
+/** Economy + React UI cadence. 100ms was overheating iPhone Safari PWAs. */
+const TICK_MS = 250
+/** Persist less often than the tick — localStorage stringify is expensive. */
+const SAVE_MS = 4000
 
 export function useGame() {
   const [state, setState] = useState<GameState>(() => {
@@ -100,44 +103,84 @@ export function useGame() {
   })
 
   const stateRef = useRef(state)
+  const dirtySaveRef = useRef(false)
   useEffect(() => {
     stateRef.current = state
+    dirtySaveRef.current = true
   }, [state])
 
   const [nowTick, setNowTick] = useState(() => Date.now())
 
   useEffect(() => {
-    saveState(state)
-  }, [state])
-
-  useEffect(() => {
-    const id = window.setInterval(() => {
-      setNowTick(Date.now())
-      setState((s) => applyTick(s, TICK_MS / 1000))
-    }, TICK_MS)
-    return () => window.clearInterval(id)
-  }, [])
-
-  useEffect(() => {
     const flush = () => {
+      dirtySaveRef.current = false
       const next = { ...stateRef.current, lastSeen: Date.now() }
+      stateRef.current = next
       saveState(next)
     }
-    window.addEventListener('pagehide', flush)
-    const onVis = () => {
-      if (document.visibilityState === 'hidden') flush()
-      if (document.visibilityState === 'visible') {
-        setState((s) => {
-          const { state: next, gained } = applyOfflineCatchup(s)
-          if (gained > 0.01) setOfflineGained(gained)
-          return collectReadyAchievements(next)
-        })
+
+    const saveTimer = window.setInterval(() => {
+      if (!dirtySaveRef.current) return
+      if (document.visibilityState === 'hidden') return
+      dirtySaveRef.current = false
+      saveState(stateRef.current)
+    }, SAVE_MS)
+
+    let tickTimer: number | null = null
+    let lastTickAt = Date.now()
+
+    const stopTick = () => {
+      if (tickTimer != null) {
+        window.clearInterval(tickTimer)
+        tickTimer = null
       }
     }
+
+    const startTick = () => {
+      if (tickTimer != null) return
+      lastTickAt = Date.now()
+      tickTimer = window.setInterval(() => {
+        const now = Date.now()
+        const dt = Math.min(Math.max((now - lastTickAt) / 1000, TICK_MS / 1000), 2)
+        lastTickAt = now
+        setNowTick(now)
+        setState((s) => applyTick(s, dt))
+      }, TICK_MS)
+    }
+
+    const onVis = () => {
+      if (document.visibilityState === 'hidden') {
+        document.documentElement.classList.add('tab-hidden')
+        stopTick()
+        flush()
+        return
+      }
+      document.documentElement.classList.remove('tab-hidden')
+      setState((s) => {
+        const { state: next, gained } = applyOfflineCatchup(s)
+        if (gained > 0.01) setOfflineGained(gained)
+        return collectReadyAchievements(next)
+      })
+      lastTickAt = Date.now()
+      startTick()
+    }
+
+    if (document.visibilityState === 'hidden') {
+      document.documentElement.classList.add('tab-hidden')
+    } else {
+      document.documentElement.classList.remove('tab-hidden')
+      startTick()
+    }
+
+    window.addEventListener('pagehide', flush)
     document.addEventListener('visibilitychange', onVis)
     return () => {
+      stopTick()
+      window.clearInterval(saveTimer)
       window.removeEventListener('pagehide', flush)
       document.removeEventListener('visibilitychange', onVis)
+      document.documentElement.classList.remove('tab-hidden')
+      if (dirtySaveRef.current) flush()
     }
   }, [])
 
