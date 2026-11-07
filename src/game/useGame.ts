@@ -17,6 +17,12 @@ import {
   type ObsidianPackDef,
   type TimeSkipId,
 } from './monetization'
+import { canClaimDaily, previewDailyReward } from './dailyOps'
+import {
+  bandwidthSurgeStatus,
+  bandwidthSurgeWindowKey,
+  isBandwidthSurgeActive,
+} from './events'
 import {
   applyOfflineCatchup,
   applyTick,
@@ -26,9 +32,13 @@ import {
   buyGenerator,
   buyTimeSkip,
   canPrestigeNow,
+  claimBandwidthSurgeGoal,
+  claimDailyOps,
+  dismissBandwidthSurge,
   doPrestige,
   effectiveClanMult,
   equipCosmetic,
+  eventProductionMult,
   mockBuyPack,
   nextPrestigeEmbers,
   prestigeMinAsh,
@@ -150,10 +160,23 @@ export function useGame() {
     setState((s) => mockBuyPack(s, pack))
   }, [])
 
+  const claimDaily = useCallback(() => {
+    setState((s) => claimDailyOps(s))
+  }, [])
+
+  const dismissEvent = useCallback(() => {
+    setState((s) => dismissBandwidthSurge(s))
+  }, [])
+
+  const claimEventGoal = useCallback(() => {
+    setState((s) => claimBandwidthSurgeGoal(s))
+  }, [])
+
   const dismissOffline = useCallback(() => setOfflineGained(null), [])
 
   const mult = prestigeMultiplier(state.emberUpgrades)
   const clanMult = effectiveClanMult(state, nowTick)
+  const eventMult = eventProductionMult(nowTick)
   const progress = prestigeProgress(state)
   const discount = foundryDiscountMult(state.emberUpgrades)
   const equipped = cosmeticById(state.equippedCosmetic)
@@ -163,6 +186,21 @@ export function useGame() {
   const clanBoostMsLeft = clanBoostActive
     ? Math.max(0, state.clanBoostExpiresAt - nowTick)
     : 0
+
+  const dailyReady = canClaimDaily(state.dailyClaimDay, nowTick)
+  const dailyPreview = previewDailyReward(
+    state.dailyStreak,
+    state.dailyClaimDay,
+    productionPerSecond(state, nowTick),
+    nowTick,
+  )
+
+  const surge = bandwidthSurgeStatus(nowTick)
+  const surgeWindow = bandwidthSurgeWindowKey(nowTick)
+  const surgeVisible =
+    isBandwidthSurgeActive(nowTick) && state.eventDismissedKey !== surgeWindow
+  const surgeGoalDone = state.eventAshProgress >= surge.goal
+  const surgeGoalClaimed = state.eventGoalClaimedKey === surgeWindow
 
   const costOf = useCallback(
     (id: GeneratorId) => {
@@ -192,6 +230,7 @@ export function useGame() {
     rate: productionPerSecond(state, nowTick),
     multiplier: mult,
     clanMult,
+    eventMult,
     clanBoostActive,
     clanBoostMsLeft,
     skipHoursRemaining: skipLeft,
@@ -211,6 +250,15 @@ export function useGame() {
     setEquippedCosmetic,
     purchaseClanBoost,
     purchasePack,
+    claimDaily,
+    dismissEvent,
+    claimEventGoal,
+    dailyReady,
+    dailyPreview,
+    surge,
+    surgeVisible,
+    surgeGoalDone,
+    surgeGoalClaimed,
     costOf,
     unlocked,
     offlineGained,

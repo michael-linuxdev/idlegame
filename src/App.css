@@ -364,6 +364,22 @@
   z-index: 2;
 }
 
+/* Content depth: 10 slots — slightly tighter footprints */
+.fortress-map.slots-10 .map-building {
+  width: min(26%, 100px);
+  min-width: 78px;
+  padding: 0.2rem 0.15rem 0.3rem;
+}
+
+.fortress-map.slots-10 .building-sil {
+  width: 56px;
+  height: 50px;
+}
+
+.fortress-map.slots-10 .map-building-name {
+  font-size: 0.68rem;
+}
+
 .map-building.selected .building-sil,
 .map-building:focus-visible .building-sil {
   outline: 2px solid var(--oc-focus);
@@ -718,13 +734,132 @@
 .building-sil.locked .sil-core-glow,
 .building-sil.locked .sil-ping,
 .building-sil.locked .sil-beam,
-.building-sil.locked .sil-antenna {
+.building-sil.locked .sil-antenna,
+.building-sil.locked .sil-cell,
+.building-sil.locked .sil-cache-ring,
+.building-sil.locked .sil-frost,
+.building-sil.locked .sil-scrub-flow {
   opacity: 0.15;
 }
 
-/* Offline banner on map */
+/* Battery bank */
+.battery-block {
+  bottom: 10px;
+  width: 34px;
+  height: 28px;
+  border-radius: 3px;
+  clip-path: polygon(8% 100%, 8% 18%, 22% 18%, 22% 8%, 78% 8%, 78% 18%, 92% 18%, 92% 100%);
+}
 
-.banner.offline {
+.sil-cell {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  width: 18px;
+  height: 14px;
+  transform: translateX(-50%);
+  background: repeating-linear-gradient(
+    90deg,
+    var(--oc-ember-dim) 0 3px,
+    transparent 3px 5px
+  );
+  opacity: 0.4;
+  border-radius: 1px;
+}
+
+.building-sil.lit .sil-cell {
+  opacity: 1;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--oc-ember-hot) 0 3px,
+    transparent 3px 5px
+  );
+  animation: bit-pulse 2.2s ease-in-out infinite;
+}
+
+/* Edge cache */
+.cache-pod {
+  bottom: 10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50% 50% 6px 6px;
+}
+
+.sil-cache-ring {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  width: 20px;
+  height: 20px;
+  transform: translateX(-50%);
+  border: 2px solid var(--oc-ice);
+  border-radius: 50%;
+  opacity: 0.4;
+}
+
+.building-sil.lit .sil-cache-ring {
+  opacity: 1;
+  animation: fan-spin 3.2s linear infinite;
+  box-shadow: 0 0 6px rgba(61, 142, 184, 0.35);
+}
+
+/* Quantum cooler */
+.quantum-cryo {
+  bottom: 10px;
+  width: 32px;
+  height: 26px;
+  border-radius: 4px;
+  clip-path: polygon(50% 0, 100% 30%, 85% 100%, 15% 100%, 0 30%);
+}
+
+.sil-frost {
+  position: absolute;
+  left: 50%;
+  bottom: 16px;
+  width: 12px;
+  height: 12px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: var(--oc-ice-pale);
+  opacity: 0.35;
+}
+
+.building-sil.lit .sil-frost {
+  opacity: 1;
+  background: radial-gradient(circle, #f4faff, var(--oc-ice));
+  animation: bit-pulse 1.6s ease-in-out infinite;
+  box-shadow: 0 0 8px rgba(126, 184, 212, 0.55);
+}
+
+/* Packet scrubber */
+.scrub-inline {
+  bottom: 10px;
+  width: 40px;
+  height: 20px;
+  border-radius: 3px;
+}
+
+.sil-scrub-flow {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 18px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--oc-ice), var(--oc-ember), var(--oc-ice));
+  opacity: 0.35;
+  border-radius: 2px;
+}
+
+.building-sil.lit .sil-scrub-flow {
+  opacity: 1;
+  animation: bit-pulse 1.3s ease-in-out infinite;
+}
+
+/* Offline / daily / event banners on map */
+
+.banner.offline,
+.banner.daily-ops,
+.banner.event-surge {
   display: flex;
   flex-direction: column;
   gap: 0.65rem;
@@ -736,14 +871,86 @@
   z-index: 4;
 }
 
-.banner.offline.map-banner {
+.banner.daily-ops {
+  background: rgba(232, 160, 80, 0.12);
+  border-color: rgba(212, 137, 58, 0.45);
+}
+
+.banner.event-surge {
+  background: rgba(61, 142, 184, 0.16);
+  border-color: rgba(61, 142, 184, 0.5);
+}
+
+.banner.offline.map-banner,
+.banner.daily-ops.map-banner,
+.banner.event-surge.map-banner {
   position: relative;
 }
 
-.banner.offline p {
+.banner.offline p,
+.banner.daily-ops p,
+.banner.event-surge p {
   margin: 0;
   color: var(--oc-ink);
-  font-size: 1rem;
+  font-size: 0.95rem;
+}
+
+.banner-kicker {
+  font-family: var(--oc-font-display);
+  font-size: 0.78rem !important;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--oc-ink-muted) !important;
+}
+
+.banner-meta {
+  color: var(--oc-ink-muted);
+  font-size: 0.85rem !important;
+}
+
+.banner-meta.claimed {
+  color: var(--oc-ember);
+  font-weight: 600;
+}
+
+.banner-reward {
+  font-family: var(--oc-font-metric);
+  font-weight: 600;
+  font-size: 0.92rem !important;
+}
+
+.banner-mult {
+  color: var(--oc-ice);
+  font-weight: 700;
+}
+
+.banner-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.banner-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.event-goal {
+  height: 8px;
+  margin: 0.35rem 0 0.15rem;
+  background: rgba(90, 110, 130, 0.25);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.event-goal-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--oc-ice), var(--oc-ember));
+  border-radius: 4px;
+  transition: width 0.35s ease-out;
 }
 
 /* Upgrade sheet */
@@ -1468,6 +1675,10 @@
   .building-sil.lit .sil-core-glow,
   .building-sil.lit .sil-ping,
   .building-sil.lit .sil-beam,
+  .building-sil.lit .sil-cell,
+  .building-sil.lit .sil-cache-ring,
+  .building-sil.lit .sil-frost,
+  .building-sil.lit .sil-scrub-flow,
   .sheet-backdrop,
   .sheet,
   .ftue-coach,
