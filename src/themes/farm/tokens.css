@@ -1,0 +1,117 @@
+/**
+ * TurmFarm palette — hell, luftig, Grün/Weiß/Soft-Earth.
+ * Overrides shared --oc-* tokens when data-theme="farm" (default).
+ */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;700&family=Nunito+Sans:wght@400;600;700&family=DM+Sans:wght@500;700&display=swap');
+
+:root,
+[data-theme='farm'] {
+  /* Surfaces — airy greenhouse / rooftop light */
+  --oc-bg-deep: #dce8d6;
+  --oc-bg-field: #e8f0e4;
+  --oc-bg-raised: #f5f9f2;
+  --oc-bg-inset: #c5d9b8;
+  --oc-stroke: #a8c09a;
+  --oc-stroke-strong: #6b8f5e;
+
+  /* Type — deep leaf on pale green */
+  --oc-ink: #1e2e1a;
+  --oc-ink-muted: #4a5f42;
+  --oc-ink-faint: #7a9070;
+
+  /* Primary CTA — leaf green (not amber panel) */
+  --oc-ember: #3d8b4f;
+  --oc-ember-hot: #4fa862;
+  --oc-ember-dim: #2d6a3a;
+
+  /* Secondary status — soft mint */
+  --oc-ice: #5a9e6e;
+  --oc-ice-pale: #8ec99a;
+  --oc-ice-wash: color-mix(in srgb, var(--oc-ice) 14%, transparent);
+
+  /* Prestige / meta — soft earth */
+  --oc-bronze: #8a7348;
+  --oc-bronze-pale: #b89a5c;
+
+  /* Semantic */
+  --oc-gain: #2f7a42;
+  --oc-warn: #b08940;
+  --oc-danger: #a3483c;
+  --oc-clan: #5a8f6a;
+  --oc-focus: #2d6a3a;
+  --oc-target-min: 44px;
+
+  --oc-font-display: 'Fraunces', 'Georgia', serif;
+  --oc-font-ui: 'Nunito Sans', 'Helvetica Neue', sans-serif;
+  --oc-font-metric: 'DM Sans', 'Helvetica Neue', sans-serif;
+  --oc-radius: 8px;
+
+  /* Legacy aliases */
+  --ad-bg-deep: var(--oc-bg-deep);
+  --ad-bg-field: var(--oc-bg-field);
+  --ad-bg-raised: var(--oc-bg-raised);
+  --ad-bg-inset: var(--oc-bg-inset);
+  --ad-stroke: var(--oc-stroke);
+  --ad-stroke-strong: var(--oc-stroke-strong);
+  --ad-ink: var(--oc-ink);
+  --ad-ink-muted: var(--oc-ink-muted);
+  --ad-ink-faint: var(--oc-ink-faint);
+  --ad-ember: var(--oc-ember);
+  --ad-ember-hot: var(--oc-ember-hot);
+  --ad-ember-dim: var(--oc-ember-dim);
+  --ad-bronze: var(--oc-bronze);
+  --ad-bronze-pale: var(--oc-bronze-pale);
+  --ad-gain: var(--oc-gain);
+  --ad-clan: var(--oc-clan);
+  --ad-focus: var(--oc-focus);
+  --ad-target-min: var(--oc-target-min);
+  --ad-font-display: var(--oc-font-display);
+  --ad-font-ui: var(--oc-font-ui);
+  --ad-font-metric: var(--oc-font-metric);
+  --ad-radius: var(--oc-radius);
+  --ad-warn: var(--oc-warn);
+
+  --bg-deep: var(--oc-bg-deep);
+  --bg: var(--oc-bg-field);
+  --bg-raised: var(--oc-bg-raised);
+  --bg-line: var(--oc-stroke);
+  --ember: var(--oc-ember);
+  --ember-hot: var(--oc-ember-hot);
+  --ash: var(--oc-ink-muted);
+  --ash-dim: var(--oc-ink-faint);
+  --ink: var(--oc-ink);
+  --font-display: var(--oc-font-display);
+  --font-body: var(--oc-font-ui);
+  --radius: var(--oc-radius);
+  color-scheme: light;
+}
+
+/* Orbit Rack alternate pack — restore steel/ice tokens when selected */
+[data-theme='orbit'] {
+  --oc-bg-deep: #d8e2ec;
+  --oc-bg-field: #e8eef4;
+  --oc-bg-raised: #f4f7fa;
+  --oc-bg-inset: #c5d0dc;
+  --oc-stroke: #9aadc0;
+  --oc-stroke-strong: #6b8299;
+  --oc-ink: #1a2330;
+  --oc-ink-muted: #3d4f63;
+  --oc-ink-faint: #6b7f94;
+  --oc-ember: #d4893a;
+  --oc-ember-hot: #e8a050;
+  --oc-ember-dim: #a86a28;
+  --oc-ice: #3d8eb8;
+  --oc-ice-pale: #7eb8d4;
+  --oc-ice-wash: color-mix(in srgb, var(--oc-ice) 14%, transparent);
+  --oc-bronze: #8a7348;
+  --oc-bronze-pale: #b89a5c;
+  --oc-gain: #2f7a52;
+  --oc-warn: #b08940;
+  --oc-danger: #a3483c;
+  --oc-clan: #3d8eb8;
+  --oc-focus: #2a6f92;
+  --oc-font-display: 'Exo 2', 'Helvetica Neue', sans-serif;
+  --oc-font-ui: 'Barlow', 'Helvetica Neue', sans-serif;
+  --oc-font-metric: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --oc-radius: 6px;
+}

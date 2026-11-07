@@ -1,8 +1,8 @@
-# Orbit Rack
+# TurmFarm
 
-Mobile-first idle PWA: run a **space data center** from a build map. Modules produce Compute offline; prestige for Credits.
+Mobile-first idle PWA on a **shared game core** with theme skins. Active skin: **Urban Vertical Farm** (working title TurmFarm). Modules produce Ertrag offline; prestige for Münzen.
 
-Interim brand for the space-datacenter tone (loop: idle / Bau-Map / prestige / clans).
+Theme packs live under `src/themes/` (`farm` default, `orbit` alternate). Flip `ACTIVE_THEME_ID` in `src/themes/index.ts` to swap skins without touching the idle / slots / prestige / clan / shop loop.
 
 ## Stack
 
@@ -24,12 +24,12 @@ npm run preview
 
 ## MVP features
 
-- **Station Home** — Bau-Map with six module slots (Power Plant, Cooling Array, Rack Bay, Uplink, Beam Relay, Core Switch). Tap to upgrade.
-- **Compute** soft currency with burst cycle, idle tick, offline catch-up (8h soft / 24h hard)
-- Prestige → **Credits** meta + shop (Rack Yield, Long Uptime, BOM Discount, Hot Spare)
+- **Farm Home** — Bau-Map with ten module slots (Gewächshaus, Nährstoffpumpe, LED-Wand, …). Tap to upgrade.
+- **Ertrag** soft currency with burst cycle, idle tick, offline catch-up (8h soft / 24h hard)
+- Prestige → **Münzen** meta + shop
 - Clan tab with fake local season leaderboard
 - FTUE coach (dismissible) + PWA install nudge
-- `base: './'` for GitHub Pages / custom domain
+- German UI (`lang=de`), `base: './'` for GitHub Pages / custom domain
 
 ## Hosted URLs
 
