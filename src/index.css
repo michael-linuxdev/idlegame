@@ -1,47 +1,85 @@
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;600&family=Cinzel:wght@600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;600&family=Exo+2:wght@600;700&display=swap');
 
 :root {
-  --ad-bg-deep: #0c0b0a;
-  --ad-bg-field: #141210;
-  --ad-bg-raised: #1c1916;
-  --ad-bg-inset: #0a0908;
-  --ad-stroke: #2e2a24;
-  --ad-stroke-strong: #4a4338;
-  /* Primary bone — hard contrast on ash fields (≥ ~12:1 on deep) */
-  --ad-ink: #f2ebe0;
-  /* Secondary — still WCAG-ish on dark panels; not for must-read labels */
-  --ad-ink-muted: #c9bfb0;
-  /* Tertiary / disabled only — never building names, rates, HUD, buttons */
-  --ad-ink-faint: #8a8174;
-  --ad-ember: #c45c2a;
-  --ad-ember-hot: #e07838;
-  --ad-ember-dim: #6e3218;
-  --ad-bronze: #8a6a3d;
-  --ad-bronze-pale: #d4b888;
-  --ad-gain: #8fad74;
-  --ad-clan: #8aa0ac;
-  --ad-focus: #d4c4a8;
-  --ad-target-min: 44px;
-  --ad-font-display: 'Cinzel', 'Times New Roman', serif;
-  --ad-font-ui: 'Barlow', 'Helvetica Neue', sans-serif;
-  --ad-font-metric: 'Barlow Condensed', 'Arial Narrow', sans-serif;
-  --ad-radius: 6px;
+  /* Surfaces — bright orbital / station deck (not black void) */
+  --oc-bg-deep: #d8e2ec;
+  --oc-bg-field: #e8eef4;
+  --oc-bg-raised: #f4f7fa;
+  --oc-bg-inset: #c5d0dc;
+  --oc-stroke: #9aadc0;
+  --oc-stroke-strong: #6b8299;
+
+  /* Type — high-contrast slate on pale steel */
+  --oc-ink: #1a2330;
+  --oc-ink-muted: #3d4f63;
+  --oc-ink-faint: #6b7f94;
+
+  /* Warm panel light — primary CTA (sparingly) */
+  --oc-ember: #d4893a;
+  --oc-ember-hot: #e8a050;
+  --oc-ember-dim: #a86a28;
+
+  /* Ice-blue accent — secondary / status (sparingly) */
+  --oc-ice: #3d8eb8;
+  --oc-ice-pale: #7eb8d4;
+  --oc-ice-wash: color-mix(in srgb, var(--oc-ice) 14%, transparent);
+
+  /* Prestige / meta — brushed steel-gold */
+  --oc-bronze: #8a7348;
+  --oc-bronze-pale: #b89a5c;
+
+  /* Semantic */
+  --oc-gain: #2f7a52;
+  --oc-warn: #b08940;
+  --oc-danger: #a3483c;
+  --oc-clan: #3d8eb8;
+  --oc-focus: #2a6f92;
+  --oc-target-min: 44px;
+
+  --oc-font-display: 'Exo 2', 'Helvetica Neue', sans-serif;
+  --oc-font-ui: 'Barlow', 'Helvetica Neue', sans-serif;
+  --oc-font-metric: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --oc-radius: 6px;
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 
-  /* Legacy aliases used across existing class names */
-  --bg-deep: var(--ad-bg-deep);
-  --bg: var(--ad-bg-field);
-  --bg-raised: var(--ad-bg-raised);
-  --bg-line: var(--ad-stroke);
-  --ember: var(--ad-ember);
-  --ember-hot: var(--ad-ember-hot);
-  --ash: var(--ad-ink-muted);
-  --ash-dim: var(--ad-ink-faint);
-  --ink: var(--ad-ink);
-  --font-display: var(--ad-font-display);
-  --font-body: var(--ad-font-ui);
-  --radius: var(--ad-radius);
-  color-scheme: dark;
+  /* Legacy aliases (existing class names) */
+  --ad-bg-deep: var(--oc-bg-deep);
+  --ad-bg-field: var(--oc-bg-field);
+  --ad-bg-raised: var(--oc-bg-raised);
+  --ad-bg-inset: var(--oc-bg-inset);
+  --ad-stroke: var(--oc-stroke);
+  --ad-stroke-strong: var(--oc-stroke-strong);
+  --ad-ink: var(--oc-ink);
+  --ad-ink-muted: var(--oc-ink-muted);
+  --ad-ink-faint: var(--oc-ink-faint);
+  --ad-ember: var(--oc-ember);
+  --ad-ember-hot: var(--oc-ember-hot);
+  --ad-ember-dim: var(--oc-ember-dim);
+  --ad-bronze: var(--oc-bronze);
+  --ad-bronze-pale: var(--oc-bronze-pale);
+  --ad-gain: var(--oc-gain);
+  --ad-clan: var(--oc-clan);
+  --ad-focus: var(--oc-focus);
+  --ad-target-min: var(--oc-target-min);
+  --ad-font-display: var(--oc-font-display);
+  --ad-font-ui: var(--oc-font-ui);
+  --ad-font-metric: var(--oc-font-metric);
+  --ad-radius: var(--oc-radius);
+  --ad-warn: var(--oc-warn);
+
+  --bg-deep: var(--oc-bg-deep);
+  --bg: var(--oc-bg-field);
+  --bg-raised: var(--oc-bg-raised);
+  --bg-line: var(--oc-stroke);
+  --ember: var(--oc-ember);
+  --ember-hot: var(--oc-ember-hot);
+  --ash: var(--oc-ink-muted);
+  --ash-dim: var(--oc-ink-faint);
+  --ink: var(--oc-ink);
+  --font-display: var(--oc-font-display);
+  --font-body: var(--oc-font-ui);
+  --radius: var(--oc-radius);
+  color-scheme: light;
 }
 
 *,
@@ -58,9 +96,9 @@ body,
 }
 
 body {
-  font-family: var(--ad-font-ui);
-  background: var(--ad-bg-deep);
-  color: var(--ad-ink);
+  font-family: var(--oc-font-ui);
+  background: var(--oc-bg-deep);
+  color: var(--oc-ink);
   -webkit-font-smoothing: antialiased;
   line-height: 1.45;
 }
@@ -76,11 +114,11 @@ button:disabled {
 }
 
 button:focus-visible {
-  outline: 2px solid var(--ad-focus);
+  outline: 2px solid var(--oc-focus);
   outline-offset: 2px;
 }
 
 strong {
   font-weight: 600;
-  color: var(--ad-ink);
+  color: var(--oc-ink);
 }

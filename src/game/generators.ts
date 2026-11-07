@@ -5,8 +5,9 @@
  * Stable IDs (map worker):
  *   emberPit, ashForge, cinderBarracks, cinderVault, ashWatch, dominionKeep
  *
- * Display (datacenter ops):
- *   Power Plant, Cooling Array, Rack Bay, Uplink, Beam Relay, Core Switch
+ * Display (datacenter ops) + silhouettes:
+ *   Power Plant (power), Cooling Array (cool), Rack Bay (rack),
+ *   Uplink (uplink), Beam Relay (relay), Core Switch (switch)
  */
 
 export type GeneratorId =
@@ -18,12 +19,12 @@ export type GeneratorId =
   | 'dominionKeep'
 
 export type SilhouetteKind =
-  | 'hearth'
-  | 'mill'
-  | 'altar'
-  | 'vault'
-  | 'watch'
-  | 'keep'
+  | 'power'
+  | 'cool'
+  | 'rack'
+  | 'uplink'
+  | 'relay'
+  | 'switch'
 
 export interface UnlockGate {
   /** Lifetime Compute earned this run (economy Ash) */
@@ -61,7 +62,7 @@ export const GENERATORS: GeneratorDef[] = [
     name: 'Power Plant',
     blurb: 'Orbital reactors that feed raw Compute into the station bus.',
     slot: { left: '48%', top: '72%' },
-    silhouette: 'hearth',
+    silhouette: 'power',
     baseRate: 1,
     baseCost: 15,
     costScale: 1.15,
@@ -72,7 +73,7 @@ export const GENERATORS: GeneratorDef[] = [
     name: 'Cooling Array',
     blurb: 'Radiators and chill loops that keep racks in thermal envelope.',
     slot: { left: '74%', top: '54%' },
-    silhouette: 'mill',
+    silhouette: 'cool',
     baseRate: 8,
     baseCost: 120,
     costScale: 1.14,
@@ -84,7 +85,7 @@ export const GENERATORS: GeneratorDef[] = [
     name: 'Rack Bay',
     blurb: 'Dense server floors that turn power into billable Compute.',
     slot: { left: '52%', top: '36%' },
-    silhouette: 'altar',
+    silhouette: 'rack',
     baseRate: 60,
     baseCost: 900,
     costScale: 1.13,
@@ -96,7 +97,7 @@ export const GENERATORS: GeneratorDef[] = [
     name: 'Uplink',
     blurb: 'High-gain dishes that sell spare cycles to the belt mesh.',
     slot: { left: '20%', top: '56%' },
-    silhouette: 'vault',
+    silhouette: 'uplink',
     baseRate: 400,
     baseCost: 12_000,
     costScale: 1.12,
@@ -108,7 +109,7 @@ export const GENERATORS: GeneratorDef[] = [
     name: 'Beam Relay',
     blurb: 'Laser backhaul that stitches distant pods into one fabric.',
     slot: { left: '24%', top: '30%' },
-    silhouette: 'watch',
+    silhouette: 'relay',
     baseRate: 2_500,
     baseCost: 90_000,
     costScale: 1.11,
@@ -120,7 +121,7 @@ export const GENERATORS: GeneratorDef[] = [
     name: 'Core Switch',
     blurb: 'The control plane — routes every rack, chill loop, and contract.',
     slot: { left: '62%', top: '18%' },
-    silhouette: 'keep',
+    silhouette: 'switch',
     baseRate: 15_000,
     baseCost: 750_000,
     costScale: 1.1,
