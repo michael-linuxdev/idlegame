@@ -555,19 +555,21 @@ export const arcadeStrings = {
   },
 
   install: {
-    title: 'Halle einen Tap entfernt',
-    iosBefore: 'Auf dem iPhone: tippe',
+    title: 'Tokenhalle installieren',
+    iosBefore: 'iPhone: tippe',
     iosShare: 'Teilen',
     iosMid: '→',
     iosAdd: 'Zum Home-Bildschirm',
-    iosAfter: '. Ein Tap zurück, während Automaten weiterlaufen.',
-    androidBody:
-      'Installiere Tokenhalle für ein Home-Screen-Icon. Offline-Tokens laufen ohnehin weiter.',
-    manualBody:
-      'Füge Tokenhalle über das Browser-Menü zum Home-Bildschirm hinzu — schnellerer Wiedereinstieg. Offline-Tokens laufen ohnehin weiter.',
+    iosAfter: '.',
+    androidBody: 'Home-Screen-Icon — ein Tap zurück zur Halle.',
+    manualBody: 'Über das Browser-Menü zum Home-Bildschirm hinzufügen.',
+    whyHome: 'Immer auf dem Startbildschirm — wie eine App.',
+    whyOffline: 'Offline-Tokens laufen weiter, auch unterwegs.',
+    whyFast: 'Schneller Wiedereinstieg — Automaten laufen weiter.',
     install: 'Installieren',
     gotIt: 'Verstanden',
     notNow: 'Nicht jetzt',
+    skipBrowser: 'Ohne Installation weiterspielen',
   },
 } as const
 

@@ -39,11 +39,7 @@ export default function App() {
         onFtueActiveChange={onFtueActiveChange}
       />
 
-      <InstallPrompt
-        offlineAwayMs={game.offlineAwayMs}
-        offlineClaimed={game.offlineGained != null}
-        holdForFtue={holdInstall}
-      />
+      <InstallPrompt holdForFtue={holdInstall} />
 
       <AppNav tab={tab} ftueHighlight={ftueHighlight} onTabChange={setTab} />
     </div>

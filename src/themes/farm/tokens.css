@@ -14,15 +14,15 @@
   --oc-stroke: #a8c09a;
   --oc-stroke-strong: #6b8f5e;
 
-  /* Type — deep leaf on pale green */
-  --oc-ink: #1e2e1a;
-  --oc-ink-muted: #4a5f42;
-  --oc-ink-faint: #7a9070;
+  /* Type — deep leaf on pale green (WCAG-friendly muted) */
+  --oc-ink: #162414;
+  --oc-ink-muted: #2f4529;
+  --oc-ink-faint: #4a6340;
 
-  /* Primary CTA — leaf green (not amber panel) */
-  --oc-ember: #3d8b4f;
-  --oc-ember-hot: #4fa862;
-  --oc-ember-dim: #2d6a3a;
+  /* Primary CTA — leaf green (not amber panel, not purple) */
+  --oc-ember: #2f9a48;
+  --oc-ember-hot: #48b85e;
+  --oc-ember-dim: #1f6e32;
 
   /* Secondary status — soft mint */
   --oc-ice: #5a9e6e;

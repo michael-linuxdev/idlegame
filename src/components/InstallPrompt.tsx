@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import {
   detectInstallMode,
+  FIRST_LAUNCH_DELAY_MS,
   isStandaloneDisplay,
   loadInstallPrefs,
-  OFFLINE_NUDGE_MS,
   saveInstallPrefs,
   type InstallMode,
   type InstallPrefs,
@@ -16,17 +16,15 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 interface Props {
-  offlineAwayMs: number
-  offlineClaimed: boolean
-  /** True while early FTUE beats are on screen — hold the nudge */
+  /** True while early FTUE beats are on screen — hold the first-launch gate briefly */
   holdForFtue?: boolean
 }
 
-export function InstallPrompt({
-  offlineAwayMs,
-  offlineClaimed,
-  holdForFtue = false,
-}: Props) {
+/**
+ * First-launch install cue (mirrors einbuergerung.micana.de gate + skip).
+ * Shows once; "Ohne Installation" dismisses permanently — play is never locked.
+ */
+export function InstallPrompt({ holdForFtue = false }: Props) {
   const [prefs, setPrefs] = useState<InstallPrefs>(() => {
     const loaded = loadInstallPrefs()
     if (isStandaloneDisplay()) {
@@ -69,9 +67,6 @@ export function InstallPrompt({
     if (isStandaloneDisplay()) return
     if (holdForFtue) return
 
-    const eligible = offlineAwayMs >= OFFLINE_NUDGE_MS || offlineClaimed
-    if (!eligible) return
-
     const timer = window.setTimeout(() => {
       const nextMode = detectInstallMode(Boolean(deferred.current))
       setMode(nextMode)
@@ -81,11 +76,9 @@ export function InstallPrompt({
         saveInstallPrefs(next)
         return next
       })
-    }, 1600)
+    }, FIRST_LAUNCH_DELAY_MS)
     return () => window.clearTimeout(timer)
   }, [
-    offlineAwayMs,
-    offlineClaimed,
     prefs.dismissed,
     prefs.installed,
     prefs.shown,
@@ -111,14 +104,18 @@ export function InstallPrompt({
         deferred.current = null
         if (choice.outcome === 'accepted') {
           setPrefs((prev) => {
-            const next = { ...prev, installed: true, dismissed: true, shown: true }
+            const next = {
+              ...prev,
+              installed: true,
+              dismissed: true,
+              shown: true,
+            }
             saveInstallPrefs(next)
             return next
           })
           setVisible(false)
           return
         }
-        // Declined native sheet — persist dismiss so we do not spam
         dismiss()
         return
       } catch {
@@ -134,8 +131,8 @@ export function InstallPrompt({
   const body =
     mode === 'ios' ? (
       <>
-        {t.install.iosBefore} <strong>{t.install.iosShare}</strong> {t.install.iosMid}{' '}
-        <strong>{t.install.iosAdd}</strong>
+        {t.install.iosBefore} <strong>{t.install.iosShare}</strong>{' '}
+        {t.install.iosMid} <strong>{t.install.iosAdd}</strong>
         {t.install.iosAfter}
       </>
     ) : mode === 'android' ? (
@@ -145,14 +142,30 @@ export function InstallPrompt({
     )
 
   return (
-    <div className="install-prompt" role="status">
-      <div className="install-prompt-inner">
-        <p className="install-eyebrow">{t.eyebrow}</p>
-        <p className="install-title">{t.install.title}</p>
+    <div
+      className="install-gate"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="install-gate-title"
+    >
+      <div className="install-gate-card">
+        <p className="install-eyebrow">{t.brand}</p>
+        <h2 id="install-gate-title" className="install-title">
+          {t.install.title}
+        </h2>
         <p className="install-body">{body}</p>
+        <ul className="install-why">
+          <li>{t.install.whyHome}</li>
+          <li>{t.install.whyOffline}</li>
+          <li>{t.install.whyFast}</li>
+        </ul>
         <div className="install-actions">
           {mode === 'android' ? (
-            <button type="button" className="btn buy" onClick={() => void install()}>
+            <button
+              type="button"
+              className="btn buy"
+              onClick={() => void install()}
+            >
               {t.install.install}
             </button>
           ) : null}
@@ -161,10 +174,15 @@ export function InstallPrompt({
               {t.install.gotIt}
             </button>
           ) : null}
-          <button type="button" className="btn ghost" onClick={dismiss}>
-            {t.install.notNow}
-          </button>
+          {mode === 'ios' ? (
+            <button type="button" className="btn buy" onClick={dismiss}>
+              {t.install.gotIt}
+            </button>
+          ) : null}
         </div>
+        <button type="button" className="install-skip" onClick={dismiss}>
+          {t.install.skipBrowser}
+        </button>
       </div>
     </div>
   )

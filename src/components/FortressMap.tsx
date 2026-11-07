@@ -271,6 +271,7 @@ export function FortressMap({ game, highlightId }: Props) {
           className="fortress-map slots-10"
           role="application"
           aria-label={t.hud.mapAria}
+          onContextMenu={(e) => e.preventDefault()}
         >
           <ThemeMapBackdrop />
 
@@ -300,6 +301,8 @@ export function FortressMap({ game, highlightId }: Props) {
                 }
                 aria-pressed={selectedHere}
                 onClick={() => setSelected(def.id)}
+                onContextMenu={(e) => e.preventDefault()}
+                onDragStart={(e) => e.preventDefault()}
               >
                 <BuildingSilhouette
                   kind={def.silhouette}
