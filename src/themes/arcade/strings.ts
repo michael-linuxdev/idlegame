@@ -331,6 +331,37 @@ export const arcadeStrings = {
     branchStartBlurb: 'Schnellerer Neustart nach jedem Prestige.',
   },
 
+  longLoop: {
+    seasonTitle: 'Saison & Tiefer Reset',
+    seasonIntro:
+      'Nach dem Ticket-Baum: Saison-Jetons und Hallen-Jahre. Scaffold — Auszahlung kommt später.',
+    seasonLabel: (n: number) => `Saison ${n}`,
+    seasonPoints: (n: number) => `${n} Saison-Punkte`,
+    sproutLabel: 'Saison-Jetons:',
+    deepRuns: 'Tiefe Resets:',
+    gateOpen: 'Tor offen — Deep-Shop folgt in der nächsten Balance-Welle.',
+    gateClosed: (prestigesLeft: number, fillPct: number) =>
+      `Noch ${prestigesLeft} Prestiges oder Ticket-Shop ${fillPct} % — dann Deep.`,
+    deepShopTitle: 'Jeton-Shop',
+    deepShopLocked: 'Gesperrt bis Deep-Tor + Balance-PR.',
+    deepYield: 'Tiefen-Ertrag',
+    deepWatch: 'Tiefen-Schicht',
+    deepPurse: 'Tiefen-Beutel',
+    yearTitle: 'Jahres-Ziele',
+    yearLabel: (n: number) => `Hallenjahr ${n}`,
+    yearProgress: (done: number, target: number) =>
+      `${done}/${target} Saisons im Jahr`,
+    yearLocked: 'Jahres-Siegel nach abgeschlossenen Saisons.',
+    eraTitle: 'Ära',
+    eraIntro: 'Wurzelsterne für Jahre 2–5 — Status und Micro-Power.',
+    eraPoints: 'Wurzelsterne:',
+    eraGateClosed: 'Nach dem ersten Jahresabschluss oder sehr vielen Prestiges.',
+    eraGateOpen: 'Ära-Shop folgt — jetzt nur Vorschau.',
+    rootYield: 'Wurzel-Ertrag',
+    rootBanner: 'Wurzel-Banner',
+    stubRank: (rank: number, max: number) => `${rank}/${max}`,
+  },
+
   emberShop: {
     dominionYield: {
       name: 'Hallen-Ertrag',
