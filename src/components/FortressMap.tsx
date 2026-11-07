@@ -319,17 +319,22 @@ export function FortressMap({ game, highlightId }: Props) {
                         <span className="map-building-lvl">
                           {t.hud.levelShort(level)}
                         </span>
-                        <span className="map-building-rate">
-                          {formatRate(buildingRate)}
-                        </span>
+                        {producing || selectedHere ? (
+                          <span className="map-building-rate">
+                            {formatRate(buildingRate)}
+                          </span>
+                        ) : null}
                       </>
                     ) : (
-                      <>
+                      <span className="map-building-lock-line">
                         <span className="map-building-lock">{t.hud.locked}</span>
+                        <span className="map-building-gate" aria-hidden="true">
+                          ·
+                        </span>
                         <span className="map-building-gate">
                           {shortUnlockGate(def)}
                         </span>
-                      </>
+                      </span>
                     )}
                   </span>
                 </span>

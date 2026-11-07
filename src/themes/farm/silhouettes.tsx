@@ -8,7 +8,7 @@ interface Props {
   selected?: boolean
 }
 
-/** Crisp SVG farm modules — glass, greens, soft earth. */
+/** Premium casual farm modules — glass, leafy greens, soft earth, readable at phone scale. */
 export function FarmSilhouettes({
   kind,
   level,
@@ -28,309 +28,499 @@ export function FarmSilhouettes({
     <div className={state} aria-hidden="true" data-level={level}>
       <svg
         className="sil-svg"
-        viewBox="0 0 80 70"
-        width="72"
-        height="63"
+        viewBox="0 0 96 84"
+        width="84"
+        height="74"
         focusable="false"
       >
         <defs>
-          <linearGradient id={`farm-hull-${kind}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#f7fbf4" />
-            <stop offset="55%" stopColor="#c5d9b8" />
-            <stop offset="100%" stopColor="#8fad7e" />
+          <linearGradient id={`fh-${kind}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#f8fcf6" />
+            <stop offset="45%" stopColor="#c8e0b8" />
+            <stop offset="100%" stopColor="#7a9e6a" />
           </linearGradient>
-          <linearGradient id={`farm-steel-${kind}`} x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#eef6ea" />
-            <stop offset="100%" stopColor="#6b8f5e" />
+          <linearGradient id={`fg-${kind}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#eaf8f0" stopOpacity="0.92" />
+            <stop offset="100%" stopColor="#6eb892" stopOpacity="0.55" />
           </linearGradient>
-          <radialGradient id={`farm-pad-${kind}`} cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#a8c09a" stopOpacity="0.9" />
-            <stop offset="100%" stopColor="#6b8f5e" stopOpacity="0.35" />
+          <linearGradient id={`fs-${kind}`} x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#f0f6ec" />
+            <stop offset="100%" stopColor="#5a8a50" />
+          </linearGradient>
+          <linearGradient id={`fw-${kind}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#d8f0fa" />
+            <stop offset="100%" stopColor="#3d8eb8" />
+          </linearGradient>
+          <linearGradient id={`fe-${kind}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#e8d4b0" />
+            <stop offset="100%" stopColor="#8a6a40" />
+          </linearGradient>
+          <radialGradient id={`fp-${kind}`} cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#a8c89a" stopOpacity="0.85" />
+            <stop offset="100%" stopColor="#5a7a4e" stopOpacity="0.25" />
           </radialGradient>
         </defs>
 
         <ellipse
           className="sil-pad"
-          cx="40"
-          cy="62"
-          rx="28"
-          ry="6"
-          fill={`url(#farm-pad-${kind})`}
+          cx="48"
+          cy="76"
+          rx="34"
+          ry="7"
+          fill={`url(#fp-${kind})`}
         />
 
-        {kind === 'power' ? <GreenhouseArt /> : null}
-        {kind === 'cool' ? <NutrientPumpArt /> : null}
-        {kind === 'rack' ? <LedWallArt /> : null}
-        {kind === 'uplink' ? <HydroBedArt /> : null}
-        {kind === 'relay' ? <VerticalTowerArt /> : null}
-        {kind === 'switch' ? <ClimateArt /> : null}
-        {kind === 'battery' ? <WaterTankArt /> : null}
-        {kind === 'cache' ? <CompactBedArt /> : null}
-        {kind === 'quantum' ? <ComposterArt /> : null}
-        {kind === 'scrub' ? <AquaponicsArt /> : null}
+        {kind === 'power' ? <GreenhouseArt id={kind} /> : null}
+        {kind === 'cool' ? <NutrientPumpArt id={kind} /> : null}
+        {kind === 'rack' ? <LedWallArt id={kind} /> : null}
+        {kind === 'uplink' ? <HydroBedArt id={kind} /> : null}
+        {kind === 'relay' ? <VerticalTowerArt id={kind} /> : null}
+        {kind === 'switch' ? <ClimateArt id={kind} /> : null}
+        {kind === 'battery' ? <WaterTankArt id={kind} /> : null}
+        {kind === 'cache' ? <CompactBedArt id={kind} /> : null}
+        {kind === 'quantum' ? <ComposterArt id={kind} /> : null}
+        {kind === 'scrub' ? <AquaponicsArt id={kind} /> : null}
       </svg>
-      {producing ? <span className="sil-particles" /> : null}
+      {producing ? <span className="sil-particles sil-farm-particles" /> : null}
     </div>
   )
 }
 
-function GreenhouseArt() {
+function Leaf({
+  x,
+  y,
+  s = 1,
+  flip = false,
+}: {
+  x: number
+  y: number
+  s?: number
+  flip?: boolean
+}) {
+  const t = `translate(${x} ${y}) scale(${flip ? -s : s} ${s})`
+  return (
+    <g className="sil-leaf" transform={t}>
+      <path
+        d="M0 0 Q-5 -8 0 -14 Q5 -8 0 0"
+        fill="#3d8b4f"
+        opacity="0.9"
+      />
+      <path d="M0 0 L0 -12" stroke="#2d6a3a" strokeWidth="0.6" opacity="0.7" />
+    </g>
+  )
+}
+
+function GreenhouseArt({ id }: { id: string }) {
   return (
     <g className="art-power">
       <path
         className="sil-hull"
-        d="M16 56 L16 34 L40 14 L64 34 L64 56 Z"
-        fill="url(#farm-hull-power)"
-        stroke="#5a7a4e"
-        strokeWidth="1.4"
+        d="M14 68 L14 38 L48 12 L82 38 L82 68 Z"
+        fill={`url(#fh-${id})`}
+        stroke="#4a7a48"
+        strokeWidth="1.5"
       />
-      <path d="M18 34 L40 16 L62 34" fill="none" stroke="#7a9a6a" strokeWidth="1" />
-      <rect x="22" y="36" width="14" height="16" rx="1" fill="#dcecc8" stroke="#3d8b4f" strokeWidth="0.9" />
-      <rect x="44" y="36" width="14" height="16" rx="1" fill="#dcecc8" stroke="#3d8b4f" strokeWidth="0.9" />
-      <path d="M25 48 Q29 40 33 48" fill="none" stroke="#3d8b4f" strokeWidth="1.4" />
-      <path d="M47 48 Q51 40 55 48" fill="none" stroke="#3d8b4f" strokeWidth="1.4" />
-      <circle className="sil-led core" cx="40" cy="28" r="3" fill="#3d8b4f" />
-      <rect x="28" y="54" width="24" height="4" rx="1" fill="#8fad7e" stroke="#5a7a4e" strokeWidth="0.7" />
+      <path
+        d="M20 40 L48 18 L76 40 L76 64 L20 64 Z"
+        fill={`url(#fg-${id})`}
+      />
+      <path d="M20 40 L48 18 L76 40" fill="none" stroke="#5a8a60" strokeWidth="1.1" />
+      <path d="M48 18 V64" stroke="rgba(255,255,255,0.4)" strokeWidth="1" />
+      <rect x="24" y="44" width="18" height="16" rx="1.5" fill="#d8ecc8" stroke="#3d8b4f" strokeWidth="0.8" />
+      <rect x="54" y="44" width="18" height="16" rx="1.5" fill="#d8ecc8" stroke="#3d8b4f" strokeWidth="0.8" />
+      <Leaf x={30} y={56} s={0.9} />
+      <Leaf x={38} y={54} s={1} flip />
+      <Leaf x={60} y={56} s={0.9} />
+      <Leaf x={68} y={54} s={1} flip />
+      <line x1="26" y1="42" x2="70" y2="42" stroke="#e8a050" strokeWidth="1.4" className="sil-led amber" opacity="0.85" />
+      <circle className="sil-led core" cx="48" cy="30" r="3.2" fill="#3d8b4f" />
+      <rect x="32" y="66" width="32" height="5" rx="1.2" fill="#8fad7e" stroke="#5a7a4e" strokeWidth="0.7" />
     </g>
   )
 }
 
-function NutrientPumpArt() {
+function NutrientPumpArt({ id }: { id: string }) {
   return (
     <g className="art-cool">
       <rect
         className="sil-hull"
-        x="18"
-        y="32"
-        width="44"
-        height="24"
-        rx="4"
-        fill="url(#farm-hull-cool)"
-        stroke="#5a7a4e"
-        strokeWidth="1.4"
+        x="16"
+        y="40"
+        width="64"
+        height="28"
+        rx="5"
+        fill={`url(#fh-${id})`}
+        stroke="#4a7a48"
+        strokeWidth="1.5"
       />
-      <circle cx="32" cy="44" r="8" fill="#cfe6f0" stroke="#4a8aa0" strokeWidth="1.2" />
-      <circle cx="48" cy="44" r="8" fill="#cfe6f0" stroke="#4a8aa0" strokeWidth="1.2" />
-      <path d="M32 44 H48" stroke="#4a8aa0" strokeWidth="2" strokeLinecap="round" />
-      <rect x="34" y="18" width="12" height="14" rx="2" fill="url(#farm-steel-cool)" stroke="#5a7a4e" strokeWidth="1" />
-      <circle className="sil-led ice" cx="40" cy="24" r="2.4" fill="#3d8b4f" />
-      <path d="M26 28 Q20 36 26 40" fill="none" stroke="#4a8aa0" strokeWidth="1.5" opacity="0.7" />
-      <path d="M54 28 Q60 36 54 40" fill="none" stroke="#4a8aa0" strokeWidth="1.5" opacity="0.7" />
+      <circle cx="36" cy="54" r="11" fill={`url(#fw-${id})`} stroke="#3d7a98" strokeWidth="1.3" />
+      <circle cx="60" cy="54" r="11" fill={`url(#fw-${id})`} stroke="#3d7a98" strokeWidth="1.3" />
+      <ellipse cx="36" cy="50" rx="6" ry="3" fill="#e8f6fc" opacity="0.55" />
+      <ellipse cx="60" cy="50" rx="6" ry="3" fill="#e8f6fc" opacity="0.55" />
+      <path d="M36 54 H60" stroke="#3d8eb8" strokeWidth="2.4" strokeLinecap="round" />
+      <path
+        d="M28 34 Q20 44 28 50"
+        fill="none"
+        stroke="#4a8aa0"
+        strokeWidth="2"
+        strokeLinecap="round"
+        opacity="0.75"
+      />
+      <path
+        d="M68 34 Q76 44 68 50"
+        fill="none"
+        stroke="#4a8aa0"
+        strokeWidth="2"
+        strokeLinecap="round"
+        opacity="0.75"
+      />
+      <rect
+        x="40"
+        y="18"
+        width="16"
+        height="22"
+        rx="3"
+        fill={`url(#fs-${id})`}
+        stroke="#4a7a48"
+        strokeWidth="1.1"
+      />
+      <circle className="sil-led ice" cx="48" cy="26" r="2.8" fill="#3d8b4f" />
+      <rect x="44" y="34" width="8" height="6" rx="1" fill="#7eb8d4" opacity="0.7" />
     </g>
   )
 }
 
-function LedWallArt() {
+function LedWallArt({ id }: { id: string }) {
   return (
     <g className="art-rack">
       <rect
         className="sil-hull"
-        x="22"
-        y="14"
-        width="36"
-        height="44"
-        rx="2"
-        fill="url(#farm-hull-rack)"
-        stroke="#5a7a4e"
-        strokeWidth="1.4"
+        x="24"
+        y="12"
+        width="48"
+        height="58"
+        rx="3"
+        fill={`url(#fh-${id})`}
+        stroke="#4a7a48"
+        strokeWidth="1.5"
       />
-      {[20, 30, 40, 50].map((y) => (
+      <rect x="28" y="16" width="40" height="50" rx="2" fill="#1a2e18" opacity="0.14" />
+      {[20, 32, 44, 56].map((y, i) => (
         <g key={y}>
-          <rect x="26" y={y} width="28" height="6" rx="0.8" fill="#1e2e1a" opacity="0.12" />
-          <rect x="28" y={y + 1} width="24" height="4" rx="0.6" fill="#8ec99a" opacity="0.85" />
-          <circle className="sil-led amber" cx="30" cy={y + 3} r="1.2" fill="#e8a050" />
-          <circle className="sil-led ice" cx="50" cy={y + 3} r="1.2" fill="#3d8b4f" />
+          <rect x="30" y={y} width="36" height="8" rx="1" fill="#0e1a0c" opacity="0.18" />
+          <rect
+            x="32"
+            y={y + 1.5}
+            width="32"
+            height="5"
+            rx="0.8"
+            fill={i % 2 === 0 ? '#6bc47a' : '#8ec99a'}
+            opacity="0.9"
+          />
+          <Leaf x={38} y={y + 6} s={0.55} />
+          <Leaf x={48} y={y + 5.5} s={0.5} flip />
+          <Leaf x={58} y={y + 6} s={0.55} />
+          <circle className="sil-led amber" cx="34" cy={y + 4} r="1.4" fill="#e8a050" />
+          <circle className="sil-led ice" cx="62" cy={y + 4} r="1.4" fill="#7ec8ff" />
         </g>
       ))}
-      <rect x="20" y="56" width="40" height="4" rx="1" fill="#8fad7e" stroke="#5a7a4e" strokeWidth="0.7" />
+      <line
+        className="sil-led amber"
+        x1="30"
+        y1="18"
+        x2="66"
+        y2="18"
+        stroke="#e070a0"
+        strokeWidth="1.6"
+        opacity="0.75"
+      />
+      <rect x="22" y="68" width="52" height="5" rx="1.2" fill="#8fad7e" stroke="#5a7a4e" strokeWidth="0.7" />
     </g>
   )
 }
 
-function HydroBedArt() {
+function HydroBedArt({ id }: { id: string }) {
   return (
     <g className="art-uplink">
       <rect
         className="sil-hull"
-        x="12"
-        y="40"
-        width="56"
-        height="16"
-        rx="3"
-        fill="url(#farm-hull-uplink)"
-        stroke="#5a7a4e"
-        strokeWidth="1.3"
+        x="8"
+        y="48"
+        width="80"
+        height="22"
+        rx="4"
+        fill={`url(#fh-${id})`}
+        stroke="#4a7a48"
+        strokeWidth="1.4"
       />
-      <rect x="16" y="34" width="14" height="10" rx="1" fill="#dcecc8" stroke="#3d8b4f" strokeWidth="0.8" />
-      <rect x="33" y="34" width="14" height="10" rx="1" fill="#dcecc8" stroke="#3d8b4f" strokeWidth="0.8" />
-      <rect x="50" y="34" width="14" height="10" rx="1" fill="#dcecc8" stroke="#3d8b4f" strokeWidth="0.8" />
-      <path d="M20 34 Q23 26 26 34" fill="none" stroke="#3d8b4f" strokeWidth="1.3" />
-      <path d="M37 34 Q40 26 43 34" fill="none" stroke="#3d8b4f" strokeWidth="1.3" />
-      <path d="M54 34 Q57 26 60 34" fill="none" stroke="#3d8b4f" strokeWidth="1.3" />
-      <rect x="18" y="46" width="44" height="4" rx="1" fill="#7eb8d4" opacity="0.55" />
-      <circle className="sil-led ice" cx="40" cy="28" r="2.2" fill="#3d8b4f" />
+      <rect x="14" y="54" width="68" height="10" rx="2" fill={`url(#fw-${id})`} opacity="0.65" />
+      {[18, 38, 58, 74].map((x) => (
+        <g key={x}>
+          <rect
+            x={x - 6}
+            y="36"
+            width="14"
+            height="14"
+            rx="1.5"
+            fill="#d8ecc8"
+            stroke="#3d8b4f"
+            strokeWidth="0.8"
+          />
+          <Leaf x={x} y={38} s={0.85} />
+          <Leaf x={x + 4} y={36} s={0.7} flip />
+        </g>
+      ))}
+      <circle className="sil-led ice" cx="48" cy="30" r="2.4" fill="#3d8b4f" />
+      <path
+        d="M20 58 Q34 52 48 58 Q62 64 76 58"
+        fill="none"
+        stroke="#7eb8d4"
+        strokeWidth="1.5"
+        opacity="0.7"
+        className="sil-wave"
+      />
     </g>
   )
 }
 
-function VerticalTowerArt() {
+function VerticalTowerArt({ id }: { id: string }) {
   return (
     <g className="art-relay">
       <rect
         className="sil-hull"
-        x="30"
-        y="10"
-        width="20"
-        height="48"
-        rx="3"
-        fill="url(#farm-hull-relay)"
-        stroke="#5a7a4e"
-        strokeWidth="1.4"
+        x="34"
+        y="8"
+        width="28"
+        height="62"
+        rx="4"
+        fill={`url(#fh-${id})`}
+        stroke="#4a7a48"
+        strokeWidth="1.5"
       />
-      {[16, 26, 36, 46].map((y) => (
+      <rect x="38" y="12" width="20" height="54" rx="3" fill={`url(#fg-${id})`} />
+      {[18, 30, 42, 54].map((y) => (
         <g key={y}>
-          <ellipse cx="40" cy={y} rx="14" ry="4" fill="#c5d9b8" stroke="#5a7a4e" strokeWidth="0.8" />
-          <path
-            d={`M30 ${y} Q34 ${y - 6} 40 ${y} Q46 ${y - 6} 50 ${y}`}
-            fill="none"
-            stroke="#3d8b4f"
-            strokeWidth="1.1"
+          <ellipse
+            cx="48"
+            cy={y}
+            rx="18"
+            ry="5"
+            fill="#c5d9b8"
+            stroke="#4a7a48"
+            strokeWidth="0.9"
           />
+          <Leaf x={38} y={y} s={0.7} />
+          <Leaf x={48} y={y - 2} s={0.85} />
+          <Leaf x={58} y={y} s={0.7} flip />
+          <circle className="sil-led amber" cx="40" cy={y} r="1.3" fill="#e8a050" />
+          <circle className="sil-led ice" cx="56" cy={y} r="1.3" fill="#7ec8ff" />
         </g>
       ))}
-      <rect x="26" y="56" width="28" height="4" rx="1" fill="#8fad7e" stroke="#5a7a4e" strokeWidth="0.7" />
-      <circle className="sil-led amber" cx="40" cy="8" r="2.5" fill="#e8a050" />
+      <circle className="sil-led amber" cx="48" cy="8" r="3" fill="#e8a050" />
+      <rect x="28" y="68" width="40" height="5" rx="1.2" fill="#8fad7e" stroke="#5a7a4e" strokeWidth="0.7" />
     </g>
   )
 }
 
-function ClimateArt() {
+function ClimateArt({ id }: { id: string }) {
   return (
     <g className="art-switch">
       <rect
         className="sil-hull"
-        x="14"
-        y="28"
-        width="52"
-        height="28"
-        rx="3"
-        fill="url(#farm-hull-switch)"
-        stroke="#5a7a4e"
-        strokeWidth="1.4"
-      />
-      <rect x="20" y="34" width="18" height="16" rx="2" fill="#eef6ea" stroke="#6b8f5e" strokeWidth="0.9" />
-      <rect x="42" y="34" width="18" height="16" rx="2" fill="#eef6ea" stroke="#6b8f5e" strokeWidth="0.9" />
-      <path d="M24 42 H34 M28 38 V46" stroke="#3d8b4f" strokeWidth="1.4" strokeLinecap="round" />
-      <circle cx="51" cy="42" r="5" fill="none" stroke="#4a8aa0" strokeWidth="1.4" />
-      <path d="M51 37 L52 42 L51 47 L50 42 Z" fill="#7eb8d4" />
-      <rect x="34" y="16" width="12" height="12" rx="2" fill="url(#farm-steel-switch)" stroke="#5a7a4e" strokeWidth="1" />
-      <circle className="sil-led amber" cx="40" cy="22" r="2.4" fill="#e8a050" />
-    </g>
-  )
-}
-
-function WaterTankArt() {
-  return (
-    <g className="art-battery">
-      <ellipse cx="40" cy="54" rx="18" ry="5" fill="#6b8f5e" opacity="0.35" />
-      <rect
-        className="sil-hull"
-        x="22"
-        y="18"
-        width="36"
-        height="36"
-        rx="16"
-        fill="url(#farm-hull-battery)"
-        stroke="#4a8aa0"
+        x="12"
+        y="34"
+        width="72"
+        height="34"
+        rx="4"
+        fill={`url(#fh-${id})`}
+        stroke="#4a7a48"
         strokeWidth="1.5"
       />
-      <rect x="26" y="34" width="28" height="16" rx="8" fill="#7eb8d4" opacity="0.55" />
-      <ellipse cx="40" cy="34" rx="14" ry="4" fill="#cfe6f0" stroke="#4a8aa0" strokeWidth="0.8" />
-      <rect x="36" y="12" width="8" height="8" rx="1" fill="url(#farm-steel-battery)" stroke="#5a7a4e" strokeWidth="0.8" />
-      <circle className="sil-led ice" cx="40" cy="26" r="2" fill="#3d8b4f" />
+      <rect x="18" y="40" width="26" height="22" rx="2.5" fill="#eef6ea" stroke="#6b8f5e" strokeWidth="1" />
+      <rect x="52" y="40" width="26" height="22" rx="2.5" fill="#eef6ea" stroke="#6b8f5e" strokeWidth="1" />
+      {/* Thermostat */}
+      <path d="M26 52 H36 M31 47 V57" stroke="#3d8b4f" strokeWidth="1.6" strokeLinecap="round" />
+      {/* Fan */}
+      <g className="sil-fan-group" transform="translate(65 51)">
+        <circle r="8" fill="none" stroke="#4a8aa0" strokeWidth="1.4" />
+        <path className="sil-fan-blade" d="M0 -7 L2 0 L0 7 L-2 0 Z" fill="#7eb8d4" />
+        <path className="sil-fan-blade" d="M-7 0 L0 2 L7 0 L0 -2 Z" fill="#5a9e6e" opacity="0.85" />
+      </g>
+      <rect
+        x="40"
+        y="14"
+        width="16"
+        height="20"
+        rx="2.5"
+        fill={`url(#fs-${id})`}
+        stroke="#4a7a48"
+        strokeWidth="1.1"
+      />
+      <circle className="sil-led amber" cx="48" cy="22" r="2.8" fill="#e8a050" />
+      <path
+        d="M44 34 Q40 38 44 42"
+        fill="none"
+        stroke="#7eb8d4"
+        strokeWidth="1.3"
+        opacity="0.6"
+      />
+      <path
+        d="M52 34 Q56 38 52 42"
+        fill="none"
+        stroke="#7eb8d4"
+        strokeWidth="1.3"
+        opacity="0.6"
+      />
     </g>
   )
 }
 
-function CompactBedArt() {
+function WaterTankArt({ id }: { id: string }) {
+  return (
+    <g className="art-battery">
+      <ellipse cx="48" cy="68" rx="22" ry="6" fill="#5a7a4e" opacity="0.3" />
+      <rect
+        className="sil-hull"
+        x="24"
+        y="18"
+        width="48"
+        height="50"
+        rx="22"
+        fill={`url(#fh-${id})`}
+        stroke="#3d7a98"
+        strokeWidth="1.6"
+      />
+      <rect x="28" y="38" width="40" height="26" rx="18" fill={`url(#fw-${id})`} opacity="0.7" />
+      <ellipse cx="48" cy="38" rx="20" ry="6" fill="#cfe6f0" stroke="#3d7a98" strokeWidth="0.9" />
+      <ellipse cx="48" cy="38" rx="12" ry="3" fill="#e8f6fc" opacity="0.55" />
+      <rect
+        x="42"
+        y="10"
+        width="12"
+        height="10"
+        rx="1.5"
+        fill={`url(#fs-${id})`}
+        stroke="#4a7a48"
+        strokeWidth="0.9"
+      />
+      <circle className="sil-led ice" cx="48" cy="28" r="2.4" fill="#3d8b4f" />
+      <path
+        className="sil-wave"
+        d="M32 52 Q40 48 48 52 Q56 56 64 52"
+        fill="none"
+        stroke="#7eb8d4"
+        strokeWidth="1.5"
+        opacity="0.8"
+      />
+    </g>
+  )
+}
+
+function CompactBedArt({ id }: { id: string }) {
   return (
     <g className="art-cache">
       <rect
         className="sil-hull"
-        x="10"
-        y="38"
-        width="60"
-        height="18"
-        rx="3"
-        fill="url(#farm-hull-cache)"
-        stroke="#5a7a4e"
-        strokeWidth="1.3"
+        x="6"
+        y="46"
+        width="84"
+        height="24"
+        rx="4"
+        fill={`url(#fe-${id})`}
+        stroke="#6a5030"
+        strokeWidth="1.4"
       />
-      {[16, 28, 40, 52, 64].map((x) => (
+      <rect x="10" y="50" width="76" height="14" rx="2" fill="#5c4330" opacity="0.85" />
+      {[16, 30, 44, 58, 72, 84].map((x, i) => (
         <g key={x}>
-          <rect x={x - 4} y="28" width="8" height="12" rx="1" fill="#dcecc8" stroke="#3d8b4f" strokeWidth="0.7" />
-          <path
-            d={`M${x} 28 Q${x - 3} 20 ${x} 22 Q${x + 3} 20 ${x} 28`}
-            fill="#3d8b4f"
-            opacity="0.85"
+          <rect
+            x={x - 5}
+            y="34"
+            width="10"
+            height="16"
+            rx="1.2"
+            fill={i % 2 ? '#d8ecc8' : '#c5e0b0'}
+            stroke="#3d8b4f"
+            strokeWidth="0.7"
           />
+          <Leaf x={x} y={36} s={0.75 + (i % 3) * 0.08} flip={i % 2 === 1} />
         </g>
       ))}
-      <rect x="14" y="44" width="52" height="6" rx="1" fill="#a8c09a" opacity="0.5" />
+      <rect x="12" y="56" width="72" height="5" rx="1" fill="#a8c09a" opacity="0.4" />
     </g>
   )
 }
 
-function ComposterArt() {
+function ComposterArt({ id }: { id: string }) {
   return (
     <g className="art-quantum">
       <path
         className="sil-hull"
-        d="M18 56 L14 34 Q14 22 40 16 Q66 22 66 34 L62 56 Z"
-        fill="url(#farm-hull-quantum)"
+        d="M16 70 L12 40 Q12 24 48 16 Q84 24 84 40 L80 70 Z"
+        fill={`url(#fe-${id})`}
         stroke="#8a7348"
-        strokeWidth="1.4"
-      />
-      <ellipse cx="40" cy="36" rx="16" ry="8" fill="#c4a878" opacity="0.45" />
-      <path
-        d="M28 40 Q40 28 52 40"
-        fill="none"
-        stroke="#6b8f5e"
         strokeWidth="1.5"
+      />
+      <ellipse cx="48" cy="42" rx="22" ry="10" fill="#c4a878" opacity="0.5" />
+      <path
+        d="M30 48 Q48 30 66 48"
+        fill="none"
+        stroke="#5a8a50"
+        strokeWidth="2"
         strokeLinecap="round"
       />
-      <circle className="sil-led amber" cx="40" cy="34" r="3" fill="#a86a28" />
-      <rect x="26" y="50" width="28" height="6" rx="1" fill="#8fad7e" stroke="#5a7a4e" strokeWidth="0.7" />
+      <Leaf x={40} y={40} s={0.9} />
+      <Leaf x={56} y={38} s={1} flip />
+      <circle className="sil-led amber" cx="48" cy="40" r="3.4" fill="#a86a28" />
+      <circle className="sil-led core" cx="48" cy="40" r="1.6" fill="#e8a050" />
+      <rect x="28" y="64" width="40" height="7" rx="1.5" fill="#8fad7e" stroke="#5a7a4e" strokeWidth="0.7" />
     </g>
   )
 }
 
-function AquaponicsArt() {
+function AquaponicsArt({ id }: { id: string }) {
   return (
     <g className="art-scrub">
       <rect
         className="sil-hull"
-        x="12"
-        y="34"
-        width="56"
-        height="22"
-        rx="4"
-        fill="url(#farm-hull-scrub)"
-        stroke="#4a8aa0"
-        strokeWidth="1.4"
+        x="10"
+        y="42"
+        width="76"
+        height="28"
+        rx="5"
+        fill={`url(#fh-${id})`}
+        stroke="#3d7a98"
+        strokeWidth="1.5"
       />
+      <rect x="16" y="48" width="64" height="16" rx="3" fill={`url(#fw-${id})`} opacity="0.7" />
       <path
-        d="M18 46 H28 Q34 40 40 46 Q46 52 52 46 H62"
+        className="sil-wave"
+        d="M20 56 H32 Q40 50 48 56 Q56 62 64 56 H76"
         fill="none"
         stroke="#3d8b4f"
         strokeWidth="2"
         strokeLinecap="round"
       />
-      <rect x="28" y="18" width="24" height="16" rx="2" fill="url(#farm-steel-scrub)" stroke="#5a7a4e" strokeWidth="1.1" />
-      <circle className="sil-led ice" cx="34" cy="26" r="2" fill="#3d8b4f" />
-      <circle className="sil-led amber" cx="40" cy="26" r="2" fill="#e8a050" />
-      <circle className="sil-led ice" cx="46" cy="26" r="2" fill="#3d8b4f" />
-      <rect x="22" y="54" width="36" height="4" rx="1" fill="#8fad7e" stroke="#5a7a4e" strokeWidth="0.7" />
+      {/* Fish hint */}
+      <ellipse cx="36" cy="58" rx="5" ry="2.2" fill="#4a8aa0" opacity="0.55" />
+      <ellipse cx="60" cy="54" rx="4" ry="1.8" fill="#4a8aa0" opacity="0.45" />
+      <rect
+        x="32"
+        y="16"
+        width="32"
+        height="26"
+        rx="3"
+        fill={`url(#fs-${id})`}
+        stroke="#4a7a48"
+        strokeWidth="1.2"
+      />
+      <rect x="36" y="20" width="24" height="18" rx="2" fill={`url(#fg-${id})`} />
+      <Leaf x={42} y={32} s={0.7} />
+      <Leaf x={52} y={30} s={0.8} flip />
+      <circle className="sil-led ice" cx="40" cy="26" r="2" fill="#3d8b4f" />
+      <circle className="sil-led amber" cx="48" cy="26" r="2" fill="#e8a050" />
+      <circle className="sil-led ice" cx="56" cy="26" r="2" fill="#3d8b4f" />
+      <rect x="24" y="68" width="48" height="5" rx="1.2" fill="#8fad7e" stroke="#5a7a4e" strokeWidth="0.7" />
     </g>
   )
 }
