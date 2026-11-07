@@ -3493,139 +3493,172 @@
 
 /*
  * Gaming fullscreen portrait — map-dominant Farm view.
- * Tab bar stays (nav worker owns menu consolidation); we only grow the map.
+ * Bau-Map fills the play area (Clash-style); chrome floats above.
+ * Tab bar stays (nav worker owns menu consolidation).
  */
 .app-main.map-mode {
-  /* Keep bottom inset for current tab-bar; nav worker may shrink later */
   padding: 0 0 calc(4.85rem + var(--safe-bottom));
 }
 
 .app-main.map-mode .fortress-home {
+  position: relative;
   height: 100%;
   min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
-.app-main.map-mode .map-hud {
-  gap: 0.35rem 0.55rem;
-  padding: calc(0.4rem + var(--safe-top)) 0.7rem 0.4rem;
+/* Map stage sits full-bleed behind HUD / strips / banners */
+.app-main.map-mode .fortress-stage {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  min-height: 0;
+  pointer-events: none;
+}
+
+.app-main.map-mode .fortress-map {
+  flex: 1;
+  min-height: 100%;
+  height: 100%;
+  border-radius: 0;
+  border-left: 0;
+  border-right: 0;
+  border-bottom: 0;
+  transform: perspective(1200px) rotateX(4deg);
+  transform-origin: center 80%;
+  pointer-events: auto;
+  box-shadow: none;
+}
+
+.app-main.map-mode .fortress-stage.theme-map-farm .fortress-map {
+  min-height: 100%;
+  transform: perspective(1300px) rotateX(5deg);
+}
+
+.app-main.map-mode .map-hint {
+  display: none;
+}
+
+/* Compact floating chrome over the map */
+.app-main.map-mode .map-hud,
+.app-main.map-mode .next-goal-strip,
+.app-main.map-mode .banner.map-banner,
+.app-main.map-mode .claim-toast {
+  position: relative;
+  z-index: 3;
   flex-shrink: 0;
 }
 
+.app-main.map-mode .map-hud {
+  gap: 0.3rem 0.5rem;
+  padding: calc(0.35rem + var(--safe-top)) 0.65rem 0.35rem;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--oc-bg-raised) 92%, transparent) 0%,
+    color-mix(in srgb, var(--oc-bg-field) 55%, transparent) 78%,
+    transparent 100%
+  );
+}
+
 .app-main.map-mode .brand.wordmark {
-  font-size: clamp(1.15rem, 4.8vw, 1.45rem);
-  margin-top: 0.08rem;
+  font-size: clamp(1.12rem, 4.6vw, 1.4rem);
+  margin-top: 0.06rem;
 }
 
 .app-main.map-mode .map-hud-brand-row .eyebrow {
-  font-size: 0.62rem;
+  font-size: 0.6rem;
   letter-spacing: 0.08em;
 }
 
 .app-main.map-mode .player-level-chip {
-  margin-top: 0.35rem;
-  padding: 0.3rem 0.45rem;
-  gap: 0.16rem;
-  width: min(100%, 11.5rem);
+  margin-top: 0.28rem;
+  padding: 0.28rem 0.42rem;
+  gap: 0.14rem;
+  width: min(100%, 11rem);
+  background: color-mix(in srgb, var(--oc-bg-raised) 88%, transparent);
 }
 
 .app-main.map-mode .player-level-num {
-  font-size: 0.82rem;
+  font-size: 0.8rem;
 }
 
 .app-main.map-mode .player-level-meta {
-  font-size: 0.64rem;
+  font-size: 0.62rem;
 }
 
 .app-main.map-mode .player-level-track {
-  height: 0.32rem;
+  height: 0.3rem;
 }
 
 .app-main.map-mode .hud-metric-chip {
-  min-width: 6.4rem;
-  padding: 0.35rem 0.5rem;
+  min-width: 6.2rem;
+  padding: 0.32rem 0.48rem;
   border-radius: 10px;
 }
 
 .app-main.map-mode .ash-value {
-  font-size: clamp(1.35rem, 5.5vw, 1.75rem);
+  font-size: clamp(1.3rem, 5.2vw, 1.65rem);
 }
 
 .app-main.map-mode .ash-label {
-  font-size: 0.68rem;
+  font-size: 0.66rem;
 }
 
 .app-main.map-mode .rate-line {
-  margin-top: 0.12rem;
-  font-size: 0.88rem;
+  margin-top: 0.1rem;
+  font-size: 0.84rem;
 }
 
 .app-main.map-mode .map-hud .btn.rake {
-  min-height: 42px;
-  padding: 0.55rem 0.75rem;
-  font-size: 0.92rem;
+  min-height: 40px;
+  padding: 0.5rem 0.7rem;
+  font-size: 0.9rem;
 }
 
 .app-main.map-mode .next-goal-strip {
-  margin: 0 0.55rem 0.3rem;
-  padding: 0.35rem 0.55rem 0.4rem;
-  gap: 0.08rem 0.45rem;
-  flex-shrink: 0;
+  margin: 0 0.5rem 0.28rem;
+  padding: 0.32rem 0.5rem 0.36rem;
+  gap: 0.06rem 0.4rem;
+  background: color-mix(in srgb, var(--oc-bg-raised) 90%, transparent);
+  backdrop-filter: blur(6px);
 }
 
 .app-main.map-mode .next-goal-title {
-  font-size: 0.88rem;
+  font-size: 0.84rem;
 }
 
 .app-main.map-mode .next-goal-kicker,
 .app-main.map-mode .next-goal-detail {
-  font-size: 0.62rem;
+  font-size: 0.6rem;
 }
 
 .app-main.map-mode .next-goal-track {
-  height: 0.3rem;
-  margin-top: 0.15rem;
+  height: 0.28rem;
+  margin-top: 0.12rem;
 }
 
 .app-main.map-mode .banner.offline.map-banner,
 .app-main.map-mode .banner.daily-ops.map-banner,
 .app-main.map-mode .banner.event-surge.map-banner {
-  margin: 0 0.55rem 0.3rem;
-  padding: 0.5rem 0.65rem;
-  gap: 0.45rem;
-  flex-shrink: 0;
+  margin: 0 0.5rem 0.28rem;
+  padding: 0.45rem 0.6rem;
+  gap: 0.4rem;
+  backdrop-filter: blur(6px);
 }
 
 .app-main.map-mode .banner-kicker {
-  font-size: 0.7rem !important;
+  font-size: 0.68rem !important;
 }
 
 .app-main.map-mode .banner.offline p,
 .app-main.map-mode .banner.daily-ops p,
 .app-main.map-mode .banner.event-surge p {
-  font-size: 0.86rem;
-}
-
-.app-main.map-mode .fortress-stage {
-  flex: 1 1 auto;
-  min-height: 0;
-  padding: 0 0.35rem 0.2rem;
-}
-
-.app-main.map-mode .fortress-map {
-  flex: 1 1 auto;
-  min-height: min(58dvh, 100%);
-  border-radius: 10px;
-  transform: perspective(1100px) rotateX(5deg);
-  transform-origin: center 78%;
-}
-
-.app-main.map-mode .fortress-stage.theme-map-farm .fortress-map {
-  min-height: min(60dvh, 100%);
-  transform: perspective(1200px) rotateX(6deg);
-}
-
-.app-main.map-mode .map-hint {
-  display: none;
+  font-size: 0.82rem;
 }
 
 @media (prefers-reduced-motion: reduce) {
