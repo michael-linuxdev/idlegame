@@ -4,6 +4,8 @@ Mobile-first idle PWA on a **shared game core** with theme skins. Active skin: *
 
 Theme packs live under `src/themes/` (`farm` default, `orbit` alternate). Flip `ACTIVE_THEME_ID` in `src/themes/index.ts` to swap skins without touching the idle / slots / prestige / clan / shop loop.
 
+Product priorities and owner notes: see [`ROADMAP.md`](./ROADMAP.md).
+
 ## Stack
 
 - Vite + React + TypeScript
