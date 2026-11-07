@@ -3,22 +3,29 @@
  * Economy Day-1: after first offline return ≥5 min away.
  */
 
-export const INSTALL_STORAGE_KEY = 'orbital-claim-install-v1'
+export const INSTALL_STORAGE_KEY = 'orbit-rack-install-v1'
 export const OFFLINE_NUDGE_MS = 5 * 60 * 1000
+
+const LEGACY_INSTALL_KEYS = [
+  'orbital-claim-install-v1',
+  'ash-dominion-install-v1',
+] as const
 
 export interface InstallPrefs {
   dismissed: boolean
-  /** Already installed / standalone */
   installed: boolean
-  /** Shown at least once */
   shown: boolean
 }
 
 export function loadInstallPrefs(): InstallPrefs {
   try {
-    const raw =
-      localStorage.getItem(INSTALL_STORAGE_KEY) ??
-      localStorage.getItem('ash-dominion-install-v1')
+    let raw = localStorage.getItem(INSTALL_STORAGE_KEY)
+    if (!raw) {
+      for (const key of LEGACY_INSTALL_KEYS) {
+        raw = localStorage.getItem(key)
+        if (raw) break
+      }
+    }
     if (!raw) return { dismissed: false, installed: false, shown: false }
     const p = JSON.parse(raw) as Record<string, unknown>
     return {
@@ -34,7 +41,7 @@ export function loadInstallPrefs(): InstallPrefs {
 export function saveInstallPrefs(prefs: InstallPrefs): void {
   try {
     localStorage.setItem(INSTALL_STORAGE_KEY, JSON.stringify(prefs))
-    localStorage.removeItem('ash-dominion-install-v1')
+    for (const key of LEGACY_INSTALL_KEYS) localStorage.removeItem(key)
   } catch {
     // ignore
   }

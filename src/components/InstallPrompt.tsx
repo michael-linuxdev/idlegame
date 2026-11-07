@@ -14,7 +14,6 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 interface Props {
-  /** ms away on this resume — show after ≥5 min offline return */
   offlineAwayMs: number
   offlineClaimed: boolean
 }
@@ -93,16 +92,16 @@ export function InstallPrompt({ offlineAwayMs, offlineClaimed }: Props) {
   return (
     <div className="install-prompt" role="status">
       <div className="install-prompt-inner">
-        <p className="install-title">Add Orbital Claim home</p>
+        <p className="install-title">Add Orbit Rack home</p>
         {iosTip ? (
           <p className="install-body">
             On iPhone: tap Share, then <strong>Add to Home Screen</strong> for
-            one-tap return while your drills keep running.
+            one-tap return while your racks keep cycling.
           </p>
         ) : (
           <p className="install-body">
-            Install the PWA for faster reopen — offline Ore still accrues either
-            way.
+            Install the PWA for faster reopen — offline Compute still accrues
+            either way.
           </p>
         )}
         <div className="install-actions">

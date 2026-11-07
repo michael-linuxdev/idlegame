@@ -1,4 +1,9 @@
-import { GENERATORS, generatorRate, type GeneratorId } from '../game/generators'
+import {
+  GENERATORS,
+  generatorRate,
+  unlockHint,
+  type GeneratorId,
+} from '../game/generators'
 import { formatAsh, formatRate } from '../game/format'
 import type { useGame } from '../game/useGame'
 
@@ -39,12 +44,7 @@ export function UpgradeSheet({ game, selectedId, onClose }: Props) {
           </button>
         </header>
         <p className="muted">{def.blurb}</p>
-        {!unlocked ? (
-          <p className="sheet-stats">
-            Locked — earn <strong>{formatAsh(def.unlockAsh)}</strong> Ore this run
-            to bring this module online.
-          </p>
-        ) : (
+        {unlocked ? (
           <>
             <p className="sheet-stats">
               Level <strong>{owned}</strong>
@@ -62,7 +62,14 @@ export function UpgradeSheet({ game, selectedId, onClose }: Props) {
               disabled={!affordable}
               onClick={() => game.buy(def.id)}
             >
-              {owned === 0 ? 'Online' : 'Upgrade'} · {formatAsh(cost)} Ore
+              {owned === 0 ? 'Online' : 'Upgrade'} · {formatAsh(cost)} Compute
+            </button>
+          </>
+        ) : (
+          <>
+            <p className="sheet-stats sheet-locked-hint">{unlockHint(def)}</p>
+            <button type="button" className="btn buy sheet-buy" disabled>
+              Locked
             </button>
           </>
         )}

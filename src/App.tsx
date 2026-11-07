@@ -43,7 +43,7 @@ export default function App() {
           className={tab === 'fortress' ? 'tab active' : 'tab'}
           onClick={() => setTab('fortress')}
         >
-          Outpost
+          Station
         </button>
         <button
           type="button"

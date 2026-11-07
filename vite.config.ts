@@ -12,10 +12,10 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'icons.svg'],
       manifest: {
-        name: 'Orbital Claim',
-        short_name: 'Orbital Claim',
+        name: 'Orbit Rack',
+        short_name: 'Orbit Rack',
         description:
-          'Command a sci-fi outpost. Modules produce Ore offline. Prestige for Plasma.',
+          'Run a space data center. Modules produce Compute offline. Prestige for Credits.',
         theme_color: '#1a1410',
         background_color: '#0e0b09',
         display: 'standalone',

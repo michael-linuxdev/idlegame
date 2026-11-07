@@ -1,4 +1,5 @@
 import {
+  EMBER_SHOP,
   emberPayout,
   EMPTY_EMBER_UPGRADES,
   foundryDiscountMult,
@@ -8,50 +9,49 @@ import {
   prestigeMultiplier,
   type EmberUpgradeId,
   type EmberUpgrades,
-  EMBER_SHOP,
 } from './economy'
 import {
   GENERATORS,
+  GENERATOR_IDS,
   generatorCost,
   generatorRate,
-  isUnlocked,
-  MVP_GENERATOR_IDS,
+  isGeneratorUnlocked,
   type GeneratorId,
 } from './generators'
 
 export interface GameState {
-  /** Soft currency — Ore (economy.md Ash) */
+  /** Soft currency — Compute (economy.md Ash) */
   ash: number
-  /** Lifetime ore earned this run (prestige base) */
+  /** Lifetime Compute earned this run (prestige base) */
   ashEarned: number
   owned: Record<GeneratorId, number>
-  /** Soft meta — Plasma (economy.md Embers; survives prestige) */
+  /** Soft meta — Credits (economy.md Embers; survives prestige) */
   embers: number
   emberUpgrades: EmberUpgrades
   /** Prestige runs completed (0-indexed for next gate) */
   prestiges: number
   lastSeen: number
-  /** Last active tap (rake) timestamp */
+  /** Last active tap timestamp */
   lastTapAt: number
   /** Clan boost multiplier stub (1.0–1.25) */
   clanMult: number
 }
 
-export const STORAGE_KEY = 'orbital-claim-save-v2'
+export const STORAGE_KEY = 'orbit-rack-save-v2'
 
 export function emptyOwned(): Record<GeneratorId, number> {
-  return {
-    emberPit: 1, // G1 Drill Rig starts raised — producing immediately (economy Day-1)
-    ashForge: 0,
-    cinderBarracks: 0,
-    sootKiln: 0,
-    pyreVault: 0,
+  const owned = {} as Record<GeneratorId, number>
+  for (const id of GENERATOR_IDS) {
+    owned[id] = 0
   }
+  // G1 Power Plant starts online — producing immediately (economy Day-1)
+  owned.emberPit = 1
+  return owned
 }
 
 export function createInitialState(now = Date.now()): GameState {
   return {
-    // Day-1: first Drill Rig upgrade affordable immediately (C0 = 15)
+    // Day-1: first Power Plant upgrade affordable immediately (C0 = 15)
     ash: 15,
     ashEarned: 0,
     owned: emptyOwned(),
@@ -66,12 +66,10 @@ export function createInitialState(now = Date.now()): GameState {
 
 /** Create a fresh run after prestige, keeping meta. */
 export function createPostPrestigeState(prev: GameState, now = Date.now()): GameState {
-  const owned = emptyOwned()
-  // First Flame: G2 unlocked — start with level 0 but unlock gate waived in isUnlocked
   return {
     ash: 0,
     ashEarned: 0,
-    owned,
+    owned: emptyOwned(),
     embers: prev.embers,
     emberUpgrades: { ...prev.emberUpgrades },
     prestiges: prev.prestiges + 1,
@@ -156,7 +154,14 @@ export function applyOfflineCatchup(
 export function buyGenerator(state: GameState, id: GeneratorId): GameState {
   const def = GENERATORS.find((g) => g.id === id)
   if (!def) return state
-  if (!isUnlocked(def, state.ashEarned, state.emberUpgrades.firstFlame > 0)) {
+  if (
+    !isGeneratorUnlocked(
+      def,
+      state.ashEarned,
+      state.owned,
+      state.emberUpgrades.firstFlame > 0,
+    )
+  ) {
     return state
   }
   const owned = state.owned[id] ?? 0
@@ -195,4 +200,4 @@ export function doPrestige(state: GameState): GameState {
   return { ...next, embers: state.embers + gain }
 }
 
-export { prestigeMultiplier, MVP_GENERATOR_IDS, prestigeMinAsh }
+export { prestigeMultiplier, GENERATOR_IDS, prestigeMinAsh }

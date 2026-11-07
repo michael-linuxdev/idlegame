@@ -168,8 +168,8 @@
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(90% 60% at 50% 110%, rgba(196, 92, 42, 0.14), transparent 55%),
-    radial-gradient(40% 30% at 70% 20%, rgba(138, 106, 61, 0.08), transparent 70%),
+    radial-gradient(90% 60% at 50% 110%, rgba(196, 92, 42, 0.16), transparent 55%),
+    radial-gradient(40% 30% at 70% 20%, rgba(138, 106, 61, 0.1), transparent 70%),
     linear-gradient(165deg, #1a1612 0%, #0f0d0b 45%, #16120f 100%);
 }
 
@@ -181,7 +181,7 @@
     linear-gradient(90deg, rgba(46, 42, 36, 0.45) 1px, transparent 1px);
   background-size: 28px 28px;
   transform: skewY(-4deg) scale(1.15);
-  opacity: 0.55;
+  opacity: 0.45;
 }
 
 .map-ridge {
@@ -196,15 +196,134 @@
   clip-path: polygon(0 60%, 12% 40%, 28% 55%, 45% 30%, 62% 50%, 78% 28%, 100% 48%, 100% 100%, 0 100%);
 }
 
-.map-keep {
+/* Curtain walls + corner towers — fortress identity without drag-build */
+.map-walls {
   position: absolute;
-  left: 42%;
-  top: 8%;
-  width: 16%;
-  height: 14%;
-  background: linear-gradient(180deg, #2a2520, #151210);
-  clip-path: polygon(15% 100%, 15% 35%, 0 35%, 50% 0, 100% 35%, 85% 35%, 85% 100%);
-  opacity: 0.55;
+  inset: 6% 7% 10% 7%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.wall-segment {
+  position: absolute;
+  background: linear-gradient(180deg, #524838, #221c16);
+  border: 1px solid #6a5e4c;
+  opacity: 0.92;
+}
+
+.wall-segment.north {
+  top: 0;
+  left: 8%;
+  right: 8%;
+  height: 9px;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.55);
+}
+
+.wall-segment.south {
+  bottom: 0;
+  left: 14%;
+  right: 14%;
+  height: 10px;
+}
+
+.wall-segment.east {
+  top: 6%;
+  right: 0;
+  bottom: 6%;
+  width: 8px;
+}
+
+.wall-segment.west {
+  top: 6%;
+  left: 0;
+  bottom: 6%;
+  width: 8px;
+}
+
+.wall-tower {
+  position: absolute;
+  width: 16px;
+  height: 22px;
+  background: linear-gradient(180deg, #5a4e3e, #1c1814);
+  border: 1px solid #7a6a52;
+  clip-path: polygon(0 20%, 20% 0, 80% 0, 100% 20%, 100% 100%, 0 100%);
+  opacity: 0.95;
+}
+
+.wall-tower.nw {
+  top: -6px;
+  left: -4px;
+}
+.wall-tower.ne {
+  top: -6px;
+  right: -4px;
+}
+.wall-tower.sw {
+  bottom: -4px;
+  left: -4px;
+}
+.wall-tower.se {
+  bottom: -4px;
+  right: -4px;
+}
+
+.wall-gate {
+  position: absolute;
+  left: 50%;
+  bottom: -2px;
+  width: 28px;
+  height: 16px;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, #2a2218, #0c0b0a);
+  border: 1px solid var(--ad-bronze);
+  border-radius: 10px 10px 2px 2px;
+  opacity: 0.9;
+}
+
+/* Distant citadel mass behind slots */
+.map-keep-silhouette {
+  position: absolute;
+  left: 34%;
+  top: 2%;
+  width: 32%;
+  height: 22%;
+  background: linear-gradient(180deg, #3a342c, #12100e);
+  clip-path: polygon(
+    8% 100%,
+    8% 42%,
+    0 42%,
+    18% 8%,
+    28% 42%,
+    32% 28%,
+    50% 0,
+    68% 28%,
+    72% 42%,
+    82% 8%,
+    100% 42%,
+    92% 42%,
+    92% 100%
+  );
+  opacity: 0.72;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.55));
+  border-bottom: 1px solid rgba(106, 94, 76, 0.45);
+}
+
+/* Banked forge wash — hearth courtyard */
+.map-forge-glow {
+  position: absolute;
+  left: 26%;
+  bottom: 6%;
+  width: 48%;
+  height: 40%;
+  background: radial-gradient(
+    ellipse at 50% 70%,
+    rgba(224, 120, 56, 0.28) 0%,
+    rgba(196, 92, 42, 0.14) 38%,
+    transparent 72%
+  );
+  pointer-events: none;
+  animation: forge-breathe 10s ease-in-out infinite alternate;
+  z-index: 0;
 }
 
 .map-haze {
@@ -213,22 +332,23 @@
   background: radial-gradient(circle at 50% 40%, transparent 40%, rgba(5, 4, 3, 0.55) 100%);
   pointer-events: none;
   animation: ember-drift 16s ease-in-out infinite alternate;
+  z-index: 1;
 }
 
 .map-building {
   position: absolute;
   transform: translate(-50%, -70%);
-  width: min(34%, 128px);
-  min-width: 96px;
+  width: min(30%, 112px);
+  min-width: 88px;
   min-height: var(--ad-target-min);
-  padding: 0.35rem 0.25rem 0.45rem;
+  padding: 0.3rem 0.2rem 0.4rem;
   border: none;
   background: transparent;
   color: var(--ad-ink);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.2rem;
   z-index: 2;
 }
 
@@ -236,6 +356,15 @@
 .map-building:focus-visible .building-sil {
   outline: 2px solid var(--ad-focus);
   outline-offset: 3px;
+}
+
+.map-building.locked {
+  z-index: 2;
+}
+
+.map-building.locked .building-sil {
+  opacity: 0.42;
+  filter: grayscale(0.55) drop-shadow(0 6px 4px rgba(0, 0, 0, 0.45));
 }
 
 .map-building-label {
@@ -251,9 +380,14 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.55);
 }
 
+.map-building.locked .map-building-label {
+  border-color: var(--ad-stroke);
+  background: #0c0b0a;
+}
+
 .map-building-name {
   font-family: var(--ad-font-display);
-  font-size: 0.9375rem; /* 15px */
+  font-size: 0.9375rem; /* 15px — readability pass */
   font-weight: 700;
   letter-spacing: 0.03em;
   white-space: nowrap;
@@ -267,7 +401,7 @@
   justify-content: center;
   gap: 0.45rem;
   font-family: var(--ad-font-metric);
-  font-size: 0.875rem; /* 14px */
+  font-size: 0.875rem; /* 14px — readability pass */
   font-weight: 600;
   color: var(--ad-ink);
   line-height: 1.2;
@@ -281,8 +415,20 @@
   color: var(--ad-gain);
 }
 
+.map-building-lock {
+  color: var(--ad-ink-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
 .map-building.raised .map-building-lvl {
   color: var(--ad-bronze-pale);
+}
+
+.sheet-locked-hint {
+  color: var(--ad-warn, #b08940);
 }
 
 .map-hint {
@@ -412,6 +558,120 @@
 
 .building-sil.lit .sil-spire {
   opacity: 1;
+}
+
+.vault-chamber {
+  bottom: 10px;
+  width: 42px;
+  height: 26px;
+  border-radius: 3px 3px 2px 2px;
+  clip-path: polygon(0 30%, 12% 0, 88% 0, 100% 30%, 100% 100%, 0 100%);
+}
+
+.sil-door {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  width: 12px;
+  height: 14px;
+  transform: translateX(-50%);
+  background: #0a0908;
+  border: 1px solid var(--ad-bronze);
+  border-radius: 6px 6px 0 0;
+  opacity: 0.55;
+}
+
+.building-sil.lit .sil-door {
+  opacity: 1;
+  box-shadow: inset 0 0 6px rgba(196, 92, 42, 0.35);
+}
+
+.watch-shaft {
+  bottom: 10px;
+  width: 22px;
+  height: 36px;
+  clip-path: polygon(15% 100%, 15% 12%, 50% 0, 85% 12%, 85% 100%);
+}
+
+.sil-battlement {
+  position: absolute;
+  left: 50%;
+  bottom: 40px;
+  width: 28px;
+  height: 8px;
+  transform: translateX(-50%);
+  background: repeating-linear-gradient(
+    90deg,
+    #3a3228 0 5px,
+    transparent 5px 8px
+  );
+  border-bottom: 1px solid var(--ad-stroke-strong);
+  opacity: 0.7;
+}
+
+.sil-beacon {
+  position: absolute;
+  left: 50%;
+  bottom: 46px;
+  width: 8px;
+  height: 10px;
+  transform: translateX(-50%);
+  background: var(--ad-ember-dim);
+  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  opacity: 0.35;
+}
+
+.building-sil.lit .sil-beacon {
+  background: linear-gradient(180deg, var(--ad-ember-hot), var(--ad-ember));
+  opacity: 1;
+  animation: flame-flicker 2.2s ease-in-out infinite;
+}
+
+.keep-hall {
+  bottom: 10px;
+  width: 40px;
+  height: 24px;
+  border-radius: 2px;
+}
+
+.sil-keep-tower {
+  position: absolute;
+  bottom: 22px;
+  width: 12px;
+  height: 28px;
+  background: linear-gradient(180deg, #3a3228, #1c1814);
+  border: 1px solid var(--ad-stroke-strong);
+  clip-path: polygon(10% 100%, 10% 18%, 50% 0, 90% 18%, 90% 100%);
+}
+
+.sil-keep-tower.left {
+  left: 6px;
+}
+
+.sil-keep-tower.right {
+  right: 6px;
+}
+
+.sil-banner {
+  position: absolute;
+  left: 50%;
+  bottom: 34px;
+  width: 10px;
+  height: 16px;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, var(--ad-ember), var(--ad-ember-dim));
+  clip-path: polygon(0 0, 100% 0, 100% 70%, 50% 100%, 0 70%);
+  opacity: 0.4;
+}
+
+.building-sil.lit .sil-banner {
+  opacity: 1;
+}
+
+.building-sil.locked .sil-flame,
+.building-sil.locked .sil-beacon,
+.building-sil.locked .sil-banner {
+  opacity: 0.15;
 }
 
 /* Offline banner on map */
@@ -720,6 +980,17 @@
   }
 }
 
+@keyframes forge-breathe {
+  from {
+    opacity: 0.75;
+    transform: scale(1);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+
 @keyframes flame-flicker {
   0%,
   100% {
@@ -962,7 +1233,9 @@
 
 @media (prefers-reduced-motion: reduce) {
   .map-haze,
+  .map-forge-glow,
   .building-sil.lit .sil-flame,
+  .building-sil.lit .sil-beacon,
   .sheet-backdrop,
   .sheet,
   .ftue-coach,

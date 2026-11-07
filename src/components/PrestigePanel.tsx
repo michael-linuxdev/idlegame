@@ -22,32 +22,32 @@ export function PrestigePanel({ game, highlight }: Props) {
       <header className="panel-header">
         <h2 id="prestige-heading">Prestige</h2>
         <p className="muted">
-          Soft-reset the outpost run. Keep <strong>Plasma</strong> for permanent
-          meta upgrades. Modules power down; Ore wallet clears.
+          Soft-reset the station run. Keep <strong>Credits</strong> for permanent
+          meta upgrades. Modules power down; Compute wallet clears.
         </p>
       </header>
 
       <div className="prestige-block">
         <p className="prestige-stats">
-          Plasma: <strong>{state.embers}</strong>
+          Credits: <strong>{state.embers}</strong>
           {' · '}
           Multiplier: <strong>×{multiplier.toFixed(2)}</strong>
           {' · '}
           Runs: <strong>{state.prestiges}</strong>
         </p>
         <p className="prestige-stats">
-          This run: <strong>{formatAsh(state.ashEarned)}</strong> Ore
+          This run: <strong>{formatAsh(state.ashEarned)}</strong> Compute
           {' · '}
           Gate: <strong>{formatAsh(prestigeMin)}</strong>
           {teaser ? (
             <>
               {' · '}
-              <span className="prestige-teaser">Plasma preview +{nextPrestige}</span>
+              <span className="prestige-teaser">Credits preview +{nextPrestige}</span>
             </>
           ) : null}
         </p>
         <p className="prestige-stats">
-          Next payout: <strong>+{nextPrestige}</strong> Plasma
+          Next payout: <strong>+{nextPrestige}</strong> Credits
         </p>
         <div className="prestige-bar" aria-hidden="true">
           <div
@@ -62,13 +62,13 @@ export function PrestigePanel({ game, highlight }: Props) {
           onClick={prestige}
         >
           {canPrestige
-            ? `Claim +${nextPrestige} Plasma & reset`
-            : `Need ${formatAsh(Math.max(0, prestigeMin - state.ashEarned))} more Ore this run`}
+            ? `Claim +${nextPrestige} Credits & reset`
+            : `Need ${formatAsh(Math.max(0, prestigeMin - state.ashEarned))} more Compute this run`}
         </button>
       </div>
 
-      <h3 className="subhead">Plasma shop</h3>
-      <p className="muted">Spend Plasma on permanent power. Never sold for cash.</p>
+      <h3 className="subhead">Credits shop</h3>
+      <p className="muted">Spend Credits on permanent power. Never sold for cash.</p>
       <ul className="ember-shop">
         {EMBER_SHOP.map((item) => {
           const rank = state.emberUpgrades[item.id]
@@ -93,7 +93,7 @@ export function PrestigePanel({ game, highlight }: Props) {
                 disabled={!affordable}
                 onClick={() => game.buyMeta(item.id)}
               >
-                {maxed ? 'Max' : `${cost} Plasma`}
+                {maxed ? 'Max' : `${cost} Credits`}
               </button>
             </li>
           )

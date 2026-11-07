@@ -1,16 +1,17 @@
-import type { GeneratorDef } from '../game/generators'
+import type { SilhouetteKind } from '../game/generators'
 
 interface Props {
-  kind: GeneratorDef['silhouette']
+  kind: SilhouetteKind
   level: number
+  locked?: boolean
 }
 
-/** Pure CSS building marks — readable on the ash map at mobile size. */
-export function BuildingSilhouette({ kind, level }: Props) {
-  const lit = level > 0
+/** Pure CSS module marks — readable on the station map at mobile size. */
+export function BuildingSilhouette({ kind, level, locked = false }: Props) {
+  const lit = level > 0 && !locked
   return (
     <div
-      className={`building-sil sil-${kind}${lit ? ' lit' : ' dormant'}`}
+      className={`building-sil sil-${kind}${lit ? ' lit' : ' dormant'}${locked ? ' locked' : ''}`}
       aria-hidden="true"
     >
       {kind === 'hearth' ? (
@@ -34,18 +35,28 @@ export function BuildingSilhouette({ kind, level }: Props) {
           <span className="sil-spire" />
         </>
       ) : null}
-      {kind === 'kiln' ? (
-        <>
-          <span className="sil-base wide" />
-          <span className="sil-body kiln-dome" />
-          <span className="sil-flame" />
-        </>
-      ) : null}
       {kind === 'vault' ? (
         <>
           <span className="sil-base wide" />
-          <span className="sil-body vault-block" />
-          <span className="sil-spire" />
+          <span className="sil-body vault-chamber" />
+          <span className="sil-door" />
+        </>
+      ) : null}
+      {kind === 'watch' ? (
+        <>
+          <span className="sil-base" />
+          <span className="sil-body watch-shaft" />
+          <span className="sil-battlement" />
+          <span className="sil-beacon" />
+        </>
+      ) : null}
+      {kind === 'keep' ? (
+        <>
+          <span className="sil-base wide" />
+          <span className="sil-body keep-hall" />
+          <span className="sil-keep-tower left" />
+          <span className="sil-keep-tower right" />
+          <span className="sil-banner" />
         </>
       ) : null}
     </div>

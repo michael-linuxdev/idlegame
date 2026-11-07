@@ -1,5 +1,10 @@
 import { useState } from 'react'
-import { GENERATORS, generatorRate, type GeneratorId } from '../game/generators'
+import {
+  GENERATORS,
+  generatorRate,
+  unlockHint,
+  type GeneratorId,
+} from '../game/generators'
 import { formatAsh, formatRate } from '../game/format'
 import type { useGame } from '../game/useGame'
 import { BuildingSilhouette } from './BuildingSilhouette'
@@ -20,15 +25,15 @@ export function FortressMap({ game, highlightId }: Props) {
     <section className="fortress-home" aria-labelledby="ash-heading">
       <header className="map-hud">
         <div className="map-hud-brand">
-          <p className="eyebrow">Commander · Sci-Fi Outpost</p>
+          <p className="eyebrow">Ops · Space Data Center</p>
           <h1 id="ash-heading" className="brand wordmark">
-            Orbital Claim
+            Orbit Rack
           </h1>
         </div>
         <div className="map-hud-metrics" aria-live="polite">
           <div className="ash-amount compact">
             <span className="ash-value">{formatAsh(state.ash)}</span>
-            <span className="ash-label">Ore</span>
+            <span className="ash-label">Compute</span>
           </div>
           <p className="rate-line">
             {formatRate(rate)}
@@ -37,7 +42,7 @@ export function FortressMap({ game, highlightId }: Props) {
             ) : null}
           </p>
           {state.embers > 0 ? (
-            <p className="embers-line">{state.embers} Plasma</p>
+            <p className="embers-line">{state.embers} Credits</p>
           ) : null}
         </div>
         <button
@@ -51,7 +56,7 @@ export function FortressMap({ game, highlightId }: Props) {
               : 'Tap bonus cooling down'
           }
         >
-          {tapReady ? 'Pulse scoop' : 'Scoop cooling'}
+          {tapReady ? 'Burst cycle' : 'Burst cooling'}
         </button>
       </header>
 
@@ -61,8 +66,8 @@ export function FortressMap({ game, highlightId }: Props) {
           role="status"
         >
           <p>
-            While you were away, the outpost gathered{' '}
-            <strong>{formatAsh(game.offlineGained)}</strong> Ore.
+            While you were away, the station banked{' '}
+            <strong>{formatAsh(game.offlineGained)}</strong> Compute.
           </p>
           <button type="button" className="btn ghost" onClick={game.dismissOffline}>
             Claim
@@ -71,34 +76,52 @@ export function FortressMap({ game, highlightId }: Props) {
       ) : null}
 
       <div className="fortress-stage">
-        <div className="fortress-map" role="application" aria-label="Outpost build map">
+        <div className="fortress-map" role="application" aria-label="Station build map">
           <div className="map-terrain" aria-hidden="true">
             <div className="map-grid" />
             <div className="map-ridge" />
-            <div className="map-keep" />
+            <div className="map-walls">
+              <span className="wall-segment north" />
+              <span className="wall-segment east" />
+              <span className="wall-segment south" />
+              <span className="wall-segment west" />
+              <span className="wall-tower nw" />
+              <span className="wall-tower ne" />
+              <span className="wall-tower sw" />
+              <span className="wall-tower se" />
+              <span className="wall-gate" />
+            </div>
+            <div className="map-keep-silhouette" />
+            <div className="map-forge-glow" />
             <div className="map-haze" />
           </div>
 
-          {GENERATORS.filter((d) => d.onMap && d.slot).map((def) => {
+          {GENERATORS.map((def) => {
             const level = state.owned[def.id] ?? 0
             const unlocked = game.unlocked(def.id)
             const selectedHere = selected === def.id
-            const buildingRate = generatorRate(def, level) * multiplier
+            const buildingRate =
+              unlocked && level > 0 ? generatorRate(def, level) * multiplier : 0
+            const hint = !unlocked ? unlockHint(def) : ''
             const hl = highlightId === def.id
             return (
               <button
                 key={def.id}
                 type="button"
-                className={`map-building${selectedHere ? ' selected' : ''}${level > 0 ? ' raised' : ''}${!unlocked ? ' locked' : ''}${hl ? ' ftue-target' : ''}`}
-                style={{ left: def.slot!.left, top: def.slot!.top }}
+                className={`map-building${selectedHere ? ' selected' : ''}${level > 0 && unlocked ? ' raised' : ''}${!unlocked ? ' locked' : ''}${hl ? ' ftue-target' : ''}`}
+                style={{ left: def.slot.left, top: def.slot.top }}
                 aria-label={
                   unlocked
                     ? `${def.name}, level ${level}, ${formatRate(buildingRate)}. Tap to upgrade.`
-                    : `${def.name} locked. Need ${formatAsh(def.unlockAsh)} Ore this run.`
+                    : `${def.name}, locked. ${hint}`
                 }
                 onClick={() => setSelected(def.id)}
               >
-                <BuildingSilhouette kind={def.silhouette} level={unlocked ? level : 0} />
+                <BuildingSilhouette
+                  kind={def.silhouette}
+                  level={level}
+                  locked={!unlocked}
+                />
                 <span className="map-building-label">
                   <span className="map-building-name">{def.name}</span>
                   <span className="map-building-meta">
@@ -108,9 +131,7 @@ export function FortressMap({ game, highlightId }: Props) {
                         <span className="map-building-rate">{formatRate(buildingRate)}</span>
                       </>
                     ) : (
-                      <span className="map-building-locked">
-                        Lock · {formatAsh(def.unlockAsh)} Ore
-                      </span>
+                      <span className="map-building-lock">Locked</span>
                     )}
                   </span>
                 </span>

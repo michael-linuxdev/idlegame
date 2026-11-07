@@ -1,8 +1,12 @@
 import { EMPTY_EMBER_UPGRADES, type EmberUpgrades } from './economy'
-import type { GeneratorId } from './generators'
+import { GENERATOR_IDS, type GeneratorId } from './generators'
 import { createInitialState, STORAGE_KEY, type GameState } from './state'
 
-const LEGACY_KEYS = ['ash-dominion-save-v2', 'ash-dominion-save-v1'] as const
+const LEGACY_KEYS = [
+  'orbital-claim-save-v2',
+  'ash-dominion-save-v2',
+  'ash-dominion-save-v1',
+] as const
 
 function isRecord(v: unknown): v is Record<string, unknown> {
   return typeof v === 'object' && v !== null
@@ -11,22 +15,11 @@ function isRecord(v: unknown): v is Record<string, unknown> {
 function parseOwned(raw: unknown): GameState['owned'] {
   const base = createInitialState().owned
   if (!isRecord(raw)) return base
-  const ids: GeneratorId[] = [
-    'emberPit',
-    'ashForge',
-    'cinderBarracks',
-    'sootKiln',
-    'pyreVault',
-  ]
-  for (const id of ids) {
+  for (const id of GENERATOR_IDS) {
     const n = raw[id]
     if (typeof n === 'number' && Number.isFinite(n) && n >= 0) {
       base[id] = Math.floor(n)
     }
-  }
-  // Ensure G1 is at least 1 for brand-new-looking saves that somehow zeroed it
-  if (base.emberPit < 1 && (raw.emberPit === undefined || raw.emberPit === 0)) {
-    // Preserve intentional zero after prestige only when ashEarned reset — handled by createPostPrestige
   }
   return base
 }
@@ -48,7 +41,6 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
   const ashEarned =
     typeof parsed.ashEarned === 'number' ? Math.max(0, parsed.ashEarned) : ash
 
-  // Migrate dominion → embers
   let embers = 0
   if (typeof parsed.embers === 'number') {
     embers = Math.max(0, Math.floor(parsed.embers))
@@ -74,7 +66,6 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
       : 1
 
   const owned = parseOwned(parsed.owned)
-  // Legacy saves may have emberPit: 0 with ash — leave as-is; fresh v2 starts at 1
   if (!isRecord(parsed.owned) || Object.keys(parsed.owned).length === 0) {
     owned.emberPit = 1
   }
@@ -118,3 +109,5 @@ export function saveState(state: GameState): void {
     // Quota / private mode — ignore for MVP
   }
 }
+
+export type { GeneratorId }

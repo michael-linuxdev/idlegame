@@ -1,8 +1,8 @@
-# Orbital Claim
+# Orbit Rack
 
-Mobile-first idle PWA: command a **sci-fi outpost** from a build map. Modules produce Ore offline; prestige for Plasma.
+Mobile-first idle PWA: run a **space data center** from a build map. Modules produce Compute offline; prestige for Credits.
 
-Working title for the Sci-Fi Outpost tone pivot (loop unchanged from the idle/build/prestige/clan design).
+Interim brand for the space-datacenter tone (loop: idle / Bau-Map / prestige / clans).
 
 ## Stack
 
@@ -17,27 +17,19 @@ npm install
 npm run dev
 ```
 
-Open the URL Vite prints (default `http://localhost:5173`). On a phone, use your LAN IP from the same output.
-
 ```bash
 npm run build
 npm run preview
 ```
 
-`preview` serves the production build (needed to fully exercise the service worker).
-
 ## MVP features
 
-- **Outpost Home** — Bau-Map with fixed module slots (Drill Rig, Hab Module, Fusion Array). Tap a module to upgrade.
-- **Ore** soft currency with tap scoop, idle tick, and offline catch-up (8h soft / 24h hard)
-- Prestige soft-reset → **Plasma** meta + shop (Outpost Yield, Long Orbit, Fabricator Discount, First Beacon)
+- **Station Home** — Bau-Map with six module slots (Power Plant, Cooling Array, Rack Bay, Uplink, Beam Relay, Core Switch). Tap to upgrade.
+- **Compute** soft currency with burst cycle, idle tick, offline catch-up (8h soft / 24h hard)
+- Prestige → **Credits** meta + shop (Rack Yield, Long Uptime, BOM Discount, Hot Spare)
 - Clan tab with fake local season leaderboard
 - FTUE coach (dismissible) + PWA install nudge
 - `base: './'` for GitHub Pages / custom domain
-
-## Install as PWA
-
-Build/preview (or a hosted deploy), then use the browser “Add to Home Screen” / install prompt. Manifest name: **Orbital Claim**.
 
 ## Hosted URLs
 

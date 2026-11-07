@@ -5,7 +5,12 @@ import {
   TAP_COOLDOWN_MS,
   type EmberUpgradeId,
 } from './economy'
-import { GENERATORS, generatorCost, isUnlocked, type GeneratorId } from './generators'
+import {
+  GENERATORS,
+  generatorCost,
+  isGeneratorUnlocked,
+  type GeneratorId,
+} from './generators'
 import {
   applyOfflineCatchup,
   applyTick,
@@ -131,9 +136,14 @@ export function useGame() {
     (id: GeneratorId) => {
       const def = GENERATORS.find((g) => g.id === id)
       if (!def) return false
-      return isUnlocked(def, state.ashEarned, state.emberUpgrades.firstFlame > 0)
+      return isGeneratorUnlocked(
+        def,
+        state.ashEarned,
+        state.owned,
+        state.emberUpgrades.firstFlame > 0,
+      )
     },
-    [state.ashEarned, state.emberUpgrades.firstFlame],
+    [state.ashEarned, state.owned, state.emberUpgrades.firstFlame],
   )
 
   return {
