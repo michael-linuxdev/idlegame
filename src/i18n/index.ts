@@ -1,8 +1,11 @@
 /**
- * Locale entry — German is the only / default locale for now.
+ * Locale entry — German is the only / default locale.
+ * Copy comes from the active theme skin (TurmFarm by default).
  */
-import { de, type DeStrings } from './de'
+import { activeTheme } from '../themes'
 
-export type Strings = DeStrings
-export const t: Strings = de
-export { de }
+export type Strings = typeof activeTheme.strings
+export const t: Strings = activeTheme.strings
+
+/** @deprecated Prefer theme packs under src/themes/ — kept for type imports. */
+export { farmStrings as de } from '../themes/farm/strings'

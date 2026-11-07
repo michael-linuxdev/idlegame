@@ -12,12 +12,12 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'icons.svg'],
       manifest: {
-        name: 'Orbit Rack',
-        short_name: 'Orbit Rack',
+        name: 'TurmFarm',
+        short_name: 'TurmFarm',
         description:
-          'Baue und betreibe orbitale Rechenzentren. Module erzeugen Rechenleistung offline. Prestige für Credits.',
-        theme_color: '#e8eef4',
-        background_color: '#d8e2ec',
+          'Baue und betreibe urbane Vertikalfarmen. Module erzeugen Ertrag offline. Prestige für Münzen.',
+        theme_color: '#e8f0e4',
+        background_color: '#dce8d6',
         display: 'standalone',
         orientation: 'portrait',
         start_url: './',

@@ -8,9 +8,11 @@ import {
 import { formatAsh, formatRate } from '../game/format'
 import { t } from '../i18n'
 import type { useGame } from '../game/useGame'
+import { activeTheme } from '../themes'
 import { BuildingSilhouette } from './BuildingSilhouette'
 import { DailyOpsBanner } from './DailyOpsBanner'
 import { EventBanner } from './EventBanner'
+import { ThemeMapBackdrop } from './ThemeMapBackdrop'
 import { UpgradeSheet } from './UpgradeSheet'
 
 type GameApi = ReturnType<typeof useGame>
@@ -93,37 +95,13 @@ export function FortressMap({ game, highlightId }: Props) {
       <DailyOpsBanner game={game} />
       <EventBanner game={game} />
 
-      <div className={`fortress-stage ${skinClass}`}>
+      <div className={`fortress-stage ${skinClass} ${activeTheme.mapClass}`}>
         <div
           className="fortress-map slots-10"
           role="application"
           aria-label={t.hud.mapAria}
         >
-          <div className="map-terrain" aria-hidden="true">
-            <div className="map-stars" />
-            <div className="map-orbital-rim" />
-            <div className="map-asteroid" />
-            <div className="map-plate" />
-            <div className="map-grid" />
-            <div className="map-cable-trays" />
-            <div className="map-ridge" />
-            <div className="map-walls">
-              <span className="wall-segment north" />
-              <span className="wall-segment east" />
-              <span className="wall-segment south" />
-              <span className="wall-segment west" />
-              <span className="wall-tower nw" />
-              <span className="wall-tower ne" />
-              <span className="wall-tower sw" />
-              <span className="wall-tower se" />
-              <span className="wall-gate" />
-            </div>
-            <div className="map-keep-silhouette" />
-            <div className="map-forge-glow" />
-            <div className="map-haze" />
-            <div className="map-skin-wash" />
-            <div className="map-dust" />
-          </div>
+          <ThemeMapBackdrop />
 
           {GENERATORS.map((def) => {
             const level = state.owned[def.id] ?? 0
