@@ -33,6 +33,13 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Ensure CNAME in dist
+        run: |
+          echo 'idlegame.micana.de' > dist/CNAME
+          test -f dist/CNAME
+          grep -q 'assets/' dist/index.html
+          ! grep -q '/src/main.tsx' dist/index.html
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
@@ -48,3 +55,19 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      # Actions GITHUB_TOKEN with pages:write can sometimes set cname when
+      # local/integration tokens cannot (403). Best-effort; ignore failure.
+      - name: Attach custom domain
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api repos/${{ github.repository }}/pages -X PUT --input - <<'EOF'
+          {
+            "cname": "idlegame.micana.de",
+            "build_type": "workflow",
+            "https_enforced": true
+          }
+          EOF
+          gh api repos/${{ github.repository }}/pages --jq '{cname,html_url,build_type,https_enforced}'

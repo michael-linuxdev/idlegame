@@ -35,3 +35,19 @@ npm run preview
 ## Install as PWA
 
 Build/preview (or a hosted deploy), then use the browser “Add to Home Screen” / install prompt. Manifest name: **Ash Dominion**.
+
+## Hosted URLs
+
+- **Primary (custom domain):** https://idlegame.micana.de  
+  Requires GitHub Pages → Custom domain = `idlegame.micana.de` (DNS already CNAMEs to `michael-linuxdev.github.io`).
+- **Fallback (project Pages):** https://michael-linuxdev.github.io/idlegame/  
+  Vite `base: './'` so JS/CSS resolve under `/idlegame/` until the custom domain is attached.
+
+### Attach custom domain (repo admin)
+
+If Pages API returns 403 for bots:
+
+1. Open https://github.com/michael-linuxdev/idlegame/settings/pages  
+2. Under **Custom domain**, enter `idlegame.micana.de` → **Save**  
+3. Wait for DNS check → enable **Enforce HTTPS**  
+4. Confirm Source is **GitHub Actions**
