@@ -157,8 +157,8 @@ export function ftueCopy(beat: FtueBeatId): FtueCopy | null {
   }
 }
 
-/** Early beats where install nudge would clutter the floor */
+/** Only the welcome beat holds the first-launch install gate briefly */
 export function ftueBlocksInstall(beat: FtueBeatId, dismissed: boolean): boolean {
   if (dismissed || beat === 'done') return false
-  return beat === 'welcome' || beat === 'upgradePit' || beat === 'claimOffline'
+  return beat === 'welcome'
 }

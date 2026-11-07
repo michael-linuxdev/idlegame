@@ -1,10 +1,12 @@
 .app-shell {
   position: relative;
-  min-height: 100%;
+  height: 100%;
+  max-height: 100dvh;
   display: flex;
   flex-direction: column;
   max-width: 480px;
   margin: 0 auto;
+  overflow: hidden;
   background:
     radial-gradient(120% 80% at 50% -10%, rgba(142, 201, 154, 0.4), transparent 55%),
     linear-gradient(180deg, #f3f8ef 0%, var(--oc-bg-deep) 40%, #c8d9bc 100%);
@@ -13,8 +15,13 @@
 .app-main {
   position: relative;
   flex: 1;
+  min-height: 0;
   padding: var(--oc-space-lg) 1rem calc(5.75rem + var(--safe-bottom));
+  /* Intentional inner scroll for shop / prestige / clan panels only */
+  overflow-x: hidden;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .app-main.map-mode {
@@ -68,8 +75,9 @@
 .muted {
   margin: 0;
   color: var(--oc-ink-muted);
-  font-size: 1rem;
-  line-height: 1.5;
+  font-size: 0.95rem;
+  line-height: 1.35;
+  font-weight: 600;
 }
 
 .eyebrow {
@@ -182,11 +190,17 @@
   align-items: flex-end;
   gap: 0.15rem;
   min-width: 7.5rem;
-  padding: 0.45rem 0.65rem;
-  background: color-mix(in srgb, var(--oc-bg-raised) 92%, transparent);
-  border: 1px solid var(--oc-stroke-strong);
-  border-radius: var(--oc-radius);
-  box-shadow: 0 2px 8px rgba(40, 60, 80, 0.08);
+  padding: 0.5rem 0.7rem;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.98) 0%,
+    color-mix(in srgb, var(--oc-bg-raised) 94%, transparent) 100%
+  );
+  border: 2px solid var(--oc-stroke-strong);
+  border-radius: 12px;
+  box-shadow:
+    0 2px 0 color-mix(in srgb, var(--oc-stroke-strong) 55%, #1e2e1a),
+    0 4px 10px rgba(30, 50, 30, 0.1);
   transition:
     border-color var(--oc-motion-tick) ease,
     box-shadow var(--oc-motion-tick) ease;
@@ -857,18 +871,20 @@
   flex-direction: column;
   align-items: center;
   gap: 0.1rem;
-  padding: 0.35rem 0.55rem 0.4rem;
-  background: #f4f7fa;
-  border: 1px solid var(--oc-stroke-strong);
-  border-radius: 4px;
+  padding: 0.4rem 0.6rem 0.45rem;
+  background: linear-gradient(180deg, #ffffff 0%, #f3f8ef 100%);
+  border: 2px solid var(--oc-stroke-strong);
+  border-radius: 10px;
   max-width: 100%;
-  box-shadow: 0 3px 8px rgba(40, 60, 80, 0.18);
+  box-shadow:
+    0 3px 0 color-mix(in srgb, var(--oc-stroke-strong) 65%, #1e2e1a),
+    0 5px 12px rgba(30, 50, 30, 0.16);
 }
 
 .map-building.locked .map-building-label {
-  border-color: var(--oc-warn);
+  border-color: color-mix(in srgb, var(--oc-warn) 70%, var(--oc-stroke-strong));
   border-style: dashed;
-  background: color-mix(in srgb, var(--oc-bg-field) 90%, var(--oc-bg-inset));
+  background: linear-gradient(180deg, #faf8f0 0%, #ebe4d4 100%);
 }
 
 .map-building-name {
@@ -913,9 +929,9 @@
   display: block;
   width: 100%;
   text-align: center;
-  color: var(--oc-ink-muted);
-  font-size: 0.68rem;
-  font-weight: 600;
+  color: var(--oc-ink);
+  font-size: 0.7rem;
+  font-weight: 700;
   letter-spacing: 0.02em;
   line-height: 1.2;
   white-space: nowrap;
@@ -1134,12 +1150,13 @@
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--oc-ink-muted) !important;
+  color: var(--oc-ink) !important;
 }
 
 .banner-meta {
   color: var(--oc-ink-muted);
-  font-size: 0.85rem !important;
+  font-size: 0.88rem !important;
+  font-weight: 600;
 }
 
 .banner-meta.claimed {
@@ -1204,14 +1221,15 @@
 .sheet {
   width: 100%;
   padding: 0.5rem 1rem calc(1rem + var(--safe-bottom));
-  background: var(--oc-bg-raised);
-  border-top: 1px solid var(--oc-stroke-strong);
-  border-radius: 14px 14px 0 0;
+  background: linear-gradient(180deg, #ffffff 0%, var(--oc-bg-raised) 28%);
+  border-top: 2px solid var(--oc-stroke-strong);
+  border-radius: 18px 18px 0 0;
   animation: sheet-up var(--oc-motion-sheet) ease-out;
-  box-shadow: 0 -10px 28px rgba(40, 60, 80, 0.18);
+  box-shadow: 0 -12px 32px rgba(30, 50, 30, 0.2);
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
+  color: var(--oc-ink);
 }
 
 .sheet-handle {
@@ -1249,9 +1267,9 @@
 
 .sheet-buy {
   width: 100%;
-  min-height: 52px;
-  font-size: 1.05rem;
-  letter-spacing: 0.02em;
+  min-height: 56px;
+  font-size: 1.12rem;
+  letter-spacing: 0.04em;
 }
 
 .sheet-cta {
@@ -1274,71 +1292,128 @@
   flex-shrink: 0;
 }
 
-/* Buttons */
+/* Buttons — casual-game chrome (bevel + weight, bright fills) */
 
 .btn {
-  border: 1px solid var(--oc-stroke-strong);
-  border-radius: var(--oc-radius);
-  padding: 0.65rem 0.95rem;
+  border: 2px solid var(--oc-stroke-strong);
+  border-radius: 12px;
+  padding: 0.7rem 1.05rem;
   min-height: var(--oc-target-min);
   min-width: var(--oc-target-min);
-  background: var(--oc-bg-raised);
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    var(--oc-bg-raised) 55%,
+    color-mix(in srgb, var(--oc-bg-inset) 35%, var(--oc-bg-raised)) 100%
+  );
   color: var(--oc-ink);
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  box-shadow:
+    0 3px 0 color-mix(in srgb, var(--oc-stroke-strong) 75%, #1e2e1a),
+    0 5px 12px rgba(30, 50, 30, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
   transition:
     background 0.15s ease,
     border-color 0.15s ease,
+    box-shadow 0.12s ease,
+    filter 0.12s ease,
     transform 0.1s ease;
 }
 
 .btn:active:not(:disabled) {
-  transform: translateY(1px);
+  transform: translateY(2px);
+  box-shadow:
+    0 1px 0 color-mix(in srgb, var(--oc-stroke-strong) 75%, #1e2e1a),
+    0 2px 6px rgba(30, 50, 30, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
 .btn.rake {
-  padding: 0.55rem 1.1rem;
-  background: linear-gradient(180deg, var(--oc-ember-hot) 0%, var(--oc-ember) 100%);
+  padding: 0.65rem 1.15rem;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--oc-ember-hot) 70%, #fff) 0%,
+    var(--oc-ember-hot) 38%,
+    var(--oc-ember) 100%
+  );
   border-color: var(--oc-ember-dim);
-  color: #f7fbf5;
+  color: #ffffff;
   font-family: var(--oc-font-display);
-  letter-spacing: 0.04em;
-  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+  font-size: 0.95rem;
   font-weight: 700;
+  text-shadow: 0 1px 0 rgba(20, 50, 25, 0.35);
+  box-shadow:
+    0 4px 0 var(--oc-ember-dim),
+    0 6px 14px rgba(31, 110, 50, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+.btn.rake:active:not(:disabled) {
+  box-shadow:
+    0 1px 0 var(--oc-ember-dim),
+    0 2px 8px rgba(31, 110, 50, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
 }
 
 [data-theme='orbit'] .btn.rake {
   color: #1a2330;
   border-color: #f0b870;
+  text-shadow: none;
 }
 
-
 .btn.buy {
-  background: linear-gradient(180deg, var(--oc-ember-hot) 0%, var(--oc-ember) 100%);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--oc-ember-hot) 72%, #fff) 0%,
+    var(--oc-ember-hot) 36%,
+    var(--oc-ember) 100%
+  );
   border-color: var(--oc-ember-dim);
-  color: #f7fbf5;
+  color: #ffffff;
+  font-family: var(--oc-font-display);
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 1.05rem;
+  letter-spacing: 0.03em;
+  text-shadow: 0 1px 0 rgba(20, 50, 25, 0.35);
+  box-shadow:
+    0 4px 0 var(--oc-ember-dim),
+    0 7px 16px rgba(31, 110, 50, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.48);
 }
 
 .btn.buy:disabled {
   background: linear-gradient(
     180deg,
-    color-mix(in srgb, var(--oc-bg-inset) 80%, white) 0%,
-    var(--oc-bg-inset) 100%
+    #eef3ea 0%,
+    color-mix(in srgb, var(--oc-bg-inset) 70%, #dce6d6) 100%
   );
-  border-color: var(--oc-stroke);
+  border-color: var(--oc-stroke-strong);
   color: var(--oc-ink-muted);
+  text-shadow: none;
   opacity: 1;
+  box-shadow:
+    0 2px 0 color-mix(in srgb, var(--oc-stroke) 80%, #6b8f5e),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
 }
 
 .btn.buy:not(:disabled):hover {
-  border-color: var(--oc-ember-hot);
-  filter: brightness(1.04);
+  border-color: color-mix(in srgb, var(--oc-ember-hot) 60%, var(--oc-ember-dim));
+  filter: brightness(1.05);
+}
+
+.btn.buy:active:not(:disabled) {
+  box-shadow:
+    0 1px 0 var(--oc-ember-dim),
+    0 2px 8px rgba(31, 110, 50, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
 }
 
 [data-theme='orbit'] .btn.buy {
   color: #1a2330;
   border-color: #f0b870;
+  text-shadow: none;
 }
 
 [data-theme='orbit'] .btn.buy:not(:disabled):hover {
@@ -1348,28 +1423,50 @@
 .btn.prestige {
   width: 100%;
   margin-top: 0.85rem;
-  padding: 0.85rem 1rem;
-  background: linear-gradient(180deg, #c4a868 0%, var(--oc-bronze) 100%);
-  border-color: var(--oc-bronze-pale);
-  color: #1a2330;
+  padding: 0.9rem 1.05rem;
+  background: linear-gradient(
+    180deg,
+    #e8d49a 0%,
+    #c4a868 42%,
+    var(--oc-bronze) 100%
+  );
+  border: 2px solid color-mix(in srgb, var(--oc-bronze) 70%, #5a4a28);
+  color: #1a160c;
   font-family: var(--oc-font-display);
   letter-spacing: 0.03em;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 1.05rem;
+  text-shadow: 0 1px 0 rgba(255, 245, 210, 0.45);
+  box-shadow:
+    0 4px 0 color-mix(in srgb, var(--oc-bronze) 75%, #3d3218),
+    0 7px 16px rgba(90, 70, 30, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 .btn.prestige:disabled {
-  background: linear-gradient(180deg, #d8e2ec 0%, #b8c8d6 100%);
-  border-color: var(--oc-stroke);
+  background: linear-gradient(180deg, #eef2e8 0%, #cfd9c6 100%);
+  border-color: var(--oc-stroke-strong);
   color: var(--oc-ink-muted);
+  text-shadow: none;
+  box-shadow:
+    0 2px 0 color-mix(in srgb, var(--oc-stroke) 80%, #6b8f5e),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+.btn.prestige:active:not(:disabled) {
+  box-shadow:
+    0 1px 0 color-mix(in srgb, var(--oc-bronze) 75%, #3d3218),
+    0 2px 8px rgba(90, 70, 30, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
 .btn.ghost {
   align-self: flex-start;
-  background: var(--oc-bg-field);
+  background: linear-gradient(180deg, #ffffff 0%, var(--oc-bg-field) 100%);
   border-color: var(--oc-stroke-strong);
   color: var(--oc-ink);
   min-height: var(--oc-target-min);
+  font-weight: 700;
 }
 
 .prestige-block {
@@ -1873,21 +1970,23 @@
   pointer-events: auto;
   display: flex;
   flex-direction: column;
-  gap: 0.65rem;
-  padding: 0.85rem 1rem;
-  background: rgba(244, 247, 250, 0.98);
-  border: 1px solid var(--oc-stroke-strong);
-  border-radius: var(--oc-radius);
-  box-shadow: 0 10px 28px rgba(40, 60, 80, 0.18);
+  gap: 0.55rem;
+  padding: 0.9rem 1.05rem;
+  background: linear-gradient(180deg, #ffffff 0%, #f3f8ef 100%);
+  border: 2px solid var(--oc-stroke-strong);
+  border-radius: 14px;
+  box-shadow:
+    0 4px 0 color-mix(in srgb, var(--oc-stroke-strong) 55%, #1e2e1a),
+    0 12px 28px rgba(30, 50, 30, 0.18);
 }
 
 .ftue-eyebrow {
   margin: 0;
-  font-size: 0.7rem;
-  letter-spacing: 0.16em;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--oc-ink-muted);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .ftue-title {
@@ -1899,10 +1998,11 @@
 }
 
 .ftue-body {
-  margin: 0.35rem 0 0;
+  margin: 0.2rem 0 0;
   color: var(--oc-ink);
   font-size: 0.95rem;
-  line-height: 1.45;
+  line-height: 1.35;
+  font-weight: 600;
 }
 
 .ftue-actions {
@@ -1936,57 +2036,124 @@
   box-shadow: inset 0 -2px 0 var(--oc-bronze);
 }
 
-.install-prompt {
+/* First-launch install gate (einbuergerung-style, dismissible) */
+.install-gate {
   position: fixed;
-  left: 50%;
-  transform: translateX(-50%);
-  top: 0.65rem;
-  width: calc(100% - 1.25rem);
-  max-width: 460px;
-  z-index: 40;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0.75rem;
+  padding-bottom: calc(0.85rem + var(--safe-bottom));
+  background: color-mix(in srgb, var(--oc-bg-deep) 55%, rgba(30, 50, 30, 0.45));
   animation: fade-in 0.25s ease-out;
 }
 
-.install-prompt-inner {
-  padding: 0.75rem 0.9rem;
-  background: rgba(244, 247, 250, 0.98);
-  border: 1px solid var(--oc-stroke-strong);
-  border-radius: var(--oc-radius);
-  box-shadow: 0 8px 22px rgba(40, 60, 80, 0.16);
+.install-gate-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 1rem 1.1rem 0.85rem;
+  background: linear-gradient(180deg, #ffffff 0%, #f3f8ef 100%);
+  border: 2px solid var(--oc-stroke-strong);
+  border-radius: 18px;
+  box-shadow:
+    0 4px 0 color-mix(in srgb, var(--oc-stroke-strong) 55%, #1e2e1a),
+    0 16px 36px rgba(30, 50, 30, 0.28);
+  animation: sheet-up var(--oc-motion-sheet) ease-out;
 }
 
 .install-eyebrow {
   margin: 0;
-  font-size: 0.7rem;
-  letter-spacing: 0.16em;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--oc-ink-muted);
-  font-weight: 600;
+  color: var(--oc-ember-dim);
+  font-weight: 700;
 }
 
 .install-title {
-  margin: 0.2rem 0 0;
+  margin: 0.25rem 0 0;
   font-family: var(--oc-font-display);
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 1.25rem;
   color: var(--oc-ink);
 }
 
 .install-body {
-  margin: 0.35rem 0 0;
+  margin: 0.4rem 0 0;
   color: var(--oc-ink);
-  font-size: 0.92rem;
-  line-height: 1.4;
+  font-size: 0.95rem;
+  line-height: 1.35;
+  font-weight: 600;
+}
+
+.install-why {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.install-why li {
+  position: relative;
+  padding: 0.35rem 0.5rem 0.35rem 1.85rem;
+  background: color-mix(in srgb, var(--oc-bg-field) 80%, white);
+  border: 1px solid var(--oc-stroke);
+  border-radius: 10px;
+  color: var(--oc-ink);
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.install-why li::before {
+  content: '✓';
+  position: absolute;
+  left: 0.45rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--oc-ember) 22%, white);
+  color: var(--oc-ember-dim);
+  font-size: 0.7rem;
+  font-weight: 800;
 }
 
 .install-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.45rem;
-  margin-top: 0.55rem;
+  margin-top: 0.85rem;
 }
 
 .install-actions .btn {
   min-height: var(--oc-target-min);
+  flex: 1 1 auto;
+}
+
+.install-skip {
+  display: block;
+  width: 100%;
+  margin: 0.65rem 0 0;
+  padding: 0.55rem;
+  border: 0;
+  background: none;
+  color: var(--oc-ink-muted);
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-align: center;
+  cursor: pointer;
 }
 
 .map-building.locked .map-building-label {
@@ -2817,7 +2984,8 @@
   .sheet-backdrop,
   .sheet,
   .ftue-coach,
-  .install-prompt,
+  .install-gate,
+  .install-gate-card,
   .ash-value.tick,
   .claim-toast,
   .float-pop,

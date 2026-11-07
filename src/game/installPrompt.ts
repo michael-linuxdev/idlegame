@@ -1,20 +1,23 @@
 /**
- * PWA install nudge — Android beforeinstallprompt + iOS Share tip.
- * Non-spammy: shown once, dismiss persisted. Economy Day-1: after offline ≥5 min.
+ * PWA install nudge — first-launch gate (einbuergerung.micana.de pattern).
+ * Android beforeinstallprompt + iOS Share tip. Dismiss persists; never blocks play forever.
  */
 
-export const INSTALL_STORAGE_KEY = 'orbit-rack-install-v1'
-export const OFFLINE_NUDGE_MS = 5 * 60 * 1000
+export const INSTALL_STORAGE_KEY = 'turmfarm-install-v1'
 
 const LEGACY_INSTALL_KEYS = [
+  'orbit-rack-install-v1',
   'orbital-claim-install-v1',
   'ash-dominion-install-v1',
 ] as const
 
+/** Soft delay before first-launch cue — lets the shell paint. */
+export const FIRST_LAUNCH_DELAY_MS = 700
+
 export interface InstallPrefs {
   dismissed: boolean
   installed: boolean
-  /** Banner was shown at least once — never auto-resurface */
+  /** Banner/gate was shown at least once — never auto-resurface */
   shown: boolean
 }
 
