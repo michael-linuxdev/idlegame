@@ -1,0 +1,86 @@
+name: Deploy Tokenhalle Pages
+
+# Thin second GitHub Pages site for tokenhalle.micana.de.
+# Builds arcade from public michael-linuxdev/idlegame (no secrets required).
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  # Keep Tokenhalle roughly in sync when the thin repo is idle.
+  schedule:
+    - cron: '17 */6 * * *'
+  repository_dispatch:
+    types: [idlegame-main-updated]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: tokenhalle-pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout idlegame (public game source)
+        uses: actions/checkout@v4
+        with:
+          repository: michael-linuxdev/idlegame
+          ref: main
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Build Tokenhalle (arcade)
+        run: npm run build:arcade
+
+      - name: Ensure CNAME + arcade icons in dist
+        run: |
+          set -euo pipefail
+          echo 'tokenhalle.micana.de' > dist/CNAME
+          test -f dist/CNAME
+          grep -q 'assets/' dist/index.html
+          ! grep -q '/src/main.tsx' dist/index.html
+          grep -q 'Tokenhalle' dist/index.html
+          test -f dist/icons/arcade/pwa-192.png
+          grep -q 'icons/arcade/pwa-192' dist/manifest.webmanifest
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Attach custom domain
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api repos/${{ github.repository }}/pages -X PUT --input - <<'EOF'
+          {
+            "cname": "tokenhalle.micana.de",
+            "build_type": "workflow",
+            "https_enforced": true
+          }
+          EOF
+          gh api repos/${{ github.repository }}/pages --jq '{cname,html_url,build_type,https_enforced}'

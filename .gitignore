@@ -9,6 +9,8 @@ lerna-debug.log*
 
 node_modules
 dist
+dist-arcade
+dist-farm
 dist-ssr
 *.local
 

@@ -129,6 +129,9 @@ export default defineConfig(({ mode }) => {
         },
         workbox: {
           globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+          // Tokenhalle is also published under /arcade/ on the same Pages site.
+          // Keep the TurmFarm SW from hijacking those navigations.
+          navigateFallbackDenylist: [/^\/arcade(?:\/|$)/],
         },
       }),
     ],
