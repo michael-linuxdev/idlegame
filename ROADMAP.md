@@ -1,32 +1,32 @@
-# TurmFarm / Idle-Kern — Roadmap & Produktvermerke
+# Idle-Kern — Roadmap & Produktvermerke
 
-Stand: 2026-11-07. Dieses Dokument lebt **im Repo** und ist die Quelle für Prioritäten.
+Stand: 2026-11-07.
 
-## Produktprinzipien
+## Architektur
 
-- Gemeinsamer Spielkern; Themes als Skins (nicht getrennte Apps).
-- Aktives Skin: **TurmFarm** (Urban Vertical Farm). Geplant: Retro-Arcade, Brauerei/Craft; Orbit Rack als Alternate-Pack.
-- Spieler-UI auf **Deutsch**.
-- Bau-Map Pflicht (Clash-Feeling); echtes Idle; keine Energy-Walls; keine Offline-Strafe.
-- UI hell und lesbar; Werbung nur optional belohnend.
+- **Ein Spielkern**, mehrere **eigene Apps** (gleiche Engine/Loop).
+- **App 1:** Urban Vertical Farm (Arbeitstitel offen — siehe Namensfindung).
+- **App 2:** Retro-Arcade-Kette (eigene App, gleicher Kern) — nach Farm-Politur.
+- **Raus:** Orbit Rack / Space-Datacenter; Brauerei-Theme.
 
-## Pipeline (Reihenfolge)
+## Prinzipien
 
-1. Laufende Fixes: Upgrade-CTA, Shop/Prestige-Tiefe, Grafik-Sprung, Level/Quests, Ad-/Shop-Stubs  
-2. **Economy-Balance** playtesten und nachziehen  
-3. **Multiplayer-Architektur** vorbereiten (API/Sync-Skizze)  
-4. Theme-Skin **Retro-Arcade**  
-5. Theme-Skin **Brauerei**  
-6. **Echtes Clan-Multiplayer**  
-7. **Echte IAP-Anbindung** (Stripe / Paddle / Stores)  
-8. **Soft-Launch + Analytics** (Retention messen, dann iterieren)
+- DE-UI; Bau-Map; echtes Idle; keine Energy-Walls; helle, lesbare UI.
+- Werbung nur rewarded/optional; Werbefrei-Kauf.
+- IAP **nur Stores**. Analytics später.
+- Suchtfaktor/Retention aktiv steigern.
+- Balance playtesten; Multiplayer vorbereiten und bauen.
 
-## Monetisierung (Absicht)
+## Pipeline
 
-- Soft: Ertrag, Münzen, Samen; Hard/Premium-Stubs (z. B. Obsidian/Samen-Packs).
-- Rewarded Ads (optionaler Bonus), **Werbefrei**-Kauf.
-- Mehr Pakete: Bundles, Schubs, Cosmetics, Mini-Pass — keine Energy-Walls.
+1. Abschließen: Upgrade-CTA, Shop/Prestige, Grafik-Sprung, Level/Quests, Ad-Stubs  
+2. **Politur-Runde** UI/UX/Grafik + **Retention/Suchtfaktor** erhöhen  
+3. **Balance**-Pass  
+4. **Multiplayer-Architektur** → echtes Clan-Multiplayer  
+5. **Arcade-App** (Skin + Bundle auf dem Kern)  
+6. Store-IAP verdrahten  
+7. Soft-Launch (Analytics-Tool dann wählen)
 
-## Vermerke pflegen
+## Fertig-Produkt?
 
-Neue Owner-Entscheidungen hier eintragen und committen — nicht nur im Chat.
+Noch **nicht**. Soft-Launch-ready erst nach: stabile Upgrade/Shop-Loops, starke Grafik/Politur, Level/Quests, Balance, Multiplayer-MVP oder klarer Solo-Mode, Store-IAP, Privacy/Impressum. Jetzt: starker Prototyp mit hohem Hook-Potenzial.

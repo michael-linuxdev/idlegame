@@ -1,24 +1,16 @@
 /**
- * Active theme skin. Flip ACTIVE_THEME_ID to swap packs without touching the loop.
- * Default: Urban Vertical Farm (TurmFarm). Orbit Rack remains an alternate pack.
+ * Active theme skin — Urban Vertical Farm (TurmFarm) only.
+ * Orbit Rack pack removed (owner: Orbit raus).
  */
 import { farmTheme } from './farm'
-import { orbitTheme } from './orbit'
 import type { ThemeId } from './types'
 
 export type { ThemeId, ThemePack } from './types'
 export { farmTheme } from './farm'
-export { orbitTheme } from './orbit'
 
-/** Change this to `'orbit'` to revive the datacenter skin. */
 export const ACTIVE_THEME_ID: ThemeId = 'farm'
 
-const THEMES = {
-  farm: farmTheme,
-  orbit: orbitTheme,
-} as const
-
-export const activeTheme = THEMES[ACTIVE_THEME_ID]
+export const activeTheme = farmTheme
 
 /** Apply theme metadata to document (lang, colors, data-theme). */
 export function applyThemeToDocument(): void {

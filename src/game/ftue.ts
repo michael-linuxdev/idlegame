@@ -1,6 +1,6 @@
 /**
  * First-10-minutes guided beats (gdd-mvp.md §7 + economy Day-1 hooks).
- * Copy: Orbit Rack datacenter Ops voice (DE via i18n). Dismissible, persisted — never blocks idle.
+ * Copy: TurmFarm Ops voice (DE via i18n). Dismissible, persisted — never blocks idle.
  */
 
 import { t } from '../i18n'

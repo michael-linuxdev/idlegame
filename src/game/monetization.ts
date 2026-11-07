@@ -65,7 +65,7 @@ export interface TimeSkipDef {
   cost: number
 }
 
-/** economy.md: Cinder Hour / Dominion Surge — Orbit Rack copy (DE) */
+/** Time-skip stubs — TurmFarm DE copy via i18n */
 export const TIME_SKIPS: TimeSkipDef[] = [
   {
     id: 'cycleHour',

@@ -2,7 +2,7 @@
 
 Mobile-first idle PWA on a **shared game core** with theme skins. Active skin: **Urban Vertical Farm** (working title TurmFarm). Modules produce Ertrag offline; prestige for Münzen.
 
-Theme packs live under `src/themes/` (`farm` default, `orbit` alternate). Flip `ACTIVE_THEME_ID` in `src/themes/index.ts` to swap skins without touching the idle / slots / prestige / clan / shop loop.
+Theme pack: `src/themes/farm` only (TurmFarm). Orbit Rack is removed — not shipped.
 
 Product priorities and owner notes: see [`ROADMAP.md`](./ROADMAP.md).
 

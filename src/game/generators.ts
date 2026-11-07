@@ -1,6 +1,6 @@
 /**
  * Module definitions — Bau-Map content depth (10 slots) + economy.md formulas for G1–G3.
- * Tone: space data centers / Orbit Rack (vision.md). Loop unchanged.
+ * Tone: Urban Vertical Farm / TurmFarm. Loop unchanged.
  *
  * Stable IDs (map worker + content depth):
  *   emberPit, ashForge, cinderBarracks, cinderVault, ashWatch, dominionKeep,
