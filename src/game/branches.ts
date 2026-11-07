@@ -1,6 +1,6 @@
 /**
  * Branch upgrades (Effizienz / Kapazität) on existing modules.
- * Paid in soft Ertrag; reset on prestige so runs stay fair.
+ * Paid in soft currency (Phyto / Tokens); reset on prestige so runs stay fair.
  * Main Upgrade CTA stays primary — branches are secondary sinks.
  */
 
@@ -32,7 +32,7 @@ export function emptyBranches(ids: GeneratorId[]): BranchRanks {
 }
 
 /**
- * Branch cost in Ertrag.
+ * Branch cost in soft currency.
  * ~2.2× module C0 · 1.5^rank — meaningful but not a wall next to main upgrades.
  */
 export function branchCost(

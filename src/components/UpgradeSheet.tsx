@@ -58,15 +58,15 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
   return (
     <div className="sheet-backdrop" role="presentation" onClick={onClose}>
       <div
-        className={`sheet sheet-compact${flash ? ' upgrade-flash' : ''}`}
+        className={`sheet sheet-compact sheet-hud${flash ? ' upgrade-flash' : ''}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="upgrade-title"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="sheet-handle" aria-hidden="true" />
-        <header className="sheet-header">
-          <div>
+        <header className="sheet-header sheet-header-hud">
+          <div className="sheet-heading">
             <h2 id="upgrade-title">{def.name}</h2>
             {unlocked ? (
               <p className="sheet-blurb" title={def.blurb}>
@@ -86,7 +86,7 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
 
         {unlocked ? (
           <>
-            <p className="sheet-stats">
+            <p className="sheet-stats sheet-stats-hud">
               {t.upgrade.level} {owned}
               {' · '}
               {formatRate(lineRate)}
@@ -102,7 +102,7 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
             <div className="sheet-cta">
               <button
                 type="button"
-                className={`btn buy sheet-buy${affordable ? ' pulse-ready' : ''}${flash ? ' just-bought' : ''}`}
+                className={`btn buy sheet-buy sheet-buy-hud${affordable ? ' pulse-ready' : ''}${flash ? ' just-bought' : ''}`}
                 disabled={!affordable}
                 onClick={buyUpgrade}
               >
@@ -111,7 +111,7 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
             </div>
 
             {owned >= 1 ? (
-              <div className="branch-block">
+              <div className="branch-block branch-block-hud">
                 <h3 className="branch-title">{t.branches.title}</h3>
                 <BranchRow
                   kind="efficiency"
@@ -136,7 +136,7 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
           <div className="sheet-empty-block">
             <p className="sheet-stats sheet-locked-hint">{unlockHint(def)}</p>
             <div className="sheet-cta">
-              <button type="button" className="btn buy sheet-buy" disabled>
+              <button type="button" className="btn buy sheet-buy sheet-buy-hud" disabled>
                 {t.upgrade.locked}
               </button>
             </div>
@@ -195,8 +195,9 @@ function BranchRow({
           className="btn ghost branch-buy"
           disabled={ash < cost}
           onClick={onBuy}
+          title={t.upgrade.costLine(name, formatAsh(cost))}
         >
-          {formatAsh(cost)}
+          {t.upgrade.costLine(name, formatAsh(cost))}
         </button>
       )}
     </div>
