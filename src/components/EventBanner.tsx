@@ -62,8 +62,13 @@ export function EventBanner({ game }: Props) {
         {surgeGoalClaimed ? (
           <p className="banner-meta claimed">{t.event.claimed}</p>
         ) : null}
-        <button type="button" className="btn ghost" onClick={dismissEvent}>
-          {t.event.dismiss}
+        <button
+          type="button"
+          className="btn ghost event-dismiss"
+          onClick={dismissEvent}
+          aria-label={t.event.dismiss}
+        >
+          ×
         </button>
       </div>
     </div>

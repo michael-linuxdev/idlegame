@@ -35,10 +35,11 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
   const eff = efficiencyMult(branch.efficiency)
   const lineRate = generatorRate(def, owned) * lineMult * eff
   const nextRate = generatorRate(def, owned + 1) * lineMult * eff
-  const milestoneNext = owned > 0 && (owned + 1) % 10 === 0
   const affordRatio =
     cost > 0 ? Math.min(1, game.state.ash / cost) : unlocked ? 1 : 0
   const actionLabel = owned === 0 ? t.upgrade.online : t.upgrade.upgrade
+  const flavor =
+    def.blurb.length > 78 ? `${def.blurb.slice(0, 75).trimEnd()}…` : def.blurb
 
   function buyBranch(kind: BranchKind) {
     game.buyModuleBranch(selectedId, kind)
@@ -57,7 +58,7 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
   return (
     <div className="sheet-backdrop" role="presentation" onClick={onClose}>
       <div
-        className={`sheet${flash ? ' upgrade-flash' : ''}`}
+        className={`sheet sheet-compact${flash ? ' upgrade-flash' : ''}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="upgrade-title"
@@ -66,45 +67,39 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
         <div className="sheet-handle" aria-hidden="true" />
         <header className="sheet-header">
           <div>
-            <p className="eyebrow">{t.upgrade.moduleEyebrow}</p>
             <h2 id="upgrade-title">{def.name}</h2>
+            {unlocked ? (
+              <p className="sheet-blurb" title={def.blurb}>
+                {flavor}
+              </p>
+            ) : null}
           </div>
-          <button type="button" className="btn ghost sheet-close" onClick={onClose}>
-            {t.upgrade.close}
+          <button
+            type="button"
+            className="sheet-close-x"
+            onClick={onClose}
+            aria-label={t.upgrade.close}
+          >
+            ×
           </button>
         </header>
-        <p className="muted">{def.blurb}</p>
+
         {unlocked ? (
           <>
             <p className="sheet-stats">
-              {t.upgrade.level} <strong>{owned}</strong>
+              {t.upgrade.level} {owned}
               {' · '}
-              {formatRate(lineRate)} {t.upgrade.now}
-              {' · '}
-              {t.upgrade.next} {formatRate(nextRate)}
+              {formatRate(lineRate)}
+              {' → '}
+              {formatRate(nextRate)}
             </p>
-            <div
-              className="upgrade-afford-track"
-              aria-hidden="true"
-              title={formatAsh(cost)}
-            >
+            <div className="upgrade-afford-track" aria-hidden="true">
               <span
                 className={`upgrade-afford-fill${affordable ? ' ready' : ''}`}
                 style={{ width: `${Math.round(affordRatio * 100)}%` }}
               />
             </div>
-            {milestoneNext ? (
-              <p className="muted">{t.upgrade.milestone}</p>
-            ) : null}
-            {owned === 0 ? (
-              <p className="sheet-empty">{t.upgrade.offlineEmpty}</p>
-            ) : null}
             <div className="sheet-cta">
-              {!affordable ? (
-                <p className="sheet-cta-hint">
-                  {t.upgrade.needMore(formatAsh(Math.max(0, cost - game.state.ash)))}
-                </p>
-              ) : null}
               <button
                 type="button"
                 className={`btn buy sheet-buy${affordable ? ' pulse-ready' : ''}${flash ? ' just-bought' : ''}`}
@@ -118,7 +113,6 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
             {owned >= 1 ? (
               <div className="branch-block">
                 <h3 className="branch-title">{t.branches.title}</h3>
-                <p className="muted branch-hint">{t.upgrade.branchHint}</p>
                 <BranchRow
                   kind="efficiency"
                   rank={branch.efficiency}
@@ -141,7 +135,6 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
         ) : (
           <div className="sheet-empty-block">
             <p className="sheet-stats sheet-locked-hint">{unlockHint(def)}</p>
-            <p className="sheet-empty">{t.upgrade.gateClosed}</p>
             <div className="sheet-cta">
               <button type="button" className="btn buy sheet-buy" disabled>
                 {t.upgrade.locked}
@@ -171,23 +164,29 @@ function BranchRow({
 }) {
   const maxed = rank >= max
   const name = kind === 'efficiency' ? t.branches.efficiency : t.branches.capacity
-  const blurb =
-    kind === 'efficiency' ? t.branches.efficiencyBlurb : t.branches.capacityBlurb
-  const effect =
+  const perRank =
+    kind === 'efficiency'
+      ? t.branches.efficiencyPerRank
+      : t.branches.capacityPerRank
+  const total =
     kind === 'efficiency'
       ? t.branches.efficiencyEffect(rank * 4)
       : t.branches.capacityEffect(Math.pow(0.97, rank).toFixed(3))
 
   return (
-    <div className="branch-row">
-      <div className="branch-copy">
-        <strong>
-          {name}{' '}
-          <span className="branch-rank">{t.branches.rank(rank, max)}</span>
-        </strong>
-        <span className="muted">{blurb}</span>
-        <span className="branch-effect">{effect}</span>
-      </div>
+    <div className="branch-row compact">
+      <p className="branch-hud">
+        <strong className="branch-name">{name}</strong>
+        <span className="branch-rank">{rank}/{max}</span>
+        <span className="branch-sep" aria-hidden="true">
+          ·
+        </span>
+        <span className="branch-per">{perRank}</span>
+        <span className="branch-sep" aria-hidden="true">
+          ·
+        </span>
+        <span className="branch-effect">{total}</span>
+      </p>
       {maxed ? (
         <span className="quest-badge">{t.branches.maxed}</span>
       ) : (
@@ -197,7 +196,7 @@ function BranchRow({
           disabled={ash < cost}
           onClick={onBuy}
         >
-          {t.branches.buy(name, formatAsh(cost))}
+          {formatAsh(cost)}
         </button>
       )}
     </div>

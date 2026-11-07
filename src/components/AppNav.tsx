@@ -11,6 +11,7 @@ interface Props {
   onTabChange: (tab: Tab) => void
 }
 
+/** Overflow destinations only — never a bottom Farm/Halle tab. */
 const SECONDARY: Tab[] = ['prestige', 'clan', 'shop']
 
 const ICONS: Record<Tab, ReactNode> = {
@@ -99,7 +100,7 @@ const LABELS: Record<Tab, string> = {
 
 function MenuGlyph({ open }: { open: boolean }) {
   return (
-    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
       {open ? (
         <path
           d="M6 6l12 12M18 6L6 18"
@@ -121,12 +122,12 @@ function MenuGlyph({ open }: { open: boolean }) {
   )
 }
 
+/** One floating ☰ Menü FAB — zero bottom tab strip (no FARM|MENÜ). */
 export function AppNav({ tab, ftueHighlight, onTabChange }: Props) {
   const [menuOpen, setMenuOpen] = useState(false)
   const menuId = useId()
   const menuRef = useRef<HTMLDivElement>(null)
   const homeActive = tab === 'fortress'
-  const secondaryActive = !homeActive
   const ftueMenu =
     ftueHighlight === 'prestige' || ftueHighlight === 'clan'
 
@@ -145,7 +146,7 @@ export function AppNav({ tab, ftueHighlight, onTabChange }: Props) {
     first?.focus()
   }, [menuOpen])
 
-  function goHome() {
+  function goMap() {
     setMenuOpen(false)
     onTabChange('fortress')
   }
@@ -185,6 +186,17 @@ export function AppNav({ tab, ftueHighlight, onTabChange }: Props) {
           role="menu"
           aria-label={t.nav.menu}
         >
+          {!homeActive ? (
+            <button
+              type="button"
+              role="menuitem"
+              className="nav-menu-item map-return"
+              onClick={goMap}
+            >
+              <span className="tab-icon">{ICONS.fortress}</span>
+              <span className="tab-label">{t.nav.backToMap}</span>
+            </button>
+          ) : null}
           {SECONDARY.map((id) => {
             const active = tab === id
             const ftue =
@@ -207,31 +219,17 @@ export function AppNav({ tab, ftueHighlight, onTabChange }: Props) {
         </div>
       ) : null}
 
-      <div className="game-chrome-bar">
-        <button
-          type="button"
-          className={`chrome-tab home${homeActive ? ' active' : ''}`}
-          aria-current={homeActive ? 'page' : undefined}
-          onClick={goHome}
-        >
-          <span className="tab-icon">{ICONS.fortress}</span>
-          <span className="tab-label">{LABELS.fortress}</span>
-        </button>
-
-        <button
-          type="button"
-          className={`chrome-tab menu${menuOpen || secondaryActive ? ' active' : ''}${ftueMenu ? ' ftue-tab' : ''}`}
-          aria-haspopup="menu"
-          aria-expanded={menuOpen}
-          aria-controls={menuOpen ? menuId : undefined}
-          onClick={toggleMenu}
-        >
-          <span className="tab-icon">
-            <MenuGlyph open={menuOpen} />
-          </span>
-          <span className="tab-label">{t.nav.menu}</span>
-        </button>
-      </div>
+      <button
+        type="button"
+        className={`menu-fab${menuOpen || !homeActive ? ' active' : ''}${ftueMenu ? ' ftue-tab' : ''}`}
+        aria-haspopup="menu"
+        aria-expanded={menuOpen}
+        aria-controls={menuOpen ? menuId : undefined}
+        aria-label={t.nav.menu}
+        onClick={toggleMenu}
+      >
+        <MenuGlyph open={menuOpen} />
+      </button>
     </nav>
   )
 }

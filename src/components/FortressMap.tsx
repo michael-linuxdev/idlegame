@@ -231,11 +231,11 @@ export function FortressMap({ game, highlightId }: Props) {
 
       {game.offlineGained != null ? (
         <div
-          className={`banner offline map-banner celebrate${highlightId === 'offline' ? ' ftue-target' : ''}`}
+          className={`banner offline map-banner claim-fab celebrate${highlightId === 'offline' ? ' ftue-target' : ''}`}
           role="status"
         >
-          <div className="banner-copy">
-            <p className="banner-kicker">{t.hud.claim}</p>
+          {/* Map-mode: single Abholen CTA only — no kicker ghost text */}
+          <div className="banner-copy claim-detail">
             <p>
               {t.hud.offlineBefore}{' '}
               <strong className="offline-amount">
@@ -248,6 +248,7 @@ export function FortressMap({ game, highlightId }: Props) {
             type="button"
             className="btn buy claim-cta pulse-ready"
             onClick={claimOffline}
+            aria-label={`${t.hud.claim}: ${formatAsh(game.offlineGained)} ${t.resources.compute}`}
           >
             {t.hud.claim}
           </button>
@@ -260,7 +261,10 @@ export function FortressMap({ game, highlightId }: Props) {
         </div>
       ) : null}
 
-      <DailyOpsBanner game={game} onClaimed={() => playSfx('streak')} />
+      {/* One Abholen row: offline claim wins over daily chip */}
+      {game.offlineGained == null ? (
+        <DailyOpsBanner game={game} onClaimed={() => playSfx('streak')} />
+      ) : null}
       <EventBanner game={game} />
 
       <div className={`fortress-stage ${skinClass} ${activeTheme.mapClass}`}>

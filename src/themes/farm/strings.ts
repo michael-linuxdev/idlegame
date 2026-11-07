@@ -21,6 +21,7 @@ export const farmStrings = {
     shop: 'Shop',
     menu: 'Menü',
     menuClose: 'Menü schließen',
+    backToMap: 'Zur Karte',
   },
 
   sound: {
@@ -160,7 +161,9 @@ export const farmStrings = {
     capacity: 'Kapazität',
     efficiencyBlurb: '+4 % Ertrag/s je Rang (max. 5).',
     capacityBlurb: '−3 % Kosten je Rang (max. 5).',
-    efficiencyEffect: (pct: number) => `+${pct} % Linie`,
+    efficiencyPerRank: '+4 %/Rang',
+    capacityPerRank: '−3 %/Rang',
+    efficiencyEffect: (pct: number) => `+${pct} % Modul`,
     capacityEffect: (mult: string) => `×${mult} Kosten`,
     rank: (n: number, max: number) => `Rang ${n}/${max}`,
     buy: (name: string, cost: string) => `${name} · ${cost}`,
