@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { computeBestBuy } from '../game/bestBuy'
+import { emberPayout } from '../game/economy'
 import {
   GENERATORS,
   generatorRate,
@@ -12,10 +13,14 @@ import { computeNextGoal } from '../game/nextGoal'
 import { xpFromOfflineClaim } from '../game/progression'
 import { logPlaytest } from '../game/playtestLog'
 import { playSfx } from '../game/sound'
-import type { SurpriseKind } from '../game/surpriseJumps'
+import {
+  PRESTIGE_SPIKE_RATIOS,
+  type SurpriseKind,
+} from '../game/surpriseJumps'
 import { t } from '../i18n'
 import type { useGame } from '../game/useGame'
 import { activeTheme } from '../themes'
+import type { Tab } from './AppNav'
 import { BestBuyChip } from './BestBuyChip'
 import { BuildingSilhouette } from './BuildingSilhouette'
 import { DailyOpsBanner } from './DailyOpsBanner'
@@ -46,11 +51,12 @@ type GameApi = ReturnType<typeof useGame>
 interface Props {
   game: GameApi
   highlightId?: string | null
+  onOpenTab?: (tab: Tab) => void
 }
 
 let popSeq = 0
 
-export function FortressMap({ game, highlightId }: Props) {
+export function FortressMap({ game, highlightId, onOpenTab }: Props) {
   const {
     state,
     rate,
@@ -63,6 +69,9 @@ export function FortressMap({ game, highlightId }: Props) {
     equippedCosmetic,
     playerLevel,
     ackSurprise,
+    nextPrestige,
+    canPrestige,
+    prestigeProgress,
   } = game
   const [selected, setSelected] = useState<GeneratorId | null>(null)
   const [progressOpen, setProgressOpen] = useState(false)
@@ -114,6 +123,27 @@ export function FortressMap({ game, highlightId }: Props) {
       }),
     [state, playerLevel.level, rate, game.costOf],
   )
+
+  /** Map short-CTA after prestigeNear tier ≥1 — Ember preview, not jackpot. */
+  const prestigeCta = useMemo(() => {
+    const nearTier = PRESTIGE_SPIKE_RATIOS.findIndex((r) => prestigeProgress.ratio >= r)
+    if (nearTier < 0 && !canPrestige) return null
+    const embers = Math.max(nextPrestige, emberPayout(state.ashEarned))
+    if (embers <= 0) return null
+    const ready = canPrestige || prestigeProgress.ratio >= 1
+    return {
+      ready,
+      embers,
+      label: ready
+        ? t.prestige.worthItCta(embers)
+        : t.prestige.worthItNear(embers),
+    }
+  }, [
+    canPrestige,
+    nextPrestige,
+    prestigeProgress.ratio,
+    state.ashEarned,
+  ])
 
   useEffect(() => {
     // Ignore passive economy ticks — flashing every 250ms forces layout/paint on iPhone.
@@ -183,7 +213,7 @@ export function FortressMap({ game, highlightId }: Props) {
 
   function onGoalActivate() {
     if (nextGoal.kind === 'prestige') {
-      /* Prestige lives on its own tab — strip still shows pressure */
+      onOpenTab?.('prestige')
       return
     }
     if (nextGoal.kind === 'level') {
@@ -193,6 +223,11 @@ export function FortressMap({ game, highlightId }: Props) {
     if (nextGoal.focusId) {
       setSelected(nextGoal.focusId)
     }
+  }
+
+  function openPrestigeCta() {
+    logPlaytest('tab_open', { tab: 'prestige', from: 'map_cta' })
+    onOpenTab?.('prestige')
   }
 
   function onUpgradeBought(deltaCost: number) {
@@ -271,6 +306,17 @@ export function FortressMap({ game, highlightId }: Props) {
               setSelected(bestBuy.id)
             }}
           />
+        ) : null}
+
+        {prestigeCta ? (
+          <button
+            type="button"
+            className={`prestige-map-cta${prestigeCta.ready ? ' ready pulse-ready' : ''}`}
+            onClick={openPrestigeCta}
+            aria-label={t.prestige.worthItAria}
+          >
+            {prestigeCta.label}
+          </button>
         ) : null}
 
         {tapReady ? (

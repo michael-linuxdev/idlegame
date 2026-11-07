@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
 import {
   GENERATORS,
   generatorRate,
@@ -20,9 +20,36 @@ interface Props {
   onUpgraded?: (cost: number) => void
 }
 
+const HOLD_START_MS = 380
+const HOLD_REPEAT_MS = 110
+
 export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
   const def = GENERATORS.find((g) => g.id === selectedId)
   const [flash, setFlash] = useState(false)
+  const holdTimer = useRef<number | null>(null)
+  const holdRepeat = useRef<number | null>(null)
+  const holding = useRef(false)
+
+  function clearHold() {
+    holding.current = false
+    if (holdTimer.current != null) {
+      window.clearTimeout(holdTimer.current)
+      holdTimer.current = null
+    }
+    if (holdRepeat.current != null) {
+      window.clearInterval(holdRepeat.current)
+      holdRepeat.current = null
+    }
+  }
+
+  useEffect(() => {
+    return () => {
+      holding.current = false
+      if (holdTimer.current != null) window.clearTimeout(holdTimer.current)
+      if (holdRepeat.current != null) window.clearInterval(holdRepeat.current)
+    }
+  }, [selectedId])
+
   if (!def) return null
 
   const owned = game.state.owned[def.id] ?? 0
@@ -39,20 +66,42 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
     cost > 0 ? Math.min(1, game.state.ash / cost) : unlocked ? 1 : 0
   const actionLabel = owned === 0 ? t.upgrade.online : t.upgrade.upgrade
   const flavor =
-    def.blurb.length > 78 ? `${def.blurb.slice(0, 75).trimEnd()}…` : def.blurb
+    def.blurb.length > 96 ? `${def.blurb.slice(0, 93).trimEnd()}…` : def.blurb
 
   function buyBranch(kind: BranchKind) {
     game.buyModuleBranch(selectedId, kind)
     playSfx('upgrade')
   }
 
-  function buyUpgrade() {
-    if (!affordable) return
-    const paid = cost
+  function buyUpgradeOnce() {
+    // buyGenerator no-ops when unaffordable — safe under hold spam.
+    const paid = game.costOf(def!.id)
     game.buy(def!.id)
     setFlash(true)
-    window.setTimeout(() => setFlash(false), 420)
+    window.setTimeout(() => setFlash(false), 220)
     onUpgraded?.(paid)
+  }
+
+  function onBuyPointerDown(e: ReactPointerEvent) {
+    if (e.button !== 0) return
+    e.preventDefault()
+    if (!affordable) return
+    buyUpgradeOnce()
+    holding.current = true
+    holdTimer.current = window.setTimeout(() => {
+      if (!holding.current) return
+      holdRepeat.current = window.setInterval(() => {
+        if (!holding.current) {
+          clearHold()
+          return
+        }
+        buyUpgradeOnce()
+      }, HOLD_REPEAT_MS)
+    }, HOLD_START_MS)
+  }
+
+  function onBuyPointerUp() {
+    clearHold()
   }
 
   return (
@@ -103,10 +152,15 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
                 type="button"
                 className={`btn buy upgrade-hud-buy${affordable ? ' pulse-ready' : ''}${flash ? ' just-bought' : ''}`}
                 disabled={!affordable}
-                onClick={buyUpgrade}
+                onPointerDown={onBuyPointerDown}
+                onPointerUp={onBuyPointerUp}
+                onPointerLeave={onBuyPointerUp}
+                onPointerCancel={onBuyPointerUp}
+                onContextMenu={(e) => e.preventDefault()}
               >
                 {t.upgrade.costLine(actionLabel, formatAsh(cost))}
               </button>
+              <p className="upgrade-hold-hint">{t.upgrade.holdHint}</p>
             </div>
 
             {owned >= 1 ? (
@@ -176,7 +230,9 @@ function BranchRow({
     <div className="upgrade-hud-row">
       <p className="upgrade-hud-row-meta">
         <strong className="branch-name">{name}</strong>
-        <span className="branch-rank">{rank}/{max}</span>
+        <span className="branch-rank">
+          {rank}/{max}
+        </span>
         <span className="branch-sep" aria-hidden="true">
           ·
         </span>

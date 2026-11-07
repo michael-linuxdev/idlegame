@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   foundryDiscountMult,
+  MIN_OFFLINE_CLAIM_AWAY_MS,
   TAP_COOLDOWN_MS,
   tapBonusSeconds,
   type EmberUpgradeId,
@@ -94,12 +95,15 @@ export function useGame() {
   })
   const [offlineGained, setOfflineGained] = useState<number | null>(() => {
     const loaded = loadState()
+    const awayMs = Math.max(0, Date.now() - loaded.lastSeen)
+    if (awayMs < MIN_OFFLINE_CLAIM_AWAY_MS) return null
     const { gained } = applyOfflineCatchup(loaded)
     return gained > 0.01 ? gained : null
   })
-  const [offlineAwayMs] = useState<number>(() => {
+  const [offlineAwayMs, setOfflineAwayMs] = useState<number>(() => {
     const loaded = loadState()
-    return Math.max(0, Date.now() - loaded.lastSeen)
+    const awayMs = Math.max(0, Date.now() - loaded.lastSeen)
+    return awayMs >= MIN_OFFLINE_CLAIM_AWAY_MS ? awayMs : 0
   })
 
   const stateRef = useRef(state)
@@ -157,8 +161,12 @@ export function useGame() {
       }
       document.documentElement.classList.remove('tab-hidden')
       setState((s) => {
+        const awayMs = Math.max(0, Date.now() - s.lastSeen)
         const { state: next, gained } = applyOfflineCatchup(s)
-        if (gained > 0.01) setOfflineGained(gained)
+        if (gained > 0.01 && awayMs >= MIN_OFFLINE_CLAIM_AWAY_MS) {
+          setOfflineGained(gained)
+          setOfflineAwayMs(awayMs)
+        }
         return collectReadyAchievements(next)
       })
       lastTickAt = Date.now()
@@ -365,14 +373,19 @@ export function useGame() {
 
   const dismissOffline = useCallback(() => {
     const amount = offlineGained ?? 0
+    const awayMs = offlineAwayMs
     setOfflineGained(null)
-    if (amount > 0.01) {
+    setOfflineAwayMs(0)
+    // Skip logging false claims (awayMs≈0 / sub-threshold) so they don't dilute the offline hook.
+    if (amount > 0.01 && awayMs >= MIN_OFFLINE_CLAIM_AWAY_MS) {
       logPlaytest('offline_claim', {
         amount: Math.round(amount * 100) / 100,
-        awayMs: offlineAwayMs,
+        awayMs,
       })
     }
-    setState((s) => claimOfflineReward(s, amount))
+    if (amount > 0.01 && awayMs >= MIN_OFFLINE_CLAIM_AWAY_MS) {
+      setState((s) => claimOfflineReward(s, amount))
+    }
   }, [offlineGained, offlineAwayMs])
 
   // Short flash event — try spawn on first paint + when returning to tab

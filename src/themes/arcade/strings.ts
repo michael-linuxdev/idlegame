@@ -65,9 +65,11 @@ export const arcadeStrings = {
   },
 
   bestBuy: {
-    tipAffordable: (name: string) => `Tipp: ${name}`,
-    tipSoon: (name: string) => `Bald: ${name}`,
-    aria: 'Bester nächster Kauf',
+    tipAffordable: (name: string) => `Bestes: ${name}`,
+    tipSoon: (name: string) => `Bald bestes: ${name}`,
+    tipCost: (name: string, cost: string) => `Bestes: ${name} · ${cost}`,
+    tipHold: 'Tippen öffnet · Ausbauen halten',
+    aria: 'Bester nächster Kauf — tippen zum Öffnen',
   },
 
   surprise: {
@@ -134,11 +136,12 @@ export const arcadeStrings = {
     },
     quantumCooler: {
       name: 'Lichtkanone',
-      blurb: 'Lichtgewehr-Station — schnelle Runden, helle Neon-LEDs.',
+      blurb:
+        'Spätmodul: Lichtgewehr mit Neon-LEDs. Freischalten über Flippertisch Lv10 oder viele Tokens.',
     },
     packetScrubber: {
       name: 'Turnierpult',
-      blurb: 'Highscore-Board und Turnier-Anmeldung am Hallenrand.',
+      blurb: 'Endmodul: Highscore-Board am Hallenrand. Nach der Lichtkanone.',
     },
   },
 
@@ -285,6 +288,7 @@ export const arcadeStrings = {
     costLine: (action: string, cost: string) =>
       `${action} · ${cost} ${SOFT_CURRENCY}`,
     branchHint: 'Pfade bleiben sekundär — der Ausbauen-Button bleibt primär.',
+    holdHint: 'Halten = Mehrfachkauf',
   },
 
   prestige: {
@@ -303,12 +307,20 @@ export const arcadeStrings = {
     claimReset: (n: number) => `+${n} Tickets holen & resetten`,
     needMore: (amount: string) =>
       `Noch ${amount} Tokens in diesem Lauf nötig`,
+    needEmbers: (have: number, need: number) =>
+      `Noch ${need - have} Ticket-Wert (min. ${need}) — Lauf lohnt sich noch nicht`,
+    needModules: (have: number, need: number) =>
+      `Erst ${need} Automaten online (jetzt ${have}) — Halle neu aufbauen`,
     emptyGate:
       'Soft-Reset bleibt dunkel, bis dieser Lauf genug Tokens bunkert. Automaten weiter in der Halle laufen lassen.',
     emptyShop: 'Noch keine Tickets — einmal prestigieren, dann füllt sich der Shop.',
     shopTitle: 'Ticket-Baum',
     shopIntro:
-      'Drei Äste permanenter Meta-Power. Tickets nur aus Prestige — nie für Echtgeld.',
+      'Drei Äste, tiefe Ränge. Höhere Stufen schalten sich mit dem Neuaufbau frei — Tickets nur aus Prestige.',
+    shopRankLocked: (need: string) =>
+      `Freischalten: ${need} Tokens in diesem Lauf`,
+    shopModulesLocked: (need: number) =>
+      `Freischalten: ${need} Automaten online in diesem Lauf`,
     max: 'Max',
     costCredits: (n: number) => `${n} Tickets`,
     keepTitle: 'Behältst du',
@@ -329,6 +341,9 @@ export const arcadeStrings = {
     branchUptimeBlurb: 'Längere Offline-Fenster und stärkere Tap-Schübe.',
     branchStartTitle: 'Start-Ast',
     branchStartBlurb: 'Schnellerer Neustart nach jedem Prestige.',
+    worthItCta: (n: number) => `Jetzt lohnt sich · +${n} Tickets`,
+    worthItNear: (n: number) => `Prestige nah · Vorschau +${n} Tickets`,
+    worthItAria: 'Prestige öffnen — Ticket-Vorschau',
   },
 
   longLoop: {
@@ -365,7 +380,7 @@ export const arcadeStrings = {
   emberShop: {
     dominionYield: {
       name: 'Hallen-Ertrag',
-      blurb: '+5 % globale Tokens/s pro Rang.',
+      blurb: '+5 % globale Tokens/s pro Rang. Höhere Ränge nach Neuaufbau.',
       effect: (rank: number) => `+${rank * 5} % Tokens/s`,
     },
     longWatch: {
@@ -394,6 +409,31 @@ export const arcadeStrings = {
       blurb: 'Starte jeden Prestige-Lauf mit +50 Tokens pro Rang.',
       effect: (rank: number) =>
         rank > 0 ? `+${rank * 50} Tokens zu Laufbeginn` : 'Kein Startbonus',
+    },
+    canopyBoost: {
+      name: 'Neon-Baldachin',
+      blurb: '+2 % globale Tokens/s — Mittel-Ast nach Neuaufbau.',
+      effect: (rank: number) => `+${(rank * 2).toFixed(0)} % Tokens/s`,
+    },
+    nightSoil: {
+      name: 'Nacht-Service',
+      blurb: '+30 Min Soft-Offline und +1 h Hard pro Rang.',
+      effect: (rank: number) =>
+        `+${rank * 0.5} h soft / +${rank} h hard`,
+    },
+    saplingSurge: {
+      name: 'Start-Credits-Stapel',
+      blurb:
+        'Starte mit Classic-Automat auf dieser Stufe (nach 3 Automaten online).',
+      effect: (rank: number) =>
+        rank > 0
+          ? `Classic-Automat startet auf Stufe ${rank}`
+          : 'Kein Start-Automat',
+    },
+    greenLattice: {
+      name: 'Jackpot-Gitter',
+      blurb: '+1,5 % Tokens/s — später Ticket-Sink nach tiefem Neuaufbau.',
+      effect: (rank: number) => `+${(rank * 1.5).toFixed(1)} % Tokens/s`,
     },
   },
 

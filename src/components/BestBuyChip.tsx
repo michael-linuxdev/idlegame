@@ -1,3 +1,4 @@
+import { formatAsh } from '../game/format'
 import type { BestBuyHint } from '../game/bestBuy'
 import { t } from '../i18n'
 
@@ -6,20 +7,21 @@ interface Props {
   onActivate: () => void
 }
 
-/** One-line optimization tip — no text walls. */
+/** Strong one-line optimization tip — cost + pulse when affordable. */
 export function BestBuyChip({ hint, onActivate }: Props) {
   const label = hint.affordable
-    ? t.bestBuy.tipAffordable(hint.name)
+    ? t.bestBuy.tipCost(hint.name, formatAsh(hint.cost))
     : t.bestBuy.tipSoon(hint.name)
 
   return (
     <button
       type="button"
-      className={`best-buy-chip${hint.affordable ? ' affordable' : ''}`}
+      className={`best-buy-chip${hint.affordable ? ' affordable pulse-ready' : ''}`}
       onClick={onActivate}
-      aria-label={`${t.bestBuy.aria}: ${label}`}
+      aria-label={`${t.bestBuy.aria}: ${label}. ${t.bestBuy.tipHold}`}
+      title={t.bestBuy.tipHold}
     >
-      {label}
+      <span className="best-buy-chip-label">{label}</span>
     </button>
   )
 }

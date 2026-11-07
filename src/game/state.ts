@@ -1,13 +1,17 @@
 import {
   EMBER_SHOP,
   emberPayout,
+  emberRankUnlocked,
   EMPTY_EMBER_UPGRADES,
   foundryDiscountMult,
+  modulesOnlineCount,
   offlineCapsHours,
   offlineCatchupAsh,
+  prestigeBlockReason,
   prestigeMinAsh,
   prestigeMultiplier,
   prestigeStartAsh,
+  prestigeStartModuleLevel,
   type EmberUpgradeId,
   type EmberUpgrades,
 } from './economy'
@@ -302,10 +306,15 @@ export function createInitialState(now = Date.now()): GameState {
 /** Create a fresh run after prestige, keeping meta + monetization unlocks. */
 export function createPostPrestigeState(prev: GameState, now = Date.now()): GameState {
   const startAsh = prestigeStartAsh(prev.emberUpgrades)
+  const owned = emptyOwned()
+  const startLevel = prestigeStartModuleLevel(prev.emberUpgrades)
+  if (startLevel > 0) {
+    owned.emberPit = startLevel
+  }
   return {
     ash: startAsh,
     ashEarned: 0,
-    owned: emptyOwned(),
+    owned,
     embers: prev.embers,
     emberUpgrades: { ...prev.emberUpgrades },
     prestiges: prev.prestiges + 1,
@@ -654,8 +663,13 @@ export function nextPrestigeEmbers(ashEarned: number): number {
 }
 
 export function canPrestigeNow(state: GameState): boolean {
-  const min = prestigeMinAsh(state.prestiges)
-  return state.ashEarned >= min && emberPayout(state.ashEarned) > 0
+  return (
+    prestigeBlockReason({
+      prestiges: state.prestiges,
+      ashEarned: state.ashEarned,
+      owned: state.owned,
+    }) === null
+  )
 }
 
 export function prestigeProgress(state: GameState): {
@@ -1196,6 +1210,8 @@ export function buyEmberUpgrade(state: GameState, id: EmberUpgradeId): GameState
   if (!item) return state
   const rank = state.emberUpgrades[id]
   if (rank >= item.maxRank) return state
+  const online = modulesOnlineCount(state.owned)
+  if (!emberRankUnlocked(item, rank, state.ashEarned, online)) return state
   const cost = item.cost(rank)
   if (state.embers < cost) return state
   return {
