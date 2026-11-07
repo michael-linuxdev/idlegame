@@ -453,6 +453,39 @@
   border-color: color-mix(in srgb, var(--oc-ember) 70%, var(--oc-stroke));
 }
 
+.map-hud .prestige-map-cta.spend {
+  max-width: min(58vw, 14rem);
+  color: var(--oc-gain);
+  border-color: color-mix(in srgb, var(--oc-gain) 55%, var(--oc-stroke));
+}
+
+.prestige-shop-ready {
+  margin: 0.35rem 0 0.15rem;
+  padding: 0.45rem 0.65rem;
+  border-radius: 0.55rem;
+  background: color-mix(in srgb, var(--oc-gain) 14%, transparent);
+  color: var(--oc-gain);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.ember-shop-row--ready {
+  background: color-mix(in srgb, var(--oc-gain) 8%, transparent);
+  margin: 0 -0.35rem;
+  padding-left: 0.35rem;
+  padding-right: 0.35rem;
+  border-radius: 0.45rem;
+}
+
+.ember-shop-row--locked {
+  opacity: 0.78;
+}
+
+.ember-shop-lock {
+  margin: 0.15rem 0 0;
+  font-size: 0.82rem;
+}
+
 .upgrade-hold-hint {
   margin: 0.25rem 0 0;
   font-size: 0.62rem;

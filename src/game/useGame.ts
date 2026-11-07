@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import {
+  emberPayout,
   foundryDiscountMult,
   MIN_OFFLINE_CLAIM_AWAY_MS,
   TAP_COOLDOWN_MS,
@@ -241,11 +242,13 @@ export function useGame() {
 
   const prestige = useCallback(() => {
     setState((s) => {
+      const gain = emberPayout(s.ashEarned)
       const next = doPrestige(s)
       if (next !== s) {
         logPlaytest('prestige', {
           run: next.prestiges,
-          embers: next.embers,
+          embers: gain,
+          wallet: next.embers,
         })
       }
       return next

@@ -310,12 +310,19 @@ export const farmStrings = {
     emptyShop: 'Erst prestigieren — dann Münzen-Shop.',
     shopTitle: 'Münzen-Baum',
     shopIntro:
-      'Drei Äste, tiefe Ränge. Höhere Stufen schalten sich mit dem Neuaufbau frei — Münzen nur aus Prestige.',
-    shopRankLocked: (need: string) => `Freischalten: ${need} ${SOFT_CURRENCY} in diesem Lauf`,
+      'Drei Äste mit frühen Käufen in jedem Ast. Weitere Ränge öffnen sich beim Neuaufbau — Münzen nur aus Prestige.',
+    shopReady: (n: number) =>
+      n === 1
+        ? '1 Münzen-Kauf bereit — Neuaufbau schaltet mehr frei.'
+        : `${n} Münzen-Käufe bereit — Neuaufbau schaltet mehr frei.`,
+    shopRankLocked: (need: string) =>
+      `Freischalten: ${need} ${SOFT_CURRENCY} oder Modul-Stufen in diesem Lauf`,
     shopModulesLocked: (need: number) =>
       `Freischalten: ${need} Module online in diesem Lauf`,
     max: 'Max',
     costCredits: (n: number) => `${n} Münzen`,
+    spendCta: (n: number) => `Münzen ausgeben · ${n} bereit`,
+    spendAria: 'Münzen-Shop öffnen — Käufe bereit',
     keepTitle: 'Behältst du',
     loseTitle: 'Reset',
     keepItems: [
@@ -399,30 +406,30 @@ export const farmStrings = {
     },
     seedPurse: {
       name: 'Saatgeld-Beutel',
-      blurb: 'Starte jeden Prestige-Lauf mit +50 Phyto pro Rang.',
+      blurb: 'Starte jeden Prestige-Lauf mit +80 Phyto pro Rang.',
       effect: (rank: number) =>
-        rank > 0 ? `+${rank * 50} ${SOFT_CURRENCY} zu Laufbeginn` : 'Kein Startbonus',
+        rank > 0 ? `+${rank * 80} ${SOFT_CURRENCY} zu Laufbeginn` : 'Kein Startbonus',
     },
     canopyBoost: {
       name: 'Kronendach',
-      blurb: '+2 % globaler Phyto/s — Mittel-Ast nach Neuaufbau.',
+      blurb: '+2 % globaler Phyto/s — frühe Ränge sofort, später nach Neuaufbau.',
       effect: (rank: number) => `+${(rank * 2).toFixed(0)} % ${SOFT_CURRENCY}/s`,
     },
     nightSoil: {
       name: 'Nachtkompost',
-      blurb: '+30 Min Soft-Offline und +1 h Hard pro Rang.',
+      blurb: '+30 Min Soft-Offline und +1 h Hard pro Rang — frühe Ränge sofort.',
       effect: (rank: number) =>
         `+${rank * 0.5} h soft / +${rank} h hard`,
     },
     saplingSurge: {
       name: 'Setzling-Schub',
-      blurb: 'Starte mit Gewächshaus auf dieser Stufe (nach 3 Modulen online).',
+      blurb: 'Starte mit Gewächshaus auf dieser Stufe (sobald 1 Modul online).',
       effect: (rank: number) =>
         rank > 0 ? `Gewächshaus startet auf Stufe ${rank}` : 'Kein Start-Modul',
     },
     greenLattice: {
       name: 'Grünes Gitter',
-      blurb: '+1,5 % Phyto/s — später Münzen-Sink nach tiefem Neuaufbau.',
+      blurb: '+1,5 % Phyto/s — öffnet sich beim Neuaufbau als später Münzen-Sink.',
       effect: (rank: number) =>
         `+${(rank * 1.5).toFixed(1)} % ${SOFT_CURRENCY}/s`,
     },

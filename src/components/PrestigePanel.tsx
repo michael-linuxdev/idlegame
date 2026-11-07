@@ -11,12 +11,14 @@ import {
 import {
   EMBER_SHOP,
   PRESTIGE_BRANCHES,
-  PRESTIGE_MIN_EMBERS_FROM_RUN,
   PRESTIGE_MIN_MODULES_ONLINE,
+  countAffordableEmberBuys,
   emberPayout,
   emberRankUnlocked,
+  emberUnlockProgress,
   modulesOnlineCount,
   prestigeBlockReason,
+  prestigeMinEmbersForRun,
 } from '../game/economy'
 import { formatAsh } from '../game/format'
 import { t } from '../i18n'
@@ -29,17 +31,36 @@ interface Props {
   highlight?: boolean
 }
 
+function shopRowPriority(
+  affordable: boolean,
+  unlocked: boolean,
+  maxed: boolean,
+): number {
+  if (affordable) return 0
+  if (!maxed && unlocked) return 1
+  if (!maxed) return 2
+  return 3
+}
+
 export function PrestigePanel({ game, highlight }: Props) {
   const { state, nextPrestige, canPrestige, prestige, multiplier, prestigeMin, prestigeProgress } =
     game
   const teaser = prestigeProgress.ratio >= 0.5 && !canPrestige
   const payout = emberPayout(state.ashEarned)
   const online = modulesOnlineCount(state.owned)
+  const minEmbers = prestigeMinEmbersForRun(state.prestiges)
   const block = prestigeBlockReason({
     prestiges: state.prestiges,
     ashEarned: state.ashEarned,
     owned: state.owned,
   })
+  const unlockProgress = emberUnlockProgress(state.ashEarned, state.owned)
+  const readyBuys = countAffordableEmberBuys(
+    state.emberUpgrades,
+    state.embers,
+    state.ashEarned,
+    state.owned,
+  )
 
   const fill = emberShopFillRatio(state.emberUpgrades)
   const deepOpen = deepGateOpen({
@@ -60,7 +81,7 @@ export function PrestigePanel({ game, highlight }: Props) {
   if (canPrestige) {
     claimLabel = t.prestige.claimReset(nextPrestige)
   } else if (block === 'embers') {
-    claimLabel = t.prestige.needEmbers(payout, PRESTIGE_MIN_EMBERS_FROM_RUN)
+    claimLabel = t.prestige.needEmbers(payout, minEmbers)
   } else if (block === 'modules') {
     claimLabel = t.prestige.needModules(online, PRESTIGE_MIN_MODULES_ONLINE)
   } else {
@@ -108,6 +129,17 @@ export function PrestigePanel({ game, highlight }: Props) {
         <p className="prestige-stats">
           {t.prestige.nextPayout}{' '}
           <strong>{t.prestige.creditsAmount(nextPrestige)}</strong>
+          {payout < minEmbers ? (
+            <>
+              {' · '}
+              {t.prestige.needEmbers(payout, minEmbers)}
+            </>
+          ) : (
+            <>
+              {' · '}
+              {t.prestige.creditsPreview(payout)}
+            </>
+          )}
           {state.prestiges >= 1 ? (
             <>
               {' · '}
@@ -158,11 +190,35 @@ export function PrestigePanel({ game, highlight }: Props) {
       <p className="muted">{t.prestige.shopIntro}</p>
       {state.embers <= 0 ? (
         <p className="panel-empty">{t.prestige.emptyShop}</p>
+      ) : readyBuys > 0 ? (
+        <p className="prestige-shop-ready">{t.prestige.shopReady(readyBuys)}</p>
       ) : null}
 
       <div className="prestige-tree">
         {PRESTIGE_BRANCHES.map((branch) => {
           const items = EMBER_SHOP.filter((item) => item.branch === branch.id)
+            .map((item) => {
+              const rank = state.emberUpgrades[item.id]
+              const maxed = rank >= item.maxRank
+              const cost = item.cost(rank)
+              const unlocked = emberRankUnlocked(
+                item,
+                rank,
+                state.ashEarned,
+                state.owned,
+              )
+              const affordable = state.embers >= cost && !maxed && unlocked
+              return {
+                item,
+                rank,
+                maxed,
+                cost,
+                unlocked,
+                affordable,
+                priority: shopRowPriority(affordable, unlocked, maxed),
+              }
+            })
+            .sort((a, b) => a.priority - b.priority || a.item.id.localeCompare(b.item.id))
           return (
             <section key={branch.id} className="prestige-branch" aria-labelledby={`branch-${branch.id}`}>
               <h4 id={`branch-${branch.id}`} className="prestige-branch-title">
@@ -170,32 +226,23 @@ export function PrestigePanel({ game, highlight }: Props) {
               </h4>
               <p className="prestige-branch-blurb">{branch.blurb}</p>
               <ul className="ember-shop">
-                {items.map((item) => {
-                  const rank = state.emberUpgrades[item.id]
-                  const maxed = rank >= item.maxRank
-                  const cost = item.cost(rank)
-                  const unlocked = emberRankUnlocked(
-                    item,
-                    rank,
-                    state.ashEarned,
-                    online,
-                  )
-                  const affordable = state.embers >= cost && !maxed && unlocked
+                {items.map(({ item, rank, maxed, cost, unlocked, affordable }) => {
                   const needAsh = item.rankUnlockAsh?.(rank) ?? 0
                   const needMods = item.unlockModulesOnline
                   let lockHint: string | null = null
                   if (!maxed && !unlocked) {
-                    if (
-                      needMods != null &&
-                      online < needMods
-                    ) {
+                    if (needMods != null && online < needMods) {
                       lockHint = t.prestige.shopModulesLocked(needMods)
                     } else if (needAsh > 0) {
-                      lockHint = t.prestige.shopRankLocked(formatAsh(needAsh))
+                      const left = Math.max(0, needAsh - unlockProgress)
+                      lockHint = t.prestige.shopRankLocked(formatAsh(left > 0 ? left : needAsh))
                     }
                   }
                   return (
-                    <li key={item.id} className="ember-shop-row">
+                    <li
+                      key={item.id}
+                      className={`ember-shop-row${affordable ? ' ember-shop-row--ready' : ''}${!unlocked && !maxed ? ' ember-shop-row--locked' : ''}`}
+                    >
                       <div className="ember-shop-info">
                         <div className="ember-shop-name">
                           {item.name}{' '}
