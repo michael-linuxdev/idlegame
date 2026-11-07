@@ -23,6 +23,33 @@ export const arcadeStrings = {
     shop: 'Shop',
   },
 
+  sound: {
+    mute: 'Ton aus',
+    unmute: 'Ton an',
+    muteAria: 'Soundeffekte stummschalten',
+    unmuteAria: 'Soundeffekte einschalten',
+  },
+
+  goal: {
+    stripAria: 'Nächstes Ziel',
+    upgradeTitle: (action: string, name: string) => `${action}: ${name}`,
+    upgradeDetail: (cost: string) => `${cost} Tokens`,
+    unlockTitle: (name: string) => `Freischalten: ${name}`,
+    unlockAshLeft: (n: string) => `noch ${n} Tokens`,
+    unlockLevel: (name: string, have: number, need: number) =>
+      `${name} ${have}/${need}`,
+    unlockPlayerLevel: (have: number, need: number) =>
+      `Level ${have}/${need}`,
+    levelTitle: (n: number) => `Nächstes Level ${n}`,
+    levelDetail: (into: number, need: number) => `${into}/${need} EP`,
+    prestigeTitle: 'Nächstes Prestige',
+    prestigeDetail: (left: string) => `noch ${left} Tokens`,
+    prestigeReady: 'Prestige bereit',
+    prestigeReadyDetail: 'Tickets abholen',
+    ready: 'Bereit',
+    fallback: 'Halle aufbauen',
+  },
+
   resources: {
     compute: 'Tokens',
     credits: 'Tickets',
@@ -89,6 +116,9 @@ export const arcadeStrings = {
     offlineAfter: 'Tokens gebankt.',
     claim: 'Abholen',
     claimToast: 'Tokens auf die Halle gebucht',
+    claimCelebrate: (amount: string, xp: number) =>
+      `+${amount} Tokens · +${xp} EP gebucht`,
+    claimCelebrateShort: (amount: string) => `+${amount} Tokens geerntet`,
     mapAria: 'Arcade-Bau-Karte',
     mapHint: 'Automat tippen zum Online-Schalten oder Upgraden.',
     locked: 'Gesperrt',
@@ -277,11 +307,11 @@ export const arcadeStrings = {
   shop: {
     title: 'Shop',
     intro:
-      'Nur Komfort und Status — keine Energie-Wände. Soft-Progress bleibt gratis. Alle Käufe sind lokale Stubs (keine echten Zahlungen).',
+      'Nur Komfort und Status — keine Energie-Wände. Soft-Progress bleibt gratis. Werbung ist optional belohnend und blockiert nie das Spielen. Alle Käufe sind lokale Stubs (keine echten Zahlungen / kein Ad-SDK).',
     skipLeftToday: 'Skip heute übrig',
     skipHours: (left: number, cap: number) => `${left}/${cap} h`,
-    packsTitle: 'Jeton-Pakete',
-    packsIntro: 'Mock-Gutschriften zum Testen. Kein IAP-Backend.',
+    packsTitle: 'Bundles & Jetons',
+    packsIntro: 'Mock-Käufe mit lokaler Jeton-Währung. Kein IAP-Backend.',
     packEffect: (n: number) => `+${n} Jetons`,
     skipsTitle: 'Zeit-Skips',
     skipsIntro: (rate: string, cap: number) =>
@@ -295,12 +325,54 @@ export const arcadeStrings = {
     active: 'Aktiv',
     equip: 'Ausrüsten',
     free: 'Gratis',
+    owned: 'Besitzt',
     clanBoostTitle: 'Clan-Boost',
     clanBoostIntro:
       'Temporärer Produktionsbuff für deinen Platzhalter-Clan. Auffrischen verlängert den Timer.',
     boostActiveShort: (mult: string, left: string) =>
       `Aktiv ×${mult} · noch ${left}`,
     boostInactiveShort: 'Inaktiv · Basis ×1,00',
+    adsTitle: 'Optionale Belohnung',
+    adsIntro:
+      'Freiwillig Werbung ansehen für einen kleinen Bonus. Niemals Pflicht — Spielen geht immer ohne.',
+    adsWatch: 'Werbung ansehen',
+    adsWatching: 'Werbung läuft…',
+    adsCooldown: (left: string) => `Cooldown ${left}`,
+    adsRemovedBadge: 'Werbefrei aktiv',
+    adsRewardSkip: (mins: number, amount: string) =>
+      `+${mins} Min Zeit-Skip-Krümel (${amount} Tokens)`,
+    adsRewardObsidian: (n: number) => `+${n} Jetons`,
+    adsRewardYield: (mins: number, amount: string) =>
+      `+${mins} Min Tokens (${amount})`,
+    removeAdsTitle: 'Werbefrei',
+    removeAdsIntro:
+      'Einmaliger Stub-Kauf — entfernt Belohnungs-Werbung dauerhaft. Progress bleibt gratis.',
+    yieldBoostTitle: 'Token-Schub',
+    yieldBoostIntro:
+      'Persönlicher +15 % Tokens für 30 Min. Mit Jetons bezahlt — optionaler Komfort.',
+    yieldBoostActive: (mult: string, left: string) =>
+      `Aktiv ×${mult} · noch ${left}`,
+    yieldBoostInactive: 'Inaktiv',
+    yieldBoostBuy: (cost: number) => `${cost} Jetons`,
+    currencyPacksTitle: 'Jeton-Packs',
+    currencyPacksIntro: 'Größere Mock-Gutschriften zum Testen der Shop-Sinks.',
+    cosmeticPacksTitle: 'Kosmetik-Packs',
+    cosmeticPacksIntro: 'Mehrere Skins in einem Stub-Kauf.',
+    battlePassTitle: 'Wochen-Pass (lite)',
+    battlePassIntro:
+      'Wöchentlicher Free-Track + Premium-Stub. XP per Tagespflege oder optionaler Werbung. Kein Energie-Gate.',
+    battlePassXp: (xp: number, max: number) => `${xp}/${max} XP`,
+    battlePassDailyXp: 'Tages-XP holen',
+    battlePassDailyDone: 'Tages-XP geholt',
+    battlePassFree: 'Gratis',
+    battlePassPremium: 'Premium',
+    battlePassClaim: 'Abholen',
+    battlePassClaimed: 'Abgeholt',
+    battlePassLocked: 'Gesperrt',
+    battlePassNeedXp: (xp: number) => `Ab ${xp} XP`,
+    battlePassNeedPremium: 'Premium freischalten',
+    rewardObsidian: (n: number) => `+${n} Jetons`,
+    rewardComputeSec: (sec: number) => `+${sec} s Tokens`,
   },
 
   packs: {
@@ -309,10 +381,35 @@ export const arcadeStrings = {
       blurb: '200 Jetons + Neon-Pad-Skin. Mock-Kauf — keine echte Abbuchung.',
       label: 'Kaufen (Stub)',
     },
+    removeAds: {
+      name: 'Werbefrei kaufen',
+      blurb: 'Entfernt optionale Belohnungs-Werbung dauerhaft. Stub — keine echte Zahlung.',
+      label: 'Werbefrei (Stub)',
+    },
     obsidian50: {
-      name: 'Jeton-Chip',
-      blurb: '50 Jetons zum Testen der Shop-Sinks. Mock-Gutschrift.',
+      name: 'Jeton-Pack S',
+      blurb: '50 Jetons. Mock-Gutschrift zum Testen.',
       label: '50 gutschreiben',
+    },
+    obsidian150: {
+      name: 'Jeton-Pack M',
+      blurb: '150 Jetons. Mock-Gutschrift.',
+      label: '150 gutschreiben',
+    },
+    obsidian500: {
+      name: 'Jeton-Pack L',
+      blurb: '500 Jetons. Mock-Gutschrift.',
+      label: '500 gutschreiben',
+    },
+    cosmeticPackLeaf: {
+      name: 'Neon-Kosmetik-Pack',
+      blurb: 'Schaltet Cyan-Gang + Gold-Token frei. Reine Optik.',
+      label: 'Pack freischalten',
+    },
+    battlePassPremium: {
+      name: 'Premium-Track',
+      blurb: 'Schaltet die Premium-Spur des Wochen-Passes frei (Stub).',
+      label: 'Premium freischalten',
     },
   },
 
@@ -392,7 +489,11 @@ export const arcadeStrings = {
     kicker: 'Tägliche Schicht',
     firstShift: 'Erste Schicht',
     streakNext: (n: number) => `Serie ${n} · nächster Tag`,
+    streakDotsAria: (n: number) => `Serie ${n} von 7 Tagen`,
+    comebackLabel: 'Willkommen zurück · Comeback-Bonus',
+    comebackMeta: 'Serie pausiert — Bonus für deine Rückkehr',
     claim: 'Abholen',
+    claimToast: 'Tägliche Schicht gebucht',
     rewardCompute: (amount: string) => `${amount} Tokens`,
     rewardCredits: (n: number) => `${n} Tickets`,
     rewardObsidian: (n: number) => `${n} Jetons`,
