@@ -1,7 +1,9 @@
 /**
  * German player-facing copy — Tokenhalle (Retro-Arcade) theme skin.
  * Soft resource: Tokens. Meta: Tickets. Premium stub: Jetons.
+ * Soft label wired via SOFT_CURRENCY + resources.compute for rename-ready swaps.
  */
+const SOFT_CURRENCY = 'Tokens'
 
 export const arcadeStrings = {
   brand: 'Tokenhalle',
@@ -44,9 +46,9 @@ export const arcadeStrings = {
   goal: {
     stripAria: 'Nächstes Ziel',
     upgradeTitle: (action: string, name: string) => `${action}: ${name}`,
-    upgradeDetail: (cost: string) => `${cost} Tokens`,
+    upgradeDetail: (cost: string) => `${cost} ${SOFT_CURRENCY}`,
     unlockTitle: (name: string) => `Freischalten: ${name}`,
-    unlockAshLeft: (n: string) => `noch ${n} Tokens`,
+    unlockAshLeft: (n: string) => `noch ${n} ${SOFT_CURRENCY}`,
     unlockLevel: (name: string, have: number, need: number) =>
       `${name} ${have}/${need}`,
     unlockPlayerLevel: (have: number, need: number) =>
@@ -54,7 +56,7 @@ export const arcadeStrings = {
     levelTitle: (n: number) => `Nächstes Level ${n}`,
     levelDetail: (into: number, need: number) => `${into}/${need} EP`,
     prestigeTitle: 'Nächstes Prestige',
-    prestigeDetail: (left: string) => `noch ${left} Tokens`,
+    prestigeDetail: (left: string) => `noch ${left} ${SOFT_CURRENCY}`,
     prestigeReady: 'Prestige bereit',
     prestigeReadyDetail: 'Tickets abholen',
     ready: 'Bereit',
@@ -62,7 +64,7 @@ export const arcadeStrings = {
   },
 
   resources: {
-    compute: 'Tokens',
+    compute: SOFT_CURRENCY,
     credits: 'Tickets',
     obsidian: 'Jetons',
   },
@@ -249,9 +251,9 @@ export const arcadeStrings = {
     offlineEmpty: 'Automat offline — online schalten, um Tokens zu erzeugen.',
     gateClosed:
       'Tor geschlossen. Erfülle die Bedingung — dann wird dieser CTA aktiv.',
-    needMore: (amount: string) => `Noch ${amount} Tokens nötig`,
+    needMore: (amount: string) => `Noch ${amount} ${SOFT_CURRENCY} nötig`,
     costLine: (action: string, cost: string) =>
-      `${action} · ${cost} Tokens`,
+      `${action} · ${cost} ${SOFT_CURRENCY}`,
     branchHint: 'Pfade bleiben sekundär — der Ausbauen-Button bleibt primär.',
   },
 

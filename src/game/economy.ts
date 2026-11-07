@@ -1,6 +1,6 @@
 /**
  * Economy knobs — core formulas (R(n), C(n), offline, ember √) unchanged.
- * Player-facing: soft Ertrag + meta Münzen (TurmFarm).
+ * Player-facing: soft Phyto (TurmFarm) / Tokens (Tokenhalle) + meta.
  * Internal save fields still map to Ash/Embers.
  *
  * Balance pass IG-31 (overnight): prestige was ~5 min for engaged play vs

@@ -26,7 +26,7 @@ const SKIN_META: Record<
     name: 'TurmFarm',
     short_name: 'TurmFarm',
     description:
-      'Baue und betreibe urbane Vertikalfarmen. Module erzeugen Ertrag offline. Prestige für Münzen.',
+      'Baue und betreibe urbane Vertikalfarmen. Module erzeugen Phyto offline. Prestige für Münzen.',
     theme_color: '#e8f0e4',
     background_color: '#dce8d6',
     iconDir: 'icons/farm',
