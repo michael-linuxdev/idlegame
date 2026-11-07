@@ -1,28 +1,37 @@
 import { useState } from 'react'
 import { ClanPanel } from './components/ClanPanel'
-import { DominionPanel } from './components/DominionPanel'
+import { FortressMap } from './components/FortressMap'
+import { PrestigePanel } from './components/PrestigePanel'
 import { useGame } from './game/useGame'
 import './App.css'
 
-type Tab = 'dominion' | 'clan'
+type Tab = 'fortress' | 'prestige' | 'clan'
 
 export default function App() {
   const game = useGame()
-  const [tab, setTab] = useState<Tab>('dominion')
+  const [tab, setTab] = useState<Tab>('fortress')
 
   return (
     <div className="app-shell">
-      <div className="atmosphere" aria-hidden="true" />
-      <main className="app-main">
-        {tab === 'dominion' ? <DominionPanel game={game} /> : <ClanPanel />}
+      <main className={`app-main${tab === 'fortress' ? ' map-mode' : ''}`}>
+        {tab === 'fortress' ? <FortressMap game={game} /> : null}
+        {tab === 'prestige' ? <PrestigePanel game={game} /> : null}
+        {tab === 'clan' ? <ClanPanel /> : null}
       </main>
-      <nav className="tab-bar" aria-label="Primary">
+      <nav className="tab-bar tabs-3" aria-label="Primary">
         <button
           type="button"
-          className={tab === 'dominion' ? 'tab active' : 'tab'}
-          onClick={() => setTab('dominion')}
+          className={tab === 'fortress' ? 'tab active' : 'tab'}
+          onClick={() => setTab('fortress')}
         >
-          Dominion
+          Fortress
+        </button>
+        <button
+          type="button"
+          className={tab === 'prestige' ? 'tab active' : 'tab'}
+          onClick={() => setTab('prestige')}
+        >
+          Prestige
         </button>
         <button
           type="button"

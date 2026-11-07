@@ -22,7 +22,7 @@ export function ClanPanel() {
       <div className="clan-card">
         <div className="clan-card-label">Your clan</div>
         <div className="clan-card-name">Ash Dominion</div>
-        <div className="clan-card-meta">Season I · Rank 3 · Placeholder</div>
+        <div className="clan-card-meta">Season 0 — Ashes · Rank 3 · Placeholder</div>
       </div>
 
       <h3 className="subhead">Season leaderboard</h3>

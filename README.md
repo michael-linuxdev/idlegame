@@ -1,6 +1,6 @@
 # Ash Dominion
 
-Mobile-first idle PWA: rule an ash legion, buy generators, catch up offline, prestige for Dominion.
+Mobile-first idle PWA: rule an ash legion from a **fortress build map**. Buildings produce offline; prestige for Dominion.
 
 ## Stack
 
@@ -15,7 +15,7 @@ npm install
 npm run dev
 ```
 
-Open the URL Vite prints (default `http://localhost:5173`). On a phone, use your LAN IP from the same output, or tunnel as you prefer.
+Open the URL Vite prints (default `http://localhost:5173`). On a phone, use your LAN IP from the same output.
 
 ```bash
 npm run build
@@ -26,11 +26,11 @@ npm run preview
 
 ## MVP features
 
-- **Ash** resource with tap (“Rake embers”) and three generators (Ember Pit, Ash Forge, Cinder Barracks)
-- Idle tick + offline catch-up on load
+- **Fortress Home** — top-down / isometric-lite ash base map; 3 generator buildings on fixed slots (Ash Hearth, Bone Mill, Legion Altar). Tap a building to upgrade.
+- **Ash** resource with tap (“Rake embers”), idle tick, and offline catch-up on load
 - Prestige soft-reset → Dominion meta multiplier (+10% production each)
 - Clan tab with fake local season leaderboard
-- Dark-fantasy UI (ember / ash palette)
+- Dark-fantasy UI (ember / ash / iron tokens)
 
 ## Install as PWA
 

@@ -4,6 +4,10 @@ export interface GeneratorDef {
   id: GeneratorId
   name: string
   blurb: string
+  /** Fixed slot on the fortress map (percent of map box) */
+  slot: { left: string; top: string }
+  /** CSS building silhouette variant */
+  silhouette: 'hearth' | 'mill' | 'altar'
   /** Base cost in Ash */
   baseCost: number
   /** Ash produced per second per owned unit */
@@ -15,24 +19,30 @@ export interface GeneratorDef {
 export const GENERATORS: GeneratorDef[] = [
   {
     id: 'emberPit',
-    name: 'Ember Pit',
-    blurb: 'Smoldering pits rake embers from the waste.',
+    name: 'Ash Hearth',
+    blurb: 'A banked sacrificial fire that distills ash essence.',
+    slot: { left: '18%', top: '58%' },
+    silhouette: 'hearth',
     baseCost: 15,
     baseRate: 0.1,
     costScale: 1.15,
   },
   {
     id: 'ashForge',
-    name: 'Ash Forge',
-    blurb: 'Forges melt cinder into usable ash.',
+    name: 'Bone Mill',
+    blurb: 'Fallen fodder ground into fuel for the legion.',
+    slot: { left: '62%', top: '48%' },
+    silhouette: 'mill',
     baseCost: 100,
     baseRate: 1,
     costScale: 1.15,
   },
   {
     id: 'cinderBarracks',
-    name: 'Cinder Barracks',
-    blurb: 'Legionnaires harvest ash from the front.',
+    name: 'Legion Altar',
+    blurb: 'Ritual stone where the ash legion binds power.',
+    slot: { left: '40%', top: '28%' },
+    silhouette: 'altar',
     baseCost: 1100,
     baseRate: 8,
     costScale: 1.15,
