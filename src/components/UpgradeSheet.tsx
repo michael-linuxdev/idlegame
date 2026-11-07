@@ -56,27 +56,26 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
   }
 
   return (
-    <div className="sheet-backdrop" role="presentation" onClick={onClose}>
+    <div className="upgrade-hud-layer" role="presentation" onClick={onClose}>
       <div
-        className={`sheet sheet-compact sheet-hud${flash ? ' upgrade-flash' : ''}`}
+        className={`upgrade-hud${flash ? ' upgrade-flash' : ''}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="upgrade-title"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="sheet-handle" aria-hidden="true" />
-        <header className="sheet-header sheet-header-hud">
-          <div className="sheet-heading">
+        <header className="upgrade-hud-header">
+          <div className="upgrade-hud-heading">
             <h2 id="upgrade-title">{def.name}</h2>
             {unlocked ? (
-              <p className="sheet-blurb" title={def.blurb}>
+              <p className="upgrade-hud-blurb" title={def.blurb}>
                 {flavor}
               </p>
             ) : null}
           </div>
           <button
             type="button"
-            className="sheet-close-x"
+            className="upgrade-hud-close"
             onClick={onClose}
             aria-label={t.upgrade.close}
           >
@@ -86,23 +85,23 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
 
         {unlocked ? (
           <>
-            <p className="sheet-stats sheet-stats-hud">
+            <p className="upgrade-hud-stats">
               {t.upgrade.level} {owned}
               {' · '}
               {formatRate(lineRate)}
               {' → '}
               {formatRate(nextRate)}
             </p>
-            <div className="upgrade-afford-track" aria-hidden="true">
+            <div className="upgrade-afford-track upgrade-hud-track" aria-hidden="true">
               <span
                 className={`upgrade-afford-fill${affordable ? ' ready' : ''}`}
                 style={{ width: `${Math.round(affordRatio * 100)}%` }}
               />
             </div>
-            <div className="sheet-cta">
+            <div className="upgrade-hud-cta">
               <button
                 type="button"
-                className={`btn buy sheet-buy sheet-buy-hud${affordable ? ' pulse-ready' : ''}${flash ? ' just-bought' : ''}`}
+                className={`btn buy upgrade-hud-buy${affordable ? ' pulse-ready' : ''}${flash ? ' just-bought' : ''}`}
                 disabled={!affordable}
                 onClick={buyUpgrade}
               >
@@ -111,8 +110,8 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
             </div>
 
             {owned >= 1 ? (
-              <div className="branch-block branch-block-hud">
-                <h3 className="branch-title">{t.branches.title}</h3>
+              <div className="upgrade-hud-modules">
+                <h3 className="upgrade-hud-modules-title">{t.branches.title}</h3>
                 <BranchRow
                   kind="efficiency"
                   rank={branch.efficiency}
@@ -133,10 +132,10 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
             ) : null}
           </>
         ) : (
-          <div className="sheet-empty-block">
-            <p className="sheet-stats sheet-locked-hint">{unlockHint(def)}</p>
-            <div className="sheet-cta">
-              <button type="button" className="btn buy sheet-buy sheet-buy-hud" disabled>
+          <div className="upgrade-hud-locked">
+            <p className="upgrade-hud-stats sheet-locked-hint">{unlockHint(def)}</p>
+            <div className="upgrade-hud-cta">
+              <button type="button" className="btn buy upgrade-hud-buy" disabled>
                 {t.upgrade.locked}
               </button>
             </div>
@@ -174,8 +173,8 @@ function BranchRow({
       : t.branches.capacityEffect(Math.pow(0.97, rank).toFixed(3))
 
   return (
-    <div className="branch-row compact">
-      <p className="branch-hud">
+    <div className="upgrade-hud-row">
+      <p className="upgrade-hud-row-meta">
         <strong className="branch-name">{name}</strong>
         <span className="branch-rank">{rank}/{max}</span>
         <span className="branch-sep" aria-hidden="true">
@@ -192,7 +191,7 @@ function BranchRow({
       ) : (
         <button
           type="button"
-          className="btn ghost branch-buy"
+          className="btn ghost upgrade-hud-row-buy"
           disabled={ash < cost}
           onClick={onBuy}
           title={t.upgrade.costLine(name, formatAsh(cost))}
