@@ -4,6 +4,7 @@ import {
   unlockHint,
   type GeneratorId,
 } from '../game/generators'
+import { efficiencyMult, type BranchKind } from '../game/branches'
 import { formatAsh, formatRate } from '../game/format'
 import { t } from '../i18n'
 import type { useGame } from '../game/useGame'
@@ -24,9 +25,17 @@ export function UpgradeSheet({ game, selectedId, onClose }: Props) {
   const unlocked = game.unlocked(def.id)
   const cost = game.costOf(def.id)
   const affordable = unlocked && game.state.ash >= cost
-  const lineRate = generatorRate(def, owned) * game.multiplier
-  const nextRate = generatorRate(def, owned + 1) * game.multiplier
+  const branch = game.state.branches[def.id] ?? { efficiency: 0, capacity: 0 }
+  const lineMult =
+    game.multiplier * game.levelMult * game.clanMult * game.eventMult
+  const eff = efficiencyMult(branch.efficiency)
+  const lineRate = generatorRate(def, owned) * lineMult * eff
+  const nextRate = generatorRate(def, owned + 1) * lineMult * eff
   const milestoneNext = owned > 0 && (owned + 1) % 10 === 0
+
+  function buyBranch(kind: BranchKind) {
+    game.buyModuleBranch(selectedId, kind)
+  }
 
   return (
     <div className="sheet-backdrop" role="presentation" onClick={onClose}>
@@ -74,6 +83,29 @@ export function UpgradeSheet({ game, selectedId, onClose }: Props) {
                 formatAsh(cost),
               )}
             </button>
+
+            {owned >= 1 ? (
+              <div className="branch-block">
+                <h3 className="branch-title">{t.branches.title}</h3>
+                <p className="muted branch-hint">{t.upgrade.branchHint}</p>
+                <BranchRow
+                  kind="efficiency"
+                  rank={branch.efficiency}
+                  max={game.branchMaxRank}
+                  cost={game.branchCostOf(def.id, 'efficiency')}
+                  ash={game.state.ash}
+                  onBuy={() => buyBranch('efficiency')}
+                />
+                <BranchRow
+                  kind="capacity"
+                  rank={branch.capacity}
+                  max={game.branchMaxRank}
+                  cost={game.branchCostOf(def.id, 'capacity')}
+                  ash={game.state.ash}
+                  onBuy={() => buyBranch('capacity')}
+                />
+              </div>
+            ) : null}
           </>
         ) : (
           <div className="sheet-empty-block">
@@ -85,6 +117,56 @@ export function UpgradeSheet({ game, selectedId, onClose }: Props) {
           </div>
         )}
       </div>
+    </div>
+  )
+}
+
+function BranchRow({
+  kind,
+  rank,
+  max,
+  cost,
+  ash,
+  onBuy,
+}: {
+  kind: BranchKind
+  rank: number
+  max: number
+  cost: number
+  ash: number
+  onBuy: () => void
+}) {
+  const maxed = rank >= max
+  const name = kind === 'efficiency' ? t.branches.efficiency : t.branches.capacity
+  const blurb =
+    kind === 'efficiency' ? t.branches.efficiencyBlurb : t.branches.capacityBlurb
+  const effect =
+    kind === 'efficiency'
+      ? t.branches.efficiencyEffect(rank * 4)
+      : t.branches.capacityEffect(Math.pow(0.97, rank).toFixed(3))
+
+  return (
+    <div className="branch-row">
+      <div className="branch-copy">
+        <strong>
+          {name}{' '}
+          <span className="branch-rank">{t.branches.rank(rank, max)}</span>
+        </strong>
+        <span className="muted">{blurb}</span>
+        <span className="branch-effect">{effect}</span>
+      </div>
+      {maxed ? (
+        <span className="quest-badge">{t.branches.maxed}</span>
+      ) : (
+        <button
+          type="button"
+          className="btn ghost branch-buy"
+          disabled={ash < cost}
+          onClick={onBuy}
+        >
+          {t.branches.buy(name, formatAsh(cost))}
+        </button>
+      )}
     </div>
   )
 }

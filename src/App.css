@@ -1835,6 +1835,235 @@
   filter: sepia(0.35) saturate(1.1);
 }
 
+/* —— Spieler-Level HUD + progress sheet + branches —— */
+
+.player-level-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.28rem;
+  margin-top: 0.55rem;
+  padding: 0.45rem 0.6rem;
+  width: min(100%, 13.5rem);
+  text-align: left;
+  border: 1px solid var(--oc-stroke-strong);
+  border-radius: var(--oc-radius);
+  background: color-mix(in srgb, var(--oc-bg-raised) 94%, transparent);
+  box-shadow: 0 2px 8px rgba(40, 60, 40, 0.08);
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+}
+
+.player-level-chip.has-claim {
+  border-color: var(--oc-ember);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--oc-ember) 25%, transparent);
+}
+
+.player-level-num {
+  font-family: var(--oc-font-display);
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  color: var(--oc-ink);
+}
+
+.player-level-track {
+  display: block;
+  height: 0.45rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--oc-bg-inset) 80%, transparent);
+  overflow: hidden;
+}
+
+.player-level-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--oc-ember) 75%, #6a9a5a),
+    var(--oc-ember)
+  );
+  transition: width 220ms ease;
+}
+
+.player-level-meta {
+  font-size: 0.72rem;
+  color: var(--oc-ink-muted);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.progress-sheet {
+  max-height: min(88vh, 640px);
+  overflow-y: auto;
+}
+
+.level-bar-block {
+  margin: 0.35rem 0 1rem;
+}
+
+.level-bar-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--oc-ink);
+  margin-bottom: 0.35rem;
+}
+
+.level-bonus {
+  color: var(--oc-bronze);
+}
+
+.level-bar-track {
+  height: 0.55rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--oc-bg-inset) 75%, transparent);
+  overflow: hidden;
+  border: 1px solid var(--oc-stroke);
+}
+
+.level-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #6a9a5a, var(--oc-ember));
+  border-radius: inherit;
+}
+
+.progress-subhead {
+  margin: 1.1rem 0 0.25rem;
+  font-family: var(--oc-font-display);
+  font-size: 1.05rem;
+  color: var(--oc-ink);
+}
+
+.progress-intro {
+  margin: 0 0 0.55rem;
+  font-size: 0.9rem;
+}
+
+.quest-list,
+.achievement-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.quest-row,
+.achievement-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.65rem;
+  padding: 0.65rem 0.7rem;
+  border: 1px solid var(--oc-stroke);
+  border-radius: var(--oc-radius);
+  background: color-mix(in srgb, var(--oc-bg-raised) 88%, transparent);
+}
+
+.quest-row.done,
+.achievement-row.done {
+  opacity: 0.72;
+}
+
+.quest-copy,
+.achievement-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.quest-copy strong,
+.achievement-copy strong {
+  color: var(--oc-ink);
+  font-size: 0.95rem;
+}
+
+.quest-progress,
+.quest-reward,
+.achievement-reward,
+.branch-effect {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--oc-bronze);
+}
+
+.quest-claim {
+  flex-shrink: 0;
+  padding: 0.45rem 0.65rem;
+  font-size: 0.8rem;
+}
+
+.quest-badge {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--oc-ink-muted);
+  padding: 0.3rem 0.45rem;
+}
+
+.branch-block {
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px dashed var(--oc-stroke);
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.branch-title {
+  margin: 0;
+  font-family: var(--oc-font-display);
+  font-size: 1rem;
+  color: var(--oc-ink);
+}
+
+.branch-hint {
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.branch-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.55rem;
+  padding: 0.55rem 0.6rem;
+  border: 1px solid var(--oc-stroke);
+  border-radius: var(--oc-radius);
+  background: color-mix(in srgb, var(--oc-bg-inset) 45%, transparent);
+}
+
+.branch-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+  min-width: 0;
+}
+
+.branch-rank {
+  font-weight: 600;
+  color: var(--oc-ink-muted);
+  font-size: 0.85rem;
+}
+
+.branch-buy {
+  flex-shrink: 0;
+  font-size: 0.78rem;
+  padding: 0.4rem 0.55rem;
+  max-width: 9.5rem;
+  white-space: normal;
+  line-height: 1.25;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .map-haze,
   .map-forge-glow,
@@ -1858,7 +2087,8 @@
   }
 
   .map-skin-wash,
-  .hud-metric-chip {
+  .hud-metric-chip,
+  .player-level-fill {
     transition: none;
   }
 }

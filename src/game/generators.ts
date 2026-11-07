@@ -14,6 +14,7 @@
  */
 
 import { t } from '../i18n'
+import { LEVEL_MODULE_GATES } from './progression'
 
 export type GeneratorId =
   | 'emberPit'
@@ -240,12 +241,15 @@ export function isGeneratorUnlocked(
   ashEarned: number,
   owned: Record<GeneratorId, number>,
   firstBeacon = false,
+  playerLevel = 1,
 ): boolean {
   if (!def.unlock) return true
   if (firstBeacon && def.id === 'ashForge') return true
   const { ashEarned: needAsh, requires } = def.unlock
   if (needAsh != null && ashEarned >= needAsh) return true
   if (requires && (owned[requires.id] ?? 0) >= requires.level) return true
+  const levelGate = LEVEL_MODULE_GATES[def.id]
+  if (levelGate != null && playerLevel >= levelGate) return true
   return false
 }
 
@@ -255,8 +259,9 @@ export function isUnlocked(
   ashEarned: number,
   firstFlame: boolean,
   owned: Record<GeneratorId, number> = {} as Record<GeneratorId, number>,
+  playerLevel = 1,
 ): boolean {
-  return isGeneratorUnlocked(def, ashEarned, owned, firstFlame)
+  return isGeneratorUnlocked(def, ashEarned, owned, firstFlame, playerLevel)
 }
 
 export function unlockHint(def: GeneratorDef): string {
@@ -275,6 +280,10 @@ export function unlockHint(def: GeneratorDef): string {
         def.unlock.requires.level,
       ),
     )
+  }
+  const levelGate = LEVEL_MODULE_GATES[def.id]
+  if (levelGate != null) {
+    parts.push(t.unlock.playerLevel(levelGate))
   }
   return parts.length ? `${t.unlock.prefix} ${parts.join(t.unlock.or)}` : ''
 }

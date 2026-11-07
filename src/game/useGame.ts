@@ -23,9 +23,17 @@ import {
   bandwidthSurgeWindowKey,
   isBandwidthSurgeActive,
 } from './events'
+import { ACHIEVEMENTS, isAchievementComplete } from './achievements'
+import {
+  BRANCH_MAX_RANK,
+  branchCost,
+  type BranchKind,
+} from './branches'
+import { questLabel } from './quests'
 import {
   applyOfflineCatchup,
   applyTick,
+  buyBranch,
   buyClanBoost,
   buyCosmetic,
   buyEmberUpgrade,
@@ -34,19 +42,28 @@ import {
   canPrestigeNow,
   claimBandwidthSurgeGoal,
   claimDailyOps,
+  claimQuestReward,
+  collectReadyAchievements,
   dismissBandwidthSurge,
   doPrestige,
   effectiveClanMult,
   equipCosmetic,
   eventProductionMult,
+  claimOfflineReward,
+  grantTapAsh,
+  levelProductionMult,
+  levelProgress,
+  lineCostMult,
   mockBuyPack,
   nextPrestigeEmbers,
+  playerLevelOf,
   prestigeMinAsh,
   prestigeMultiplier,
   prestigeProgress,
   productionPerSecond,
   skipHoursRemaining,
   type GameState,
+  type QuestProgress,
 } from './state'
 import { loadState, saveState } from './storage'
 
@@ -98,7 +115,7 @@ export function useGame() {
         setState((s) => {
           const { state: next, gained } = applyOfflineCatchup(s)
           if (gained > 0.01) setOfflineGained(gained)
-          return next
+          return collectReadyAchievements(next)
         })
       }
     }
@@ -118,18 +135,16 @@ export function useGame() {
       if (s.lastTapAt > 0 && now - s.lastTapAt < TAP_COOLDOWN_MS) return s
       const rate = productionPerSecond(s, now)
       const gained = Math.max(rate * TAP_BONUS_SECONDS, 1)
-      return {
-        ...s,
-        ash: s.ash + gained,
-        ashEarned: s.ashEarned + gained,
-        lastTapAt: now,
-        lastSeen: now,
-      }
+      return grantTapAsh(s, gained, now)
     })
   }, [])
 
   const buy = useCallback((id: GeneratorId) => {
     setState((s) => buyGenerator(s, id))
+  }, [])
+
+  const buyModuleBranch = useCallback((id: GeneratorId, kind: BranchKind) => {
+    setState((s) => buyBranch(s, id, kind))
   }, [])
 
   const buyMeta = useCallback((id: EmberUpgradeId) => {
@@ -172,9 +187,18 @@ export function useGame() {
     setState((s) => claimBandwidthSurgeGoal(s))
   }, [])
 
-  const dismissOffline = useCallback(() => setOfflineGained(null), [])
+  const claimQuest = useCallback((questId: string) => {
+    setState((s) => claimQuestReward(s, questId))
+  }, [])
+
+  const dismissOffline = useCallback(() => {
+    const amount = offlineGained ?? 0
+    setOfflineGained(null)
+    setState((s) => claimOfflineReward(s, amount))
+  }, [offlineGained])
 
   const mult = prestigeMultiplier(state.emberUpgrades)
+  const levelMult = levelProductionMult(playerLevelOf(state))
   const clanMult = effectiveClanMult(state, nowTick)
   const eventMult = eventProductionMult(nowTick)
   const progress = prestigeProgress(state)
@@ -202,13 +226,46 @@ export function useGame() {
   const surgeGoalDone = state.eventAshProgress >= surge.goal
   const surgeGoalClaimed = state.eventGoalClaimedKey === surgeWindow
 
+  const playerLevel = levelProgress(state.playerXp)
+
+  const achievementRows = ACHIEVEMENTS.map((def) => {
+    const claimed = state.claimedAchievements.includes(def.id)
+    const complete = isAchievementComplete(def.id, {
+      totalUpgrades: state.totalUpgrades,
+      lifetimeAshEarned: state.lifetimeAshEarned,
+      claimedDailyOnce: state.claimedDailyOnce,
+      claimedOfflineOnce: state.claimedOfflineOnce,
+      playerLevel: playerLevel.level,
+      prestiges: state.prestiges,
+      owned: state.owned,
+    })
+    return { def, claimed, complete }
+  })
+
+  const questRows = state.quests.map((q: QuestProgress) => ({
+    ...q,
+    label: questLabel(q),
+    ready: !q.claimed && q.progress >= q.target,
+  }))
+
   const costOf = useCallback(
     (id: GeneratorId) => {
       const def = GENERATORS.find((g) => g.id === id)
       if (!def) return Infinity
-      return generatorCost(def, state.owned[id] ?? 0, discount)
+      return generatorCost(def, state.owned[id] ?? 0, lineCostMult(state, id))
     },
-    [state.owned, discount],
+    [state],
+  )
+
+  const branchCostOf = useCallback(
+    (id: GeneratorId, kind: BranchKind) => {
+      const def = GENERATORS.find((g) => g.id === id)
+      if (!def) return Infinity
+      const ranks = state.branches[id] ?? { efficiency: 0, capacity: 0 }
+      const rank = kind === 'efficiency' ? ranks.efficiency : ranks.capacity
+      return branchCost(def, kind, rank)
+    },
+    [state.branches],
   )
 
   const unlocked = useCallback(
@@ -220,15 +277,22 @@ export function useGame() {
         state.ashEarned,
         state.owned,
         state.emberUpgrades.firstFlame > 0,
+        playerLevel.level,
       )
     },
-    [state.ashEarned, state.owned, state.emberUpgrades.firstFlame],
+    [
+      state.ashEarned,
+      state.owned,
+      state.emberUpgrades.firstFlame,
+      playerLevel.level,
+    ],
   )
 
   return {
     state,
     rate: productionPerSecond(state, nowTick),
     multiplier: mult,
+    levelMult,
     clanMult,
     eventMult,
     clanBoostActive,
@@ -243,6 +307,7 @@ export function useGame() {
     tapCooldownMs: TAP_COOLDOWN_MS,
     rake,
     buy,
+    buyModuleBranch,
     buyMeta,
     prestige,
     purchaseTimeSkip,
@@ -253,6 +318,7 @@ export function useGame() {
     claimDaily,
     dismissEvent,
     claimEventGoal,
+    claimQuest,
     dailyReady,
     dailyPreview,
     surge,
@@ -260,9 +326,15 @@ export function useGame() {
     surgeGoalDone,
     surgeGoalClaimed,
     costOf,
+    branchCostOf,
+    branchMaxRank: BRANCH_MAX_RANK,
     unlocked,
     offlineGained,
     offlineAwayMs,
     dismissOffline,
+    playerLevel,
+    achievementRows,
+    questRows,
+    metaDiscount: discount,
   }
 }
