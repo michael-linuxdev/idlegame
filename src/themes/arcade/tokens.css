@@ -1,0 +1,94 @@
+/**
+ * Tokenhalle palette — bright arcade hall, cyan + magenta neon accents.
+ * Readable pale surfaces (not a dark void). No purple wash.
+ */
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Sans+Condensed:wght@600;700&display=swap');
+
+[data-theme='arcade'] {
+  /* Surfaces — lit hall / pale linoleum */
+  --oc-bg-deep: #d6e2f0;
+  --oc-bg-field: #e6eef8;
+  --oc-bg-raised: #f5f8fc;
+  --oc-bg-inset: #c2d2e4;
+  --oc-stroke: #9ab0c8;
+  --oc-stroke-strong: #5a7a98;
+
+  /* Type — slate on pale ice */
+  --oc-ink: #1a2438;
+  --oc-ink-muted: #3d4f68;
+  --oc-ink-faint: #6b8299;
+
+  /* Primary CTA — hot magenta ticket neon (sparingly) */
+  --oc-ember: #d91872;
+  --oc-ember-hot: #f24d9a;
+  --oc-ember-dim: #a01055;
+
+  /* Secondary status — arcade cyan */
+  --oc-ice: #0a9cba;
+  --oc-ice-pale: #5ecfe0;
+  --oc-ice-wash: color-mix(in srgb, var(--oc-ice) 14%, transparent);
+
+  /* Prestige / meta — token gold */
+  --oc-bronze: #c9a227;
+  --oc-bronze-pale: #e8c84a;
+
+  /* Semantic */
+  --oc-gain: #1a9e6e;
+  --oc-warn: #c48930;
+  --oc-danger: #b04040;
+  --oc-clan: #0a9cba;
+  --oc-focus: #0a7a96;
+  --oc-target-min: 44px;
+
+  --oc-font-display: 'Chakra Petch', 'Helvetica Neue', sans-serif;
+  --oc-font-ui: 'IBM Plex Sans', 'Helvetica Neue', sans-serif;
+  --oc-font-metric: 'IBM Plex Sans Condensed', 'Arial Narrow', sans-serif;
+  --oc-radius: 8px;
+  --oc-space-xs: 0.35rem;
+  --oc-space-sm: 0.55rem;
+  --oc-space-md: 0.85rem;
+  --oc-space-lg: 1.25rem;
+  --oc-motion-tick: 260ms;
+  --oc-motion-sheet: 240ms;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-top: env(safe-area-inset-top, 0px);
+
+  /* Legacy aliases */
+  --ad-bg-deep: var(--oc-bg-deep);
+  --ad-bg-field: var(--oc-bg-field);
+  --ad-bg-raised: var(--oc-bg-raised);
+  --ad-bg-inset: var(--oc-bg-inset);
+  --ad-stroke: var(--oc-stroke);
+  --ad-stroke-strong: var(--oc-stroke-strong);
+  --ad-ink: var(--oc-ink);
+  --ad-ink-muted: var(--oc-ink-muted);
+  --ad-ink-faint: var(--oc-ink-faint);
+  --ad-ember: var(--oc-ember);
+  --ad-ember-hot: var(--oc-ember-hot);
+  --ad-ember-dim: var(--oc-ember-dim);
+  --ad-bronze: var(--oc-bronze);
+  --ad-bronze-pale: var(--oc-bronze-pale);
+  --ad-gain: var(--oc-gain);
+  --ad-clan: var(--oc-clan);
+  --ad-focus: var(--oc-focus);
+  --ad-target-min: var(--oc-target-min);
+  --ad-font-display: var(--oc-font-display);
+  --ad-font-ui: var(--oc-font-ui);
+  --ad-font-metric: var(--oc-font-metric);
+  --ad-radius: var(--oc-radius);
+  --ad-warn: var(--oc-warn);
+
+  --bg-deep: var(--oc-bg-deep);
+  --bg: var(--oc-bg-field);
+  --bg-raised: var(--oc-bg-raised);
+  --bg-line: var(--oc-stroke);
+  --ember: var(--oc-ember);
+  --ember-hot: var(--oc-ember-hot);
+  --ash: var(--oc-ink-muted);
+  --ash-dim: var(--oc-ink-faint);
+  --ink: var(--oc-ink);
+  --font-display: var(--oc-font-display);
+  --font-body: var(--oc-font-ui);
+  --radius: var(--oc-radius);
+  color-scheme: light;
+}

@@ -5,8 +5,8 @@ Stand: 2026-11-07.
 ## Architektur
 
 - **Ein Spielkern**, mehrere **eigene Apps** (gleiche Engine/Loop).
-- **App 1 — TurmFarm** (live): Urban Vertical Farm. Offizieller Produktname.
-- **App 2 — Tokenhalle** (geplant): Retro-Arcade-Kette; eigener Store-Eintrag, gleicher Kern. Kein Arcade-Build in diesem Stand — Name ist nur festgelegt.
+- **App 1 — TurmFarm** (live): Urban Vertical Farm. Offizieller Produktname. Default theme (`src/themes/farm`).
+- **App 2 — Tokenhalle**: Retro-Arcade-Kette auf demselben Kern. Theme-Skin unter `src/themes/arcade`; aktivieren mit `VITE_THEME=arcade` / `npm run build:arcade`. Eigener Store-Eintrag später — Bundle-Flag reicht für jetzt.
 - **Raus:** Orbit Rack / Space-Datacenter; Brauerei-Theme.
 
 ## Prinzipien
@@ -23,7 +23,7 @@ Stand: 2026-11-07.
 2. **Politur-Runde** UI/UX/Grafik + **Retention/Suchtfaktor** erhöhen  
 3. **Balance**-Pass  
 4. **Multiplayer-Architektur** → echtes Clan-Multiplayer  
-5. **Tokenhalle** (Arcade-App: Skin + Bundle auf dem Kern)  
+5. **Tokenhalle** Store-Bundle / eigener Eintrag (Skin liegt bereits im Kern)  
 6. Store-IAP verdrahten  
 7. Soft-Launch (Analytics-Tool dann wählen)
 
