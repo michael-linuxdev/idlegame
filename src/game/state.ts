@@ -146,9 +146,9 @@ export function emptyOwned(): Record<GeneratorId, number> {
 export function createInitialState(now = Date.now()): GameState {
   const quests = emptyQuestProgress(now)
   return {
-    // Day-1: first Power Plant upgrade affordable immediately
-    // (Lv1→2 costs floor(15·1.15)=17; start with a small ops float)
-    ash: 20,
+    // Day-1: first greenhouse upgrade affordable immediately
+    // IG-31: G1 C0=20 g=1.18 → Lv1→2 costs floor(20·1.18)=23; float 28
+    ash: 28,
     ashEarned: 0,
     owned: emptyOwned(),
     embers: 0,

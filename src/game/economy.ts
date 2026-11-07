@@ -1,10 +1,11 @@
 /**
- * Economy knobs from docs/economy.md — core formulas unchanged.
+ * Economy knobs — core formulas (R(n), C(n), offline, ember √) unchanged.
  * Player-facing: soft Ertrag + meta Münzen (TurmFarm).
  * Internal save fields still map to Ash/Embers.
  *
- * Feel polish (IG-19) early tweaks live on generators.ts / createInitialState:
- * start wallet 20 Compute; G2 unlock 200; G2 C0 100. Prestige / offline / shop untouched.
+ * Balance pass IG-31 (overnight): prestige was ~5 min for engaged play vs
+ * design 45–90 min. Raised P_min base + slowed generator ladder (see generators.ts).
+ * Offline caps / ember shop costs untouched.
  */
 
 import { t } from '../i18n'
@@ -13,9 +14,19 @@ export const OFFLINE_SOFT_HOURS = 8
 export const OFFLINE_HARD_HOURS = 24
 export const OFFLINE_DECAY_RATE = 0.5
 
-/** Prestige gate: P_min = 50_000 · 1.8^p */
+/**
+ * Prestige gate: P_min = PRESTIGE_BASE · 1.8^p
+ * IG-31: 50_000 → 2_000_000 so first Soft-Reset lands ~45–75 min engaged
+ * (was ~5–10 min after content-depth rate snowball).
+ */
+export const PRESTIGE_BASE_ASH = 2_000_000
+export const PRESTIGE_GROWTH = 1.8
+
+/** Prestige gate: P_min = PRESTIGE_BASE_ASH · PRESTIGE_GROWTH^p */
 export function prestigeMinAsh(prestiges: number): number {
-  return Math.floor(50_000 * Math.pow(1.8, Math.max(0, prestiges)))
+  return Math.floor(
+    PRESTIGE_BASE_ASH * Math.pow(PRESTIGE_GROWTH, Math.max(0, prestiges)),
+  )
 }
 
 /** Credits payout: E = floor(sqrt(A / 10_000)) where A = Compute earned this run */
@@ -137,6 +148,10 @@ export function offlineCatchupAsh(
   )
 }
 
-/** Active tap bonus: ~45s of current rate; cooldown 5 minutes. */
-export const TAP_BONUS_SECONDS = 45
+/**
+ * Active tap bonus — session hook, not a grind sink.
+ * IG-31: 45s → 60s of current rate so short visits feel juicier while idle
+ * curve stays the prestige pace-setter. Cooldown unchanged (5 min).
+ */
+export const TAP_BONUS_SECONDS = 60
 export const TAP_COOLDOWN_MS = 5 * 60 * 1000

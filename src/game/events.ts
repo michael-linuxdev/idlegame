@@ -10,8 +10,12 @@ import { dayKey } from './monetization'
 /** +25% Compute/sec while surge is live */
 export const BANDWIDTH_SURGE_MULT = 1.25
 
-/** Goal: earn this much Compute during the active window */
-export const BANDWIDTH_SURGE_GOAL = 10_000
+/**
+ * Goal: earn this much Compute during the active window.
+ * IG-31: 10_000 → 25_000 so the weekend Ziel tracks the slower midgame curve
+ * (still clearable in one engaged session once G3 is online).
+ */
+export const BANDWIDTH_SURGE_GOAL = 25_000
 
 /** Obsidian crumb when goal is claimed */
 export const BANDWIDTH_SURGE_GOAL_REWARD = 15
