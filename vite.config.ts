@@ -46,6 +46,26 @@ export default defineConfig(({ mode }) => {
     base: './',
     plugins: [
       react(),
+      {
+        name: 'skin-html-meta',
+        transformIndexHtml(html) {
+          return html
+            .replace(/data-theme="[^"]*"/, `data-theme="${skin}"`)
+            .replace(
+              /<meta name="theme-color" content="[^"]*" \/>/,
+              `<meta name="theme-color" content="${meta.theme_color}" />`,
+            )
+            .replace(
+              /<meta name="apple-mobile-web-app-title" content="[^"]*" \/>/,
+              `<meta name="apple-mobile-web-app-title" content="${meta.name}" />`,
+            )
+            .replace(
+              /<meta\s+name="description"\s+content="[^"]*"\s*\/>/,
+              `<meta name="description" content="${meta.name} — ${meta.description}" />`,
+            )
+            .replace(/<title>[^<]*<\/title>/, `<title>${meta.name}</title>`)
+        },
+      },
       VitePWA({
         registerType: 'autoUpdate',
         includeAssets: ['favicon.svg', 'icons.svg'],
