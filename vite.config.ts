@@ -3,6 +3,8 @@ import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
+  // Custom domain root (idlegame.micana.de) — not a project-pages subpath.
+  base: '/',
   plugins: [
     react(),
     VitePWA({
