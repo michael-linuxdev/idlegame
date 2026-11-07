@@ -5,7 +5,9 @@
   flex-direction: column;
   max-width: 480px;
   margin: 0 auto;
-  background: var(--ad-bg-deep);
+  background:
+    radial-gradient(120% 80% at 50% -10%, rgba(126, 184, 212, 0.35), transparent 55%),
+    linear-gradient(180deg, #eef3f8 0%, var(--oc-bg-deep) 40%, #cfd9e4 100%);
 }
 
 .app-main {
@@ -25,11 +27,11 @@
 
 .panel-header h2,
 .subhead {
-  font-family: var(--ad-font-display);
+  font-family: var(--oc-font-display);
   font-weight: 600;
   letter-spacing: 0.04em;
   margin: 0 0 0.4rem;
-  color: var(--ad-ink);
+  color: var(--oc-ink);
 }
 
 .subhead {
@@ -39,7 +41,7 @@
 
 .muted {
   margin: 0;
-  color: var(--ad-ink-muted);
+  color: var(--oc-ink-muted);
   font-size: 1rem;
   line-height: 1.5;
 }
@@ -49,16 +51,17 @@
   font-size: 0.75rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--ad-ink-muted);
+  color: var(--oc-ink-muted);
+  font-weight: 600;
 }
 
 .brand {
-  font-family: var(--ad-font-display);
+  font-family: var(--oc-font-display);
   font-weight: 700;
   font-size: clamp(1.65rem, 6.5vw, 2.1rem);
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
   margin: 0.2rem 0 0;
-  color: var(--ad-ink);
+  color: var(--oc-ink);
 }
 
 .brand.wordmark {
@@ -77,35 +80,34 @@
 }
 
 .ash-value {
-  font-family: var(--ad-font-metric);
+  font-family: var(--oc-font-metric);
   font-size: clamp(1.75rem, 7vw, 2.25rem);
   font-weight: 700;
-  color: var(--ad-ink);
+  color: var(--oc-ink);
   line-height: 1;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.65);
 }
 
 .ash-label {
   font-size: 0.8rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--ad-ink-muted);
+  color: var(--oc-ink-muted);
   font-weight: 600;
 }
 
 .rate-line {
   margin: 0.25rem 0 0;
-  color: var(--ad-ink);
+  color: var(--oc-ink);
   font-size: 1rem;
-  font-family: var(--ad-font-metric);
+  font-family: var(--oc-font-metric);
   font-weight: 600;
 }
 
 .mult {
-  color: var(--ad-bronze-pale);
+  color: var(--oc-bronze);
 }
 
-/* —— Fortress home / map —— */
+/* —— Outpost home / map —— */
 
 .fortress-home {
   flex: 1;
@@ -125,7 +127,12 @@
     'rake rake';
   gap: 0.55rem 0.75rem;
   padding: 0.85rem 1rem 0.65rem;
-  background: linear-gradient(180deg, rgba(12, 11, 10, 0.92) 0%, rgba(12, 11, 10, 0.55) 70%, transparent 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(244, 247, 250, 0.96) 0%,
+    rgba(232, 238, 244, 0.78) 70%,
+    transparent 100%
+  );
 }
 
 .map-hud-brand {
@@ -154,34 +161,34 @@
   position: relative;
   flex: 1;
   min-height: 340px;
-  border: 1px solid var(--ad-stroke);
+  border: 1px solid var(--oc-stroke-strong);
   border-radius: 4px;
   overflow: hidden;
   isolation: isolate;
-  background: #12100e;
+  background: #b8c8d6;
   transform: perspective(900px) rotateX(8deg);
   transform-origin: center 70%;
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 14px 32px rgba(40, 60, 80, 0.22);
 }
 
 .map-terrain {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(90% 60% at 50% 110%, rgba(196, 92, 42, 0.16), transparent 55%),
-    radial-gradient(40% 30% at 70% 20%, rgba(138, 106, 61, 0.1), transparent 70%),
-    linear-gradient(165deg, #1a1612 0%, #0f0d0b 45%, #16120f 100%);
+    radial-gradient(90% 55% at 50% 105%, rgba(232, 160, 80, 0.22), transparent 55%),
+    radial-gradient(45% 35% at 72% 18%, rgba(126, 184, 212, 0.35), transparent 70%),
+    linear-gradient(165deg, #c5d5e4 0%, #a8bbcc 48%, #9eb0c2 100%);
 }
 
 .map-grid {
   position: absolute;
   inset: -10%;
   background-image:
-    linear-gradient(rgba(46, 42, 36, 0.45) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(46, 42, 36, 0.45) 1px, transparent 1px);
+    linear-gradient(rgba(90, 110, 130, 0.28) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(90, 110, 130, 0.28) 1px, transparent 1px);
   background-size: 28px 28px;
   transform: skewY(-4deg) scale(1.15);
-  opacity: 0.45;
+  opacity: 0.55;
 }
 
 .map-ridge {
@@ -191,12 +198,12 @@
   bottom: 12%;
   height: 38%;
   background:
-    radial-gradient(ellipse at 50% 80%, rgba(74, 67, 56, 0.35), transparent 65%),
-    linear-gradient(180deg, transparent, rgba(20, 16, 12, 0.5));
+    radial-gradient(ellipse at 50% 80%, rgba(120, 140, 160, 0.4), transparent 65%),
+    linear-gradient(180deg, transparent, rgba(70, 90, 110, 0.25));
   clip-path: polygon(0 60%, 12% 40%, 28% 55%, 45% 30%, 62% 50%, 78% 28%, 100% 48%, 100% 100%, 0 100%);
 }
 
-/* Curtain walls + corner towers — fortress identity without drag-build */
+/* Perimeter rails + corner nodes — outpost pad, not fortress walls */
 .map-walls {
   position: absolute;
   inset: 6% 7% 10% 7%;
@@ -206,64 +213,65 @@
 
 .wall-segment {
   position: absolute;
-  background: linear-gradient(180deg, #524838, #221c16);
-  border: 1px solid #6a5e4c;
-  opacity: 0.92;
+  background: linear-gradient(180deg, #e8eef4, #9aadc0);
+  border: 1px solid #6b8299;
+  opacity: 0.95;
 }
 
 .wall-segment.north {
   top: 0;
   left: 8%;
   right: 8%;
-  height: 9px;
-  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.55);
+  height: 7px;
+  box-shadow: 0 2px 0 rgba(40, 60, 80, 0.18);
 }
 
 .wall-segment.south {
   bottom: 0;
   left: 14%;
   right: 14%;
-  height: 10px;
+  height: 8px;
 }
 
 .wall-segment.east {
   top: 6%;
   right: 0;
   bottom: 6%;
-  width: 8px;
+  width: 7px;
 }
 
 .wall-segment.west {
   top: 6%;
   left: 0;
   bottom: 6%;
-  width: 8px;
+  width: 7px;
 }
 
 .wall-tower {
   position: absolute;
   width: 16px;
-  height: 22px;
-  background: linear-gradient(180deg, #5a4e3e, #1c1814);
-  border: 1px solid #7a6a52;
-  clip-path: polygon(0 20%, 20% 0, 80% 0, 100% 20%, 100% 100%, 0 100%);
+  height: 18px;
+  background: linear-gradient(180deg, #f4f7fa, #8aa0b4);
+  border: 1px solid #5a738a;
+  clip-path: polygon(15% 0, 85% 0, 100% 25%, 100% 100%, 0 100%, 0 25%);
   opacity: 0.95;
+  box-shadow: inset 0 -4px 0 rgba(232, 160, 80, 0.45);
 }
 
 .wall-tower.nw {
-  top: -6px;
+  top: -4px;
   left: -4px;
 }
 .wall-tower.ne {
-  top: -6px;
+  top: -4px;
   right: -4px;
 }
 .wall-tower.sw {
-  bottom: -4px;
+  bottom: -2px;
   left: -4px;
 }
 .wall-tower.se {
-  bottom: -4px;
+  bottom: -2px;
   right: -4px;
 }
 
@@ -271,44 +279,44 @@
   position: absolute;
   left: 50%;
   bottom: -2px;
-  width: 28px;
-  height: 16px;
+  width: 30px;
+  height: 14px;
   transform: translateX(-50%);
-  background: linear-gradient(180deg, #2a2218, #0c0b0a);
-  border: 1px solid var(--ad-bronze);
-  border-radius: 10px 10px 2px 2px;
-  opacity: 0.9;
+  background: linear-gradient(180deg, #d8e2ec, #7a92a8);
+  border: 1px solid var(--oc-ice);
+  border-radius: 3px 3px 2px 2px;
+  opacity: 0.95;
+  box-shadow: 0 0 0 2px rgba(61, 142, 184, 0.2);
 }
 
-/* Distant citadel mass behind slots */
+/* Distant hall / NOC mass behind slots */
 .map-keep-silhouette {
   position: absolute;
   left: 34%;
   top: 2%;
   width: 32%;
   height: 22%;
-  background: linear-gradient(180deg, #3a342c, #12100e);
+  background: linear-gradient(180deg, #f0f5f9, #7e93a8);
   clip-path: polygon(
-    8% 100%,
-    8% 42%,
-    0 42%,
-    18% 8%,
-    28% 42%,
-    32% 28%,
-    50% 0,
-    68% 28%,
-    72% 42%,
-    82% 8%,
-    100% 42%,
-    92% 42%,
-    92% 100%
+    0 100%,
+    0 35%,
+    12% 35%,
+    12% 18%,
+    28% 18%,
+    28% 8%,
+    72% 8%,
+    72% 18%,
+    88% 18%,
+    88% 35%,
+    100% 35%,
+    100% 100%
   );
-  opacity: 0.72;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.55));
-  border-bottom: 1px solid rgba(106, 94, 76, 0.45);
+  opacity: 0.78;
+  filter: drop-shadow(0 4px 8px rgba(40, 60, 80, 0.25));
+  border-bottom: 1px solid rgba(107, 130, 153, 0.55);
 }
 
-/* Banked forge wash — hearth courtyard */
+/* Warm panel wash — central pad lights */
 .map-forge-glow {
   position: absolute;
   left: 26%;
@@ -317,21 +325,25 @@
   height: 40%;
   background: radial-gradient(
     ellipse at 50% 70%,
-    rgba(224, 120, 56, 0.28) 0%,
-    rgba(196, 92, 42, 0.14) 38%,
+    rgba(232, 160, 80, 0.32) 0%,
+    rgba(212, 137, 58, 0.14) 38%,
     transparent 72%
   );
   pointer-events: none;
-  animation: forge-breathe 10s ease-in-out infinite alternate;
+  animation: panel-breathe 10s ease-in-out infinite alternate;
   z-index: 0;
 }
 
 .map-haze {
   position: absolute;
   inset: 0;
-  background: radial-gradient(circle at 50% 40%, transparent 40%, rgba(5, 4, 3, 0.55) 100%);
+  background: radial-gradient(
+    circle at 50% 40%,
+    transparent 42%,
+    rgba(180, 200, 220, 0.35) 100%
+  );
   pointer-events: none;
-  animation: ember-drift 16s ease-in-out infinite alternate;
+  animation: station-drift 16s ease-in-out infinite alternate;
   z-index: 1;
 }
 
@@ -340,11 +352,11 @@
   transform: translate(-50%, -70%);
   width: min(30%, 112px);
   min-width: 88px;
-  min-height: var(--ad-target-min);
+  min-height: var(--oc-target-min);
   padding: 0.3rem 0.2rem 0.4rem;
   border: none;
   background: transparent;
-  color: var(--ad-ink);
+  color: var(--oc-ink);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -354,7 +366,7 @@
 
 .map-building.selected .building-sil,
 .map-building:focus-visible .building-sil {
-  outline: 2px solid var(--ad-focus);
+  outline: 2px solid var(--oc-focus);
   outline-offset: 3px;
 }
 
@@ -363,8 +375,8 @@
 }
 
 .map-building.locked .building-sil {
-  opacity: 0.42;
-  filter: grayscale(0.55) drop-shadow(0 6px 4px rgba(0, 0, 0, 0.45));
+  opacity: 0.48;
+  filter: grayscale(0.4) drop-shadow(0 4px 3px rgba(40, 60, 80, 0.25));
 }
 
 .map-building-label {
@@ -373,25 +385,25 @@
   align-items: center;
   gap: 0.1rem;
   padding: 0.35rem 0.55rem 0.4rem;
-  background: #0a0908;
-  border: 1px solid var(--ad-stroke-strong);
+  background: #f4f7fa;
+  border: 1px solid var(--oc-stroke-strong);
   border-radius: 4px;
   max-width: 100%;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 3px 8px rgba(40, 60, 80, 0.18);
 }
 
 .map-building.locked .map-building-label {
-  border-color: var(--ad-stroke);
-  background: #0c0b0a;
+  border-color: var(--oc-stroke);
+  background: #e8eef4;
 }
 
 .map-building-name {
-  font-family: var(--ad-font-display);
-  font-size: 0.9375rem; /* 15px — readability pass */
+  font-family: var(--oc-font-display);
+  font-size: 0.9375rem;
   font-weight: 700;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;
   white-space: nowrap;
-  color: var(--ad-ink);
+  color: var(--oc-ink);
   line-height: 1.2;
 }
 
@@ -400,23 +412,23 @@
   align-items: baseline;
   justify-content: center;
   gap: 0.45rem;
-  font-family: var(--ad-font-metric);
-  font-size: 0.875rem; /* 14px — readability pass */
+  font-family: var(--oc-font-metric);
+  font-size: 0.875rem;
   font-weight: 600;
-  color: var(--ad-ink);
+  color: var(--oc-ink);
   line-height: 1.2;
 }
 
 .map-building-lvl {
-  color: var(--ad-ink);
+  color: var(--oc-ink);
 }
 
 .map-building-rate {
-  color: var(--ad-gain);
+  color: var(--oc-gain);
 }
 
 .map-building-lock {
-  color: var(--ad-ink-muted);
+  color: var(--oc-ink-muted);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-size: 0.75rem;
@@ -424,32 +436,32 @@
 }
 
 .map-building.raised .map-building-lvl {
-  color: var(--ad-bronze-pale);
+  color: var(--oc-bronze);
 }
 
 .sheet-locked-hint {
-  color: var(--ad-warn, #b08940);
+  color: var(--oc-warn);
 }
 
 .map-hint {
   margin: 0.55rem 0.25rem 0;
   text-align: center;
   font-size: 0.95rem;
-  color: var(--ad-ink-muted);
+  color: var(--oc-ink-muted);
 }
 
-/* Building silhouettes */
+/* Building silhouettes — orbital datacenter modules */
 
 .building-sil {
   position: relative;
   width: 64px;
   height: 56px;
-  filter: drop-shadow(0 6px 4px rgba(0, 0, 0, 0.45));
+  filter: drop-shadow(0 4px 3px rgba(40, 60, 80, 0.28));
 }
 
 .building-sil.dormant {
-  opacity: 0.55;
-  filter: grayscale(0.35) drop-shadow(0 6px 4px rgba(0, 0, 0, 0.45));
+  opacity: 0.6;
+  filter: grayscale(0.25) drop-shadow(0 4px 3px rgba(40, 60, 80, 0.22));
 }
 
 .sil-base {
@@ -459,9 +471,9 @@
   width: 48px;
   height: 10px;
   transform: translateX(-50%);
-  background: #1a1612;
+  background: #8aa0b4;
   border-radius: 50%;
-  border: 1px solid var(--ad-stroke-strong);
+  border: 1px solid var(--oc-stroke-strong);
 }
 
 .sil-base.wide {
@@ -472,205 +484,241 @@
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  background: linear-gradient(180deg, #3a3228, #1c1814);
-  border: 1px solid var(--ad-stroke-strong);
+  background: linear-gradient(180deg, #f4f7fa, #8aa0b4);
+  border: 1px solid var(--oc-stroke-strong);
 }
 
-.hearth-bowl {
-  bottom: 10px;
-  width: 40px;
-  height: 22px;
-  border-radius: 4px 4px 18px 18px;
-}
-
-.mill-tower {
+/* Compute rack cabinet */
+.rack-cabinet {
   bottom: 10px;
   width: 28px;
-  height: 34px;
-  clip-path: polygon(10% 100%, 10% 18%, 50% 0, 90% 18%, 90% 100%);
-}
-
-.altar-plinth {
-  bottom: 10px;
-  width: 36px;
-  height: 18px;
-}
-
-.kiln-dome {
-  bottom: 10px;
-  width: 38px;
-  height: 28px;
-  border-radius: 18px 18px 4px 4px;
-}
-
-.vault-block {
-  bottom: 10px;
-  width: 40px;
-  height: 26px;
+  height: 36px;
   border-radius: 2px;
+  background:
+    repeating-linear-gradient(
+      180deg,
+      #eef3f8 0 4px,
+      #7a90a4 4px 5px
+    ),
+    linear-gradient(180deg, #f4f7fa, #8aa0b4);
 }
 
-.sil-flame {
+.sil-leds {
   position: absolute;
   left: 50%;
-  bottom: 26px;
-  width: 12px;
-  height: 18px;
+  bottom: 14px;
+  width: 4px;
+  height: 22px;
   transform: translateX(-50%);
-  background: var(--ad-ember-dim);
-  clip-path: polygon(50% 0, 85% 45%, 70% 100%, 30% 100%, 15% 45%);
+  background: repeating-linear-gradient(
+    180deg,
+    var(--oc-ember-dim) 0 3px,
+    transparent 3px 6px
+  );
   opacity: 0.35;
 }
 
-.building-sil.lit .sil-flame {
-  background: linear-gradient(180deg, var(--ad-ember-hot), var(--ad-ember));
+.building-sil.lit .sil-leds {
   opacity: 1;
-  animation: flame-flicker 1.8s ease-in-out infinite;
+  background: repeating-linear-gradient(
+    180deg,
+    var(--oc-ember-hot) 0 3px,
+    transparent 3px 6px
+  );
+  animation: bit-pulse 1.8s ease-in-out infinite;
 }
 
-.sil-wheel {
+/* Cooling plant */
+.cool-plant {
+  bottom: 10px;
+  width: 36px;
+  height: 24px;
+  border-radius: 4px 4px 2px 2px;
+}
+
+.sil-fan {
   position: absolute;
-  right: 6px;
-  bottom: 18px;
+  left: 50%;
+  bottom: 16px;
   width: 18px;
   height: 18px;
-  border: 2px solid var(--ad-bronze-pale);
-  border-radius: 50%;
-  opacity: 0.5;
-}
-
-.building-sil.lit .sil-wheel {
-  opacity: 1;
-  border-color: var(--ad-bronze-pale);
-}
-
-.sil-spire {
-  position: absolute;
-  left: 50%;
-  bottom: 26px;
-  width: 8px;
-  height: 26px;
   transform: translateX(-50%);
-  background: linear-gradient(180deg, var(--ad-bronze-pale), #2a2218);
-  clip-path: polygon(50% 0, 100% 100%, 0 100%);
-  opacity: 0.55;
+  border: 2px solid var(--oc-ice);
+  border-radius: 50%;
+  opacity: 0.45;
+  background:
+    linear-gradient(45deg, transparent 46%, var(--oc-ice-pale) 46% 54%, transparent 54%),
+    linear-gradient(-45deg, transparent 46%, var(--oc-ice-pale) 46% 54%, transparent 54%);
 }
 
-.building-sil.lit .sil-spire {
+.building-sil.lit .sil-fan {
   opacity: 1;
+  animation: fan-spin 2.4s linear infinite;
 }
 
-.vault-chamber {
+/* Power core */
+.power-core {
   bottom: 10px;
-  width: 42px;
-  height: 26px;
-  border-radius: 3px 3px 2px 2px;
-  clip-path: polygon(0 30%, 12% 0, 88% 0, 100% 30%, 100% 100%, 0 100%);
+  width: 36px;
+  height: 28px;
+  border-radius: 4px;
+  clip-path: polygon(10% 100%, 0 35%, 50% 0, 100% 35%, 90% 100%);
 }
 
-.sil-door {
+.sil-core-glow {
   position: absolute;
   left: 50%;
-  bottom: 12px;
-  width: 12px;
+  bottom: 18px;
+  width: 14px;
   height: 14px;
   transform: translateX(-50%);
-  background: #0a0908;
-  border: 1px solid var(--ad-bronze);
-  border-radius: 6px 6px 0 0;
-  opacity: 0.55;
+  border-radius: 50%;
+  background: var(--oc-ember-dim);
+  opacity: 0.35;
 }
 
-.building-sil.lit .sil-door {
+.building-sil.lit .sil-core-glow {
+  background: radial-gradient(circle, var(--oc-ember-hot), var(--oc-ember));
   opacity: 1;
-  box-shadow: inset 0 0 6px rgba(196, 92, 42, 0.35);
+  animation: bit-pulse 2s ease-in-out infinite;
+  box-shadow: 0 0 8px rgba(232, 160, 80, 0.45);
 }
 
-.watch-shaft {
+/* Beam relay */
+.relay-stack {
   bottom: 10px;
-  width: 22px;
-  height: 36px;
-  clip-path: polygon(15% 100%, 15% 12%, 50% 0, 85% 12%, 85% 100%);
+  width: 24px;
+  height: 32px;
+  border-radius: 2px;
+  clip-path: polygon(20% 100%, 20% 28%, 50% 0, 80% 28%, 80% 100%);
 }
 
-.sil-battlement {
+.sil-beam {
   position: absolute;
   left: 50%;
   bottom: 40px;
-  width: 28px;
-  height: 8px;
+  width: 4px;
+  height: 14px;
   transform: translateX(-50%);
-  background: repeating-linear-gradient(
-    90deg,
-    #3a3228 0 5px,
-    transparent 5px 8px
-  );
-  border-bottom: 1px solid var(--ad-stroke-strong);
-  opacity: 0.7;
+  background: linear-gradient(180deg, var(--oc-ember-hot), var(--oc-ice));
+  opacity: 0.4;
+  border-radius: 2px;
 }
 
-.sil-beacon {
+.building-sil.lit .sil-beam {
+  opacity: 1;
+  animation: bit-pulse 1.5s ease-in-out infinite;
+  box-shadow: 0 0 6px rgba(61, 142, 184, 0.45);
+}
+
+/* Uplink array */
+.uplink-mast {
+  bottom: 10px;
+  width: 10px;
+  height: 34px;
+  background: linear-gradient(180deg, #f4f7fa, #6b8299);
+  border: 1px solid var(--oc-stroke-strong);
+}
+
+.sil-dish {
+  position: absolute;
+  left: 50%;
+  bottom: 36px;
+  width: 28px;
+  height: 12px;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, #e8eef4, #7eb8d4);
+  border: 1px solid var(--oc-ice);
+  border-radius: 50% 50% 40% 40%;
+  opacity: 0.65;
+}
+
+.building-sil.lit .sil-dish {
+  opacity: 1;
+}
+
+.sil-ping {
   position: absolute;
   left: 50%;
   bottom: 46px;
   width: 8px;
-  height: 10px;
+  height: 8px;
   transform: translateX(-50%);
-  background: var(--ad-ember-dim);
-  clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  border-radius: 50%;
+  background: var(--oc-ice);
   opacity: 0.35;
 }
 
-.building-sil.lit .sil-beacon {
-  background: linear-gradient(180deg, var(--ad-ember-hot), var(--ad-ember));
+.building-sil.lit .sil-ping {
   opacity: 1;
-  animation: flame-flicker 2.2s ease-in-out infinite;
+  animation: bit-pulse 1.4s ease-in-out infinite;
+  box-shadow: 0 0 6px rgba(61, 142, 184, 0.55);
 }
 
-.keep-hall {
+/* NOC hub */
+.noc-deck {
   bottom: 10px;
-  width: 40px;
-  height: 24px;
-  border-radius: 2px;
+  width: 42px;
+  height: 22px;
+  border-radius: 3px;
 }
 
-.sil-keep-tower {
+.sil-hub-tower {
   position: absolute;
-  bottom: 22px;
+  bottom: 20px;
   width: 12px;
-  height: 28px;
-  background: linear-gradient(180deg, #3a3228, #1c1814);
-  border: 1px solid var(--ad-stroke-strong);
-  clip-path: polygon(10% 100%, 10% 18%, 50% 0, 90% 18%, 90% 100%);
+  height: 26px;
+  background: linear-gradient(180deg, #f4f7fa, #8aa0b4);
+  border: 1px solid var(--oc-stroke-strong);
+  clip-path: polygon(15% 100%, 15% 18%, 50% 0, 85% 18%, 85% 100%);
 }
 
-.sil-keep-tower.left {
-  left: 6px;
+.sil-hub-tower.left {
+  left: 8px;
 }
 
-.sil-keep-tower.right {
-  right: 6px;
+.sil-hub-tower.right {
+  right: 8px;
 }
 
-.sil-banner {
+.sil-antenna {
   position: absolute;
   left: 50%;
-  bottom: 34px;
-  width: 10px;
-  height: 16px;
+  bottom: 32px;
+  width: 3px;
+  height: 18px;
   transform: translateX(-50%);
-  background: linear-gradient(180deg, var(--ad-ember), var(--ad-ember-dim));
-  clip-path: polygon(0 0, 100% 0, 100% 70%, 50% 100%, 0 70%);
-  opacity: 0.4;
+  background: var(--oc-ice);
+  opacity: 0.45;
 }
 
-.building-sil.lit .sil-banner {
+.sil-antenna::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: var(--oc-ember-dim);
+}
+
+.building-sil.lit .sil-antenna {
   opacity: 1;
 }
 
-.building-sil.locked .sil-flame,
-.building-sil.locked .sil-beacon,
-.building-sil.locked .sil-banner {
+.building-sil.lit .sil-antenna::after {
+  background: var(--oc-ember-hot);
+  box-shadow: 0 0 6px rgba(232, 160, 80, 0.5);
+}
+
+.building-sil.locked .sil-leds,
+.building-sil.locked .sil-fan,
+.building-sil.locked .sil-core-glow,
+.building-sil.locked .sil-ping,
+.building-sil.locked .sil-beam,
+.building-sil.locked .sil-antenna {
   opacity: 0.15;
 }
 
@@ -682,9 +730,9 @@
   gap: 0.65rem;
   margin: 0 1rem 0.5rem;
   padding: 0.85rem 1rem;
-  background: rgba(196, 92, 42, 0.12);
-  border: 1px solid rgba(196, 92, 42, 0.35);
-  border-radius: var(--ad-radius);
+  background: rgba(61, 142, 184, 0.12);
+  border: 1px solid rgba(61, 142, 184, 0.4);
+  border-radius: var(--oc-radius);
   z-index: 4;
 }
 
@@ -694,7 +742,7 @@
 
 .banner.offline p {
   margin: 0;
-  color: var(--ad-ink);
+  color: var(--oc-ink);
   font-size: 1rem;
 }
 
@@ -705,7 +753,7 @@
   inset: 0;
   max-width: 480px;
   margin: 0 auto;
-  background: rgba(5, 4, 3, 0.55);
+  background: rgba(40, 60, 80, 0.35);
   z-index: 20;
   display: flex;
   align-items: flex-end;
@@ -715,10 +763,11 @@
 .sheet {
   width: 100%;
   padding: 0.5rem 1rem calc(1rem + var(--safe-bottom) + 3.5rem);
-  background: var(--ad-bg-raised);
-  border-top: 1px solid var(--ad-stroke-strong);
+  background: var(--oc-bg-raised);
+  border-top: 1px solid var(--oc-stroke-strong);
   border-radius: 12px 12px 0 0;
   animation: sheet-up 0.22s ease-out;
+  box-shadow: 0 -8px 24px rgba(40, 60, 80, 0.15);
 }
 
 .sheet-handle {
@@ -726,7 +775,7 @@
   height: 4px;
   margin: 0.25rem auto 0.75rem;
   border-radius: 2px;
-  background: var(--ad-stroke-strong);
+  background: var(--oc-stroke-strong);
 }
 
 .sheet-header {
@@ -739,24 +788,24 @@
 
 .sheet-header h2 {
   margin: 0;
-  font-family: var(--ad-font-display);
+  font-family: var(--oc-font-display);
   font-size: 1.2rem;
   font-weight: 700;
-  letter-spacing: 0.04em;
-  color: var(--ad-ink);
+  letter-spacing: 0.03em;
+  color: var(--oc-ink);
 }
 
 .sheet-stats {
   margin: 0.65rem 0 0.85rem;
-  color: var(--ad-ink);
-  font-family: var(--ad-font-metric);
+  color: var(--oc-ink);
+  font-family: var(--oc-font-metric);
   font-size: 1.05rem;
   font-weight: 600;
 }
 
 .sheet-buy {
   width: 100%;
-  min-height: var(--ad-target-min);
+  min-height: var(--oc-target-min);
 }
 
 .sheet-close {
@@ -766,12 +815,12 @@
 /* Buttons */
 
 .btn {
-  border: 1px solid var(--ad-stroke-strong);
-  border-radius: var(--ad-radius);
+  border: 1px solid var(--oc-stroke-strong);
+  border-radius: var(--oc-radius);
   padding: 0.55rem 0.85rem;
-  min-height: var(--ad-target-min);
-  background: var(--ad-bg-raised);
-  color: var(--ad-ink);
+  min-height: var(--oc-target-min);
+  background: var(--oc-bg-raised);
+  color: var(--oc-ink);
   font-weight: 600;
   transition:
     background 0.15s ease,
@@ -785,11 +834,11 @@
 
 .btn.rake {
   padding: 0.55rem 1.1rem;
-  background: linear-gradient(180deg, var(--ad-ember-hot) 0%, var(--ad-ember) 100%);
-  border-color: #f0a060;
-  color: #fff8f0;
-  font-family: var(--ad-font-display);
-  letter-spacing: 0.05em;
+  background: linear-gradient(180deg, var(--oc-ember-hot) 0%, var(--oc-ember) 100%);
+  border-color: #f0b870;
+  color: #1a2330;
+  font-family: var(--oc-font-display);
+  letter-spacing: 0.04em;
   font-size: 0.9rem;
   font-weight: 700;
 }
@@ -800,48 +849,48 @@
 }
 
 .btn.buy {
-  background: linear-gradient(180deg, var(--ad-ember-hot) 0%, var(--ad-ember) 100%);
-  border-color: #f0a060;
-  color: #fff8f0;
+  background: linear-gradient(180deg, var(--oc-ember-hot) 0%, var(--oc-ember) 100%);
+  border-color: #f0b870;
+  color: #1a2330;
   font-weight: 700;
   font-size: 1rem;
 }
 
 .btn.buy:disabled {
-  background: linear-gradient(180deg, #3a3228 0%, #1c1814 100%);
-  border-color: var(--ad-stroke-strong);
-  color: var(--ad-ink-muted);
+  background: linear-gradient(180deg, #d8e2ec 0%, #b8c8d6 100%);
+  border-color: var(--oc-stroke);
+  color: var(--oc-ink-muted);
 }
 
 .btn.buy:not(:disabled):hover {
-  border-color: #ffc090;
-  filter: brightness(1.05);
+  border-color: #ffd090;
+  filter: brightness(1.03);
 }
 
 .btn.prestige {
   width: 100%;
   margin-top: 0.85rem;
   padding: 0.85rem 1rem;
-  background: linear-gradient(180deg, #a88448 0%, var(--ad-bronze) 100%);
-  border-color: var(--ad-bronze-pale);
-  color: #fff8f0;
-  font-family: var(--ad-font-display);
-  letter-spacing: 0.04em;
+  background: linear-gradient(180deg, #c4a868 0%, var(--oc-bronze) 100%);
+  border-color: var(--oc-bronze-pale);
+  color: #1a2330;
+  font-family: var(--oc-font-display);
+  letter-spacing: 0.03em;
   font-weight: 700;
   font-size: 1rem;
 }
 
 .btn.prestige:disabled {
-  background: linear-gradient(180deg, #3a3228 0%, #1c1814 100%);
-  border-color: var(--ad-stroke-strong);
-  color: var(--ad-ink-muted);
+  background: linear-gradient(180deg, #d8e2ec 0%, #b8c8d6 100%);
+  border-color: var(--oc-stroke);
+  color: var(--oc-ink-muted);
 }
 
 .btn.ghost {
   align-self: flex-start;
-  background: var(--ad-bg-inset);
-  border-color: var(--ad-stroke-strong);
-  color: var(--ad-ink);
+  background: var(--oc-bg-field);
+  border-color: var(--oc-stroke-strong);
+  color: var(--oc-ink);
   min-height: 40px;
 }
 
@@ -851,7 +900,7 @@
 
 .prestige-stats {
   margin: 0.5rem 0 0;
-  color: var(--ad-ink);
+  color: var(--oc-ink);
   font-size: 1rem;
   line-height: 1.5;
 }
@@ -864,28 +913,28 @@
 
 .clan-card {
   padding: 1rem 0 1.1rem;
-  border-bottom: 1px solid var(--ad-stroke);
+  border-bottom: 1px solid var(--oc-stroke);
 }
 
 .clan-card-label {
   font-size: 0.8rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--ad-ink-muted);
+  color: var(--oc-ink-muted);
   font-weight: 600;
 }
 
 .clan-card-name {
-  font-family: var(--ad-font-display);
+  font-family: var(--oc-font-display);
   font-size: 1.45rem;
   margin-top: 0.25rem;
-  color: var(--ad-ink);
+  color: var(--oc-ink);
   font-weight: 700;
 }
 
 .clan-card-meta {
   margin-top: 0.35rem;
-  color: var(--ad-ink-muted);
+  color: var(--oc-ink-muted);
   font-size: 0.95rem;
 }
 
@@ -901,31 +950,31 @@
   gap: 0.5rem;
   align-items: baseline;
   padding: 0.65rem 0;
-  border-bottom: 1px solid var(--ad-stroke);
-  color: var(--ad-ink);
+  border-bottom: 1px solid var(--oc-stroke);
+  color: var(--oc-ink);
   font-size: 1rem;
 }
 
 .leaderboard-row.you {
-  color: var(--ad-clan);
+  color: var(--oc-clan);
   font-weight: 600;
 }
 
 .lb-rank {
-  color: var(--ad-ink-muted);
+  color: var(--oc-ink-muted);
   font-variant-numeric: tabular-nums;
   font-weight: 600;
 }
 
 .lb-score {
   font-variant-numeric: tabular-nums;
-  color: var(--ad-ink);
-  font-family: var(--ad-font-metric);
+  color: var(--oc-ink);
+  font-family: var(--oc-font-metric);
   font-weight: 600;
 }
 
 .leaderboard-row.you .lb-score {
-  color: var(--ad-clan);
+  color: var(--oc-clan);
 }
 
 /* Nav */
@@ -941,8 +990,8 @@
   grid-template-columns: 1fr 1fr;
   gap: 0;
   padding: 0.35rem 0.35rem calc(0.35rem + var(--safe-bottom));
-  background: rgba(12, 11, 10, 0.96);
-  border-top: 1px solid var(--ad-stroke);
+  background: rgba(244, 247, 250, 0.96);
+  border-top: 1px solid var(--oc-stroke);
   backdrop-filter: blur(8px);
   z-index: 30;
 }
@@ -955,23 +1004,23 @@
   appearance: none;
   border: none;
   background: transparent;
-  color: var(--ad-ink-muted);
-  font-family: var(--ad-font-display);
+  color: var(--oc-ink-muted);
+  font-family: var(--oc-font-display);
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  font-size: 0.8125rem; /* 13px — readable nav labels */
+  font-size: 0.8125rem;
   font-weight: 600;
   padding: 0.85rem 0.25rem;
-  min-height: var(--ad-target-min);
+  min-height: var(--oc-target-min);
 }
 
 .tab.active {
-  color: var(--ad-ink);
+  color: var(--oc-ink);
   font-weight: 700;
-  box-shadow: inset 0 -2px 0 var(--ad-ember);
+  box-shadow: inset 0 -2px 0 var(--oc-ember);
 }
 
-@keyframes ember-drift {
+@keyframes station-drift {
   from {
     opacity: 0.85;
   }
@@ -980,7 +1029,7 @@
   }
 }
 
-@keyframes forge-breathe {
+@keyframes panel-breathe {
   from {
     opacity: 0.75;
     transform: scale(1);
@@ -991,13 +1040,24 @@
   }
 }
 
-@keyframes flame-flicker {
+@keyframes bit-pulse {
   0%,
   100% {
-    transform: translateX(-50%) scaleY(1);
+    transform: translateX(-50%) scale(1);
+    opacity: 0.85;
   }
   50% {
-    transform: translateX(-50%) scaleY(1.12);
+    transform: translateX(-50%) scale(1.08);
+    opacity: 1;
+  }
+}
+
+@keyframes fan-spin {
+  from {
+    transform: translateX(-50%) rotate(0deg);
+  }
+  to {
+    transform: translateX(-50%) rotate(360deg);
   }
 }
 
@@ -1021,45 +1081,32 @@
   }
 }
 
-/* Locked map buildings */
-
-.map-building.locked .map-building-label {
-  opacity: 0.92;
-}
-
-.map-building-locked {
-  color: var(--ad-bronze-pale);
-  font-size: 0.8125rem;
-  font-weight: 600;
-}
 
 .embers-line {
   margin: 0.15rem 0 0;
   font-size: 0.85rem;
-  font-family: var(--ad-font-metric);
+  font-family: var(--oc-font-metric);
   font-weight: 600;
-  color: var(--ad-bronze-pale);
+  color: var(--oc-bronze);
 }
-
-/* Prestige progress + ember shop */
 
 .prestige-bar {
   margin-top: 0.65rem;
   height: 8px;
-  background: var(--ad-bg-inset);
-  border: 1px solid var(--ad-stroke-strong);
+  background: var(--oc-bg-inset);
+  border: 1px solid var(--oc-stroke-strong);
   border-radius: 4px;
   overflow: hidden;
 }
 
 .prestige-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--ad-ember-dim), var(--ad-ember-hot));
+  background: linear-gradient(90deg, var(--oc-ember-dim), var(--oc-ember-hot));
   transition: width 0.25s ease;
 }
 
 .prestige-teaser {
-  color: var(--ad-bronze-pale);
+  color: var(--oc-bronze);
   font-weight: 700;
 }
 
@@ -1075,37 +1122,35 @@
   gap: 0.75rem;
   align-items: center;
   padding: 0.85rem 0;
-  border-bottom: 1px solid var(--ad-stroke);
+  border-bottom: 1px solid var(--oc-stroke);
 }
 
 .ember-shop-name {
-  font-family: var(--ad-font-display);
+  font-family: var(--oc-font-display);
   font-weight: 700;
-  color: var(--ad-ink);
+  color: var(--oc-ink);
   font-size: 1.05rem;
 }
 
 .ember-shop-rank {
-  font-family: var(--ad-font-metric);
+  font-family: var(--oc-font-metric);
   font-weight: 600;
-  color: var(--ad-ink-muted);
+  color: var(--oc-ink-muted);
   font-size: 0.9rem;
 }
 
 .ember-shop-blurb,
 .ember-shop-effect {
   margin: 0.2rem 0 0;
-  color: var(--ad-ink-muted);
+  color: var(--oc-ink-muted);
   font-size: 0.95rem;
 }
 
 .ember-shop-effect {
-  color: var(--ad-gain);
-  font-family: var(--ad-font-metric);
+  color: var(--oc-gain);
+  font-family: var(--oc-font-metric);
   font-weight: 600;
 }
-
-/* FTUE coach */
 
 .ftue-coach {
   position: fixed;
@@ -1125,10 +1170,10 @@
   flex-direction: column;
   gap: 0.65rem;
   padding: 0.85rem 1rem;
-  background: rgba(12, 11, 10, 0.96);
-  border: 1px solid var(--ad-stroke-strong);
-  border-radius: var(--ad-radius);
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55);
+  background: rgba(244, 247, 250, 0.98);
+  border: 1px solid var(--oc-stroke-strong);
+  border-radius: var(--oc-radius);
+  box-shadow: 0 10px 28px rgba(40, 60, 80, 0.18);
 }
 
 .ftue-eyebrow {
@@ -1136,21 +1181,21 @@
   font-size: 0.7rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--ad-ink-muted);
+  color: var(--oc-ink-muted);
   font-weight: 600;
 }
 
 .ftue-title {
   margin: 0.15rem 0 0;
-  font-family: var(--ad-font-display);
+  font-family: var(--oc-font-display);
   font-size: 1.1rem;
   font-weight: 700;
-  color: var(--ad-ink);
+  color: var(--oc-ink);
 }
 
 .ftue-body {
   margin: 0.35rem 0 0;
-  color: var(--ad-ink);
+  color: var(--oc-ink);
   font-size: 0.95rem;
   line-height: 1.45;
 }
@@ -1176,16 +1221,14 @@
 .ftue-target.map-building .map-building-label,
 .banner.ftue-target,
 .panel.ftue-target {
-  outline: 2px solid var(--ad-ember-hot);
+  outline: 2px solid var(--oc-ember-hot);
   outline-offset: 3px;
 }
 
 .tab.ftue-tab {
-  color: var(--ad-bronze-pale);
-  box-shadow: inset 0 -2px 0 var(--ad-bronze-pale);
+  color: var(--oc-bronze);
+  box-shadow: inset 0 -2px 0 var(--oc-bronze);
 }
-
-/* Install prompt — non-intrusive top chip */
 
 .install-prompt {
   position: fixed;
@@ -1200,23 +1243,23 @@
 
 .install-prompt-inner {
   padding: 0.75rem 0.9rem;
-  background: rgba(12, 11, 10, 0.96);
-  border: 1px solid var(--ad-stroke-strong);
-  border-radius: var(--ad-radius);
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.5);
+  background: rgba(244, 247, 250, 0.98);
+  border: 1px solid var(--oc-stroke-strong);
+  border-radius: var(--oc-radius);
+  box-shadow: 0 8px 22px rgba(40, 60, 80, 0.16);
 }
 
 .install-title {
   margin: 0;
-  font-family: var(--ad-font-display);
+  font-family: var(--oc-font-display);
   font-weight: 700;
   font-size: 1rem;
-  color: var(--ad-ink);
+  color: var(--oc-ink);
 }
 
 .install-body {
   margin: 0.35rem 0 0;
-  color: var(--ad-ink);
+  color: var(--oc-ink);
   font-size: 0.92rem;
   line-height: 1.4;
 }
@@ -1231,11 +1274,24 @@
   min-height: 40px;
 }
 
+.map-building.locked .map-building-label {
+  opacity: 0.92;
+}
+
+.map-building-locked {
+  color: var(--oc-bronze);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .map-haze,
   .map-forge-glow,
-  .building-sil.lit .sil-flame,
-  .building-sil.lit .sil-beacon,
+  .building-sil.lit .sil-leds,
+  .building-sil.lit .sil-fan,
+  .building-sil.lit .sil-core-glow,
+  .building-sil.lit .sil-ping,
+  .building-sil.lit .sil-beam,
   .sheet-backdrop,
   .sheet,
   .ftue-coach,

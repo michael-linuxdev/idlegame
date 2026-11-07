@@ -6,7 +6,7 @@ interface Props {
   locked?: boolean
 }
 
-/** Pure CSS module marks — readable on the station map at mobile size. */
+/** Pure CSS datacenter module marks — readable on the station map at mobile size. */
 export function BuildingSilhouette({ kind, level, locked = false }: Props) {
   const lit = level > 0 && !locked
   return (
@@ -14,49 +14,49 @@ export function BuildingSilhouette({ kind, level, locked = false }: Props) {
       className={`building-sil sil-${kind}${lit ? ' lit' : ' dormant'}${locked ? ' locked' : ''}`}
       aria-hidden="true"
     >
-      {kind === 'hearth' ? (
-        <>
-          <span className="sil-base" />
-          <span className="sil-body hearth-bowl" />
-          <span className="sil-flame" />
-        </>
-      ) : null}
-      {kind === 'mill' ? (
-        <>
-          <span className="sil-base" />
-          <span className="sil-body mill-tower" />
-          <span className="sil-wheel" />
-        </>
-      ) : null}
-      {kind === 'altar' ? (
+      {kind === 'power' ? (
         <>
           <span className="sil-base wide" />
-          <span className="sil-body altar-plinth" />
-          <span className="sil-spire" />
+          <span className="sil-body power-core" />
+          <span className="sil-core-glow" />
         </>
       ) : null}
-      {kind === 'vault' ? (
-        <>
-          <span className="sil-base wide" />
-          <span className="sil-body vault-chamber" />
-          <span className="sil-door" />
-        </>
-      ) : null}
-      {kind === 'watch' ? (
+      {kind === 'cool' ? (
         <>
           <span className="sil-base" />
-          <span className="sil-body watch-shaft" />
-          <span className="sil-battlement" />
-          <span className="sil-beacon" />
+          <span className="sil-body cool-plant" />
+          <span className="sil-fan" />
         </>
       ) : null}
-      {kind === 'keep' ? (
+      {kind === 'rack' ? (
+        <>
+          <span className="sil-base" />
+          <span className="sil-body rack-cabinet" />
+          <span className="sil-leds" />
+        </>
+      ) : null}
+      {kind === 'uplink' ? (
+        <>
+          <span className="sil-base" />
+          <span className="sil-body uplink-mast" />
+          <span className="sil-dish" />
+          <span className="sil-ping" />
+        </>
+      ) : null}
+      {kind === 'relay' ? (
+        <>
+          <span className="sil-base" />
+          <span className="sil-body relay-stack" />
+          <span className="sil-beam" />
+        </>
+      ) : null}
+      {kind === 'switch' ? (
         <>
           <span className="sil-base wide" />
-          <span className="sil-body keep-hall" />
-          <span className="sil-keep-tower left" />
-          <span className="sil-keep-tower right" />
-          <span className="sil-banner" />
+          <span className="sil-body noc-deck" />
+          <span className="sil-hub-tower left" />
+          <span className="sil-hub-tower right" />
+          <span className="sil-antenna" />
         </>
       ) : null}
     </div>

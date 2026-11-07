@@ -15,9 +15,9 @@ export default defineConfig({
         name: 'Orbit Rack',
         short_name: 'Orbit Rack',
         description:
-          'Run a space data center. Modules produce Compute offline. Prestige for Credits.',
-        theme_color: '#1a1410',
-        background_color: '#0e0b09',
+          'Build and operate orbital datacenters. Modules mint Compute offline. Prestige for Credits.',
+        theme_color: '#e8eef4',
+        background_color: '#d8e2ec',
         display: 'standalone',
         orientation: 'portrait',
         start_url: './',
