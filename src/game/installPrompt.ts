@@ -1,6 +1,6 @@
 /**
- * PWA install nudge — non-intrusive, dismissible, persisted.
- * Economy Day-1: after first offline return ≥5 min away.
+ * PWA install nudge — Android beforeinstallprompt + iOS Share tip.
+ * Non-spammy: shown once, dismiss persisted. Economy Day-1: after offline ≥5 min.
  */
 
 export const INSTALL_STORAGE_KEY = 'orbit-rack-install-v1'
@@ -14,6 +14,7 @@ const LEGACY_INSTALL_KEYS = [
 export interface InstallPrefs {
   dismissed: boolean
   installed: boolean
+  /** Banner was shown at least once — never auto-resurface */
   shown: boolean
 }
 
@@ -63,6 +64,14 @@ export function isIosSafari(): boolean {
     /iPad|iPhone|iPod/.test(ua) ||
     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
   const webkit = /WebKit/.test(ua)
-  const chrome = /CriOS|Chrome|Firefox|EdgiOS/.test(ua)
+  const chrome = /CriOS|FxiOS|EdgiOS|OPiOS/.test(ua)
   return iOS && webkit && !chrome
+}
+
+export type InstallMode = 'android' | 'ios' | 'manual'
+
+export function detectInstallMode(hasDeferredPrompt: boolean): InstallMode {
+  if (hasDeferredPrompt) return 'android'
+  if (isIosSafari()) return 'ios'
+  return 'manual'
 }

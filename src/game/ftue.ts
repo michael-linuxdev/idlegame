@@ -1,6 +1,6 @@
 /**
- * First-10-minutes guided beats (gdd-mvp.md §7 structure + economy Day-1 hooks).
- * Copy: space data centers / Orbit Rack. Dismissible, persisted — never blocks idle.
+ * First-10-minutes guided beats (gdd-mvp.md §7 + economy Day-1 hooks).
+ * Copy: Orbit Rack datacenter Ops voice. Dismissible, persisted — never blocks idle.
  */
 
 export type FtueBeatId =
@@ -30,6 +30,9 @@ const BEAT_ORDER: FtueBeatId[] = [
   'prestigeTeaser',
   'done',
 ]
+
+/** Beats that count toward the step chip (excludes `done`) */
+export const FTUE_STEP_BEATS: FtueBeatId[] = BEAT_ORDER.filter((b) => b !== 'done')
 
 const LEGACY_FTUE_KEYS = ['orbital-claim-ftue-v1', 'ash-dominion-ftue-v1'] as const
 
@@ -87,10 +90,17 @@ export function nextBeat(current: FtueBeatId): FtueBeatId {
   return BEAT_ORDER[i + 1]!
 }
 
+export function ftueStepIndex(beat: FtueBeatId): { step: number; total: number } {
+  const total = FTUE_STEP_BEATS.length
+  const idx = FTUE_STEP_BEATS.indexOf(beat)
+  return { step: idx < 0 ? total : idx + 1, total }
+}
+
 export interface FtueCopy {
   title: string
   body: string
   cta: string
+  /** Secondary — advance without the primary action */
   skipLabel?: string
   highlight?: 'emberPit' | 'ashForge' | 'clan' | 'prestige' | 'offline'
 }
@@ -99,48 +109,54 @@ export function ftueCopy(beat: FtueBeatId): FtueCopy | null {
   switch (beat) {
     case 'welcome':
       return {
-        title: 'Bring the station online',
-        body: 'This build map is home. Modules produce Compute while you are away.',
-        cta: 'Take ops',
+        title: 'Station online',
+        body: 'Orbit Rack is your floor. Modules mint Compute while you are away.',
+        cta: 'Open Ops',
       }
     case 'upgradePit':
       return {
-        title: 'Upgrade the Power Plant',
-        body: 'Tap the plant, then upgrade. Throughput climbs with every level.',
-        cta: 'Got it',
+        title: 'Upgrade Power Plant',
+        body: 'Tap the plant on the map → Upgrade. Throughput rises each level.',
+        cta: 'Next',
         highlight: 'emberPit',
       }
     case 'claimOffline':
       return {
-        title: 'Idle is real',
-        body: 'Leave briefly, then return — catchup credits Compute up to the offline cap.',
-        cta: 'Understood',
+        title: 'Idle banks Compute',
+        body: 'Leave the app, then return. Catchup pays up to the offline cap.',
+        cta: 'Got it',
         highlight: 'offline',
       }
     case 'unlockForge':
       return {
-        title: 'Spin up Cooling Array',
-        body: 'Earn 250 Compute this run to unlock the second module on the map.',
-        cta: 'On it',
+        title: 'Bring Cooling online',
+        body: 'Earn 200 Compute this run (or Power Plant Lv 10) to unlock Cooling Array.',
+        cta: 'Next',
         highlight: 'ashForge',
       }
     case 'visitClan':
       return {
-        title: 'Clans await',
-        body: 'Peek at the Clan tab — seasonal orbit slots come later. No action required.',
+        title: 'Clan roster',
+        body: 'Optional peek — seasonal orbit slots come later. No action required.',
         cta: 'Open Clan',
-        skipLabel: 'Later',
+        skipLabel: 'Skip',
         highlight: 'clan',
       }
     case 'prestigeTeaser':
       return {
-        title: 'Credits await',
-        body: 'Prestige soft-resets the run for Credits — permanent meta power. Check Prestige when ready.',
-        cta: 'Finish guide',
+        title: 'Credits meta',
+        body: 'Prestige soft-resets the run for Credits — permanent rack power. Check Prestige when ready.',
+        cta: 'Done',
         skipLabel: 'Dismiss',
         highlight: 'prestige',
       }
     case 'done':
       return null
   }
+}
+
+/** Early beats where install nudge would clutter the floor */
+export function ftueBlocksInstall(beat: FtueBeatId, dismissed: boolean): boolean {
+  if (dismissed || beat === 'done') return false
+  return beat === 'welcome' || beat === 'upgradePit' || beat === 'claimOffline'
 }

@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import {
+  ftueBlocksInstall,
   ftueCopy,
+  ftueStepIndex,
   loadFtue,
   nextBeat,
   saveFtue,
@@ -16,6 +18,7 @@ interface Props {
   game: GameApi
   onTabChange: (tab: Tab) => void
   onHighlightChange: (id: string | null) => void
+  onFtueActiveChange?: (active: boolean) => void
 }
 
 function advanceFtue(s: FtueState, from: FtueBeatId): FtueState {
@@ -24,22 +27,46 @@ function advanceFtue(s: FtueState, from: FtueBeatId): FtueState {
   return { ...s, beat: nextBeat(from), completed }
 }
 
-export function FtueCoach({ game, onTabChange, onHighlightChange }: Props) {
+export function FtueCoach({
+  game,
+  onTabChange,
+  onHighlightChange,
+  onFtueActiveChange,
+}: Props) {
   const [ftue, setFtue] = useState<FtueState>(() => loadFtue())
 
   useEffect(() => {
     saveFtue(ftue)
   }, [ftue])
 
-  // Sync map/tab highlight with current beat (advances only via CTAs — never blocks idle)
+  const active = !ftue.dismissed && ftue.beat !== 'done'
+
   useEffect(() => {
-    if (ftue.dismissed || ftue.beat === 'done') {
+    onFtueActiveChange?.(active && ftueBlocksInstall(ftue.beat, ftue.dismissed))
+  }, [active, ftue.beat, ftue.dismissed, onFtueActiveChange])
+
+  // Sync map/tab highlight with current beat (advances only via CTAs / auto — never blocks idle)
+  useEffect(() => {
+    if (!active) {
       onHighlightChange(null)
       return
     }
     const copy = ftueCopy(ftue.beat)
     onHighlightChange(copy?.highlight ?? null)
-  }, [ftue.beat, ftue.dismissed, onHighlightChange])
+  }, [ftue.beat, active, onHighlightChange])
+
+  // Auto-advance when the player actually does the beat (less CTA clutter)
+  const pitLevel = game.state.owned.emberPit ?? 0
+  const coolingOpen = game.unlocked('ashForge')
+  useEffect(() => {
+    if (!active) return
+    if (ftue.beat === 'upgradePit' && pitLevel > 1) {
+      setFtue((s) => advanceFtue(s, 'upgradePit'))
+    }
+    if (ftue.beat === 'unlockForge' && coolingOpen) {
+      setFtue((s) => advanceFtue(s, 'unlockForge'))
+    }
+  }, [active, ftue.beat, pitLevel, coolingOpen])
 
   function onPrimary() {
     if (ftue.beat === 'welcome') {
@@ -75,16 +102,20 @@ export function FtueCoach({ game, onTabChange, onHighlightChange }: Props) {
     onHighlightChange(null)
   }
 
-  if (ftue.dismissed || ftue.beat === 'done') return null
+  if (!active) return null
 
   const copy = ftueCopy(ftue.beat)
   if (!copy) return null
+
+  const { step, total } = ftueStepIndex(ftue.beat)
 
   return (
     <aside className="ftue-coach" role="dialog" aria-labelledby="ftue-title">
       <div className="ftue-coach-inner">
         <div className="ftue-coach-text">
-          <p className="ftue-eyebrow">Guide</p>
+          <p className="ftue-eyebrow">
+            Ops guide · {step}/{total}
+          </p>
           <h2 id="ftue-title" className="ftue-title">
             {copy.title}
           </h2>
@@ -102,10 +133,11 @@ export function FtueCoach({ game, onTabChange, onHighlightChange }: Props) {
             >
               {copy.skipLabel}
             </button>
-          ) : null}
-          <button type="button" className="btn ghost ftue-dismiss" onClick={dismissAll}>
-            Skip guide
-          </button>
+          ) : (
+            <button type="button" className="btn ghost ftue-dismiss" onClick={dismissAll}>
+              Skip
+            </button>
+          )}
         </div>
       </div>
     </aside>

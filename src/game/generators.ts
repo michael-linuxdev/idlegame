@@ -54,6 +54,11 @@ export interface GeneratorDef {
 /**
  * Bau-Map v2 — six fixed slots (layout from map worker).
  * G1–G3 rates/costs/growth from economy.md; G4–G6 extend the curve.
+ *
+ * Feel polish (IG-19) — small early-game knobs only (documented):
+ * - G2 unlock 250 → 200 Compute (closes dead wait before second module)
+ * - G2 C0 120 → 100 (matches gdd sketch; first Cooling buy sooner after unlock)
+ * Formulas R(n)/C(n), G1, G3–G6 unchanged.
  */
 export const GENERATORS: GeneratorDef[] = [
   {
@@ -75,9 +80,9 @@ export const GENERATORS: GeneratorDef[] = [
     slot: { left: '74%', top: '54%' },
     silhouette: 'cool',
     baseRate: 8,
-    baseCost: 120,
+    baseCost: 100,
     costScale: 1.14,
-    unlock: { ashEarned: 250, requires: { id: 'emberPit', level: 10 } },
+    unlock: { ashEarned: 200, requires: { id: 'emberPit', level: 10 } },
   },
   {
     id: 'cinderBarracks',

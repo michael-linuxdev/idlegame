@@ -25,7 +25,7 @@ export function FortressMap({ game, highlightId }: Props) {
     <section className="fortress-home" aria-labelledby="ash-heading">
       <header className="map-hud">
         <div className="map-hud-brand">
-          <p className="eyebrow">Ops · Space Data Center</p>
+          <p className="eyebrow">Tech · Ops</p>
           <h1 id="ash-heading" className="brand wordmark">
             Orbit Rack
           </h1>

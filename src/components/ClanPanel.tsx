@@ -12,6 +12,7 @@ export function ClanPanel() {
   return (
     <section className="panel clan-panel" aria-labelledby="clan-heading">
       <header className="panel-header">
+        <p className="eyebrow">Tech · Ops</p>
         <h2 id="clan-heading">Clan</h2>
         <p className="muted">
           Seasonal orbit slots are shared on the map. Backend comes later — this is

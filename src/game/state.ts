@@ -51,8 +51,9 @@ export function emptyOwned(): Record<GeneratorId, number> {
 
 export function createInitialState(now = Date.now()): GameState {
   return {
-    // Day-1: first Power Plant upgrade affordable immediately (C0 = 15)
-    ash: 15,
+    // Day-1: first Power Plant upgrade affordable immediately
+    // (Lv1→2 costs floor(15·1.15)=17; start with a small ops float)
+    ash: 20,
     ashEarned: 0,
     owned: emptyOwned(),
     embers: 0,
