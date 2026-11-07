@@ -272,8 +272,11 @@
 }
 
 .theme-map-arcade .fortress-map {
-  background: #a8bfd4;
-  box-shadow: 0 14px 32px rgba(40, 60, 90, 0.2);
+  background: #7a9ab8;
+  min-height: 380px;
+  box-shadow: 0 16px 36px rgba(40, 60, 90, 0.24);
+  transform: perspective(960px) rotateX(10deg);
+  border-color: #5a7a98;
 }
 
 .map-terrain {
@@ -332,192 +335,75 @@
 }
 
 .map-terrain-arcade {
-  background:
-    radial-gradient(90% 55% at 50% 110%, rgba(217, 24, 114, 0.18), transparent 60%),
-    radial-gradient(42% 32% at 18% 12%, rgba(10, 156, 186, 0.32), transparent 70%),
-    radial-gradient(36% 28% at 82% 18%, rgba(242, 77, 154, 0.2), transparent 65%),
-    radial-gradient(28% 22% at 50% 8%, rgba(255, 255, 255, 0.45), transparent 70%),
-    linear-gradient(168deg, #d4e4f4 0%, #b8cce2 38%, #9cb4cc 100%);
+  background: #b0c8dc;
+  overflow: hidden;
 }
 
-.map-arcade-ceiling {
+/* Rich SVG arcade hall */
+.arcade-hall-svg {
   position: absolute;
-  inset: 0 0 62% 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
   pointer-events: none;
   z-index: 0;
-  background:
-    repeating-linear-gradient(
-      90deg,
-      transparent 0 11%,
-      rgba(10, 156, 186, 0.12) 11% 12%,
-      transparent 12% 22%,
-      rgba(217, 24, 114, 0.1) 22% 23%,
-      transparent 23% 100%
-    ),
-    linear-gradient(180deg, rgba(230, 240, 250, 0.75), transparent 85%);
-  mask-image: linear-gradient(180deg, #000 30%, transparent 100%);
 }
 
-.map-arcade-neon-beams {
-  position: absolute;
-  inset: 8% 6% 55% 6%;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.55;
-  background:
-    linear-gradient(90deg, transparent, rgba(10, 156, 186, 0.45) 20%, transparent 40%),
-    linear-gradient(90deg, transparent 55%, rgba(217, 24, 114, 0.4) 75%, transparent);
-  filter: blur(6px);
-  animation: arcade-neon-sweep 7s ease-in-out infinite alternate;
-}
-
-.map-arcade-wash {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.62), transparent 82%);
-}
-
-.map-arcade-carpet {
-  position: absolute;
-  left: 8%;
-  right: 8%;
-  top: 28%;
-  bottom: 12%;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.22;
-  border-radius: 6px;
-  background:
-    repeating-linear-gradient(
-      45deg,
-      rgba(10, 156, 186, 0.35) 0 6px,
-      transparent 6px 14px,
-      rgba(217, 24, 114, 0.28) 14px 20px,
-      transparent 20px 28px
-    );
-  mask-image: radial-gradient(ellipse at 50% 55%, #000 40%, transparent 85%);
-}
-
-.map-arcade-ticket-booth {
-  position: absolute;
-  left: 6%;
-  bottom: 18%;
-  width: 14%;
-  height: 16%;
-  pointer-events: none;
-  z-index: 1;
-  border-radius: 3px 3px 2px 2px;
-  background:
-    linear-gradient(180deg, #eef4fa 0%, #7a94ae 100%);
-  box-shadow:
-    inset 0 -3px 0 rgba(10, 156, 186, 0.45),
-    0 3px 8px rgba(40, 60, 90, 0.18);
-  opacity: 0.55;
-}
-
-.map-arcade-ticket-booth::before {
-  content: '';
-  position: absolute;
-  left: 18%;
-  right: 18%;
-  top: 22%;
-  height: 28%;
-  border-radius: 2px;
-  background: rgba(10, 156, 186, 0.55);
-}
-
-.map-arcade-prize-counter {
-  position: absolute;
-  right: 5%;
-  bottom: 16%;
-  width: 18%;
-  height: 14%;
-  pointer-events: none;
-  z-index: 1;
-  border-radius: 3px;
-  background:
-    linear-gradient(180deg, #f5f8fc, #9ab0c8);
-  box-shadow:
-    inset 0 -3px 0 rgba(217, 24, 114, 0.4),
-    0 3px 8px rgba(40, 60, 90, 0.16);
-  opacity: 0.5;
-}
-
-.map-arcade-prize-counter::before {
-  content: '';
-  position: absolute;
-  inset: 18% 12% 40% 12%;
-  border-radius: 2px;
-  background:
-    repeating-linear-gradient(
-      90deg,
-      rgba(10, 156, 186, 0.55) 0 18%,
-      rgba(217, 24, 114, 0.5) 18% 36%,
-      rgba(201, 162, 39, 0.55) 36% 54%,
-      transparent 54% 100%
-    );
-}
-
-.map-arcade-marquee-glow {
-  position: absolute;
-  left: 34%;
-  right: 34%;
-  top: 10%;
-  height: 14%;
-  pointer-events: none;
-  z-index: 1;
-  border-radius: 50%;
+.arcade-hall-glow {
+  left: 16%;
+  bottom: 4%;
+  width: 68%;
+  height: 50%;
   background: radial-gradient(
-    ellipse at center,
-    rgba(10, 156, 186, 0.45),
-    rgba(217, 24, 114, 0.22) 45%,
-    transparent 70%
+    ellipse at 50% 68%,
+    rgba(10, 156, 186, 0.36) 0%,
+    rgba(217, 24, 114, 0.14) 42%,
+    transparent 72%
   );
-  filter: blur(4px);
-  animation: arcade-marquee-pulse 3.2s ease-in-out infinite alternate;
+  z-index: 1;
 }
 
-.map-arcade-coin-glints {
-  position: absolute;
-  inset: 30% 12% 18% 12%;
-  pointer-events: none;
-  z-index: 2;
-  opacity: 0.55;
-  background-image:
-    radial-gradient(1.6px 1.6px at 15% 40%, rgba(201, 162, 39, 0.85), transparent),
-    radial-gradient(1.2px 1.2px at 62% 28%, rgba(255, 255, 255, 0.8), transparent),
-    radial-gradient(1.4px 1.4px at 78% 55%, rgba(10, 156, 186, 0.75), transparent),
-    radial-gradient(1px 1px at 42% 70%, rgba(217, 24, 114, 0.7), transparent),
-    radial-gradient(1.3px 1.3px at 88% 35%, rgba(201, 162, 39, 0.7), transparent);
+.arcade-hall-haze {
+  background: radial-gradient(
+    circle at 50% 35%,
+    transparent 40%,
+    rgba(180, 200, 220, 0.3) 100%
+  );
+}
+
+.theme-map-arcade .arcade-neon-rail {
+  animation: arcade-neon-tube 2.6s ease-in-out infinite alternate;
+}
+
+.theme-map-arcade .arcade-ceiling-bulb,
+.theme-map-arcade .arcade-marquee-bulb {
+  animation: arcade-marquee-pulse 2.8s ease-in-out infinite alternate;
+}
+
+.theme-map-arcade .arcade-coin-glints {
   animation: arcade-coin-twinkle 4.5s ease-in-out infinite alternate;
 }
 
-@keyframes arcade-neon-sweep {
-  from {
-    opacity: 0.35;
-    transform: translateX(-2%);
-  }
-  to {
-    opacity: 0.65;
-    transform: translateX(2%);
-  }
+.theme-map-arcade .arcade-screen-glow {
+  animation: arcade-screen-glow 2.8s ease-in-out infinite alternate;
 }
 
 @keyframes arcade-marquee-pulse {
   from {
     opacity: 0.55;
-    transform: scale(0.96);
   }
   to {
-    opacity: 0.95;
-    transform: scale(1.04);
+    opacity: 1;
   }
 }
 
 @keyframes arcade-coin-twinkle {
   from {
-    opacity: 0.35;
+    opacity: 0.4;
   }
   to {
-    opacity: 0.7;
+    opacity: 0.85;
   }
 }
 
@@ -728,16 +614,25 @@
 
 /* Tokenhalle neon cabinet juice */
 .theme-map-arcade .map-building.producing .building-sil {
-  filter: drop-shadow(0 4px 4px rgba(40, 60, 90, 0.28))
+  filter: drop-shadow(0 5px 5px rgba(40, 60, 90, 0.3))
     drop-shadow(0 0 8px rgba(10, 156, 186, 0.45))
     drop-shadow(0 0 4px rgba(217, 24, 114, 0.3));
 }
 
 .theme-map-arcade .map-building.selected .building-sil,
+.theme-map-arcade .map-building:focus-visible .building-sil,
 .theme-map-arcade .building-sil.selected {
   outline-color: var(--oc-ember);
-  filter: drop-shadow(0 4px 4px rgba(40, 60, 90, 0.28))
+  outline-offset: 4px;
+  border-radius: 8px;
+  filter: drop-shadow(0 6px 8px rgba(40, 60, 90, 0.32))
     drop-shadow(0 0 10px rgba(217, 24, 114, 0.4));
+}
+
+.theme-map-arcade .map-building.locked .building-sil {
+  opacity: 0.72;
+  filter: saturate(0.55) brightness(1.05)
+    drop-shadow(0 3px 3px rgba(40, 60, 90, 0.24));
 }
 
 .theme-map-arcade .building-sil.lit .sil-led.core {
@@ -1254,6 +1149,38 @@
   max-width: 5.4rem;
 }
 
+/* Arcade map: cabinets readable, plaques compact under art */
+.theme-map-arcade .fortress-map.slots-10 .map-building {
+  width: min(26%, 96px);
+  min-width: 76px;
+  gap: 0.06rem;
+  padding: 0.05rem 0.06rem 0.12rem;
+  transform: translate(-50%, -70%);
+}
+
+.theme-map-arcade .fortress-map.slots-10 .building-sil {
+  width: 64px;
+  height: 56px;
+  z-index: 1;
+  filter: drop-shadow(0 4px 4px rgba(30, 50, 80, 0.34));
+}
+
+.theme-map-arcade .fortress-map.slots-10 .building-sil .sil-svg {
+  width: 64px;
+  height: 56px;
+}
+
+.theme-map-arcade .fortress-map.slots-10 .map-building-name {
+  font-size: 0.56rem;
+  letter-spacing: 0.01em;
+  max-width: 5rem;
+}
+
+.theme-map-arcade .fortress-map.slots-10 .map-building-label {
+  padding: 0.12rem 0.3rem 0.14rem;
+  max-width: 5.4rem;
+}
+
 .map-building.selected .building-sil,
 .map-building:focus-visible .building-sil,
 .building-sil.selected {
@@ -1351,6 +1278,28 @@
     0 0 0 2px color-mix(in srgb, var(--oc-ember) 32%, transparent);
 }
 
+/* Arcade plaques — compact under-art labels, less overlap */
+.theme-map-arcade .map-building-label {
+  gap: 0.02rem;
+  padding: 0.12rem 0.3rem 0.14rem;
+  background: color-mix(in srgb, #f5f8fc 88%, #ffffff);
+  border: 1.5px solid color-mix(in srgb, var(--oc-stroke-strong) 75%, #0a9cba);
+  border-radius: 6px;
+  box-shadow:
+    0 2px 5px rgba(40, 60, 90, 0.16),
+    0 1px 0 rgba(255, 255, 255, 0.55) inset;
+  max-width: 5.4rem;
+  z-index: 2;
+}
+
+.theme-map-arcade .map-building.selected .map-building-label {
+  border-color: var(--oc-ember);
+  background: color-mix(in srgb, #f5f8fc 78%, var(--oc-ember-hot));
+  box-shadow:
+    0 4px 12px rgba(40, 60, 90, 0.2),
+    0 0 0 2px color-mix(in srgb, var(--oc-ember) 32%, transparent);
+}
+
 .map-building.locked .map-building-label {
   border-color: color-mix(in srgb, var(--oc-warn) 70%, var(--oc-stroke-strong));
   border-style: dashed;
@@ -1364,6 +1313,13 @@
   opacity: 0.92;
 }
 
+.theme-map-arcade .map-building.locked .map-building-label {
+  border-style: dashed;
+  border-color: color-mix(in srgb, var(--oc-warn) 70%, var(--oc-stroke));
+  background: color-mix(in srgb, #eef2f8 88%, var(--oc-bg-inset));
+  opacity: 0.92;
+}
+
 .map-building-name {
   font-family: var(--oc-font-display);
   font-size: 0.9375rem;
@@ -1374,7 +1330,8 @@
   line-height: 1.2;
 }
 
-.theme-map-farm .map-building-name {
+.theme-map-farm .map-building-name,
+.theme-map-arcade .map-building-name {
   max-width: 5rem;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1392,7 +1349,8 @@
   line-height: 1.15;
 }
 
-.theme-map-farm .map-building-meta {
+.theme-map-farm .map-building-meta,
+.theme-map-arcade .map-building-meta {
   gap: 0.2rem;
   font-size: 0.6rem;
 }
@@ -1413,7 +1371,8 @@
   font-weight: 700;
 }
 
-.theme-map-farm .map-building-lock {
+.theme-map-farm .map-building-lock,
+.theme-map-arcade .map-building-lock {
   font-size: 0.58rem;
   letter-spacing: 0.05em;
 }
@@ -3614,8 +3573,49 @@
   transform: perspective(1300px) rotateX(5deg);
 }
 
+.app-main.map-mode .fortress-stage.theme-map-arcade .fortress-map {
+  min-height: 100%;
+  background: #7a9ab8;
+  transform: perspective(1300px) rotateX(5deg);
+  border-color: transparent;
+}
+
 .app-main.map-mode .map-hint {
   display: none;
+}
+
+/*
+ * Tokenhalle: glass overlay only — never opaque stacked cards over the hall.
+ * Hall stays the hero; chrome is a thin translucent tray.
+ */
+html[data-theme='arcade'] .app-main.map-mode .map-hud-tray {
+  background: color-mix(in srgb, var(--oc-bg-raised) 55%, transparent);
+  border-color: color-mix(in srgb, var(--oc-stroke-strong) 45%, transparent);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.4) inset,
+    0 4px 14px rgba(30, 50, 80, 0.12);
+}
+
+html[data-theme='arcade'] .app-main.map-mode .map-hud {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--oc-bg-raised) 42%, transparent) 0%,
+    transparent 100%
+  );
+}
+
+html[data-theme='arcade'] .app-main.map-mode .next-goal-strip {
+  background: color-mix(in srgb, var(--oc-bg-raised) 52%, transparent);
+  border-color: color-mix(in srgb, var(--oc-stroke-strong) 40%, transparent);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.4) inset,
+    0 3px 10px rgba(30, 50, 80, 0.1);
+}
+
+html[data-theme='arcade'] .app-main.map-mode .banner.offline.map-banner,
+html[data-theme='arcade'] .app-main.map-mode .banner.daily-ops.map-banner,
+html[data-theme='arcade'] .app-main.map-mode .banner.event-surge.map-banner {
+  background: color-mix(in srgb, var(--oc-bg-raised) 58%, transparent);
 }
 
 /* Compact floating chrome over the map — shared tray language */
@@ -3786,6 +3786,12 @@
   .farm-yard-haze,
   .theme-map-farm .farm-led-dot,
   .theme-map-farm .farm-pollen,
+  .arcade-neon-rail,
+  .arcade-ceiling-bulb,
+  .arcade-marquee-bulb,
+  .arcade-coin-glints,
+  .arcade-screen-glow,
+  .arcade-hall-glow,
   .building-sil.lit .sil-led,
   .building-sil.lit .sil-ping,
   .building-sil.lit .sil-beam,

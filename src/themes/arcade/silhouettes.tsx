@@ -8,7 +8,7 @@ interface Props {
   selected?: boolean
 }
 
-/** Distinct SVG arcade cabinets — cyan/magenta neon, pale hulls, readable at map scale. */
+/** Premium arcade cabinets — cyan/magenta neon, pale hulls, readable at phone scale. */
 export function ArcadeSilhouettes({
   kind,
   level,
@@ -28,9 +28,9 @@ export function ArcadeSilhouettes({
     <div className={state} aria-hidden="true" data-level={level}>
       <svg
         className="sil-svg"
-        viewBox="0 0 80 70"
-        width="72"
-        height="63"
+        viewBox="0 0 96 84"
+        width="84"
+        height="74"
         focusable="false"
       >
         <defs>
@@ -71,460 +71,503 @@ export function ArcadeSilhouettes({
 
         <ellipse
           className="sil-pad"
-          cx="40"
-          cy="63"
-          rx="30"
-          ry="5.5"
+          cx="48"
+          cy="76"
+          rx="34"
+          ry="7"
           fill={`url(#arc-pad-${kind})`}
         />
         <ellipse
-          cx="40"
-          cy="36"
-          rx="26"
-          ry="22"
+          cx="48"
+          cy="42"
+          rx="30"
+          ry="26"
           fill={`url(#arc-glow-${kind})`}
-          opacity="0.45"
+          opacity="0.4"
           className="sil-arcade-glow"
         />
 
-        {kind === 'power' ? <ClassicCabinetArt /> : null}
-        {kind === 'cool' ? <TicketPrinterArt /> : null}
-        {kind === 'rack' ? <RacingCabArt /> : null}
-        {kind === 'uplink' ? <ClawMachineArt /> : null}
-        {kind === 'relay' ? <DancePadArt /> : null}
-        {kind === 'switch' ? <PrizeWallArt /> : null}
-        {kind === 'battery' ? <TokenChangerArt /> : null}
-        {kind === 'cache' ? <PinballArt /> : null}
-        {kind === 'quantum' ? <LightGunArt /> : null}
-        {kind === 'scrub' ? <TournamentDeskArt /> : null}
+        {kind === 'power' ? <ClassicCabinetArt id={kind} /> : null}
+        {kind === 'cool' ? <TicketPrinterArt id={kind} /> : null}
+        {kind === 'rack' ? <RacingCabArt id={kind} /> : null}
+        {kind === 'uplink' ? <ClawMachineArt id={kind} /> : null}
+        {kind === 'relay' ? <DancePadArt id={kind} /> : null}
+        {kind === 'switch' ? <PrizeWallArt id={kind} /> : null}
+        {kind === 'battery' ? <TokenChangerArt id={kind} /> : null}
+        {kind === 'cache' ? <PinballArt id={kind} /> : null}
+        {kind === 'quantum' ? <LightGunArt id={kind} /> : null}
+        {kind === 'scrub' ? <TournamentDeskArt id={kind} /> : null}
       </svg>
       {producing ? <span className="sil-particles sil-arcade-tokens" /> : null}
     </div>
   )
 }
 
-function ClassicCabinetArt() {
+function ClassicCabinetArt({ id }: { id: string }) {
   return (
     <g className="art-power">
       <path
         className="sil-hull"
-        d="M21 57 L18 24 Q18 12 40 9 Q62 12 62 24 L59 57 Z"
-        fill="url(#arc-hull-power)"
+        d="M22 70 L18 28 Q18 12 48 8 Q78 12 78 28 L74 70 Z"
+        fill={`url(#arc-hull-${id})`}
         stroke="#4a6a88"
-        strokeWidth="1.5"
+        strokeWidth="1.6"
       />
       <path
-        d="M22 24 Q22 14 40 12 Q58 14 58 24"
+        d="M24 28 Q24 14 48 11 Q72 14 72 28"
         fill="none"
-        stroke="url(#arc-neon-m-power)"
-        strokeWidth="2.2"
+        stroke={`url(#arc-neon-m-${id})`}
+        strokeWidth="2.6"
         className="sil-neon-tube"
       />
-      <rect x="24" y="18" width="32" height="20" rx="2" fill="#0d1a28" opacity="0.92" />
+      <rect x="28" y="20" width="40" height="26" rx="2.5" fill="#0d1a28" opacity="0.92" />
       <rect
-        x="26"
-        y="20"
-        width="28"
-        height="16"
-        rx="1.2"
-        fill="url(#arc-screen-power)"
+        x="30"
+        y="22"
+        width="36"
+        height="22"
+        rx="1.5"
+        fill={`url(#arc-screen-${id})`}
         className="sil-screen"
       />
-      <path d="M30 24 H50 M34 28 H46 M32 32 H48" stroke="#5ecfe0" strokeWidth="0.9" opacity="0.55" />
-      <circle className="sil-led core" cx="40" cy="28" r="3.2" fill="#d91872" />
-      <rect x="26" y="42" width="28" height="8" rx="1.5" fill="#e8f0f8" stroke="#5a7a98" strokeWidth="0.85" />
-      <circle className="sil-led amber" cx="32" cy="46" r="2.1" fill="#d91872" />
-      <circle cx="40" cy="46" r="3.2" fill="#c2d2e4" stroke="#4a6a88" strokeWidth="0.9" />
-      <circle className="sil-led ice" cx="48" cy="46" r="2.1" fill="#0a9cba" />
-      <rect x="22" y="54" width="36" height="4.5" rx="1.2" fill="#7a94ae" stroke="#4a6a88" strokeWidth="0.7" />
-      <rect x="36" y="55" width="8" height="2" rx="0.6" fill="#c9a227" opacity="0.85" />
+      <path d="M36 28 H60 M40 34 H56 M38 40 H58" stroke="#5ecfe0" strokeWidth="1" opacity="0.55" />
+      <circle className="sil-led core" cx="48" cy="34" r="4" fill="#d91872" />
+      <rect x="30" y="50" width="36" height="10" rx="2" fill="#e8f0f8" stroke="#5a7a98" strokeWidth="0.9" />
+      <circle className="sil-led amber" cx="38" cy="55" r="2.4" fill="#d91872" />
+      <circle cx="48" cy="55" r="3.6" fill="#c2d2e4" stroke="#4a6a88" strokeWidth="1" />
+      <circle className="sil-led ice" cx="58" cy="55" r="2.4" fill="#0a9cba" />
+      <rect x="26" y="64" width="44" height="5.5" rx="1.4" fill="#7a94ae" stroke="#4a6a88" strokeWidth="0.8" />
+      <rect x="42" y="65.5" width="12" height="2.4" rx="0.7" fill="#c9a227" opacity="0.9" />
     </g>
   )
 }
 
-function TicketPrinterArt() {
+function TicketPrinterArt({ id }: { id: string }) {
   return (
     <g className="art-cool">
       <rect
         className="sil-hull"
         x="16"
-        y="26"
-        width="48"
-        height="30"
-        rx="4"
-        fill="url(#arc-hull-cool)"
+        y="30"
+        width="64"
+        height="38"
+        rx="5"
+        fill={`url(#arc-hull-${id})`}
         stroke="#4a6a88"
-        strokeWidth="1.5"
+        strokeWidth="1.6"
       />
       <path
-        d="M18 28 H62"
-        stroke="url(#arc-neon-c-cool)"
-        strokeWidth="2"
+        d="M20 34 H76"
+        stroke={`url(#arc-neon-c-${id})`}
+        strokeWidth="2.4"
         className="sil-neon-tube"
       />
-      <rect x="22" y="32" width="36" height="12" rx="1.5" fill="#f8fbfe" stroke="#d91872" strokeWidth="1.1" />
-      <path d="M26 38 H58" stroke="#d91872" strokeWidth="1.4" strokeDasharray="4 2.5" />
-      <path d="M26 41 H50" stroke="#f24d9a" strokeWidth="1" strokeDasharray="3 2" opacity="0.7" />
-      <rect x="32" y="12" width="16" height="16" rx="2.5" fill="url(#arc-steel-cool)" stroke="#4a6a88" strokeWidth="1.1" />
-      <circle className="sil-led ice" cx="40" cy="19" r="2.8" fill="#0a9cba" />
-      <rect x="28" y="48" width="24" height="5" rx="1" fill="#f24d9a" opacity="0.75" />
-      <path d="M30 53 L34 58 H46 L50 53" fill="#e8f0f8" stroke="#5a7a98" strokeWidth="0.7" />
+      <rect x="24" y="38" width="48" height="16" rx="2" fill="#f8fbfe" stroke="#d91872" strokeWidth="1.2" />
+      <path d="M28 46 H68" stroke="#d91872" strokeWidth="1.6" strokeDasharray="5 3" />
+      <path d="M28 50 H58" stroke="#f24d9a" strokeWidth="1.1" strokeDasharray="3.5 2.5" opacity="0.75" />
+      <rect
+        x="36"
+        y="10"
+        width="24"
+        height="22"
+        rx="3"
+        fill={`url(#arc-steel-${id})`}
+        stroke="#4a6a88"
+        strokeWidth="1.2"
+      />
+      <circle className="sil-led ice" cx="48" cy="20" r="3.4" fill="#0a9cba" />
+      <rect x="32" y="58" width="32" height="6" rx="1.2" fill="#f24d9a" opacity="0.8" />
+      <path d="M34 64 L40 72 H56 L62 64" fill="#e8f0f8" stroke="#5a7a98" strokeWidth="0.8" />
     </g>
   )
 }
 
-function RacingCabArt() {
+function RacingCabArt({ id }: { id: string }) {
   return (
     <g className="art-rack">
       <rect
         className="sil-hull"
-        x="14"
-        y="28"
-        width="52"
-        height="28"
-        rx="4"
-        fill="url(#arc-hull-rack)"
+        x="12"
+        y="34"
+        width="72"
+        height="34"
+        rx="5"
+        fill={`url(#arc-hull-${id})`}
         stroke="#4a6a88"
-        strokeWidth="1.5"
+        strokeWidth="1.6"
       />
       <path
-        d="M20 28 L26 12 H54 L60 28"
+        d="M20 34 L28 12 H68 L76 34"
         fill="#c8d8e8"
         stroke="#4a6a88"
-        strokeWidth="1.2"
+        strokeWidth="1.3"
       />
-      <path d="M22 28 H58" stroke="url(#arc-neon-m-rack)" strokeWidth="2" className="sil-neon-tube" />
-      <rect x="26" y="14" width="28" height="12" rx="1.5" fill="#0d1a28" opacity="0.9" />
+      <path
+        d="M22 34 H74"
+        stroke={`url(#arc-neon-m-${id})`}
+        strokeWidth="2.4"
+        className="sil-neon-tube"
+      />
+      <rect x="30" y="14" width="36" height="16" rx="2" fill="#0d1a28" opacity="0.9" />
       <rect
-        x="28"
+        x="32"
         y="16"
-        width="24"
-        height="8"
-        rx="0.8"
-        fill="url(#arc-screen-rack)"
+        width="32"
+        height="12"
+        rx="1"
+        fill={`url(#arc-screen-${id})`}
         className="sil-screen"
       />
-      <path d="M32 20 H48" stroke="#5ecfe0" strokeWidth="1" opacity="0.6" />
-      <ellipse cx="28" cy="42" rx="6" ry="5" fill="#2a3548" stroke="#4a6a88" strokeWidth="0.9" />
-      <ellipse cx="52" cy="42" rx="6" ry="5" fill="#2a3548" stroke="#4a6a88" strokeWidth="0.9" />
-      <circle className="sil-led amber" cx="28" cy="42" r="2.4" fill="#d91872" />
-      <circle className="sil-led ice" cx="52" cy="42" r="2.4" fill="#0a9cba" />
-      <rect x="36" y="46" width="8" height="5" rx="1" fill="#7a94ae" />
-      <path d="M18 54 H62" stroke="#5a7a98" strokeWidth="1.2" opacity="0.5" />
+      <path d="M38 22 H58" stroke="#5ecfe0" strokeWidth="1.1" opacity="0.65" />
+      <ellipse cx="30" cy="50" rx="8" ry="6.5" fill="#2a3548" stroke="#4a6a88" strokeWidth="1" />
+      <ellipse cx="66" cy="50" rx="8" ry="6.5" fill="#2a3548" stroke="#4a6a88" strokeWidth="1" />
+      <circle className="sil-led amber" cx="30" cy="50" r="3" fill="#d91872" />
+      <circle className="sil-led ice" cx="66" cy="50" r="3" fill="#0a9cba" />
+      <rect x="42" y="54" width="12" height="6" rx="1.2" fill="#7a94ae" />
+      <path d="M18 66 H78" stroke="#5a7a98" strokeWidth="1.4" opacity="0.5" />
     </g>
   )
 }
 
-function ClawMachineArt() {
+function ClawMachineArt({ id }: { id: string }) {
   return (
     <g className="art-uplink">
       <rect
         className="sil-hull"
         x="18"
-        y="10"
-        width="44"
-        height="46"
-        rx="3.5"
-        fill="url(#arc-hull-uplink)"
+        y="8"
+        width="60"
+        height="60"
+        rx="4"
+        fill={`url(#arc-hull-${id})`}
         stroke="#4a6a88"
-        strokeWidth="1.5"
+        strokeWidth="1.6"
       />
       <path
-        d="M20 12 H60"
-        stroke="url(#arc-neon-c-uplink)"
-        strokeWidth="2.2"
+        d="M22 12 H74"
+        stroke={`url(#arc-neon-c-${id})`}
+        strokeWidth="2.6"
         className="sil-neon-tube"
       />
-      <rect x="22" y="16" width="36" height="28" rx="1.5" fill="#cfe0f0" stroke="#0a9cba" strokeWidth="1" />
-      <rect x="24" y="18" width="32" height="24" rx="1" fill="#a8c4d8" opacity="0.35" className="sil-screen" />
-      <path d="M40 18 V36" stroke="#5a7a98" strokeWidth="1.3" />
-      <circle cx="40" cy="18" r="1.8" fill="#4a6a88" />
+      <rect x="24" y="16" width="48" height="36" rx="2" fill="#cfe0f0" stroke="#0a9cba" strokeWidth="1.1" />
+      <rect x="26" y="18" width="44" height="32" rx="1.2" fill="#a8c4d8" opacity="0.35" className="sil-screen" />
+      <path d="M48 18 V42" stroke="#5a7a98" strokeWidth="1.5" />
+      <circle cx="48" cy="18" r="2.2" fill="#4a6a88" />
       <path
-        d="M33 36 L40 42 L47 36"
+        d="M38 42 L48 52 L58 42"
         fill="none"
         stroke="#d91872"
-        strokeWidth="1.6"
+        strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <circle cx="28" cy="28" r="3.5" fill="#f24d9a" opacity="0.8" />
-      <circle cx="52" cy="32" r="2.8" fill="#0a9cba" opacity="0.8" />
-      <circle cx="44" cy="24" r="2.2" fill="#c9a227" opacity="0.85" />
-      <circle cx="32" cy="34" r="2" fill="#5ecfe0" opacity="0.7" />
-      <rect x="22" y="48" width="36" height="6" rx="1.2" fill="#e8f0f8" stroke="#5a7a98" strokeWidth="0.75" />
-      <circle className="sil-led ice" cx="32" cy="51" r="1.6" fill="#0a9cba" />
-      <circle className="sil-led amber" cx="48" cy="51" r="1.6" fill="#d91872" />
+      <circle cx="32" cy="32" r="4.2" fill="#f24d9a" opacity="0.85" />
+      <circle cx="64" cy="38" r="3.4" fill="#0a9cba" opacity="0.85" />
+      <circle cx="54" cy="26" r="2.6" fill="#c9a227" opacity="0.9" />
+      <circle cx="36" cy="40" r="2.4" fill="#5ecfe0" opacity="0.75" />
+      <rect x="24" y="56" width="48" height="8" rx="1.5" fill="#e8f0f8" stroke="#5a7a98" strokeWidth="0.85" />
+      <circle className="sil-led ice" cx="36" cy="60" r="2" fill="#0a9cba" />
+      <circle className="sil-led amber" cx="60" cy="60" r="2" fill="#d91872" />
     </g>
   )
 }
 
-function DancePadArt() {
+function DancePadArt({ id }: { id: string }) {
   return (
     <g className="art-relay">
       <rect
         className="sil-hull"
-        x="12"
-        y="34"
-        width="56"
-        height="22"
-        rx="3.5"
-        fill="url(#arc-hull-relay)"
+        x="10"
+        y="40"
+        width="76"
+        height="28"
+        rx="4"
+        fill={`url(#arc-hull-${id})`}
         stroke="#4a6a88"
-        strokeWidth="1.4"
+        strokeWidth="1.5"
       />
-      <rect x="18" y="38" width="12" height="12" rx="1.5" fill="#d91872" opacity="0.82" />
-      <rect x="34" y="38" width="12" height="12" rx="1.5" fill="#0a9cba" opacity="0.82" />
-      <rect x="50" y="38" width="12" height="12" rx="1.5" fill="#d91872" opacity="0.62" />
-      <path d="M21 41 L27 47 M27 41 L21 47" stroke="#f8fbfe" strokeWidth="1.3" opacity="0.85" />
-      <path d="M40 40 V48 M36 44 H44" stroke="#f8fbfe" strokeWidth="1.3" opacity="0.85" />
-      <path d="M53 41 L59 47 M59 41 L53 47" stroke="#f8fbfe" strokeWidth="1.3" opacity="0.7" />
+      <rect x="18" y="46" width="16" height="16" rx="2" fill="#d91872" opacity="0.85" />
+      <rect x="40" y="46" width="16" height="16" rx="2" fill="#0a9cba" opacity="0.85" />
+      <rect x="62" y="46" width="16" height="16" rx="2" fill="#d91872" opacity="0.65" />
+      <path d="M22 50 L30 58 M30 50 L22 58" stroke="#f8fbfe" strokeWidth="1.5" opacity="0.9" />
+      <path d="M48 48 V62 M42 55 H54" stroke="#f8fbfe" strokeWidth="1.5" opacity="0.9" />
+      <path d="M66 50 L74 58 M74 50 L66 58" stroke="#f8fbfe" strokeWidth="1.5" opacity="0.75" />
       <rect
-        x="28"
-        y="10"
-        width="24"
-        height="24"
-        rx="2.5"
-        fill="url(#arc-steel-relay)"
+        x="30"
+        y="8"
+        width="36"
+        height="32"
+        rx="3"
+        fill={`url(#arc-steel-${id})`}
         stroke="#4a6a88"
-        strokeWidth="1.2"
+        strokeWidth="1.3"
       />
-      <rect x="32" y="14" width="16" height="12" rx="1.2" fill="#0d1a28" opacity="0.85" />
+      <rect x="36" y="14" width="24" height="16" rx="1.5" fill="#0d1a28" opacity="0.88" />
       <rect
-        x="33"
-        y="15"
-        width="14"
-        height="10"
-        rx="0.8"
-        fill="url(#arc-screen-relay)"
+        x="38"
+        y="16"
+        width="20"
+        height="12"
+        rx="1"
+        fill={`url(#arc-screen-${id})`}
         className="sil-screen"
       />
-      <circle className="sil-led amber" cx="40" cy="20" r="2.2" fill="#f24d9a" />
-      <path d="M30 32 H50" stroke="url(#arc-neon-m-relay)" strokeWidth="1.8" className="sil-neon-tube" />
-      <rect x="20" y="54" width="40" height="4" rx="1" fill="#7a94ae" stroke="#4a6a88" strokeWidth="0.7" />
+      <circle className="sil-led amber" cx="48" cy="22" r="2.6" fill="#f24d9a" />
+      <path
+        d="M32 38 H64"
+        stroke={`url(#arc-neon-m-${id})`}
+        strokeWidth="2.2"
+        className="sil-neon-tube"
+      />
+      <rect x="22" y="66" width="52" height="5" rx="1.2" fill="#7a94ae" stroke="#4a6a88" strokeWidth="0.75" />
     </g>
   )
 }
 
-function PrizeWallArt() {
+function PrizeWallArt({ id }: { id: string }) {
   return (
     <g className="art-switch">
       <rect
         className="sil-hull"
-        x="10"
-        y="16"
-        width="60"
-        height="40"
-        rx="3.5"
-        fill="url(#arc-hull-switch)"
+        x="8"
+        y="18"
+        width="80"
+        height="50"
+        rx="4"
+        fill={`url(#arc-hull-${id})`}
         stroke="#4a6a88"
-        strokeWidth="1.5"
+        strokeWidth="1.6"
       />
-      <path d="M12 18 H68" stroke="url(#arc-neon-c-switch)" strokeWidth="2" className="sil-neon-tube" />
-      {[20, 32, 44].map((y, row) => (
+      <path
+        d="M12 22 H84"
+        stroke={`url(#arc-neon-c-${id})`}
+        strokeWidth="2.4"
+        className="sil-neon-tube"
+      />
+      {[24, 40, 56].map((y, row) => (
         <g key={y}>
           <rect
             x="14"
             y={y}
-            width="12"
-            height="9"
-            rx="1.2"
+            width="16"
+            height="12"
+            rx="1.5"
             fill="#f8fbfe"
             stroke={row % 2 === 0 ? '#0a9cba' : '#d91872'}
-            strokeWidth="0.85"
+            strokeWidth="1"
           />
           <rect
-            x="30"
+            x="36"
             y={y}
-            width="12"
-            height="9"
-            rx="1.2"
+            width="16"
+            height="12"
+            rx="1.5"
             fill="#f8fbfe"
             stroke={row % 2 === 0 ? '#d91872' : '#c9a227'}
-            strokeWidth="0.85"
+            strokeWidth="1"
           />
           <rect
-            x="46"
+            x="58"
             y={y}
-            width="12"
-            height="9"
-            rx="1.2"
+            width="16"
+            height="12"
+            rx="1.5"
             fill="#f8fbfe"
             stroke={row % 2 === 0 ? '#c9a227' : '#0a9cba'}
-            strokeWidth="0.85"
+            strokeWidth="1"
           />
-          <rect x="62" y={y} width="6" height="9" rx="1" fill="#e8f0f8" stroke="#5a7a98" strokeWidth="0.65" />
-          <circle cx="20" cy={y + 4.5} r="1.4" fill={row === 1 ? '#d91872' : '#0a9cba'} opacity="0.7" />
-          <circle cx="36" cy={y + 4.5} r="1.4" fill="#c9a227" opacity="0.75" />
+          <rect x="78" y={y} width="6" height="12" rx="1" fill="#e8f0f8" stroke="#5a7a98" strokeWidth="0.7" />
+          <circle cx="22" cy={y + 6} r="1.8" fill={row === 1 ? '#d91872' : '#0a9cba'} opacity="0.75" />
+          <circle cx="44" cy={y + 6} r="1.8" fill="#c9a227" opacity="0.8" />
         </g>
       ))}
-      <rect x="26" y="8" width="28" height="9" rx="1.5" fill="#0a9cba" opacity="0.9" />
-      <circle className="sil-led core" cx="40" cy="12.5" r="2.4" fill="#f8fbfe" />
-      <path d="M30 12.5 H36 M44 12.5 H50" stroke="#5ecfe0" strokeWidth="1.2" opacity="0.8" />
+      <rect x="28" y="6" width="40" height="12" rx="2" fill="#0a9cba" opacity="0.92" />
+      <circle className="sil-led core" cx="48" cy="12" r="3" fill="#f8fbfe" />
+      <path d="M34 12 H42 M54 12 H62" stroke="#5ecfe0" strokeWidth="1.4" opacity="0.85" />
     </g>
   )
 }
 
-function TokenChangerArt() {
+function TokenChangerArt({ id }: { id: string }) {
   return (
     <g className="art-battery">
       <rect
         className="sil-hull"
-        x="22"
-        y="12"
-        width="36"
-        height="44"
-        rx="5"
-        fill="url(#arc-hull-battery)"
+        x="24"
+        y="10"
+        width="48"
+        height="58"
+        rx="6"
+        fill={`url(#arc-hull-${id})`}
         stroke="#4a6a88"
-        strokeWidth="1.55"
+        strokeWidth="1.7"
       />
       <path
-        d="M24 16 H56"
-        stroke="url(#arc-neon-m-battery)"
-        strokeWidth="2"
+        d="M28 16 H68"
+        stroke={`url(#arc-neon-m-${id})`}
+        strokeWidth="2.4"
         className="sil-neon-tube"
       />
-      <circle cx="40" cy="34" r="12" fill="#e8c84a" opacity="0.92" stroke="#a88620" strokeWidth="1.4" />
-      <circle cx="40" cy="34" r="8.5" fill="#c9a227" opacity="0.55" />
+      <circle cx="48" cy="40" r="15" fill="#e8c84a" opacity="0.94" stroke="#a88620" strokeWidth="1.6" />
+      <circle cx="48" cy="40" r="10.5" fill="#c9a227" opacity="0.55" />
       <text
-        x="40"
-        y="38.5"
+        x="48"
+        y="45.5"
         textAnchor="middle"
-        fontSize="11"
+        fontSize="14"
         fontWeight="700"
         fill="#1a2438"
         fontFamily="sans-serif"
       >
         T
       </text>
-      <rect x="28" y="18" width="24" height="6" rx="1" fill="#0d1a28" opacity="0.75" />
-      <rect x="30" y="19.5" width="20" height="3" rx="0.6" fill="#0a9cba" opacity="0.65" className="sil-screen" />
-      <rect x="28" y="48" width="24" height="5" rx="1" fill="#e8f0f8" stroke="#5a7a98" strokeWidth="0.7" />
-      <circle className="sil-led ice" cx="40" cy="22" r="1.8" fill="#0a9cba" />
-      <rect x="34" y="54" width="12" height="3" rx="0.8" fill="#7a94ae" />
+      <rect x="32" y="18" width="32" height="8" rx="1.2" fill="#0d1a28" opacity="0.78" />
+      <rect
+        x="34"
+        y="20"
+        width="28"
+        height="4"
+        rx="0.8"
+        fill="#0a9cba"
+        opacity="0.7"
+        className="sil-screen"
+      />
+      <rect x="32" y="58" width="32" height="6" rx="1.2" fill="#e8f0f8" stroke="#5a7a98" strokeWidth="0.8" />
+      <circle className="sil-led ice" cx="48" cy="24" r="2.2" fill="#0a9cba" />
+      <rect x="38" y="66" width="20" height="4" rx="1" fill="#7a94ae" />
     </g>
   )
 }
 
-function PinballArt() {
+function PinballArt({ id }: { id: string }) {
   return (
     <g className="art-cache">
       <path
         className="sil-hull"
-        d="M16 58 L12 40 Q10 26 28 12 L52 12 Q70 26 68 40 L64 58 Z"
-        fill="url(#arc-hull-cache)"
+        d="M16 70 L10 46 Q8 28 30 10 L66 10 Q88 28 86 46 L80 70 Z"
+        fill={`url(#arc-hull-${id})`}
         stroke="#4a6a88"
-        strokeWidth="1.4"
+        strokeWidth="1.5"
       />
       <path
-        d="M20 16 Q40 10 60 16"
+        d="M24 16 Q48 8 72 16"
         fill="none"
-        stroke="url(#arc-neon-c-cache)"
-        strokeWidth="2"
+        stroke={`url(#arc-neon-c-${id})`}
+        strokeWidth="2.4"
         className="sil-neon-tube"
       />
-      <ellipse cx="40" cy="34" rx="16" ry="12" fill="#0d1a28" opacity="0.2" />
-      <ellipse cx="40" cy="34" rx="14" ry="10" fill="#1a3040" opacity="0.35" className="sil-screen" />
-      <circle cx="32" cy="28" r="2.8" fill="#0a9cba" className="sil-led ice" />
-      <circle cx="48" cy="36" r="2.2" fill="#d91872" className="sil-led amber" />
-      <circle cx="40" cy="24" r="1.8" fill="#c9a227" />
-      <circle cx="36" cy="38" r="1.5" fill="#5ecfe0" />
-      <path d="M22 50 Q40 42 58 50" fill="none" stroke="#5a7a98" strokeWidth="1.7" />
-      <path d="M24 54 Q40 48 56 54" fill="none" stroke="#4a6a88" strokeWidth="1.2" opacity="0.6" />
-      <circle className="sil-led amber" cx="40" cy="16" r="2.2" fill="#f24d9a" />
-      <rect x="30" y="56" width="20" height="3" rx="1" fill="#7a94ae" />
+      <ellipse cx="48" cy="40" rx="20" ry="14" fill="#0d1a28" opacity="0.22" />
+      <ellipse cx="48" cy="40" rx="17" ry="12" fill="#1a3040" opacity="0.4" className="sil-screen" />
+      <circle cx="36" cy="32" r="3.4" fill="#0a9cba" className="sil-led ice" />
+      <circle cx="60" cy="44" r="2.8" fill="#d91872" className="sil-led amber" />
+      <circle cx="48" cy="26" r="2.2" fill="#c9a227" />
+      <circle cx="42" cy="48" r="1.8" fill="#5ecfe0" />
+      <path d="M22 58 Q48 48 74 58" fill="none" stroke="#5a7a98" strokeWidth="2" />
+      <path d="M26 64 Q48 56 70 64" fill="none" stroke="#4a6a88" strokeWidth="1.4" opacity="0.65" />
+      <circle className="sil-led amber" cx="48" cy="16" r="2.6" fill="#f24d9a" />
+      <rect x="34" y="68" width="28" height="4" rx="1.2" fill="#7a94ae" />
     </g>
   )
 }
 
-function LightGunArt() {
+function LightGunArt({ id }: { id: string }) {
   return (
     <g className="art-quantum">
       <rect
         className="sil-hull"
-        x="16"
-        y="20"
-        width="48"
-        height="34"
-        rx="3.5"
-        fill="url(#arc-hull-quantum)"
+        x="14"
+        y="22"
+        width="68"
+        height="44"
+        rx="4"
+        fill={`url(#arc-hull-${id})`}
         stroke="#4a6a88"
-        strokeWidth="1.5"
+        strokeWidth="1.6"
       />
-      <path d="M18 24 H62" stroke="url(#arc-neon-m-quantum)" strokeWidth="2" className="sil-neon-tube" />
-      <rect x="22" y="26" width="36" height="18" rx="1.5" fill="#0d1a28" opacity="0.9" />
+      <path
+        d="M18 28 H78"
+        stroke={`url(#arc-neon-m-${id})`}
+        strokeWidth="2.4"
+        className="sil-neon-tube"
+      />
+      <rect x="22" y="30" width="52" height="24" rx="2" fill="#0d1a28" opacity="0.92" />
       <rect
         x="24"
-        y="28"
-        width="32"
-        height="14"
-        rx="1"
-        fill="url(#arc-screen-quantum)"
+        y="32"
+        width="48"
+        height="20"
+        rx="1.2"
+        fill={`url(#arc-screen-${id})`}
         className="sil-screen"
       />
-      <circle className="sil-led core" cx="40" cy="35" r="3.4" fill="#d91872" />
-      <path d="M28 32 H36 M44 32 H52" stroke="#5ecfe0" strokeWidth="0.9" opacity="0.5" />
-      <path d="M28 52 H52" stroke="#5a7a98" strokeWidth="2.2" strokeLinecap="round" />
-      <circle cx="26" cy="52" r="3.5" fill="#7a94ae" stroke="#4a6a88" strokeWidth="0.85" />
+      <circle className="sil-led core" cx="48" cy="42" r="4.2" fill="#d91872" />
+      <path d="M30 36 H42 M54 36 H66" stroke="#5ecfe0" strokeWidth="1" opacity="0.55" />
+      <path d="M28 62 H68" stroke="#5a7a98" strokeWidth="2.6" strokeLinecap="round" />
+      <circle cx="26" cy="62" r="4.2" fill="#7a94ae" stroke="#4a6a88" strokeWidth="0.9" />
       <rect
-        x="50"
-        y="46"
-        width="12"
-        height="10"
-        rx="1.5"
-        fill="url(#arc-steel-quantum)"
+        x="62"
+        y="54"
+        width="16"
+        height="14"
+        rx="2"
+        fill={`url(#arc-steel-${id})`}
         stroke="#4a6a88"
-        strokeWidth="0.85"
+        strokeWidth="0.9"
       />
-      <circle className="sil-led ice" cx="56" cy="51" r="1.6" fill="#0a9cba" />
-      <rect x="30" y="12" width="20" height="8" rx="1.5" fill="#c2d2e4" stroke="#5a7a98" strokeWidth="0.8" />
+      <circle className="sil-led ice" cx="70" cy="61" r="2" fill="#0a9cba" />
+      <rect x="32" y="10" width="32" height="12" rx="2" fill="#c2d2e4" stroke="#5a7a98" strokeWidth="0.9" />
     </g>
   )
 }
 
-function TournamentDeskArt() {
+function TournamentDeskArt({ id }: { id: string }) {
   return (
     <g className="art-scrub">
       <rect
         className="sil-hull"
-        x="10"
-        y="34"
-        width="60"
-        height="22"
-        rx="3.5"
-        fill="url(#arc-hull-scrub)"
+        x="8"
+        y="40"
+        width="80"
+        height="28"
+        rx="4"
+        fill={`url(#arc-hull-${id})`}
         stroke="#4a6a88"
-        strokeWidth="1.5"
+        strokeWidth="1.6"
       />
-      <path d="M12 36 H68" stroke="url(#arc-neon-c-scrub)" strokeWidth="1.8" className="sil-neon-tube" />
+      <path
+        d="M12 44 H84"
+        stroke={`url(#arc-neon-c-${id})`}
+        strokeWidth="2.2"
+        className="sil-neon-tube"
+      />
       <rect
-        x="18"
-        y="10"
-        width="44"
-        height="26"
-        rx="2.5"
-        fill="url(#arc-steel-scrub)"
+        x="16"
+        y="8"
+        width="64"
+        height="34"
+        rx="3"
+        fill={`url(#arc-steel-${id})`}
         stroke="#4a6a88"
-        strokeWidth="1.2"
+        strokeWidth="1.3"
       />
-      <rect x="22" y="14" width="36" height="16" rx="1.2" fill="#0d1a28" opacity="0.85" />
-      {[26, 34, 42, 50].map((x, i) => (
+      <rect x="22" y="14" width="52" height="22" rx="1.5" fill="#0d1a28" opacity="0.88" />
+      {[28, 40, 52, 64].map((x, i) => (
         <rect
           key={x}
           x={x}
           y={16 + (i % 2)}
-          width="5"
-          height={10 - (i % 3)}
-          rx="0.6"
+          width="7"
+          height={14 - (i % 3)}
+          rx="0.8"
           fill={i % 2 === 0 ? '#0a9cba' : '#d91872'}
-          opacity="0.9"
+          opacity="0.92"
           className="sil-led"
         />
       ))}
-      <circle className="sil-led ice" cx="28" cy="45" r="2.2" fill="#0a9cba" />
-      <circle className="sil-led amber" cx="40" cy="45" r="2.2" fill="#d91872" />
-      <circle className="sil-led ice" cx="52" cy="45" r="2.2" fill="#0a9cba" />
-      <rect x="24" y="50" width="32" height="3" rx="0.8" fill="#c9a227" opacity="0.55" />
+      <circle className="sil-led ice" cx="28" cy="54" r="2.6" fill="#0a9cba" />
+      <circle className="sil-led amber" cx="48" cy="54" r="2.6" fill="#d91872" />
+      <circle className="sil-led ice" cx="68" cy="54" r="2.6" fill="#0a9cba" />
+      <rect x="26" y="60" width="44" height="4" rx="1" fill="#c9a227" opacity="0.6" />
     </g>
   )
 }
