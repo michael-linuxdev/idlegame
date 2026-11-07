@@ -1,11 +1,13 @@
 /**
  * Economy knobs from docs/economy.md — core formulas unchanged.
- * Player-facing: soft Compute + meta Credits (Orbit Rack / space data centers).
+ * Player-facing: soft Rechenleistung + meta Credits (Orbit Rack / space data centers).
  * Internal save fields still map to Ash/Embers.
  *
  * Feel polish (IG-19) early tweaks live on generators.ts / createInitialState:
  * start wallet 20 Compute; G2 unlock 200; G2 C0 100. Prestige / offline / shop untouched.
  */
+
+import { t } from '../i18n'
 
 export const OFFLINE_SOFT_HOURS = 8
 export const OFFLINE_HARD_HOURS = 24
@@ -55,35 +57,35 @@ export interface EmberShopItem {
 export const EMBER_SHOP: EmberShopItem[] = [
   {
     id: 'dominionYield',
-    name: 'Rack Yield',
-    blurb: '+5% global Compute/sec per rank.',
+    name: t.emberShop.dominionYield.name,
+    blurb: t.emberShop.dominionYield.blurb,
     maxRank: 20,
     cost: (rank) => 3 + 2 * rank,
-    effectLabel: (rank) => `+${rank * 5}% Compute/sec`,
+    effectLabel: (rank) => t.emberShop.dominionYield.effect(rank),
   },
   {
     id: 'longWatch',
-    name: 'Long Uptime',
-    blurb: 'Extend offline soft (+1h) and hard (+2h) caps per rank.',
+    name: t.emberShop.longWatch.name,
+    blurb: t.emberShop.longWatch.blurb,
     maxRank: 4,
     cost: (rank) => 5 + 5 * rank,
-    effectLabel: (rank) => `+${rank}h soft / +${rank * 2}h hard`,
+    effectLabel: (rank) => t.emberShop.longWatch.effect(rank),
   },
   {
     id: 'foundryDiscount',
-    name: 'BOM Discount',
-    blurb: '−2% all module upgrade costs per rank (compounds).',
+    name: t.emberShop.foundryDiscount.name,
+    blurb: t.emberShop.foundryDiscount.blurb,
     maxRank: 10,
     cost: (rank) => 2 + 2 * rank,
-    effectLabel: (rank) => `×${Math.pow(0.98, rank).toFixed(3)} costs`,
+    effectLabel: (rank) => t.emberShop.foundryDiscount.effect(rank),
   },
   {
     id: 'firstFlame',
-    name: 'Hot Spare',
-    blurb: 'Start each run with Cooling Array unlocked.',
+    name: t.emberShop.firstFlame.name,
+    blurb: t.emberShop.firstFlame.blurb,
     maxRank: 1,
     cost: () => 8,
-    effectLabel: (rank) => (rank > 0 ? 'Cooling unlocked at start' : 'Locked'),
+    effectLabel: (rank) => t.emberShop.firstFlame.effect(rank),
   },
 ]
 

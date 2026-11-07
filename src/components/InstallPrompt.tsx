@@ -8,6 +8,7 @@ import {
   type InstallMode,
   type InstallPrefs,
 } from '../game/installPrompt'
+import { t } from '../i18n'
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>
@@ -71,7 +72,7 @@ export function InstallPrompt({
     const eligible = offlineAwayMs >= OFFLINE_NUDGE_MS || offlineClaimed
     if (!eligible) return
 
-    const t = window.setTimeout(() => {
+    const timer = window.setTimeout(() => {
       const nextMode = detectInstallMode(Boolean(deferred.current))
       setMode(nextMode)
       setVisible(true)
@@ -81,7 +82,7 @@ export function InstallPrompt({
         return next
       })
     }, 1600)
-    return () => window.clearTimeout(t)
+    return () => window.clearTimeout(timer)
   }, [
     offlineAwayMs,
     offlineClaimed,
@@ -133,40 +134,35 @@ export function InstallPrompt({
   const body =
     mode === 'ios' ? (
       <>
-        On iPhone: tap <strong>Share</strong> → <strong>Add to Home Screen</strong>.
-        One-tap return while racks keep cycling.
+        {t.install.iosBefore} <strong>{t.install.iosShare}</strong> {t.install.iosMid}{' '}
+        <strong>{t.install.iosAdd}</strong>
+        {t.install.iosAfter}
       </>
     ) : mode === 'android' ? (
-      <>
-        Install Orbit Rack for a home-screen icon. Offline Compute still accrues either
-        way.
-      </>
+      t.install.androidBody
     ) : (
-      <>
-        Add Orbit Rack to your home screen from the browser menu for faster reopen.
-        Offline Compute still accrues either way.
-      </>
+      t.install.manualBody
     )
 
   return (
     <div className="install-prompt" role="status">
       <div className="install-prompt-inner">
-        <p className="install-eyebrow">Tech · Ops</p>
-        <p className="install-title">Keep the station one tap away</p>
+        <p className="install-eyebrow">{t.eyebrow}</p>
+        <p className="install-title">{t.install.title}</p>
         <p className="install-body">{body}</p>
         <div className="install-actions">
           {mode === 'android' ? (
             <button type="button" className="btn buy" onClick={() => void install()}>
-              Install
+              {t.install.install}
             </button>
           ) : null}
           {mode === 'manual' ? (
             <button type="button" className="btn buy" onClick={dismiss}>
-              Got it
+              {t.install.gotIt}
             </button>
           ) : null}
           <button type="button" className="btn ghost" onClick={dismiss}>
-            Not now
+            {t.install.notNow}
           </button>
         </div>
       </div>

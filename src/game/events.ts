@@ -1,9 +1,10 @@
 /**
  * Event stub — Bandbreiten-Schub (local clock, weekend-style).
  * Buffs production; optional Compute goal with Obsidian crumb. Dismissible UI.
- * Never energy walls. Player-facing copy: German.
+ * Never energy walls. Player-facing copy: German via i18n.
  */
 
+import { t } from '../i18n'
 import { dayKey } from './monetization'
 
 /** +25% Compute/sec while surge is live */
@@ -15,9 +16,8 @@ export const BANDWIDTH_SURGE_GOAL = 10_000
 /** Obsidian crumb when goal is claimed */
 export const BANDWIDTH_SURGE_GOAL_REWARD = 15
 
-export const BANDWIDTH_SURGE_NAME = 'Bandbreiten-Schub'
-export const BANDWIDTH_SURGE_BLURB =
-  '+25 % Compute/s am Wochenende. Ziel erreichen für Obsidian-Krümel.'
+export const BANDWIDTH_SURGE_NAME = t.event.name
+export const BANDWIDTH_SURGE_BLURB = t.event.blurb
 
 /**
  * Weekend window in local time: Sat 00:00 → Sun 23:59:59.
@@ -51,10 +51,10 @@ export function bandwidthSurgeWindowKey(now = Date.now()): string {
 export function surgeEndsLabel(now = Date.now()): string {
   const d = new Date(now)
   const day = d.getDay()
-  if (day === 5) return 'Endet Sonntagabend'
-  if (day === 6) return 'Endet morgen Abend'
-  if (day === 0) return 'Endet heute Abend'
-  return 'Wochenend-Fenster'
+  if (day === 5) return t.event.endsFri
+  if (day === 6) return t.event.endsSat
+  if (day === 0) return t.event.endsSun
+  return t.event.endsDefault
 }
 
 export interface BandwidthSurgeStatus {

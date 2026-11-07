@@ -6,6 +6,7 @@ import { InstallPrompt } from './components/InstallPrompt'
 import { PrestigePanel } from './components/PrestigePanel'
 import { ShopPanel } from './components/ShopPanel'
 import { useGame } from './game/useGame'
+import { t } from './i18n'
 import './App.css'
 
 type Tab = 'fortress' | 'prestige' | 'clan' | 'shop'
@@ -46,34 +47,34 @@ export default function App() {
         holdForFtue={holdInstall}
       />
 
-      <nav className="tab-bar tabs-4" aria-label="Primary">
+      <nav className="tab-bar tabs-4" aria-label={t.nav.ariaLabel}>
         <button
           type="button"
           className={tab === 'fortress' ? 'tab active' : 'tab'}
           onClick={() => setTab('fortress')}
         >
-          Station
+          {t.nav.station}
         </button>
         <button
           type="button"
           className={`tab${tab === 'prestige' ? ' active' : ''}${ftueHighlight === 'prestige' ? ' ftue-tab' : ''}`}
           onClick={() => setTab('prestige')}
         >
-          Prestige
+          {t.nav.prestige}
         </button>
         <button
           type="button"
           className={`tab${tab === 'clan' ? ' active' : ''}${ftueHighlight === 'clan' ? ' ftue-tab' : ''}`}
           onClick={() => setTab('clan')}
         >
-          Clan
+          {t.nav.clan}
         </button>
         <button
           type="button"
           className={tab === 'shop' ? 'tab active' : 'tab'}
           onClick={() => setTab('shop')}
         >
-          Shop
+          {t.nav.shop}
         </button>
       </nav>
     </div>

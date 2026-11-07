@@ -6,6 +6,7 @@ import {
   type GeneratorId,
 } from '../game/generators'
 import { formatAsh, formatRate } from '../game/format'
+import { t } from '../i18n'
 import type { useGame } from '../game/useGame'
 import { BuildingSilhouette } from './BuildingSilhouette'
 import { DailyOpsBanner } from './DailyOpsBanner'
@@ -38,15 +39,15 @@ export function FortressMap({ game, highlightId }: Props) {
     <section className="fortress-home" aria-labelledby="ash-heading">
       <header className="map-hud">
         <div className="map-hud-brand">
-          <p className="eyebrow">Tech · Ops</p>
+          <p className="eyebrow">{t.eyebrow}</p>
           <h1 id="ash-heading" className="brand wordmark">
-            Orbit Rack
+            {t.brand}
           </h1>
         </div>
         <div className="map-hud-metrics" aria-live="polite">
           <div className="ash-amount compact">
             <span className="ash-value">{formatAsh(state.ash)}</span>
-            <span className="ash-label">Compute</span>
+            <span className="ash-label">{t.resources.compute}</span>
           </div>
           <p className="rate-line">
             {formatRate(rate)}
@@ -55,22 +56,22 @@ export function FortressMap({ game, highlightId }: Props) {
             ) : null}
           </p>
           {state.embers > 0 ? (
-            <p className="embers-line">{state.embers} Credits</p>
+            <p className="embers-line">
+              {state.embers} {t.resources.credits}
+            </p>
           ) : null}
-          <p className="obsidian-line">{state.obsidian} Obsidian</p>
+          <p className="obsidian-line">
+            {state.obsidian} {t.resources.obsidian}
+          </p>
         </div>
         <button
           type="button"
           className="btn rake compact"
           onClick={rake}
           disabled={!tapReady}
-          title={
-            tapReady
-              ? 'Claim ~45s of current rate (once per 5 min)'
-              : 'Tap bonus cooling down'
-          }
+          title={tapReady ? t.hud.burstReadyTitle : t.hud.burstCoolingTitle}
         >
-          {tapReady ? 'Burst cycle' : 'Burst cooling'}
+          {tapReady ? t.hud.burstReady : t.hud.burstCooling}
         </button>
       </header>
 
@@ -80,11 +81,11 @@ export function FortressMap({ game, highlightId }: Props) {
           role="status"
         >
           <p>
-            While you were away, the station banked{' '}
-            <strong>{formatAsh(game.offlineGained)}</strong> Compute.
+            {t.hud.offlineBefore}{' '}
+            <strong>{formatAsh(game.offlineGained)}</strong> {t.hud.offlineAfter}
           </p>
           <button type="button" className="btn ghost" onClick={game.dismissOffline}>
-            Claim
+            {t.hud.claim}
           </button>
         </div>
       ) : null}
@@ -96,7 +97,7 @@ export function FortressMap({ game, highlightId }: Props) {
         <div
           className="fortress-map slots-10"
           role="application"
-          aria-label="Station build map"
+          aria-label={t.hud.mapAria}
         >
           <div className="map-terrain" aria-hidden="true">
             <div className="map-grid" />
@@ -134,8 +135,12 @@ export function FortressMap({ game, highlightId }: Props) {
                 style={{ left: def.slot.left, top: def.slot.top }}
                 aria-label={
                   unlocked
-                    ? `${def.name}, level ${level}, ${formatRate(buildingRate)}. Tap to upgrade.`
-                    : `${def.name}, locked. ${hint}`
+                    ? t.hud.buildingAriaUnlocked(
+                        def.name,
+                        level,
+                        formatRate(buildingRate),
+                      )
+                    : t.hud.buildingAriaLocked(def.name, hint)
                 }
                 onClick={() => setSelected(def.id)}
               >
@@ -149,11 +154,15 @@ export function FortressMap({ game, highlightId }: Props) {
                   <span className="map-building-meta">
                     {unlocked ? (
                       <>
-                        <span className="map-building-lvl">Lv {level}</span>
-                        <span className="map-building-rate">{formatRate(buildingRate)}</span>
+                        <span className="map-building-lvl">
+                          {t.hud.levelShort(level)}
+                        </span>
+                        <span className="map-building-rate">
+                          {formatRate(buildingRate)}
+                        </span>
                       </>
                     ) : (
-                      <span className="map-building-lock">Locked</span>
+                      <span className="map-building-lock">{t.hud.locked}</span>
                     )}
                   </span>
                 </span>
@@ -161,7 +170,7 @@ export function FortressMap({ game, highlightId }: Props) {
             )
           })}
         </div>
-        <p className="map-hint">Modul tippen zum Online-Schalten oder Upgraden.</p>
+        <p className="map-hint">{t.hud.mapHint}</p>
       </div>
 
       {selected ? (

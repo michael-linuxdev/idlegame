@@ -1,9 +1,10 @@
 /**
  * Daily Ops — claimable login reward (Compute / Credits / Obsidian crumb).
  * Optional streak; miss freezes (does not reset). Never energy/lives walls.
- * Player-facing copy: German (Orbit Rack brand unchanged).
+ * Player-facing copy: German via i18n (Orbit Rack brand unchanged).
  */
 
+import { t } from '../i18n'
 import { dayKey } from './monetization'
 
 export interface DailyReward {
@@ -25,17 +26,17 @@ interface StreakRow {
 
 /** Streak day 1…7 cycles; day N uses index (N-1) % 7 */
 const ROWS: StreakRow[] = [
-  { computeSec: 120, credits: 0, obsidian: 0, label: 'Ops-Float · 2 Min Compute' },
-  { computeSec: 180, credits: 0, obsidian: 0, label: 'Schichtbonus · 3 Min Compute' },
-  { computeSec: 60, credits: 0, obsidian: 20, label: 'Obsidian-Krümel · 20' },
-  { computeSec: 240, credits: 0, obsidian: 0, label: 'Lange Schicht · 4 Min Compute' },
-  { computeSec: 90, credits: 1, obsidian: 0, label: 'Credit-Gutschein · 1' },
-  { computeSec: 300, credits: 0, obsidian: 0, label: 'Überstunden · 5 Min Compute' },
+  { computeSec: 120, credits: 0, obsidian: 0, label: t.daily.rows.float2 },
+  { computeSec: 180, credits: 0, obsidian: 0, label: t.daily.rows.shift3 },
+  { computeSec: 60, credits: 0, obsidian: 20, label: t.daily.rows.crumb20 },
+  { computeSec: 240, credits: 0, obsidian: 0, label: t.daily.rows.long4 },
+  { computeSec: 90, credits: 1, obsidian: 0, label: t.daily.rows.credit1 },
+  { computeSec: 300, credits: 0, obsidian: 0, label: t.daily.rows.ot5 },
   {
     computeSec: 120,
     credits: 1,
     obsidian: 40,
-    label: 'Wochen-Siegel · Credits + Obsidian',
+    label: t.daily.rows.weekSeal,
   },
 ]
 

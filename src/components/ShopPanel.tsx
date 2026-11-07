@@ -6,6 +6,7 @@ import {
   OBSIDIAN_PACKS,
   TIME_SKIPS,
 } from '../game/monetization'
+import { t } from '../i18n'
 import type { useGame } from '../game/useGame'
 
 type GameApi = ReturnType<typeof useGame>
@@ -38,35 +39,32 @@ export function ShopPanel({ game }: Props) {
   return (
     <section className="panel shop-panel" aria-labelledby="shop-heading">
       <header className="panel-header">
-        <h2 id="shop-heading">Shop</h2>
-        <p className="muted">
-          Convenience and status only — no energy walls. Soft progress stays free.
-          All buys are local stubs (no real payments).
-        </p>
+        <h2 id="shop-heading">{t.shop.title}</h2>
+        <p className="muted">{t.shop.intro}</p>
       </header>
 
       <div className="shop-wallet" aria-live="polite">
         <div className="shop-wallet-chip">
-          <span className="shop-wallet-label">Obsidian</span>
+          <span className="shop-wallet-label">{t.resources.obsidian}</span>
           <span className="shop-wallet-value">{state.obsidian}</span>
         </div>
         <div className="shop-wallet-chip secondary">
-          <span className="shop-wallet-label">Skip left today</span>
+          <span className="shop-wallet-label">{t.shop.skipLeftToday}</span>
           <span className="shop-wallet-value">
-            {skipHoursRemaining}/{DAILY_SKIP_CAP_HOURS}h
+            {t.shop.skipHours(skipHoursRemaining, DAILY_SKIP_CAP_HOURS)}
           </span>
         </div>
       </div>
 
-      <h3 className="subhead">Obsidian packs</h3>
-      <p className="muted">Mock grants for testing. No IAP backend.</p>
+      <h3 className="subhead">{t.shop.packsTitle}</h3>
+      <p className="muted">{t.shop.packsIntro}</p>
       <ul className="ember-shop shop-list">
         {OBSIDIAN_PACKS.map((pack) => (
           <li key={pack.id} className="ember-shop-row">
             <div className="ember-shop-info">
               <div className="ember-shop-name">{pack.name}</div>
               <p className="ember-shop-blurb">{pack.blurb}</p>
-              <p className="ember-shop-effect">+{pack.obsidian} Obsidian</p>
+              <p className="ember-shop-effect">{t.shop.packEffect(pack.obsidian)}</p>
             </div>
             <button
               type="button"
@@ -79,11 +77,8 @@ export function ShopPanel({ game }: Props) {
         ))}
       </ul>
 
-      <h3 className="subhead">Time-skips</h3>
-      <p className="muted">
-        Simulate production at live rate ({formatAsh(rate)}/s). Daily cap{' '}
-        {DAILY_SKIP_CAP_HOURS}h — does not touch offline catchup.
-      </p>
+      <h3 className="subhead">{t.shop.skipsTitle}</h3>
+      <p className="muted">{t.shop.skipsIntro(formatAsh(rate), DAILY_SKIP_CAP_HOURS)}</p>
       <ul className="ember-shop shop-list">
         {TIME_SKIPS.map((skip) => {
           const capped = skipHoursRemaining <= 0
@@ -97,8 +92,8 @@ export function ShopPanel({ game }: Props) {
                 <p className="ember-shop-blurb">{skip.blurb}</p>
                 <p className="ember-shop-effect">
                   {capped
-                    ? 'Daily skip cap reached'
-                    : `+${formatAsh(rate * hours * 3600)} Compute`}
+                    ? t.shop.dailyCapReached
+                    : t.shop.computeGain(formatAsh(rate * hours * 3600))}
                 </p>
               </div>
               <button
@@ -107,15 +102,15 @@ export function ShopPanel({ game }: Props) {
                 disabled={disabled}
                 onClick={() => purchaseTimeSkip(skip.id)}
               >
-                {skip.cost} Obsidian
+                {t.shop.costObsidian(skip.cost)}
               </button>
             </li>
           )
         })}
       </ul>
 
-      <h3 className="subhead">Station skins</h3>
-      <p className="muted">Pure cosmetics — zero power. Equip one accent for the floor.</p>
+      <h3 className="subhead">{t.shop.skinsTitle}</h3>
+      <p className="muted">{t.shop.skinsIntro}</p>
       <ul className="cosmetic-grid">
         {COSMETICS.map((skin) => {
           const owned = state.ownedCosmetics.includes(skin.id)
@@ -127,7 +122,9 @@ export function ShopPanel({ game }: Props) {
               <div className="cosmetic-info">
                 <div className="ember-shop-name">
                   {skin.name}
-                  {equipped ? <span className="cosmetic-tag">Equipped</span> : null}
+                  {equipped ? (
+                    <span className="cosmetic-tag">{t.shop.equipped}</span>
+                  ) : null}
                 </div>
                 <p className="ember-shop-blurb">{skin.blurb}</p>
               </div>
@@ -138,7 +135,7 @@ export function ShopPanel({ game }: Props) {
                   disabled={equipped}
                   onClick={() => setEquippedCosmetic(skin.id)}
                 >
-                  {equipped ? 'Active' : 'Equip'}
+                  {equipped ? t.shop.active : t.shop.equip}
                 </button>
               ) : (
                 <button
@@ -147,7 +144,7 @@ export function ShopPanel({ game }: Props) {
                   disabled={!afford || skin.cost <= 0}
                   onClick={() => purchaseCosmetic(skin.id)}
                 >
-                  {skin.cost <= 0 ? 'Free' : `${skin.cost} Obsidian`}
+                  {skin.cost <= 0 ? t.shop.free : t.shop.costObsidian(skin.cost)}
                 </button>
               )}
             </li>
@@ -155,18 +152,19 @@ export function ShopPanel({ game }: Props) {
         })}
       </ul>
 
-      <h3 className="subhead">Clan boost</h3>
-      <p className="muted">
-        Temporary production buff for your placeholder clan. Refresh extends the timer.
-      </p>
+      <h3 className="subhead">{t.shop.clanBoostTitle}</h3>
+      <p className="muted">{t.shop.clanBoostIntro}</p>
       <div className="clan-boost-row">
         <div className="ember-shop-info">
           <div className="ember-shop-name">{CLAN_BOOST.name}</div>
           <p className="ember-shop-blurb">{CLAN_BOOST.blurb}</p>
           <p className="ember-shop-effect">
             {clanBoostActive
-              ? `Active ×${game.clanMult.toFixed(2)} · ${formatMsLeft(clanBoostMsLeft)} left`
-              : 'Inactive · base ×1.00'}
+              ? t.shop.boostActiveShort(
+                  game.clanMult.toFixed(2),
+                  formatMsLeft(clanBoostMsLeft),
+                )
+              : t.shop.boostInactiveShort}
           </p>
         </div>
         <button
@@ -175,7 +173,7 @@ export function ShopPanel({ game }: Props) {
           disabled={state.obsidian < CLAN_BOOST.cost}
           onClick={purchaseClanBoost}
         >
-          {CLAN_BOOST.cost} Obsidian
+          {t.shop.costObsidian(CLAN_BOOST.cost)}
         </button>
       </div>
     </section>

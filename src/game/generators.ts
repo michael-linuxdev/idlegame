@@ -6,12 +6,14 @@
  *   emberPit, ashForge, cinderBarracks, cinderVault, ashWatch, dominionKeep,
  *   batteryBank, edgeCache, quantumCooler, packetScrubber
  *
- * Display (datacenter ops) + silhouettes:
- *   Power Plant (power), Cooling Array (cool), Rack Bay (rack),
- *   Uplink (uplink), Beam Relay (relay), Core Switch (switch),
- *   Battery Bank (battery), Edge Cache (cache), Quantum Cooler (quantum),
- *   Packet Scrubber (scrub)
+ * Display names (DE via i18n) + silhouettes:
+ *   Kraftwerk (power), Kühlanlage (cool), Rack-Bucht (rack),
+ *   Uplink (uplink), Strahl-Relais (relay), Core-Switch (switch),
+ *   Batteriebank (battery), Edge-Cache (cache), Quantenkühler (quantum),
+ *   Paketfilter (scrub)
  */
+
+import { t } from '../i18n'
 
 export type GeneratorId =
   | 'emberPit'
@@ -88,8 +90,8 @@ export const GENERATORS: GeneratorDef[] = [
   {
     id: 'emberPit',
     economyId: 'G1',
-    name: 'Power Plant',
-    blurb: 'Orbital reactors that feed raw Compute into the station bus.',
+    name: t.modules.emberPit.name,
+    blurb: t.modules.emberPit.blurb,
     slot: { left: '48%', top: '78%' },
     silhouette: 'power',
     baseRate: 1,
@@ -99,8 +101,8 @@ export const GENERATORS: GeneratorDef[] = [
   {
     id: 'ashForge',
     economyId: 'G2',
-    name: 'Cooling Array',
-    blurb: 'Radiators and chill loops that keep racks in thermal envelope.',
+    name: t.modules.ashForge.name,
+    blurb: t.modules.ashForge.blurb,
     slot: { left: '76%', top: '62%' },
     silhouette: 'cool',
     baseRate: 8,
@@ -111,8 +113,8 @@ export const GENERATORS: GeneratorDef[] = [
   {
     id: 'cinderBarracks',
     economyId: 'G3',
-    name: 'Rack Bay',
-    blurb: 'Dense server floors that turn power into billable Compute.',
+    name: t.modules.cinderBarracks.name,
+    blurb: t.modules.cinderBarracks.blurb,
     slot: { left: '50%', top: '48%' },
     silhouette: 'rack',
     baseRate: 60,
@@ -123,8 +125,8 @@ export const GENERATORS: GeneratorDef[] = [
   {
     id: 'cinderVault',
     economyId: 'G4',
-    name: 'Uplink',
-    blurb: 'High-gain dishes that sell spare cycles to the belt mesh.',
+    name: t.modules.cinderVault.name,
+    blurb: t.modules.cinderVault.blurb,
     slot: { left: '18%', top: '60%' },
     silhouette: 'uplink',
     baseRate: 400,
@@ -135,8 +137,8 @@ export const GENERATORS: GeneratorDef[] = [
   {
     id: 'ashWatch',
     economyId: 'G5',
-    name: 'Beam Relay',
-    blurb: 'Laser backhaul that stitches distant pods into one fabric.',
+    name: t.modules.ashWatch.name,
+    blurb: t.modules.ashWatch.blurb,
     slot: { left: '22%', top: '36%' },
     silhouette: 'relay',
     baseRate: 2_500,
@@ -147,8 +149,8 @@ export const GENERATORS: GeneratorDef[] = [
   {
     id: 'dominionKeep',
     economyId: 'G6',
-    name: 'Core Switch',
-    blurb: 'The control plane — routes every rack, chill loop, and contract.',
+    name: t.modules.dominionKeep.name,
+    blurb: t.modules.dominionKeep.blurb,
     slot: { left: '58%', top: '28%' },
     silhouette: 'switch',
     baseRate: 15_000,
@@ -159,8 +161,8 @@ export const GENERATORS: GeneratorDef[] = [
   {
     id: 'batteryBank',
     economyId: 'G7',
-    name: 'Batteriebank',
-    blurb: 'Kondensator-Gewölbe, die Orbit-Finsternisse abfangen.',
+    name: t.modules.batteryBank.name,
+    blurb: t.modules.batteryBank.blurb,
     slot: { left: '84%', top: '40%' },
     silhouette: 'battery',
     baseRate: 90_000,
@@ -171,8 +173,8 @@ export const GENERATORS: GeneratorDef[] = [
   {
     id: 'edgeCache',
     economyId: 'G8',
-    name: 'Edge-Cache',
-    blurb: 'Nahorbit-CDN-Pods, die heiße Requests in Compute verwandeln.',
+    name: t.modules.edgeCache.name,
+    blurb: t.modules.edgeCache.blurb,
     slot: { left: '36%', top: '22%' },
     silhouette: 'cache',
     baseRate: 550_000,
@@ -183,8 +185,8 @@ export const GENERATORS: GeneratorDef[] = [
   {
     id: 'quantumCooler',
     economyId: 'G9',
-    name: 'Quantenkühler',
-    blurb: 'Kryo-Gitter für dichtere Qubit- und ASIC-Böden.',
+    name: t.modules.quantumCooler.name,
+    blurb: t.modules.quantumCooler.blurb,
     slot: { left: '8%', top: '24%' },
     silhouette: 'quantum',
     baseRate: 3_500_000,
@@ -198,8 +200,8 @@ export const GENERATORS: GeneratorDef[] = [
   {
     id: 'packetScrubber',
     economyId: 'G10',
-    name: 'Paketfilter',
-    blurb: 'Inline-Filter, die Abfallpakete in abrechenbare Zyklen holen.',
+    name: t.modules.packetScrubber.name,
+    blurb: t.modules.packetScrubber.blurb,
     slot: { left: '78%', top: '14%' },
     silhouette: 'scrub',
     baseRate: 22_000_000,
@@ -261,13 +263,18 @@ export function unlockHint(def: GeneratorDef): string {
   if (!def.unlock) return ''
   const parts: string[] = []
   if (def.unlock.ashEarned != null) {
-    parts.push(`${def.unlock.ashEarned.toLocaleString('de-DE')} Compute verdient`)
+    parts.push(
+      t.unlock.computeEarned(def.unlock.ashEarned.toLocaleString('de-DE')),
+    )
   }
   if (def.unlock.requires) {
     const prior = GENERATORS.find((g) => g.id === def.unlock!.requires!.id)
     parts.push(
-      `${prior?.name ?? def.unlock.requires.id} Stufe ${def.unlock.requires.level}`,
+      t.unlock.levelOf(
+        prior?.name ?? def.unlock.requires.id,
+        def.unlock.requires.level,
+      ),
     )
   }
-  return parts.length ? `Freischalten: ${parts.join(' oder ')}` : ''
+  return parts.length ? `${t.unlock.prefix} ${parts.join(t.unlock.or)}` : ''
 }
