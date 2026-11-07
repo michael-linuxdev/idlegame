@@ -13,6 +13,7 @@ import { activeTheme } from '../themes'
 import { BuildingSilhouette } from './BuildingSilhouette'
 import { DailyOpsBanner } from './DailyOpsBanner'
 import { EventBanner } from './EventBanner'
+import { ProgressSheet } from './ProgressSheet'
 import { ThemeMapBackdrop } from './ThemeMapBackdrop'
 import { UpgradeSheet } from './UpgradeSheet'
 
@@ -28,18 +29,23 @@ export function FortressMap({ game, highlightId }: Props) {
     state,
     rate,
     multiplier,
+    levelMult,
     clanMult,
     eventMult,
     rake,
     tapReady,
     equippedCosmetic,
+    playerLevel,
   } = game
   const [selected, setSelected] = useState<GeneratorId | null>(null)
+  const [progressOpen, setProgressOpen] = useState(false)
   const [tickFlash, setTickFlash] = useState(false)
   const [claimFlash, setClaimFlash] = useState(false)
   const prevAsh = useRef(state.ash)
-  const totalMult = multiplier * clanMult * eventMult
+  const totalMult = multiplier * levelMult * clanMult * eventMult
   const skinClass = equippedCosmetic?.accentClass ?? 'skin-steel'
+  const bonusPct = ((levelMult - 1) * 100).toFixed(1)
+  const questReady = game.questRows.some((q: { ready: boolean }) => q.ready)
 
   useEffect(() => {
     if (state.ash > prevAsh.current + 0.05) {
@@ -65,6 +71,30 @@ export function FortressMap({ game, highlightId }: Props) {
           <h1 id="ash-heading" className="brand wordmark">
             {t.brand}
           </h1>
+          <button
+            type="button"
+            className={`player-level-chip${questReady ? ' has-claim' : ''}`}
+            onClick={() => setProgressOpen(true)}
+            aria-label={t.hud.playerLevelAria(
+              playerLevel.level,
+              playerLevel.intoLevel,
+              playerLevel.need,
+            )}
+          >
+            <span className="player-level-num">
+              {t.level.label} {playerLevel.level}
+            </span>
+            <span className="player-level-track" aria-hidden="true">
+              <span
+                className="player-level-fill"
+                style={{ width: `${Math.round(playerLevel.ratio * 100)}%` }}
+              />
+            </span>
+            <span className="player-level-meta">
+              {playerLevel.intoLevel}/{playerLevel.need} {t.level.xp}
+              {levelMult > 1 ? ` · ${t.level.bonus(bonusPct)}` : ''}
+            </span>
+          </button>
         </div>
         <div className="map-hud-metrics" aria-live="polite">
           <div className={`hud-metric-chip${tickFlash ? ' ticking' : ''}`}>
@@ -204,6 +234,10 @@ export function FortressMap({ game, highlightId }: Props) {
           selectedId={selected}
           onClose={() => setSelected(null)}
         />
+      ) : null}
+
+      {progressOpen ? (
+        <ProgressSheet game={game} onClose={() => setProgressOpen(false)} />
       ) : null}
     </section>
   )

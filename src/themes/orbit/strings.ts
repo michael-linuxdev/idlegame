@@ -77,6 +77,7 @@ export const orbitStrings = {
     or: ' oder ',
     computeEarned: (n: string) => `${n} Rechenleistung verdient`,
     levelOf: (name: string, level: number) => `${name} Stufe ${level}`,
+    playerLevel: (level: number) => `Spieler-Level ${level}`,
   },
 
   hud: {
@@ -97,6 +98,101 @@ export const orbitStrings = {
       `${name}, Stufe ${level}, ${rate}. Tippen zum Upgrade.`,
     buildingAriaLocked: (name: string, hint: string) =>
       `${name}, gesperrt. ${hint}`,
+    playerLevelAria: (level: number, xp: number, need: number) =>
+      `Spieler-Level ${level}, ${xp} von ${need} EP`,
+    progressOpen: 'Meilensteine & Tagesziele',
+    progressClose: 'Schließen',
+  },
+
+  level: {
+    label: 'Level',
+    xp: 'EP',
+    bonus: (pct: string) => `+${pct} % Rechenleistung/s`,
+    rewards: {
+      ash: (n: number) => `+${n} Rechenleistung`,
+      embers: (n: number) => `+${n} Credits`,
+      obsidian: (n: number) => `+${n} Obsidian`,
+      cosmetic: (name: string) => `Skin: ${name}`,
+    },
+  },
+
+  branches: {
+    title: 'Upgradepfade',
+    efficiency: 'Effizienz',
+    capacity: 'Kapazität',
+    efficiencyBlurb: '+4 % Modul-Rechenleistung/s pro Rang (max. 5).',
+    capacityBlurb: '−3 % Upgrade-Kosten dieser Linie pro Rang (max. 5).',
+    efficiencyEffect: (pct: number) => `+${pct} % Linie`,
+    capacityEffect: (mult: string) => `×${mult} Kosten`,
+    rank: (n: number, max: number) => `Rang ${n}/${max}`,
+    buy: (name: string, cost: string) => `${name} · ${cost} Rechenleistung`,
+    maxed: 'Max',
+    needOnline: 'Modul zuerst online schalten.',
+  },
+
+  achievements: {
+    title: 'Meilensteine',
+    intro: 'Einmalige Ziele — Belohnung landet automatisch.',
+    done: 'Erledigt',
+    rewardAsh: (n: number) => `+${n} Rechenleistung`,
+    rewardEmbers: (n: number) => `+${n} Credits`,
+    rewardObsidian: (n: number) => `+${n} Obsidian`,
+    rewardCosmetic: (name: string) => `Skin: ${name}`,
+    firstUpgrade: {
+      name: 'Erster Zyklus',
+      blurb: 'Kaufe dein erstes Modul-Upgrade.',
+    },
+    greenhouseTen: {
+      name: 'Kraftwerk Lv 10',
+      blurb: 'Bringe das Kraftwerk auf Stufe 10.',
+    },
+    pumpOnline: {
+      name: 'Kühlkreislauf',
+      blurb: 'Schalte die Kühlanlage online.',
+    },
+    earn10k: {
+      name: 'Rechen-Polster',
+      blurb: 'Verdiene insgesamt 10.000 Rechenleistung.',
+    },
+    dailyOnce: {
+      name: 'Schichtbeginn',
+      blurb: 'Hole einmal Tägliche Ops ab.',
+    },
+    offlineOnce: {
+      name: 'Nachtzyklus',
+      blurb: 'Hole Offline-Rechenleistung mindestens einmal ab.',
+    },
+    fiveOnline: {
+      name: 'Fünf Module',
+      blurb: 'Habe fünf Module gleichzeitig online.',
+    },
+    levelFive: {
+      name: 'Ops-Lehrling',
+      blurb: 'Erreiche Spieler-Level 5.',
+    },
+    prestigeOnce: {
+      name: 'Neuer Orbit',
+      blurb: 'Prestigiere einmal.',
+    },
+    upgradesFifty: {
+      name: 'Fleißige Ops',
+      blurb: 'Kaufe insgesamt 50 Upgrades.',
+    },
+  },
+
+  quests: {
+    title: 'Tagesziele',
+    intro: 'Drei Ziele pro Tag — kein Energie-Limit.',
+    claim: 'Belohnung holen',
+    claimed: 'Abgeholt',
+    progress: (cur: string, target: string) => `${cur} / ${target}`,
+    upgradeTimes: (n: number) => `Upgrade ${n}× kaufen`,
+    earnAsh: (n: string) => `${n} Rechenleistung verdienen`,
+    claimDaily: 'Tägliche Ops abholen',
+    rewardLine: (ash: number, seeds: number) =>
+      seeds > 0
+        ? `+${ash} Rechenleistung · +${seeds} Obsidian`
+        : `+${ash} Rechenleistung`,
   },
 
   upgrade: {
@@ -115,6 +211,7 @@ export const orbitStrings = {
       'Tor geschlossen. Erfülle die Bedingung — dann wird dieser CTA aktiv.',
     costLine: (action: string, cost: string) =>
       `${action} · ${cost} Rechenleistung`,
+    branchHint: 'Pfade bleiben sekundär — der Upgrade-Button bleibt primär.',
   },
 
   prestige: {

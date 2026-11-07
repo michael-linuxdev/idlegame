@@ -1,6 +1,9 @@
 import { EMPTY_EMBER_UPGRADES, type EmberUpgrades } from './economy'
 import { GENERATOR_IDS, type GeneratorId } from './generators'
 import { COSMETICS, dayKey, type CosmeticId } from './monetization'
+import { ACHIEVEMENT_IDS, type AchievementId } from './achievements'
+import { emptyBranches } from './branches'
+import { emptyQuestProgress, type QuestProgress } from './quests'
 import { createInitialState, STORAGE_KEY, type GameState } from './state'
 
 const LEGACY_KEYS = [
@@ -135,6 +138,31 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
     owned.emberPit = 1
   }
 
+  const playerXp =
+    typeof parsed.playerXp === 'number' && Number.isFinite(parsed.playerXp)
+      ? Math.max(0, Math.floor(parsed.playerXp))
+      : 0
+  const claimedLevelRewards = Array.isArray(parsed.claimedLevelRewards)
+    ? parsed.claimedLevelRewards.filter(
+        (n): n is number => typeof n === 'number' && Number.isFinite(n),
+      )
+    : []
+  const totalUpgrades =
+    typeof parsed.totalUpgrades === 'number' &&
+    Number.isFinite(parsed.totalUpgrades)
+      ? Math.max(0, Math.floor(parsed.totalUpgrades))
+      : 0
+  const lifetimeAshEarned =
+    typeof parsed.lifetimeAshEarned === 'number' &&
+    Number.isFinite(parsed.lifetimeAshEarned)
+      ? Math.max(0, parsed.lifetimeAshEarned)
+      : ashEarned
+  const claimedDailyOnce = parsed.claimedDailyOnce === true
+  const claimedOfflineOnce = parsed.claimedOfflineOnce === true
+  const claimedAchievements = parseAchievements(parsed.claimedAchievements)
+  const branches = parseBranches(parsed.branches)
+  const questBundle = parseQuests(parsed.questDayKey, parsed.quests)
+
   return {
     ash,
     ashEarned,
@@ -157,7 +185,102 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
     eventAshProgress,
     eventProgressKey,
     eventGoalClaimedKey,
+    playerXp,
+    claimedLevelRewards,
+    totalUpgrades,
+    lifetimeAshEarned,
+    claimedDailyOnce,
+    claimedOfflineOnce,
+    claimedAchievements,
+    branches,
+    questDayKey: questBundle.dayKey,
+    quests: questBundle.quests,
   }
+}
+
+function parseAchievements(raw: unknown): AchievementId[] {
+  if (!Array.isArray(raw)) return []
+  const allowed = new Set<string>(ACHIEVEMENT_IDS)
+  const out: AchievementId[] = []
+  for (const item of raw) {
+    if (typeof item === 'string' && allowed.has(item)) {
+      out.push(item as AchievementId)
+    }
+  }
+  return out
+}
+
+function parseBranches(raw: unknown): GameState['branches'] {
+  const base = emptyBranches(GENERATOR_IDS)
+  if (!isRecord(raw)) return base
+  for (const id of GENERATOR_IDS) {
+    const row = raw[id]
+    if (!isRecord(row)) continue
+    const efficiency =
+      typeof row.efficiency === 'number' && Number.isFinite(row.efficiency)
+        ? Math.max(0, Math.min(5, Math.floor(row.efficiency)))
+        : 0
+    const capacity =
+      typeof row.capacity === 'number' && Number.isFinite(row.capacity)
+        ? Math.max(0, Math.min(5, Math.floor(row.capacity)))
+        : 0
+    base[id] = { efficiency, capacity }
+  }
+  return base
+}
+
+function parseQuests(
+  dayRaw: unknown,
+  questsRaw: unknown,
+): { dayKey: string; quests: QuestProgress[] } {
+  const fallback = emptyQuestProgress()
+  const key =
+    typeof dayRaw === 'string' && dayRaw.length >= 8 ? dayRaw : fallback.dayKey
+  if (!Array.isArray(questsRaw) || questsRaw.length === 0) {
+    return key === fallback.dayKey ? fallback : emptyQuestProgress()
+  }
+  const quests: QuestProgress[] = []
+  for (const item of questsRaw) {
+    if (!isRecord(item)) continue
+    if (typeof item.id !== 'string') continue
+    if (
+      item.kind !== 'upgrades' &&
+      item.kind !== 'earnAsh' &&
+      item.kind !== 'claimDaily'
+    ) {
+      continue
+    }
+    const target =
+      typeof item.target === 'number' && Number.isFinite(item.target)
+        ? Math.max(1, item.target)
+        : 1
+    const progress =
+      typeof item.progress === 'number' && Number.isFinite(item.progress)
+        ? Math.max(0, item.progress)
+        : 0
+    const rewardAsh =
+      typeof item.rewardAsh === 'number' && Number.isFinite(item.rewardAsh)
+        ? Math.max(0, Math.floor(item.rewardAsh))
+        : 0
+    const rewardObsidian =
+      typeof item.rewardObsidian === 'number' &&
+      Number.isFinite(item.rewardObsidian)
+        ? Math.max(0, Math.floor(item.rewardObsidian))
+        : 0
+    quests.push({
+      id: item.id,
+      kind: item.kind,
+      target,
+      progress: Math.min(target, progress),
+      rewardAsh,
+      rewardObsidian,
+      claimed: item.claimed === true,
+    })
+  }
+  if (quests.length < 2) {
+    return key === dayKey() ? fallback : emptyQuestProgress()
+  }
+  return { dayKey: key, quests }
 }
 
 export function loadState(): GameState {

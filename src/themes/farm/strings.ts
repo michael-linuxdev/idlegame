@@ -77,6 +77,7 @@ export const farmStrings = {
     or: ' oder ',
     computeEarned: (n: string) => `${n} Ertrag verdient`,
     levelOf: (name: string, level: number) => `${name} Stufe ${level}`,
+    playerLevel: (level: number) => `Spieler-Level ${level}`,
   },
 
   hud: {
@@ -97,6 +98,99 @@ export const farmStrings = {
       `${name}, Stufe ${level}, ${rate}. Tippen zum Upgrade.`,
     buildingAriaLocked: (name: string, hint: string) =>
       `${name}, gesperrt. ${hint}`,
+    playerLevelAria: (level: number, xp: number, need: number) =>
+      `Spieler-Level ${level}, ${xp} von ${need} EP`,
+    progressOpen: 'Meilensteine & Tagesziele',
+    progressClose: 'Schließen',
+  },
+
+  level: {
+    label: 'Level',
+    xp: 'EP',
+    bonus: (pct: string) => `+${pct} % Ertrag/s`,
+    rewards: {
+      ash: (n: number) => `+${n} Ertrag`,
+      embers: (n: number) => `+${n} Münzen`,
+      obsidian: (n: number) => `+${n} Samen`,
+      cosmetic: (name: string) => `Skin: ${name}`,
+    },
+  },
+
+  branches: {
+    title: 'Upgradepfade',
+    efficiency: 'Effizienz',
+    capacity: 'Kapazität',
+    efficiencyBlurb: '+4 % Modul-Ertrag/s pro Rang (max. 5).',
+    capacityBlurb: '−3 % Upgrade-Kosten dieser Linie pro Rang (max. 5).',
+    efficiencyEffect: (pct: number) => `+${pct} % Linie`,
+    capacityEffect: (mult: string) => `×${mult} Kosten`,
+    rank: (n: number, max: number) => `Rang ${n}/${max}`,
+    buy: (name: string, cost: string) => `${name} · ${cost} Ertrag`,
+    maxed: 'Max',
+    needOnline: 'Modul zuerst online schalten.',
+  },
+
+  achievements: {
+    title: 'Meilensteine',
+    intro: 'Einmalige Ziele — Belohnung landet automatisch.',
+    done: 'Erledigt',
+    rewardAsh: (n: number) => `+${n} Ertrag`,
+    rewardEmbers: (n: number) => `+${n} Münzen`,
+    rewardObsidian: (n: number) => `+${n} Samen`,
+    rewardCosmetic: (name: string) => `Skin: ${name}`,
+    firstUpgrade: {
+      name: 'Erster Schnitt',
+      blurb: 'Kaufe dein erstes Modul-Upgrade.',
+    },
+    greenhouseTen: {
+      name: 'Volles Glasdach',
+      blurb: 'Bringe das Gewächshaus auf Stufe 10.',
+    },
+    pumpOnline: {
+      name: 'Kreislauf läuft',
+      blurb: 'Schalte die Nährstoffpumpe online.',
+    },
+    earn10k: {
+      name: 'Ernte-Polster',
+      blurb: 'Verdiene insgesamt 10.000 Ertrag.',
+    },
+    dailyOnce: {
+      name: 'Morgenroutine',
+      blurb: 'Hole einmal Tägliche Pflege ab.',
+    },
+    offlineOnce: {
+      name: 'Nachtwachstum',
+      blurb: 'Hole Offline-Ertrag mindestens einmal ab.',
+    },
+    fiveOnline: {
+      name: 'Fünf Beete',
+      blurb: 'Habe fünf Module gleichzeitig online.',
+    },
+    levelFive: {
+      name: 'Hof-Lehrling',
+      blurb: 'Erreiche Spieler-Level 5.',
+    },
+    prestigeOnce: {
+      name: 'Neuer Aussaat',
+      blurb: 'Prestigiere einmal.',
+    },
+    upgradesFifty: {
+      name: 'Fleißige Hände',
+      blurb: 'Kaufe insgesamt 50 Upgrades.',
+    },
+  },
+
+  quests: {
+    title: 'Tagesziele',
+    intro: 'Drei Ziele pro Tag — kein Energie-Limit.',
+    claim: 'Belohnung holen',
+    claimed: 'Abgeholt',
+    progress: (cur: string, target: string) => `${cur} / ${target}`,
+    upgradeTimes: (n: number) => `Upgrade ${n}× kaufen`,
+    earnAsh: (n: string) => `${n} Ertrag verdienen`,
+    claimDaily: 'Tägliche Pflege abholen',
+    rewardLine: (ash: number, seeds: number) =>
+      seeds > 0 ? `+${ash} Ertrag · +${seeds} Samen` : `+${ash} Ertrag`,
   },
 
   upgrade: {
@@ -114,6 +208,7 @@ export const farmStrings = {
       'Tor geschlossen. Erfülle die Bedingung — dann wird dieser CTA aktiv.',
     costLine: (action: string, cost: string) =>
       `${action} · ${cost} Ertrag`,
+    branchHint: 'Pfade bleiben sekundär — der Upgrade-Button bleibt primär.',
   },
 
   prestige: {
