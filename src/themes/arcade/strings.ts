@@ -21,6 +21,8 @@ export const arcadeStrings = {
     prestige: 'Prestige',
     clan: 'Clan',
     shop: 'Shop',
+    menu: 'Menü',
+    menuClose: 'Menü schließen',
   },
 
   sound: {

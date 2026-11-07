@@ -157,75 +157,72 @@ export function FortressMap({ game, highlightId }: Props) {
       <h1 id="ash-heading" className="sr-only">
         {t.brand}
       </h1>
+      {/* Clash HUD: floating chips only — no white card tiles */}
       <header className="map-hud">
-        <div className="map-hud-tray">
-          <div className="map-hud-top">
-            <button
-              type="button"
-              className={`player-level-chip${questReady ? ' has-claim' : ''}${levelPulse ? ' level-up' : ''}`}
-              onClick={() => setProgressOpen(true)}
-              aria-label={t.hud.playerLevelAria(
-                playerLevel.level,
-                playerLevel.intoLevel,
-                playerLevel.need,
-              )}
-            >
-              <span className="player-level-num">
-                {t.level.label} {playerLevel.level}
-              </span>
-              <span className="player-level-track" aria-hidden="true">
-                <span
-                  className="player-level-fill"
-                  style={{ width: `${Math.round(playerLevel.ratio * 100)}%` }}
-                />
-              </span>
-              <span className="player-level-meta">
-                {playerLevel.intoLevel}/{playerLevel.need} {t.level.xp}
-                {levelMult > 1 ? ` · ${t.level.bonus(bonusPct)}` : ''}
-              </span>
-            </button>
-            <div className="map-hud-metrics" aria-live="polite">
-              <div className={`hud-metric-chip${tickFlash ? ' ticking' : ''}`}>
-                <div className="ash-amount compact">
-                  <span className={`ash-value${tickFlash ? ' tick' : ''}`}>
-                    {formatAsh(state.ash)}
-                  </span>
-                  <span className="ash-label">{t.resources.compute}</span>
-                </div>
-                <p className="rate-line">
-                  {formatRate(rate)}
-                  {totalMult > 1 ? (
-                    <span className="mult"> · ×{totalMult.toFixed(2)}</span>
-                  ) : null}
-                </p>
-              </div>
-              <div className="hud-meta-row">
-                {state.embers > 0 ? (
-                  <p className="embers-line">
-                    {state.embers} {t.resources.credits}
-                  </p>
-                ) : null}
-                <p className="obsidian-line">
-                  {state.obsidian} {t.resources.obsidian}
-                </p>
-                <MuteToggle />
-              </div>
-            </div>
-          </div>
-          {tapReady ? (
-            <button
-              type="button"
-              className="btn rake pulse-ready"
-              onClick={onRake}
-              title={t.hud.burstReadyTitle}
-            >
-              {t.hud.burstReady}
-            </button>
-          ) : null}
-        </div>
-      </header>
+        <button
+          type="button"
+          className={`hud-chip level${questReady ? ' has-claim' : ''}${levelPulse ? ' level-up' : ''}`}
+          onClick={() => setProgressOpen(true)}
+          aria-label={t.hud.playerLevelAria(
+            playerLevel.level,
+            playerLevel.intoLevel,
+            playerLevel.need,
+          )}
+        >
+          <span className="hud-chip-title">
+            {t.level.label} {playerLevel.level}
+          </span>
+          <span className="hud-chip-bar" aria-hidden="true">
+            <span
+              className="hud-chip-fill"
+              style={{ width: `${Math.round(playerLevel.ratio * 100)}%` }}
+            />
+          </span>
+          <span className="hud-chip-meta">
+            {playerLevel.intoLevel}/{playerLevel.need}
+            {levelMult > 1 ? ` · ${t.level.bonus(bonusPct)}` : ''}
+          </span>
+        </button>
 
-      <NextGoalStrip goal={nextGoal} onActivate={onGoalActivate} />
+        <div className="hud-chip resources" aria-live="polite">
+          <div className={`hud-res-main${tickFlash ? ' ticking' : ''}`}>
+            <span className={`ash-value${tickFlash ? ' tick' : ''}`}>
+              {formatAsh(state.ash)}
+            </span>
+            <span className="ash-label">{t.resources.compute}</span>
+          </div>
+          <p className="rate-line">
+            {formatRate(rate)}
+            {totalMult > 1 ? (
+              <span className="mult"> · ×{totalMult.toFixed(2)}</span>
+            ) : null}
+          </p>
+          <div className="hud-res-meta">
+            {state.embers > 0 ? (
+              <span className="embers-line">
+                {state.embers} {t.resources.credits}
+              </span>
+            ) : null}
+            <span className="obsidian-line">
+              {state.obsidian} {t.resources.obsidian}
+            </span>
+            <MuteToggle />
+          </div>
+        </div>
+
+        <NextGoalStrip goal={nextGoal} onActivate={onGoalActivate} />
+
+        {tapReady ? (
+          <button
+            type="button"
+            className="btn rake pulse-ready hud-schub"
+            onClick={onRake}
+            title={t.hud.burstReadyTitle}
+          >
+            {t.hud.burstReady}
+          </button>
+        ) : null}
+      </header>
 
       <FloatPops items={pops} onDone={removePop} />
 
@@ -242,9 +239,6 @@ export function FortressMap({ game, highlightId }: Props) {
                 {formatAsh(game.offlineGained)}
               </strong>{' '}
               {t.hud.offlineAfter}
-            </p>
-            <p className="banner-meta">
-              +{xpFromOfflineClaim(game.offlineGained)} {t.level.xp}
             </p>
           </div>
           <button
