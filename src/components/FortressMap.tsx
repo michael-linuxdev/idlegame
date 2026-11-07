@@ -100,7 +100,12 @@ export function FortressMap({ game, highlightId }: Props) {
           aria-label={t.hud.mapAria}
         >
           <div className="map-terrain" aria-hidden="true">
+            <div className="map-stars" />
+            <div className="map-orbital-rim" />
+            <div className="map-asteroid" />
+            <div className="map-plate" />
             <div className="map-grid" />
+            <div className="map-cable-trays" />
             <div className="map-ridge" />
             <div className="map-walls">
               <span className="wall-segment north" />
@@ -117,6 +122,7 @@ export function FortressMap({ game, highlightId }: Props) {
             <div className="map-forge-glow" />
             <div className="map-haze" />
             <div className="map-skin-wash" />
+            <div className="map-dust" />
           </div>
 
           {GENERATORS.map((def) => {
@@ -125,13 +131,14 @@ export function FortressMap({ game, highlightId }: Props) {
             const selectedHere = selected === def.id
             const buildingRate =
               unlocked && level > 0 ? generatorRate(def, level) * totalMult : 0
+            const producing = buildingRate > 0
             const hint = !unlocked ? unlockHint(def) : ''
             const hl = highlightId === def.id
             return (
               <button
                 key={def.id}
                 type="button"
-                className={`map-building${selectedHere ? ' selected' : ''}${level > 0 && unlocked ? ' raised' : ''}${!unlocked ? ' locked' : ''}${hl ? ' ftue-target' : ''}`}
+                className={`map-building${selectedHere ? ' selected' : ''}${level > 0 && unlocked ? ' raised' : ''}${!unlocked ? ' locked' : ''}${producing ? ' producing' : ''}${hl ? ' ftue-target' : ''}`}
                 style={{ left: def.slot.left, top: def.slot.top }}
                 aria-label={
                   unlocked
@@ -148,6 +155,8 @@ export function FortressMap({ game, highlightId }: Props) {
                   kind={def.silhouette}
                   level={level}
                   locked={!unlocked}
+                  producing={producing}
+                  selected={selectedHere}
                 />
                 <span className="map-building-label">
                   <span className="map-building-name">{def.name}</span>
