@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;600&family=Cinzel:wght@600;700&display=swap');
+
+:root {
+  --ad-bg-deep: #0c0b0a;
+  --ad-bg-field: #141210;
+  --ad-bg-raised: #1c1916;
+  --ad-bg-inset: #0a0908;
+  --ad-stroke: #2e2a24;
+  --ad-stroke-strong: #4a4338;
+  --ad-ink: #e8e0d4;
+  --ad-ink-muted: #9a9080;
+  --ad-ink-faint: #6b6458;
+  --ad-ember: #c45c2a;
+  --ad-ember-hot: #e07838;
+  --ad-ember-dim: #6e3218;
+  --ad-bronze: #8a6a3d;
+  --ad-bronze-pale: #c4a574;
+  --ad-gain: #6f8f5a;
+  --ad-clan: #5a6e78;
+  --ad-focus: #d4c4a8;
+  --ad-target-min: 44px;
+  --ad-font-display: 'Cinzel', 'Times New Roman', serif;
+  --ad-font-ui: 'Barlow', 'Helvetica Neue', sans-serif;
+  --ad-font-metric: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --ad-radius: 6px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+
+  /* Legacy aliases used across existing class names */
+  --bg-deep: var(--ad-bg-deep);
+  --bg: var(--ad-bg-field);
+  --bg-raised: var(--ad-bg-raised);
+  --bg-line: var(--ad-stroke);
+  --ember: var(--ad-ember);
+  --ember-hot: var(--ad-ember-hot);
+  --ash: var(--ad-ink-muted);
+  --ash-dim: var(--ad-ink-faint);
+  --ink: var(--ad-ink);
+  --font-display: var(--ad-font-display);
+  --font-body: var(--ad-font-ui);
+  --radius: var(--ad-radius);
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--ad-font-ui);
+  background: var(--ad-bg-deep);
+  color: var(--ad-ink);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.45;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+button:focus-visible {
+  outline: 2px solid var(--ad-focus);
+  outline-offset: 2px;
+}
+
+strong {
+  font-weight: 600;
+  color: var(--ad-ink);
+}
