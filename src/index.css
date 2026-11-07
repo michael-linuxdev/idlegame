@@ -1,26 +1,28 @@
 @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;600&family=Cinzel:wght@600;700&display=swap');
 
 :root {
-  --ad-bg-deep: #0c0b0a;
-  --ad-bg-field: #141210;
-  --ad-bg-raised: #1c1916;
-  --ad-bg-inset: #0a0908;
-  --ad-stroke: #2e2a24;
-  --ad-stroke-strong: #4a4338;
-  /* Primary bone — hard contrast on ash fields (≥ ~12:1 on deep) */
-  --ad-ink: #f2ebe0;
-  /* Secondary — still WCAG-ish on dark panels; not for must-read labels */
-  --ad-ink-muted: #c9bfb0;
+  /* Surfaces — dusk forge ash (lit slag, not black void) */
+  --ad-bg-deep: #1a1612;
+  --ad-bg-field: #242018;
+  --ad-bg-raised: #2e2820;
+  --ad-bg-inset: #16130f;
+  --ad-stroke: #4a4338;
+  --ad-stroke-strong: #6a5e4c;
+  /* Primary bone — hard contrast on mid-dark ash */
+  --ad-ink: #f5efe6;
+  /* Secondary — still WCAG-ish on panels; not for must-read labels */
+  --ad-ink-muted: #d0c6b6;
   /* Tertiary / disabled only — never building names, rates, HUD, buttons */
-  --ad-ink-faint: #8a8174;
-  --ad-ember: #c45c2a;
-  --ad-ember-hot: #e07838;
-  --ad-ember-dim: #6e3218;
-  --ad-bronze: #8a6a3d;
-  --ad-bronze-pale: #d4b888;
-  --ad-gain: #8fad74;
-  --ad-clan: #8aa0ac;
-  --ad-focus: #d4c4a8;
+  --ad-ink-faint: #9a9080;
+  /* Brand accent — warmer banked ember */
+  --ad-ember: #d4682e;
+  --ad-ember-hot: #ef8a42;
+  --ad-ember-dim: #8a3e1c;
+  --ad-bronze: #9a7848;
+  --ad-bronze-pale: #dcc090;
+  --ad-gain: #9bb87e;
+  --ad-clan: #92a8b4;
+  --ad-focus: #e0d2b8;
   --ad-target-min: 44px;
   --ad-font-display: 'Cinzel', 'Times New Roman', serif;
   --ad-font-ui: 'Barlow', 'Helvetica Neue', sans-serif;

@@ -16,8 +16,8 @@ export default defineConfig({
         short_name: 'Ash Dominion',
         description:
           'Rule an ash legion. Generators produce offline. Prestige for dominion.',
-        theme_color: '#1a1410',
-        background_color: '#0e0b09',
+        theme_color: '#242018',
+        background_color: '#1a1612',
         display: 'standalone',
         orientation: 'portrait',
         start_url: './',
