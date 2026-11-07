@@ -154,75 +154,74 @@ export function FortressMap({ game, highlightId }: Props) {
 
   return (
     <section className="fortress-home" aria-labelledby="ash-heading">
+      <h1 id="ash-heading" className="sr-only">
+        {t.brand}
+      </h1>
       <header className="map-hud">
-        <div className="map-hud-brand">
-          <div className="map-hud-brand-row">
-            <p className="eyebrow">{t.eyebrow}</p>
-            <MuteToggle />
+        <div className="map-hud-tray">
+          <div className="map-hud-top">
+            <button
+              type="button"
+              className={`player-level-chip${questReady ? ' has-claim' : ''}${levelPulse ? ' level-up' : ''}`}
+              onClick={() => setProgressOpen(true)}
+              aria-label={t.hud.playerLevelAria(
+                playerLevel.level,
+                playerLevel.intoLevel,
+                playerLevel.need,
+              )}
+            >
+              <span className="player-level-num">
+                {t.level.label} {playerLevel.level}
+              </span>
+              <span className="player-level-track" aria-hidden="true">
+                <span
+                  className="player-level-fill"
+                  style={{ width: `${Math.round(playerLevel.ratio * 100)}%` }}
+                />
+              </span>
+              <span className="player-level-meta">
+                {playerLevel.intoLevel}/{playerLevel.need} {t.level.xp}
+                {levelMult > 1 ? ` · ${t.level.bonus(bonusPct)}` : ''}
+              </span>
+            </button>
+            <div className="map-hud-metrics" aria-live="polite">
+              <div className={`hud-metric-chip${tickFlash ? ' ticking' : ''}`}>
+                <div className="ash-amount compact">
+                  <span className={`ash-value${tickFlash ? ' tick' : ''}`}>
+                    {formatAsh(state.ash)}
+                  </span>
+                  <span className="ash-label">{t.resources.compute}</span>
+                </div>
+                <p className="rate-line">
+                  {formatRate(rate)}
+                  {totalMult > 1 ? (
+                    <span className="mult"> · ×{totalMult.toFixed(2)}</span>
+                  ) : null}
+                </p>
+              </div>
+              <div className="hud-meta-row">
+                {state.embers > 0 ? (
+                  <p className="embers-line">
+                    {state.embers} {t.resources.credits}
+                  </p>
+                ) : null}
+                <p className="obsidian-line">
+                  {state.obsidian} {t.resources.obsidian}
+                </p>
+                <MuteToggle />
+              </div>
+            </div>
           </div>
-          <h1 id="ash-heading" className="brand wordmark">
-            {t.brand}
-          </h1>
           <button
             type="button"
-            className={`player-level-chip${questReady ? ' has-claim' : ''}${levelPulse ? ' level-up' : ''}`}
-            onClick={() => setProgressOpen(true)}
-            aria-label={t.hud.playerLevelAria(
-              playerLevel.level,
-              playerLevel.intoLevel,
-              playerLevel.need,
-            )}
+            className={`btn rake${tapReady ? ' pulse-ready' : ' rake-cooling'}`}
+            onClick={onRake}
+            disabled={!tapReady}
+            title={tapReady ? t.hud.burstReadyTitle : t.hud.burstCoolingTitle}
           >
-            <span className="player-level-num">
-              {t.level.label} {playerLevel.level}
-            </span>
-            <span className="player-level-track" aria-hidden="true">
-              <span
-                className="player-level-fill"
-                style={{ width: `${Math.round(playerLevel.ratio * 100)}%` }}
-              />
-            </span>
-            <span className="player-level-meta">
-              {playerLevel.intoLevel}/{playerLevel.need} {t.level.xp}
-              {levelMult > 1 ? ` · ${t.level.bonus(bonusPct)}` : ''}
-            </span>
+            {tapReady ? t.hud.burstReady : t.hud.burstCooling}
           </button>
         </div>
-        <div className="map-hud-metrics" aria-live="polite">
-          <div className={`hud-metric-chip${tickFlash ? ' ticking' : ''}`}>
-            <div className="ash-amount compact">
-              <span className={`ash-value${tickFlash ? ' tick' : ''}`}>
-                {formatAsh(state.ash)}
-              </span>
-              <span className="ash-label">{t.resources.compute}</span>
-            </div>
-            <p className="rate-line">
-              {formatRate(rate)}
-              {totalMult > 1 ? (
-                <span className="mult"> · ×{totalMult.toFixed(2)}</span>
-              ) : null}
-            </p>
-          </div>
-          <div className="hud-meta-row">
-            {state.embers > 0 ? (
-              <p className="embers-line">
-                {state.embers} {t.resources.credits}
-              </p>
-            ) : null}
-            <p className="obsidian-line">
-              {state.obsidian} {t.resources.obsidian}
-            </p>
-          </div>
-        </div>
-        <button
-          type="button"
-          className="btn rake"
-          onClick={onRake}
-          disabled={!tapReady}
-          title={tapReady ? t.hud.burstReadyTitle : t.hud.burstCoolingTitle}
-        >
-          {tapReady ? t.hud.burstReady : t.hud.burstCooling}
-        </button>
       </header>
 
       <NextGoalStrip goal={nextGoal} onActivate={onGoalActivate} />
