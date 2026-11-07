@@ -89,6 +89,18 @@
   font-weight: 600;
 }
 
+/* HUD brand row: never truncate “Urban · Farm” next to mute */
+.map-hud-brand-row .eyebrow {
+  flex: 1 1 auto;
+  min-width: max-content;
+  max-width: none;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: nowrap;
+  letter-spacing: 0.1em;
+  font-size: 0.68rem;
+}
+
 .brand {
   font-family: var(--oc-font-display);
   font-weight: 700;
@@ -247,8 +259,11 @@
 }
 
 .theme-map-farm .fortress-map {
-  background: #a8c4a0;
-  box-shadow: 0 14px 32px rgba(40, 70, 40, 0.18);
+  background: #7eb090;
+  min-height: 380px;
+  box-shadow: 0 16px 36px rgba(40, 70, 40, 0.22);
+  transform: perspective(960px) rotateX(10deg);
+  border-color: #5a8a58;
 }
 
 .theme-map-arcade .fortress-map {
@@ -266,10 +281,49 @@
 }
 
 .map-terrain-farm {
-  background:
-    radial-gradient(90% 55% at 50% 110%, rgba(61, 139, 79, 0.22), transparent 60%),
-    radial-gradient(40% 30% at 82% 12%, rgba(255, 255, 255, 0.55), transparent 70%),
-    linear-gradient(168deg, #cfe6d4 0%, #b5d0a8 42%, #9cbc8c 100%);
+  background: #b8d4c0;
+  overflow: hidden;
+}
+
+/* Rich SVG rooftop farm yard */
+.farm-yard-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.farm-yard-glow {
+  left: 18%;
+  bottom: 4%;
+  width: 64%;
+  height: 48%;
+  background: radial-gradient(
+    ellipse at 50% 70%,
+    rgba(61, 139, 79, 0.38) 0%,
+    rgba(107, 196, 122, 0.16) 42%,
+    transparent 72%
+  );
+  z-index: 1;
+}
+
+.farm-yard-haze {
+  background: radial-gradient(
+    circle at 50% 35%,
+    transparent 40%,
+    rgba(180, 210, 190, 0.28) 100%
+  );
+}
+
+.theme-map-farm .farm-led-dot {
+  animation: led-blink 2.2s ease-in-out infinite;
+}
+
+.theme-map-farm .farm-pollen {
+  animation: dust-drift 14s ease-in-out infinite alternate;
 }
 
 .map-terrain-arcade {
@@ -1046,47 +1100,112 @@
   z-index: 2;
 }
 
-/* Content depth: 10 slots — slightly tighter footprints */
+/* Content depth: 10 slots — compact plaques, roomy lattice (see generators slots) */
 .fortress-map.slots-10 .map-building {
-  width: min(26%, 100px);
-  min-width: 78px;
-  padding: 0.2rem 0.15rem 0.3rem;
+  width: min(24%, 92px);
+  min-width: 72px;
+  padding: 0.12rem 0.1rem 0.18rem;
+  gap: 0.08rem;
+  transform: translate(-50%, -68%);
 }
 
 .fortress-map.slots-10 .building-sil {
-  width: 60px;
-  height: 52px;
+  width: 56px;
+  height: 48px;
 }
 
 .fortress-map.slots-10 .building-sil .sil-svg {
-  width: 60px;
-  height: 52px;
+  width: 56px;
+  height: 48px;
 }
 
 .fortress-map.slots-10 .map-building-name {
-  font-size: 0.62rem;
-  max-width: 5.6rem;
+  font-size: 0.58rem;
+  max-width: 5.2rem;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .fortress-map.slots-10 .map-building-label {
-  padding: 0.22rem 0.4rem 0.28rem;
-  max-width: 6.2rem;
+  padding: 0.14rem 0.32rem 0.16rem;
+  max-width: 5.6rem;
+  gap: 0.02rem;
 }
 
 .fortress-map.slots-10 .map-building-meta {
-  font-size: 0.72rem;
-  gap: 0.28rem;
+  font-size: 0.62rem;
+  gap: 0.2rem;
 }
 
-/* Reduce label clutter — rate only on selected / producing */
+.fortress-map.slots-10 .map-building-lock {
+  font-size: 0.55rem;
+  letter-spacing: 0.04em;
+}
+
+.fortress-map.slots-10 .map-building-gate {
+  font-size: 0.55rem;
+  max-width: 3.6rem;
+  font-weight: 700;
+}
+
+.fortress-map.slots-10 .map-building-lock-line {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.15rem;
+  max-width: 100%;
+}
+
+/* Rate only when producing / selected (markup + CSS backup) */
 .fortress-map.slots-10 .map-building:not(.selected):not(.producing) .map-building-rate {
   display: none;
 }
 
 .fortress-map.slots-10 .map-building:not(.selected) .map-building-label {
-  opacity: 0.92;
+  opacity: 0.95;
+}
+
+.fortress-map.slots-10 .map-building.locked:not(.selected) {
+  z-index: 2;
+}
+
+.fortress-map.slots-10 .map-building.raised:not(.selected),
+.fortress-map.slots-10 .map-building.producing:not(.selected) {
+  z-index: 3;
+}
+
+/* Farm map: art readable, plaques stay compact under silhouettes */
+.theme-map-farm .fortress-map.slots-10 .map-building {
+  width: min(26%, 96px);
+  min-width: 76px;
+  gap: 0.06rem;
+  padding: 0.05rem 0.06rem 0.12rem;
+  transform: translate(-50%, -70%);
+}
+
+.theme-map-farm .fortress-map.slots-10 .building-sil {
+  width: 64px;
+  height: 56px;
+  z-index: 1;
+  filter: drop-shadow(0 4px 4px rgba(30, 55, 30, 0.32));
+}
+
+.theme-map-farm .fortress-map.slots-10 .building-sil .sil-svg {
+  width: 64px;
+  height: 56px;
+}
+
+.theme-map-farm .fortress-map.slots-10 .map-building-name {
+  font-size: 0.56rem;
+  letter-spacing: 0.01em;
+  max-width: 5rem;
+}
+
+.theme-map-farm .fortress-map.slots-10 .map-building-label {
+  padding: 0.12rem 0.3rem 0.14rem;
+  max-width: 5.4rem;
 }
 
 .map-building.selected .building-sil,
@@ -1095,6 +1214,16 @@
   outline: 2px solid var(--oc-focus);
   outline-offset: 3px;
   border-radius: 4px;
+}
+
+.theme-map-farm .map-building.selected .building-sil,
+.theme-map-farm .map-building:focus-visible .building-sil,
+.theme-map-farm .building-sil.selected {
+  outline-color: var(--oc-ember);
+  outline-offset: 4px;
+  border-radius: 8px;
+  filter: drop-shadow(0 6px 8px rgba(40, 70, 40, 0.32))
+    drop-shadow(0 0 10px rgba(61, 139, 79, 0.35));
 }
 
 .map-building.selected {
@@ -1114,6 +1243,11 @@
     drop-shadow(0 0 6px rgba(232, 160, 80, 0.28));
 }
 
+.theme-map-farm .map-building.producing .building-sil {
+  filter: drop-shadow(0 5px 5px rgba(40, 70, 40, 0.28))
+    drop-shadow(0 0 8px rgba(61, 139, 79, 0.4));
+}
+
 .map-building.producing .map-building-rate {
   animation: rate-tick 2.2s ease-in-out infinite;
 }
@@ -1125,6 +1259,13 @@
 .map-building.locked .building-sil {
   opacity: 0.48;
   filter: grayscale(0.45) drop-shadow(0 4px 3px rgba(40, 60, 80, 0.25));
+}
+
+.theme-map-farm .map-building.locked .building-sil {
+  /* Ghost blueprint — still readable leafy forms, not washed-out cards */
+  opacity: 0.72;
+  filter: saturate(0.55) brightness(1.05)
+    drop-shadow(0 3px 3px rgba(40, 70, 40, 0.22));
 }
 
 .map-building-label {
@@ -1142,10 +1283,39 @@
     0 5px 12px rgba(30, 50, 30, 0.16);
 }
 
+/* Farm plaques — compact under-art labels, less overlap */
+.theme-map-farm .map-building-label {
+  gap: 0.02rem;
+  padding: 0.12rem 0.3rem 0.14rem;
+  background: color-mix(in srgb, #f7fbf4 88%, #ffffff);
+  border: 1.5px solid color-mix(in srgb, var(--oc-stroke-strong) 75%, #5a7a4e);
+  border-radius: 6px;
+  box-shadow:
+    0 2px 5px rgba(40, 70, 40, 0.14),
+    0 1px 0 rgba(255, 255, 255, 0.55) inset;
+  max-width: 5.4rem;
+  z-index: 2;
+}
+
+.theme-map-farm .map-building.selected .map-building-label {
+  border-color: var(--oc-ember);
+  background: color-mix(in srgb, #f7fbf4 78%, var(--oc-ember-hot));
+  box-shadow:
+    0 4px 12px rgba(40, 70, 40, 0.18),
+    0 0 0 2px color-mix(in srgb, var(--oc-ember) 32%, transparent);
+}
+
 .map-building.locked .map-building-label {
   border-color: color-mix(in srgb, var(--oc-warn) 70%, var(--oc-stroke-strong));
   border-style: dashed;
   background: linear-gradient(180deg, #faf8f0 0%, #ebe4d4 100%);
+}
+
+.theme-map-farm .map-building.locked .map-building-label {
+  border-style: dashed;
+  border-color: color-mix(in srgb, var(--oc-warn) 70%, var(--oc-stroke));
+  background: color-mix(in srgb, #eef4ea 88%, var(--oc-bg-inset));
+  opacity: 0.92;
 }
 
 .map-building-name {
@@ -1158,6 +1328,12 @@
   line-height: 1.2;
 }
 
+.theme-map-farm .map-building-name {
+  max-width: 5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .map-building-meta {
   display: flex;
   align-items: baseline;
@@ -1167,7 +1343,12 @@
   font-size: 0.875rem;
   font-weight: 600;
   color: var(--oc-ink);
-  line-height: 1.2;
+  line-height: 1.15;
+}
+
+.theme-map-farm .map-building-meta {
+  gap: 0.2rem;
+  font-size: 0.6rem;
 }
 
 .map-building-lvl {
@@ -1186,23 +1367,42 @@
   font-weight: 700;
 }
 
+.theme-map-farm .map-building-lock {
+  font-size: 0.58rem;
+  letter-spacing: 0.05em;
+}
+
+.map-building-lock-line {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.18rem;
+  max-width: 100%;
+}
+
 .map-building-gate {
-  display: block;
-  width: 100%;
+  display: inline;
+  width: auto;
   text-align: center;
   color: var(--oc-ink);
-  font-size: 0.7rem;
+  font-size: 0.62rem;
   font-weight: 700;
   letter-spacing: 0.02em;
-  line-height: 1.2;
+  line-height: 1.15;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 6.8rem;
+  max-width: 3.8rem;
 }
 
 .map-building.raised .map-building-lvl {
   color: var(--oc-bronze);
+}
+
+.theme-map-farm .map-building.raised .map-building-lvl {
+  color: var(--oc-ember-dim);
 }
 
 .sheet-locked-hint {
@@ -1314,6 +1514,43 @@
     radial-gradient(1.2px 1.2px at 55% 60%, rgba(126, 184, 212, 0.8), transparent),
     radial-gradient(1px 1px at 75% 75%, rgba(232, 160, 80, 0.7), transparent);
   animation: particle-rise 2.4s ease-in-out infinite;
+}
+
+/* Farm module motion — grow lights + leaves */
+.building-sil.sil-farm.lit .sil-led.amber,
+.building-sil.sil-farm.lit .sil-led.core {
+  animation: grow-led-pulse 2s ease-in-out infinite;
+  filter: drop-shadow(0 0 3px rgba(232, 160, 80, 0.55));
+}
+
+.building-sil.sil-farm.lit .sil-led.ice {
+  animation: grow-led-pulse 1.6s ease-in-out infinite 0.4s;
+  fill: #6bc47a;
+  filter: drop-shadow(0 0 3px rgba(107, 196, 122, 0.5));
+}
+
+.building-sil.sil-farm.lit .sil-leaf {
+  transform-box: fill-box;
+  transform-origin: bottom center;
+  animation: leaf-sway 3.2s ease-in-out infinite;
+}
+
+.building-sil.sil-farm.lit .sil-leaf:nth-of-type(odd) {
+  animation-duration: 2.8s;
+  animation-direction: reverse;
+}
+
+.building-sil.sil-farm.lit .sil-wave {
+  animation: bit-pulse 2.4s ease-in-out infinite;
+}
+
+.building-sil.sil-farm.producing .sil-farm-particles {
+  background-image:
+    radial-gradient(1.6px 1.6px at 22% 78%, rgba(107, 196, 122, 0.9), transparent),
+    radial-gradient(1.2px 1.2px at 52% 58%, rgba(232, 160, 80, 0.75), transparent),
+    radial-gradient(1.1px 1.1px at 72% 72%, rgba(142, 201, 154, 0.8), transparent),
+    radial-gradient(1px 1px at 40% 40%, rgba(255, 255, 255, 0.65), transparent);
+  animation: particle-rise 2.8s ease-in-out infinite;
 }
 
 /* Offline / daily / event banners on map */
@@ -2091,6 +2328,32 @@
   }
   50% {
     opacity: 1;
+  }
+}
+
+@keyframes grow-led-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  45% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 0.7;
+  }
+  75% {
+    opacity: 1;
+  }
+}
+
+@keyframes leaf-sway {
+  0%,
+  100% {
+    transform: rotate(-4deg) translateY(0);
+  }
+  50% {
+    transform: rotate(5deg) translateY(-0.5px);
   }
 }
 
@@ -3228,6 +3491,143 @@
   }
 }
 
+/*
+ * Gaming fullscreen portrait — map-dominant Farm view.
+ * Tab bar stays (nav worker owns menu consolidation); we only grow the map.
+ */
+.app-main.map-mode {
+  /* Keep bottom inset for current tab-bar; nav worker may shrink later */
+  padding: 0 0 calc(4.85rem + var(--safe-bottom));
+}
+
+.app-main.map-mode .fortress-home {
+  height: 100%;
+  min-height: 0;
+}
+
+.app-main.map-mode .map-hud {
+  gap: 0.35rem 0.55rem;
+  padding: calc(0.4rem + var(--safe-top)) 0.7rem 0.4rem;
+  flex-shrink: 0;
+}
+
+.app-main.map-mode .brand.wordmark {
+  font-size: clamp(1.15rem, 4.8vw, 1.45rem);
+  margin-top: 0.08rem;
+}
+
+.app-main.map-mode .map-hud-brand-row .eyebrow {
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+}
+
+.app-main.map-mode .player-level-chip {
+  margin-top: 0.35rem;
+  padding: 0.3rem 0.45rem;
+  gap: 0.16rem;
+  width: min(100%, 11.5rem);
+}
+
+.app-main.map-mode .player-level-num {
+  font-size: 0.82rem;
+}
+
+.app-main.map-mode .player-level-meta {
+  font-size: 0.64rem;
+}
+
+.app-main.map-mode .player-level-track {
+  height: 0.32rem;
+}
+
+.app-main.map-mode .hud-metric-chip {
+  min-width: 6.4rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 10px;
+}
+
+.app-main.map-mode .ash-value {
+  font-size: clamp(1.35rem, 5.5vw, 1.75rem);
+}
+
+.app-main.map-mode .ash-label {
+  font-size: 0.68rem;
+}
+
+.app-main.map-mode .rate-line {
+  margin-top: 0.12rem;
+  font-size: 0.88rem;
+}
+
+.app-main.map-mode .map-hud .btn.rake {
+  min-height: 42px;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.92rem;
+}
+
+.app-main.map-mode .next-goal-strip {
+  margin: 0 0.55rem 0.3rem;
+  padding: 0.35rem 0.55rem 0.4rem;
+  gap: 0.08rem 0.45rem;
+  flex-shrink: 0;
+}
+
+.app-main.map-mode .next-goal-title {
+  font-size: 0.88rem;
+}
+
+.app-main.map-mode .next-goal-kicker,
+.app-main.map-mode .next-goal-detail {
+  font-size: 0.62rem;
+}
+
+.app-main.map-mode .next-goal-track {
+  height: 0.3rem;
+  margin-top: 0.15rem;
+}
+
+.app-main.map-mode .banner.offline.map-banner,
+.app-main.map-mode .banner.daily-ops.map-banner,
+.app-main.map-mode .banner.event-surge.map-banner {
+  margin: 0 0.55rem 0.3rem;
+  padding: 0.5rem 0.65rem;
+  gap: 0.45rem;
+  flex-shrink: 0;
+}
+
+.app-main.map-mode .banner-kicker {
+  font-size: 0.7rem !important;
+}
+
+.app-main.map-mode .banner.offline p,
+.app-main.map-mode .banner.daily-ops p,
+.app-main.map-mode .banner.event-surge p {
+  font-size: 0.86rem;
+}
+
+.app-main.map-mode .fortress-stage {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 0 0.35rem 0.2rem;
+}
+
+.app-main.map-mode .fortress-map {
+  flex: 1 1 auto;
+  min-height: min(58dvh, 100%);
+  border-radius: 10px;
+  transform: perspective(1100px) rotateX(5deg);
+  transform-origin: center 78%;
+}
+
+.app-main.map-mode .fortress-stage.theme-map-farm .fortress-map {
+  min-height: min(60dvh, 100%);
+  transform: perspective(1200px) rotateX(6deg);
+}
+
+.app-main.map-mode .map-hint {
+  display: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .map-haze,
   .map-forge-glow,
@@ -3238,6 +3638,10 @@
   .map-arcade-neon-beams,
   .map-arcade-marquee-glow,
   .map-arcade-coin-glints,
+  .farm-yard-glow,
+  .farm-yard-haze,
+  .theme-map-farm .farm-led-dot,
+  .theme-map-farm .farm-pollen,
   .building-sil.lit .sil-led,
   .building-sil.lit .sil-ping,
   .building-sil.lit .sil-beam,
@@ -3246,6 +3650,10 @@
   .building-sil.lit .sil-fan-group,
   .building-sil.lit .sil-neon-tube,
   .building-sil.lit .sil-screen,
+  .building-sil.lit .sil-leaf,
+  .building-sil.lit .sil-wave,
+  .building-sil.sil-farm.lit .sil-led,
+  .building-sil.sil-farm.lit .sil-leaf,
   .building-sil.producing .sil-particles,
   .map-building.producing .map-building-rate,
   .sheet-backdrop,

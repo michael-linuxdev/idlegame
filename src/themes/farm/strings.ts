@@ -11,7 +11,7 @@ export const farmStrings = {
     pwaDescription: 'Module erzeugen Ertrag offline. Prestige für Münzen.',
   },
 
-  eyebrow: 'Urban · Farm',
+  eyebrow: 'Urban Farm',
 
   nav: {
     ariaLabel: 'Hauptnavigation',
