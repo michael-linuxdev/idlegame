@@ -2,7 +2,10 @@
  * Monetization stubs from docs/economy.md §8.
  * Local only — no IAP backend. Hard currency: Obsidian.
  * Soft power stays free; paid = time-skips, cosmetics, clan boosts.
+ * Display copy from i18n/de (German UI).
  */
+
+import { t } from '../i18n'
 
 export const DAILY_SKIP_CAP_HOURS = 6
 export const CLAN_BOOST_MULT = 1.1
@@ -24,29 +27,29 @@ export interface CosmeticDef {
 export const COSMETICS: CosmeticDef[] = [
   {
     id: 'steelDeck',
-    name: 'Steel Deck',
-    blurb: 'Default bright station floor — pale steel tiles.',
+    name: t.cosmetics.steelDeck.name,
+    blurb: t.cosmetics.steelDeck.blurb,
     cost: 0,
     accentClass: 'skin-steel',
   },
   {
     id: 'amberPad',
-    name: 'Amber Pad',
-    blurb: 'Warm panel wash across the courtyard pads.',
+    name: t.cosmetics.amberPad.name,
+    blurb: t.cosmetics.amberPad.blurb,
     cost: 80,
     accentClass: 'skin-amber',
   },
   {
     id: 'iceAisle',
-    name: 'Ice Aisle',
-    blurb: 'Cold-aisle ice-blue rim lights on every rack.',
+    name: t.cosmetics.iceAisle.name,
+    blurb: t.cosmetics.iceAisle.blurb,
     cost: 120,
     accentClass: 'skin-ice',
   },
   {
     id: 'goldOps',
-    name: 'Gold Ops',
-    blurb: 'Brushed steel-gold NOC trim — status flex only.',
+    name: t.cosmetics.goldOps.name,
+    blurb: t.cosmetics.goldOps.blurb,
     cost: 200,
     accentClass: 'skin-gold',
   },
@@ -62,19 +65,19 @@ export interface TimeSkipDef {
   cost: number
 }
 
-/** economy.md: Cinder Hour / Dominion Surge — Orbit Rack copy */
+/** economy.md: Cinder Hour / Dominion Surge — Orbit Rack copy (DE) */
 export const TIME_SKIPS: TimeSkipDef[] = [
   {
     id: 'cycleHour',
-    name: 'Cycle Hour',
-    blurb: 'Simulate 1h of production at your current rate.',
+    name: t.timeSkips.cycleHour.name,
+    blurb: t.timeSkips.cycleHour.blurb,
     hours: 1,
     cost: 40,
   },
   {
     id: 'orbitSurge',
-    name: 'Orbit Surge',
-    blurb: 'Simulate 4h of production at your current rate.',
+    name: t.timeSkips.orbitSurge.name,
+    blurb: t.timeSkips.orbitSurge.blurb,
     hours: 4,
     cost: 120,
   },
@@ -89,11 +92,11 @@ export interface ClanBoostDef {
   durationMs: number
 }
 
-/** economy.md Banner of Cinders → Uplink Banner */
+/** economy.md Banner of Cinders → Uplink-Banner (DE) */
 export const CLAN_BOOST: ClanBoostDef = {
   id: 'uplinkBanner',
-  name: 'Uplink Banner',
-  blurb: '+10% clan production for 1 hour. Refresh extends; max ×1.25.',
+  name: t.clanBoost.name,
+  blurb: t.clanBoost.blurb,
   cost: 60,
   mult: CLAN_BOOST_MULT,
   durationMs: CLAN_BOOST_MS,
@@ -113,18 +116,18 @@ export interface ObsidianPackDef {
 export const OBSIDIAN_PACKS: ObsidianPackDef[] = [
   {
     id: 'starterBundle',
-    name: 'Starter Bundle',
-    blurb: '200 Obsidian + Amber Pad skin. Mock buy — no real charge.',
+    name: t.packs.starterBundle.name,
+    blurb: t.packs.starterBundle.blurb,
     obsidian: 200,
     cosmeticId: 'amberPad',
-    label: 'Buy (stub)',
+    label: t.packs.starterBundle.label,
   },
   {
     id: 'obsidian50',
-    name: 'Obsidian Chip',
-    blurb: '50 Obsidian for testing shop sinks. Mock grant.',
+    name: t.packs.obsidian50.name,
+    blurb: t.packs.obsidian50.blurb,
     obsidian: 50,
-    label: 'Grant 50',
+    label: t.packs.obsidian50.label,
   },
 ]
 

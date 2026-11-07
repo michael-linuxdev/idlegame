@@ -9,6 +9,7 @@ import {
   type FtueBeatId,
   type FtueState,
 } from '../game/ftue'
+import { t } from '../i18n'
 import type { useGame } from '../game/useGame'
 
 type GameApi = ReturnType<typeof useGame>
@@ -113,9 +114,7 @@ export function FtueCoach({
     <aside className="ftue-coach" role="dialog" aria-labelledby="ftue-title">
       <div className="ftue-coach-inner">
         <div className="ftue-coach-text">
-          <p className="ftue-eyebrow">
-            Ops guide · {step}/{total}
-          </p>
+          <p className="ftue-eyebrow">{t.ftue.guide(step, total)}</p>
           <h2 id="ftue-title" className="ftue-title">
             {copy.title}
           </h2>
@@ -135,7 +134,7 @@ export function FtueCoach({
             </button>
           ) : (
             <button type="button" className="btn ghost ftue-dismiss" onClick={dismissAll}>
-              Skip
+              {t.ftue.skip}
             </button>
           )}
         </div>

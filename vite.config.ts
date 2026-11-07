@@ -15,7 +15,7 @@ export default defineConfig({
         name: 'Orbit Rack',
         short_name: 'Orbit Rack',
         description:
-          'Build and operate orbital datacenters. Modules mint Compute offline. Prestige for Credits.',
+          'Baue und betreibe orbitale Rechenzentren. Module erzeugen Rechenleistung offline. Prestige für Credits.',
         theme_color: '#e8eef4',
         background_color: '#d8e2ec',
         display: 'standalone',

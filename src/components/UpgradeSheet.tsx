@@ -5,6 +5,7 @@ import {
   type GeneratorId,
 } from '../game/generators'
 import { formatAsh, formatRate } from '../game/format'
+import { t } from '../i18n'
 import type { useGame } from '../game/useGame'
 
 type GameApi = ReturnType<typeof useGame>
@@ -40,21 +41,21 @@ export function UpgradeSheet({ game, selectedId, onClose }: Props) {
         <header className="sheet-header">
           <h2 id="upgrade-title">{def.name}</h2>
           <button type="button" className="btn ghost sheet-close" onClick={onClose}>
-            Close
+            {t.upgrade.close}
           </button>
         </header>
         <p className="muted">{def.blurb}</p>
         {unlocked ? (
           <>
             <p className="sheet-stats">
-              Level <strong>{owned}</strong>
+              {t.upgrade.level} <strong>{owned}</strong>
               {' · '}
-              {formatRate(lineRate)} now
+              {formatRate(lineRate)} {t.upgrade.now}
               {' · '}
-              next {formatRate(nextRate)}
+              {t.upgrade.next} {formatRate(nextRate)}
             </p>
             {milestoneNext ? (
-              <p className="muted">Next level hits a +2% milestone on this line.</p>
+              <p className="muted">{t.upgrade.milestone}</p>
             ) : null}
             <button
               type="button"
@@ -62,14 +63,17 @@ export function UpgradeSheet({ game, selectedId, onClose }: Props) {
               disabled={!affordable}
               onClick={() => game.buy(def.id)}
             >
-              {owned === 0 ? 'Online' : 'Upgrade'} · {formatAsh(cost)} Compute
+              {t.upgrade.costLine(
+                owned === 0 ? t.upgrade.online : t.upgrade.upgrade,
+                formatAsh(cost),
+              )}
             </button>
           </>
         ) : (
           <>
             <p className="sheet-stats sheet-locked-hint">{unlockHint(def)}</p>
             <button type="button" className="btn buy sheet-buy" disabled>
-              Locked
+              {t.upgrade.locked}
             </button>
           </>
         )}

@@ -1,3 +1,4 @@
+import { t } from '../i18n'
 import type { useGame } from '../game/useGame'
 
 type GameApi = ReturnType<typeof useGame>
@@ -29,31 +30,23 @@ export function ClanPanel({ game }: Props) {
   return (
     <section className="panel clan-panel" aria-labelledby="clan-heading">
       <header className="panel-header">
-        <p className="eyebrow">Tech · Ops</p>
-        <h2 id="clan-heading">Clan</h2>
-        <p className="muted">
-          Seasonal orbit slots are shared on the map. Backend comes later — this is
-          a local placeholder.
-        </p>
+        <p className="eyebrow">{t.eyebrow}</p>
+        <h2 id="clan-heading">{t.clan.title}</h2>
+        <p className="muted">{t.clan.intro}</p>
       </header>
 
       <div className="clan-card">
-        <div className="clan-card-label">Your clan</div>
-        <div className="clan-card-name">Orbit Rack</div>
-        <div className="clan-card-meta">Season 0 — Survey · Rank 3 · Placeholder</div>
+        <div className="clan-card-label">{t.clan.yourClan}</div>
+        <div className="clan-card-name">{t.brand}</div>
+        <div className="clan-card-meta">{t.clan.seasonMeta}</div>
         <div className="clan-boost-status">
-          {clanBoostActive ? (
-            <>
-              Uplink Banner active · ×{clanMult.toFixed(2)} ·{' '}
-              {formatMsLeft(clanBoostMsLeft)} left
-            </>
-          ) : (
-            <>No active boost — buy Uplink Banner in Shop</>
-          )}
+          {clanBoostActive
+            ? t.clan.boostActive(clanMult.toFixed(2), formatMsLeft(clanBoostMsLeft))
+            : t.clan.boostInactive}
         </div>
       </div>
 
-      <h3 className="subhead">Season leaderboard</h3>
+      <h3 className="subhead">{t.clan.leaderboard}</h3>
       <ol className="leaderboard">
         {FAKE_LEADERBOARD.map((row) => (
           <li
@@ -63,9 +56,11 @@ export function ClanPanel({ game }: Props) {
             <span className="lb-rank">#{row.rank}</span>
             <span className="lb-name">
               {row.clan}
-              {row.you ? ' (you)' : ''}
+              {row.you ? ` ${t.clan.you}` : ''}
             </span>
-            <span className="lb-score">{row.score.toLocaleString()} pts</span>
+            <span className="lb-score">
+              {row.score.toLocaleString('de-DE')} {t.clan.pts}
+            </span>
           </li>
         ))}
       </ol>

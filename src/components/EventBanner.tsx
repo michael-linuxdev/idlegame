@@ -1,4 +1,5 @@
 import { formatAsh } from '../game/format'
+import { t } from '../i18n'
 import type { useGame } from '../game/useGame'
 
 type GameApi = ReturnType<typeof useGame>
@@ -42,25 +43,25 @@ export function EventBanner({ game }: Props) {
           aria-valuenow={Math.round(progress * 100)}
           aria-valuemin={0}
           aria-valuemax={100}
-          aria-label="Event-Ziel"
+          aria-label={t.event.goalAria}
         >
           <div className="event-goal-bar" style={{ width: `${progress * 100}%` }} />
         </div>
         <p className="banner-reward">
-          Ziel: {progressLabel} Compute → {surge.goalReward} Obsidian
+          {t.event.goalLine(progressLabel, surge.goalReward)}
         </p>
       </div>
       <div className="banner-actions">
         {surgeGoalDone && !surgeGoalClaimed ? (
           <button type="button" className="btn buy" onClick={claimEventGoal}>
-            Ziel belohnen
+            {t.event.claimGoal}
           </button>
         ) : null}
         {surgeGoalClaimed ? (
-          <p className="banner-meta claimed">Ziel abgeholt</p>
+          <p className="banner-meta claimed">{t.event.claimed}</p>
         ) : null}
         <button type="button" className="btn ghost" onClick={dismissEvent}>
-          Schließen
+          {t.event.dismiss}
         </button>
       </div>
     </div>

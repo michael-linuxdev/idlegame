@@ -1,5 +1,6 @@
 import { EMBER_SHOP } from '../game/economy'
 import { formatAsh } from '../game/format'
+import { t } from '../i18n'
 import type { useGame } from '../game/useGame'
 
 type GameApi = ReturnType<typeof useGame>
@@ -20,35 +21,39 @@ export function PrestigePanel({ game, highlight }: Props) {
       aria-labelledby="prestige-heading"
     >
       <header className="panel-header">
-        <p className="eyebrow">Tech · Ops</p>
-        <h2 id="prestige-heading">Prestige</h2>
+        <p className="eyebrow">{t.eyebrow}</p>
+        <h2 id="prestige-heading">{t.prestige.title}</h2>
         <p className="muted">
-          Soft-reset the station run. Keep <strong>Credits</strong> for permanent
-          meta upgrades. Modules power down; Compute wallet clears.
+          {t.prestige.introBefore} <strong>{t.resources.credits}</strong>{' '}
+          {t.prestige.introAfter}
         </p>
       </header>
 
       <div className="prestige-block">
         <p className="prestige-stats">
-          Credits: <strong>{state.embers}</strong>
+          {t.prestige.credits} <strong>{state.embers}</strong>
           {' · '}
-          Multiplier: <strong>×{multiplier.toFixed(2)}</strong>
+          {t.prestige.multiplier} <strong>×{multiplier.toFixed(2)}</strong>
           {' · '}
-          Runs: <strong>{state.prestiges}</strong>
+          {t.prestige.runs} <strong>{state.prestiges}</strong>
         </p>
         <p className="prestige-stats">
-          This run: <strong>{formatAsh(state.ashEarned)}</strong> Compute
+          {t.prestige.thisRun} <strong>{formatAsh(state.ashEarned)}</strong>{' '}
+          {t.resources.compute}
           {' · '}
-          Gate: <strong>{formatAsh(prestigeMin)}</strong>
+          {t.prestige.gate} <strong>{formatAsh(prestigeMin)}</strong>
           {teaser ? (
             <>
               {' · '}
-              <span className="prestige-teaser">Credits preview +{nextPrestige}</span>
+              <span className="prestige-teaser">
+                {t.prestige.creditsPreview(nextPrestige)}
+              </span>
             </>
           ) : null}
         </p>
         <p className="prestige-stats">
-          Next payout: <strong>+{nextPrestige}</strong> Credits
+          {t.prestige.nextPayout}{' '}
+          <strong>{t.prestige.creditsAmount(nextPrestige)}</strong>
         </p>
         <div className="prestige-bar" aria-hidden="true">
           <div
@@ -63,13 +68,15 @@ export function PrestigePanel({ game, highlight }: Props) {
           onClick={prestige}
         >
           {canPrestige
-            ? `Claim +${nextPrestige} Credits & reset`
-            : `Need ${formatAsh(Math.max(0, prestigeMin - state.ashEarned))} more Compute this run`}
+            ? t.prestige.claimReset(nextPrestige)
+            : t.prestige.needMore(
+                formatAsh(Math.max(0, prestigeMin - state.ashEarned)),
+              )}
         </button>
       </div>
 
-      <h3 className="subhead">Credits shop</h3>
-      <p className="muted">Spend Credits on permanent power. Never sold for cash.</p>
+      <h3 className="subhead">{t.prestige.shopTitle}</h3>
+      <p className="muted">{t.prestige.shopIntro}</p>
       <ul className="ember-shop">
         {EMBER_SHOP.map((item) => {
           const rank = state.emberUpgrades[item.id]
@@ -94,7 +101,7 @@ export function PrestigePanel({ game, highlight }: Props) {
                 disabled={!affordable}
                 onClick={() => game.buyMeta(item.id)}
               >
-                {maxed ? 'Max' : `${cost} Credits`}
+                {maxed ? t.prestige.max : t.prestige.costCredits(cost)}
               </button>
             </li>
           )

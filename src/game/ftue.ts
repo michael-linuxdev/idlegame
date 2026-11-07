@@ -1,7 +1,9 @@
 /**
  * First-10-minutes guided beats (gdd-mvp.md §7 + economy Day-1 hooks).
- * Copy: Orbit Rack datacenter Ops voice. Dismissible, persisted — never blocks idle.
+ * Copy: Orbit Rack datacenter Ops voice (DE via i18n). Dismissible, persisted — never blocks idle.
  */
+
+import { t } from '../i18n'
 
 export type FtueBeatId =
   | 'welcome'
@@ -109,45 +111,45 @@ export function ftueCopy(beat: FtueBeatId): FtueCopy | null {
   switch (beat) {
     case 'welcome':
       return {
-        title: 'Station online',
-        body: 'Orbit Rack is your floor. Modules mint Compute while you are away.',
-        cta: 'Open Ops',
+        title: t.ftue.welcome.title,
+        body: t.ftue.welcome.body,
+        cta: t.ftue.welcome.cta,
       }
     case 'upgradePit':
       return {
-        title: 'Upgrade Power Plant',
-        body: 'Tap the plant on the map → Upgrade. Throughput rises each level.',
-        cta: 'Next',
+        title: t.ftue.upgradePit.title,
+        body: t.ftue.upgradePit.body,
+        cta: t.ftue.upgradePit.cta,
         highlight: 'emberPit',
       }
     case 'claimOffline':
       return {
-        title: 'Idle banks Compute',
-        body: 'Leave the app, then return. Catchup pays up to the offline cap.',
-        cta: 'Got it',
+        title: t.ftue.claimOffline.title,
+        body: t.ftue.claimOffline.body,
+        cta: t.ftue.claimOffline.cta,
         highlight: 'offline',
       }
     case 'unlockForge':
       return {
-        title: 'Bring Cooling online',
-        body: 'Earn 200 Compute this run (or Power Plant Lv 10) to unlock Cooling Array.',
-        cta: 'Next',
+        title: t.ftue.unlockForge.title,
+        body: t.ftue.unlockForge.body,
+        cta: t.ftue.unlockForge.cta,
         highlight: 'ashForge',
       }
     case 'visitClan':
       return {
-        title: 'Clan roster',
-        body: 'Optional peek — seasonal orbit slots come later. No action required.',
-        cta: 'Open Clan',
-        skipLabel: 'Skip',
+        title: t.ftue.visitClan.title,
+        body: t.ftue.visitClan.body,
+        cta: t.ftue.visitClan.cta,
+        skipLabel: t.ftue.visitClan.skipLabel,
         highlight: 'clan',
       }
     case 'prestigeTeaser':
       return {
-        title: 'Credits meta',
-        body: 'Prestige soft-resets the run for Credits — permanent rack power. Check Prestige when ready.',
-        cta: 'Done',
-        skipLabel: 'Dismiss',
+        title: t.ftue.prestigeTeaser.title,
+        body: t.ftue.prestigeTeaser.body,
+        cta: t.ftue.prestigeTeaser.cta,
+        skipLabel: t.ftue.prestigeTeaser.skipLabel,
         highlight: 'prestige',
       }
     case 'done':
