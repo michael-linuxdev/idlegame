@@ -29,7 +29,7 @@
   font-weight: 600;
   letter-spacing: 0.04em;
   margin: 0 0 0.4rem;
-  color: var(--ad-ink-muted);
+  color: var(--ad-ink);
 }
 
 .subhead {
@@ -39,16 +39,17 @@
 
 .muted {
   margin: 0;
-  color: var(--ad-ink-faint);
-  font-size: 0.92rem;
+  color: var(--ad-ink-muted);
+  font-size: 1rem;
+  line-height: 1.5;
 }
 
 .eyebrow {
   margin: 0;
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--ad-ink-faint);
+  color: var(--ad-ink-muted);
 }
 
 .brand {
@@ -79,26 +80,29 @@
   font-family: var(--ad-font-metric);
   font-size: clamp(1.75rem, 7vw, 2.25rem);
   font-weight: 700;
-  color: var(--ad-ember-hot);
+  color: var(--ad-ink);
   line-height: 1;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.65);
 }
 
 .ash-label {
-  font-size: 0.72rem;
+  font-size: 0.8rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--ad-ink-faint);
+  color: var(--ad-ink-muted);
+  font-weight: 600;
 }
 
 .rate-line {
   margin: 0.25rem 0 0;
-  color: var(--ad-ink-muted);
-  font-size: 0.9rem;
+  color: var(--ad-ink);
+  font-size: 1rem;
   font-family: var(--ad-font-metric);
+  font-weight: 600;
 }
 
 .mult {
-  color: var(--ad-ink-faint);
+  color: var(--ad-bronze-pale);
 }
 
 /* —— Fortress home / map —— */
@@ -238,35 +242,54 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.05rem;
-  padding: 0.15rem 0.4rem;
-  background: rgba(12, 11, 10, 0.78);
-  border: 1px solid var(--ad-stroke);
-  border-radius: 3px;
+  gap: 0.1rem;
+  padding: 0.35rem 0.55rem 0.4rem;
+  background: #0a0908;
+  border: 1px solid var(--ad-stroke-strong);
+  border-radius: 4px;
   max-width: 100%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.55);
 }
 
 .map-building-name {
   font-family: var(--ad-font-display);
-  font-size: 0.72rem;
+  font-size: 0.9375rem; /* 15px */
+  font-weight: 700;
   letter-spacing: 0.03em;
   white-space: nowrap;
+  color: var(--ad-ink);
+  line-height: 1.2;
+}
+
+.map-building-meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.45rem;
+  font-family: var(--ad-font-metric);
+  font-size: 0.875rem; /* 14px */
+  font-weight: 600;
+  color: var(--ad-ink);
+  line-height: 1.2;
 }
 
 .map-building-lvl {
-  font-family: var(--ad-font-metric);
-  font-size: 0.75rem;
-  color: var(--ad-ink-muted);
+  color: var(--ad-ink);
+}
+
+.map-building-rate {
+  color: var(--ad-gain);
 }
 
 .map-building.raised .map-building-lvl {
-  color: var(--ad-ember-hot);
+  color: var(--ad-bronze-pale);
 }
 
 .map-hint {
   margin: 0.55rem 0.25rem 0;
   text-align: center;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
+  color: var(--ad-ink-muted);
 }
 
 /* Building silhouettes */
@@ -397,7 +420,8 @@
 
 .banner.offline p {
   margin: 0;
-  color: var(--ad-ink-muted);
+  color: var(--ad-ink);
+  font-size: 1rem;
 }
 
 /* Upgrade sheet */
@@ -442,15 +466,18 @@
 .sheet-header h2 {
   margin: 0;
   font-family: var(--ad-font-display);
-  font-size: 1.15rem;
-  font-weight: 600;
+  font-size: 1.2rem;
+  font-weight: 700;
   letter-spacing: 0.04em;
+  color: var(--ad-ink);
 }
 
 .sheet-stats {
   margin: 0.65rem 0 0.85rem;
-  color: var(--ad-ink-muted);
+  color: var(--ad-ink);
   font-family: var(--ad-font-metric);
+  font-size: 1.05rem;
+  font-weight: 600;
 }
 
 .sheet-buy {
@@ -465,12 +492,13 @@
 /* Buttons */
 
 .btn {
-  border: 1px solid transparent;
+  border: 1px solid var(--ad-stroke-strong);
   border-radius: var(--ad-radius);
   padding: 0.55rem 0.85rem;
   min-height: var(--ad-target-min);
   background: var(--ad-bg-raised);
   color: var(--ad-ink);
+  font-weight: 600;
   transition:
     background 0.15s ease,
     border-color 0.15s ease,
@@ -483,12 +511,13 @@
 
 .btn.rake {
   padding: 0.55rem 1.1rem;
-  background: linear-gradient(180deg, #2f241c 0%, #1a1410 100%);
-  border-color: rgba(196, 92, 42, 0.45);
-  color: var(--ad-ink);
+  background: linear-gradient(180deg, var(--ad-ember-hot) 0%, var(--ad-ember) 100%);
+  border-color: #f0a060;
+  color: #fff8f0;
   font-family: var(--ad-font-display);
   letter-spacing: 0.05em;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
+  font-weight: 700;
 }
 
 .btn.rake.compact {
@@ -497,32 +526,48 @@
 }
 
 .btn.buy {
-  background: linear-gradient(180deg, #2a1f18 0%, #1a1410 100%);
-  border-color: rgba(196, 92, 42, 0.55);
-  color: var(--ad-ember-hot);
-  font-weight: 600;
+  background: linear-gradient(180deg, var(--ad-ember-hot) 0%, var(--ad-ember) 100%);
+  border-color: #f0a060;
+  color: #fff8f0;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.btn.buy:disabled {
+  background: linear-gradient(180deg, #3a3228 0%, #1c1814 100%);
+  border-color: var(--ad-stroke-strong);
+  color: var(--ad-ink-muted);
 }
 
 .btn.buy:not(:disabled):hover {
-  border-color: var(--ad-ember-hot);
+  border-color: #ffc090;
+  filter: brightness(1.05);
 }
 
 .btn.prestige {
   width: 100%;
   margin-top: 0.85rem;
   padding: 0.85rem 1rem;
-  background: linear-gradient(180deg, #2e2418 0%, #1a1510 100%);
-  border-color: rgba(138, 106, 61, 0.55);
-  color: var(--ad-bronze-pale);
+  background: linear-gradient(180deg, #a88448 0%, var(--ad-bronze) 100%);
+  border-color: var(--ad-bronze-pale);
+  color: #fff8f0;
   font-family: var(--ad-font-display);
   letter-spacing: 0.04em;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.btn.prestige:disabled {
+  background: linear-gradient(180deg, #3a3228 0%, #1c1814 100%);
+  border-color: var(--ad-stroke-strong);
+  color: var(--ad-ink-muted);
 }
 
 .btn.ghost {
   align-self: flex-start;
-  background: transparent;
-  border-color: rgba(154, 144, 128, 0.35);
-  color: var(--ad-ink-muted);
+  background: var(--ad-bg-inset);
+  border-color: var(--ad-stroke-strong);
+  color: var(--ad-ink);
   min-height: 40px;
 }
 
@@ -532,8 +577,9 @@
 
 .prestige-stats {
   margin: 0.5rem 0 0;
-  color: var(--ad-ink-muted);
-  font-size: 0.95rem;
+  color: var(--ad-ink);
+  font-size: 1rem;
+  line-height: 1.5;
 }
 
 /* Clan */
@@ -548,22 +594,25 @@
 }
 
 .clan-card-label {
-  font-size: 0.72rem;
+  font-size: 0.8rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--ad-ink-faint);
+  color: var(--ad-ink-muted);
+  font-weight: 600;
 }
 
 .clan-card-name {
   font-family: var(--ad-font-display);
   font-size: 1.45rem;
   margin-top: 0.25rem;
+  color: var(--ad-ink);
+  font-weight: 700;
 }
 
 .clan-card-meta {
-  margin-top: 0.25rem;
-  color: var(--ad-ink-faint);
-  font-size: 0.9rem;
+  margin-top: 0.35rem;
+  color: var(--ad-ink-muted);
+  font-size: 0.95rem;
 }
 
 .leaderboard {
@@ -579,23 +628,26 @@
   align-items: baseline;
   padding: 0.65rem 0;
   border-bottom: 1px solid var(--ad-stroke);
-  color: var(--ad-ink-muted);
-  font-size: 0.95rem;
+  color: var(--ad-ink);
+  font-size: 1rem;
 }
 
 .leaderboard-row.you {
   color: var(--ad-clan);
+  font-weight: 600;
 }
 
 .lb-rank {
-  color: var(--ad-ink-faint);
+  color: var(--ad-ink-muted);
   font-variant-numeric: tabular-nums;
+  font-weight: 600;
 }
 
 .lb-score {
   font-variant-numeric: tabular-nums;
-  color: var(--ad-ink-faint);
+  color: var(--ad-ink);
   font-family: var(--ad-font-metric);
+  font-weight: 600;
 }
 
 .leaderboard-row.you .lb-score {
@@ -629,17 +681,19 @@
   appearance: none;
   border: none;
   background: transparent;
-  color: var(--ad-ink-faint);
+  color: var(--ad-ink-muted);
   font-family: var(--ad-font-display);
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  font-size: 0.72rem;
+  font-size: 0.8125rem; /* 13px — readable nav labels */
+  font-weight: 600;
   padding: 0.85rem 0.25rem;
   min-height: var(--ad-target-min);
 }
 
 .tab.active {
-  color: var(--ad-ember-hot);
+  color: var(--ad-ink);
+  font-weight: 700;
   box-shadow: inset 0 -2px 0 var(--ad-ember);
 }
 
