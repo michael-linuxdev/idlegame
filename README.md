@@ -40,5 +40,12 @@ npm run preview
 
 ## Hosted URLs
 
-- Custom domain (when CNAME attached): https://idlegame.micana.de
-- Project Pages fallback: https://michael-linuxdev.github.io/idlegame/
+| App | URL |
+|---|---|
+| **TurmFarm** | https://idlegame.micana.de |
+| **Tokenhalle** (same Pages site) | https://idlegame.micana.de/arcade/ |
+| **Tokenhalle** (preferred custom domain) | https://tokenhalle.micana.de — needs thin second repo; see [`deploy/tokenhalle-repo/`](./deploy/tokenhalle-repo/) |
+
+Project Pages fallback: https://michael-linuxdev.github.io/idlegame/ (redirects to the TurmFarm custom domain).
+
+DNS for `tokenhalle.micana.de`: **CNAME** `tokenhalle` → `michael-linuxdev.github.io` (same target as TurmFarm). GitHub Pages is 1 custom domain per site, so the custom domain needs the thin `tokenhalle` mirror repo.
