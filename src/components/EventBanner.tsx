@@ -27,7 +27,7 @@ export function EventBanner({ game }: Props) {
   const progressLabel = `${formatAsh(Math.min(state.eventAshProgress, surge.goal))} / ${formatAsh(surge.goal)}`
 
   return (
-    <div className="banner event-surge map-banner" role="status">
+    <div className="banner event-surge map-banner compact" role="status">
       <div className="banner-copy">
         <p className="banner-kicker">
           {surge.name}
@@ -35,8 +35,13 @@ export function EventBanner({ game }: Props) {
             <span className="banner-mult"> · ×{eventMult.toFixed(2)}</span>
           ) : null}
         </p>
-        <p>{surge.blurb}</p>
-        <p className="banner-meta">{surge.endsLabel}</p>
+        <p className="banner-oneline">
+          <span className="banner-meta">{surge.endsLabel}</span>
+          <span className="banner-reward">
+            {' '}
+            · {t.event.goalLine(progressLabel, surge.goalReward)}
+          </span>
+        </p>
         <div
           className="event-goal"
           role="progressbar"
@@ -47,9 +52,6 @@ export function EventBanner({ game }: Props) {
         >
           <div className="event-goal-bar" style={{ width: `${progress * 100}%` }} />
         </div>
-        <p className="banner-reward">
-          {t.event.goalLine(progressLabel, surge.goalReward)}
-        </p>
       </div>
       <div className="banner-actions">
         {surgeGoalDone && !surgeGoalClaimed ? (

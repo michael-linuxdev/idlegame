@@ -13,7 +13,7 @@ export const arcadeStrings = {
       'Baue und betreibe deine Retro-Arcade-Halle. Automaten erzeugen Tokens offline. Prestige für Tickets.',
   },
 
-  eyebrow: 'Retro · Arcade',
+  eyebrow: 'Retro Arcade',
 
   nav: {
     ariaLabel: 'Hauptnavigation',

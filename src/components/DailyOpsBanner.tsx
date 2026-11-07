@@ -51,14 +51,17 @@ export function DailyOpsBanner({ game, onClaimed }: Props) {
 
   return (
     <div
-      className={`banner daily-ops map-banner${comeback ? ' comeback' : ''}`}
+      className={`banner daily-ops map-banner compact${comeback ? ' comeback' : ''}`}
       role="status"
     >
       <div className="banner-copy">
         <p className="banner-kicker">{t.daily.kicker}</p>
-        <p>
+        <p className="banner-oneline">
           <strong>{dailyPreview.label}</strong>
           <span className="banner-meta"> · {streakLabel}</span>
+          {bits.length ? (
+            <span className="banner-reward"> · {bits.join(' · ')}</span>
+          ) : null}
         </p>
         {comeback ? (
           <p className="banner-meta comeback-meta">{t.daily.comebackMeta}</p>
@@ -74,7 +77,6 @@ export function DailyOpsBanner({ game, onClaimed }: Props) {
             />
           ))}
         </div>
-        <p className="banner-reward">{bits.join(' · ')}</p>
       </div>
       <button type="button" className="btn buy pulse-ready" onClick={onClaim}>
         {t.daily.claim}

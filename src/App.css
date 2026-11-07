@@ -1176,6 +1176,47 @@
   z-index: 2;
 }
 
+/* Tiny lock pad under silhouette — replaces name/GESPERRT plaques until select */
+.map-building-lock-chip {
+  display: block;
+  width: 1.15rem;
+  height: 0.85rem;
+  margin-top: 0.05rem;
+  border: 1.5px dashed color-mix(in srgb, var(--oc-warn) 75%, var(--oc-stroke-strong));
+  border-radius: 3px;
+  background: linear-gradient(180deg, #faf8f0 0%, #ebe4d4 100%);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--oc-stroke) 60%, #1e2e1a);
+  position: relative;
+  flex-shrink: 0;
+}
+
+.map-building-lock-chip::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0.35rem;
+  height: 0.28rem;
+  transform: translate(-50%, -40%);
+  border: 1.5px solid var(--oc-warn);
+  border-radius: 1px 1px 2px 2px;
+  box-sizing: border-box;
+}
+
+.map-building-lock-chip::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 18%;
+  width: 0.28rem;
+  height: 0.22rem;
+  transform: translateX(-50%);
+  border: 1.5px solid var(--oc-warn);
+  border-bottom: none;
+  border-radius: 0.2rem 0.2rem 0 0;
+  box-sizing: border-box;
+}
+
 .fortress-map.slots-10 .map-building.raised:not(.selected),
 .fortress-map.slots-10 .map-building.producing:not(.selected) {
   z-index: 3;
@@ -1853,21 +1894,18 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.45);
 }
 
-/* Cooling: flat, no glow — pulse only via .pulse-ready when usable */
+/* Cooling: dark ink on muted green — never white-on-pale via global opacity */
 .btn.rake.rake-cooling:disabled,
-.btn.rake:disabled {
-  opacity: 1;
-  background: linear-gradient(
-    180deg,
-    #e8eee4 0%,
-    color-mix(in srgb, var(--oc-bg-inset) 75%, #cfd9c8) 100%
-  );
-  border-color: var(--oc-stroke);
-  color: var(--oc-ink-muted);
+.btn.rake:disabled,
+.btn.rake:disabled:hover {
+  opacity: 1 !important;
+  background: linear-gradient(180deg, #dfe8da 0%, #c5d4bc 100%);
+  border-color: #5a7350;
+  color: #162414 !important;
   text-shadow: none;
   box-shadow:
-    0 2px 0 color-mix(in srgb, var(--oc-stroke) 70%, #8aa07a),
-    inset 0 1px 0 rgba(255, 255, 255, 0.55);
+    0 2px 0 #6b8f5e,
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
   animation: none;
   filter: none;
 }
@@ -3678,9 +3716,9 @@
 .app-main.map-mode .banner.offline.map-banner,
 .app-main.map-mode .banner.daily-ops.map-banner,
 .app-main.map-mode .banner.event-surge.map-banner {
-  margin: 0 0.55rem 0.28rem;
-  padding: 0.45rem 0.6rem;
-  gap: 0.4rem;
+  margin: 0 0.5rem 0.22rem;
+  padding: 0.32rem 0.5rem;
+  gap: 0.3rem;
   border-radius: 12px;
   border-width: 1.5px;
   backdrop-filter: blur(10px);
@@ -3689,14 +3727,49 @@
     0 4px 12px rgba(30, 55, 30, 0.1);
 }
 
+.app-main.map-mode .banner.map-banner.compact {
+  padding: 0.28rem 0.45rem;
+}
+
+.app-main.map-mode .banner.map-banner.compact .banner-oneline {
+  margin: 0;
+  font-size: 0.72rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-main.map-mode .banner.map-banner.compact .streak-dots {
+  display: none;
+}
+
+.app-main.map-mode .banner.map-banner.compact .event-goal {
+  height: 5px;
+  margin: 0.12rem 0 0;
+}
+
+.app-main.map-mode .banner.map-banner.compact .btn {
+  min-height: 36px;
+  padding: 0.3rem 0.55rem;
+  font-size: 0.8rem;
+}
+
+.app-main.map-mode .banner.map-banner.compact .btn.ghost {
+  min-height: 32px;
+  padding: 0.22rem 0.45rem;
+  font-size: 0.72rem;
+}
+
 .app-main.map-mode .banner-kicker {
-  font-size: 0.68rem !important;
+  font-size: 0.6rem !important;
 }
 
 .app-main.map-mode .banner.offline p,
 .app-main.map-mode .banner.daily-ops p,
 .app-main.map-mode .banner.event-surge p {
-  font-size: 0.82rem;
+  font-size: 0.78rem;
+  line-height: 1.2;
 }
 
 @media (prefers-reduced-motion: reduce) {

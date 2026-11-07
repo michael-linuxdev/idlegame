@@ -60,7 +60,7 @@ export const farmStrings = {
       blurb: 'Glasdach + Saatbeete. Start-Ertrag.',
     },
     ashForge: {
-      name: 'Nährstoffpumpe',
+      name: 'Nährpumpe',
       blurb: 'Nährlösung in den Kreislauf.',
     },
     cinderBarracks: {
@@ -76,7 +76,7 @@ export const farmStrings = {
       blurb: 'Mehr Stockwerke, mehr Ertrag.',
     },
     dominionKeep: {
-      name: 'Klimasteuerung',
+      name: 'Klima',
       blurb: 'Klima und Bewässerung zentral.',
     },
     batteryBank: {
@@ -92,7 +92,7 @@ export const farmStrings = {
       blurb: 'Erntereste → Kompost.',
     },
     packetScrubber: {
-      name: 'Aquaponik-Filter',
+      name: 'Aquaponik',
       blurb: 'Abwasser → Nährstoffe.',
     },
   },
