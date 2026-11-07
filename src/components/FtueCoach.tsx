@@ -12,7 +12,7 @@ import {
 import type { useGame } from '../game/useGame'
 
 type GameApi = ReturnType<typeof useGame>
-type Tab = 'fortress' | 'prestige' | 'clan'
+type Tab = 'fortress' | 'prestige' | 'clan' | 'shop'
 
 interface Props {
   game: GameApi

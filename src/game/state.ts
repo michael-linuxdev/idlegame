@@ -18,6 +18,17 @@ import {
   isGeneratorUnlocked,
   type GeneratorId,
 } from './generators'
+import {
+  CLAN_BOOST,
+  CLAN_BOOST_MAX,
+  COSMETICS,
+  DAILY_SKIP_CAP_HOURS,
+  TIME_SKIPS,
+  dayKey,
+  type CosmeticId,
+  type ObsidianPackDef,
+  type TimeSkipId,
+} from './monetization'
 
 export interface GameState {
   /** Soft currency — Compute (economy.md Ash) */
@@ -33,8 +44,20 @@ export interface GameState {
   lastSeen: number
   /** Last active tap timestamp */
   lastTapAt: number
-  /** Clan boost multiplier stub (1.0–1.25) */
+  /** Active clan boost multiplier while clanBoostExpiresAt > now (1.0–1.25) */
   clanMult: number
+  /** Hard currency — Obsidian (survives prestige) */
+  obsidian: number
+  /** Owned cosmetic ids (survives prestige) */
+  ownedCosmetics: CosmeticId[]
+  /** Equipped station skin */
+  equippedCosmetic: CosmeticId
+  /** Hours of paid time-skip used on skipDayKey */
+  skipHoursUsedToday: number
+  /** Local calendar day for skipHoursUsedToday */
+  skipDayKey: string
+  /** Clan boost expiry timestamp; 0 = inactive */
+  clanBoostExpiresAt: number
 }
 
 export const STORAGE_KEY = 'orbit-rack-save-v2'
@@ -62,10 +85,17 @@ export function createInitialState(now = Date.now()): GameState {
     lastSeen: now,
     lastTapAt: 0,
     clanMult: 1,
+    // Day-1 login gift: 20 Obsidian (economy.md §10)
+    obsidian: 20,
+    ownedCosmetics: ['steelDeck'],
+    equippedCosmetic: 'steelDeck',
+    skipHoursUsedToday: 0,
+    skipDayKey: dayKey(now),
+    clanBoostExpiresAt: 0,
   }
 }
 
-/** Create a fresh run after prestige, keeping meta. */
+/** Create a fresh run after prestige, keeping meta + monetization unlocks. */
 export function createPostPrestigeState(prev: GameState, now = Date.now()): GameState {
   return {
     ash: 0,
@@ -77,12 +107,35 @@ export function createPostPrestigeState(prev: GameState, now = Date.now()): Game
     lastSeen: now,
     lastTapAt: 0,
     clanMult: prev.clanMult,
+    obsidian: prev.obsidian,
+    ownedCosmetics: [...prev.ownedCosmetics],
+    equippedCosmetic: prev.equippedCosmetic,
+    skipHoursUsedToday: prev.skipHoursUsedToday,
+    skipDayKey: prev.skipDayKey,
+    clanBoostExpiresAt: prev.clanBoostExpiresAt,
   }
 }
 
-export function productionPerSecond(state: GameState): number {
+/** Effective clan multiplier honoring expiry + hard max. */
+export function effectiveClanMult(state: GameState, now = Date.now()): number {
+  if (state.clanBoostExpiresAt > 0 && now >= state.clanBoostExpiresAt) {
+    return 1
+  }
+  if (state.clanBoostExpiresAt <= 0) return 1
+  return Math.min(CLAN_BOOST_MAX, Math.max(1, state.clanMult))
+}
+
+/** Drop expired clan boost fields (idempotent). */
+export function syncClanBoost(state: GameState, now = Date.now()): GameState {
+  if (state.clanBoostExpiresAt > 0 && now >= state.clanBoostExpiresAt) {
+    return { ...state, clanMult: 1, clanBoostExpiresAt: 0 }
+  }
+  return state
+}
+
+export function productionPerSecond(state: GameState, now = Date.now()): number {
   const mPrestige = prestigeMultiplier(state.emberUpgrades)
-  const mClan = Math.min(1.25, Math.max(1, state.clanMult))
+  const mClan = effectiveClanMult(state, now)
   let sum = 0
   for (const def of GENERATORS) {
     sum += generatorRate(def, state.owned[def.id] ?? 0)
@@ -117,15 +170,104 @@ export function prestigeProgress(state: GameState): {
 
 export function applyTick(state: GameState, dtSeconds: number): GameState {
   if (dtSeconds <= 0) return state
-  const gained = productionPerSecond(state) * dtSeconds
+  const now = Date.now()
+  const synced = syncClanBoost(state, now)
+  const gained = productionPerSecond(synced, now) * dtSeconds
   if (gained <= 0) {
-    return { ...state, lastSeen: Date.now() }
+    return { ...synced, lastSeen: now }
   }
   return {
+    ...synced,
+    ash: synced.ash + gained,
+    ashEarned: synced.ashEarned + gained,
+    lastSeen: now,
+  }
+}
+
+function withSkipDay(state: GameState, now = Date.now()): GameState {
+  const key = dayKey(now)
+  if (state.skipDayKey === key) return state
+  return { ...state, skipDayKey: key, skipHoursUsedToday: 0 }
+}
+
+export function skipHoursRemaining(state: GameState, now = Date.now()): number {
+  const s = withSkipDay(state, now)
+  return Math.max(0, DAILY_SKIP_CAP_HOURS - s.skipHoursUsedToday)
+}
+
+export function buyTimeSkip(state: GameState, id: TimeSkipId, now = Date.now()): GameState {
+  const def = TIME_SKIPS.find((t) => t.id === id)
+  if (!def) return state
+  let next = syncClanBoost(withSkipDay(state, now), now)
+  const remaining = DAILY_SKIP_CAP_HOURS - next.skipHoursUsedToday
+  if (remaining <= 0) return state
+  const hours = Math.min(def.hours, remaining, 4)
+  if (hours <= 0) return state
+  if (next.obsidian < def.cost) return state
+  const rate = productionPerSecond(next, now)
+  const gained = rate * hours * 3600
+  return {
+    ...next,
+    obsidian: next.obsidian - def.cost,
+    ash: next.ash + gained,
+    ashEarned: next.ashEarned + gained,
+    skipHoursUsedToday: next.skipHoursUsedToday + hours,
+    lastSeen: now,
+  }
+}
+
+export function buyCosmetic(state: GameState, id: CosmeticId, now = Date.now()): GameState {
+  const def = COSMETICS.find((c) => c.id === id)
+  if (!def) return state
+  if (state.ownedCosmetics.includes(id)) return state
+  if (def.cost <= 0) {
+    return {
+      ...state,
+      ownedCosmetics: [...state.ownedCosmetics, id],
+      lastSeen: now,
+    }
+  }
+  if (state.obsidian < def.cost) return state
+  return {
     ...state,
-    ash: state.ash + gained,
-    ashEarned: state.ashEarned + gained,
-    lastSeen: Date.now(),
+    obsidian: state.obsidian - def.cost,
+    ownedCosmetics: [...state.ownedCosmetics, id],
+    lastSeen: now,
+  }
+}
+
+export function equipCosmetic(state: GameState, id: CosmeticId, now = Date.now()): GameState {
+  if (!state.ownedCosmetics.includes(id)) return state
+  if (state.equippedCosmetic === id) return state
+  return { ...state, equippedCosmetic: id, lastSeen: now }
+}
+
+export function buyClanBoost(state: GameState, now = Date.now()): GameState {
+  let next = syncClanBoost(state, now)
+  if (next.obsidian < CLAN_BOOST.cost) return state
+  const active = next.clanBoostExpiresAt > now
+  const baseExpiry = active ? next.clanBoostExpiresAt : now
+  const nextMult = Math.min(
+    CLAN_BOOST_MAX,
+    Math.max(next.clanMult > 1 ? next.clanMult : 1, CLAN_BOOST.mult),
+  )
+  return {
+    ...next,
+    obsidian: next.obsidian - CLAN_BOOST.cost,
+    clanMult: nextMult,
+    clanBoostExpiresAt: baseExpiry + CLAN_BOOST.durationMs,
+    lastSeen: now,
+  }
+}
+
+export function mockBuyPack(state: GameState, pack: ObsidianPackDef, now = Date.now()): GameState {
+  const owned = new Set(state.ownedCosmetics)
+  if (pack.cosmeticId) owned.add(pack.cosmeticId)
+  return {
+    ...state,
+    obsidian: state.obsidian + pack.obsidian,
+    ownedCosmetics: Array.from(owned),
+    lastSeen: now,
   }
 }
 

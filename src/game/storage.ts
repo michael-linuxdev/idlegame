@@ -1,5 +1,6 @@
 import { EMPTY_EMBER_UPGRADES, type EmberUpgrades } from './economy'
 import { GENERATOR_IDS, type GeneratorId } from './generators'
+import { COSMETICS, dayKey, type CosmeticId } from './monetization'
 import { createInitialState, STORAGE_KEY, type GameState } from './state'
 
 const LEGACY_KEYS = [
@@ -7,6 +8,8 @@ const LEGACY_KEYS = [
   'ash-dominion-save-v2',
   'ash-dominion-save-v1',
 ] as const
+
+const COSMETIC_IDS = new Set(COSMETICS.map((c) => c.id))
 
 function isRecord(v: unknown): v is Record<string, unknown> {
   return typeof v === 'object' && v !== null
@@ -34,6 +37,18 @@ function parseUpgrades(raw: unknown): EmberUpgrades {
     }
   }
   return base
+}
+
+function parseCosmetics(raw: unknown): CosmeticId[] {
+  if (!Array.isArray(raw)) return ['steelDeck']
+  const out: CosmeticId[] = []
+  for (const item of raw) {
+    if (typeof item === 'string' && COSMETIC_IDS.has(item as CosmeticId)) {
+      out.push(item as CosmeticId)
+    }
+  }
+  if (!out.includes('steelDeck')) out.unshift('steelDeck')
+  return out
 }
 
 function parseGameState(parsed: Record<string, unknown>): GameState {
@@ -65,6 +80,36 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
       ? Math.min(1.25, Math.max(1, parsed.clanMult))
       : 1
 
+  const obsidian =
+    typeof parsed.obsidian === 'number' && Number.isFinite(parsed.obsidian)
+      ? Math.max(0, Math.floor(parsed.obsidian))
+      : 20
+
+  const ownedCosmetics = parseCosmetics(parsed.ownedCosmetics)
+  let equippedCosmetic: CosmeticId = 'steelDeck'
+  if (
+    typeof parsed.equippedCosmetic === 'string' &&
+    COSMETIC_IDS.has(parsed.equippedCosmetic as CosmeticId) &&
+    ownedCosmetics.includes(parsed.equippedCosmetic as CosmeticId)
+  ) {
+    equippedCosmetic = parsed.equippedCosmetic as CosmeticId
+  }
+
+  const skipDayKey =
+    typeof parsed.skipDayKey === 'string' && parsed.skipDayKey.length >= 8
+      ? parsed.skipDayKey
+      : dayKey()
+  const skipHoursUsedToday =
+    typeof parsed.skipHoursUsedToday === 'number' &&
+    Number.isFinite(parsed.skipHoursUsedToday)
+      ? Math.max(0, parsed.skipHoursUsedToday)
+      : 0
+  const clanBoostExpiresAt =
+    typeof parsed.clanBoostExpiresAt === 'number' &&
+    Number.isFinite(parsed.clanBoostExpiresAt)
+      ? Math.max(0, parsed.clanBoostExpiresAt)
+      : 0
+
   const owned = parseOwned(parsed.owned)
   if (!isRecord(parsed.owned) || Object.keys(parsed.owned).length === 0) {
     owned.emberPit = 1
@@ -80,6 +125,12 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
     lastSeen,
     lastTapAt,
     clanMult,
+    obsidian,
+    ownedCosmetics,
+    equippedCosmetic,
+    skipHoursUsedToday,
+    skipDayKey,
+    clanBoostExpiresAt,
   }
 }
 

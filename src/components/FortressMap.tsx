@@ -18,8 +18,11 @@ interface Props {
 }
 
 export function FortressMap({ game, highlightId }: Props) {
-  const { state, rate, multiplier, rake, tapReady } = game
+  const { state, rate, multiplier, clanMult, rake, tapReady, equippedCosmetic } =
+    game
   const [selected, setSelected] = useState<GeneratorId | null>(null)
+  const totalMult = multiplier * clanMult
+  const skinClass = equippedCosmetic?.accentClass ?? 'skin-steel'
 
   return (
     <section className="fortress-home" aria-labelledby="ash-heading">
@@ -37,13 +40,14 @@ export function FortressMap({ game, highlightId }: Props) {
           </div>
           <p className="rate-line">
             {formatRate(rate)}
-            {multiplier > 1 ? (
-              <span className="mult"> · ×{multiplier.toFixed(2)}</span>
+            {totalMult > 1 ? (
+              <span className="mult"> · ×{totalMult.toFixed(2)}</span>
             ) : null}
           </p>
           {state.embers > 0 ? (
             <p className="embers-line">{state.embers} Credits</p>
           ) : null}
+          <p className="obsidian-line">{state.obsidian} Obsidian</p>
         </div>
         <button
           type="button"
@@ -75,7 +79,7 @@ export function FortressMap({ game, highlightId }: Props) {
         </div>
       ) : null}
 
-      <div className="fortress-stage">
+      <div className={`fortress-stage ${skinClass}`}>
         <div className="fortress-map" role="application" aria-label="Station build map">
           <div className="map-terrain" aria-hidden="true">
             <div className="map-grid" />
@@ -94,6 +98,7 @@ export function FortressMap({ game, highlightId }: Props) {
             <div className="map-keep-silhouette" />
             <div className="map-forge-glow" />
             <div className="map-haze" />
+            <div className="map-skin-wash" />
           </div>
 
           {GENERATORS.map((def) => {
@@ -101,7 +106,7 @@ export function FortressMap({ game, highlightId }: Props) {
             const unlocked = game.unlocked(def.id)
             const selectedHere = selected === def.id
             const buildingRate =
-              unlocked && level > 0 ? generatorRate(def, level) * multiplier : 0
+              unlocked && level > 0 ? generatorRate(def, level) * totalMult : 0
             const hint = !unlocked ? unlockHint(def) : ''
             const hl = highlightId === def.id
             return (

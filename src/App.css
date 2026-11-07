@@ -1000,6 +1000,16 @@
   grid-template-columns: 1fr 1fr 1fr;
 }
 
+.tab-bar.tabs-4 {
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+
+.tab-bar.tabs-4 .tab {
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  padding: 0.85rem 0.1rem;
+}
+
 .tab {
   appearance: none;
   border: none;
@@ -1293,6 +1303,163 @@
   font-weight: 600;
 }
 
+.obsidian-line {
+  margin: 0.1rem 0 0;
+  font-size: 0.85rem;
+  font-family: var(--oc-font-metric);
+  font-weight: 600;
+  color: var(--oc-ice);
+}
+
+.shop-wallet {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin: 1rem 0 0.25rem;
+}
+
+.shop-wallet-chip {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 7.5rem;
+  padding: 0.55rem 0.75rem;
+  background: var(--oc-bg-raised);
+  border: 1px solid var(--oc-stroke-strong);
+  border-radius: var(--oc-radius);
+}
+
+.shop-wallet-chip.secondary {
+  border-color: var(--oc-stroke);
+}
+
+.shop-wallet-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--oc-ink-muted);
+  font-weight: 600;
+}
+
+.shop-wallet-value {
+  font-family: var(--oc-font-metric);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--oc-ink);
+}
+
+.cosmetic-grid {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.cosmetic-card {
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.75rem;
+  border: 1px solid var(--oc-stroke);
+  border-radius: var(--oc-radius);
+  background: var(--oc-bg-raised);
+}
+
+.cosmetic-card.equipped {
+  border-color: var(--oc-ember);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--oc-ember) 35%, transparent);
+}
+
+.cosmetic-swatch {
+  width: 48px;
+  height: 48px;
+  border-radius: 4px;
+  border: 1px solid var(--oc-stroke-strong);
+}
+
+.cosmetic-swatch.skin-steel {
+  background: linear-gradient(145deg, #e8eef4, #c5d0dc);
+}
+
+.cosmetic-swatch.skin-amber {
+  background: linear-gradient(145deg, #f0d4a8, #d4893a);
+}
+
+.cosmetic-swatch.skin-ice {
+  background: linear-gradient(145deg, #cfe8f4, #3d8eb8);
+}
+
+.cosmetic-swatch.skin-gold {
+  background: linear-gradient(145deg, #e8d9a8, #8a7348);
+}
+
+.cosmetic-tag {
+  margin-left: 0.4rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--oc-ember-dim);
+  font-weight: 700;
+}
+
+.clan-boost-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 0.75rem;
+  padding: 0.85rem 0;
+  border-top: 1px solid var(--oc-stroke);
+  border-bottom: 1px solid var(--oc-stroke);
+}
+
+.clan-boost-status {
+  margin-top: 0.55rem;
+  font-family: var(--oc-font-metric);
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--oc-clan);
+}
+
+.map-skin-wash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.fortress-stage.skin-amber .map-skin-wash {
+  opacity: 1;
+  background:
+    radial-gradient(60% 50% at 50% 55%, rgba(212, 137, 58, 0.28), transparent 70%);
+}
+
+.fortress-stage.skin-ice .map-skin-wash {
+  opacity: 1;
+  background:
+    radial-gradient(70% 55% at 50% 40%, rgba(61, 142, 184, 0.26), transparent 72%);
+}
+
+.fortress-stage.skin-ice .map-walls .wall-segment,
+.fortress-stage.skin-ice .map-walls .wall-tower {
+  box-shadow: 0 0 0 1px rgba(126, 184, 212, 0.55);
+}
+
+.fortress-stage.skin-gold .map-skin-wash {
+  opacity: 1;
+  background:
+    radial-gradient(55% 48% at 50% 48%, rgba(184, 154, 92, 0.3), transparent 68%);
+}
+
+.fortress-stage.skin-gold .map-keep-silhouette {
+  filter: sepia(0.35) saturate(1.1);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .map-haze,
   .map-forge-glow,
@@ -1306,5 +1473,9 @@
   .ftue-coach,
   .install-prompt {
     animation: none;
+  }
+
+  .map-skin-wash {
+    transition: none;
   }
 }
