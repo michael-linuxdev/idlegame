@@ -204,6 +204,33 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
   const bpDailyXpDay =
     typeof parsed.bpDailyXpDay === 'string' ? parsed.bpDailyXpDay : ''
 
+  const prestigeSpikeFlags =
+    typeof parsed.prestigeSpikeFlags === 'number' &&
+    Number.isFinite(parsed.prestigeSpikeFlags)
+      ? Math.max(0, Math.floor(parsed.prestigeSpikeFlags))
+      : 0
+  const flashEventId =
+    typeof parsed.flashEventId === 'string' ? parsed.flashEventId : ''
+  const flashEndsAt =
+    typeof parsed.flashEndsAt === 'number' && Number.isFinite(parsed.flashEndsAt)
+      ? Math.max(0, parsed.flashEndsAt)
+      : 0
+  const flashProgress =
+    typeof parsed.flashProgress === 'number' &&
+    Number.isFinite(parsed.flashProgress)
+      ? Math.max(0, parsed.flashProgress)
+      : 0
+  const flashGoal =
+    typeof parsed.flashGoal === 'number' && Number.isFinite(parsed.flashGoal)
+      ? Math.max(0, parsed.flashGoal)
+      : 0
+  const flashClaimed = parsed.flashClaimed === true
+  const flashDismissed = parsed.flashDismissed === true
+  const lastFlashAt =
+    typeof parsed.lastFlashAt === 'number' && Number.isFinite(parsed.lastFlashAt)
+      ? Math.max(0, parsed.lastFlashAt)
+      : 0
+
   return {
     ash,
     ashEarned,
@@ -247,6 +274,15 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
     bpPremium,
     bpClaimedPremium,
     bpDailyXpDay,
+    prestigeSpikeFlags,
+    lastSurprise: null,
+    flashEventId,
+    flashEndsAt,
+    flashProgress,
+    flashGoal,
+    flashClaimed,
+    flashDismissed,
+    lastFlashAt,
   }
 }
 

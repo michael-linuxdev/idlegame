@@ -21,6 +21,7 @@ import {
 } from './generators'
 import {
   canClaimDaily,
+  daysSinceClaim,
   isComebackClaim,
   nextStreakAfterClaim,
   rewardForStreak,
@@ -32,6 +33,23 @@ import {
   bandwidthSurgeWindowKey,
   isBandwidthSurgeActive,
 } from './events'
+import {
+  FLASH_CLAIM_GRACE_MS,
+  FLASH_DURATION_MS,
+  FLASH_GOAL_REWARD_OBSIDIAN,
+  FLASH_MULT,
+  canSpawnFlashEvent,
+  flashGoalForRate,
+  makeFlashEventId,
+  rollFlashSpawn,
+} from './flashEvent'
+import {
+  prestigeSpikeBit,
+  rollOfflineJackpot,
+  rollPrestigeSpike,
+  rollUpgradeSurprise,
+  type SurpriseJump,
+} from './surpriseJumps'
 import {
   BATTLE_PASS_AD_XP,
   BATTLE_PASS_DAILY_XP,
@@ -163,6 +181,24 @@ export interface GameState {
   bpClaimedPremium: number[]
   /** Day key of last battle-pass daily XP claim */
   bpDailyXpDay: string
+  /** Bitmask of prestige near-miss spikes already fired this run */
+  prestigeSpikeFlags: number
+  /** Last surprise juice for HUD (cleared by UI) */
+  lastSurprise: SurpriseJump | null
+  /** Short flash event id; empty = none */
+  flashEventId: string
+  /** Flash event end timestamp */
+  flashEndsAt: number
+  /** Soft earned toward flash goal */
+  flashProgress: number
+  /** Soft goal for current flash */
+  flashGoal: number
+  /** Whether flash goal reward was claimed */
+  flashClaimed: boolean
+  /** UI dismissed (does not wipe soft) */
+  flashDismissed: boolean
+  /** Last flash start time (cooldown) */
+  lastFlashAt: number
 }
 
 export const STORAGE_KEY = 'orbit-rack-save-v2'
@@ -225,6 +261,15 @@ export function createInitialState(now = Date.now()): GameState {
     bpPremium: false,
     bpClaimedPremium: [],
     bpDailyXpDay: '',
+    prestigeSpikeFlags: 0,
+    lastSurprise: null,
+    flashEventId: '',
+    flashEndsAt: 0,
+    flashProgress: 0,
+    flashGoal: 0,
+    flashClaimed: false,
+    flashDismissed: false,
+    lastFlashAt: 0,
   }
 }
 
@@ -260,7 +305,7 @@ export function createPostPrestigeState(prev: GameState, now = Date.now()): Game
     claimedDailyOnce: prev.claimedDailyOnce,
     claimedOfflineOnce: prev.claimedOfflineOnce,
     claimedAchievements: [...prev.claimedAchievements],
-    // Branches reset with the run — Ertrag sinks stay fair
+    // Branches reset with the run — soft sinks stay fair
     branches: emptyBranches(GENERATOR_IDS),
     questDayKey: prev.questDayKey,
     quests: prev.quests.map((q) => ({ ...q })),
@@ -275,6 +320,16 @@ export function createPostPrestigeState(prev: GameState, now = Date.now()): Game
     bpPremium: prev.bpPremium,
     bpClaimedPremium: [...prev.bpClaimedPremium],
     bpDailyXpDay: prev.bpDailyXpDay,
+    // Prestige spikes reset per run; flash / daily survive
+    prestigeSpikeFlags: 0,
+    lastSurprise: null,
+    flashEventId: prev.flashEventId,
+    flashEndsAt: prev.flashEndsAt,
+    flashProgress: prev.flashProgress,
+    flashGoal: prev.flashGoal,
+    flashClaimed: prev.flashClaimed,
+    flashDismissed: prev.flashDismissed,
+    lastFlashAt: prev.lastFlashAt,
   }
 }
 
@@ -377,10 +432,6 @@ export function syncEventWindow(state: GameState, now = Date.now()): GameState {
   }
 }
 
-export function eventProductionMult(now = Date.now()): number {
-  return isBandwidthSurgeActive(now) ? BANDWIDTH_SURGE_MULT : 1
-}
-
 /** Effective clan multiplier honoring expiry + hard max. */
 export function effectiveClanMult(state: GameState, now = Date.now()): number {
   if (state.clanBoostExpiresAt > 0 && now >= state.clanBoostExpiresAt) {
@@ -430,10 +481,21 @@ export function effectiveYieldBoostMult(state: GameState, now = Date.now()): num
   return YIELD_BOOST_MULT
 }
 
+export function eventProductionMult(now = Date.now()): number {
+  return isBandwidthSurgeActive(now) ? BANDWIDTH_SURGE_MULT : 1
+}
+
+export function flashProductionMult(state: GameState, now = Date.now()): number {
+  if (!state.flashEventId) return 1
+  if (state.flashEndsAt <= now) return 1
+  return FLASH_MULT
+}
+
 export function productionPerSecond(state: GameState, now = Date.now()): number {
   const mPrestige = prestigeMultiplier(state.emberUpgrades)
   const mClan = effectiveClanMult(state, now)
   const mEvent = eventProductionMult(now)
+  const mFlash = flashProductionMult(state, now)
   const mLevel = levelProductionMult(playerLevelOf(state))
   const mYield = effectiveYieldBoostMult(state, now)
   let sum = 0
@@ -443,15 +505,109 @@ export function productionPerSecond(state: GameState, now = Date.now()): number 
     const mEff = efficiencyMult(branch?.efficiency ?? 0)
     sum += generatorRate(def, owned) * mEff
   }
-  return sum * mPrestige * mClan * mEvent * mLevel * mYield
+  return sum * mPrestige * mClan * mEvent * mFlash * mLevel * mYield
 }
 
 function withEventProgress(state: GameState, gained: number, now: number): GameState {
-  if (gained <= 0 || !isBandwidthSurgeActive(now)) return state
-  const synced = syncEventWindow(state, now)
+  if (gained <= 0) return state
+  let next = state
+  if (isBandwidthSurgeActive(now)) {
+    const synced = syncEventWindow(next, now)
+    next = {
+      ...synced,
+      eventAshProgress: synced.eventAshProgress + gained,
+    }
+  }
+  if (next.flashEventId && next.flashEndsAt > now && !next.flashClaimed) {
+    next = {
+      ...next,
+      flashProgress: next.flashProgress + gained,
+    }
+  }
+  return next
+}
+
+function maybePrestigeSpike(state: GameState, now: number): GameState {
+  const rate = productionPerSecond(state, now)
+  const spike = rollPrestigeSpike(
+    state.ashEarned,
+    state.prestiges,
+    state.prestigeSpikeFlags,
+    rate,
+  )
+  if (!spike || spike.prestigeTier == null) return state
   return {
-    ...synced,
-    eventAshProgress: synced.eventAshProgress + gained,
+    ...state,
+    ash: state.ash + spike.amount,
+    ashEarned: state.ashEarned + spike.amount,
+    lifetimeAshEarned: state.lifetimeAshEarned + spike.amount,
+    prestigeSpikeFlags:
+      state.prestigeSpikeFlags | prestigeSpikeBit(spike.prestigeTier),
+    lastSurprise: spike,
+    lastSeen: now,
+  }
+}
+
+export function clearLastSurprise(state: GameState): GameState {
+  if (!state.lastSurprise) return state
+  return { ...state, lastSurprise: null }
+}
+
+export function maybeStartFlashEvent(
+  state: GameState,
+  now = Date.now(),
+  force = false,
+): GameState {
+  if (
+    !force &&
+    !rollFlashSpawn(state.lastFlashAt, state.flashEndsAt, now)
+  ) {
+    return state
+  }
+  if (!canSpawnFlashEvent(state.lastFlashAt, state.flashEndsAt, now) && !force) {
+    return state
+  }
+  const rate = productionPerSecond(
+    {
+      ...state,
+      flashEventId: '',
+      flashEndsAt: 0,
+    },
+    now,
+  )
+  return {
+    ...state,
+    flashEventId: makeFlashEventId(now),
+    flashEndsAt: now + FLASH_DURATION_MS,
+    flashProgress: 0,
+    flashGoal: flashGoalForRate(rate),
+    flashClaimed: false,
+    flashDismissed: false,
+    lastFlashAt: now,
+    lastSeen: now,
+  }
+}
+
+export function dismissFlashEvent(state: GameState, now = Date.now()): GameState {
+  if (!state.flashEventId) return state
+  return { ...state, flashDismissed: true, lastSeen: now }
+}
+
+export function claimFlashEventGoal(
+  state: GameState,
+  now = Date.now(),
+): GameState {
+  if (!state.flashEventId || state.flashClaimed) return state
+  if (state.flashProgress < state.flashGoal) return state
+  const inWindow =
+    state.flashEndsAt > now || now <= state.flashEndsAt + FLASH_CLAIM_GRACE_MS
+  if (!inWindow) return state
+  return {
+    ...state,
+    obsidian: state.obsidian + FLASH_GOAL_REWARD_OBSIDIAN,
+    flashClaimed: true,
+    flashDismissed: true,
+    lastSeen: now,
   }
 }
 
@@ -486,7 +642,7 @@ export function applyTick(state: GameState, dtSeconds: number): GameState {
   let synced = withQuestSync(syncEventWindow(syncMonetization(state, now), now), now)
   const gained = productionPerSecond(synced, now) * dtSeconds
   if (gained <= 0) {
-    return { ...synced, lastSeen: now }
+    return maybePrestigeSpike({ ...synced, lastSeen: now }, now)
   }
   let withProg = withEventProgress(synced, gained, now)
   withProg = {
@@ -497,7 +653,8 @@ export function applyTick(state: GameState, dtSeconds: number): GameState {
     lastSeen: now,
   }
   // Quest earnAsh tracks session production without spammy XP
-  return bumpQuest(withProg, 'earnAsh', gained, now)
+  withProg = bumpQuest(withProg, 'earnAsh', gained, now)
+  return maybePrestigeSpike(withProg, now)
 }
 
 function withSkipDay(state: GameState, now = Date.now()): GameState {
@@ -538,7 +695,11 @@ export function claimDailyOps(state: GameState, now = Date.now()): GameState {
   const streak = nextStreakAfterClaim(state.dailyClaimDay, state.dailyStreak, now)
   const rate = productionPerSecond(state, now)
   const comeback = isComebackClaim(state.dailyClaimDay, now)
-  const reward = rewardForStreak(Math.max(0, streak - 1), rate, { comeback })
+  const gapDays = comeback ? daysSinceClaim(state.dailyClaimDay, now) : 0
+  const reward = rewardForStreak(Math.max(0, streak - 1), rate, {
+    comeback,
+    gapDays,
+  })
   let next = syncEventWindow(syncMonetization(state, now), now)
   next = withEventProgress(next, reward.compute, now)
   next = {
@@ -626,7 +787,7 @@ export function buyClanBoost(state: GameState, now = Date.now()): GameState {
   }
 }
 
-/** Personal Ertrag-Schub — Samen sink, temporary mult. */
+/** Personal Phyto-Schub — Samen sink, temporary mult. */
 export function buyYieldBoost(state: GameState, now = Date.now()): GameState {
   let next = syncMonetization(state, now)
   if (next.obsidian < YIELD_BOOST_COST) return state
@@ -786,17 +947,21 @@ export function applyOfflineCatchup(
   if (gained <= 0) {
     return { state: { ...base, lastSeen: now }, gained: 0 }
   }
-  let withProg = withEventProgress(base, gained, now)
+  let total = gained
+  const jackpot = rollOfflineJackpot(gained, elapsedMs)
+  if (jackpot) total += jackpot.amount
+  let withProg = withEventProgress(base, total, now)
   withProg = {
     ...withProg,
-    ash: withProg.ash + gained,
-    ashEarned: withProg.ashEarned + gained,
-    lifetimeAshEarned: withProg.lifetimeAshEarned + gained,
+    ash: withProg.ash + total,
+    ashEarned: withProg.ashEarned + total,
+    lifetimeAshEarned: withProg.lifetimeAshEarned + total,
     lastSeen: now,
+    lastSurprise: jackpot ?? withProg.lastSurprise,
   }
-  withProg = bumpQuest(withProg, 'earnAsh', gained, now)
+  withProg = bumpQuest(withProg, 'earnAsh', total, now)
   // XP for offline is granted when the player taps Abholen (claimOfflineReward)
-  return { state: withProg, gained }
+  return { state: withProg, gained: total }
 }
 
 /**
@@ -851,7 +1016,23 @@ export function buyGenerator(state: GameState, id: GeneratorId): GameState {
     totalUpgrades: state.totalUpgrades + 1,
     lastSeen: now,
   }
+  const rate = productionPerSecond(next, now)
+  const surprise = rollUpgradeSurprise(
+    next.totalUpgrades,
+    rate,
+    next.ashEarned,
+  )
+  if (surprise) {
+    next = {
+      ...next,
+      ash: next.ash + surprise.amount,
+      ashEarned: next.ashEarned + surprise.amount,
+      lifetimeAshEarned: next.lifetimeAshEarned + surprise.amount,
+      lastSurprise: surprise,
+    }
+  }
   next = bumpQuest(next, 'upgrades', 1, now)
+  if (surprise) next = bumpQuest(next, 'earnAsh', surprise.amount, now)
   next = withXp(next, XP_PER_UPGRADE, now)
   return collectReadyAchievements(next, now)
 }

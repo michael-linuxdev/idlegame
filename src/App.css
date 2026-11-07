@@ -369,11 +369,62 @@
   margin-top: 0.06rem;
 }
 
+.map-hud .next-goal-strip.near-miss {
+  border-color: color-mix(in srgb, var(--oc-ember) 55%, var(--oc-stroke));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--oc-ember) 28%, transparent);
+}
+
+.map-hud .next-goal-fill.near-miss-pulse {
+  animation: near-miss-pulse 1.1s ease-in-out infinite;
+}
+
+@keyframes near-miss-pulse {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.25);
+  }
+}
+
+/* One-line best-buy tip — right column under resources; claims stay left */
+.map-hud .best-buy-chip {
+  position: absolute;
+  right: 0.45rem;
+  left: auto;
+  top: calc(5.05rem + var(--safe-top));
+  z-index: 2;
+  pointer-events: auto;
+  margin: 0;
+  padding: 0.22rem 0.55rem;
+  max-width: min(42vw, 10.5rem);
+  border: 1px solid color-mix(in srgb, var(--oc-stroke-strong) 30%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--oc-bg-raised) 34%, transparent);
+  backdrop-filter: blur(6px);
+  color: var(--oc-ink);
+  font: inherit;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(20, 35, 25, 0.1);
+}
+
+.map-hud .best-buy-chip.affordable {
+  border-color: color-mix(in srgb, var(--oc-ember) 50%, var(--oc-stroke));
+  color: var(--oc-ember-dim);
+}
+
 /* Compact Schub FAB — always right; claims stay left (never collide) */
 .map-hud .hud-schub {
   position: absolute;
   right: 0.5rem;
-  top: calc(5.55rem + var(--safe-top));
+  top: calc(6.7rem + var(--safe-top));
   z-index: 2;
   pointer-events: auto;
   width: auto;
@@ -3792,6 +3843,14 @@
   animation: bar-shine 1.4s ease-in-out infinite;
 }
 
+.next-goal-strip.near-miss {
+  border-color: color-mix(in srgb, var(--oc-ember) 45%, var(--oc-stroke));
+}
+
+.next-goal-fill.near-miss-pulse {
+  animation: near-miss-pulse 1.1s ease-in-out infinite;
+}
+
 .float-pops {
   pointer-events: none;
   position: absolute;
@@ -4120,17 +4179,37 @@
   font-size: 0.68rem;
 }
 
-/* Schub stays right; claims are left — no vertical dodge needed */
+/* Schub stays right under best-buy; claims stay left — no collide with Menü FAB */
 .app-main.map-mode .map-hud:has(~ .banner.offline) .hud-schub,
 .app-main.map-mode .map-hud:has(~ .banner.daily-ops) .hud-schub,
 .app-main.map-mode .map-hud:has(~ .banner.event-surge) .hud-schub {
-  top: calc(5.55rem + var(--safe-top));
+  top: calc(6.7rem + var(--safe-top));
   right: 0.5rem;
 }
 
 .app-main.map-mode .banner.offline ~ .banner.event-surge.map-banner,
 .app-main.map-mode .banner.daily-ops ~ .banner.event-surge.map-banner {
   top: calc(8.15rem + var(--safe-top));
+}
+
+.app-main.map-mode .banner.event-surge.map-banner ~ .banner.flash-event.map-banner {
+  top: calc(8.15rem + var(--safe-top));
+}
+
+.app-main.map-mode .banner.offline ~ .banner.event-surge ~ .banner.flash-event,
+.app-main.map-mode .banner.daily-ops ~ .banner.event-surge ~ .banner.flash-event {
+  top: calc(10.55rem + var(--safe-top));
+}
+
+.app-main.map-mode .banner.flash-event.map-banner .banner-kicker::before {
+  content: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .next-goal-fill.near-miss-pulse,
+  .map-hud .next-goal-fill.near-miss-pulse {
+    animation: none;
+  }
 }
 
 .app-main.map-mode .banner.daily-ops .streak-dots,

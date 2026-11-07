@@ -61,6 +61,36 @@ export const arcadeStrings = {
     prestigeReadyDetail: 'Tickets abholen',
     ready: 'Bereit',
     fallback: 'Halle aufbauen',
+    nearMiss: (pct: number) => `fast · ${pct}%`,
+  },
+
+  bestBuy: {
+    tipAffordable: (name: string) => `Tipp: ${name}`,
+    tipSoon: (name: string) => `Bald: ${name}`,
+    aria: 'Bester nächster Kauf',
+  },
+
+  surprise: {
+    milestone: (amount: string) => `Meilenstein +${amount}`,
+    jackpot: (amount: string) => `Jackpot +${amount}`,
+    prestigeNear: (amount: string) => `Prestige nah +${amount}`,
+    offlineJackpot: (amount: string) => `Comeback-Krümel +${amount}`,
+  },
+
+  flash: {
+    name: 'Blitz-Runde',
+    blurb: '+15 % Tokens/s · kurzes Fenster.',
+    endsMin: (m: number, s: number) =>
+      s > 0 ? `Noch ${m}:${String(s).padStart(2, '0')}` : `Noch ${m} Min`,
+    endsSec: (s: number) => `Noch ${s}s`,
+    endsSoon: 'Fenster zu',
+    graceLabel: 'Ziel noch abholen',
+    goalAria: 'Blitz-Ziel',
+    goalLine: (progress: string, reward: number) =>
+      `${progress} → ${reward} Jetons`,
+    claimGoal: 'Belohnen',
+    claimed: 'Abgeholt',
+    dismiss: 'Schließen',
   },
 
   resources: {
@@ -533,23 +563,26 @@ export const arcadeStrings = {
 
   daily: {
     kicker: 'Tägliche Schicht',
-    firstShift: 'Erste Schicht',
-    streakNext: (n: number) => `Serie ${n} · nächster Tag`,
+    firstShift: 'Tag 1/7 · Start',
+    streakNext: (n: number) => {
+      const day = (Math.max(0, n) % 7) + 1
+      return `Serie ${n} · Tag ${day}/7`
+    },
     streakDotsAria: (n: number) => `Serie ${n} von 7 Tagen`,
     comebackLabel: 'Willkommen zurück · Comeback-Bonus',
-    comebackMeta: 'Serie pausiert — Bonus für deine Rückkehr',
+    comebackMeta: 'Serie hält — Extra-Bonus für deine Rückkehr',
     claim: 'Abholen',
     claimToast: 'Tägliche Schicht gebucht',
-    rewardCompute: (amount: string) => `${amount} Tokens`,
+    rewardCompute: (amount: string) => `${amount} ${SOFT_CURRENCY}`,
     rewardCredits: (n: number) => `${n} Tickets`,
     rewardObsidian: (n: number) => `${n} Jetons`,
     rows: {
-      float2: 'Credit-Float · 2 Min Tokens',
-      shift3: 'Schichtbonus · 3 Min Tokens',
+      float2: `Credit-Float · 2 Min ${SOFT_CURRENCY}`,
+      shift3: `Schichtbonus · 3 Min ${SOFT_CURRENCY}`,
       crumb20: 'Jeton-Krümel · 20',
-      long4: 'Lange Schicht · 4 Min Tokens',
+      long4: `Lange Schicht · 4 Min ${SOFT_CURRENCY}`,
       credit1: 'Ticket-Gutschein · 1',
-      ot5: 'Überstunden · 5 Min Tokens',
+      ot5: `Überstunden · 5 Min ${SOFT_CURRENCY}`,
       weekSeal: 'Wochen-Siegel · Tickets + Jetons',
     },
   },

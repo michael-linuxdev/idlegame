@@ -8,12 +8,13 @@ interface Props {
 
 export function NextGoalStrip({ goal, onActivate }: Props) {
   const ready = goal.ratio >= 0.999
+  const nearMiss = goal.nearMiss === true && !ready
   const pct = Math.round(Math.min(1, Math.max(0, goal.ratio)) * 100)
 
   return (
     <button
       type="button"
-      className={`next-goal-strip kind-${goal.kind}${ready ? ' ready' : ''}`}
+      className={`next-goal-strip kind-${goal.kind}${ready ? ' ready' : ''}${nearMiss ? ' near-miss' : ''}`}
       onClick={onActivate}
       aria-label={`${t.goal.stripAria}: ${goal.title}. ${goal.detail}`}
     >
@@ -24,7 +25,7 @@ export function NextGoalStrip({ goal, onActivate }: Props) {
       ) : null}
       <span className="next-goal-track" aria-hidden="true">
         <span
-          className={`next-goal-fill${ready ? ' pulse' : ''}`}
+          className={`next-goal-fill${ready ? ' pulse' : ''}${nearMiss ? ' near-miss-pulse' : ''}`}
           style={{ width: `${pct}%` }}
         />
       </span>

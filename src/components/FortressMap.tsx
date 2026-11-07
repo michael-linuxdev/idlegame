@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { computeBestBuy } from '../game/bestBuy'
 import {
   GENERATORS,
   generatorRate,
@@ -11,18 +12,34 @@ import { computeNextGoal } from '../game/nextGoal'
 import { xpFromOfflineClaim } from '../game/progression'
 import { logPlaytest } from '../game/playtestLog'
 import { playSfx } from '../game/sound'
+import type { SurpriseKind } from '../game/surpriseJumps'
 import { t } from '../i18n'
 import type { useGame } from '../game/useGame'
 import { activeTheme } from '../themes'
+import { BestBuyChip } from './BestBuyChip'
 import { BuildingSilhouette } from './BuildingSilhouette'
 import { DailyOpsBanner } from './DailyOpsBanner'
 import { EventBanner } from './EventBanner'
+import { FlashEventBanner } from './FlashEventBanner'
 import { FloatPops, type FloatPopItem } from './FloatPops'
 import { MuteToggle } from './MuteToggle'
 import { NextGoalStrip } from './NextGoalStrip'
 import { ProgressSheet } from './ProgressSheet'
 import { ThemeMapBackdrop } from './ThemeMapBackdrop'
 import { UpgradeSheet } from './UpgradeSheet'
+
+function surpriseLabel(kind: SurpriseKind, amount: string): string {
+  switch (kind) {
+    case 'milestone':
+      return t.surprise.milestone(amount)
+    case 'jackpot':
+      return t.surprise.jackpot(amount)
+    case 'prestigeNear':
+      return t.surprise.prestigeNear(amount)
+    case 'offlineJackpot':
+      return t.surprise.offlineJackpot(amount)
+  }
+}
 
 type GameApi = ReturnType<typeof useGame>
 
@@ -45,6 +62,7 @@ export function FortressMap({ game, highlightId }: Props) {
     tapReady,
     equippedCosmetic,
     playerLevel,
+    ackSurprise,
   } = game
   const [selected, setSelected] = useState<GeneratorId | null>(null)
   const [progressOpen, setProgressOpen] = useState(false)
@@ -87,6 +105,16 @@ export function FortressMap({ game, highlightId }: Props) {
     ],
   )
 
+  const bestBuy = useMemo(
+    () =>
+      computeBestBuy(state, {
+        playerLevel: playerLevel.level,
+        ratePerSec: rate,
+        costOf: game.costOf,
+      }),
+    [state, playerLevel.level, rate, game.costOf],
+  )
+
   useEffect(() => {
     if (state.ash > prevAsh.current + 0.05) {
       setTickFlash(true)
@@ -96,6 +124,20 @@ export function FortressMap({ game, highlightId }: Props) {
     }
     prevAsh.current = state.ash
   }, [state.ash])
+
+  useEffect(() => {
+    const surprise = state.lastSurprise
+    if (!surprise) return
+    const amount = formatAsh(surprise.amount)
+    playSfx('claim')
+    pushPop(surpriseLabel(surprise.kind, amount), 'claim')
+    logPlaytest('surprise', {
+      kind: surprise.kind,
+      amount: Math.round(surprise.amount * 100) / 100,
+      tier: surprise.prestigeTier ?? null,
+    })
+    ackSurprise()
+  }, [state.lastSurprise, pushPop, ackSurprise])
 
   useEffect(() => {
     if (playerLevel.level > prevLevel.current) {
@@ -215,6 +257,19 @@ export function FortressMap({ game, highlightId }: Props) {
 
         <NextGoalStrip goal={nextGoal} onActivate={onGoalActivate} />
 
+        {bestBuy ? (
+          <BestBuyChip
+            hint={bestBuy}
+            onActivate={() => {
+              logPlaytest('best_buy_tap', {
+                id: bestBuy.id,
+                affordable: bestBuy.affordable,
+              })
+              setSelected(bestBuy.id)
+            }}
+          />
+        ) : null}
+
         {tapReady ? (
           <button
             type="button"
@@ -266,6 +321,7 @@ export function FortressMap({ game, highlightId }: Props) {
         <DailyOpsBanner game={game} onClaimed={() => playSfx('streak')} />
       ) : null}
       <EventBanner game={game} />
+      <FlashEventBanner game={game} />
 
       <div className={`fortress-stage ${skinClass} ${activeTheme.mapClass}`}>
         <div

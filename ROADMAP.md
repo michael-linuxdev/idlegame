@@ -21,7 +21,7 @@ Stand: 2026-11-07.
 ## Pipeline
 
 1. Abschließen: Upgrade-CTA, Shop/Prestige, Grafik-Sprung, Level/Quests, Ad-Stubs  
-2. **Politur-Runde** UI/UX/Grafik + **Retention/Suchtfaktor** erhöhen  
+2. **Politur-Runde** UI/UX/Grafik + **Retention/Suchtfaktor** erhöhen — **Retention-Loops Vertiefung done** (variable jumps / Zeigarnik / Daily+Comeback / best-buy / Blitz-Events; Soft = **Phyto**)  
 3. **Balance**-Pass  
 4. **Multiplayer-Architektur** → echtes Clan-Multiplayer  
 5. **Tokenhalle** Store-Bundle / eigener Eintrag (Skin liegt bereits im Kern)  

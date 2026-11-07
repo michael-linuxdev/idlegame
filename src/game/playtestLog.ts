@@ -15,6 +15,10 @@ export type PlaytestEventType =
   | 'shop_tap'
   | 'tab_open'
   | 'menu_open'
+  | 'surprise'
+  | 'flash_event'
+  | 'daily_claim'
+  | 'best_buy_tap'
 
 export type PlaytestPayload = Record<
   string,
