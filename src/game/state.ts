@@ -7,6 +7,7 @@ import {
   offlineCatchupAsh,
   prestigeMinAsh,
   prestigeMultiplier,
+  prestigeStartAsh,
   type EmberUpgradeId,
   type EmberUpgrades,
 } from './economy'
@@ -229,8 +230,9 @@ export function createInitialState(now = Date.now()): GameState {
 
 /** Create a fresh run after prestige, keeping meta + monetization unlocks. */
 export function createPostPrestigeState(prev: GameState, now = Date.now()): GameState {
+  const startAsh = prestigeStartAsh(prev.emberUpgrades)
   return {
-    ash: 0,
+    ash: startAsh,
     ashEarned: 0,
     owned: emptyOwned(),
     embers: prev.embers,
@@ -515,7 +517,7 @@ export function buyTimeSkip(state: GameState, id: TimeSkipId, now = Date.now()):
   let next = syncEventWindow(syncMonetization(withSkipDay(state, now), now), now)
   const remaining = DAILY_SKIP_CAP_HOURS - next.skipHoursUsedToday
   if (remaining <= 0) return state
-  const hours = Math.min(def.hours, remaining, 4)
+  const hours = Math.min(def.hours, remaining)
   if (hours <= 0) return state
   if (next.obsidian < def.cost) return state
   const rate = productionPerSecond(next, now)

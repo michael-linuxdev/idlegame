@@ -789,7 +789,29 @@
 }
 
 .fortress-map.slots-10 .map-building-name {
-  font-size: 0.68rem;
+  font-size: 0.62rem;
+  max-width: 5.6rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fortress-map.slots-10 .map-building-label {
+  padding: 0.22rem 0.4rem 0.28rem;
+  max-width: 6.2rem;
+}
+
+.fortress-map.slots-10 .map-building-meta {
+  font-size: 0.72rem;
+  gap: 0.28rem;
+}
+
+/* Reduce label clutter — rate only on selected / producing */
+.fortress-map.slots-10 .map-building:not(.selected):not(.producing) .map-building-rate {
+  display: none;
+}
+
+.fortress-map.slots-10 .map-building:not(.selected) .map-building-label {
+  opacity: 0.92;
 }
 
 .map-building.selected .building-sil,
@@ -1172,7 +1194,8 @@
   max-width: 480px;
   margin: 0 auto;
   background: rgba(40, 60, 80, 0.35);
-  z-index: 20;
+  /* Above tab-bar (30) so Ausbauen CTA is never covered by nav */
+  z-index: 40;
   display: flex;
   align-items: flex-end;
   animation: fade-in var(--oc-motion-sheet) ease-out;
@@ -1180,12 +1203,15 @@
 
 .sheet {
   width: 100%;
-  padding: 0.5rem 1rem calc(1rem + var(--safe-bottom) + 3.5rem);
+  padding: 0.5rem 1rem calc(1rem + var(--safe-bottom));
   background: var(--oc-bg-raised);
   border-top: 1px solid var(--oc-stroke-strong);
-  border-radius: 12px 12px 0 0;
+  border-radius: 14px 14px 0 0;
   animation: sheet-up var(--oc-motion-sheet) ease-out;
-  box-shadow: 0 -8px 24px rgba(40, 60, 80, 0.15);
+  box-shadow: 0 -10px 28px rgba(40, 60, 80, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
 }
 
 .sheet-handle {
@@ -1223,7 +1249,25 @@
 
 .sheet-buy {
   width: 100%;
-  min-height: var(--oc-target-min);
+  min-height: 52px;
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+}
+
+.sheet-cta {
+  margin-top: 0.55rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--oc-stroke);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.sheet-cta-hint {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--oc-warn);
+  font-weight: 600;
 }
 
 .sheet-close {
@@ -1254,32 +1298,51 @@
 .btn.rake {
   padding: 0.55rem 1.1rem;
   background: linear-gradient(180deg, var(--oc-ember-hot) 0%, var(--oc-ember) 100%);
-  border-color: #f0b870;
-  color: #1a2330;
+  border-color: var(--oc-ember-dim);
+  color: #f7fbf5;
   font-family: var(--oc-font-display);
   letter-spacing: 0.04em;
   font-size: 0.9rem;
   font-weight: 700;
 }
 
+[data-theme='orbit'] .btn.rake {
+  color: #1a2330;
+  border-color: #f0b870;
+}
+
 
 .btn.buy {
   background: linear-gradient(180deg, var(--oc-ember-hot) 0%, var(--oc-ember) 100%);
-  border-color: #f0b870;
-  color: #1a2330;
+  border-color: var(--oc-ember-dim);
+  color: #f7fbf5;
   font-weight: 700;
   font-size: 1rem;
 }
 
 .btn.buy:disabled {
-  background: linear-gradient(180deg, #d8e2ec 0%, #b8c8d6 100%);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--oc-bg-inset) 80%, white) 0%,
+    var(--oc-bg-inset) 100%
+  );
   border-color: var(--oc-stroke);
   color: var(--oc-ink-muted);
+  opacity: 1;
 }
 
 .btn.buy:not(:disabled):hover {
+  border-color: var(--oc-ember-hot);
+  filter: brightness(1.04);
+}
+
+[data-theme='orbit'] .btn.buy {
+  color: #1a2330;
+  border-color: #f0b870;
+}
+
+[data-theme='orbit'] .btn.buy:not(:disabled):hover {
   border-color: #ffd090;
-  filter: brightness(1.03);
 }
 
 .btn.prestige {
@@ -1311,6 +1374,10 @@
 
 .prestige-block {
   margin-top: 0.75rem;
+  padding: 0.85rem 0.9rem 1rem;
+  background: color-mix(in srgb, var(--oc-bg-raised) 88%, var(--oc-bronze-pale));
+  border: 1px solid var(--oc-stroke-strong);
+  border-radius: var(--oc-radius);
 }
 
 .prestige-stats {
@@ -1318,6 +1385,92 @@
   color: var(--oc-ink);
   font-size: 1rem;
   line-height: 1.5;
+}
+
+.prestige-preview {
+  margin-top: 0.75rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.55rem;
+}
+
+.prestige-preview-card {
+  padding: 0.55rem 0.65rem;
+  border-radius: var(--oc-radius);
+  border: 1px solid var(--oc-stroke);
+  background: var(--oc-bg-raised);
+}
+
+.prestige-preview-card.keep {
+  border-color: var(--oc-gain);
+}
+
+.prestige-preview-card.lose {
+  border-color: var(--oc-danger);
+}
+
+.prestige-preview-label {
+  margin: 0;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--oc-ink-muted);
+}
+
+.prestige-preview-card.keep .prestige-preview-label {
+  color: var(--oc-gain);
+}
+
+.prestige-preview-card.lose .prestige-preview-label {
+  color: var(--oc-danger);
+}
+
+.prestige-preview-list {
+  margin: 0.35rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.88rem;
+  color: var(--oc-ink);
+  line-height: 1.4;
+}
+
+.prestige-tree {
+  margin: 0.85rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.prestige-branch {
+  padding: 0.75rem 0.8rem 0.85rem;
+  border: 1px solid var(--oc-stroke);
+  border-radius: var(--oc-radius);
+  background: color-mix(in srgb, var(--oc-bg-field) 70%, var(--oc-bg-raised));
+}
+
+.prestige-branch-title {
+  margin: 0;
+  font-family: var(--oc-font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--oc-ink);
+}
+
+.prestige-branch-blurb {
+  margin: 0.25rem 0 0.55rem;
+  font-size: 0.88rem;
+  color: var(--oc-ink-muted);
+  line-height: 1.4;
+}
+
+.prestige-branch .ember-shop {
+  margin: 0;
+}
+
+.prestige-branch .ember-shop-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
 }
 
 /* Clan */
@@ -1404,7 +1557,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.15rem;
-  padding: 0.4rem 0.4rem calc(0.45rem + var(--safe-bottom));
+  padding: 0.35rem 0.35rem calc(0.4rem + var(--safe-bottom));
   background: color-mix(in srgb, var(--oc-bg-raised) 97%, transparent);
   border-top: 1px solid var(--oc-stroke);
   backdrop-filter: blur(8px);
@@ -1436,6 +1589,10 @@
   text-transform: uppercase;
   font-size: 0.8125rem;
   font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   padding: 0.85rem 0.25rem;
   min-height: var(--oc-target-min);
   display: flex;
@@ -2040,6 +2197,32 @@
   border-top: 1px solid var(--oc-stroke);
   border-bottom: 1px solid var(--oc-stroke);
 }
+
+.shop-section {
+  margin-top: 1.35rem;
+  padding: 0.85rem 0.85rem 1rem;
+  border: 1px solid var(--oc-stroke);
+  border-radius: var(--oc-radius);
+  background: color-mix(in srgb, var(--oc-bg-raised) 92%, var(--oc-bg-inset));
+}
+
+.shop-section .subhead {
+  margin-top: 0;
+}
+
+.shop-section-kicker {
+  margin: 0 0 0.2rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--oc-ember-dim);
+}
+
+.shop-list {
+  margin-top: 0.35rem;
+}
+
 
 .clan-boost-status {
   margin-top: 0.55rem;

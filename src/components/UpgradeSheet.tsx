@@ -38,6 +38,7 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
   const milestoneNext = owned > 0 && (owned + 1) % 10 === 0
   const affordRatio =
     cost > 0 ? Math.min(1, game.state.ash / cost) : unlocked ? 1 : 0
+  const actionLabel = owned === 0 ? t.upgrade.online : t.upgrade.upgrade
 
   function buyBranch(kind: BranchKind) {
     game.buyModuleBranch(selectedId, kind)
@@ -98,17 +99,21 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
             {owned === 0 ? (
               <p className="sheet-empty">{t.upgrade.offlineEmpty}</p>
             ) : null}
-            <button
-              type="button"
-              className={`btn buy sheet-buy${affordable ? ' pulse-ready' : ''}${flash ? ' just-bought' : ''}`}
-              disabled={!affordable}
-              onClick={buyUpgrade}
-            >
-              {t.upgrade.costLine(
-                owned === 0 ? t.upgrade.online : t.upgrade.upgrade,
-                formatAsh(cost),
-              )}
-            </button>
+            <div className="sheet-cta">
+              {!affordable ? (
+                <p className="sheet-cta-hint">
+                  {t.upgrade.needMore(formatAsh(Math.max(0, cost - game.state.ash)))}
+                </p>
+              ) : null}
+              <button
+                type="button"
+                className={`btn buy sheet-buy${affordable ? ' pulse-ready' : ''}${flash ? ' just-bought' : ''}`}
+                disabled={!affordable}
+                onClick={buyUpgrade}
+              >
+                {t.upgrade.costLine(actionLabel, formatAsh(cost))}
+              </button>
+            </div>
 
             {owned >= 1 ? (
               <div className="branch-block">
@@ -137,9 +142,11 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
           <div className="sheet-empty-block">
             <p className="sheet-stats sheet-locked-hint">{unlockHint(def)}</p>
             <p className="sheet-empty">{t.upgrade.gateClosed}</p>
-            <button type="button" className="btn buy sheet-buy" disabled>
-              {t.upgrade.locked}
-            </button>
+            <div className="sheet-cta">
+              <button type="button" className="btn buy sheet-buy" disabled>
+                {t.upgrade.locked}
+              </button>
+            </div>
           </div>
         )}
       </div>

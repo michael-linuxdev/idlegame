@@ -230,15 +230,16 @@ export const arcadeStrings = {
     now: 'jetzt',
     next: 'nächste',
     milestone: 'Nächste Stufe löst +2 % Meilenstein auf dieser Linie aus.',
-    online: 'Online',
-    upgrade: 'Upgrade',
+    online: 'Online schalten',
+    upgrade: 'Ausbauen',
     locked: 'Gesperrt',
     offlineEmpty: 'Automat offline — online schalten, um Tokens zu erzeugen.',
     gateClosed:
       'Tor geschlossen. Erfülle die Bedingung — dann wird dieser CTA aktiv.',
+    needMore: (amount: string) => `Noch ${amount} Tokens nötig`,
     costLine: (action: string, cost: string) =>
       `${action} · ${cost} Tokens`,
-    branchHint: 'Pfade bleiben sekundär — der Upgrade-Button bleibt primär.',
+    branchHint: 'Pfade bleiben sekundär — der Ausbauen-Button bleibt primär.',
   },
 
   prestige: {
@@ -260,10 +261,29 @@ export const arcadeStrings = {
     emptyGate:
       'Soft-Reset bleibt dunkel, bis dieser Lauf genug Tokens bunkert. Automaten weiter in der Halle laufen lassen.',
     emptyShop: 'Noch keine Tickets — einmal prestigieren, dann füllt sich der Shop.',
-    shopTitle: 'Ticket-Shop',
-    shopIntro: 'Gib Tickets für permanente Power aus. Nie für Echtgeld verkauft.',
+    shopTitle: 'Ticket-Baum',
+    shopIntro:
+      'Drei Äste permanenter Meta-Power. Tickets nur aus Prestige — nie für Echtgeld.',
     max: 'Max',
     costCredits: (n: number) => `${n} Tickets`,
+    keepTitle: 'Behältst du',
+    loseTitle: 'Reset',
+    keepItems: [
+      'Tickets & Meta-Upgrades',
+      'Jetons, Skins, Daily-Streak',
+      'Prestige-Zähler',
+    ],
+    loseItems: [
+      'Token-Wallet dieses Laufs',
+      'Alle Automaten-Stufen',
+      'Lauf-Fortschritt zur Schwelle',
+    ],
+    branchYieldTitle: 'Ertrags-Ast',
+    branchYieldBlurb: 'Mehr Durchsatz und günstigere Ausbauten.',
+    branchUptimeTitle: 'Schicht-Ast',
+    branchUptimeBlurb: 'Längere Offline-Fenster und stärkere Tap-Schübe.',
+    branchStartTitle: 'Start-Ast',
+    branchStartBlurb: 'Schnellerer Neustart nach jedem Prestige.',
   },
 
   emberShop: {
@@ -287,6 +307,17 @@ export const arcadeStrings = {
       blurb: 'Starte jeden Lauf mit freigeschaltetem Ticketdrucker.',
       effect: (rank: number) =>
         rank > 0 ? 'Ticketdrucker zu Laufbeginn frei' : 'Gesperrt',
+    },
+    tapMastery: {
+      name: 'Tap-Meister',
+      blurb: '+15 s Tap-Bonus-Dauer pro Rang.',
+      effect: (rank: number) => `+${rank * 15} s Tap-Bonus`,
+    },
+    seedPurse: {
+      name: 'Start-Guthaben',
+      blurb: 'Starte jeden Prestige-Lauf mit +50 Tokens pro Rang.',
+      effect: (rank: number) =>
+        rank > 0 ? `+${rank * 50} Tokens zu Laufbeginn` : 'Kein Startbonus',
     },
   },
 

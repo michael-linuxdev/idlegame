@@ -44,6 +44,10 @@ export interface EmberUpgrades {
   foundryDiscount: number
   /** Hot Spare — start each run with Cooling Array unlocked (max 1) */
   firstFlame: number
+  /** Tap Mastery — +15s tap bonus duration per rank (max 5) */
+  tapMastery: number
+  /** Seed Purse — start each prestige run with bonus soft currency (max 5) */
+  seedPurse: number
 }
 
 export const EMPTY_EMBER_UPGRADES: EmberUpgrades = {
@@ -51,12 +55,17 @@ export const EMPTY_EMBER_UPGRADES: EmberUpgrades = {
   longWatch: 0,
   foundryDiscount: 0,
   firstFlame: 0,
+  tapMastery: 0,
+  seedPurse: 0,
 }
 
 export type EmberUpgradeId = keyof EmberUpgrades
 
+export type PrestigeBranchId = 'yield' | 'uptime' | 'start'
+
 export interface EmberShopItem {
   id: EmberUpgradeId
+  branch: PrestigeBranchId
   name: string
   blurb: string
   maxRank: number
@@ -68,6 +77,7 @@ export interface EmberShopItem {
 export const EMBER_SHOP: EmberShopItem[] = [
   {
     id: 'dominionYield',
+    branch: 'yield',
     name: t.emberShop.dominionYield.name,
     blurb: t.emberShop.dominionYield.blurb,
     maxRank: 20,
@@ -75,15 +85,8 @@ export const EMBER_SHOP: EmberShopItem[] = [
     effectLabel: (rank) => t.emberShop.dominionYield.effect(rank),
   },
   {
-    id: 'longWatch',
-    name: t.emberShop.longWatch.name,
-    blurb: t.emberShop.longWatch.blurb,
-    maxRank: 4,
-    cost: (rank) => 5 + 5 * rank,
-    effectLabel: (rank) => t.emberShop.longWatch.effect(rank),
-  },
-  {
     id: 'foundryDiscount',
+    branch: 'yield',
     name: t.emberShop.foundryDiscount.name,
     blurb: t.emberShop.foundryDiscount.blurb,
     maxRank: 10,
@@ -91,12 +94,62 @@ export const EMBER_SHOP: EmberShopItem[] = [
     effectLabel: (rank) => t.emberShop.foundryDiscount.effect(rank),
   },
   {
+    id: 'longWatch',
+    branch: 'uptime',
+    name: t.emberShop.longWatch.name,
+    blurb: t.emberShop.longWatch.blurb,
+    maxRank: 4,
+    cost: (rank) => 5 + 5 * rank,
+    effectLabel: (rank) => t.emberShop.longWatch.effect(rank),
+  },
+  {
+    id: 'tapMastery',
+    branch: 'uptime',
+    name: t.emberShop.tapMastery.name,
+    blurb: t.emberShop.tapMastery.blurb,
+    maxRank: 5,
+    cost: (rank) => 4 + 3 * rank,
+    effectLabel: (rank) => t.emberShop.tapMastery.effect(rank),
+  },
+  {
     id: 'firstFlame',
+    branch: 'start',
     name: t.emberShop.firstFlame.name,
     blurb: t.emberShop.firstFlame.blurb,
     maxRank: 1,
     cost: () => 8,
     effectLabel: (rank) => t.emberShop.firstFlame.effect(rank),
+  },
+  {
+    id: 'seedPurse',
+    branch: 'start',
+    name: t.emberShop.seedPurse.name,
+    blurb: t.emberShop.seedPurse.blurb,
+    maxRank: 5,
+    cost: (rank) => 3 + 4 * rank,
+    effectLabel: (rank) => t.emberShop.seedPurse.effect(rank),
+  },
+]
+
+export const PRESTIGE_BRANCHES: {
+  id: PrestigeBranchId
+  title: string
+  blurb: string
+}[] = [
+  {
+    id: 'yield',
+    title: t.prestige.branchYieldTitle,
+    blurb: t.prestige.branchYieldBlurb,
+  },
+  {
+    id: 'uptime',
+    title: t.prestige.branchUptimeTitle,
+    blurb: t.prestige.branchUptimeBlurb,
+  },
+  {
+    id: 'start',
+    title: t.prestige.branchStartTitle,
+    blurb: t.prestige.branchStartBlurb,
   },
 ]
 
@@ -116,6 +169,16 @@ export function offlineCapsHours(upgrades: EmberUpgrades): {
     soft: OFFLINE_SOFT_HOURS + upgrades.longWatch * 1,
     hard: OFFLINE_HARD_HOURS + upgrades.longWatch * 2,
   }
+}
+
+/** Tap bonus seconds including Tap Mastery ranks. */
+export function tapBonusSeconds(upgrades: EmberUpgrades): number {
+  return TAP_BONUS_SECONDS + upgrades.tapMastery * 15
+}
+
+/** Soft wallet granted at the start of a prestige run. */
+export function prestigeStartAsh(upgrades: EmberUpgrades): number {
+  return upgrades.seedPurse * 50
 }
 
 /**
@@ -152,6 +215,7 @@ export function offlineCatchupAsh(
  * Active tap bonus — session hook, not a grind sink.
  * IG-31: 45s → 60s of current rate so short visits feel juicier while idle
  * curve stays the prestige pace-setter. Cooldown unchanged (5 min).
+ * Tap Mastery adds +15s per rank on top.
  */
 export const TAP_BONUS_SECONDS = 60
 export const TAP_COOLDOWN_MS = 5 * 60 * 1000

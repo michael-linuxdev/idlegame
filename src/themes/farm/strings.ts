@@ -230,15 +230,16 @@ export const farmStrings = {
     now: 'jetzt',
     next: 'nächste',
     milestone: 'Nächste Stufe löst +2 % Meilenstein auf dieser Linie aus.',
-    online: 'Online',
-    upgrade: 'Upgrade',
+    online: 'Online schalten',
+    upgrade: 'Ausbauen',
     locked: 'Gesperrt',
     offlineEmpty: 'Modul offline — online schalten, um Ertrag zu erzeugen.',
     gateClosed:
       'Tor geschlossen. Erfülle die Bedingung — dann wird dieser CTA aktiv.',
+    needMore: (amount: string) => `Noch ${amount} Ertrag nötig`,
     costLine: (action: string, cost: string) =>
       `${action} · ${cost} Ertrag`,
-    branchHint: 'Pfade bleiben sekundär — der Upgrade-Button bleibt primär.',
+    branchHint: 'Pfade bleiben sekundär — der Ausbauen-Button bleibt primär.',
   },
 
   prestige: {
@@ -260,10 +261,29 @@ export const farmStrings = {
     emptyGate:
       'Soft-Reset bleibt dunkel, bis dieser Lauf genug Ertrag bunkert. Module weiter auf der Farm laufen lassen.',
     emptyShop: 'Noch keine Münzen — einmal prestigieren, dann füllt sich der Shop.',
-    shopTitle: 'Münzen-Shop',
-    shopIntro: 'Gib Münzen für permanente Power aus. Nie für Echtgeld verkauft.',
+    shopTitle: 'Münzen-Baum',
+    shopIntro:
+      'Drei Äste permanenter Meta-Power. Münzen nur aus Prestige — nie für Echtgeld.',
     max: 'Max',
     costCredits: (n: number) => `${n} Münzen`,
+    keepTitle: 'Behältst du',
+    loseTitle: 'Reset',
+    keepItems: [
+      'Münzen & Meta-Upgrades',
+      'Samen, Skins, Daily-Streak',
+      'Prestige-Zähler',
+    ],
+    loseItems: [
+      'Ertrags-Wallet dieses Laufs',
+      'Alle Modul-Stufen',
+      'Lauf-Fortschritt zur Schwelle',
+    ],
+    branchYieldTitle: 'Ertrags-Ast',
+    branchYieldBlurb: 'Mehr Durchsatz und günstigere Ausbauten.',
+    branchUptimeTitle: 'Pflege-Ast',
+    branchUptimeBlurb: 'Längere Offline-Fenster und stärkere Ernte-Schübe.',
+    branchStartTitle: 'Start-Ast',
+    branchStartBlurb: 'Schnellerer Neustart nach jedem Prestige.',
   },
 
   emberShop: {
@@ -287,6 +307,17 @@ export const farmStrings = {
       blurb: 'Starte jeden Lauf mit freigeschalteter Nährstoffpumpe.',
       effect: (rank: number) =>
         rank > 0 ? 'Nährstoffpumpe zu Laufbeginn frei' : 'Gesperrt',
+    },
+    tapMastery: {
+      name: 'Ernte-Griff',
+      blurb: '+15 s Ernte-Schub-Dauer pro Rang.',
+      effect: (rank: number) => `+${rank * 15} s Schub`,
+    },
+    seedPurse: {
+      name: 'Saatgeld-Beutel',
+      blurb: 'Starte jeden Prestige-Lauf mit +50 Ertrag pro Rang.',
+      effect: (rank: number) =>
+        rank > 0 ? `+${rank * 50} Ertrag zu Laufbeginn` : 'Kein Startbonus',
     },
   },
 
