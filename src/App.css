@@ -10,12 +10,6 @@
     linear-gradient(180deg, #f3f8ef 0%, var(--oc-bg-deep) 40%, #c8d9bc 100%);
 }
 
-[data-theme='orbit'] .app-shell {
-  background:
-    radial-gradient(120% 80% at 50% -10%, rgba(126, 184, 212, 0.35), transparent 55%),
-    linear-gradient(180deg, #eef3f8 0%, var(--oc-bg-deep) 40%, #cfd9e4 100%);
-}
-
 .app-main {
   position: relative;
   flex: 1;
@@ -99,12 +93,6 @@
 .brand.wordmark {
   font-size: clamp(1.45rem, 6vw, 1.95rem);
   color: var(--oc-ember-dim);
-}
-
-[data-theme='orbit'] .brand,
-[data-theme='orbit'] .brand.wordmark {
-  color: var(--oc-ink);
-  letter-spacing: 0.04em;
 }
 
 .ash-amount {

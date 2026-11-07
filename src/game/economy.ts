@@ -1,6 +1,6 @@
 /**
  * Economy knobs from docs/economy.md — core formulas unchanged.
- * Player-facing: soft Rechenleistung + meta Credits (Orbit Rack / space data centers).
+ * Player-facing: soft Ertrag + meta Münzen (TurmFarm).
  * Internal save fields still map to Ash/Embers.
  *
  * Feel polish (IG-19) early tweaks live on generators.ts / createInitialState:
