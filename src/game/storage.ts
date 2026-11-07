@@ -1,5 +1,5 @@
 import { createInitialState, STORAGE_KEY, type GameState } from './state'
-import type { GeneratorId } from './generators'
+import { GENERATOR_IDS } from './generators'
 
 function isRecord(v: unknown): v is Record<string, unknown> {
   return typeof v === 'object' && v !== null
@@ -8,8 +8,7 @@ function isRecord(v: unknown): v is Record<string, unknown> {
 function parseOwned(raw: unknown): GameState['owned'] {
   const base = createInitialState().owned
   if (!isRecord(raw)) return base
-  const ids: GeneratorId[] = ['emberPit', 'ashForge', 'cinderBarracks']
-  for (const id of ids) {
+  for (const id of GENERATOR_IDS) {
     const n = raw[id]
     if (typeof n === 'number' && Number.isFinite(n) && n >= 0) {
       base[id] = Math.floor(n)

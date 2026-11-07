@@ -1,5 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { GENERATORS, generatorCost, type GeneratorId } from './generators'
+import {
+  GENERATORS,
+  generatorCost,
+  isGeneratorUnlocked,
+  type GeneratorId,
+} from './generators'
 import {
   applyOfflineCatchup,
   applyTick,
@@ -72,6 +77,7 @@ export function useGame() {
     setState((s) => {
       const def = GENERATORS.find((g) => g.id === id)
       if (!def) return s
+      if (!isGeneratorUnlocked(def, s.ashEarned, s.owned)) return s
       const owned = s.owned[id] ?? 0
       const cost = generatorCost(def, owned)
       if (s.ash < cost) return s

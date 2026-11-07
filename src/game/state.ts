@@ -1,4 +1,4 @@
-import { GENERATORS, type GeneratorId } from './generators'
+import { GENERATORS, GENERATOR_IDS, type GeneratorId } from './generators'
 
 export interface GameState {
   /** Current Ash (Embers) */
@@ -16,11 +16,11 @@ export interface GameState {
 export const STORAGE_KEY = 'ash-dominion-save-v1'
 
 export function emptyOwned(): Record<GeneratorId, number> {
-  return {
-    emberPit: 0,
-    ashForge: 0,
-    cinderBarracks: 0,
+  const owned = {} as Record<GeneratorId, number>
+  for (const id of GENERATOR_IDS) {
+    owned[id] = 0
   }
+  return owned
 }
 
 export function createInitialState(now = Date.now()): GameState {

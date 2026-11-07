@@ -1,5 +1,10 @@
 import { useState } from 'react'
-import { GENERATORS, type GeneratorId } from '../game/generators'
+import {
+  GENERATORS,
+  isGeneratorUnlocked,
+  unlockHint,
+  type GeneratorId,
+} from '../game/generators'
 import { formatAsh, formatRate } from '../game/format'
 import type { useGame } from '../game/useGame'
 import { BuildingSilhouette } from './BuildingSilhouette'
@@ -58,29 +63,57 @@ export function FortressMap({ game }: Props) {
           <div className="map-terrain" aria-hidden="true">
             <div className="map-grid" />
             <div className="map-ridge" />
-            <div className="map-keep" />
+            <div className="map-walls">
+              <span className="wall-segment north" />
+              <span className="wall-segment east" />
+              <span className="wall-segment south" />
+              <span className="wall-segment west" />
+              <span className="wall-tower nw" />
+              <span className="wall-tower ne" />
+              <span className="wall-tower sw" />
+              <span className="wall-tower se" />
+              <span className="wall-gate" />
+            </div>
+            <div className="map-keep-silhouette" />
+            <div className="map-forge-glow" />
             <div className="map-haze" />
           </div>
 
           {GENERATORS.map((def) => {
             const level = state.owned[def.id] ?? 0
+            const unlocked = isGeneratorUnlocked(def, state.ashEarned, state.owned)
             const selectedHere = selected === def.id
-            const buildingRate = level * def.baseRate * multiplier
+            const buildingRate = unlocked && level > 0 ? level * def.baseRate * multiplier : 0
+            const hint = !unlocked ? unlockHint(def) : ''
             return (
               <button
                 key={def.id}
                 type="button"
-                className={`map-building${selectedHere ? ' selected' : ''}${level > 0 ? ' raised' : ''}`}
+                className={`map-building${selectedHere ? ' selected' : ''}${level > 0 && unlocked ? ' raised' : ''}${!unlocked ? ' locked' : ''}`}
                 style={{ left: def.slot.left, top: def.slot.top }}
-                aria-label={`${def.name}, level ${level}, ${formatRate(buildingRate)}. Tap to upgrade.`}
+                aria-label={
+                  unlocked
+                    ? `${def.name}, level ${level}, ${formatRate(buildingRate)}. Tap to upgrade.`
+                    : `${def.name}, locked. ${hint}`
+                }
                 onClick={() => setSelected(def.id)}
               >
-                <BuildingSilhouette kind={def.silhouette} level={level} />
+                <BuildingSilhouette
+                  kind={def.silhouette}
+                  level={level}
+                  locked={!unlocked}
+                />
                 <span className="map-building-label">
                   <span className="map-building-name">{def.name}</span>
                   <span className="map-building-meta">
-                    <span className="map-building-lvl">Lv {level}</span>
-                    <span className="map-building-rate">{formatRate(buildingRate)}</span>
+                    {unlocked ? (
+                      <>
+                        <span className="map-building-lvl">Lv {level}</span>
+                        <span className="map-building-rate">{formatRate(buildingRate)}</span>
+                      </>
+                    ) : (
+                      <span className="map-building-lock">Locked</span>
+                    )}
                   </span>
                 </span>
               </button>
