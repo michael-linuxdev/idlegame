@@ -3705,11 +3705,22 @@ html[data-theme='arcade'] .app-main.map-mode .banner.daily-ops .btn {
 /* Compact floating chrome over the map — shared tray language */
 .app-main.map-mode .map-hud,
 .app-main.map-mode .next-goal-strip,
-.app-main.map-mode .banner.map-banner,
-.app-main.map-mode .claim-toast {
+.app-main.map-mode .banner.map-banner {
   position: relative;
   z-index: 3;
   flex-shrink: 0;
+}
+
+/* Toasts float — never push the hall down as another tile */
+.app-main.map-mode .claim-toast {
+  position: absolute;
+  left: 0.55rem;
+  right: 0.55rem;
+  top: auto;
+  bottom: calc(5.4rem + var(--safe-bottom));
+  z-index: 5;
+  margin: 0;
+  pointer-events: none;
 }
 
 .app-main.map-mode .map-hud {
