@@ -1,4 +1,4 @@
-import { GENERATORS, generatorCost, type GeneratorId } from '../game/generators'
+import { GENERATORS, generatorRate, type GeneratorId } from '../game/generators'
 import { formatAsh, formatRate } from '../game/format'
 import type { useGame } from '../game/useGame'
 
@@ -15,9 +15,12 @@ export function UpgradeSheet({ game, selectedId, onClose }: Props) {
   if (!def) return null
 
   const owned = game.state.owned[def.id] ?? 0
-  const cost = generatorCost(def, owned)
-  const affordable = game.state.ash >= cost
-  const unitRate = def.baseRate * game.multiplier
+  const unlocked = game.unlocked(def.id)
+  const cost = game.costOf(def.id)
+  const affordable = unlocked && game.state.ash >= cost
+  const lineRate = generatorRate(def, owned) * game.multiplier
+  const nextRate = generatorRate(def, owned + 1) * game.multiplier
+  const milestoneNext = owned > 0 && (owned + 1) % 10 === 0
 
   return (
     <div className="sheet-backdrop" role="presentation" onClick={onClose}>
@@ -36,21 +39,33 @@ export function UpgradeSheet({ game, selectedId, onClose }: Props) {
           </button>
         </header>
         <p className="muted">{def.blurb}</p>
-        <p className="sheet-stats">
-          Level <strong>{owned}</strong>
-          {' · '}
-          {formatRate(unitRate)} each
-          {' · '}
-          {formatRate(unitRate * owned)} total
-        </p>
-        <button
-          type="button"
-          className="btn buy sheet-buy"
-          disabled={!affordable}
-          onClick={() => game.buy(def.id)}
-        >
-          {owned === 0 ? 'Raise' : 'Upgrade'} · {formatAsh(cost)} Ash
-        </button>
+        {!unlocked ? (
+          <p className="sheet-stats">
+            Locked — earn <strong>{formatAsh(def.unlockAsh)}</strong> Ore this run
+            to bring this module online.
+          </p>
+        ) : (
+          <>
+            <p className="sheet-stats">
+              Level <strong>{owned}</strong>
+              {' · '}
+              {formatRate(lineRate)} now
+              {' · '}
+              next {formatRate(nextRate)}
+            </p>
+            {milestoneNext ? (
+              <p className="muted">Next level hits a +2% milestone on this line.</p>
+            ) : null}
+            <button
+              type="button"
+              className="btn buy sheet-buy"
+              disabled={!affordable}
+              onClick={() => game.buy(def.id)}
+            >
+              {owned === 0 ? 'Online' : 'Upgrade'} · {formatAsh(cost)} Ore
+            </button>
+          </>
+        )}
       </div>
     </div>
   )

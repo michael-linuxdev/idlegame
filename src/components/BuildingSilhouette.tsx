@@ -34,6 +34,20 @@ export function BuildingSilhouette({ kind, level }: Props) {
           <span className="sil-spire" />
         </>
       ) : null}
+      {kind === 'kiln' ? (
+        <>
+          <span className="sil-base wide" />
+          <span className="sil-body kiln-dome" />
+          <span className="sil-flame" />
+        </>
+      ) : null}
+      {kind === 'vault' ? (
+        <>
+          <span className="sil-base wide" />
+          <span className="sil-body vault-block" />
+          <span className="sil-spire" />
+        </>
+      ) : null}
     </div>
   )
 }

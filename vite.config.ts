@@ -12,10 +12,10 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'icons.svg'],
       manifest: {
-        name: 'Ash Dominion',
-        short_name: 'Ash Dominion',
+        name: 'Orbital Claim',
+        short_name: 'Orbital Claim',
         description:
-          'Rule an ash legion. Generators produce offline. Prestige for dominion.',
+          'Command a sci-fi outpost. Modules produce Ore offline. Prestige for Plasma.',
         theme_color: '#1a1410',
         background_color: '#0e0b09',
         display: 'standalone',
