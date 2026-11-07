@@ -41,6 +41,25 @@ export function isComebackClaim(lastClaimDay: string, now = Date.now()): boolean
   return daysSinceClaim(lastClaimDay, now) >= 2
 }
 
+/**
+ * Comeback gift scale by gap (calendar days since last claim).
+ * Gap 2 → mild; 3–4 → strong; 5+ → warm welcome. Never punishes / resets streak.
+ */
+export function comebackScale(gapDays: number): {
+  computeMult: number
+  computeFlat: number
+  obsidian: number
+  credits: number
+} {
+  if (gapDays >= 5) {
+    return { computeMult: 2.0, computeFlat: 80, obsidian: 40, credits: 1 }
+  }
+  if (gapDays >= 3) {
+    return { computeMult: 1.75, computeFlat: 60, obsidian: 30, credits: 0 }
+  }
+  return { computeMult: 1.5, computeFlat: 40, obsidian: 20, credits: 0 }
+}
+
 interface StreakRow {
   computeSec: number
   credits: number
@@ -70,7 +89,7 @@ const MIN_COMPUTE = 50
 export function rewardForStreak(
   streakBeforeClaim: number,
   ratePerSec: number,
-  opts: { comeback?: boolean } = {},
+  opts: { comeback?: boolean; gapDays?: number } = {},
 ): DailyReward {
   const dayIndex = Math.max(0, streakBeforeClaim) % ROWS.length
   const row = ROWS[dayIndex]!
@@ -78,10 +97,15 @@ export function rewardForStreak(
   let credits = row.credits
   let obsidian = row.obsidian
   let label = row.label
+  // Streak day-7 seal already rich; mild bump on day 3 / 5 for visible rhythm
+  if (dayIndex === 2) obsidian += 5
+  if (dayIndex === 4) compute = Math.floor(compute * 1.1)
   if (opts.comeback) {
-    // Light welcome-back gift — no energy walls, streak still frozen
-    compute = Math.floor(compute * 1.35) + MIN_COMPUTE
-    obsidian += 15
+    const gap = Math.max(2, opts.gapDays ?? 2)
+    const scale = comebackScale(gap)
+    compute = Math.floor(compute * scale.computeMult) + scale.computeFlat
+    obsidian += scale.obsidian
+    credits += scale.credits
     label = t.daily.comebackLabel
   }
   return {
@@ -139,7 +163,8 @@ export function previewDailyReward(
     : Math.max(0, streak - 1)
   const comeback =
     canClaimDaily(lastClaimDay, now) && isComebackClaim(lastClaimDay, now)
-  return rewardForStreak(next, ratePerSec, { comeback })
+  const gapDays = comeback ? daysSinceClaim(lastClaimDay, now) : 0
+  return rewardForStreak(next, ratePerSec, { comeback, gapDays })
 }
 
 export { dayKey, ROWS as DAILY_STREAK_ROWS }

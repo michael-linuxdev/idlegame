@@ -59,6 +59,36 @@ export const farmStrings = {
     prestigeReadyDetail: 'Münzen abholen',
     ready: 'Bereit',
     fallback: 'Hof aufbauen',
+    nearMiss: (pct: number) => `fast · ${pct}%`,
+  },
+
+  bestBuy: {
+    tipAffordable: (name: string) => `Tipp: ${name}`,
+    tipSoon: (name: string) => `Bald: ${name}`,
+    aria: 'Bester nächster Kauf',
+  },
+
+  surprise: {
+    milestone: (amount: string) => `Meilenstein +${amount}`,
+    jackpot: (amount: string) => `Jackpot +${amount}`,
+    prestigeNear: (amount: string) => `Prestige nah +${amount}`,
+    offlineJackpot: (amount: string) => `Comeback-Krümel +${amount}`,
+  },
+
+  flash: {
+    name: 'Blitz-Ernte',
+    blurb: '+15 % Phyto/s · kurzes Fenster.',
+    endsMin: (m: number, s: number) =>
+      s > 0 ? `Noch ${m}:${String(s).padStart(2, '0')}` : `Noch ${m} Min`,
+    endsSec: (s: number) => `Noch ${s}s`,
+    endsSoon: 'Fenster zu',
+    graceLabel: 'Ziel noch abholen',
+    goalAria: 'Blitz-Ziel',
+    goalLine: (progress: string, reward: number) =>
+      `${progress} → ${reward} Samen`,
+    claimGoal: 'Belohnen',
+    claimed: 'Abgeholt',
+    dismiss: 'Schließen',
   },
 
   resources: {
@@ -519,23 +549,26 @@ export const farmStrings = {
 
   daily: {
     kicker: 'Tägliche Pflege',
-    firstShift: 'Erste Schicht',
-    streakNext: (n: number) => `Serie ${n}`,
+    firstShift: 'Tag 1/7 · Start',
+    streakNext: (n: number) => {
+      const day = (Math.max(0, n) % 7) + 1
+      return `Serie ${n} · Tag ${day}/7`
+    },
     streakDotsAria: (n: number) => `Serie ${n} von 7`,
     comebackLabel: 'Comeback-Bonus',
-    comebackMeta: 'Willkommen zurück',
+    comebackMeta: 'Serie hält · Extra-Pflege für die Rückkehr',
     claim: 'Abholen',
     claimToast: 'Pflege gebucht',
     rewardCompute: (amount: string) => `${amount} ${SOFT_CURRENCY}`,
     rewardCredits: (n: number) => `${n} Münzen`,
     rewardObsidian: (n: number) => `${n} Samen`,
     rows: {
-      float2: '2 Min Phyto',
-      shift3: '3 Min Phyto',
+      float2: `2 Min ${SOFT_CURRENCY}`,
+      shift3: `3 Min ${SOFT_CURRENCY}`,
       crumb20: '20 Samen',
-      long4: '4 Min Phyto',
+      long4: `4 Min ${SOFT_CURRENCY}`,
       credit1: '1 Münze',
-      ot5: '5 Min Phyto',
+      ot5: `5 Min ${SOFT_CURRENCY}`,
       weekSeal: 'Wochen-Siegel',
     },
   },

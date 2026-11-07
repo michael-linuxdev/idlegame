@@ -26,6 +26,7 @@ import {
   bandwidthSurgeWindowKey,
   isBandwidthSurgeActive,
 } from './events'
+import { flashEventStatus } from './flashEvent'
 import { ACHIEVEMENTS, isAchievementComplete } from './achievements'
 import {
   BRANCH_MAX_RANK,
@@ -48,20 +49,25 @@ import {
   claimBattlePassDailyXp,
   claimBattlePassTier,
   claimDailyOps,
+  claimFlashEventGoal,
   claimQuestReward,
   claimRewardedAd,
+  clearLastSurprise,
   collectReadyAchievements,
   dismissBandwidthSurge,
+  dismissFlashEvent,
   doPrestige,
   effectiveClanMult,
   effectiveYieldBoostMult,
   equipCosmetic,
   eventProductionMult,
+  flashProductionMult,
   claimOfflineReward,
   grantTapAsh,
   levelProductionMult,
   levelProgress,
   lineCostMult,
+  maybeStartFlashEvent,
   mockBuyOffer,
   nextPrestigeEmbers,
   playerLevelOf,
@@ -270,7 +276,16 @@ export function useGame() {
   }, [])
 
   const claimDaily = useCallback(() => {
-    setState((s) => claimDailyOps(s))
+    setState((s) => {
+      const next = claimDailyOps(s)
+      if (next !== s) {
+        logPlaytest('daily_claim', {
+          streak: next.dailyStreak,
+          comeback: next.dailyStreak === s.dailyStreak,
+        })
+      }
+      return next
+    })
   }, [])
 
   const dismissEvent = useCallback(() => {
@@ -279,6 +294,26 @@ export function useGame() {
 
   const claimEventGoal = useCallback(() => {
     setState((s) => claimBandwidthSurgeGoal(s))
+  }, [])
+
+  const dismissFlash = useCallback(() => {
+    setState((s) => {
+      const next = dismissFlashEvent(s)
+      if (next !== s) logPlaytest('flash_event', { action: 'dismiss' })
+      return next
+    })
+  }, [])
+
+  const claimFlashGoal = useCallback(() => {
+    setState((s) => {
+      const next = claimFlashEventGoal(s)
+      if (next !== s) logPlaytest('flash_event', { action: 'claim' })
+      return next
+    })
+  }, [])
+
+  const ackSurprise = useCallback(() => {
+    setState((s) => clearLastSurprise(s))
   }, [])
 
   const claimQuest = useCallback((questId: string) => {
@@ -297,10 +332,23 @@ export function useGame() {
     setState((s) => claimOfflineReward(s, amount))
   }, [offlineGained, offlineAwayMs])
 
+  // Short flash event — try spawn on first paint + when returning to tab
+  useEffect(() => {
+    setState((s) => maybeStartFlashEvent(s))
+    const onVis = () => {
+      if (document.visibilityState === 'visible') {
+        setState((s) => maybeStartFlashEvent(s))
+      }
+    }
+    document.addEventListener('visibilitychange', onVis)
+    return () => document.removeEventListener('visibilitychange', onVis)
+  }, [])
+
   const mult = prestigeMultiplier(state.emberUpgrades)
   const levelMult = levelProductionMult(playerLevelOf(state))
   const clanMult = effectiveClanMult(state, nowTick)
-  const eventMult = eventProductionMult(nowTick)
+  const eventMult =
+    eventProductionMult(nowTick) * flashProductionMult(state, nowTick)
   const progress = prestigeProgress(state)
   const discount = foundryDiscountMult(state.emberUpgrades)
   const equipped = cosmeticById(state.equippedCosmetic)
@@ -336,6 +384,19 @@ export function useGame() {
     isBandwidthSurgeActive(nowTick) && state.eventDismissedKey !== surgeWindow
   const surgeGoalDone = state.eventAshProgress >= surge.goal
   const surgeGoalClaimed = state.eventGoalClaimedKey === surgeWindow
+
+  const flash = flashEventStatus(
+    {
+      flashEventId: state.flashEventId,
+      flashEndsAt: state.flashEndsAt,
+      flashProgress: state.flashProgress,
+      flashGoal: state.flashGoal,
+      flashClaimed: state.flashClaimed,
+      flashDismissed: state.flashDismissed,
+      lastFlashAt: state.lastFlashAt,
+    },
+    nowTick,
+  )
 
   const playerLevel = levelProgress(state.playerXp)
 
@@ -440,6 +501,9 @@ export function useGame() {
     claimDaily,
     dismissEvent,
     claimEventGoal,
+    dismissFlash,
+    claimFlashGoal,
+    ackSurprise,
     claimQuest,
     dailyReady,
     dailyPreview,
@@ -447,6 +511,7 @@ export function useGame() {
     surgeVisible,
     surgeGoalDone,
     surgeGoalClaimed,
+    flash,
     costOf,
     branchCostOf,
     branchMaxRank: BRANCH_MAX_RANK,

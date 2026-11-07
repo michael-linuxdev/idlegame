@@ -1,6 +1,7 @@
 /**
  * Always-visible “next goal” picker — unlock / level / prestige / upgrade.
- * Biases toward near-complete goals for “one more” pressure. No energy walls.
+ * Biases toward near-complete goals for “one more” pressure (Zeigarnik).
+ * No energy walls.
  */
 
 import { formatAsh } from './format'
@@ -16,6 +17,10 @@ import { t } from '../i18n'
 
 export type NextGoalKind = 'upgrade' | 'unlock' | 'level' | 'prestige'
 
+/** Near-miss band — sharper “almost there” pulse in HUD. */
+export const NEAR_MISS_RATIO = 0.78
+export const NEAR_MISS_HOT_RATIO = 0.92
+
 export interface NextGoal {
   kind: NextGoalKind
   /** Short German label for the strip */
@@ -28,6 +33,22 @@ export interface NextGoal {
   focusId?: GeneratorId
   /** Urgency score — higher wins */
   urgency: number
+  /** Zeigarnik near-miss — pulse the strip */
+  nearMiss?: boolean
+}
+
+function withNearMiss(goal: NextGoal): NextGoal {
+  const nearMiss =
+    goal.ratio >= NEAR_MISS_RATIO && goal.ratio < 0.999
+  if (!nearMiss) return { ...goal, nearMiss: false }
+  const leftPct = Math.max(1, Math.round((1 - goal.ratio) * 100))
+  const detail =
+    goal.detail && !goal.detail.includes('%')
+      ? `${goal.detail} · ${t.goal.nearMiss(leftPct)}`
+      : goal.detail || t.goal.nearMiss(leftPct)
+  let urgency = goal.urgency + 0.16
+  if (goal.ratio >= NEAR_MISS_HOT_RATIO) urgency += 0.12
+  return { ...goal, detail, urgency, nearMiss: true }
 }
 
 function unlockProgress(
@@ -113,15 +134,17 @@ export function computeNextGoal(
     const owned = state.owned[def.id] ?? 0
     const action = owned === 0 ? t.upgrade.online : t.upgrade.upgrade
     const urgency =
-      ratio >= 1 ? 0.95 + (1 / (cost + 1)) * 0.04 : 0.35 + ratio * 0.45
-    const goal: NextGoal = {
+      ratio >= 1
+        ? 0.95 + (1 / (cost + 1)) * 0.04
+        : 0.35 + ratio * 0.45 + (ratio >= NEAR_MISS_RATIO ? 0.1 : 0)
+    const goal: NextGoal = withNearMiss({
       kind: 'upgrade',
       title: t.goal.upgradeTitle(action, def.name),
       detail: t.goal.upgradeDetail(formatAsh(cost)),
       ratio,
       focusId: def.id,
       urgency,
-    }
+    })
     if (!bestUpgrade || goal.urgency > bestUpgrade.urgency) {
       bestUpgrade = goal
     }
@@ -140,48 +163,61 @@ export function computeNextGoal(
     if (unlocked) continue
     const prog = unlockProgress(state, def.id, opts.playerLevel)
     if (!prog) continue
-    candidates.push({
-      kind: 'unlock',
-      title: t.goal.unlockTitle(def.name),
-      detail: prog.detail,
-      ratio: prog.ratio,
-      focusId: def.id,
-      urgency: 0.4 + prog.ratio * 0.5,
-    })
+    candidates.push(
+      withNearMiss({
+        kind: 'unlock',
+        title: t.goal.unlockTitle(def.name),
+        detail: prog.detail,
+        ratio: prog.ratio,
+        focusId: def.id,
+        urgency: 0.4 + prog.ratio * 0.5,
+      }),
+    )
     break
   }
 
   // Next Spieler-Level
   if (opts.playerLevel < 40) {
     const ratio = opts.playerXpRatio
-    candidates.push({
-      kind: 'level',
-      title: t.goal.levelTitle(opts.playerLevel + 1),
-      detail: t.goal.levelDetail(opts.playerXpInto, opts.playerXpNeed),
-      ratio,
-      urgency: 0.35 + ratio * 0.48,
-    })
+    candidates.push(
+      withNearMiss({
+        kind: 'level',
+        title: t.goal.levelTitle(opts.playerLevel + 1),
+        detail: t.goal.levelDetail(opts.playerXpInto, opts.playerXpNeed),
+        ratio,
+        urgency: 0.35 + ratio * 0.48,
+      }),
+    )
   }
 
-  // Prestige gate
+  // Prestige gate — strong Zeigarnik when “almost ready”
   const prestigeMin = prestigeMinAsh(state.prestiges)
   const prestigeRatio =
     prestigeMin > 0 ? Math.min(1, state.ashEarned / prestigeMin) : 1
-  candidates.push({
-    kind: 'prestige',
-    title:
-      prestigeRatio >= 1
-        ? t.goal.prestigeReady
-        : t.goal.prestigeTitle,
-    detail:
-      prestigeRatio >= 1
-        ? t.goal.prestigeReadyDetail
-        : t.goal.prestigeDetail(
-            formatAsh(Math.max(0, prestigeMin - state.ashEarned)),
-          ),
-    ratio: prestigeRatio,
-    urgency: prestigeRatio >= 1 ? 0.88 : 0.25 + prestigeRatio * 0.55,
-  })
+  const prestigeUrgency =
+    prestigeRatio >= 1
+      ? 0.9
+      : 0.28 +
+        prestigeRatio * 0.55 +
+        (prestigeRatio >= NEAR_MISS_RATIO ? 0.14 : 0) +
+        (prestigeRatio >= NEAR_MISS_HOT_RATIO ? 0.1 : 0)
+  candidates.push(
+    withNearMiss({
+      kind: 'prestige',
+      title:
+        prestigeRatio >= 1
+          ? t.goal.prestigeReady
+          : t.goal.prestigeTitle,
+      detail:
+        prestigeRatio >= 1
+          ? t.goal.prestigeReadyDetail
+          : t.goal.prestigeDetail(
+              formatAsh(Math.max(0, prestigeMin - state.ashEarned)),
+            ),
+      ratio: prestigeRatio,
+      urgency: prestigeUrgency,
+    }),
+  )
 
   candidates.sort((a, b) => b.urgency - a.urgency)
   return (
@@ -191,6 +227,7 @@ export function computeNextGoal(
       detail: '',
       ratio: 0,
       urgency: 0,
+      nearMiss: false,
     }
   )
 }
