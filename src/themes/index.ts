@@ -1,16 +1,32 @@
 /**
- * Active theme skin — Urban Vertical Farm (TurmFarm) only.
- * Orbit Rack pack removed (owner: Orbit raus).
+ * Active theme skin. Flip via VITE_THEME=arcade|farm or ACTIVE_THEME_ID.
+ * Default: Urban Vertical Farm (TurmFarm). Tokenhalle is the Arcade pack.
  */
+import { arcadeTheme } from './arcade'
 import { farmTheme } from './farm'
 import type { ThemeId } from './types'
 
 export type { ThemeId, ThemePack } from './types'
+export { arcadeTheme } from './arcade'
 export { farmTheme } from './farm'
 
-export const ACTIVE_THEME_ID: ThemeId = 'farm'
+const THEMES = {
+  farm: farmTheme,
+  arcade: arcadeTheme,
+} as const
 
-export const activeTheme = farmTheme
+function resolveThemeId(): ThemeId {
+  const fromEnv = (import.meta.env.VITE_THEME as string | undefined)?.toLowerCase()
+  if (fromEnv === 'arcade' || fromEnv === 'tokenhalle') return 'arcade'
+  if (fromEnv === 'farm' || fromEnv === 'turmfarm') return 'farm'
+  /** Change this to `'arcade'` to ship Tokenhalle without an env flag. */
+  const ACTIVE_THEME_ID: ThemeId = 'farm'
+  return ACTIVE_THEME_ID
+}
+
+export const ACTIVE_THEME_ID: ThemeId = resolveThemeId()
+
+export const activeTheme = THEMES[ACTIVE_THEME_ID]
 
 /** Apply theme metadata to document (lang, colors, data-theme). */
 export function applyThemeToDocument(): void {

@@ -2,7 +2,7 @@
  * Thin theme-skin contract. Game loop (idle, slots, prestige, clan, shop,
  * daily, event) stays theme-agnostic — packs only swap copy, tokens, art.
  */
-export type ThemeId = 'farm'
+export type ThemeId = 'farm' | 'arcade'
 
 export interface ThemePack<S> {
   id: ThemeId

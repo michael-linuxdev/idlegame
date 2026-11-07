@@ -1,6 +1,6 @@
 /**
  * Locale entry — German is the only / default locale.
- * Copy comes from the active theme skin (TurmFarm by default).
+ * Copy comes from the active theme skin (TurmFarm default; Tokenhalle via VITE_THEME=arcade).
  */
 import { activeTheme } from '../themes'
 
