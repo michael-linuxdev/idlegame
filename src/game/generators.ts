@@ -278,3 +278,28 @@ export function unlockHint(def: GeneratorDef): string {
   }
   return parts.length ? `${t.unlock.prefix} ${parts.join(t.unlock.or)}` : ''
 }
+
+/** Compact unlock gate for map plaques (phone-scale labels). */
+export function shortUnlockGate(def: GeneratorDef): string {
+  if (!def.unlock) return t.hud.locked
+  if (def.unlock.ashEarned != null) {
+    const n = def.unlock.ashEarned
+    const label =
+      n >= 1_000_000_000
+        ? `${n / 1_000_000_000}B`
+        : n >= 1_000_000
+          ? `${n / 1_000_000}M`
+          : n >= 1_000
+            ? `${Math.round(n / 1_000)}k`
+            : `${n}`
+    return t.hud.gateCompute(label)
+  }
+  if (def.unlock.requires) {
+    const prior = GENERATORS.find((g) => g.id === def.unlock!.requires!.id)
+    return t.unlock.levelOf(
+      prior?.name ?? def.unlock.requires.id,
+      def.unlock.requires.level,
+    )
+  }
+  return t.hud.locked
+}

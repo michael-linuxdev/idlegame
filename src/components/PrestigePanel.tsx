@@ -61,6 +61,9 @@ export function PrestigePanel({ game, highlight }: Props) {
             style={{ width: `${Math.min(100, prestigeProgress.ratio * 100)}%` }}
           />
         </div>
+        {!canPrestige && prestigeProgress.ratio < 0.05 ? (
+          <p className="panel-empty">{t.prestige.emptyGate}</p>
+        ) : null}
         <button
           type="button"
           className="btn prestige"
@@ -77,6 +80,9 @@ export function PrestigePanel({ game, highlight }: Props) {
 
       <h3 className="subhead">{t.prestige.shopTitle}</h3>
       <p className="muted">{t.prestige.shopIntro}</p>
+      {state.embers <= 0 ? (
+        <p className="panel-empty">{t.prestige.emptyShop}</p>
+      ) : null}
       <ul className="ember-shop">
         {EMBER_SHOP.map((item) => {
           const rank = state.emberUpgrades[item.id]

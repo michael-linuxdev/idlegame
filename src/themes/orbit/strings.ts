@@ -87,10 +87,12 @@ export const orbitStrings = {
     offlineBefore: 'Während du weg warst, hat die Station',
     offlineAfter: 'Rechenleistung gebankt.',
     claim: 'Abholen',
+    claimToast: 'Rechenleistung auf den Bus gebucht',
     mapAria: 'Stations-Bau-Karte',
     mapHint: 'Modul tippen zum Online-Schalten oder Upgraden.',
     locked: 'Gesperrt',
     levelShort: (level: number) => `Lv ${level}`,
+    gateCompute: (n: string) => `${n} Rechenleistung`,
     buildingAriaUnlocked: (name: string, level: number, rate: string) =>
       `${name}, Stufe ${level}, ${rate}. Tippen zum Upgrade.`,
     buildingAriaLocked: (name: string, hint: string) =>
@@ -99,6 +101,7 @@ export const orbitStrings = {
 
   upgrade: {
     close: 'Schließen',
+    moduleEyebrow: 'Modul',
     level: 'Stufe',
     now: 'jetzt',
     next: 'nächste',
@@ -106,6 +109,10 @@ export const orbitStrings = {
     online: 'Online',
     upgrade: 'Upgrade',
     locked: 'Gesperrt',
+    offlineEmpty:
+      'Modul offline — online schalten, um Rechenleistung zu erzeugen.',
+    gateClosed:
+      'Tor geschlossen. Erfülle die Bedingung — dann wird dieser CTA aktiv.',
     costLine: (action: string, cost: string) =>
       `${action} · ${cost} Rechenleistung`,
   },
@@ -126,6 +133,10 @@ export const orbitStrings = {
     claimReset: (n: number) => `+${n} Credits holen & resetten`,
     needMore: (amount: string) =>
       `Noch ${amount} Rechenleistung in diesem Lauf nötig`,
+    emptyGate:
+      'Soft-Reset bleibt dunkel, bis dieser Lauf genug Rechenleistung bunkert. Module weiter auf Station laufen lassen.',
+    emptyShop:
+      'Noch keine Credits — einmal prestigieren, dann füllt sich der Shop.',
     shopTitle: 'Credits-Shop',
     shopIntro: 'Gib Credits für permanente Power aus. Nie für Echtgeld verkauft.',
     max: 'Max',

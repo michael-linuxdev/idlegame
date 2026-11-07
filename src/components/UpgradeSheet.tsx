@@ -39,7 +39,10 @@ export function UpgradeSheet({ game, selectedId, onClose }: Props) {
       >
         <div className="sheet-handle" aria-hidden="true" />
         <header className="sheet-header">
-          <h2 id="upgrade-title">{def.name}</h2>
+          <div>
+            <p className="eyebrow">{t.upgrade.moduleEyebrow}</p>
+            <h2 id="upgrade-title">{def.name}</h2>
+          </div>
           <button type="button" className="btn ghost sheet-close" onClick={onClose}>
             {t.upgrade.close}
           </button>
@@ -57,6 +60,9 @@ export function UpgradeSheet({ game, selectedId, onClose }: Props) {
             {milestoneNext ? (
               <p className="muted">{t.upgrade.milestone}</p>
             ) : null}
+            {owned === 0 ? (
+              <p className="sheet-empty">{t.upgrade.offlineEmpty}</p>
+            ) : null}
             <button
               type="button"
               className="btn buy sheet-buy"
@@ -70,12 +76,13 @@ export function UpgradeSheet({ game, selectedId, onClose }: Props) {
             </button>
           </>
         ) : (
-          <>
+          <div className="sheet-empty-block">
             <p className="sheet-stats sheet-locked-hint">{unlockHint(def)}</p>
+            <p className="sheet-empty">{t.upgrade.gateClosed}</p>
             <button type="button" className="btn buy sheet-buy" disabled>
               {t.upgrade.locked}
             </button>
-          </>
+          </div>
         )}
       </div>
     </div>
