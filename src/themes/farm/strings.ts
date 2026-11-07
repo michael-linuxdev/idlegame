@@ -87,10 +87,12 @@ export const farmStrings = {
     offlineBefore: 'Während du weg warst, hat die Farm',
     offlineAfter: 'Ertrag gebankt.',
     claim: 'Abholen',
+    claimToast: 'Ertrag auf die Farm gebucht',
     mapAria: 'Farm-Bau-Karte',
     mapHint: 'Modul tippen zum Online-Schalten oder Upgraden.',
     locked: 'Gesperrt',
     levelShort: (level: number) => `Lv ${level}`,
+    gateCompute: (n: string) => `${n} Ertrag`,
     buildingAriaUnlocked: (name: string, level: number, rate: string) =>
       `${name}, Stufe ${level}, ${rate}. Tippen zum Upgrade.`,
     buildingAriaLocked: (name: string, hint: string) =>
@@ -99,6 +101,7 @@ export const farmStrings = {
 
   upgrade: {
     close: 'Schließen',
+    moduleEyebrow: 'Modul',
     level: 'Stufe',
     now: 'jetzt',
     next: 'nächste',
@@ -106,6 +109,9 @@ export const farmStrings = {
     online: 'Online',
     upgrade: 'Upgrade',
     locked: 'Gesperrt',
+    offlineEmpty: 'Modul offline — online schalten, um Ertrag zu erzeugen.',
+    gateClosed:
+      'Tor geschlossen. Erfülle die Bedingung — dann wird dieser CTA aktiv.',
     costLine: (action: string, cost: string) =>
       `${action} · ${cost} Ertrag`,
   },
@@ -126,6 +132,9 @@ export const farmStrings = {
     claimReset: (n: number) => `+${n} Münzen holen & resetten`,
     needMore: (amount: string) =>
       `Noch ${amount} Ertrag in diesem Lauf nötig`,
+    emptyGate:
+      'Soft-Reset bleibt dunkel, bis dieser Lauf genug Ertrag bunkert. Module weiter auf der Farm laufen lassen.',
+    emptyShop: 'Noch keine Münzen — einmal prestigieren, dann füllt sich der Shop.',
     shopTitle: 'Münzen-Shop',
     shopIntro: 'Gib Münzen für permanente Power aus. Nie für Echtgeld verkauft.',
     max: 'Max',

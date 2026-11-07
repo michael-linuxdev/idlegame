@@ -39,7 +39,9 @@ export function ClanPanel({ game }: Props) {
         <div className="clan-card-label">{t.clan.yourClan}</div>
         <div className="clan-card-name">{t.brand}</div>
         <div className="clan-card-meta">{t.clan.seasonMeta}</div>
-        <div className="clan-boost-status">
+        <div
+          className={`clan-boost-status${clanBoostActive ? ' active' : ' idle'}`}
+        >
           {clanBoostActive
             ? t.clan.boostActive(clanMult.toFixed(2), formatMsLeft(clanBoostMsLeft))
             : t.clan.boostInactive}

@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   GENERATORS,
   generatorRate,
+  shortUnlockGate,
   unlockHint,
   type GeneratorId,
 } from '../game/generators'
@@ -34,8 +35,27 @@ export function FortressMap({ game, highlightId }: Props) {
     equippedCosmetic,
   } = game
   const [selected, setSelected] = useState<GeneratorId | null>(null)
+  const [tickFlash, setTickFlash] = useState(false)
+  const [claimFlash, setClaimFlash] = useState(false)
+  const prevAsh = useRef(state.ash)
   const totalMult = multiplier * clanMult * eventMult
   const skinClass = equippedCosmetic?.accentClass ?? 'skin-steel'
+
+  useEffect(() => {
+    if (state.ash > prevAsh.current + 0.05) {
+      setTickFlash(true)
+      const timer = window.setTimeout(() => setTickFlash(false), 280)
+      prevAsh.current = state.ash
+      return () => window.clearTimeout(timer)
+    }
+    prevAsh.current = state.ash
+  }, [state.ash])
+
+  function claimOffline() {
+    game.dismissOffline()
+    setClaimFlash(true)
+    window.setTimeout(() => setClaimFlash(false), 900)
+  }
 
   return (
     <section className="fortress-home" aria-labelledby="ash-heading">
@@ -47,28 +67,34 @@ export function FortressMap({ game, highlightId }: Props) {
           </h1>
         </div>
         <div className="map-hud-metrics" aria-live="polite">
-          <div className="ash-amount compact">
-            <span className="ash-value">{formatAsh(state.ash)}</span>
-            <span className="ash-label">{t.resources.compute}</span>
-          </div>
-          <p className="rate-line">
-            {formatRate(rate)}
-            {totalMult > 1 ? (
-              <span className="mult"> · ×{totalMult.toFixed(2)}</span>
-            ) : null}
-          </p>
-          {state.embers > 0 ? (
-            <p className="embers-line">
-              {state.embers} {t.resources.credits}
+          <div className={`hud-metric-chip${tickFlash ? ' ticking' : ''}`}>
+            <div className="ash-amount compact">
+              <span className={`ash-value${tickFlash ? ' tick' : ''}`}>
+                {formatAsh(state.ash)}
+              </span>
+              <span className="ash-label">{t.resources.compute}</span>
+            </div>
+            <p className="rate-line">
+              {formatRate(rate)}
+              {totalMult > 1 ? (
+                <span className="mult"> · ×{totalMult.toFixed(2)}</span>
+              ) : null}
             </p>
-          ) : null}
-          <p className="obsidian-line">
-            {state.obsidian} {t.resources.obsidian}
-          </p>
+          </div>
+          <div className="hud-meta-row">
+            {state.embers > 0 ? (
+              <p className="embers-line">
+                {state.embers} {t.resources.credits}
+              </p>
+            ) : null}
+            <p className="obsidian-line">
+              {state.obsidian} {t.resources.obsidian}
+            </p>
+          </div>
         </div>
         <button
           type="button"
-          className="btn rake compact"
+          className="btn rake"
           onClick={rake}
           disabled={!tapReady}
           title={tapReady ? t.hud.burstReadyTitle : t.hud.burstCoolingTitle}
@@ -86,9 +112,15 @@ export function FortressMap({ game, highlightId }: Props) {
             {t.hud.offlineBefore}{' '}
             <strong>{formatAsh(game.offlineGained)}</strong> {t.hud.offlineAfter}
           </p>
-          <button type="button" className="btn ghost" onClick={game.dismissOffline}>
+          <button type="button" className="btn buy claim-cta" onClick={claimOffline}>
             {t.hud.claim}
           </button>
+        </div>
+      ) : null}
+
+      {claimFlash ? (
+        <div className="claim-toast" role="status">
+          {t.hud.claimToast}
         </div>
       ) : null}
 
@@ -127,6 +159,7 @@ export function FortressMap({ game, highlightId }: Props) {
                       )
                     : t.hud.buildingAriaLocked(def.name, hint)
                 }
+                aria-pressed={selectedHere}
                 onClick={() => setSelected(def.id)}
               >
                 <BuildingSilhouette
@@ -149,7 +182,12 @@ export function FortressMap({ game, highlightId }: Props) {
                         </span>
                       </>
                     ) : (
-                      <span className="map-building-lock">{t.hud.locked}</span>
+                      <>
+                        <span className="map-building-lock">{t.hud.locked}</span>
+                        <span className="map-building-gate">
+                          {shortUnlockGate(def)}
+                        </span>
+                      </>
                     )}
                   </span>
                 </span>

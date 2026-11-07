@@ -45,6 +45,14 @@
   --oc-font-ui: 'Nunito Sans', 'Helvetica Neue', sans-serif;
   --oc-font-metric: 'DM Sans', 'Helvetica Neue', sans-serif;
   --oc-radius: 8px;
+  --oc-space-xs: 0.35rem;
+  --oc-space-sm: 0.55rem;
+  --oc-space-md: 0.85rem;
+  --oc-space-lg: 1.25rem;
+  --oc-motion-tick: 260ms;
+  --oc-motion-sheet: 240ms;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-top: env(safe-area-inset-top, 0px);
 
   /* Legacy aliases */
   --ad-bg-deep: var(--oc-bg-deep);
@@ -113,5 +121,5 @@
   --oc-font-display: 'Exo 2', 'Helvetica Neue', sans-serif;
   --oc-font-ui: 'Barlow', 'Helvetica Neue', sans-serif;
   --oc-font-metric: 'Barlow Condensed', 'Arial Narrow', sans-serif;
-  --oc-radius: 6px;
+  --oc-radius: 8px;
 }

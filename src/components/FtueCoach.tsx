@@ -127,13 +127,17 @@ export function FtueCoach({
           {copy.skipLabel ? (
             <button
               type="button"
-              className="btn ghost"
+              className="btn ghost ftue-secondary"
               onClick={() => setFtue((s) => advanceFtue(s, ftue.beat))}
             >
               {copy.skipLabel}
             </button>
           ) : (
-            <button type="button" className="btn ghost ftue-dismiss" onClick={dismissAll}>
+            <button
+              type="button"
+              className="btn ghost ftue-secondary"
+              onClick={dismissAll}
+            >
               {t.ftue.skip}
             </button>
           )}
