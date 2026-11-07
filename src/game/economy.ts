@@ -1,7 +1,10 @@
 /**
- * Economy knobs from docs/economy.md — formulas unchanged.
+ * Economy knobs from docs/economy.md — core formulas unchanged.
  * Player-facing: soft Compute + meta Credits (Orbit Rack / space data centers).
  * Internal save fields still map to Ash/Embers.
+ *
+ * Feel polish (IG-19) early tweaks live on generators.ts / createInitialState:
+ * start wallet 20 Compute; G2 unlock 200; G2 C0 100. Prestige / offline / shop untouched.
  */
 
 export const OFFLINE_SOFT_HOURS = 8

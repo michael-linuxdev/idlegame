@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { ClanPanel } from './components/ClanPanel'
 import { FortressMap } from './components/FortressMap'
 import { FtueCoach } from './components/FtueCoach'
@@ -13,6 +13,11 @@ export default function App() {
   const game = useGame()
   const [tab, setTab] = useState<Tab>('fortress')
   const [ftueHighlight, setFtueHighlight] = useState<string | null>(null)
+  const [holdInstall, setHoldInstall] = useState(false)
+
+  const onFtueActiveChange = useCallback((hold: boolean) => {
+    setHoldInstall(hold)
+  }, [])
 
   return (
     <div className="app-shell">
@@ -30,11 +35,13 @@ export default function App() {
         game={game}
         onTabChange={setTab}
         onHighlightChange={setFtueHighlight}
+        onFtueActiveChange={onFtueActiveChange}
       />
 
       <InstallPrompt
         offlineAwayMs={game.offlineAwayMs}
         offlineClaimed={game.offlineGained != null}
+        holdForFtue={holdInstall}
       />
 
       <nav className="tab-bar tabs-3" aria-label="Primary">

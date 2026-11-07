@@ -20,6 +20,7 @@ export function PrestigePanel({ game, highlight }: Props) {
       aria-labelledby="prestige-heading"
     >
       <header className="panel-header">
+        <p className="eyebrow">Tech · Ops</p>
         <h2 id="prestige-heading">Prestige</h2>
         <p className="muted">
           Soft-reset the station run. Keep <strong>Credits</strong> for permanent

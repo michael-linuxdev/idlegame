@@ -1249,8 +1249,17 @@
   box-shadow: 0 8px 22px rgba(40, 60, 80, 0.16);
 }
 
-.install-title {
+.install-eyebrow {
   margin: 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--oc-ink-muted);
+  font-weight: 600;
+}
+
+.install-title {
+  margin: 0.2rem 0 0;
   font-family: var(--oc-font-display);
   font-weight: 700;
   font-size: 1rem;
