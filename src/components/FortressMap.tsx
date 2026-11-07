@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { computeBestBuy } from '../game/bestBuy'
-import { emberPayout } from '../game/economy'
+import { countAffordableEmberBuys, emberPayout } from '../game/economy'
 import {
   GENERATORS,
   generatorRate,
@@ -124,8 +124,23 @@ export function FortressMap({ game, highlightId, onOpenTab }: Props) {
     [state, playerLevel.level, rate, game.costOf],
   )
 
-  /** Map short-CTA after prestigeNear tier ≥1 — Ember preview, not jackpot. */
+  /** Map CTA: spend leftover Münzen, or prestigeNear / ready. */
   const prestigeCta = useMemo(() => {
+    const readyBuys = countAffordableEmberBuys(
+      state.emberUpgrades,
+      state.embers,
+      state.ashEarned,
+      state.owned,
+    )
+    if (readyBuys > 0 && state.embers > 0) {
+      return {
+        ready: true,
+        embers: state.embers,
+        label: t.prestige.spendCta(readyBuys),
+        aria: t.prestige.spendAria,
+        spend: true,
+      }
+    }
     const nearTier = PRESTIGE_SPIKE_RATIOS.findIndex((r) => prestigeProgress.ratio >= r)
     if (nearTier < 0 && !canPrestige) return null
     const embers = Math.max(nextPrestige, emberPayout(state.ashEarned))
@@ -137,12 +152,17 @@ export function FortressMap({ game, highlightId, onOpenTab }: Props) {
       label: ready
         ? t.prestige.worthItCta(embers)
         : t.prestige.worthItNear(embers),
+      aria: t.prestige.worthItAria,
+      spend: false,
     }
   }, [
     canPrestige,
     nextPrestige,
     prestigeProgress.ratio,
     state.ashEarned,
+    state.embers,
+    state.emberUpgrades,
+    state.owned,
   ])
 
   useEffect(() => {
@@ -311,9 +331,9 @@ export function FortressMap({ game, highlightId, onOpenTab }: Props) {
         {prestigeCta ? (
           <button
             type="button"
-            className={`prestige-map-cta${prestigeCta.ready ? ' ready pulse-ready' : ''}`}
+            className={`prestige-map-cta${prestigeCta.ready ? ' ready pulse-ready' : ''}${prestigeCta.spend ? ' spend' : ''}`}
             onClick={openPrestigeCta}
-            aria-label={t.prestige.worthItAria}
+            aria-label={prestigeCta.aria}
           >
             {prestigeCta.label}
           </button>

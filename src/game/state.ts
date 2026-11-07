@@ -4,7 +4,6 @@ import {
   emberRankUnlocked,
   EMPTY_EMBER_UPGRADES,
   foundryDiscountMult,
-  modulesOnlineCount,
   offlineCapsHours,
   offlineCatchupAsh,
   prestigeBlockReason,
@@ -1210,8 +1209,7 @@ export function buyEmberUpgrade(state: GameState, id: EmberUpgradeId): GameState
   if (!item) return state
   const rank = state.emberUpgrades[id]
   if (rank >= item.maxRank) return state
-  const online = modulesOnlineCount(state.owned)
-  if (!emberRankUnlocked(item, rank, state.ashEarned, online)) return state
+  if (!emberRankUnlocked(item, rank, state.ashEarned, state.owned)) return state
   const cost = item.cost(rank)
   if (state.embers < cost) return state
   return {

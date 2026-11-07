@@ -7,9 +7,9 @@
  * design 45–90 min. Raised P_min base + slowed generator ladder (see generators.ts).
  * Offline caps / ember √ payout untouched.
  *
- * Soft-Prestige depth (IG-53 / playtest 2026-11-07): Münzen-Baum expanded +
- * progressive rank unlocks so first prestige cannot empty the tree in ~50s.
- * Run 2+ soft-gate (min Münzen + rebuilt modules) blocks worthless tiny resets.
+ * Soft-Prestige depth (IG-53 / playtest 2026-11-07 + b): Münzen-Baum expanded,
+ * early ranks across ALL branches, rebuild-accelerated unlocks, and a Münzen
+ * soft-gate on every prestige (incl. first) so tiny resets cannot dead-end.
  */
 
 import { t } from '../i18n'
@@ -28,14 +28,24 @@ export const PRESTIGE_BASE_ASH = 2_000_000
 export const PRESTIGE_GROWTH = 1.8
 
 /**
- * Soft-Prestige Run 2+ — reject “curiosity” resets with tiny Münzen payouts
- * (playtest: prestige 2 @ 99 embers felt pointless). First prestige ignores this.
- * 180 Münzen ⇒ ashEarned ≥ 180²·10_000 = 324M this run.
+ * Soft-Prestige Münzen floor — reject tiny “curiosity” resets.
+ * First prestige: 120 Münzen ⇒ ashEarned ≥ 120²·10_000 = 144M this run
+ * (playtest-b: 38-Münzen first reset emptied early pool and felt dead).
+ * Run 2+: 180 Münzen ⇒ 324M this run.
  */
+export const PRESTIGE_MIN_EMBERS_FIRST = 120
 export const PRESTIGE_MIN_EMBERS_FROM_RUN = 180
 
 /** Modules that must be online (owned ≥ 1) before Run 2+ Soft-Prestige. */
 export const PRESTIGE_MIN_MODULES_ONLINE = 3
+
+/** Each owned module level counts as this much ash toward Münzen-rank unlocks. */
+export const EMBER_UNLOCK_ASH_PER_MODULE_LEVEL = 2_500
+
+/** Min Münzen payout required before Soft-Prestige at this prestige count. */
+export function prestigeMinEmbersForRun(prestiges: number): number {
+  return prestiges < 1 ? PRESTIGE_MIN_EMBERS_FIRST : PRESTIGE_MIN_EMBERS_FROM_RUN
+}
 
 /** Prestige gate: P_min = PRESTIGE_BASE_ASH · PRESTIGE_GROWTH^p */
 export function prestigeMinAsh(prestiges: number): number {
@@ -124,9 +134,9 @@ export const EMBER_SHOP: EmberShopItem[] = [
     maxRank: 40,
     cost: (rank) => 5 + 4 * rank,
     effectLabel: (rank) => t.emberShop.dominionYield.effect(rank),
-    // Early 0–4 immediate; mid/late gated so leftover Münzen wait on rebuild.
+    // Wide early band so ~120–400 Münzen buy across branches, not 4 old ids.
     rankUnlockAsh: (rank) =>
-      rank < 5 ? 0 : rank < 15 ? 12_000 : rank < 28 ? 250_000 : 2_000_000,
+      rank < 12 ? 0 : rank < 22 ? 25_000 : rank < 32 ? 200_000 : 1_500_000,
   },
   {
     id: 'foundryDiscount',
@@ -137,7 +147,7 @@ export const EMBER_SHOP: EmberShopItem[] = [
     cost: (rank) => 4 + 3 * rank,
     effectLabel: (rank) => t.emberShop.foundryDiscount.effect(rank),
     rankUnlockAsh: (rank) =>
-      rank < 4 ? 0 : rank < 10 ? 20_000 : 400_000,
+      rank < 8 ? 0 : rank < 14 ? 30_000 : 350_000,
   },
   {
     id: 'canopyBoost',
@@ -147,7 +157,9 @@ export const EMBER_SHOP: EmberShopItem[] = [
     maxRank: 25,
     cost: (rank) => 12 + 8 * rank,
     effectLabel: (rank) => t.emberShop.canopyBoost.effect(rank),
-    rankUnlockAsh: (rank) => (rank < 8 ? 80_000 : 1_200_000),
+    // Immediate early ranks — playtest-b never purchased this id.
+    rankUnlockAsh: (rank) =>
+      rank < 6 ? 0 : rank < 14 ? 40_000 : 600_000,
   },
   {
     id: 'greenLattice',
@@ -157,7 +169,7 @@ export const EMBER_SHOP: EmberShopItem[] = [
     maxRank: 20,
     cost: (rank) => 20 + 12 * rank,
     effectLabel: (rank) => t.emberShop.greenLattice.effect(rank),
-    rankUnlockAsh: () => 1_000_000,
+    rankUnlockAsh: (rank) => (rank < 4 ? 80_000 : 500_000),
   },
   {
     id: 'longWatch',
@@ -167,7 +179,7 @@ export const EMBER_SHOP: EmberShopItem[] = [
     maxRank: 8,
     cost: (rank) => 8 + 8 * rank,
     effectLabel: (rank) => t.emberShop.longWatch.effect(rank),
-    rankUnlockAsh: (rank) => (rank < 3 ? 8_000 : 180_000),
+    rankUnlockAsh: (rank) => (rank < 4 ? 0 : 60_000),
   },
   {
     id: 'tapMastery',
@@ -177,7 +189,7 @@ export const EMBER_SHOP: EmberShopItem[] = [
     maxRank: 12,
     cost: (rank) => 6 + 5 * rank,
     effectLabel: (rank) => t.emberShop.tapMastery.effect(rank),
-    rankUnlockAsh: (rank) => (rank < 4 ? 8_000 : 220_000),
+    rankUnlockAsh: (rank) => (rank < 5 ? 0 : 80_000),
   },
   {
     id: 'nightSoil',
@@ -187,7 +199,7 @@ export const EMBER_SHOP: EmberShopItem[] = [
     maxRank: 15,
     cost: (rank) => 10 + 7 * rank,
     effectLabel: (rank) => t.emberShop.nightSoil.effect(rank),
-    rankUnlockAsh: (rank) => (rank < 5 ? 60_000 : 900_000),
+    rankUnlockAsh: (rank) => (rank < 4 ? 0 : 100_000),
   },
   {
     id: 'firstFlame',
@@ -207,7 +219,7 @@ export const EMBER_SHOP: EmberShopItem[] = [
     cost: (rank) => 5 + 6 * rank,
     effectLabel: (rank) => t.emberShop.seedPurse.effect(rank),
     rankUnlockAsh: (rank) =>
-      rank < 3 ? 0 : rank < 7 ? 25_000 : 500_000,
+      rank < 5 ? 0 : rank < 9 ? 20_000 : 300_000,
   },
   {
     id: 'saplingSurge',
@@ -217,8 +229,10 @@ export const EMBER_SHOP: EmberShopItem[] = [
     maxRank: 10,
     cost: (rank) => 15 + 10 * rank,
     effectLabel: (rank) => t.emberShop.saplingSurge.effect(rank),
-    unlockModulesOnline: 3,
-    rankUnlockAsh: (rank) => (rank < 4 ? 40_000 : 750_000),
+    // 1 module online (always true once G1 bought) — was gated behind 3 + 40k.
+    unlockModulesOnline: 1,
+    rankUnlockAsh: (rank) =>
+      rank < 3 ? 0 : rank < 7 ? 25_000 : 400_000,
   },
 ]
 
@@ -274,7 +288,8 @@ export function tapBonusSeconds(upgrades: EmberUpgrades): number {
 
 /** Soft wallet granted at the start of a prestige run. */
 export function prestigeStartAsh(upgrades: EmberUpgrades): number {
-  return upgrades.seedPurse * 50
+  // Slightly juicier start crumbs so post-prestige Phyto doesn't feel flat.
+  return upgrades.seedPurse * 80
 }
 
 /** Starting G1 module level after Soft-Prestige (saplingSurge). */
@@ -292,14 +307,41 @@ export function modulesOnlineCount(
   return n
 }
 
+/** Sum of owned module levels (rebuild progress). */
+export function moduleLevelsTotal(
+  owned: Partial<Record<GeneratorId, number>>,
+): number {
+  let n = 0
+  for (const level of Object.values(owned)) {
+    n += Math.max(0, level ?? 0)
+  }
+  return n
+}
+
+/**
+ * Effective unlock progress: this-run soft + rebuild (module levels).
+ * Lets mid/late Münzen ranks open during active Ausbauen, not only after
+ * huge ash thresholds the player never revisits the shop for.
+ */
+export function emberUnlockProgress(
+  ashEarnedThisRun: number,
+  owned: Partial<Record<GeneratorId, number>>,
+): number {
+  return (
+    Math.max(0, ashEarnedThisRun) +
+    moduleLevelsTotal(owned) * EMBER_UNLOCK_ASH_PER_MODULE_LEVEL
+  )
+}
+
 /** Whether the next rank of a Münzen-shop item is unlocked this run. */
 export function emberRankUnlocked(
   item: EmberShopItem,
   rank: number,
   ashEarnedThisRun: number,
-  modulesOnline: number,
+  owned: Partial<Record<GeneratorId, number>>,
 ): boolean {
   if (rank < 0 || rank >= item.maxRank) return false
+  const modulesOnline = modulesOnlineCount(owned)
   if (
     item.unlockModulesOnline != null &&
     modulesOnline < item.unlockModulesOnline
@@ -307,7 +349,24 @@ export function emberRankUnlocked(
     return false
   }
   const needAsh = item.rankUnlockAsh?.(rank) ?? 0
-  return ashEarnedThisRun >= needAsh
+  return emberUnlockProgress(ashEarnedThisRun, owned) >= needAsh
+}
+
+/** How many Münzen-shop ranks are affordable + unlocked right now. */
+export function countAffordableEmberBuys(
+  upgrades: EmberUpgrades,
+  embers: number,
+  ashEarnedThisRun: number,
+  owned: Partial<Record<GeneratorId, number>>,
+): number {
+  let n = 0
+  for (const item of EMBER_SHOP) {
+    const rank = upgrades[item.id]
+    if (rank >= item.maxRank) continue
+    if (!emberRankUnlocked(item, rank, ashEarnedThisRun, owned)) continue
+    if (embers >= item.cost(rank)) n += 1
+  }
+  return n
 }
 
 export type PrestigeBlockReason =
@@ -316,7 +375,7 @@ export type PrestigeBlockReason =
   | 'modules'
   | null
 
-/** Soft-gate diagnostics for UI (Run 2+ Münzen + rebuild). */
+/** Soft-gate diagnostics for UI (Münzen floor every run + rebuild on Run 2+). */
 export function prestigeBlockReason(args: {
   prestiges: number
   ashEarned: number
@@ -326,11 +385,12 @@ export function prestigeBlockReason(args: {
   if (args.ashEarned < min) return 'ash'
   const payout = emberPayout(args.ashEarned)
   if (payout <= 0) return 'ash'
-  if (args.prestiges >= 1) {
-    if (payout < PRESTIGE_MIN_EMBERS_FROM_RUN) return 'embers'
-    if (modulesOnlineCount(args.owned) < PRESTIGE_MIN_MODULES_ONLINE) {
-      return 'modules'
-    }
+  if (payout < prestigeMinEmbersForRun(args.prestiges)) return 'embers'
+  if (
+    args.prestiges >= 1 &&
+    modulesOnlineCount(args.owned) < PRESTIGE_MIN_MODULES_ONLINE
+  ) {
+    return 'modules'
   }
   return null
 }
