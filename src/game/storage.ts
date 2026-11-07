@@ -1,5 +1,12 @@
+import { EMPTY_EMBER_UPGRADES, type EmberUpgrades } from './economy'
+import { GENERATOR_IDS, type GeneratorId } from './generators'
 import { createInitialState, STORAGE_KEY, type GameState } from './state'
-import { GENERATOR_IDS } from './generators'
+
+const LEGACY_KEYS = [
+  'orbital-claim-save-v2',
+  'ash-dominion-save-v2',
+  'ash-dominion-save-v1',
+] as const
 
 function isRecord(v: unknown): v is Record<string, unknown> {
   return typeof v === 'object' && v !== null
@@ -17,35 +24,78 @@ function parseOwned(raw: unknown): GameState['owned'] {
   return base
 }
 
+function parseUpgrades(raw: unknown): EmberUpgrades {
+  const base = { ...EMPTY_EMBER_UPGRADES }
+  if (!isRecord(raw)) return base
+  for (const key of Object.keys(base) as (keyof EmberUpgrades)[]) {
+    const n = raw[key]
+    if (typeof n === 'number' && Number.isFinite(n) && n >= 0) {
+      base[key] = Math.floor(n)
+    }
+  }
+  return base
+}
+
+function parseGameState(parsed: Record<string, unknown>): GameState {
+  const ash = typeof parsed.ash === 'number' ? Math.max(0, parsed.ash) : 0
+  const ashEarned =
+    typeof parsed.ashEarned === 'number' ? Math.max(0, parsed.ashEarned) : ash
+
+  let embers = 0
+  if (typeof parsed.embers === 'number') {
+    embers = Math.max(0, Math.floor(parsed.embers))
+  } else if (typeof parsed.dominion === 'number') {
+    embers = Math.max(0, Math.floor(parsed.dominion))
+  }
+
+  const prestiges =
+    typeof parsed.prestiges === 'number'
+      ? Math.max(0, Math.floor(parsed.prestiges))
+      : 0
+  const lastSeen =
+    typeof parsed.lastSeen === 'number' && parsed.lastSeen > 0
+      ? parsed.lastSeen
+      : Date.now()
+  const lastTapAt =
+    typeof parsed.lastTapAt === 'number' && parsed.lastTapAt >= 0
+      ? parsed.lastTapAt
+      : 0
+  const clanMult =
+    typeof parsed.clanMult === 'number' && Number.isFinite(parsed.clanMult)
+      ? Math.min(1.25, Math.max(1, parsed.clanMult))
+      : 1
+
+  const owned = parseOwned(parsed.owned)
+  if (!isRecord(parsed.owned) || Object.keys(parsed.owned).length === 0) {
+    owned.emberPit = 1
+  }
+
+  return {
+    ash,
+    ashEarned,
+    owned,
+    embers,
+    emberUpgrades: parseUpgrades(parsed.emberUpgrades),
+    prestiges,
+    lastSeen,
+    lastTapAt,
+    clanMult,
+  }
+}
+
 export function loadState(): GameState {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY)
+    let raw = localStorage.getItem(STORAGE_KEY)
+    if (!raw) {
+      for (const key of LEGACY_KEYS) {
+        raw = localStorage.getItem(key)
+        if (raw) break
+      }
+    }
     if (!raw) return createInitialState()
     const parsed: unknown = JSON.parse(raw)
     if (!isRecord(parsed)) return createInitialState()
-
-    const ash = typeof parsed.ash === 'number' ? Math.max(0, parsed.ash) : 0
-    const ashEarned =
-      typeof parsed.ashEarned === 'number' ? Math.max(0, parsed.ashEarned) : ash
-    const dominion =
-      typeof parsed.dominion === 'number' ? Math.max(0, Math.floor(parsed.dominion)) : 0
-    const prestiges =
-      typeof parsed.prestiges === 'number'
-        ? Math.max(0, Math.floor(parsed.prestiges))
-        : 0
-    const lastSeen =
-      typeof parsed.lastSeen === 'number' && parsed.lastSeen > 0
-        ? parsed.lastSeen
-        : Date.now()
-
-    return {
-      ash,
-      ashEarned,
-      owned: parseOwned(parsed.owned),
-      dominion,
-      prestiges,
-      lastSeen,
-    }
+    return parseGameState(parsed)
   } catch {
     return createInitialState()
   }
@@ -54,7 +104,10 @@ export function loadState(): GameState {
 export function saveState(state: GameState): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+    for (const key of LEGACY_KEYS) localStorage.removeItem(key)
   } catch {
     // Quota / private mode — ignore for MVP
   }
 }
+
+export type { GeneratorId }

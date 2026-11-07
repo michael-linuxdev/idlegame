@@ -1,7 +1,6 @@
 import {
   GENERATORS,
-  generatorCost,
-  isGeneratorUnlocked,
+  generatorRate,
   unlockHint,
   type GeneratorId,
 } from '../game/generators'
@@ -21,10 +20,12 @@ export function UpgradeSheet({ game, selectedId, onClose }: Props) {
   if (!def) return null
 
   const owned = game.state.owned[def.id] ?? 0
-  const unlocked = isGeneratorUnlocked(def, game.state.ashEarned, game.state.owned)
-  const cost = generatorCost(def, owned)
+  const unlocked = game.unlocked(def.id)
+  const cost = game.costOf(def.id)
   const affordable = unlocked && game.state.ash >= cost
-  const unitRate = def.baseRate * game.multiplier
+  const lineRate = generatorRate(def, owned) * game.multiplier
+  const nextRate = generatorRate(def, owned + 1) * game.multiplier
+  const milestoneNext = owned > 0 && (owned + 1) % 10 === 0
 
   return (
     <div className="sheet-backdrop" role="presentation" onClick={onClose}>
@@ -48,17 +49,20 @@ export function UpgradeSheet({ game, selectedId, onClose }: Props) {
             <p className="sheet-stats">
               Level <strong>{owned}</strong>
               {' · '}
-              {formatRate(unitRate)} each
+              {formatRate(lineRate)} now
               {' · '}
-              {formatRate(unitRate * owned)} total
+              next {formatRate(nextRate)}
             </p>
+            {milestoneNext ? (
+              <p className="muted">Next level hits a +2% milestone on this line.</p>
+            ) : null}
             <button
               type="button"
               className="btn buy sheet-buy"
               disabled={!affordable}
               onClick={() => game.buy(def.id)}
             >
-              {owned === 0 ? 'Raise' : 'Upgrade'} · {formatAsh(cost)} Ash
+              {owned === 0 ? 'Online' : 'Upgrade'} · {formatAsh(cost)} Compute
             </button>
           </>
         ) : (

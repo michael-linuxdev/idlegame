@@ -6,7 +6,7 @@ interface Props {
   locked?: boolean
 }
 
-/** Pure CSS building marks — readable on the ash map at mobile size. */
+/** Pure CSS module marks — readable on the station map at mobile size. */
 export function BuildingSilhouette({ kind, level, locked = false }: Props) {
   const lit = level > 0 && !locked
   return (

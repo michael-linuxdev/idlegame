@@ -496,6 +496,20 @@
   height: 18px;
 }
 
+.kiln-dome {
+  bottom: 10px;
+  width: 38px;
+  height: 28px;
+  border-radius: 18px 18px 4px 4px;
+}
+
+.vault-block {
+  bottom: 10px;
+  width: 40px;
+  height: 26px;
+  border-radius: 2px;
+}
+
 .sil-flame {
   position: absolute;
   left: 50%;
@@ -1007,13 +1021,225 @@
   }
 }
 
+/* Locked map buildings */
+
+.map-building.locked .map-building-label {
+  opacity: 0.92;
+}
+
+.map-building-locked {
+  color: var(--ad-bronze-pale);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.embers-line {
+  margin: 0.15rem 0 0;
+  font-size: 0.85rem;
+  font-family: var(--ad-font-metric);
+  font-weight: 600;
+  color: var(--ad-bronze-pale);
+}
+
+/* Prestige progress + ember shop */
+
+.prestige-bar {
+  margin-top: 0.65rem;
+  height: 8px;
+  background: var(--ad-bg-inset);
+  border: 1px solid var(--ad-stroke-strong);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.prestige-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--ad-ember-dim), var(--ad-ember-hot));
+  transition: width 0.25s ease;
+}
+
+.prestige-teaser {
+  color: var(--ad-bronze-pale);
+  font-weight: 700;
+}
+
+.ember-shop {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+}
+
+.ember-shop-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--ad-stroke);
+}
+
+.ember-shop-name {
+  font-family: var(--ad-font-display);
+  font-weight: 700;
+  color: var(--ad-ink);
+  font-size: 1.05rem;
+}
+
+.ember-shop-rank {
+  font-family: var(--ad-font-metric);
+  font-weight: 600;
+  color: var(--ad-ink-muted);
+  font-size: 0.9rem;
+}
+
+.ember-shop-blurb,
+.ember-shop-effect {
+  margin: 0.2rem 0 0;
+  color: var(--ad-ink-muted);
+  font-size: 0.95rem;
+}
+
+.ember-shop-effect {
+  color: var(--ad-gain);
+  font-family: var(--ad-font-metric);
+  font-weight: 600;
+}
+
+/* FTUE coach */
+
+.ftue-coach {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(3.75rem + var(--safe-bottom));
+  width: calc(100% - 1.25rem);
+  max-width: 460px;
+  z-index: 35;
+  pointer-events: none;
+  animation: sheet-up 0.28s ease-out;
+}
+
+.ftue-coach-inner {
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 0.85rem 1rem;
+  background: rgba(12, 11, 10, 0.96);
+  border: 1px solid var(--ad-stroke-strong);
+  border-radius: var(--ad-radius);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55);
+}
+
+.ftue-eyebrow {
+  margin: 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ad-ink-muted);
+  font-weight: 600;
+}
+
+.ftue-title {
+  margin: 0.15rem 0 0;
+  font-family: var(--ad-font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--ad-ink);
+}
+
+.ftue-body {
+  margin: 0.35rem 0 0;
+  color: var(--ad-ink);
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.ftue-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.ftue-cta {
+  min-height: 40px;
+}
+
+.ftue-dismiss {
+  margin-left: auto;
+  font-size: 0.85rem;
+  min-height: 36px;
+}
+
+.ftue-target .building-sil,
+.ftue-target.map-building .map-building-label,
+.banner.ftue-target,
+.panel.ftue-target {
+  outline: 2px solid var(--ad-ember-hot);
+  outline-offset: 3px;
+}
+
+.tab.ftue-tab {
+  color: var(--ad-bronze-pale);
+  box-shadow: inset 0 -2px 0 var(--ad-bronze-pale);
+}
+
+/* Install prompt — non-intrusive top chip */
+
+.install-prompt {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 0.65rem;
+  width: calc(100% - 1.25rem);
+  max-width: 460px;
+  z-index: 40;
+  animation: fade-in 0.25s ease-out;
+}
+
+.install-prompt-inner {
+  padding: 0.75rem 0.9rem;
+  background: rgba(12, 11, 10, 0.96);
+  border: 1px solid var(--ad-stroke-strong);
+  border-radius: var(--ad-radius);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.5);
+}
+
+.install-title {
+  margin: 0;
+  font-family: var(--ad-font-display);
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--ad-ink);
+}
+
+.install-body {
+  margin: 0.35rem 0 0;
+  color: var(--ad-ink);
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+
+.install-actions {
+  display: flex;
+  gap: 0.45rem;
+  margin-top: 0.55rem;
+}
+
+.install-actions .btn {
+  min-height: 40px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .map-haze,
   .map-forge-glow,
   .building-sil.lit .sil-flame,
   .building-sil.lit .sil-beacon,
   .sheet-backdrop,
-  .sheet {
+  .sheet,
+  .ftue-coach,
+  .install-prompt {
     animation: none;
   }
 }
