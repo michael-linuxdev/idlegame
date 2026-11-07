@@ -324,6 +324,37 @@ export const farmStrings = {
     branchStartBlurb: 'Schnellerer Neustart nach Prestige.',
   },
 
+  longLoop: {
+    seasonTitle: 'Saison & Tiefer Reset',
+    seasonIntro:
+      'Nach dem Münzen-Baum: Sprossen und Saison-Ziele. Scaffold — Auszahlung kommt später.',
+    seasonLabel: (n: number) => `Saison ${n}`,
+    seasonPoints: (n: number) => `${n} Saison-Punkte`,
+    sproutLabel: 'Sprossen:',
+    deepRuns: 'Tiefe Resets:',
+    gateOpen: 'Tor offen — Deep-Shop folgt in der nächsten Balance-Welle.',
+    gateClosed: (prestigesLeft: number, fillPct: number) =>
+      `Noch ${prestigesLeft} Prestiges oder Münzen-Shop ${fillPct} % — dann Deep.`,
+    deepShopTitle: 'Sprossen-Shop',
+    deepShopLocked: 'Gesperrt bis Deep-Tor + Balance-PR.',
+    deepYield: 'Tiefen-Phyto',
+    deepWatch: 'Tiefen-Pflege',
+    deepPurse: 'Tiefen-Beutel',
+    yearTitle: 'Jahres-Ziele',
+    yearLabel: (n: number) => `Erntejahr ${n}`,
+    yearProgress: (done: number, target: number) =>
+      `${done}/${target} Saisons im Jahr`,
+    yearLocked: 'Jahres-Siegel nach abgeschlossenen Saisons.',
+    eraTitle: 'Ära',
+    eraIntro: 'Wurzelsterne für Jahre 2–5 — Status und Micro-Power.',
+    eraPoints: 'Wurzelsterne:',
+    eraGateClosed: 'Nach dem ersten Jahresabschluss oder sehr vielen Prestiges.',
+    eraGateOpen: 'Ära-Shop folgt — jetzt nur Vorschau.',
+    rootYield: 'Wurzel-Ertrag',
+    rootBanner: 'Wurzel-Banner',
+    stubRank: (rank: number, max: number) => `${rank}/${max}`,
+  },
+
   emberShop: {
     dominionYield: {
       name: 'Farm-Phyto',

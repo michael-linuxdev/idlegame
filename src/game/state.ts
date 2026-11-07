@@ -99,6 +99,11 @@ import {
   syncQuestDay,
   type QuestProgress,
 } from './quests'
+import {
+  emptyLongLoopSlice,
+  type DeepMetaUpgrades,
+  type EraUpgrades,
+} from './longLoop'
 
 export interface GameState {
   /** Soft currency — Compute (economy.md Ash) */
@@ -199,6 +204,26 @@ export interface GameState {
   flashDismissed: boolean
   /** Last flash start time (cooldown) */
   lastFlashAt: number
+  /** L3 season index (0-based); survives soft prestige */
+  seasonIndex: number
+  /** Season wall-clock start; 0 = not opened yet */
+  seasonStartedAt: number
+  /** Season points toward deep payout (earn later) */
+  seasonPoints: number
+  /** Deep meta currency (Sprossen / Saison-Jetons) */
+  deepEmbers: number
+  deepUpgrades: DeepMetaUpgrades
+  /** Deep resets completed */
+  deepPrestiges: number
+  /** Year track index (0 = Jahr 1) */
+  yearIndex: number
+  /** Seasons completed toward current year */
+  yearSeasonsDone: number
+  /** Claimed year milestone ids */
+  yearGoalsClaimed: string[]
+  /** Era currency (Wurzelsterne) */
+  eraPoints: number
+  eraUpgrades: EraUpgrades
 }
 
 export const STORAGE_KEY = 'orbit-rack-save-v2'
@@ -270,6 +295,7 @@ export function createInitialState(now = Date.now()): GameState {
     flashClaimed: false,
     flashDismissed: false,
     lastFlashAt: 0,
+    ...emptyLongLoopSlice(),
   }
 }
 
@@ -330,6 +356,18 @@ export function createPostPrestigeState(prev: GameState, now = Date.now()): Game
     flashClaimed: prev.flashClaimed,
     flashDismissed: prev.flashDismissed,
     lastFlashAt: prev.lastFlashAt,
+    // L3–L5 survive soft prestige
+    seasonIndex: prev.seasonIndex,
+    seasonStartedAt: prev.seasonStartedAt,
+    seasonPoints: prev.seasonPoints,
+    deepEmbers: prev.deepEmbers,
+    deepUpgrades: { ...prev.deepUpgrades },
+    deepPrestiges: prev.deepPrestiges,
+    yearIndex: prev.yearIndex,
+    yearSeasonsDone: prev.yearSeasonsDone,
+    yearGoalsClaimed: [...prev.yearGoalsClaimed],
+    eraPoints: prev.eraPoints,
+    eraUpgrades: { ...prev.eraUpgrades },
   }
 }
 

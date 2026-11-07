@@ -4,6 +4,13 @@ import { COSMETICS, dayKey, weekKey, type CosmeticId } from './monetization'
 import { ACHIEVEMENT_IDS, type AchievementId } from './achievements'
 import { emptyBranches } from './branches'
 import { emptyQuestProgress, type QuestProgress } from './quests'
+import {
+  EMPTY_DEEP_META,
+  EMPTY_ERA_UPGRADES,
+  emptyLongLoopSlice,
+  type DeepMetaUpgrades,
+  type EraUpgrades,
+} from './longLoop'
 import { createInitialState, STORAGE_KEY, type GameState } from './state'
 
 const LEGACY_KEYS = [
@@ -230,6 +237,7 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
     typeof parsed.lastFlashAt === 'number' && Number.isFinite(parsed.lastFlashAt)
       ? Math.max(0, parsed.lastFlashAt)
       : 0
+  const longLoop = parseLongLoop(parsed)
 
   return {
     ash,
@@ -283,6 +291,66 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
     flashClaimed,
     flashDismissed,
     lastFlashAt,
+    ...longLoop,
+  }
+}
+
+function parseNonNegInt(raw: unknown, fallback = 0): number {
+  if (typeof raw === 'number' && Number.isFinite(raw)) {
+    return Math.max(0, Math.floor(raw))
+  }
+  return fallback
+}
+
+function parseDeepUpgrades(raw: unknown): DeepMetaUpgrades {
+  const base = { ...EMPTY_DEEP_META }
+  if (!isRecord(raw)) return base
+  for (const key of Object.keys(base) as (keyof DeepMetaUpgrades)[]) {
+    const n = raw[key]
+    if (typeof n === 'number' && Number.isFinite(n) && n >= 0) {
+      base[key] = Math.floor(n)
+    }
+  }
+  return base
+}
+
+function parseEraUpgrades(raw: unknown): EraUpgrades {
+  const base = { ...EMPTY_ERA_UPGRADES }
+  if (!isRecord(raw)) return base
+  for (const key of Object.keys(base) as (keyof EraUpgrades)[]) {
+    const n = raw[key]
+    if (typeof n === 'number' && Number.isFinite(n) && n >= 0) {
+      base[key] = Math.floor(n)
+    }
+  }
+  return base
+}
+
+function parseLongLoop(parsed: Record<string, unknown>) {
+  const defaults = emptyLongLoopSlice()
+  const yearGoalsClaimed = Array.isArray(parsed.yearGoalsClaimed)
+    ? parsed.yearGoalsClaimed.filter(
+        (id): id is string => typeof id === 'string' && id.length > 0,
+      )
+    : defaults.yearGoalsClaimed
+  return {
+    seasonIndex: parseNonNegInt(parsed.seasonIndex, defaults.seasonIndex),
+    seasonStartedAt: parseNonNegInt(
+      parsed.seasonStartedAt,
+      defaults.seasonStartedAt,
+    ),
+    seasonPoints: parseNonNegInt(parsed.seasonPoints, defaults.seasonPoints),
+    deepEmbers: parseNonNegInt(parsed.deepEmbers, defaults.deepEmbers),
+    deepUpgrades: parseDeepUpgrades(parsed.deepUpgrades),
+    deepPrestiges: parseNonNegInt(parsed.deepPrestiges, defaults.deepPrestiges),
+    yearIndex: parseNonNegInt(parsed.yearIndex, defaults.yearIndex),
+    yearSeasonsDone: parseNonNegInt(
+      parsed.yearSeasonsDone,
+      defaults.yearSeasonsDone,
+    ),
+    yearGoalsClaimed,
+    eraPoints: parseNonNegInt(parsed.eraPoints, defaults.eraPoints),
+    eraUpgrades: parseEraUpgrades(parsed.eraUpgrades),
   }
 }
 
