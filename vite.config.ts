@@ -3,8 +3,9 @@ import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
-  // Custom domain root (idlegame.micana.de) — not a project-pages subpath.
-  base: '/',
+  // Relative base: works on custom-domain root AND project Pages (/idlegame/).
+  // Primary URL once CNAME is attached: https://idlegame.micana.de
+  base: './',
   plugins: [
     react(),
     VitePWA({
@@ -19,7 +20,8 @@ export default defineConfig({
         background_color: '#0e0b09',
         display: 'standalone',
         orientation: 'portrait',
-        start_url: '/',
+        start_url: './',
+        scope: './',
         icons: [
           {
             src: 'pwa-192.png',
