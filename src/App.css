@@ -3586,36 +3586,120 @@
 
 /*
  * Tokenhalle: glass overlay only — never opaque stacked cards over the hall.
- * Hall stays the hero; chrome is a thin translucent tray.
+ * Hall stays the hero; chrome is a thin translucent tray (~1 compact row).
  */
-html[data-theme='arcade'] .app-main.map-mode .map-hud-tray {
-  background: color-mix(in srgb, var(--oc-bg-raised) 55%, transparent);
-  border-color: color-mix(in srgb, var(--oc-stroke-strong) 45%, transparent);
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.4) inset,
-    0 4px 14px rgba(30, 50, 80, 0.12);
-}
-
 html[data-theme='arcade'] .app-main.map-mode .map-hud {
+  padding: calc(0.18rem + var(--safe-top)) 0.45rem 0.1rem;
   background: linear-gradient(
     180deg,
-    color-mix(in srgb, var(--oc-bg-raised) 42%, transparent) 0%,
+    color-mix(in srgb, var(--oc-bg-raised) 28%, transparent) 0%,
     transparent 100%
   );
 }
 
-html[data-theme='arcade'] .app-main.map-mode .next-goal-strip {
-  background: color-mix(in srgb, var(--oc-bg-raised) 52%, transparent);
-  border-color: color-mix(in srgb, var(--oc-stroke-strong) 40%, transparent);
+html[data-theme='arcade'] .app-main.map-mode .map-hud-tray {
+  gap: 0.22rem;
+  padding: 0.28rem 0.38rem 0.32rem;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--oc-bg-raised) 42%, transparent);
+  border-color: color-mix(in srgb, var(--oc-stroke-strong) 38%, transparent);
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.4) inset,
+    0 1px 0 rgba(255, 255, 255, 0.35) inset,
     0 3px 10px rgba(30, 50, 80, 0.1);
+}
+
+html[data-theme='arcade'] .app-main.map-mode .player-level-chip {
+  background: transparent;
+  border-color: color-mix(in srgb, var(--oc-stroke) 55%, transparent);
+  box-shadow: none;
+  padding: 0.12rem 0.28rem;
+  width: min(100%, 8.8rem);
+  flex-basis: 8.8rem;
+  gap: 0.06rem;
+}
+
+html[data-theme='arcade'] .app-main.map-mode .player-level-num {
+  font-size: 0.7rem;
+}
+
+html[data-theme='arcade'] .app-main.map-mode .player-level-meta {
+  font-size: 0.52rem;
+}
+
+html[data-theme='arcade'] .app-main.map-mode .player-level-track {
+  height: 0.22rem;
+}
+
+html[data-theme='arcade'] .app-main.map-mode .ash-value {
+  font-size: clamp(1.05rem, 4.4vw, 1.3rem);
+}
+
+html[data-theme='arcade'] .app-main.map-mode .ash-label,
+html[data-theme='arcade'] .app-main.map-mode .rate-line {
+  font-size: 0.58rem;
+}
+
+html[data-theme='arcade'] .app-main.map-mode .map-hud .btn.rake {
+  min-height: 36px;
+  padding: 0.35rem 0.55rem;
+  font-size: 0.82rem;
+}
+
+html[data-theme='arcade'] .app-main.map-mode .next-goal-strip {
+  margin: 0 0.45rem 0.18rem;
+  padding: 0.22rem 0.45rem 0.26rem;
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--oc-bg-raised) 40%, transparent);
+  border-color: color-mix(in srgb, var(--oc-stroke-strong) 32%, transparent);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.35) inset,
+    0 2px 8px rgba(30, 50, 80, 0.08);
+}
+
+html[data-theme='arcade'] .app-main.map-mode .next-goal-title {
+  font-size: 0.72rem;
+}
+
+html[data-theme='arcade'] .app-main.map-mode .next-goal-kicker,
+html[data-theme='arcade'] .app-main.map-mode .next-goal-detail {
+  font-size: 0.52rem;
+}
+
+html[data-theme='arcade'] .app-main.map-mode .next-goal-track {
+  height: 0.22rem;
+  margin-top: 0.08rem;
 }
 
 html[data-theme='arcade'] .app-main.map-mode .banner.offline.map-banner,
 html[data-theme='arcade'] .app-main.map-mode .banner.daily-ops.map-banner,
 html[data-theme='arcade'] .app-main.map-mode .banner.event-surge.map-banner {
-  background: color-mix(in srgb, var(--oc-bg-raised) 58%, transparent);
+  margin: 0 0.45rem 0.18rem;
+  padding: 0.28rem 0.45rem;
+  gap: 0.3rem;
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--oc-bg-raised) 45%, transparent);
+}
+
+/* Daily claim: one slim row — hide streak chrome that ate the hall */
+html[data-theme='arcade'] .app-main.map-mode .banner.daily-ops .streak-dots,
+html[data-theme='arcade'] .app-main.map-mode .banner.daily-ops .banner-meta,
+html[data-theme='arcade'] .app-main.map-mode .banner.daily-ops .banner-reward {
+  display: none;
+}
+
+html[data-theme='arcade'] .app-main.map-mode .banner.daily-ops .banner-kicker {
+  font-size: 0.58rem !important;
+}
+
+html[data-theme='arcade'] .app-main.map-mode .banner.daily-ops p {
+  font-size: 0.72rem;
+  margin: 0;
+}
+
+html[data-theme='arcade'] .app-main.map-mode .banner.daily-ops .btn {
+  min-height: 34px;
+  padding: 0.3rem 0.55rem;
+  font-size: 0.78rem;
 }
 
 /* Compact floating chrome over the map — shared tray language */

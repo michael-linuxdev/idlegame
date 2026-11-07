@@ -212,15 +212,16 @@ export function FortressMap({ game, highlightId }: Props) {
               </div>
             </div>
           </div>
-          <button
-            type="button"
-            className={`btn rake${tapReady ? ' pulse-ready' : ' rake-cooling'}`}
-            onClick={onRake}
-            disabled={!tapReady}
-            title={tapReady ? t.hud.burstReadyTitle : t.hud.burstCoolingTitle}
-          >
-            {tapReady ? t.hud.burstReady : t.hud.burstCooling}
-          </button>
+          {tapReady ? (
+            <button
+              type="button"
+              className="btn rake pulse-ready"
+              onClick={onRake}
+              title={t.hud.burstReadyTitle}
+            >
+              {t.hud.burstReady}
+            </button>
+          ) : null}
         </div>
       </header>
 
