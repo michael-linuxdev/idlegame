@@ -1,8 +1,8 @@
 # TurmFarm
 
-Mobile-first idle PWA on a **shared game core** with theme skins. Active skin: **Urban Vertical Farm** (working title TurmFarm). Modules produce Ertrag offline; prestige for Münzen.
+Mobile-first idle PWA on a **shared game core** with theme skins. Live product: **TurmFarm** (Urban Vertical Farm). Modules produce Ertrag offline; prestige for Münzen. Planned sister app on the same core: **Tokenhalle** (Arcade) — see [`ROADMAP.md`](./ROADMAP.md).
 
-Theme pack: `src/themes/farm` only (TurmFarm). Orbit Rack is removed — not shipped.
+Theme pack: `src/themes/farm` only (TurmFarm). Orbit Rack and Brauerei are removed — not shipped.
 
 Product priorities and owner notes: see [`ROADMAP.md`](./ROADMAP.md).
 
