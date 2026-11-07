@@ -1912,7 +1912,7 @@
   transition: width 0.35s ease-out;
 }
 
-/* Upgrade sheet */
+/* Progress / generic sheets (opaque bottom sheet — not Ausbauen) */
 
 .sheet-backdrop {
   position: fixed;
@@ -1920,7 +1920,7 @@
   max-width: 480px;
   margin: 0 auto;
   background: rgba(40, 60, 80, 0.35);
-  /* Above game-chrome (30) so Ausbauen CTA stays primary */
+  /* Above game-chrome (30) so panel CTAs stay primary */
   z-index: 40;
   display: flex;
   align-items: flex-end;
@@ -1939,44 +1939,6 @@
   flex-direction: column;
   gap: 0.1rem;
   color: var(--oc-ink);
-}
-
-.sheet.sheet-compact {
-  gap: 0.08rem;
-}
-
-/* Compact game HUD panel — less chrome, clearer hierarchy */
-.sheet.sheet-hud {
-  gap: 0.35rem;
-  padding: 0.28rem 0.85rem calc(0.7rem + var(--safe-bottom));
-  background:
-    linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--oc-bg-raised) 96%, #fff) 0%,
-      color-mix(in srgb, var(--oc-bg-field) 55%, #fff) 100%
-    );
-  border-top: 1px solid color-mix(in srgb, var(--oc-stroke-strong) 55%, transparent);
-  border-radius: 20px 20px 0 0;
-  box-shadow:
-    0 -10px 28px rgba(25, 40, 30, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.65);
-}
-
-.sheet.sheet-hud .sheet-handle {
-  width: 28px;
-  height: 3px;
-  margin: 0.1rem auto 0.2rem;
-  background: color-mix(in srgb, var(--oc-stroke-strong) 55%, transparent);
-}
-
-.sheet-header-hud {
-  margin-bottom: 0;
-  align-items: center;
-}
-
-.sheet-heading {
-  min-width: 0;
-  flex: 1;
 }
 
 .sheet-handle {
@@ -2009,11 +1971,6 @@
   line-height: 1.15;
 }
 
-.sheet.sheet-hud .sheet-header h2 {
-  font-size: 1.05rem;
-  letter-spacing: 0.01em;
-}
-
 .sheet-blurb {
   margin: 0.2rem 0 0;
   font-size: 0.72rem;
@@ -2026,13 +1983,6 @@
   overflow: hidden;
 }
 
-.sheet.sheet-hud .sheet-blurb {
-  margin-top: 0.12rem;
-  font-size: 0.68rem;
-  font-weight: 500;
-  color: var(--oc-ink-faint);
-}
-
 .sheet-stats {
   margin: 0.2rem 0 0.35rem;
   color: var(--oc-ink);
@@ -2042,60 +1992,11 @@
   line-height: 1.2;
 }
 
-.sheet-stats-hud {
-  margin: 0.05rem 0 0.2rem;
-  font-size: 0.82rem;
-  font-weight: 700;
-  letter-spacing: 0.01em;
-  color: var(--oc-ink);
-}
-
-.sheet.sheet-hud .upgrade-afford-track {
-  height: 0.28rem;
-  margin: 0 0 0.45rem;
-  border: none;
-  background: color-mix(in srgb, var(--oc-bg-inset) 55%, transparent);
-}
-
 .sheet-buy {
   width: 100%;
   min-height: 54px;
   font-size: 1.1rem;
   letter-spacing: 0.04em;
-}
-
-.sheet-buy-hud {
-  min-height: 52px;
-  font-family: var(--oc-font-display);
-  font-size: 1.05rem;
-  font-weight: 700;
-  letter-spacing: 0.03em;
-  border-radius: 14px;
-  border-width: 2px;
-  box-shadow:
-    0 3px 0 color-mix(in srgb, var(--oc-ember-dim) 70%, #000),
-    0 8px 18px color-mix(in srgb, var(--oc-ember) 28%, transparent);
-}
-
-.sheet-buy-hud:disabled {
-  box-shadow: none;
-  opacity: 0.55;
-}
-
-.sheet-buy-hud.pulse-ready {
-  animation: sheet-cta-glow 1.6s ease-in-out infinite;
-}
-
-@keyframes sheet-cta-glow {
-  0%,
-  100% {
-    filter: brightness(1);
-    transform: translateY(0);
-  }
-  50% {
-    filter: brightness(1.06);
-    transform: translateY(-1px);
-  }
 }
 
 .sheet-cta {
@@ -2105,10 +2006,6 @@
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-}
-
-.sheet.sheet-hud .sheet-cta {
-  margin-top: 0;
 }
 
 .sheet-cta-hint {
@@ -2143,6 +2040,248 @@
 .sheet-close-x:focus-visible {
   outline: 2px solid var(--oc-focus);
   outline-offset: 2px;
+}
+
+/* Ausbauen — glass HUD overlay (map stays readable; no opaque sheet / dimmer) */
+
+.upgrade-hud-layer {
+  position: fixed;
+  inset: 0;
+  max-width: 480px;
+  margin: 0 auto;
+  z-index: 40;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  /* Transparent hit target only — map stays bright and readable */
+  background: transparent;
+  padding: 0 0.5rem calc(0.45rem + var(--safe-bottom));
+  animation: fade-in var(--oc-motion-sheet) ease-out;
+  pointer-events: auto;
+}
+
+.upgrade-hud {
+  width: 100%;
+  /* Clear Menü FAB so map chrome stays usable */
+  margin: 0 0 3.55rem;
+  padding: 0.55rem 0.7rem 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.28rem;
+  color: var(--oc-ink);
+  border: 1px solid color-mix(in srgb, var(--oc-stroke-strong) 38%, transparent);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--oc-bg-raised) 38%, transparent);
+  backdrop-filter: blur(10px);
+  box-shadow:
+    0 6px 20px rgba(20, 35, 25, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.42);
+  animation: sheet-up var(--oc-motion-sheet) ease-out;
+}
+
+.upgrade-hud.upgrade-flash {
+  box-shadow:
+    0 6px 20px rgba(20, 35, 25, 0.16),
+    0 0 0 2px color-mix(in srgb, var(--oc-ember) 40%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.upgrade-hud-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.upgrade-hud-heading {
+  min-width: 0;
+  flex: 1;
+}
+
+.upgrade-hud-heading h2 {
+  margin: 0;
+  font-family: var(--oc-font-display);
+  font-size: 1.02rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--oc-ink);
+  line-height: 1.15;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.35);
+}
+
+.upgrade-hud-blurb {
+  margin: 0.12rem 0 0;
+  font-size: 0.66rem;
+  line-height: 1.25;
+  font-weight: 500;
+  color: var(--oc-ink-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.upgrade-hud-close {
+  appearance: none;
+  flex-shrink: 0;
+  width: 1.85rem;
+  height: 1.85rem;
+  margin: 0;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--oc-stroke-strong) 40%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--oc-bg-raised) 45%, transparent);
+  backdrop-filter: blur(6px);
+  color: var(--oc-ink-muted);
+  font-size: 1.15rem;
+  line-height: 1;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.upgrade-hud-close:focus-visible {
+  outline: 2px solid var(--oc-focus);
+  outline-offset: 2px;
+}
+
+.upgrade-hud-stats {
+  margin: 0;
+  font-family: var(--oc-font-metric);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+  color: var(--oc-ink);
+}
+
+.upgrade-hud-track {
+  height: 0.26rem;
+  margin: 0.05rem 0 0.15rem;
+  border: none;
+  background: color-mix(in srgb, var(--oc-bg-inset) 40%, transparent);
+}
+
+.upgrade-hud-cta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.upgrade-hud-buy {
+  width: 100%;
+  min-height: 48px;
+  font-family: var(--oc-font-display);
+  font-size: 1.02rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  border-radius: 12px;
+  border-width: 2px;
+  box-shadow:
+    0 3px 0 color-mix(in srgb, var(--oc-ember-dim) 70%, #000),
+    0 8px 16px color-mix(in srgb, var(--oc-ember) 24%, transparent);
+}
+
+.upgrade-hud-buy:disabled {
+  box-shadow: none;
+  opacity: 0.55;
+}
+
+.upgrade-hud-buy.pulse-ready {
+  animation: sheet-cta-glow 1.6s ease-in-out infinite;
+}
+
+@keyframes sheet-cta-glow {
+  0%,
+  100% {
+    filter: brightness(1);
+    transform: translateY(0);
+  }
+  50% {
+    filter: brightness(1.06);
+    transform: translateY(-1px);
+  }
+}
+
+.upgrade-hud-modules {
+  margin-top: 0.15rem;
+  padding-top: 0.35rem;
+  border-top: 1px solid color-mix(in srgb, var(--oc-stroke) 40%, transparent);
+  display: flex;
+  flex-direction: column;
+  gap: 0.28rem;
+}
+
+.upgrade-hud-modules-title {
+  margin: 0 0 0.02rem;
+  font-family: var(--oc-font-display);
+  font-size: 0.64rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--oc-ink-muted);
+  font-weight: 700;
+}
+
+.upgrade-hud-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+  min-height: 2.35rem;
+  padding: 0.28rem 0.4rem 0.28rem 0.5rem;
+  border: 1px solid color-mix(in srgb, var(--oc-stroke-strong) 28%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--oc-bg-raised) 32%, transparent);
+  backdrop-filter: blur(6px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+
+.upgrade-hud-row-meta {
+  margin: 0;
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.1rem 0.26rem;
+  font-size: 0.7rem;
+  line-height: 1.2;
+}
+
+.upgrade-hud-row-buy {
+  flex-shrink: 0;
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 0.26rem 0.5rem;
+  min-height: 1.9rem;
+  min-width: 5.25rem;
+  max-width: 9.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.1;
+  border-width: 1px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--oc-bg-raised) 48%, transparent);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--oc-stroke-strong) 40%, transparent);
+}
+
+.upgrade-hud-locked {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+[data-theme='arcade'] .upgrade-hud {
+  background: color-mix(in srgb, var(--oc-bg-raised) 44%, transparent);
+  border-color: color-mix(in srgb, var(--oc-stroke-strong) 48%, transparent);
+  box-shadow:
+    0 6px 22px rgba(20, 25, 55, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+
+[data-theme='arcade'] .upgrade-hud-row {
+  background: color-mix(in srgb, var(--oc-bg-raised) 36%, transparent);
 }
 
 /* Buttons — casual-game chrome (bevel + weight, bright fills) */
@@ -3954,12 +4093,6 @@
   animation: buy-flash 0.42s ease-out;
 }
 
-.sheet.upgrade-flash {
-  box-shadow:
-    0 -8px 24px rgba(40, 60, 80, 0.15),
-    0 0 0 2px color-mix(in srgb, var(--oc-ember) 35%, transparent);
-}
-
 .upgrade-afford-track {
   height: 0.32rem;
   margin: 0.15rem 0 0.35rem;
@@ -4318,6 +4451,8 @@
   .map-building.producing .map-building-rate,
   .sheet-backdrop,
   .sheet,
+  .upgrade-hud-layer,
+  .upgrade-hud,
   .ftue-coach,
   .install-gate,
   .install-gate-card,
@@ -4326,7 +4461,7 @@
   .float-pop,
   .btn.pulse-ready,
   .btn.buy.just-bought,
-  .sheet-buy-hud.pulse-ready,
+  .upgrade-hud-buy.pulse-ready,
   .next-goal-fill.pulse,
   .upgrade-afford-fill.ready,
   .player-level-chip.level-up {
