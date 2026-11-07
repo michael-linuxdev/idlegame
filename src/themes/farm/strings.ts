@@ -307,11 +307,11 @@ export const farmStrings = {
   shop: {
     title: 'Shop',
     intro:
-      'Nur Komfort und Status — keine Energie-Wände. Soft-Progress bleibt gratis. Alle Käufe sind lokale Stubs (keine echten Zahlungen).',
+      'Nur Komfort und Status — keine Energie-Wände. Soft-Progress bleibt gratis. Werbung ist optional belohnend und blockiert nie das Spielen. Alle Käufe sind lokale Stubs (keine echten Zahlungen / kein Ad-SDK).',
     skipLeftToday: 'Skip heute übrig',
     skipHours: (left: number, cap: number) => `${left}/${cap} h`,
-    packsTitle: 'Samen-Pakete',
-    packsIntro: 'Mock-Gutschriften zum Testen. Kein IAP-Backend.',
+    packsTitle: 'Bundles & Samen',
+    packsIntro: 'Mock-Käufe mit lokaler Samen-Währung. Kein IAP-Backend.',
     packEffect: (n: number) => `+${n} Samen`,
     skipsTitle: 'Zeit-Skips',
     skipsIntro: (rate: string, cap: number) =>
@@ -325,24 +325,91 @@ export const farmStrings = {
     active: 'Aktiv',
     equip: 'Ausrüsten',
     free: 'Gratis',
+    owned: 'Besitzt',
     clanBoostTitle: 'Clan-Boost',
     clanBoostIntro:
       'Temporärer Produktionsbuff für deinen Platzhalter-Clan. Auffrischen verlängert den Timer.',
     boostActiveShort: (mult: string, left: string) =>
       `Aktiv ×${mult} · noch ${left}`,
     boostInactiveShort: 'Inaktiv · Basis ×1,00',
+    adsTitle: 'Optionale Belohnung',
+    adsIntro:
+      'Freiwillig Werbung ansehen für einen kleinen Bonus. Niemals Pflicht — Spielen geht immer ohne.',
+    adsWatch: 'Werbung ansehen',
+    adsWatching: 'Werbung läuft…',
+    adsCooldown: (left: string) => `Cooldown ${left}`,
+    adsRemovedBadge: 'Werbefrei aktiv',
+    adsRewardSkip: (mins: number, amount: string) =>
+      `+${mins} Min Zeit-Skip-Krümel (${amount} Ertrag)`,
+    adsRewardObsidian: (n: number) => `+${n} Samen`,
+    adsRewardYield: (mins: number, amount: string) =>
+      `+${mins} Min Ertrag (${amount})`,
+    removeAdsTitle: 'Werbefrei',
+    removeAdsIntro:
+      'Einmaliger Stub-Kauf — entfernt Belohnungs-Werbung dauerhaft. Progress bleibt gratis.',
+    yieldBoostTitle: 'Ertrag-Schub',
+    yieldBoostIntro:
+      'Persönlicher +15 % Ertrag für 30 Min. Mit Samen bezahlt — optionaler Komfort.',
+    yieldBoostActive: (mult: string, left: string) =>
+      `Aktiv ×${mult} · noch ${left}`,
+    yieldBoostInactive: 'Inaktiv',
+    yieldBoostBuy: (cost: number) => `${cost} Samen`,
+    currencyPacksTitle: 'Samen-Packs',
+    currencyPacksIntro: 'Größere Mock-Gutschriften zum Testen der Shop-Sinks.',
+    cosmeticPacksTitle: 'Kosmetik-Packs',
+    cosmeticPacksIntro: 'Mehrere Skins in einem Stub-Kauf.',
+    battlePassTitle: 'Wochen-Pass (lite)',
+    battlePassIntro:
+      'Wöchentlicher Free-Track + Premium-Stub. XP per Tagespflege oder optionaler Werbung. Kein Energie-Gate.',
+    battlePassXp: (xp: number, max: number) => `${xp}/${max} XP`,
+    battlePassDailyXp: 'Tages-XP holen',
+    battlePassDailyDone: 'Tages-XP geholt',
+    battlePassFree: 'Gratis',
+    battlePassPremium: 'Premium',
+    battlePassClaim: 'Abholen',
+    battlePassClaimed: 'Abgeholt',
+    battlePassLocked: 'Gesperrt',
+    battlePassNeedXp: (xp: number) => `Ab ${xp} XP`,
+    battlePassNeedPremium: 'Premium freischalten',
+    rewardObsidian: (n: number) => `+${n} Samen`,
+    rewardComputeSec: (sec: number) => `+${sec} s Ertrag`,
   },
 
   packs: {
     starterBundle: {
       name: 'Starter-Bundle',
-      blurb: '200 Samen + Amber-Pad-Skin. Mock-Kauf — keine echte Abbuchung.',
+      blurb: '200 Samen + Erde-Pad-Skin. Mock-Kauf — keine echte Abbuchung.',
       label: 'Kaufen (Stub)',
     },
+    removeAds: {
+      name: 'Werbefrei kaufen',
+      blurb: 'Entfernt optionale Belohnungs-Werbung dauerhaft. Stub — keine echte Zahlung.',
+      label: 'Werbefrei (Stub)',
+    },
     obsidian50: {
-      name: 'Samen-Chip',
-      blurb: '50 Samen zum Testen der Shop-Sinks. Mock-Gutschrift.',
+      name: 'Samen-Pack S',
+      blurb: '50 Samen. Mock-Gutschrift zum Testen.',
       label: '50 gutschreiben',
+    },
+    obsidian150: {
+      name: 'Samen-Pack M',
+      blurb: '150 Samen. Mock-Gutschrift.',
+      label: '150 gutschreiben',
+    },
+    obsidian500: {
+      name: 'Samen-Pack L',
+      blurb: '500 Samen. Mock-Gutschrift.',
+      label: '500 gutschreiben',
+    },
+    cosmeticPackLeaf: {
+      name: 'Blatt-Kosmetik-Pack',
+      blurb: 'Schaltet Blatt-Gang + Gold-Ernte frei. Reine Optik.',
+      label: 'Pack freischalten',
+    },
+    battlePassPremium: {
+      name: 'Premium-Track',
+      blurb: 'Schaltet die Premium-Spur des Wochen-Passes frei (Stub).',
+      label: 'Premium freischalten',
     },
   },
 

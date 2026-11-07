@@ -32,14 +32,25 @@ import {
   isBandwidthSurgeActive,
 } from './events'
 import {
+  BATTLE_PASS_AD_XP,
+  BATTLE_PASS_DAILY_XP,
+  BATTLE_PASS_MAX_XP,
+  BATTLE_PASS_TIERS,
   CLAN_BOOST,
   CLAN_BOOST_MAX,
   COSMETICS,
   DAILY_SKIP_CAP_HOURS,
   TIME_SKIPS,
+  YIELD_BOOST_COST,
+  YIELD_BOOST_MS,
+  YIELD_BOOST_MULT,
   dayKey,
+  nextRewardedAdReward,
+  rewardedAdReady,
+  shopOfferById,
+  weekKey,
   type CosmeticId,
-  type ObsidianPackDef,
+  type ShopOfferDef,
   type TimeSkipId,
 } from './monetization'
 import {
@@ -129,6 +140,28 @@ export interface GameState {
   questDayKey: string
   /** Daily quest progress rows */
   quests: QuestProgress[]
+  /** One-time mock IAP / offer ids already owned (survives prestige) */
+  ownedOfferIds: string[]
+  /** Permanent remove-ads stub (survives prestige) */
+  adsRemoved: boolean
+  /** Last rewarded-ad claim timestamp */
+  lastRewardedAdAt: number
+  /** How many rewarded ads claimed (rotates reward kinds) */
+  rewardedAdClaims: number
+  /** Personal yield boost expiry; 0 = inactive */
+  yieldBoostExpiresAt: number
+  /** Battle-pass lite week key */
+  bpWeekKey: string
+  /** Battle-pass XP this week (0–100) */
+  bpXp: number
+  /** Free-track tiers claimed this week */
+  bpClaimedFree: number[]
+  /** Premium track unlocked for current week (stub) */
+  bpPremium: boolean
+  /** Premium-track tiers claimed this week */
+  bpClaimedPremium: number[]
+  /** Day key of last battle-pass daily XP claim */
+  bpDailyXpDay: string
 }
 
 export const STORAGE_KEY = 'orbit-rack-save-v2'
@@ -180,6 +213,17 @@ export function createInitialState(now = Date.now()): GameState {
     branches: emptyBranches(GENERATOR_IDS),
     questDayKey: quests.dayKey,
     quests: quests.quests,
+    ownedOfferIds: [],
+    adsRemoved: false,
+    lastRewardedAdAt: 0,
+    rewardedAdClaims: 0,
+    yieldBoostExpiresAt: 0,
+    bpWeekKey: weekKey(now),
+    bpXp: 0,
+    bpClaimedFree: [],
+    bpPremium: false,
+    bpClaimedPremium: [],
+    bpDailyXpDay: '',
   }
 }
 
@@ -218,6 +262,17 @@ export function createPostPrestigeState(prev: GameState, now = Date.now()): Game
     branches: emptyBranches(GENERATOR_IDS),
     questDayKey: prev.questDayKey,
     quests: prev.quests.map((q) => ({ ...q })),
+    ownedOfferIds: [...prev.ownedOfferIds],
+    adsRemoved: prev.adsRemoved,
+    lastRewardedAdAt: prev.lastRewardedAdAt,
+    rewardedAdClaims: prev.rewardedAdClaims,
+    yieldBoostExpiresAt: prev.yieldBoostExpiresAt,
+    bpWeekKey: prev.bpWeekKey,
+    bpXp: prev.bpXp,
+    bpClaimedFree: [...prev.bpClaimedFree],
+    bpPremium: prev.bpPremium,
+    bpClaimedPremium: [...prev.bpClaimedPremium],
+    bpDailyXpDay: prev.bpDailyXpDay,
   }
 }
 
@@ -341,11 +396,44 @@ export function syncClanBoost(state: GameState, now = Date.now()): GameState {
   return state
 }
 
+/** Clear expired personal yield boost. */
+export function syncYieldBoost(state: GameState, now = Date.now()): GameState {
+  if (state.yieldBoostExpiresAt > 0 && now >= state.yieldBoostExpiresAt) {
+    return { ...state, yieldBoostExpiresAt: 0 }
+  }
+  return state
+}
+
+/** Reset battle-pass progress when the local week rolls. */
+export function syncBattlePass(state: GameState, now = Date.now()): GameState {
+  const key = weekKey(now)
+  if (state.bpWeekKey === key) return state
+  return {
+    ...state,
+    bpWeekKey: key,
+    bpXp: 0,
+    bpClaimedFree: [],
+    bpPremium: false,
+    bpClaimedPremium: [],
+    bpDailyXpDay: '',
+  }
+}
+
+export function syncMonetization(state: GameState, now = Date.now()): GameState {
+  return syncBattlePass(syncYieldBoost(syncClanBoost(state, now), now), now)
+}
+
+export function effectiveYieldBoostMult(state: GameState, now = Date.now()): number {
+  if (state.yieldBoostExpiresAt <= 0 || now >= state.yieldBoostExpiresAt) return 1
+  return YIELD_BOOST_MULT
+}
+
 export function productionPerSecond(state: GameState, now = Date.now()): number {
   const mPrestige = prestigeMultiplier(state.emberUpgrades)
   const mClan = effectiveClanMult(state, now)
   const mEvent = eventProductionMult(now)
   const mLevel = levelProductionMult(playerLevelOf(state))
+  const mYield = effectiveYieldBoostMult(state, now)
   let sum = 0
   for (const def of GENERATORS) {
     const owned = state.owned[def.id] ?? 0
@@ -353,7 +441,7 @@ export function productionPerSecond(state: GameState, now = Date.now()): number 
     const mEff = efficiencyMult(branch?.efficiency ?? 0)
     sum += generatorRate(def, owned) * mEff
   }
-  return sum * mPrestige * mClan * mEvent * mLevel
+  return sum * mPrestige * mClan * mEvent * mLevel * mYield
 }
 
 function withEventProgress(state: GameState, gained: number, now: number): GameState {
@@ -393,7 +481,7 @@ export function prestigeProgress(state: GameState): {
 export function applyTick(state: GameState, dtSeconds: number): GameState {
   if (dtSeconds <= 0) return state
   const now = Date.now()
-  let synced = withQuestSync(syncEventWindow(syncClanBoost(state, now), now), now)
+  let synced = withQuestSync(syncEventWindow(syncMonetization(state, now), now), now)
   const gained = productionPerSecond(synced, now) * dtSeconds
   if (gained <= 0) {
     return { ...synced, lastSeen: now }
@@ -424,7 +512,7 @@ export function skipHoursRemaining(state: GameState, now = Date.now()): number {
 export function buyTimeSkip(state: GameState, id: TimeSkipId, now = Date.now()): GameState {
   const def = TIME_SKIPS.find((t) => t.id === id)
   if (!def) return state
-  let next = syncEventWindow(syncClanBoost(withSkipDay(state, now), now), now)
+  let next = syncEventWindow(syncMonetization(withSkipDay(state, now), now), now)
   const remaining = DAILY_SKIP_CAP_HOURS - next.skipHoursUsedToday
   if (remaining <= 0) return state
   const hours = Math.min(def.hours, remaining, 4)
@@ -449,7 +537,7 @@ export function claimDailyOps(state: GameState, now = Date.now()): GameState {
   const rate = productionPerSecond(state, now)
   const comeback = isComebackClaim(state.dailyClaimDay, now)
   const reward = rewardForStreak(Math.max(0, streak - 1), rate, { comeback })
-  let next = syncEventWindow(syncClanBoost(state, now), now)
+  let next = syncEventWindow(syncMonetization(state, now), now)
   next = withEventProgress(next, reward.compute, now)
   next = {
     ...next,
@@ -519,7 +607,7 @@ export function equipCosmetic(state: GameState, id: CosmeticId, now = Date.now()
 }
 
 export function buyClanBoost(state: GameState, now = Date.now()): GameState {
-  let next = syncClanBoost(state, now)
+  let next = syncMonetization(state, now)
   if (next.obsidian < CLAN_BOOST.cost) return state
   const active = next.clanBoostExpiresAt > now
   const baseExpiry = active ? next.clanBoostExpiresAt : now
@@ -536,13 +624,148 @@ export function buyClanBoost(state: GameState, now = Date.now()): GameState {
   }
 }
 
-export function mockBuyPack(state: GameState, pack: ObsidianPackDef, now = Date.now()): GameState {
-  const owned = new Set(state.ownedCosmetics)
-  if (pack.cosmeticId) owned.add(pack.cosmeticId)
+/** Personal Ertrag-Schub — Samen sink, temporary mult. */
+export function buyYieldBoost(state: GameState, now = Date.now()): GameState {
+  let next = syncMonetization(state, now)
+  if (next.obsidian < YIELD_BOOST_COST) return state
+  const active = next.yieldBoostExpiresAt > now
+  const baseExpiry = active ? next.yieldBoostExpiresAt : now
   return {
-    ...state,
-    obsidian: state.obsidian + pack.obsidian,
-    ownedCosmetics: Array.from(owned),
+    ...next,
+    obsidian: next.obsidian - YIELD_BOOST_COST,
+    yieldBoostExpiresAt: baseExpiry + YIELD_BOOST_MS,
+    lastSeen: now,
+  }
+}
+
+export function mockBuyOffer(state: GameState, offer: ShopOfferDef, now = Date.now()): GameState {
+  let next = syncMonetization(state, now)
+  if (offer.once && next.ownedOfferIds.includes(offer.id)) return state
+  if (offer.kind === 'removeAds' && next.adsRemoved) return state
+  if (offer.kind === 'battlePassPremium' && next.bpPremium) return state
+
+  const ownedCosmetics = new Set(next.ownedCosmetics)
+  for (const id of offer.cosmeticIds ?? []) ownedCosmetics.add(id)
+
+  const ownedOfferIds =
+    offer.once || offer.kind === 'removeAds'
+      ? Array.from(new Set([...next.ownedOfferIds, offer.id]))
+      : next.ownedOfferIds
+
+  return {
+    ...next,
+    obsidian: next.obsidian + (offer.obsidian ?? 0),
+    ownedCosmetics: Array.from(ownedCosmetics),
+    ownedOfferIds,
+    adsRemoved: offer.kind === 'removeAds' ? true : next.adsRemoved,
+    bpPremium: offer.kind === 'battlePassPremium' ? true : next.bpPremium,
+    lastSeen: now,
+  }
+}
+
+/** @deprecated Prefer mockBuyOffer */
+export function mockBuyPack(state: GameState, pack: ShopOfferDef, now = Date.now()): GameState {
+  return mockBuyOffer(state, pack, now)
+}
+
+export function mockBuyOfferById(state: GameState, id: string, now = Date.now()): GameState {
+  const offer = shopOfferById(id)
+  if (!offer) return state
+  return mockBuyOffer(state, offer, now)
+}
+
+export type RewardedAdResult =
+  | { ok: false; reason: 'adsRemoved' | 'cooldown' }
+  | {
+      ok: true
+      state: GameState
+      kind: 'skipCrumb' | 'obsidianCrumb' | 'yieldCrumb'
+      ashGained: number
+      obsidianGained: number
+    }
+
+/** Grant optional rewarded-ad crumb after mock interstitial. Never blocks play. */
+export function claimRewardedAd(state: GameState, now = Date.now()): RewardedAdResult {
+  let next = syncMonetization(state, now)
+  if (next.adsRemoved) return { ok: false, reason: 'adsRemoved' }
+  if (!rewardedAdReady(next.lastRewardedAdAt, now)) {
+    return { ok: false, reason: 'cooldown' }
+  }
+  const reward = nextRewardedAdReward(next.rewardedAdClaims)
+  const rate = productionPerSecond(next, now)
+  let ashGained = 0
+  let obsidianGained = 0
+  if (reward.kind === 'skipCrumb' || reward.kind === 'yieldCrumb') {
+    const minutes = reward.minutes ?? 1
+    ashGained = rate * minutes * 60
+  } else if (reward.kind === 'obsidianCrumb') {
+    obsidianGained = reward.obsidian ?? 0
+  }
+  next = withEventProgress(next, ashGained, now)
+  const bpXp = Math.min(BATTLE_PASS_MAX_XP, next.bpXp + BATTLE_PASS_AD_XP)
+  return {
+    ok: true,
+    kind: reward.kind,
+    ashGained,
+    obsidianGained,
+    state: {
+      ...next,
+      ash: next.ash + ashGained,
+      ashEarned: next.ashEarned + ashGained,
+      lifetimeAshEarned: next.lifetimeAshEarned + ashGained,
+      obsidian: next.obsidian + obsidianGained,
+      lastRewardedAdAt: now,
+      rewardedAdClaims: next.rewardedAdClaims + 1,
+      bpXp,
+      lastSeen: now,
+    },
+  }
+}
+
+export function claimBattlePassDailyXp(state: GameState, now = Date.now()): GameState {
+  let next = syncMonetization(state, now)
+  const today = dayKey(now)
+  if (next.bpDailyXpDay === today) return state
+  return {
+    ...next,
+    bpXp: Math.min(BATTLE_PASS_MAX_XP, next.bpXp + BATTLE_PASS_DAILY_XP),
+    bpDailyXpDay: today,
+    lastSeen: now,
+  }
+}
+
+export function claimBattlePassTier(
+  state: GameState,
+  tier: number,
+  track: 'free' | 'premium',
+  now = Date.now(),
+): GameState {
+  let next = syncMonetization(state, now)
+  const def = BATTLE_PASS_TIERS.find((row) => row.tier === tier)
+  if (!def) return state
+  if (next.bpXp < def.xp) return state
+  if (track === 'premium' && !next.bpPremium) return state
+  const claimed =
+    track === 'free' ? next.bpClaimedFree : next.bpClaimedPremium
+  if (claimed.includes(tier)) return state
+  const reward = track === 'free' ? def.free : def.premium
+  let ashGained = 0
+  let obsidianGained = 0
+  if (reward.kind === 'computeSec') {
+    ashGained = productionPerSecond(next, now) * reward.amount
+  } else {
+    obsidianGained = reward.amount
+  }
+  next = withEventProgress(next, ashGained, now)
+  const nextClaimed = [...claimed, tier]
+  return {
+    ...next,
+    ash: next.ash + ashGained,
+    ashEarned: next.ashEarned + ashGained,
+    lifetimeAshEarned: next.lifetimeAshEarned + ashGained,
+    obsidian: next.obsidian + obsidianGained,
+    bpClaimedFree: track === 'free' ? nextClaimed : next.bpClaimedFree,
+    bpClaimedPremium: track === 'premium' ? nextClaimed : next.bpClaimedPremium,
     lastSeen: now,
   }
 }
@@ -553,7 +776,7 @@ export function applyOfflineCatchup(
 ): { state: GameState; gained: number } {
   const elapsedMs = Math.max(0, now - state.lastSeen)
   const elapsedSec = elapsedMs / 1000
-  let base = withQuestSync(syncEventWindow(syncClanBoost(state, now), now), now)
+  let base = withQuestSync(syncEventWindow(syncMonetization(state, now), now), now)
   base = applyLevelRewards(base, now)
   const rate = productionPerSecond(base, now)
   const caps = offlineCapsHours(base.emberUpgrades)
@@ -780,7 +1003,7 @@ export function grantTapAsh(
 ): GameState {
   if (gained <= 0) return state
   let next = withEventProgress(
-    syncEventWindow(syncClanBoost(state, now), now),
+    syncEventWindow(syncMonetization(state, now), now),
     gained,
     now,
   )
