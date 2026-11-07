@@ -63,9 +63,11 @@ export const farmStrings = {
   },
 
   bestBuy: {
-    tipAffordable: (name: string) => `Tipp: ${name}`,
-    tipSoon: (name: string) => `Bald: ${name}`,
-    aria: 'Bester nächster Kauf',
+    tipAffordable: (name: string) => `Bestes: ${name}`,
+    tipSoon: (name: string) => `Bald bestes: ${name}`,
+    tipCost: (name: string, cost: string) => `Bestes: ${name} · ${cost}`,
+    tipHold: 'Tippen öffnet · Ausbauen halten',
+    aria: 'Bester nächster Kauf — tippen zum Öffnen',
   },
 
   surprise: {
@@ -132,11 +134,12 @@ export const farmStrings = {
     },
     quantumCooler: {
       name: 'Kompostierer',
-      blurb: 'Erntereste → Kompost.',
+      blurb:
+        'Spätmodul: Erntereste → dichter Kompost-Phyto. Freischalten über Kompaktbeet Lv10 oder viel Phyto.',
     },
     packetScrubber: {
       name: 'Aquaponik',
-      blurb: 'Abwasser → Nährstoffe.',
+      blurb: 'Endmodul: Abwasser → Nährstoffe. Nach dem Kompostierer.',
     },
   },
 
@@ -282,6 +285,7 @@ export const farmStrings = {
     costLine: (action: string, cost: string) =>
       `${action} · ${cost} ${SOFT_CURRENCY}`,
     branchHint: 'Pfade sekundär — Ausbauen bleibt primär.',
+    holdHint: 'Halten = Mehrfachkauf',
   },
 
   prestige: {
@@ -298,10 +302,18 @@ export const farmStrings = {
     creditsAmount: (n: number) => `+${n} Münzen`,
     claimReset: (n: number) => `+${n} Münzen & Reset`,
     needMore: (amount: string) => `Noch ${amount} ${SOFT_CURRENCY} nötig`,
+    needEmbers: (have: number, need: number) =>
+      `Noch ${need - have} Münzen-Wert (min. ${need}) — Lauf lohnt sich noch nicht`,
+    needModules: (have: number, need: number) =>
+      `Erst ${need} Module online (jetzt ${have}) — Hof neu aufbauen`,
     emptyGate: 'Mehr Phyto bunkern — dann Prestige.',
     emptyShop: 'Erst prestigieren — dann Münzen-Shop.',
     shopTitle: 'Münzen-Baum',
-    shopIntro: 'Drei Äste. Münzen nur aus Prestige — nie Echtgeld.',
+    shopIntro:
+      'Drei Äste, tiefe Ränge. Höhere Stufen schalten sich mit dem Neuaufbau frei — Münzen nur aus Prestige.',
+    shopRankLocked: (need: string) => `Freischalten: ${need} ${SOFT_CURRENCY} in diesem Lauf`,
+    shopModulesLocked: (need: number) =>
+      `Freischalten: ${need} Module online in diesem Lauf`,
     max: 'Max',
     costCredits: (n: number) => `${n} Münzen`,
     keepTitle: 'Behältst du',
@@ -322,6 +334,9 @@ export const farmStrings = {
     branchUptimeBlurb: 'Längeres Offline, stärkere Schübe.',
     branchStartTitle: 'Start-Ast',
     branchStartBlurb: 'Schnellerer Neustart nach Prestige.',
+    worthItCta: (n: number) => `Jetzt lohnt sich · +${n} Münzen`,
+    worthItNear: (n: number) => `Prestige nah · Vorschau +${n} Münzen`,
+    worthItAria: 'Prestige öffnen — Münzen-Vorschau',
   },
 
   longLoop: {
@@ -358,7 +373,7 @@ export const farmStrings = {
   emberShop: {
     dominionYield: {
       name: 'Farm-Phyto',
-      blurb: '+5 % globaler Phyto/s pro Rang.',
+      blurb: '+5 % globaler Phyto/s pro Rang. Höhere Ränge nach Neuaufbau.',
       effect: (rank: number) => `+${rank * 5} % ${SOFT_CURRENCY}/s`,
     },
     longWatch: {
@@ -373,9 +388,9 @@ export const farmStrings = {
     },
     firstFlame: {
       name: 'Start-Spross',
-      blurb: 'Starte jeden Lauf mit freigeschalteter Nährstoffpumpe.',
+      blurb: 'Starte jeden Lauf mit freigeschalteter Nährpumpe.',
       effect: (rank: number) =>
-        rank > 0 ? 'Nährstoffpumpe zu Laufbeginn frei' : 'Gesperrt',
+        rank > 0 ? 'Nährpumpe zu Laufbeginn frei' : 'Gesperrt',
     },
     tapMastery: {
       name: 'Ernte-Griff',
@@ -387,6 +402,29 @@ export const farmStrings = {
       blurb: 'Starte jeden Prestige-Lauf mit +50 Phyto pro Rang.',
       effect: (rank: number) =>
         rank > 0 ? `+${rank * 50} ${SOFT_CURRENCY} zu Laufbeginn` : 'Kein Startbonus',
+    },
+    canopyBoost: {
+      name: 'Kronendach',
+      blurb: '+2 % globaler Phyto/s — Mittel-Ast nach Neuaufbau.',
+      effect: (rank: number) => `+${(rank * 2).toFixed(0)} % ${SOFT_CURRENCY}/s`,
+    },
+    nightSoil: {
+      name: 'Nachtkompost',
+      blurb: '+30 Min Soft-Offline und +1 h Hard pro Rang.',
+      effect: (rank: number) =>
+        `+${rank * 0.5} h soft / +${rank} h hard`,
+    },
+    saplingSurge: {
+      name: 'Setzling-Schub',
+      blurb: 'Starte mit Gewächshaus auf dieser Stufe (nach 3 Modulen online).',
+      effect: (rank: number) =>
+        rank > 0 ? `Gewächshaus startet auf Stufe ${rank}` : 'Kein Start-Modul',
+    },
+    greenLattice: {
+      name: 'Grünes Gitter',
+      blurb: '+1,5 % Phyto/s — später Münzen-Sink nach tiefem Neuaufbau.',
+      effect: (rank: number) =>
+        `+${(rank * 1.5).toFixed(1)} % ${SOFT_CURRENCY}/s`,
     },
   },
 

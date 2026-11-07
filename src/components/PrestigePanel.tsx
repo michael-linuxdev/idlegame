@@ -8,7 +8,16 @@ import {
   eraGateOpen,
   previewDeepPayout,
 } from '../game/longLoop'
-import { EMBER_SHOP, PRESTIGE_BRANCHES } from '../game/economy'
+import {
+  EMBER_SHOP,
+  PRESTIGE_BRANCHES,
+  PRESTIGE_MIN_EMBERS_FROM_RUN,
+  PRESTIGE_MIN_MODULES_ONLINE,
+  emberPayout,
+  emberRankUnlocked,
+  modulesOnlineCount,
+  prestigeBlockReason,
+} from '../game/economy'
 import { formatAsh } from '../game/format'
 import { t } from '../i18n'
 import type { useGame } from '../game/useGame'
@@ -24,6 +33,13 @@ export function PrestigePanel({ game, highlight }: Props) {
   const { state, nextPrestige, canPrestige, prestige, multiplier, prestigeMin, prestigeProgress } =
     game
   const teaser = prestigeProgress.ratio >= 0.5 && !canPrestige
+  const payout = emberPayout(state.ashEarned)
+  const online = modulesOnlineCount(state.owned)
+  const block = prestigeBlockReason({
+    prestiges: state.prestiges,
+    ashEarned: state.ashEarned,
+    owned: state.owned,
+  })
 
   const fill = emberShopFillRatio(state.emberUpgrades)
   const deepOpen = deepGateOpen({
@@ -39,6 +55,19 @@ export function PrestigePanel({ game, highlight }: Props) {
     lifetimePrestiges: state.prestiges,
   })
   const deepPreview = previewDeepPayout(state.seasonPoints)
+
+  let claimLabel: string
+  if (canPrestige) {
+    claimLabel = t.prestige.claimReset(nextPrestige)
+  } else if (block === 'embers') {
+    claimLabel = t.prestige.needEmbers(payout, PRESTIGE_MIN_EMBERS_FROM_RUN)
+  } else if (block === 'modules') {
+    claimLabel = t.prestige.needModules(online, PRESTIGE_MIN_MODULES_ONLINE)
+  } else {
+    claimLabel = t.prestige.needMore(
+      formatAsh(Math.max(0, prestigeMin - state.ashEarned)),
+    )
+  }
 
   return (
     <section
@@ -67,7 +96,7 @@ export function PrestigePanel({ game, highlight }: Props) {
           {t.resources.compute}
           {' · '}
           {t.prestige.gate} <strong>{formatAsh(prestigeMin)}</strong>
-          {teaser ? (
+          {teaser || canPrestige ? (
             <>
               {' · '}
               <span className="prestige-teaser">
@@ -79,6 +108,12 @@ export function PrestigePanel({ game, highlight }: Props) {
         <p className="prestige-stats">
           {t.prestige.nextPayout}{' '}
           <strong>{t.prestige.creditsAmount(nextPrestige)}</strong>
+          {state.prestiges >= 1 ? (
+            <>
+              {' · '}
+              {t.prestige.needModules(online, PRESTIGE_MIN_MODULES_ONLINE)}
+            </>
+          ) : null}
         </p>
         <div className="prestige-bar" aria-hidden="true">
           <div
@@ -106,7 +141,7 @@ export function PrestigePanel({ game, highlight }: Props) {
           </div>
         </div>
 
-        {!canPrestige && prestigeProgress.ratio < 0.05 ? (
+        {!canPrestige && prestigeProgress.ratio < 0.05 && block === 'ash' ? (
           <p className="panel-empty">{t.prestige.emptyGate}</p>
         ) : null}
         <button
@@ -115,11 +150,7 @@ export function PrestigePanel({ game, highlight }: Props) {
           disabled={!canPrestige}
           onClick={prestige}
         >
-          {canPrestige
-            ? t.prestige.claimReset(nextPrestige)
-            : t.prestige.needMore(
-                formatAsh(Math.max(0, prestigeMin - state.ashEarned)),
-              )}
+          {claimLabel}
         </button>
       </div>
 
@@ -143,7 +174,26 @@ export function PrestigePanel({ game, highlight }: Props) {
                   const rank = state.emberUpgrades[item.id]
                   const maxed = rank >= item.maxRank
                   const cost = item.cost(rank)
-                  const affordable = state.embers >= cost && !maxed
+                  const unlocked = emberRankUnlocked(
+                    item,
+                    rank,
+                    state.ashEarned,
+                    online,
+                  )
+                  const affordable = state.embers >= cost && !maxed && unlocked
+                  const needAsh = item.rankUnlockAsh?.(rank) ?? 0
+                  const needMods = item.unlockModulesOnline
+                  let lockHint: string | null = null
+                  if (!maxed && !unlocked) {
+                    if (
+                      needMods != null &&
+                      online < needMods
+                    ) {
+                      lockHint = t.prestige.shopModulesLocked(needMods)
+                    } else if (needAsh > 0) {
+                      lockHint = t.prestige.shopRankLocked(formatAsh(needAsh))
+                    }
+                  }
                   return (
                     <li key={item.id} className="ember-shop-row">
                       <div className="ember-shop-info">
@@ -155,6 +205,9 @@ export function PrestigePanel({ game, highlight }: Props) {
                         </div>
                         <p className="ember-shop-blurb">{item.blurb}</p>
                         <p className="ember-shop-effect">{item.effectLabel(rank)}</p>
+                        {lockHint ? (
+                          <p className="ember-shop-lock muted">{lockHint}</p>
+                        ) : null}
                       </div>
                       <button
                         type="button"
@@ -162,7 +215,11 @@ export function PrestigePanel({ game, highlight }: Props) {
                         disabled={!affordable}
                         onClick={() => game.buyMeta(item.id)}
                       >
-                        {maxed ? t.prestige.max : t.prestige.costCredits(cost)}
+                        {maxed
+                          ? t.prestige.max
+                          : !unlocked
+                            ? t.upgrade.locked
+                            : t.prestige.costCredits(cost)}
                       </button>
                     </li>
                   )

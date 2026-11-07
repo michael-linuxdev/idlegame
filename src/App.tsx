@@ -33,7 +33,11 @@ export default function App() {
     <div className="app-shell">
       <main className={`app-main${tab === 'fortress' ? ' map-mode' : ''}`}>
         {tab === 'fortress' ? (
-          <FortressMap game={game} highlightId={ftueHighlight} />
+          <FortressMap
+            game={game}
+            highlightId={ftueHighlight}
+            onOpenTab={onTabChange}
+          />
         ) : null}
         {tab === 'prestige' ? (
           <PrestigePanel game={game} highlight={ftueHighlight === 'prestige'} />

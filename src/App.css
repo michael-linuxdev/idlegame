@@ -416,8 +416,48 @@
 }
 
 .map-hud .best-buy-chip.affordable {
-  border-color: color-mix(in srgb, var(--oc-ember) 50%, var(--oc-stroke));
+  border-color: color-mix(in srgb, var(--oc-ember) 55%, var(--oc-stroke));
   color: var(--oc-ember-dim);
+  font-size: 0.68rem;
+  max-width: min(52vw, 13rem);
+  box-shadow: 0 2px 10px color-mix(in srgb, var(--oc-ember) 22%, transparent);
+}
+
+.map-hud .prestige-map-cta {
+  position: absolute;
+  left: 0.45rem;
+  right: auto;
+  top: calc(5.05rem + var(--safe-top));
+  z-index: 2;
+  pointer-events: auto;
+  margin: 0;
+  padding: 0.28rem 0.65rem;
+  max-width: min(48vw, 12rem);
+  border: 1px solid color-mix(in srgb, var(--oc-ember) 45%, var(--oc-stroke));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--oc-bg-raised) 42%, transparent);
+  backdrop-filter: blur(6px);
+  color: var(--oc-ember-dim);
+  font: inherit;
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(20, 35, 25, 0.12);
+}
+
+.map-hud .prestige-map-cta.ready {
+  border-color: color-mix(in srgb, var(--oc-ember) 70%, var(--oc-stroke));
+}
+
+.upgrade-hold-hint {
+  margin: 0.25rem 0 0;
+  font-size: 0.62rem;
+  opacity: 0.72;
+  text-align: center;
 }
 
 /* Compact Schub FAB — always right; claims stay left (never collide) */
