@@ -311,33 +311,38 @@ export function FortressMap({ game, highlightId }: Props) {
                   producing={producing}
                   selected={selectedHere}
                 />
-                <span className="map-building-label">
-                  <span className="map-building-name">{def.name}</span>
-                  <span className="map-building-meta">
-                    {unlocked ? (
-                      <>
-                        <span className="map-building-lvl">
-                          {t.hud.levelShort(level)}
-                        </span>
-                        {producing || selectedHere ? (
-                          <span className="map-building-rate">
-                            {formatRate(buildingRate)}
+                {/* Locked: tiny chip until selected — kills GESPERRT plaque piles */}
+                {unlocked || selectedHere ? (
+                  <span className="map-building-label">
+                    <span className="map-building-name">{def.name}</span>
+                    <span className="map-building-meta">
+                      {unlocked ? (
+                        <>
+                          <span className="map-building-lvl">
+                            {t.hud.levelShort(level)}
                           </span>
-                        ) : null}
-                      </>
-                    ) : (
-                      <span className="map-building-lock-line">
-                        <span className="map-building-lock">{t.hud.locked}</span>
-                        <span className="map-building-gate" aria-hidden="true">
-                          ·
+                          {producing || selectedHere ? (
+                            <span className="map-building-rate">
+                              {formatRate(buildingRate)}
+                            </span>
+                          ) : null}
+                        </>
+                      ) : (
+                        <span className="map-building-lock-line">
+                          <span className="map-building-lock">{t.hud.locked}</span>
+                          <span className="map-building-gate" aria-hidden="true">
+                            ·
+                          </span>
+                          <span className="map-building-gate">
+                            {shortUnlockGate(def)}
+                          </span>
                         </span>
-                        <span className="map-building-gate">
-                          {shortUnlockGate(def)}
-                        </span>
-                      </span>
-                    )}
+                      )}
+                    </span>
                   </span>
-                </span>
+                ) : (
+                  <span className="map-building-lock-chip" aria-hidden="true" />
+                )}
               </button>
             )
           })}
