@@ -51,10 +51,11 @@ export function DailyOpsBanner({ game, onClaimed }: Props) {
 
   return (
     <div
-      className={`banner daily-ops map-banner compact${comeback ? ' comeback' : ''}`}
+      className={`banner daily-ops map-banner compact claim-fab${comeback ? ' comeback' : ''}`}
       role="status"
     >
-      <div className="banner-copy">
+      {/* Map-mode: single CTA — detail copy hidden; no kicker stacked on Abholen */}
+      <div className="banner-copy claim-detail">
         <p className="banner-kicker">{t.daily.kicker}</p>
         <p className="banner-oneline">
           <strong>{dailyPreview.label}</strong>
@@ -78,7 +79,12 @@ export function DailyOpsBanner({ game, onClaimed }: Props) {
           ))}
         </div>
       </div>
-      <button type="button" className="btn buy pulse-ready" onClick={onClaim}>
+      <button
+        type="button"
+        className="btn buy pulse-ready"
+        onClick={onClaim}
+        aria-label={`${t.daily.kicker}: ${bits.join(', ') || streakLabel}`}
+      >
         {t.daily.claim}
       </button>
     </div>
