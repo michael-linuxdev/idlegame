@@ -19,6 +19,18 @@ import {
   type GeneratorId,
 } from './generators'
 import {
+  canClaimDaily,
+  nextStreakAfterClaim,
+  rewardForStreak,
+} from './dailyOps'
+import {
+  BANDWIDTH_SURGE_GOAL,
+  BANDWIDTH_SURGE_GOAL_REWARD,
+  BANDWIDTH_SURGE_MULT,
+  bandwidthSurgeWindowKey,
+  isBandwidthSurgeActive,
+} from './events'
+import {
   CLAN_BOOST,
   CLAN_BOOST_MAX,
   COSMETICS,
@@ -58,6 +70,18 @@ export interface GameState {
   skipDayKey: string
   /** Clan boost expiry timestamp; 0 = inactive */
   clanBoostExpiresAt: number
+  /** Daily Ops — last claim day key (local); empty = never */
+  dailyClaimDay: string
+  /** Daily Ops streak (freeze on miss, never energy) */
+  dailyStreak: number
+  /** Bandwidth Surge window key last dismissed */
+  eventDismissedKey: string
+  /** Compute earned toward surge goal in current window */
+  eventAshProgress: number
+  /** Window key for eventAshProgress */
+  eventProgressKey: string
+  /** Window key when surge goal reward was claimed */
+  eventGoalClaimedKey: string
 }
 
 export const STORAGE_KEY = 'orbit-rack-save-v2'
@@ -92,6 +116,12 @@ export function createInitialState(now = Date.now()): GameState {
     skipHoursUsedToday: 0,
     skipDayKey: dayKey(now),
     clanBoostExpiresAt: 0,
+    dailyClaimDay: '',
+    dailyStreak: 0,
+    eventDismissedKey: '',
+    eventAshProgress: 0,
+    eventProgressKey: '',
+    eventGoalClaimedKey: '',
   }
 }
 
@@ -113,7 +143,29 @@ export function createPostPrestigeState(prev: GameState, now = Date.now()): Game
     skipHoursUsedToday: prev.skipHoursUsedToday,
     skipDayKey: prev.skipDayKey,
     clanBoostExpiresAt: prev.clanBoostExpiresAt,
+    dailyClaimDay: prev.dailyClaimDay,
+    dailyStreak: prev.dailyStreak,
+    eventDismissedKey: prev.eventDismissedKey,
+    eventAshProgress: prev.eventAshProgress,
+    eventProgressKey: prev.eventProgressKey,
+    eventGoalClaimedKey: prev.eventGoalClaimedKey,
   }
+}
+
+/** Sync event progress window; reset progress when a new surge window opens. */
+export function syncEventWindow(state: GameState, now = Date.now()): GameState {
+  if (!isBandwidthSurgeActive(now)) return state
+  const key = bandwidthSurgeWindowKey(now)
+  if (state.eventProgressKey === key) return state
+  return {
+    ...state,
+    eventProgressKey: key,
+    eventAshProgress: 0,
+  }
+}
+
+export function eventProductionMult(now = Date.now()): number {
+  return isBandwidthSurgeActive(now) ? BANDWIDTH_SURGE_MULT : 1
 }
 
 /** Effective clan multiplier honoring expiry + hard max. */
@@ -136,11 +188,21 @@ export function syncClanBoost(state: GameState, now = Date.now()): GameState {
 export function productionPerSecond(state: GameState, now = Date.now()): number {
   const mPrestige = prestigeMultiplier(state.emberUpgrades)
   const mClan = effectiveClanMult(state, now)
+  const mEvent = eventProductionMult(now)
   let sum = 0
   for (const def of GENERATORS) {
     sum += generatorRate(def, state.owned[def.id] ?? 0)
   }
-  return sum * mPrestige * mClan
+  return sum * mPrestige * mClan * mEvent
+}
+
+function withEventProgress(state: GameState, gained: number, now: number): GameState {
+  if (gained <= 0 || !isBandwidthSurgeActive(now)) return state
+  const synced = syncEventWindow(state, now)
+  return {
+    ...synced,
+    eventAshProgress: synced.eventAshProgress + gained,
+  }
 }
 
 export function nextPrestigeEmbers(ashEarned: number): number {
@@ -171,15 +233,16 @@ export function prestigeProgress(state: GameState): {
 export function applyTick(state: GameState, dtSeconds: number): GameState {
   if (dtSeconds <= 0) return state
   const now = Date.now()
-  const synced = syncClanBoost(state, now)
+  const synced = syncEventWindow(syncClanBoost(state, now), now)
   const gained = productionPerSecond(synced, now) * dtSeconds
   if (gained <= 0) {
     return { ...synced, lastSeen: now }
   }
+  const withProg = withEventProgress(synced, gained, now)
   return {
-    ...synced,
-    ash: synced.ash + gained,
-    ashEarned: synced.ashEarned + gained,
+    ...withProg,
+    ash: withProg.ash + gained,
+    ashEarned: withProg.ashEarned + gained,
     lastSeen: now,
   }
 }
@@ -198,7 +261,7 @@ export function skipHoursRemaining(state: GameState, now = Date.now()): number {
 export function buyTimeSkip(state: GameState, id: TimeSkipId, now = Date.now()): GameState {
   const def = TIME_SKIPS.find((t) => t.id === id)
   if (!def) return state
-  let next = syncClanBoost(withSkipDay(state, now), now)
+  let next = syncEventWindow(syncClanBoost(withSkipDay(state, now), now), now)
   const remaining = DAILY_SKIP_CAP_HOURS - next.skipHoursUsedToday
   if (remaining <= 0) return state
   const hours = Math.min(def.hours, remaining, 4)
@@ -206,12 +269,55 @@ export function buyTimeSkip(state: GameState, id: TimeSkipId, now = Date.now()):
   if (next.obsidian < def.cost) return state
   const rate = productionPerSecond(next, now)
   const gained = rate * hours * 3600
+  next = withEventProgress(next, gained, now)
   return {
     ...next,
     obsidian: next.obsidian - def.cost,
     ash: next.ash + gained,
     ashEarned: next.ashEarned + gained,
     skipHoursUsedToday: next.skipHoursUsedToday + hours,
+    lastSeen: now,
+  }
+}
+
+export function claimDailyOps(state: GameState, now = Date.now()): GameState {
+  if (!canClaimDaily(state.dailyClaimDay, now)) return state
+  const streak = nextStreakAfterClaim(state.dailyClaimDay, state.dailyStreak, now)
+  const rate = productionPerSecond(state, now)
+  const reward = rewardForStreak(Math.max(0, streak - 1), rate)
+  let next = syncEventWindow(syncClanBoost(state, now), now)
+  next = withEventProgress(next, reward.compute, now)
+  return {
+    ...next,
+    ash: next.ash + reward.compute,
+    ashEarned: next.ashEarned + reward.compute,
+    embers: next.embers + reward.credits,
+    obsidian: next.obsidian + reward.obsidian,
+    dailyClaimDay: dayKey(now),
+    dailyStreak: streak,
+    lastSeen: now,
+  }
+}
+
+export function dismissBandwidthSurge(state: GameState, now = Date.now()): GameState {
+  if (!isBandwidthSurgeActive(now)) return state
+  return {
+    ...state,
+    eventDismissedKey: bandwidthSurgeWindowKey(now),
+    lastSeen: now,
+  }
+}
+
+export function claimBandwidthSurgeGoal(state: GameState, now = Date.now()): GameState {
+  if (!isBandwidthSurgeActive(now)) return state
+  const key = bandwidthSurgeWindowKey(now)
+  let next = syncEventWindow(state, now)
+  if (next.eventGoalClaimedKey === key) return state
+  if (next.eventAshProgress < BANDWIDTH_SURGE_GOAL) return state
+  return {
+    ...next,
+    obsidian: next.obsidian + BANDWIDTH_SURGE_GOAL_REWARD,
+    eventGoalClaimedKey: key,
     lastSeen: now,
   }
 }
@@ -277,17 +383,19 @@ export function applyOfflineCatchup(
 ): { state: GameState; gained: number } {
   const elapsedMs = Math.max(0, now - state.lastSeen)
   const elapsedSec = elapsedMs / 1000
-  const rate = productionPerSecond(state)
-  const caps = offlineCapsHours(state.emberUpgrades)
+  const base = syncEventWindow(syncClanBoost(state, now), now)
+  const rate = productionPerSecond(base, now)
+  const caps = offlineCapsHours(base.emberUpgrades)
   const gained = offlineCatchupAsh(rate, elapsedSec, caps.soft, caps.hard)
   if (gained <= 0) {
-    return { state: { ...state, lastSeen: now }, gained: 0 }
+    return { state: { ...base, lastSeen: now }, gained: 0 }
   }
+  const withProg = withEventProgress(base, gained, now)
   return {
     state: {
-      ...state,
-      ash: state.ash + gained,
-      ashEarned: state.ashEarned + gained,
+      ...withProg,
+      ash: withProg.ash + gained,
+      ashEarned: withProg.ashEarned + gained,
       lastSeen: now,
     },
     gained,

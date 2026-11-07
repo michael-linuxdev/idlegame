@@ -110,6 +110,26 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
       ? Math.max(0, parsed.clanBoostExpiresAt)
       : 0
 
+  const dailyClaimDay =
+    typeof parsed.dailyClaimDay === 'string' ? parsed.dailyClaimDay : ''
+  const dailyStreak =
+    typeof parsed.dailyStreak === 'number' && Number.isFinite(parsed.dailyStreak)
+      ? Math.max(0, Math.floor(parsed.dailyStreak))
+      : 0
+  const eventDismissedKey =
+    typeof parsed.eventDismissedKey === 'string' ? parsed.eventDismissedKey : ''
+  const eventAshProgress =
+    typeof parsed.eventAshProgress === 'number' &&
+    Number.isFinite(parsed.eventAshProgress)
+      ? Math.max(0, parsed.eventAshProgress)
+      : 0
+  const eventProgressKey =
+    typeof parsed.eventProgressKey === 'string' ? parsed.eventProgressKey : ''
+  const eventGoalClaimedKey =
+    typeof parsed.eventGoalClaimedKey === 'string'
+      ? parsed.eventGoalClaimedKey
+      : ''
+
   const owned = parseOwned(parsed.owned)
   if (!isRecord(parsed.owned) || Object.keys(parsed.owned).length === 0) {
     owned.emberPit = 1
@@ -131,6 +151,12 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
     skipHoursUsedToday,
     skipDayKey,
     clanBoostExpiresAt,
+    dailyClaimDay,
+    dailyStreak,
+    eventDismissedKey,
+    eventAshProgress,
+    eventProgressKey,
+    eventGoalClaimedKey,
   }
 }
 

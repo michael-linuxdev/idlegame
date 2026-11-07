@@ -8,6 +8,8 @@ import {
 import { formatAsh, formatRate } from '../game/format'
 import type { useGame } from '../game/useGame'
 import { BuildingSilhouette } from './BuildingSilhouette'
+import { DailyOpsBanner } from './DailyOpsBanner'
+import { EventBanner } from './EventBanner'
 import { UpgradeSheet } from './UpgradeSheet'
 
 type GameApi = ReturnType<typeof useGame>
@@ -18,10 +20,18 @@ interface Props {
 }
 
 export function FortressMap({ game, highlightId }: Props) {
-  const { state, rate, multiplier, clanMult, rake, tapReady, equippedCosmetic } =
-    game
+  const {
+    state,
+    rate,
+    multiplier,
+    clanMult,
+    eventMult,
+    rake,
+    tapReady,
+    equippedCosmetic,
+  } = game
   const [selected, setSelected] = useState<GeneratorId | null>(null)
-  const totalMult = multiplier * clanMult
+  const totalMult = multiplier * clanMult * eventMult
   const skinClass = equippedCosmetic?.accentClass ?? 'skin-steel'
 
   return (
@@ -79,8 +89,15 @@ export function FortressMap({ game, highlightId }: Props) {
         </div>
       ) : null}
 
+      <DailyOpsBanner game={game} />
+      <EventBanner game={game} />
+
       <div className={`fortress-stage ${skinClass}`}>
-        <div className="fortress-map" role="application" aria-label="Station build map">
+        <div
+          className="fortress-map slots-10"
+          role="application"
+          aria-label="Station build map"
+        >
           <div className="map-terrain" aria-hidden="true">
             <div className="map-grid" />
             <div className="map-ridge" />
@@ -144,7 +161,7 @@ export function FortressMap({ game, highlightId }: Props) {
             )
           })}
         </div>
-        <p className="map-hint">Tap a module to bring it online or upgrade it.</p>
+        <p className="map-hint">Modul tippen zum Online-Schalten oder Upgraden.</p>
       </div>
 
       {selected ? (

@@ -59,6 +59,34 @@ export function BuildingSilhouette({ kind, level, locked = false }: Props) {
           <span className="sil-antenna" />
         </>
       ) : null}
+      {kind === 'battery' ? (
+        <>
+          <span className="sil-base" />
+          <span className="sil-body battery-block" />
+          <span className="sil-cell" />
+        </>
+      ) : null}
+      {kind === 'cache' ? (
+        <>
+          <span className="sil-base" />
+          <span className="sil-body cache-pod" />
+          <span className="sil-cache-ring" />
+        </>
+      ) : null}
+      {kind === 'quantum' ? (
+        <>
+          <span className="sil-base" />
+          <span className="sil-body quantum-cryo" />
+          <span className="sil-frost" />
+        </>
+      ) : null}
+      {kind === 'scrub' ? (
+        <>
+          <span className="sil-base wide" />
+          <span className="sil-body scrub-inline" />
+          <span className="sil-scrub-flow" />
+        </>
+      ) : null}
     </div>
   )
 }
