@@ -1,3 +1,7 @@
+import type { useGame } from '../game/useGame'
+
+type GameApi = ReturnType<typeof useGame>
+
 const FAKE_LEADERBOARD = [
   { rank: 1, clan: 'Helios Fabric', score: 18420 },
   { rank: 2, clan: 'Vector Uplink', score: 15110 },
@@ -8,7 +12,20 @@ const FAKE_LEADERBOARD = [
   { rank: 7, clan: 'Lagrange Nine', score: 2890 },
 ]
 
-export function ClanPanel() {
+interface Props {
+  game: GameApi
+}
+
+function formatMsLeft(ms: number): string {
+  const totalSec = Math.ceil(ms / 1000)
+  const m = Math.floor(totalSec / 60)
+  const s = totalSec % 60
+  return `${m}:${String(s).padStart(2, '0')}`
+}
+
+export function ClanPanel({ game }: Props) {
+  const { clanBoostActive, clanBoostMsLeft, clanMult } = game
+
   return (
     <section className="panel clan-panel" aria-labelledby="clan-heading">
       <header className="panel-header">
@@ -24,6 +41,16 @@ export function ClanPanel() {
         <div className="clan-card-label">Your clan</div>
         <div className="clan-card-name">Orbit Rack</div>
         <div className="clan-card-meta">Season 0 — Survey · Rank 3 · Placeholder</div>
+        <div className="clan-boost-status">
+          {clanBoostActive ? (
+            <>
+              Uplink Banner active · ×{clanMult.toFixed(2)} ·{' '}
+              {formatMsLeft(clanBoostMsLeft)} left
+            </>
+          ) : (
+            <>No active boost — buy Uplink Banner in Shop</>
+          )}
+        </div>
       </div>
 
       <h3 className="subhead">Season leaderboard</h3>

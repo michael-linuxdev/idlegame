@@ -4,10 +4,11 @@ import { FortressMap } from './components/FortressMap'
 import { FtueCoach } from './components/FtueCoach'
 import { InstallPrompt } from './components/InstallPrompt'
 import { PrestigePanel } from './components/PrestigePanel'
+import { ShopPanel } from './components/ShopPanel'
 import { useGame } from './game/useGame'
 import './App.css'
 
-type Tab = 'fortress' | 'prestige' | 'clan'
+type Tab = 'fortress' | 'prestige' | 'clan' | 'shop'
 
 export default function App() {
   const game = useGame()
@@ -28,7 +29,8 @@ export default function App() {
         {tab === 'prestige' ? (
           <PrestigePanel game={game} highlight={ftueHighlight === 'prestige'} />
         ) : null}
-        {tab === 'clan' ? <ClanPanel /> : null}
+        {tab === 'clan' ? <ClanPanel game={game} /> : null}
+        {tab === 'shop' ? <ShopPanel game={game} /> : null}
       </main>
 
       <FtueCoach
@@ -44,7 +46,7 @@ export default function App() {
         holdForFtue={holdInstall}
       />
 
-      <nav className="tab-bar tabs-3" aria-label="Primary">
+      <nav className="tab-bar tabs-4" aria-label="Primary">
         <button
           type="button"
           className={tab === 'fortress' ? 'tab active' : 'tab'}
@@ -65,6 +67,13 @@ export default function App() {
           onClick={() => setTab('clan')}
         >
           Clan
+        </button>
+        <button
+          type="button"
+          className={tab === 'shop' ? 'tab active' : 'tab'}
+          onClick={() => setTab('shop')}
+        >
+          Shop
         </button>
       </nav>
     </div>

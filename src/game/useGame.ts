@@ -12,17 +12,30 @@ import {
   type GeneratorId,
 } from './generators'
 import {
+  cosmeticById,
+  type CosmeticId,
+  type ObsidianPackDef,
+  type TimeSkipId,
+} from './monetization'
+import {
   applyOfflineCatchup,
   applyTick,
+  buyClanBoost,
+  buyCosmetic,
   buyEmberUpgrade,
   buyGenerator,
+  buyTimeSkip,
   canPrestigeNow,
   doPrestige,
+  effectiveClanMult,
+  equipCosmetic,
+  mockBuyPack,
   nextPrestigeEmbers,
   prestigeMinAsh,
   prestigeMultiplier,
   prestigeProgress,
   productionPerSecond,
+  skipHoursRemaining,
   type GameState,
 } from './state'
 import { loadState, saveState } from './storage'
@@ -93,7 +106,7 @@ export function useGame() {
     setState((s) => {
       const now = Date.now()
       if (s.lastTapAt > 0 && now - s.lastTapAt < TAP_COOLDOWN_MS) return s
-      const rate = productionPerSecond(s)
+      const rate = productionPerSecond(s, now)
       const gained = Math.max(rate * TAP_BONUS_SECONDS, 1)
       return {
         ...s,
@@ -117,11 +130,39 @@ export function useGame() {
     setState((s) => doPrestige(s))
   }, [])
 
+  const purchaseTimeSkip = useCallback((id: TimeSkipId) => {
+    setState((s) => buyTimeSkip(s, id))
+  }, [])
+
+  const purchaseCosmetic = useCallback((id: CosmeticId) => {
+    setState((s) => buyCosmetic(s, id))
+  }, [])
+
+  const setEquippedCosmetic = useCallback((id: CosmeticId) => {
+    setState((s) => equipCosmetic(s, id))
+  }, [])
+
+  const purchaseClanBoost = useCallback(() => {
+    setState((s) => buyClanBoost(s))
+  }, [])
+
+  const purchasePack = useCallback((pack: ObsidianPackDef) => {
+    setState((s) => mockBuyPack(s, pack))
+  }, [])
+
   const dismissOffline = useCallback(() => setOfflineGained(null), [])
 
   const mult = prestigeMultiplier(state.emberUpgrades)
+  const clanMult = effectiveClanMult(state, nowTick)
   const progress = prestigeProgress(state)
   const discount = foundryDiscountMult(state.emberUpgrades)
+  const equipped = cosmeticById(state.equippedCosmetic)
+  const skipLeft = skipHoursRemaining(state, nowTick)
+  const clanBoostActive =
+    state.clanBoostExpiresAt > nowTick && clanMult > 1
+  const clanBoostMsLeft = clanBoostActive
+    ? Math.max(0, state.clanBoostExpiresAt - nowTick)
+    : 0
 
   const costOf = useCallback(
     (id: GeneratorId) => {
@@ -148,8 +189,13 @@ export function useGame() {
 
   return {
     state,
-    rate: productionPerSecond(state),
+    rate: productionPerSecond(state, nowTick),
     multiplier: mult,
+    clanMult,
+    clanBoostActive,
+    clanBoostMsLeft,
+    skipHoursRemaining: skipLeft,
+    equippedCosmetic: equipped,
     nextPrestige: nextPrestigeEmbers(state.ashEarned),
     prestigeMin: prestigeMinAsh(state.prestiges),
     prestigeProgress: progress,
@@ -160,6 +206,11 @@ export function useGame() {
     buy,
     buyMeta,
     prestige,
+    purchaseTimeSkip,
+    purchaseCosmetic,
+    setEquippedCosmetic,
+    purchaseClanBoost,
+    purchasePack,
     costOf,
     unlocked,
     offlineGained,
