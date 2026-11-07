@@ -1,6 +1,6 @@
 import { EMPTY_EMBER_UPGRADES, type EmberUpgrades } from './economy'
 import { GENERATOR_IDS, type GeneratorId } from './generators'
-import { COSMETICS, dayKey, type CosmeticId } from './monetization'
+import { COSMETICS, dayKey, weekKey, type CosmeticId } from './monetization'
 import { ACHIEVEMENT_IDS, type AchievementId } from './achievements'
 import { emptyBranches } from './branches'
 import { emptyQuestProgress, type QuestProgress } from './quests'
@@ -163,6 +163,47 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
   const branches = parseBranches(parsed.branches)
   const questBundle = parseQuests(parsed.questDayKey, parsed.quests)
 
+  const ownedOfferIds = Array.isArray(parsed.ownedOfferIds)
+    ? parsed.ownedOfferIds.filter((id): id is string => typeof id === 'string')
+    : []
+  const adsRemoved = parsed.adsRemoved === true
+  const lastRewardedAdAt =
+    typeof parsed.lastRewardedAdAt === 'number' &&
+    Number.isFinite(parsed.lastRewardedAdAt)
+      ? Math.max(0, parsed.lastRewardedAdAt)
+      : 0
+  const rewardedAdClaims =
+    typeof parsed.rewardedAdClaims === 'number' &&
+    Number.isFinite(parsed.rewardedAdClaims)
+      ? Math.max(0, Math.floor(parsed.rewardedAdClaims))
+      : 0
+  const yieldBoostExpiresAt =
+    typeof parsed.yieldBoostExpiresAt === 'number' &&
+    Number.isFinite(parsed.yieldBoostExpiresAt)
+      ? Math.max(0, parsed.yieldBoostExpiresAt)
+      : 0
+  const bpWeekKey =
+    typeof parsed.bpWeekKey === 'string' && parsed.bpWeekKey.length > 0
+      ? parsed.bpWeekKey
+      : weekKey()
+  const bpXp =
+    typeof parsed.bpXp === 'number' && Number.isFinite(parsed.bpXp)
+      ? Math.max(0, Math.floor(parsed.bpXp))
+      : 0
+  const bpClaimedFree = Array.isArray(parsed.bpClaimedFree)
+    ? parsed.bpClaimedFree.filter(
+        (n): n is number => typeof n === 'number' && Number.isFinite(n),
+      )
+    : []
+  const bpPremium = parsed.bpPremium === true
+  const bpClaimedPremium = Array.isArray(parsed.bpClaimedPremium)
+    ? parsed.bpClaimedPremium.filter(
+        (n): n is number => typeof n === 'number' && Number.isFinite(n),
+      )
+    : []
+  const bpDailyXpDay =
+    typeof parsed.bpDailyXpDay === 'string' ? parsed.bpDailyXpDay : ''
+
   return {
     ash,
     ashEarned,
@@ -195,6 +236,17 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
     branches,
     questDayKey: questBundle.dayKey,
     quests: questBundle.quests,
+    ownedOfferIds,
+    adsRemoved,
+    lastRewardedAdAt,
+    rewardedAdClaims,
+    yieldBoostExpiresAt,
+    bpWeekKey,
+    bpXp,
+    bpClaimedFree,
+    bpPremium,
+    bpClaimedPremium,
+    bpDailyXpDay,
   }
 }
 

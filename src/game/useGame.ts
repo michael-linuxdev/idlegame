@@ -13,8 +13,11 @@ import {
 } from './generators'
 import {
   cosmeticById,
+  dayKey,
+  rewardedAdCooldownMsLeft,
+  rewardedAdReady,
   type CosmeticId,
-  type ObsidianPackDef,
+  type ShopOfferDef,
   type TimeSkipId,
 } from './monetization'
 import { canClaimDaily, previewDailyReward } from './dailyOps'
@@ -40,13 +43,18 @@ import {
   buyGenerator,
   buyTimeSkip,
   canPrestigeNow,
+  buyYieldBoost,
   claimBandwidthSurgeGoal,
+  claimBattlePassDailyXp,
+  claimBattlePassTier,
   claimDailyOps,
   claimQuestReward,
+  claimRewardedAd,
   collectReadyAchievements,
   dismissBandwidthSurge,
   doPrestige,
   effectiveClanMult,
+  effectiveYieldBoostMult,
   equipCosmetic,
   eventProductionMult,
   claimOfflineReward,
@@ -54,7 +62,7 @@ import {
   levelProductionMult,
   levelProgress,
   lineCostMult,
-  mockBuyPack,
+  mockBuyOffer,
   nextPrestigeEmbers,
   playerLevelOf,
   prestigeMinAsh,
@@ -171,8 +179,31 @@ export function useGame() {
     setState((s) => buyClanBoost(s))
   }, [])
 
-  const purchasePack = useCallback((pack: ObsidianPackDef) => {
-    setState((s) => mockBuyPack(s, pack))
+  const purchasePack = useCallback((pack: ShopOfferDef) => {
+    setState((s) => mockBuyOffer(s, pack))
+  }, [])
+
+  const purchaseOffer = useCallback((offer: ShopOfferDef) => {
+    setState((s) => mockBuyOffer(s, offer))
+  }, [])
+
+  const purchaseYieldBoost = useCallback(() => {
+    setState((s) => buyYieldBoost(s))
+  }, [])
+
+  const watchRewardedAd = useCallback(() => {
+    setState((s) => {
+      const result = claimRewardedAd(s)
+      return result.ok ? result.state : s
+    })
+  }, [])
+
+  const claimBpDailyXp = useCallback(() => {
+    setState((s) => claimBattlePassDailyXp(s))
+  }, [])
+
+  const claimBpTier = useCallback((tier: number, track: 'free' | 'premium') => {
+    setState((s) => claimBattlePassTier(s, tier, track))
   }, [])
 
   const claimDaily = useCallback(() => {
@@ -210,6 +241,17 @@ export function useGame() {
   const clanBoostMsLeft = clanBoostActive
     ? Math.max(0, state.clanBoostExpiresAt - nowTick)
     : 0
+
+  const yieldBoostMult = effectiveYieldBoostMult(state, nowTick)
+  const yieldBoostActive = yieldBoostMult > 1
+  const yieldBoostMsLeft = yieldBoostActive
+    ? Math.max(0, state.yieldBoostExpiresAt - nowTick)
+    : 0
+  const adReady = !state.adsRemoved && rewardedAdReady(state.lastRewardedAdAt, nowTick)
+  const adCooldownMs = state.adsRemoved
+    ? 0
+    : rewardedAdCooldownMsLeft(state.lastRewardedAdAt, nowTick)
+  const bpDailyXpReady = state.bpDailyXpDay !== dayKey(nowTick)
 
   const dailyReady = canClaimDaily(state.dailyClaimDay, nowTick)
   const dailyPreview = previewDailyReward(
@@ -297,6 +339,12 @@ export function useGame() {
     eventMult,
     clanBoostActive,
     clanBoostMsLeft,
+    yieldBoostActive,
+    yieldBoostMsLeft,
+    yieldBoostMult,
+    adReady,
+    adCooldownMs,
+    bpDailyXpReady,
     skipHoursRemaining: skipLeft,
     equippedCosmetic: equipped,
     nextPrestige: nextPrestigeEmbers(state.ashEarned),
@@ -315,6 +363,11 @@ export function useGame() {
     setEquippedCosmetic,
     purchaseClanBoost,
     purchasePack,
+    purchaseOffer,
+    purchaseYieldBoost,
+    watchRewardedAd,
+    claimBpDailyXp,
+    claimBpTier,
     claimDaily,
     dismissEvent,
     claimEventGoal,
