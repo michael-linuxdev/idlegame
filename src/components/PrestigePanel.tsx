@@ -251,17 +251,20 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
           <button
             type="button"
             className="btn buy"
-            disabled={!helperRank || state.erbstuecke < helperRank.cost}
+            disabled={!helperRank || state[helperRank.currency] < helperRank.cost}
             onClick={game.hireHelper}
           >
             {!helperRank
               ? t.helper.maxed
               : state.helperLevel === 0
-                ? t.helper.hire(helperRank.cost)
+                ? t.helper.hire(t.helper.price(helperRank.cost, helperRank.currency))
                 : helperIsPro(state.helperLevel + 1)
-                  ? t.helper.proUpgrade(helperRank.cost)
-                  : t.helper.upgrade(helperRank.cost)}
+                  ? t.helper.proUpgrade(t.helper.price(helperRank.cost, helperRank.currency))
+                  : t.helper.upgrade(t.helper.price(helperRank.cost, helperRank.currency))}
           </button>
+        ) : null}
+        {game.helperUnlocked && helperRank && helperRank.currency !== 'erbstuecke' && state[helperRank.currency] < helperRank.cost ? (
+          <p className="muted helper-pro-note">{t.helper.needLayer(helperRank.currency)}</p>
         ) : null}
         {game.helperUnlocked && helperRank && helperIsPro(state.helperLevel + 1) ? (
           <p className="muted helper-pro-note">{t.helper.proNote}</p>

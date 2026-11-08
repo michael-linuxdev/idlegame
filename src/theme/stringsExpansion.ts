@@ -24,8 +24,12 @@ export const expansionStrings = {
     locked: 'Kommt nach deinem ersten Saisonende vorbei.',
     rank: (rank: number, max: number) => `Stufe ${rank}/${max}`,
     speed: (sec: string) => `1 Ausbau alle ${sec} s`,
-    hire: (cost: number) => `Einstellen · ${cost} Erbstücke`,
-    upgrade: (cost: number) => `Schneller · ${cost} Erbstücke`,
+    hire: (cost: string) => `Einstellen · ${cost}`,
+    upgrade: (cost: string) => `Schneller · ${cost}`,
+    price: (cost: number, currency: 'erbstuecke' | 'sproesslinge' | 'vermaechtnis') =>
+      `${cost} ${currency === 'erbstuecke' ? 'Erbstücke' : currency === 'sproesslinge' ? 'Sprösslinge' : 'Vermächtnis'}`,
+    needLayer: (currency: 'sproesslinge' | 'vermaechtnis') =>
+      currency === 'sproesslinge' ? 'Sprösslinge gibt es beim Tiefen Winter.' : 'Vermächtnis gibt es, wenn du den Garten weitergibst (Generation).',
     maxed: 'Volle Fahrt',
     on: 'Jonas hilft',
     off: 'Jonas pausiert',
@@ -43,7 +47,7 @@ export const expansionStrings = {
     proTitle: 'Profi-Jonas',
     proHint:
       'Auf der letzten Stufe plant Jonas selbst über alle Bereiche: Er pflanzt Neues zuerst, spart auf Meilensteine (×2) und baut aus, was sich langfristig am meisten lohnt. Eine Sperrliste gibt es dann nicht mehr.',
-    proUpgrade: (cost: number) => `Profi werden · ${cost} Erbstücke`,
+    proUpgrade: (cost: string) => `Profi werden · ${cost}`,
     proNote: 'Letzte Stufe: Jonas plant dann selbst — die Sperrliste entfällt.',
   },
 

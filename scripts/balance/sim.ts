@@ -10,9 +10,10 @@
  * Build + run:  npm run balance   (see package.json)
  *
  * Jonas / realism switches (env):
- *  REALISTIC=1   buy like „Max“/„Alles ausbauen“: only the first buy per
- *                tick rolls Überraschungs-Krümel (default single-buy spam
- *                farms a crumb every 5th level and overrates active play)
+ *  (default)     once „Max“ is unlocked, buy like „Max“/„Alles ausbauen“:
+ *                only the first buy per tick rolls Überraschungs-Krümel
+ *  SPAM=1        old behaviour: every single buy rolls crumbs (farms one
+ *                every 5th level, overrates active play ~1.7×)
  *  LAZY=1        the player never buys areas — Jonas does all of it
  *  HELPER_CAP=n  hire Jonas only up to rank n · NO_HELPER=1 never
  *  HELPER_FREE=1 Jonas ranks cost nothing (what is each rank worth?)
@@ -53,6 +54,8 @@ import {
   gatePrestiges,
   doDeepReset,
   canHandDownNow,
+  HELPER_RANKS,
+  bulkUnlocks,
   buyHelper,
   doGeneration,
   buyLegacy,
@@ -132,8 +135,8 @@ function buyBest(s: GameState, maxBuys = 40): GameState {
       }
     }
     if (!target) break
-    // REALISTIC=1: like „Max“/„Alles ausbauen“ — only the first buy per tick rolls surprises
-    const next = buyGenerator(s, target, process.env.REALISTIC && boughtThisTick > 0 ? 'bulk' : 'manual')
+    // once „Max“ exists players bulk-buy: only the first buy per tick rolls surprises (SPAM=1: every buy)
+    const next = buyGenerator(s, target, !process.env.SPAM && bulkUnlocks(s).max && boughtThisTick > 0 ? 'bulk' : 'manual')
     boughtThisTick += 1
     if (next === s) break
     s = next
@@ -142,6 +145,8 @@ function buyBest(s: GameState, maxBuys = 40): GameState {
 }
 
 function spendSprouts(s: GameState): GameState {
+  // players save Sprösslinge for Jonas' next rank when that is what it costs
+  if (!process.env.NO_HELPER && HELPER_RANKS[s.helperLevel]?.currency === 'sproesslinge') return s
   for (let guard = 0; guard < 100; guard++) {
     let best: { id: (typeof DEEP_SHOP)[number]['id']; cost: number } | null = null
     for (const item of DEEP_SHOP) {
@@ -156,19 +161,25 @@ function spendSprouts(s: GameState): GameState {
   return s
 }
 
-function spendEmbers(s: GameState): GameState {
-  // Jonas first (players hire him as soon as they can; NO_HELPER=1 to skip)
+function hireJonas(s: GameState): GameState {
   // HELPER_CAP=n: hire Jonas only up to rank n (balance comparisons)
   const cap = Number(process.env.HELPER_CAP ?? 99)
   if (!process.env.NO_HELPER) for (let g = 0; g < 5 && s.helperLevel < cap; g++) {
     // HELPER_FREE=1: ranks cost nothing (measures what each rank is worth)
-    const before = process.env.HELPER_FREE ? { ...s, erbstuecke: s.erbstuecke + 1e9 } : s
+    const before = process.env.HELPER_FREE ? { ...s, erbstuecke: s.erbstuecke + 1e9, sproesslinge: s.sproesslinge + 1e9, vermaechtnis: s.vermaechtnis + 1e9 } : s
     const bought = buyHelper(before)
-    const n = bought === before ? s : process.env.HELPER_FREE ? { ...bought, erbstuecke: s.erbstuecke } : bought
+    const n = bought === before ? s : process.env.HELPER_FREE ? { ...bought, erbstuecke: s.erbstuecke, sproesslinge: s.sproesslinge, vermaechtnis: s.vermaechtnis } : bought
     if (n === s) break
     s = n
     helperDays.push(Math.floor((clock - simStart) / 86400000) + 1)
   }
+  return s
+}
+
+function spendEmbers(s: GameState): GameState {
+  // Jonas first (players hire him as soon as they can; NO_HELPER=1 to skip)
+  s = hireJonas(s)
+
   for (let guard = 0; guard < 200; guard++) {
     let best: { id: (typeof EMBER_SHOP)[number]['id']; cost: number } | null = null
     for (const item of EMBER_SHOP) {
@@ -290,17 +301,20 @@ export function run(profile: Profile, hours: number) {
         if (canDeepReset(s.prestiges) && (lastDur > Number(process.env.DEEP_AFTER_H ?? 12) * 3600 || s.prestiges >= Number(process.env.DEEP_AT_YEAR ?? 99) - 1)) {
           const sp = sproutPayout(s.prestiges)
           s = doDeepReset(s)
+          s = hireJonas(s)
           s = spendSprouts(s)
           deeps.push({ day: Math.floor((clock - start) / 86400000) + 1, sprouts: sp, total: s.sproesslinge })
           note(`TIEFER WINTER #${s.deepPrestiges} +${sp} sprouts`)
           // GEN=1: hand the garden down as soon as allowed (Generationen)
           if (process.env.GEN && canHandDownNow(s)) {
             s = doGeneration(s, clock)
+            s = hireJonas(s)
             for (let g = 0; g < 200; g++) {
               let best: { id: (typeof LEGACY_SHOP)[number]['id']; cost: number } | null = null
               for (const item of LEGACY_SHOP) {
                 const cost = item.cost(s.legacy[item.id])
-                if (cost <= s.vermaechtnis && (!best || cost < best.cost)) best = { id: item.id, cost }
+                if (HELPER_RANKS[s.helperLevel]?.currency === 'vermaechtnis' && !process.env.NO_HELPER) break
+              if (cost <= s.vermaechtnis && (!best || cost < best.cost)) best = { id: item.id, cost }
               }
               if (!best) break
               s = buyLegacy(s, best.id)
