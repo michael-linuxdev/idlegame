@@ -8,6 +8,15 @@
  *  - casual:  short sessions every few hours, offline catch-up in between.
  *
  * Build + run:  npm run balance   (see package.json)
+ *
+ * Jonas / realism switches (env):
+ *  REALISTIC=1   buy like „Max“/„Alles ausbauen“: only the first buy per
+ *                tick rolls Überraschungs-Krümel (default single-buy spam
+ *                farms a crumb every 5th level and overrates active play)
+ *  LAZY=1        the player never buys areas — Jonas does all of it
+ *  HELPER_CAP=n  hire Jonas only up to rank n · NO_HELPER=1 never
+ *  HELPER_FREE=1 Jonas ranks cost nothing (what is each rank worth?)
+ *  HELPER_DAYS=1 print the day each rank was bought
  */
 import { computeBestBuy } from '../../src/game/bestBuy'
 import {
@@ -54,6 +63,8 @@ import { DEEP_SHOP, canDeepReset, sproutPayout } from '../../src/game/longLoop'
 import { LEGACY_SHOP } from '../../src/game/generations'
 
 /* ---------- virtual clock + seeded RNG ---------- */
+const helperDays: number[] = []
+let simStart = 0
 // Monday 2026-11-09 08:00 local → avoids starting inside a weekend event
 let clock = new Date(2026, 10, 9, 8, 0, 0).getTime()
 const realNow = Date.now
@@ -101,6 +112,7 @@ function water(s: GameState): GameState {
 }
 
 function buyBest(s: GameState, maxBuys = 40): GameState {
+  let boughtThisTick = 0
   for (let i = 0; i < maxBuys; i++) {
     const hint = computeBestBuy(s, {
       playerLevel: playerLevelOf(s),
@@ -120,7 +132,9 @@ function buyBest(s: GameState, maxBuys = 40): GameState {
       }
     }
     if (!target) break
-    const next = buyGenerator(s, target)
+    // REALISTIC=1: like „Max“/„Alles ausbauen“ — only the first buy per tick rolls surprises
+    const next = buyGenerator(s, target, process.env.REALISTIC && boughtThisTick > 0 ? 'bulk' : 'manual')
+    boughtThisTick += 1
     if (next === s) break
     s = next
   }
@@ -144,10 +158,16 @@ function spendSprouts(s: GameState): GameState {
 
 function spendEmbers(s: GameState): GameState {
   // Jonas first (players hire him as soon as they can; NO_HELPER=1 to skip)
-  if (!process.env.NO_HELPER) for (let g = 0; g < 5; g++) {
-    const n = buyHelper(s)
+  // HELPER_CAP=n: hire Jonas only up to rank n (balance comparisons)
+  const cap = Number(process.env.HELPER_CAP ?? 99)
+  if (!process.env.NO_HELPER) for (let g = 0; g < 5 && s.helperLevel < cap; g++) {
+    // HELPER_FREE=1: ranks cost nothing (measures what each rank is worth)
+    const before = process.env.HELPER_FREE ? { ...s, erbstuecke: s.erbstuecke + 1e9 } : s
+    const bought = buyHelper(before)
+    const n = bought === before ? s : process.env.HELPER_FREE ? { ...bought, erbstuecke: s.erbstuecke } : bought
     if (n === s) break
     s = n
+    helperDays.push(Math.floor((clock - simStart) / 86400000) + 1)
   }
   for (let guard = 0; guard < 200; guard++) {
     let best: { id: (typeof EMBER_SHOP)[number]['id']; cost: number } | null = null
@@ -168,6 +188,8 @@ function spendEmbers(s: GameState): GameState {
 
 export function run(profile: Profile, hours: number) {
   const start = clock
+  simStart = clock
+  helperDays.length = 0
   let s = createInitialState(clock)
   const milestones: Milestone[] = []
   const seenUnlock = new Set<string>()
@@ -218,7 +240,8 @@ export function run(profile: Profile, hours: number) {
       }
     }
     if (s.lastTapAt <= 0 || clock - s.lastTapAt >= 5 * 60_000) s = water(s)
-    s = buyBest(s)
+    // LAZY=1: the player never buys areas himself — Jonas does all of it
+    if (!process.env.LAZY || s.helperLevel === 0) s = buyBest(s)
     s = spendEmbers(s)
 
     {
@@ -310,6 +333,7 @@ function report(profile: Profile, hours: number) {
     console.log(
       `${profile} ${hours}h | seasons/day ${perDay} | planted/day ${garden} | seasons ${runs.length} | first ${d[0] ?? '-'}m | mins ${d.slice(0, 14).join(' ')} | payout ${runs.slice(0, 6).map((r) => r.payout).join(' ')} | last ${d.slice(-3).join(' ')} | orangerie ${plantedAll ? fmtT(plantedAll.t) : 'never(1st run)'} | end lvls ${GENERATORS.map((g) => s.owned[g.id]).join(',')}`,
     )
+    if (process.env.HELPER_DAYS) console.log(`  jonas ranks bought: ${helperDays.map((d, i) => `R${i + 1}@d${d}`).join(' ')} | year ${s.prestiges + 1} | deep ${s.deepPrestiges} | gen ${s.generation}`)
     if (process.env.GEN) console.log(`  generations: ${gens.map((d, i) => `G${i + 1}@d${d}`).join(' ')}`)
     if (deeps.length || process.env.DEEP)
       console.log(
