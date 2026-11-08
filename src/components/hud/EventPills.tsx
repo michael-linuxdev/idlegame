@@ -17,7 +17,9 @@ import {
   IconSun,
   IconFestToken,
   IconSprout,
+  IconNotebook,
 } from '../../theme/icons'
+import { RECIPE_NEED } from '../../game/extrasCore'
 import { festAt } from '../../game/fests'
 
 type GameApi = ReturnType<typeof useGame>
@@ -41,6 +43,8 @@ interface Props {
   order?: { label: string; detail: string; ratio: number; claim: boolean; onClaim: () => void } | null
   /** Open the Festladen */
   onOpenFest?: () => void
+  /** Open Omas Tagesrezept */
+  onOpenRecipe?: () => void
 }
 
 const WEATHER_ICON = {
@@ -51,7 +55,7 @@ const WEATHER_ICON = {
 } as const
 
 /** Compact event bar — every timed bonus is one small pill, never a card. */
-export function EventPills({ game, season, order, onOpenFest }: Props) {
+export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Props) {
   const [open, setOpen] = useState<string | null>(null)
   const { surge, surgeVisible, surgeGoalDone, surgeGoalClaimed, state, eventMult, flash } = game
   const pills: Pill[] = []
@@ -73,6 +77,25 @@ export function EventPills({ game, season, order, onOpenFest }: Props) {
       icon: <IconSprout />,
       label: t.turbo.pill(formatClock(game.turboMsLeft)),
       detail: { line: t.turbo.detail, ratio: 0, aria: t.turbo.detail },
+    })
+  }
+
+  if (game.rainbowMsLeft > 0) {
+    pills.push({
+      key: 'rainbow',
+      icon: <IconSun />,
+      label: t.sky.rainbowActive(formatClock(game.rainbowMsLeft)),
+    })
+  }
+
+  if (onOpenRecipe && state.recipe.areas.length > 0 && !state.recipe.claimed) {
+    const done = state.recipe.areas.filter((_, i) => (state.recipe.have[i] ?? 0) >= RECIPE_NEED).length
+    pills.push({
+      key: 'recipe',
+      icon: <IconNotebook />,
+      label: game.recipeReady ? t.recipe.pillReady : t.recipe.pill(done),
+      claim: game.recipeReady,
+      onClick: onOpenRecipe,
     })
   }
 

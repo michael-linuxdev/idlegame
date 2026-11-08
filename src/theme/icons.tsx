@@ -334,3 +334,32 @@ export function IconFestToken({ fest }: { fest: string }) {
       )
   }
 }
+
+/** Trauben — Weinberg currency */
+export function IconGrapes() {
+  return (
+    <Svg>
+      <path d="M12 2.5v3.5" stroke="#6e4a2b" strokeWidth="1.4" strokeLinecap="round" />
+      <path d="M12.5 4c2-1.6 4.6-1.2 5.5.2-1.8 1.4-4 1.2-5.5-.2z" fill="#5f9e45" />
+      {[[12, 8], [8.6, 10.4], [15.4, 10.4], [6, 13.4], [12, 13], [18, 13.4], [9, 16.4], [15, 16.4], [12, 19.6]].map(([x, y], i) => (
+        <circle key={i} cx={x} cy={y} r="2.6" fill="#6b3a78" stroke="#3a1838" strokeWidth=".6" />
+      ))}
+      <circle cx="11" cy="7.2" r=".9" fill="#fff" opacity=".4" />
+    </Svg>
+  )
+}
+
+/** Oma Ilse — headscarf, glasses */
+export function IconIlse() {
+  return (
+    <Svg>
+      <circle cx="12" cy="13" r="5.2" fill="#f2d2b0" stroke="#8a6a40" strokeWidth="1" />
+      <path d="M6 13c0-5 3-8 6-8s6 3 6 8c-1-2-3-3.4-6-3.4S7 11 6 13z" fill="#c4553f" />
+      <path d="M7 18.5l2-2.2M17 18.5l-2-2.2" stroke="#c4553f" strokeWidth="1.6" strokeLinecap="round" />
+      <circle cx="10" cy="13.4" r="1.4" fill="none" stroke="#4a3208" strokeWidth=".7" />
+      <circle cx="14" cy="13.4" r="1.4" fill="none" stroke="#4a3208" strokeWidth=".7" />
+      <path d="M11.4 13.4h1.2" stroke="#4a3208" strokeWidth=".6" />
+      <path d="M10.6 16.2c.9.6 1.9.6 2.8 0" stroke="#4a3208" strokeWidth=".8" fill="none" strokeLinecap="round" />
+    </Svg>
+  )
+}

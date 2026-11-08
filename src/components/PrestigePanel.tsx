@@ -2,7 +2,10 @@ import { useState } from 'react'
 import { DEEP_GATE_YEAR, DEEP_SHOP, canDeepReset } from '../game/longLoop'
 import { GENERATION_GATE_DEEP, LEGACY_SHOP } from '../game/generations'
 import { HELPER_RANKS, helperInterval } from '../game/state'
-import { IconApple, IconFamily, IconHelper } from '../theme/icons'
+import { IconFamily, IconHelper, IconIlse } from '../theme/icons'
+import { CHAPTERS, type ChapterId } from '../game/chapters'
+import { ILSE_RANKS } from '../game/extrasCore'
+import { chapterCopy } from './chapterCopy'
 import {
   EMBER_SHOP,
   PRESTIGE_BRANCHES,
@@ -29,8 +32,8 @@ type GameApi = ReturnType<typeof useGame>
 interface Props {
   game: GameApi
   highlight?: boolean
-  /** Kapitel 2 open → jump to the Streuobstwiese */
-  onOpenOrchard?: () => void
+  /** Jump to an open chapter */
+  onOpenChapter?: (id: ChapterId) => void
 }
 
 function shopRowPriority(
@@ -44,7 +47,7 @@ function shopRowPriority(
   return 3
 }
 
-export function PrestigePanel({ game, highlight, onOpenOrchard }: Props) {
+export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
   const { state, nextPrestige, canPrestige, prestige, multiplier, prestigeMin, prestigeProgress } =
     game
   const teaser = prestigeProgress.ratio >= 0.5 && !canPrestige
@@ -398,15 +401,19 @@ export function PrestigePanel({ game, highlight, onOpenOrchard }: Props) {
             <dd>+{deepPayout}</dd>
           </div>
         </dl>
-        {onOpenOrchard ? (
-          <button type="button" className="btn ghost orchard-entry" onClick={onOpenOrchard}>
-            <IconApple /> {t.orchard.toOrchard}
-          </button>
-        ) : (
-          <p className="orchard-teaser">
-            <IconApple /> {t.orchard.teaser}
-          </p>
-        )}
+        {CHAPTERS.map((d) => {
+          const copy = chapterCopy(d.id)
+          return game.openChapters.includes(d.id) ? (
+            <button key={d.id} type="button" className="btn ghost orchard-entry" onClick={() => onOpenChapter?.(d.id)}>
+              {copy.icon} {copy.to}
+            </button>
+          ) : (
+            <p key={d.id} className="orchard-teaser">
+              {copy.icon} {t.chapters[d.id].teaser}
+            </p>
+          )
+        })}
+        <IlseBlock game={game} />
         <div className="prestige-preview">
           <div className="prestige-preview-card keep">
             <p className="prestige-preview-label">{t.prestige.keepTitle}</p>
@@ -602,5 +609,49 @@ function FamilyTree({ generation }: { generation: number }) {
         )
       })}
     </svg>
+  )
+}
+
+/** Oma Ilse — helper for the chapter plots, paid in Obst. */
+function IlseBlock({ game }: { game: GameApi }) {
+  const { state } = game
+  const rank = ILSE_RANKS[state.ilseLevel]
+  const obst = state.chapters.obstwiese.cur
+  return (
+    <section className="helper-block ilse-block" aria-labelledby="ilse-heading">
+      <div className="helper-head">
+        <span className="helper-avatar" aria-hidden="true">
+          <IconIlse />
+        </span>
+        <div>
+          <h4 id="ilse-heading" className="subhead">
+            {t.ilse.title}
+          </h4>
+          <p className="helper-name">
+            {t.ilse.name}
+            {state.ilseLevel > 0 ? ` · ${t.ilse.rank(state.ilseLevel, ILSE_RANKS.length)}` : ''}
+          </p>
+        </div>
+      </div>
+      <p className="muted">{game.ilseUnlocked ? t.ilse.intro : t.ilse.locked}</p>
+      {state.ilseLevel > 0 ? (
+        <p className="helper-speed">
+          {t.ilse.speed(formatDecimal(ILSE_RANKS[state.ilseLevel - 1]!.intervalMs / 1000, 2))}
+          {' · '}
+          <button type="button" className="link-btn" onClick={game.switchIlse}>
+            {state.ilseOn ? t.ilse.chipOn : t.ilse.chipOff}
+          </button>
+        </p>
+      ) : null}
+      {game.ilseUnlocked ? (
+        <button type="button" className="btn buy" disabled={!rank || obst < rank.cost} onClick={game.hireIlse}>
+          {!rank
+            ? t.ilse.maxed
+            : state.ilseLevel === 0
+              ? t.ilse.hire(formatAsh(rank.cost))
+              : t.ilse.upgrade(formatAsh(rank.cost))}
+        </button>
+      ) : null}
+    </section>
   )
 }

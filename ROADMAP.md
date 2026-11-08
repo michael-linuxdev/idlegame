@@ -68,29 +68,26 @@ Werkzeug: `npm run balance -- <engaged|regular|casual> <stunden>` — spielt die
     - **Generationen** (3. Prestige-Ebene ab 3 Tiefen Wintern): Vermächtnis → Familienschatz ohne Obergrenze (Familiensinn, Obstbau-Tradition, Wurzelwerk, Hausrezept, Grüner Daumen), Stammbaum.
     - **Saisonale Feste nach echtem Kalender** + Zwischenfeste (immer eins aktiv): Raunächte, Schneeglöckchenfest, Frühlingsfest, Blütenfest, Sommerfest, Sonnenblumentage, Erntedank, Laternenfest, Advent. Festmarken aus normalem Spiel, Festladen mit 13 Festsorten (Pflanzenbuch), Festschub, Erbstück-Kiste, Samen; Fest-Gartenstile und Festkorb als kostenpflichtige Extras (Samen). Eigene Karten-Deko je Fest. Gartenwoche bleibt, kein zusätzlicher Pass.
     - **UI/UX:** Event-Pillen umbrechen statt abschneiden (Saisonende-Kachel), „78 % geschafft“ statt „fast · 22 %“, lange Fenster scrollen, Markt-Platzhalter wieder sichtbar und gekennzeichnet, „Nach Updates suchen“ + „Jetzt aktualisieren“ mit Versionsanzeige im Menü.
-14. Multiplayer-Architektur (Kleingartenverein mit echtem Backend).
-15. Store-IAP, Impressum-Daten, Namensprüfung „Gartenerbe“, Store-Assets, Soft-Launch. Vor Launch: `STORE_ENABLED` prüfen (Platzhalter).
+14. ✅ **Update-Runde „Kapitel 3“:**
+    - **Gartenjahr-13-Hänger behoben:** *Nachbarschaftshilfe* (nur im ersten Durchgang, Gartenjahr 11–14, bis ×2,6 Ernte), Orangerie ab Gartenjahr 13, Sprösslinge ab Jahr 22 linear. Sim Regular: keine Saison > ~4 h zwischen Jahr 11 und 14, 1. Tiefer Winter Tag 7–9, Sprösslings-Laden voll ~Tag 80–85. Eine generell flachere Kurve wurde verworfen: sie macht den Tiefen Winter zur Farm-Schleife (bis 7× pro Tag).
+    - **Kapitel-Baukasten** (`src/game/chapters.ts`): neue Kapitel sind nur Daten (10 Bereiche, Texte, Grafik). Streuobstwiese umgezogen, **Kapitel 3 Weinberg** (ab 1. Generation) mit Terrassen, 10 Bereichen, Währung Trauben, Brief von Tante Hilde und **Weinlese**-Minispiel (Timing-Tippen, 1×/h).
+    - **Oma Ilse** pflegt alle Kapitel (bezahlt in Obst), Jonas nur noch den Garten; beide mit Sprechblasen.
+    - **Meilenstein-Truhen** (neuer Lebenszeit-Rekord je Bereich → Zufallsbelohnung), **Pflanzenbuch-Sets** (+2 % je komplettem Bereich), **Omas Tagesrezept**, **Regenbogen** (×5 für 60 s) / **Sternschnuppe** (Wunsch), **Messing-Gießkanne** (1 verpasster Tag/Woche zählt), **Größter Kürbis** (wöchentliche Offline-Vereinsrunde gegen 9 Nachbarn, Samen-Preise).
+    - **Grafik:** Bäume nach echtem Kalender (Blüte, Laub, Schnee — Garten und Obstwiese), Zeitraffer-Wachsen beim Stufen-Sprung, pickende Hühner, Bienenflug, Glühwürmchen und Igel nachts, Morgennebel, Gartenstil-Vorschau live auf der Karte, **Foto-Modus** (Postkarte speichern/teilen).
+15. Multiplayer-Architektur (Kleingartenverein mit echtem Backend; Kürbis-Runde umstellen).
+16. Store-IAP, Impressum-Daten, Namensprüfung „Gartenerbe“, Store-Assets, Soft-Launch. Vor Launch: `STORE_ENABLED` prüfen (Platzhalter).
+
+## 5-Jahres-Plan (Inhalt)
+
+- Ein Kapitel trägt ~6–10 Wochen neue Ziele; Feste erneuern sich jährlich.
+- Ziel: **10–12 große Kapitel** in 5 Jahren (≈ alle 4–6 Monate), dazwischen je ein System-/Fest-Update. Ohne Zwischen-Updates wären ~20 Kapitel nötig.
+- Kapitel-Ideen in Reihenfolge: 4 Bauernhof (Tiere), 5 Imkerei am Waldrand, 6 Teich & Fischerhütte, 7 Kräuterapotheke, 8 Botanischer Garten (Gewächshäuser), 9 Alpen-Alm, 10 Lavendelfeld (Provence-Reise), 11 Japanischer Garten, 12 Gartenschau (Finale).
+- Freischaltung staffeln über Prestige-Ebenen (Tiefer Winter / Generation N), damit jedes Kapitel ein neues Ziel nach einem Reset ist.
 
 ## Ideen-Backlog (nächste Updates)
 
-**Bindung / „noch eine Runde“**
-- Kapitel 3 *Weinberg* (gleiches Muster wie die Streuobstwiese) mit Weinlese-Minispiel (Timing-Tippen).
-- Meilenstein-Truhen: alle Sterne eines Bereichs → Kiste mit Zufallsbelohnung.
-- Pflanzenbuch-Sets: komplette Reihe (z. B. alle Kräuter) → Set-Bonus.
-- Omas Tagesrezept: drei Zutaten aus verschiedenen Bereichen liefern.
-- Zweiter Helfer (Oma Ilse) nur für die Streuobstwiese, mit eigenen Sprüchen.
-- Seltene Himmelsereignisse: Regenbogen (×5 für 60 s), Sternschnuppe nachts (Wunsch wählen).
-- Streak-Schutz „Messing-Gießkanne“ (ein verpasster Tag pro Woche).
-- Kleingartenverein-Wettbewerb „Größter Kürbis“ (asynchron, Bestenliste).
-
-**Grafik**
-- Bäume nach echtem Kalender: Blüte im Frühling, Laub im Herbst, Schnee im Winter.
-- Zeitraffer-Animation beim Stufen-Sprung (Pflanze wächst sichtbar nach).
-- Tiere mit Wegen: Hühner picken, Schafe ziehen über die Wiese, Bienen fliegen zum Stock.
-- Glühwürmchen und Igel nachts, Nebel am Morgen.
-- Gartenstil-Vorschau live auf der Karte vor dem Kauf.
-- Foto-Modus: Garten als Postkarte exportieren und teilen.
-
-## Fertig-Produkt?
-
-Noch **nicht**. Soft-Launch-ready erst nach: Garten-Erzählung und -Grafik, stabile Upgrade/Shop-Loops, Balance, Multiplayer-MVP oder klarer Solo-Mode, Store-IAP, Privacy/Impressum.
+- Kapitel 4 *Bauernhof* (Daten im Kapitel-Baukasten).
+- Echter Online-Wettbewerb für den Kürbis (mit Multiplayer-Backend).
+- Ilse-/Jonas-Geschichten als kurze Briefe im Notizbuch.
+- Gartenstile für Kapitel-Karten.
+- Saisonaler Pass bleibt bewusst aus — Gartenwoche + Feste reichen.

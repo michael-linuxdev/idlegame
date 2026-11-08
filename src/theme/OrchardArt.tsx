@@ -3,10 +3,11 @@
  * (same thresholds as the garden: 1 / 10 / 25 / 50 / 100).
  */
 import { memo } from 'react'
-import type { OrchardId } from '../game/orchard'
+type OrchardId = string
 import { moduleTier } from './tiers'
+import type { Season } from './ambient'
 
-const FRUIT: Partial<Record<OrchardId, { fruit: string; crown: string; crownD: string; r: number }>> = {
+const FRUIT: Partial<Record<string, { fruit: string; crown: string; crownD: string; r: number }>> = {
   apfel: { fruit: '#d9483b', crown: '#6ca848', crownD: '#4f8a34', r: 1.9 },
   birne: { fruit: '#d8c84a', crown: '#5f9e45', crownD: '#477e32', r: 1.9 },
   kirsche: { fruit: '#9e1f2c', crown: '#79b452', crownD: '#5a913a', r: 1.3 },
@@ -19,8 +20,15 @@ function seeded(i: number): number {
   return x - Math.floor(x)
 }
 
-function FruitTree({ id, tier }: { id: OrchardId; tier: number }) {
-  const f = FRUIT[id]!
+function FruitTree({ id, tier, season = 'summer' }: { id: OrchardId; tier: number; season?: Season }) {
+  const base = FRUIT[id]!
+  // Real calendar: blossom in spring, fruit in summer/autumn, bare + snow in winter
+  const f =
+    season === 'autumn'
+      ? { ...base, crown: '#a8a845', crownD: '#8a7a32' }
+      : season === 'winter'
+        ? { ...base, crown: '#7a8a6a', crownD: '#5f6b52' }
+        : base
   const scale = 0.8 + tier * 0.05
   const fruits = Math.min(14, tier * 3)
   const pear = id === 'birne'
@@ -42,11 +50,21 @@ function FruitTree({ id, tier }: { id: OrchardId; tier: number }) {
         <circle cx="51" cy="30" r="13" fill={f.crown} />
         <circle cx="40" cy="20" r="14" fill={f.crown} />
         <circle cx="35" cy="16" r="6" fill="#fff" opacity="0.12" />
-        {Array.from({ length: fruits }, (_, i) => {
+        {season === 'winter' ? (
+          <g>
+            <ellipse cx="40" cy="9" rx="13" ry="3.4" fill="#fff" />
+            <ellipse cx="28" cy="20" rx="8" ry="2.6" fill="#fff" />
+            <ellipse cx="52" cy="19" rx="8" ry="2.6" fill="#fff" />
+          </g>
+        ) : null}
+        {Array.from({ length: season === 'winter' ? 0 : season === 'spring' ? fruits + 8 : fruits }, (_, i) => {
           const a = seeded(i + 1) * Math.PI * 2
           const d = 6 + seeded(i + 7) * 13
           const x = 40 + Math.cos(a) * d
           const y = 26 + Math.sin(a) * d * 0.8
+          if (season === 'spring') {
+            return <circle key={i} cx={x} cy={y} r={1.5} fill={i % 3 ? '#fff' : '#f7c6d9'} />
+          }
           return pear ? (
             <ellipse key={i} cx={x} cy={y} rx={f.r * 0.85} ry={f.r * 1.25} fill={f.fruit} />
           ) : (
@@ -194,7 +212,15 @@ function Obstmarkt({ tier }: { tier: number }) {
   )
 }
 
-export const OrchardArt = memo(function OrchardArt({ id, level }: { id: OrchardId; level: number }) {
+export const OrchardArt = memo(function OrchardArt({
+  id,
+  level,
+  season,
+}: {
+  id: OrchardId
+  level: number
+  season?: Season
+}) {
   const tier = Math.max(1, moduleTier(level))
   switch (id) {
     case 'schafe':
@@ -208,7 +234,7 @@ export const OrchardArt = memo(function OrchardArt({ id, level }: { id: OrchardI
     case 'obstmarkt':
       return <Obstmarkt tier={tier} />
     default:
-      return <FruitTree id={id} tier={tier} />
+      return <FruitTree id={id} tier={tier} season={season} />
   }
 })
 

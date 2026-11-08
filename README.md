@@ -17,7 +17,7 @@ npm install
 npm run dev            # Stimmung testen: ?ambient=night-winter
                        # Fest erzwingen: ?fest=advent (raunaechte, lichtmess, fruehlingsfest, bluetenfest,
                        #   sommerfest, sonnenblumen, erntedank, laternenfest, advent)
-                       # Kapitel 2 ohne Tiefen Winter öffnen: ?kapitel2=1
+                       # Kapitel sofort öffnen: ?kapitel2=1 (Streuobstwiese) · ?kapitel3=1 (Weinberg)
 npm run build
 npm run preview
 npm run lint

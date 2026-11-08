@@ -19,7 +19,8 @@ describe('Pflanzenbuch', () => {
     for (const v of VARIETIES) expect(strings.plantbook.names[v.id]).toBeTruthy()
     const all = collectionMult(GARDEN_VARIETIES.map((v) => v.id))
     expect(all).toBeGreaterThan(1.2)
-    expect(all).toBeLessThan(1.45)
+    // varieties ≈ +36 %, plus 10 Pflanzenbuch-Sets à +2 %
+    expect(all).toBeLessThan(1.6)
     // Festsorten add a little on top, never more than ~+20 %
     expect(collectionMult(VARIETIES.map((v) => v.id)) - all).toBeLessThan(0.2)
   })

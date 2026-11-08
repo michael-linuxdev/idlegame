@@ -4,7 +4,7 @@
  *  1. Fresh start: Omas letter → Gemüsebeet ausbauen → Gießen
  *  2. Near the gate: Saisonende → ceremony → Glücksrad → back in the garden
  *  3. Notebook + Spielstand-sichern sheets open
- *  4. Festladen, Kapitel 2 via ?kapitel2=1, Gartenhelfer, Update-Check
+ *  4. Festladen, Kapitel 2/3 via ?kapitel2=1&kapitel3=1, Weinlese, Gartenhelfer, Update-Check
  * Fails on any uncaught page error. Run: npm run build && npm run e2e
  */
 import { spawn } from 'node:child_process'
@@ -119,14 +119,21 @@ try {
     })
     const p = await ctx.newPage()
     p.on('pageerror', (e) => errors.push(e.message))
-    await p.goto(URL + '?fest=advent&kapitel2=1')
+    await p.goto(URL + '?fest=advent&kapitel2=1&kapitel3=1')
     await p.locator('.pill-fest').click()
     await p.getByText('Advent im Garten').first().waitFor()
     await p.locator('.fest-sheet .upgrade-hud-close').click()
-    await p.locator('.plot-switch').click()
+    await p.getByRole('button', { name: 'Zur Streuobstwiese' }).click()
     await p.locator('.orchard-intro .btn').click()
     await p.locator('.orchard-home').waitFor()
-    await p.locator('.plot-switch').click()
+    await p.getByRole('button', { name: 'Zum Weinberg' }).click()
+    await p.locator('.orchard-intro .btn').click()
+    await p.locator('.chapter-weinberg').waitFor()
+    await p.locator('.pill-weinlese').click()
+    await p.getByRole('button', { name: 'Los geht’s' }).click()
+    await p.waitForTimeout(19_500)
+    await p.getByRole('button', { name: 'Fertig' }).click()
+    await p.locator('.plot-switch.back').click()
     await p.locator('.menu-fab').click()
     await p.getByRole('menuitem', { name: 'Saison' }).click()
     await p.getByRole('button', { name: /Einstellen/ }).click()

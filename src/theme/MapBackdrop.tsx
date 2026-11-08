@@ -243,7 +243,7 @@ function Teich() {
   )
 }
 
-function Baum({ tone = 0 }: { tone?: number }) {
+function Baum({ tone = 0, season }: { tone?: number; season?: Ambient['season'] }) {
   const a = ['#6fae52', '#5f9a48', '#7dba5c'][tone % 3]
   const b = ['#4f8a3a', '#447a34', '#5c9945'][tone % 3]
   return (
@@ -256,6 +256,23 @@ function Baum({ tone = 0 }: { tone?: number }) {
       <circle cx="44" cy="34" r="22" fill={a} />
       <circle cx="62" cy="38" r="18" fill={a} />
       <circle cx="40" cy="28" r="8" fill="#9fd07d" opacity="0.7" />
+      {season === 'spring'
+        ? [[30, 40], [44, 22], [58, 30], [70, 46], [36, 56], [52, 48], [64, 58], [26, 52], [48, 36]].map(([x, y], i) => (
+            <circle key={i} cx={x} cy={y} r="3.2" fill={i % 3 ? '#fde3ee' : '#f7b6cf'} />
+          ))
+        : null}
+      {season === 'autumn'
+        ? [[30, 44], [56, 26], [68, 52], [40, 58]].map(([x, y], i) => (
+            <circle key={i} cx={x} cy={y} r="3" fill="#d2752c" />
+          ))
+        : null}
+      {season === 'winter' ? (
+        <g fill="#fbfdff">
+          <ellipse cx="46" cy="14" rx="20" ry="5" />
+          <ellipse cx="26" cy="34" rx="10" ry="3.4" />
+          <ellipse cx="72" cy="36" rx="10" ry="3.4" />
+        </g>
+      ) : null}
     </svg>
   )
 }
@@ -492,10 +509,10 @@ export const MapBackdrop = memo(function MapBackdrop({ stage, ambient, skin, fes
         <Hecke />
       </div>
       <Decor className="decor-tree" left="-3%" top="17%" w={30}>
-        <Baum tone={1} />
+        <Baum tone={1} season={ambient.season} />
       </Decor>
       <Decor className="decor-tree" left="103%" top="14%" w={32}>
-        <Baum tone={0} />
+        <Baum tone={0} season={ambient.season} />
       </Decor>
       <Decor className="decor-laube" left="50%" top="26.5%" w={22}>
         <Laube />
@@ -506,10 +523,10 @@ export const MapBackdrop = memo(function MapBackdrop({ stage, ambient, skin, fes
       </Decor>
 
       <Decor className="decor-tree" left="-5%" top="76%" w={28}>
-        <Baum tone={2} />
+        <Baum tone={2} season={ambient.season} />
       </Decor>
       <Decor className="decor-tree" left="104%" top="64%" w={26}>
-        <Baum tone={1} />
+        <Baum tone={1} season={ambient.season} />
       </Decor>
       <Decor className="decor-teich" left="92%" top="66%" w={24}>
         <Teich />

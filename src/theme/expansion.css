@@ -692,3 +692,477 @@ html.tab-hidden .helper-walker svg,
 html.tab-hidden .fest-snow {
   animation-play-state: paused;
 }
+
+/* ======== Update-Runde 3: Kapitel 3, Ilse, Weinlese, Himmel, Rezept, Kürbis, Grafik ======== */
+
+/* Vineyard / chapter maps */
+.stage-weinberg {
+  --g-grass: #a3b566;
+}
+
+.helper-walker.ilse {
+  animation-duration: 60s;
+}
+
+/* Speech bubbles for Jonas / Ilse */
+.speech-bubble {
+  position: absolute;
+  z-index: 45;
+  left: 50%;
+  top: 30%;
+  max-width: 11rem;
+  transform: translateX(-50%);
+  padding: 0.3rem 0.55rem;
+  border: 1.5px solid #c9b48a;
+  border-radius: 12px;
+  background: #fffcf4;
+  box-shadow: 0 3px 8px rgba(40, 32, 12, 0.18);
+  color: #33261a;
+  font-family: var(--oc-font-hand, inherit);
+  font-size: 0.82rem;
+  line-height: 1.15;
+  text-align: center;
+  pointer-events: none;
+  animation: claim-pop 200ms ease-out;
+}
+
+.speech-bubble::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -7px;
+  width: 10px;
+  height: 10px;
+  border-right: 1.5px solid #c9b48a;
+  border-bottom: 1.5px solid #c9b48a;
+  background: #fffcf4;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.speech-ilse {
+  top: 40%;
+  left: 38%;
+}
+
+/* Weinlese minigame */
+.weinlese-card {
+  text-align: center;
+}
+
+.weinlese-score {
+  min-height: 1.4em;
+  font-weight: 700;
+}
+
+.weinlese-vine {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.4rem;
+  margin: 0.6rem 0 0.8rem;
+  padding: 0.6rem 0.3rem;
+  border-top: 3px solid #6e4a2b;
+  background: linear-gradient(180deg, rgba(95, 158, 69, 0.18), transparent);
+}
+
+.weinlese-grape {
+  aspect-ratio: 3 / 4;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  transition: transform 120ms ease-out, opacity 200ms;
+}
+
+.weinlese-grape svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.weinlese-grape circle {
+  stroke: rgba(0, 0, 0, 0.25);
+  stroke-width: 0.6;
+  transition: fill 300ms;
+}
+
+.weinlese-grape.look-wait { opacity: 0.25; }
+.weinlese-grape.look-wait circle,
+.weinlese-grape.look-green circle { fill: #9ccd6c; }
+.weinlese-grape.look-ripe circle { fill: #6b3a78; }
+.weinlese-grape.look-ripe { transform: scale(1.12); filter: drop-shadow(0 0 6px rgba(245, 197, 66, 0.9)); }
+.weinlese-grape.look-over circle { fill: #7a5a3a; }
+.weinlese-grape.look-picked { opacity: 0.35; }
+.weinlese-grape.look-picked circle { fill: #f5c542; }
+.weinlese-grape.look-missed { opacity: 0.3; }
+.weinlese-grape.look-missed circle { fill: #b8ab94; }
+
+.hud-pill.pill-weinlese:disabled {
+  opacity: 0.85;
+  cursor: default;
+}
+
+/* Himmelsereignisse */
+.sky-event {
+  position: absolute;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font-family: var(--oc-font-display);
+  font-weight: 700;
+  font-size: 0.72rem;
+  color: #33261a;
+  animation: sky-float 2.6s ease-in-out infinite alternate;
+}
+
+.sky-event span {
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  background: rgba(255, 252, 244, 0.92);
+  box-shadow: 0 2px 6px rgba(40, 32, 12, 0.18);
+}
+
+.sky-event.rainbow {
+  left: 58%;
+  top: 34%;
+  width: calc(var(--u) * 26);
+}
+
+.sky-event.star {
+  left: 18%;
+  top: 34%;
+  width: calc(var(--u) * 16);
+}
+
+.sky-event svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@keyframes sky-float {
+  from { transform: translateY(0); }
+  to { transform: translateY(-6px); }
+}
+
+.wish-sheet h2 {
+  margin: 0 0 0.5rem;
+  text-align: center;
+}
+
+.wish-row {
+  display: grid;
+  gap: 0.4rem;
+}
+
+/* Omas Tagesrezept */
+.recipe-list {
+  margin: 0 0 0.4rem;
+  padding: 0;
+  list-style: none;
+}
+
+.recipe-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.3rem 0;
+  font-weight: 700;
+  font-size: 0.82rem;
+}
+
+.recipe-list li > span:first-child {
+  flex: 0 0 48%;
+}
+
+.recipe-list li.done {
+  color: #3f7a30;
+}
+
+/* Kürbis-Wettbewerb */
+.contest-block {
+  margin: 1rem 0;
+  padding: 0.75rem 0.85rem;
+  border: 1.5px solid #d2752c;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #fff6ea, #fbe8cf);
+}
+
+.contest-block .subhead {
+  margin-top: 0;
+}
+
+.contest-honest,
+.contest-meta,
+.shield-note {
+  margin: 0.2rem 0 0.4rem;
+  font-size: 0.72rem;
+  color: #6a5434;
+}
+
+.contest-result {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.4rem 0;
+  font-weight: 700;
+}
+
+.pumpkin-dot {
+  display: inline-block;
+  width: 0.9rem;
+  height: 0.75rem;
+  margin-right: 0.4rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #f5a83a, #d2752c);
+  vertical-align: -1px;
+}
+
+/* Pflanzenbuch-Sets */
+.plantbook-set {
+  margin-left: 0.5rem;
+  padding: 0.05rem 0.4rem;
+  border-radius: 999px;
+  background: #efe1c2;
+  font-size: 0.66rem;
+  font-weight: 700;
+  color: #6a5434;
+}
+
+.plantbook-set.done {
+  background: #7fbf5a;
+  color: #fff;
+}
+
+/* Gartenstil-Vorschau */
+.preview-banner {
+  position: absolute;
+  left: 0.6rem;
+  right: 0.6rem;
+  bottom: calc(var(--safe-bottom) + 5.6rem);
+  z-index: 8;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.7rem;
+  border: 1.5px solid #c9b48a;
+  border-radius: 14px;
+  background: #fffcf4;
+  box-shadow: 0 6px 14px rgba(40, 32, 12, 0.2);
+  font-weight: 700;
+}
+
+.preview-banner > span {
+  flex: 1 1 100%;
+}
+
+.cosmetic-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+/* Foto-Modus */
+.fortress-home.photo-mode .hud,
+.fortress-home.photo-mode .hud-bottom,
+.fortress-home.photo-mode .map-side,
+.fortress-home.photo-mode .plot-sign,
+.fortress-home.photo-mode .hud-toast {
+  display: none !important;
+}
+
+.app-shell:has(.photo-mode) .game-chrome {
+  display: none;
+}
+
+.photo-overlay {
+  position: absolute;
+  left: 0.6rem;
+  right: 0.6rem;
+  bottom: calc(var(--safe-bottom) + 0.8rem);
+  z-index: 60;
+  padding: 0.6rem 0.75rem;
+  border: 1.5px solid #c9b48a;
+  border-radius: 14px;
+  background: rgba(255, 252, 244, 0.95);
+  box-shadow: 0 6px 16px rgba(40, 32, 12, 0.22);
+  text-align: center;
+}
+
+.photo-caption {
+  margin: 0 0 0.4rem;
+  font-family: var(--oc-font-hand, inherit);
+  font-size: 1.1rem;
+}
+
+.photo-note {
+  margin: 0 0 0.3rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.photo-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+/* Zeitraffer beim Stufen-Sprung */
+.plot-visual.tier-grow {
+  animation: tier-grow 1.2s cubic-bezier(0.3, 1.6, 0.5, 1) both;
+}
+
+@keyframes tier-grow {
+  0% { transform: scale(0.6, 0.4); filter: brightness(1.4); }
+  60% { transform: scale(1.12, 1.15); }
+  100% { transform: scale(1); filter: none; }
+}
+
+/* Garden critters */
+.critters {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.critter {
+  position: absolute;
+}
+
+.critter svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.chicken {
+  width: calc(var(--u) * 4.4);
+  top: 52%;
+  animation: chicken-walk 14s ease-in-out infinite alternate;
+}
+
+.chicken.c0 { left: 10%; }
+.chicken.c1 { left: 14%; top: 54%; animation-delay: -5s; }
+.chicken.c2 { left: 6%; top: 50%; animation-delay: -9s; }
+
+.chicken-head {
+  transform-origin: 15px 9px;
+  animation: chicken-peck 1.6s ease-in-out infinite;
+}
+
+@keyframes chicken-walk {
+  from { transform: translateX(0) scaleX(1); }
+  49% { transform: translateX(calc(var(--u) * 8)) scaleX(1); }
+  50% { transform: translateX(calc(var(--u) * 8)) scaleX(-1); }
+  to { transform: translateX(0) scaleX(-1); }
+}
+
+@keyframes chicken-peck {
+  0%, 60%, 100% { transform: rotate(0); }
+  70% { transform: rotate(35deg); }
+  80% { transform: rotate(0); }
+}
+
+.bee-trail {
+  width: calc(var(--u) * 1.8);
+  left: 68%;
+  top: 46%;
+  animation: bee-trail 7s linear infinite;
+}
+
+.bee-trail.b1 { animation-delay: -1.7s; }
+.bee-trail.b2 { animation-delay: -3.4s; }
+.bee-trail.b3 { animation-delay: -5.1s; }
+
+@keyframes bee-trail {
+  0% { transform: translate(calc(var(--u) * -30), calc(var(--u) * 8)); opacity: 0; }
+  10% { opacity: 1; }
+  50% { transform: translate(calc(var(--u) * -12), calc(var(--u) * -4)); }
+  90% { opacity: 1; }
+  100% { transform: translate(calc(var(--u) * 8), calc(var(--u) * 2)); opacity: 0; }
+}
+
+.firefly {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #fff6a0;
+  box-shadow: 0 0 6px 2px rgba(255, 240, 120, 0.8);
+  animation: firefly 5s ease-in-out infinite;
+}
+
+@keyframes firefly {
+  0%, 100% { transform: translate(0, 0); opacity: 0.1; }
+  30% { opacity: 1; }
+  50% { transform: translate(10px, -14px); opacity: 0.4; }
+  70% { opacity: 1; }
+}
+
+.hedgehog {
+  width: calc(var(--u) * 6);
+  top: 90%;
+  left: 10%;
+  animation: hedgehog-walk 40s linear infinite;
+}
+
+@keyframes hedgehog-walk {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(var(--u) * 70)); }
+}
+
+.morning-mist {
+  position: absolute;
+  inset: 40% 0 0 0;
+  background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.35) 60%, rgba(255, 255, 255, 0.15));
+  animation: mist-drift 18s ease-in-out infinite alternate;
+}
+
+@keyframes mist-drift {
+  from { transform: translateX(-3%); opacity: 0.7; }
+  to { transform: translateX(3%); opacity: 1; }
+}
+
+.chapter-weinberg .lizard {
+  animation: bee-buzz 2.6s ease-in-out infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .speech-bubble,
+  .sky-event,
+  .plot-visual.tier-grow,
+  .chicken,
+  .chicken-head,
+  .bee-trail,
+  .firefly,
+  .hedgehog,
+  .morning-mist,
+  .chapter-weinberg .lizard {
+    animation: none !important;
+  }
+}
+
+html.tab-hidden .critters *,
+html.tab-hidden .sky-event {
+  animation-play-state: paused;
+}
+
+/* Chapter signs: long lock hints wrap instead of spilling out */
+.orchard-home .plot-sign {
+  max-width: calc(var(--u) * 26);
+}
+
+.orchard-home .plot-meta {
+  white-space: normal;
+  text-align: center;
+  line-height: 1.15;
+}

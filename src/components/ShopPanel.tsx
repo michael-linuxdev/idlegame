@@ -5,6 +5,7 @@ import {
   BATTLE_PASS_TIERS,
   CLAN_BOOST,
   COSMETICS,
+  type CosmeticId,
   DAILY_SKIP_CAP_HOURS,
   REWARDED_AD_DELAY_MS,
   SHOP_OFFERS,
@@ -22,6 +23,8 @@ type GameApi = ReturnType<typeof useGame>
 
 interface Props {
   game: GameApi
+  /** Gartenstil-Vorschau live on the map */
+  onPreview?: (id: CosmeticId) => void
 }
 
 function formatMsLeft(ms: number): string {
@@ -61,7 +64,7 @@ function OfferButton({
   )
 }
 
-export function ShopPanel({ game }: Props) {
+export function ShopPanel({ game, onPreview }: Props) {
   const {
     state,
     rate,
@@ -350,14 +353,21 @@ export function ShopPanel({ game }: Props) {
                   {equipped ? t.shop.active : t.shop.equip}
                 </button>
               ) : (
-                <button
-                  type="button"
-                  className="btn buy"
-                  disabled={!afford || skin.cost <= 0}
-                  onClick={() => purchaseCosmetic(skin.id)}
-                >
-                  {skin.cost <= 0 ? t.shop.free : t.shop.costObsidian(skin.cost)}
-                </button>
+                <div className="cosmetic-actions">
+                  {onPreview ? (
+                    <button type="button" className="btn ghost" onClick={() => onPreview(skin.id)}>
+                      {t.preview.button}
+                    </button>
+                  ) : null}
+                  <button
+                    type="button"
+                    className="btn buy"
+                    disabled={!afford || skin.cost <= 0}
+                    onClick={() => purchaseCosmetic(skin.id)}
+                  >
+                    {skin.cost <= 0 ? t.shop.free : t.shop.costObsidian(skin.cost)}
+                  </button>
+                </div>
               )}
             </li>
           )

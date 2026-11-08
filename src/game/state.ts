@@ -25,17 +25,36 @@ import {
   type GeneratorId,
 } from './generators'
 import {
-  ORCHARD,
-  emptyOrchard,
-  orchardAreaRate,
-  orchardBaseRate,
-  orchardCost,
-  orchardGardenMult,
-  orchardLevels,
-  orchardUnlocked,
-  type OrchardId,
-  type OrchardState,
-} from './orchard'
+  CHAPTERS,
+  areaCost,
+  areaRate,
+  areaUnlocked,
+  chapterBaseRate,
+  chapterDef,
+  chaptersGardenMult,
+  emptyChapters,
+  totalChapterLevels,
+  type ChapterId,
+  type ChaptersState,
+} from './chapters'
+import { milestonesReached } from './generators'
+import {
+  CONTEST_REWARDS,
+  CONTEST_KG,
+  ILSE_RANKS,
+  RECIPE_NEED,
+  RECIPE_REWARD,
+  SKY,
+  WEINLESE,
+  contestRank,
+  emptyRecipe,
+  makeRecipe,
+  rollChest,
+  type ChestReward,
+  type ContestResult,
+  type Recipe,
+  type SkyEvent,
+} from './extrasCore'
 import {
   EMPTY_LEGACY,
   LEGACY_SHOP,
@@ -276,8 +295,31 @@ export interface GameState {
   helperReport: number
   /** Frühlingsschub end (×3 right after Saisonende) */
   turboEndsAt: number
-  /** Kapitel 2 — Streuobstwiese */
-  orchard: OrchardState
+  /** Kapitel 2+ — Streuobstwiese, Weinberg … */
+  chapters: ChaptersState
+  /** Oma Ilse — helper for the chapters (bought with Obst) */
+  ilseLevel: number
+  ilseOn: boolean
+  ilseCarryMs: number
+  /** Last Weinlese minigame */
+  weinleseAt: number
+  /** Best Meilenstein count per area (lifetime) — new record opens a Truhe */
+  milestoneRecord: Record<string, number>
+  /** Transient: Meilenstein-Truhe just opened (UI pop) */
+  lastChest: ChestReward | null
+  /** Omas Tagesrezept */
+  recipe: Recipe
+  /** Himmelsereignis waiting to be tapped */
+  skyEvent: SkyEvent | null
+  skyNextAt: number
+  /** Regenbogen ×5 active until */
+  rainbowEndsAt: number
+  /** Messing-Gießkanne used in this week (weekKey) */
+  shieldWeek: string
+  /** Größter Kürbis — week key, kg this week, pending result of last week */
+  contestWeek: string
+  contestKg: number
+  contestResult: ContestResult | null
   /** Generationen handed down */
   generation: number
   /** Vermächtnis — Generation currency */
@@ -310,7 +352,21 @@ export interface ExpansionSlice {
   helperCarryMs: number
   helperReport: number
   turboEndsAt: number
-  orchard: OrchardState
+  chapters: ChaptersState
+  ilseLevel: number
+  ilseOn: boolean
+  ilseCarryMs: number
+  weinleseAt: number
+  milestoneRecord: Record<string, number>
+  lastChest: ChestReward | null
+  recipe: Recipe
+  skyEvent: SkyEvent | null
+  skyNextAt: number
+  rainbowEndsAt: number
+  shieldWeek: string
+  contestWeek: string
+  contestKg: number
+  contestResult: ContestResult | null
   generation: number
   vermaechtnis: number
   legacy: LegacyUpgrades
@@ -326,7 +382,21 @@ export function emptyExpansion(now = Date.now()): ExpansionSlice {
     helperCarryMs: 0,
     helperReport: 0,
     turboEndsAt: 0,
-    orchard: emptyOrchard(),
+    chapters: emptyChapters(),
+    ilseLevel: 0,
+    ilseOn: true,
+    ilseCarryMs: 0,
+    weinleseAt: 0,
+    milestoneRecord: {},
+    lastChest: null,
+    recipe: emptyRecipe(),
+    skyEvent: null,
+    skyNextAt: now + SKY.firstDelayMs,
+    rainbowEndsAt: 0,
+    shieldWeek: '',
+    contestWeek: weekKey(now),
+    contestKg: 0,
+    contestResult: null,
     generation: 0,
     vermaechtnis: 0,
     legacy: { ...EMPTY_LEGACY },
@@ -344,7 +414,21 @@ export function pickExpansion(s: GameState): ExpansionSlice {
     helperCarryMs: 0,
     helperReport: 0,
     turboEndsAt: s.turboEndsAt,
-    orchard: s.orchard,
+    chapters: s.chapters,
+    ilseLevel: s.ilseLevel,
+    ilseOn: s.ilseOn,
+    ilseCarryMs: 0,
+    weinleseAt: s.weinleseAt,
+    milestoneRecord: { ...s.milestoneRecord },
+    lastChest: null,
+    recipe: s.recipe,
+    skyEvent: s.skyEvent,
+    skyNextAt: s.skyNextAt,
+    rainbowEndsAt: s.rainbowEndsAt,
+    shieldWeek: s.shieldWeek,
+    contestWeek: s.contestWeek,
+    contestKg: s.contestKg,
+    contestResult: s.contestResult,
     generation: s.generation,
     vermaechtnis: s.vermaechtnis,
     legacy: { ...s.legacy },
@@ -692,7 +776,7 @@ export function turboMult(state: GameState, now = Date.now()): number {
 
 /** Permanent multipliers from Kapitel 2 and Generationen (shown in HUD). */
 export function expansionGardenMult(state: GameState): number {
-  return orchardGardenMult(state.orchard) * legacyGardenMult(state.legacy)
+  return chaptersGardenMult(state.chapters) * legacyGardenMult(state.legacy)
 }
 
 export function productionPerSecond(state: GameState, now = Date.now()): number {
@@ -723,24 +807,37 @@ export function productionPerSecond(state: GameState, now = Date.now()): number 
     wheelYieldMult(state.wheelBuff, state.prestiges) *
     expansionGardenMult(state) *
     neighbourMult(state) *
+    rainbowMult(state, now) *
     turboMult(state, now)
   )
 }
 
-/* ———————————— Kapitel 2: Streuobstwiese ———————————— */
+/* ———————————— Kapitel (Streuobstwiese, Weinberg …) ———————————— */
 
-export function orchardOpen(state: GameState): boolean {
-  return state.orchard.openedAt > 0
+export function chapterOpen(state: GameState, id: ChapterId): boolean {
+  return state.chapters[id].openedAt > 0
 }
 
-/** Opens Kapitel 2 once the first Tiefer Winter (or a Generation) is done. */
-export function syncOrchardOpen(state: GameState, now = Date.now(), force = false): GameState {
-  if (state.orchard.openedAt > 0) return state
-  if (!force && state.deepPrestiges < 1 && state.generation < 1) return state
-  return { ...state, orchard: { ...state.orchard, openedAt: now } }
+export function openChapters(state: GameState): ChapterId[] {
+  return CHAPTERS.filter((c) => chapterOpen(state, c.id)).map((c) => c.id)
 }
 
-export function orchardRateMult(state: GameState): number {
+/** Opens every chapter whose rule is met (or `force`, test hook). */
+export function syncChaptersOpen(state: GameState, now = Date.now(), force?: ChapterId): GameState {
+  let chapters = state.chapters
+  let changed = false
+  for (const def of CHAPTERS) {
+    const c = chapters[def.id]
+    if (c.openedAt > 0) continue
+    if (force === def.id || def.unlock(state)) {
+      chapters = { ...chapters, [def.id]: { ...c, openedAt: now } }
+      changed = true
+    }
+  }
+  return changed ? { ...state, chapters } : state
+}
+
+export function chapterRateMult(state: GameState): number {
   return (
     legacyOrchardMult(state.legacy) *
     (1 + 0.05 * state.deepPrestiges) *
@@ -749,55 +846,73 @@ export function orchardRateMult(state: GameState): number {
   )
 }
 
-export function orchardPerSecond(state: GameState): number {
-  if (!orchardOpen(state)) return 0
-  return orchardBaseRate(state.orchard) * orchardRateMult(state)
+export function chapterPerSecond(state: GameState, id: ChapterId): number {
+  if (!chapterOpen(state, id)) return 0
+  return chapterBaseRate(chapterDef(id), state.chapters[id]) * chapterRateMult(state)
 }
 
-function withObst(state: GameState, gained: number): GameState {
+function withChapterCur(state: GameState, id: ChapterId, gained: number): GameState {
   if (gained <= 0) return state
+  const c = state.chapters[id]
   return {
     ...state,
-    orchard: {
-      ...state.orchard,
-      obst: state.orchard.obst + gained,
-      obstLifetime: state.orchard.obstLifetime + gained,
-    },
+    chapters: { ...state.chapters, [id]: { ...c, cur: c.cur + gained, curLifetime: c.curLifetime + gained } },
   }
 }
 
-export function orchardCostOf(state: GameState, id: OrchardId): number {
-  const def = ORCHARD.find((o) => o.id === id)
-  if (!def) return Infinity
-  return orchardCost(def, state.orchard.owned[id] ?? 0, legacyCostMult(state.legacy))
+function tickChapters(state: GameState, seconds: (rate: number) => number): GameState {
+  let next = state
+  for (const def of CHAPTERS) {
+    const rate = chapterPerSecond(next, def.id)
+    if (rate > 0) next = withChapterCur(next, def.id, seconds(rate))
+  }
+  return next
 }
 
-export function buyOrchard(state: GameState, id: OrchardId, fromHelper = false): GameState {
-  if (!orchardOpen(state)) return state
-  const def = ORCHARD.find((o) => o.id === id)
-  if (!def || !orchardUnlocked(def, state.orchard.owned)) return state
-  const cost = orchardCostOf(state, id)
-  if (state.orchard.obst < cost) return state
-  const owned = state.orchard.owned[id] ?? 0
-  const next: GameState = {
+export function chapterCostOf(state: GameState, id: ChapterId, areaId: string): number {
+  const a = chapterDef(id).areas.find((x) => x.id === areaId)
+  if (!a) return Infinity
+  return areaCost(a, state.chapters[id].owned[areaId] ?? 0, legacyCostMult(state.legacy))
+}
+
+export function buyChapterArea(
+  state: GameState,
+  id: ChapterId,
+  areaId: string,
+  mode: BuyMode = 'manual',
+): GameState {
+  if (!chapterOpen(state, id)) return state
+  const c = state.chapters[id]
+  const a = chapterDef(id).areas.find((x) => x.id === areaId)
+  if (!a || !areaUnlocked(a, c.owned)) return state
+  const cost = chapterCostOf(state, id, areaId)
+  if (c.cur < cost) return state
+  const owned = c.owned[areaId] ?? 0
+  let next: GameState = {
     ...state,
-    orchard: {
-      ...state.orchard,
-      obst: state.orchard.obst - cost,
-      owned: { ...state.orchard.owned, [id]: owned + 1 },
+    chapters: {
+      ...state.chapters,
+      [id]: { ...c, cur: c.cur - cost, owned: { ...c.owned, [areaId]: owned + 1 } },
     },
     totalUpgrades: state.totalUpgrades + 1,
     lastSeen: Date.now(),
   }
-  return earnFest(withXp(next, fromHelper ? 1 : XP_PER_UPGRADE), fromHelper ? FEST_EARN.helperUpgrade : FEST_EARN.upgrade)
+  next = withMilestoneChest(next, `${id}:${areaId}`, owned + 1)
+  next = withXp(next, mode === 'helper' ? 1 : XP_PER_UPGRADE)
+  return earnFest(next, mode === 'helper' ? FEST_EARN.helperUpgrade : FEST_EARN.upgrade)
 }
 
-/** Buy up to `n` orchard levels (stops when Obst runs out). */
-export function buyOrchardMany(state: GameState, id: OrchardId, n: number): { state: GameState; bought: number } {
+/** Buy up to `n` levels of one chapter area. */
+export function buyChapterMany(
+  state: GameState,
+  id: ChapterId,
+  areaId: string,
+  n: number,
+): { state: GameState; bought: number } {
   let next = state
   let bought = 0
   for (let i = 0; i < n; i++) {
-    const after = buyOrchard(next, id)
+    const after = buyChapterArea(next, id, areaId, i === 0 ? 'manual' : 'bulk')
     if (after === next) break
     next = after
     bought += 1
@@ -805,28 +920,212 @@ export function buyOrchardMany(state: GameState, id: OrchardId, n: number): { st
   return { state: next, bought }
 }
 
-/** Best Obst buy by Δrate / cost (affordable only). */
-export function bestOrchardBuy(state: GameState): OrchardId | null {
-  let best: OrchardId | null = null
+/** Best affordable chapter buy by Δrate / cost. */
+export function bestChapterBuy(state: GameState, id: ChapterId): string | null {
+  const c = state.chapters[id]
+  let best: string | null = null
   let bestScore = 0
-  for (const def of ORCHARD) {
-    if (!orchardUnlocked(def, state.orchard.owned)) continue
-    const cost = orchardCostOf(state, def.id)
-    if (cost > state.orchard.obst) continue
-    const n = state.orchard.owned[def.id] ?? 0
-    const score = (orchardAreaRate(def, n + 1) - orchardAreaRate(def, n)) / cost
+  for (const a of chapterDef(id).areas) {
+    if (!areaUnlocked(a, c.owned)) continue
+    const cost = chapterCostOf(state, id, a.id)
+    if (cost > c.cur) continue
+    const n = c.owned[a.id] ?? 0
+    const score = (areaRate(a, n + 1) - areaRate(a, n)) / cost
     if (score > bestScore) {
       bestScore = score
-      best = def.id
+      best = a.id
     }
   }
   return best
 }
 
+/* ———————————— Oma Ilse (Kapitel-Helferin) ———————————— */
+
+export function ilseUnlocked(state: GameState): boolean {
+  return chapterOpen(state, 'obstwiese')
+}
+
+export function buyIlse(state: GameState): GameState {
+  if (!ilseUnlocked(state)) return state
+  const rank = ILSE_RANKS[state.ilseLevel]
+  if (!rank) return state
+  const c = state.chapters.obstwiese
+  if (c.cur < rank.cost) return state
+  return {
+    ...state,
+    chapters: { ...state.chapters, obstwiese: { ...c, cur: c.cur - rank.cost } },
+    ilseLevel: state.ilseLevel + 1,
+    ilseOn: true,
+    lastSeen: Date.now(),
+  }
+}
+
+export function toggleIlse(state: GameState): GameState {
+  return state.ilseLevel > 0 ? { ...state, ilseOn: !state.ilseOn } : state
+}
+
+export function runIlse(state: GameState, dtMs: number, maxBuys = 40): { state: GameState; bought: number } {
+  if (state.ilseLevel <= 0 || !state.ilseOn) return { state, bought: 0 }
+  const ids = openChapters(state)
+  if (ids.length === 0) return { state, bought: 0 }
+  const interval = ILSE_RANKS[Math.min(ILSE_RANKS.length, state.ilseLevel) - 1]!.intervalMs
+  let carry = state.ilseCarryMs + dtMs
+  let next = state
+  let bought = 0
+  while (carry >= interval && bought < maxBuys) {
+    let did = false
+    for (let k = 0; k < ids.length; k++) {
+      const id = ids[(bought + k) % ids.length]!
+      const area = bestChapterBuy(next, id)
+      if (!area) continue
+      next = buyChapterArea(next, id, area, 'helper')
+      did = true
+      break
+    }
+    if (!did) {
+      carry = Math.min(carry, interval)
+      break
+    }
+    carry -= interval
+    bought += 1
+  }
+  return { state: { ...next, ilseCarryMs: Math.min(carry, interval * 2) }, bought }
+}
+
+/* ———————————— Weinlese ———————————— */
+
+export function weinleseReady(state: GameState, now = Date.now()): boolean {
+  return chapterOpen(state, 'weinberg') && now - state.weinleseAt >= WEINLESE.cooldownMs
+}
+
+/** Finish the Weinlese with `hits` ripe grapes tapped (0…WEINLESE.grapes). */
+export function finishWeinlese(state: GameState, hits: number, now = Date.now()): GameState {
+  if (!weinleseReady(state, now)) return state
+  const h = Math.max(0, Math.min(WEINLESE.grapes, Math.floor(hits)))
+  const trauben = chapterPerSecond(state, 'weinberg') * WEINLESE.secondsPerHit * h
+  const next = withChapterCur({ ...state, weinleseAt: now, lastSeen: now }, 'weinberg', Math.max(h * 10, trauben))
+  return earnFest(next, h, now)
+}
+
+/* ———————————— Meilenstein-Truhen ———————————— */
+
+/** A new lifetime record of Meilensteine on an area opens one Truhe. */
+function withMilestoneChest(state: GameState, key: string, level: number): GameState {
+  const stars = milestonesReached(level)
+  if (stars <= (state.milestoneRecord[key] ?? 0)) return state
+  const chest = rollChest(state.prestiges, state.collection)
+  let next: GameState = {
+    ...state,
+    milestoneRecord: { ...state.milestoneRecord, [key]: stars },
+    lastChest: chest,
+  }
+  if (chest.kind === 'samen') next = { ...next, samen: next.samen + chest.amount }
+  if (chest.kind === 'erbstuecke') next = { ...next, erbstuecke: next.erbstuecke + chest.amount }
+  if (chest.kind === 'fest') next = earnFest(next, chest.amount)
+  if (chest.kind === 'variety' && chest.variety) {
+    next = { ...next, collection: [...next.collection, chest.variety], lastVariety: chest.variety }
+  }
+  return next
+}
+
+export function clearLastChest(state: GameState): GameState {
+  return state.lastChest ? { ...state, lastChest: null } : state
+}
+
+/* ———————————— Omas Tagesrezept ———————————— */
+
+export function syncRecipe(state: GameState, now = Date.now()): GameState {
+  const day = dayKey(now)
+  if (state.recipe.day === day) return state
+  const planted = GENERATORS.filter((g) => (state.owned[g.id] ?? 0) > 0).map((g) => g.id)
+  return { ...state, recipe: makeRecipe(day, planted) }
+}
+
+function bumpRecipe(state: GameState, id: GeneratorId, now: number): GameState {
+  const synced = syncRecipe(state, now)
+  const i = synced.recipe.areas.indexOf(id)
+  if (i < 0 || synced.recipe.claimed) return synced
+  if ((synced.recipe.have[i] ?? 0) >= RECIPE_NEED) return synced
+  const have = [...synced.recipe.have]
+  have[i] = (have[i] ?? 0) + 1
+  return { ...synced, recipe: { ...synced.recipe, have } }
+}
+
+export function recipeReady(state: GameState): boolean {
+  const r = state.recipe
+  return !r.claimed && r.areas.length > 0 && r.areas.every((_, i) => (r.have[i] ?? 0) >= RECIPE_NEED)
+}
+
+export function claimRecipe(state: GameState, now = Date.now()): GameState {
+  if (!recipeReady(state)) return state
+  const next = grantReward(state, RECIPE_REWARD, now)
+  return { ...next, recipe: { ...next.recipe, claimed: true } }
+}
+
+/* ———————————— Himmelsereignisse ———————————— */
+
+export function rainbowMult(state: GameState, now = Date.now()): number {
+  return state.rainbowEndsAt > now ? SKY.rainbowMult : 1
+}
+
+/** Spawn a Regenbogen (day) or Sternschnuppe (night) now and then. */
+export function syncSky(state: GameState, now = Date.now()): GameState {
+  if (state.skyEvent && state.skyEvent.until <= now) {
+    return { ...state, skyEvent: null }
+  }
+  if (state.skyEvent || now < state.skyNextAt) return state
+  const hour = new Date(now).getHours()
+  const kind: SkyEvent['kind'] = hour >= 21 || hour < 5 ? 'star' : 'rainbow'
+  const gap = SKY.minGapMs + Math.random() * (SKY.maxGapMs - SKY.minGapMs)
+  return { ...state, skyEvent: { kind, until: now + SKY.windowMs }, skyNextAt: now + gap }
+}
+
+export function catchRainbow(state: GameState, now = Date.now()): GameState {
+  if (state.skyEvent?.kind !== 'rainbow' || state.skyEvent.until <= now) return state
+  return { ...state, skyEvent: null, rainbowEndsAt: now + SKY.rainbowMs, lastSeen: now }
+}
+
+export type Wish = 'samen' | 'ernte' | 'fest'
+
+export function makeWish(state: GameState, wish: Wish, now = Date.now()): GameState {
+  if (state.skyEvent?.kind !== 'star' || state.skyEvent.until <= now) return state
+  const base = { ...state, skyEvent: null }
+  if (wish === 'samen') return grantReward(base, { samen: SKY.wishSamen }, now)
+  if (wish === 'ernte') return grantReward(base, { ernteSeconds: SKY.wishErnteSec }, now)
+  return grantReward(base, { fest: SKY.wishFest }, now)
+}
+
+/* ———————————— Größter Kürbis (Vereinsrunde) ———————————— */
+
+/** Roll the week: settle last week's rank, start fresh. */
+export function syncContest(state: GameState, now = Date.now()): GameState {
+  const key = weekKey(now)
+  if (state.contestWeek === key) return state
+  const rank = contestRank(state.contestWeek, state.contestKg)
+  const result: ContestResult | null =
+    state.contestKg > 0 ? { week: state.contestWeek, rank, kg: state.contestKg, claimed: false } : null
+  return { ...state, contestWeek: key, contestKg: 0, contestResult: result ?? state.contestResult }
+}
+
+export function growPumpkin(state: GameState, kg: number, now = Date.now()): GameState {
+  if (kg <= 0) return state
+  const synced = syncContest(state, now)
+  return { ...synced, contestKg: synced.contestKg + kg }
+}
+
+export function claimContest(state: GameState, now = Date.now()): GameState {
+  const r = state.contestResult
+  if (!r || r.claimed) return state
+  const samen = CONTEST_REWARDS[Math.min(r.rank, CONTEST_REWARDS.length) - 1] ?? 5
+  return { ...grantReward(state, { samen }, now), contestResult: { ...r, claimed: true } }
+}
+
+export { CONTEST_KG }
+
 /* ———————————— Generationen ———————————— */
 
 export function generationPayout(state: GameState): number {
-  return legacyPayout(state.deepPrestiges, orchardLevels(state.orchard))
+  return legacyPayout(state.deepPrestiges, totalChapterLevels(state.chapters))
 }
 
 export function canHandDownNow(state: GameState): boolean {
@@ -845,7 +1144,7 @@ export function doGeneration(state: GameState, now = Date.now()): GameState {
     { ...state, erbstuecke: 0, emberUpgrades: { ...EMPTY_EMBER_UPGRADES } },
     now,
   )
-  return collectReadyAchievements({
+  return collectReadyAchievements(syncChaptersOpen({
     ...fresh,
     prestiges: 0,
     erbstuecke: 0,
@@ -856,7 +1155,7 @@ export function doGeneration(state: GameState, now = Date.now()): GameState {
     generation: state.generation + 1,
     vermaechtnis: state.vermaechtnis + gain,
     wheelBuff: null,
-  })
+  }, now))
 }
 
 export function buyLegacy(state: GameState, id: LegacyId): GameState {
@@ -1041,7 +1340,7 @@ export function buyAllBest(state: GameState, cap = 400): { state: GameState; bou
   return { state: next, bought }
 }
 
-/** Run the Gartenhelfer for `dtMs` (garden first, then Streuobstwiese). */
+/** Run the Gartenhelfer for `dtMs` (Omas Garten only — Ilse tends the chapters). */
 export function runHelper(state: GameState, dtMs: number, maxBuys = 40): { state: GameState; bought: number } {
   if (state.helperLevel <= 0 || !state.helperOn) return { state, bought: 0 }
   const interval = helperInterval(state.helperLevel)
@@ -1050,16 +1349,11 @@ export function runHelper(state: GameState, dtMs: number, maxBuys = 40): { state
   let bought = 0
   while (carry >= interval && bought < maxBuys) {
     const gid = bestGardenBuy(next)
-    if (gid) {
-      next = buyGenerator(next, gid, 'helper')
-    } else {
-      const oid = orchardOpen(next) ? bestOrchardBuy(next) : null
-      if (!oid) {
-        carry = Math.min(carry, interval)
-        break
-      }
-      next = buyOrchard(next, oid, true)
+    if (!gid) {
+      carry = Math.min(carry, interval)
+      break
     }
+    next = buyGenerator(next, gid, 'helper')
     carry -= interval
     bought += 1
   }
@@ -1208,10 +1502,13 @@ export function applyTick(state: GameState, dtSeconds: number): GameState {
   if (dtSeconds <= 0) return state
   const now = Date.now()
   let synced = withQuestSync(syncEventWindow(syncMonetization(state, now), now), now)
-  synced = syncFest(syncOrchardOpen(synced, now), now)
-  synced = withObst(synced, orchardPerSecond(synced) * dtSeconds)
+  synced = syncContest(syncSky(syncFest(syncChaptersOpen(synced, now), now), now), now)
+  synced = tickChapters(synced, (rate) => rate * dtSeconds)
   if (synced.helperLevel > 0 && synced.helperOn) {
     synced = runHelper(synced, dtSeconds * 1000).state
+  }
+  if (synced.ilseLevel > 0 && synced.ilseOn) {
+    synced = runIlse(synced, dtSeconds * 1000).state
   }
   const gained = productionPerSecond(synced, now) * dtSeconds
   if (gained <= 0) {
@@ -1263,9 +1560,17 @@ export function buyTimeSkip(state: GameState, id: TimeSkipId, now = Date.now()):
   }
 }
 
+/** Messing-Gießkanne: one missed day per week still counts for the Serie. */
+export function shieldReady(state: GameState, now = Date.now()): boolean {
+  return state.shieldWeek !== weekKey(now)
+}
+
 export function claimDailyOps(state: GameState, now = Date.now()): GameState {
   if (!canClaimDaily(state.dailyClaimDay, now)) return state
-  const streak = nextStreakAfterClaim(state.dailyClaimDay, state.dailyStreak, now)
+  let streak = nextStreakAfterClaim(state.dailyClaimDay, state.dailyStreak, now)
+  const missedOne = state.dailyClaimDay !== '' && daysSinceClaim(state.dailyClaimDay, now) === 2
+  const useShield = missedOne && shieldReady(state, now)
+  if (useShield) streak = state.dailyStreak + 2
   const rate = productionPerSecond(state, now)
   const comeback = isComebackClaim(state.dailyClaimDay, now)
   const gapDays = comeback ? daysSinceClaim(state.dailyClaimDay, now) : 0
@@ -1285,8 +1590,10 @@ export function claimDailyOps(state: GameState, now = Date.now()): GameState {
     dailyClaimDay: dayKey(now),
     dailyStreak: streak,
     claimedDailyOnce: true,
+    shieldWeek: useShield ? weekKey(now) : next.shieldWeek,
     lastSeen: now,
   }
+  next = growPumpkin(next, CONTEST_KG.daily, now)
   next = bumpQuest(next, 'claimDaily', 1, now)
   next = bumpQuest(next, 'earnAsh', reward.compute, now)
   next = withXp(next, XP_PER_DAILY, now)
@@ -1523,14 +1830,13 @@ export function applyOfflineCatchup(
     emberCaps.soft + deepCaps.soft,
     emberCaps.hard + deepCaps.hard,
   )
-  // Streuobstwiese grows offline with the same caps
-  base = syncFest(syncOrchardOpen(base, now), now)
-  const obstRate = orchardPerSecond(base)
-  if (obstRate > 0) {
-    base = withObst(
-      base,
-      offlineCatchupAsh(obstRate, elapsedSec, emberCaps.soft + deepCaps.soft, emberCaps.hard + deepCaps.hard),
-    )
+  // Chapters grow offline with the same caps; Ilse keeps tending them
+  base = syncContest(syncFest(syncChaptersOpen(base, now), now), now)
+  base = tickChapters(base, (r) =>
+    offlineCatchupAsh(r, elapsedSec, emberCaps.soft + deepCaps.soft, emberCaps.hard + deepCaps.hard),
+  )
+  if (base.ilseLevel > 0 && base.ilseOn && elapsedMs > 60_000) {
+    base = runIlse(base, Math.min(elapsedMs, 8 * 3600_000), 300).state
   }
   if (elapsedSec >= 3600) {
     base = earnFest(base, Math.min(FEST_EARN.offlineCap, Math.floor(elapsedSec / 3600) * FEST_EARN.offlineHour), now)
@@ -1640,6 +1946,9 @@ export function buyGenerator(state: GameState, id: GeneratorId, mode: BuyMode | 
   if (variety) {
     next = { ...next, collection: [...next.collection, variety], lastVariety: variety }
   }
+  next = withMilestoneChest(next, `g:${id}`, owned + 1)
+  next = bumpRecipe(next, id, now)
+  if (buyMode === 'manual') next = growPumpkin(next, CONTEST_KG.upgrade, now)
   next = bumpQuest(next, 'upgrades', 1, now)
   if (surprise) next = bumpQuest(next, 'earnAsh', surprise.amount, now)
   next = withXp(next, fromHelper ? 2 : XP_PER_UPGRADE, now)
@@ -1838,7 +2147,7 @@ export function doDeepReset(state: GameState): GameState {
     emberUpgrades: { ...EMPTY_EMBER_UPGRADES },
   })
   return collectReadyAchievements(
-    syncOrchardOpen({
+    syncChaptersOpen({
       ...fresh,
       prestiges: 0,
       erbstuecke: deepStartEmbers(state.deepUpgrades),
@@ -1866,6 +2175,8 @@ export interface Reward {
   xp?: number
   /** Festmarken */
   fest?: number
+  /** Kürbis-kg for the Vereinsrunde */
+  kg?: number
 }
 
 /** Generic reward for visitors, orders, weekly plan, comeback gifts. */
@@ -1883,6 +2194,7 @@ export function grantReward(state: GameState, reward: Reward, now = Date.now()):
   if (ernte > 0) next = bumpQuest(next, 'earnAsh', ernte, now)
   if (reward.xp) next = withXp(next, reward.xp, now)
   if (reward.fest) next = earnFest(next, reward.fest, now)
+  if (reward.kg) next = growPumpkin(next, reward.kg, now)
   return next
 }
 

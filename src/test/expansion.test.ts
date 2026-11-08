@@ -2,14 +2,27 @@ import { describe, expect, it } from 'vitest'
 import { GENERATORS, generatorRate, milestoneMult, nextMilestone } from '../game/generators'
 import { FESTS, festAt, festKeyAt, festShop } from '../game/fests'
 import { GENERATION_GATE_DEEP, legacyPayout } from '../game/generations'
-import { orchardGardenMult } from '../game/orchard'
+import { CHAPTERS, chaptersGardenMult } from '../game/chapters'
+import { contestRank, makeRecipe, neighbourFinals, RECIPE_NEED, WEINLESE } from '../game/extrasCore'
+import { completedSets, GARDEN_VARIETIES } from '../game/gardenLife'
 import {
   applyTick,
   buyAllBest,
   buyFestItem,
   buyHelper,
   buyLegacy,
-  buyOrchard,
+  buyChapterArea,
+  buyIlse,
+  catchRainbow,
+  claimDailyOps,
+  claimRecipe,
+  finishWeinlese,
+  neighbourMult,
+  recipeReady,
+  runIlse,
+  syncChaptersOpen,
+  syncContest,
+  syncSky,
   createInitialState,
   doDeepReset,
   doGeneration,
@@ -110,23 +123,102 @@ describe('Gartenhelfer', () => {
   })
 })
 
-describe('Kapitel 2 — Streuobstwiese', () => {
-  it('opens after the first Tiefer Winter and boosts the garden', () => {
+describe('Kapitel (Streuobstwiese, Weinberg)', () => {
+  it('opens the Streuobstwiese after the first Tiefer Winter and boosts the garden', () => {
     const s = { ...createInitialState(0), prestiges: DEEP_GATE_YEAR }
     const after = doDeepReset(s)
-    expect(after.orchard.openedAt).toBeGreaterThan(0)
+    expect(after.chapters.obstwiese.openedAt).toBeGreaterThan(0)
+    expect(after.chapters.weinberg.openedAt).toBe(0)
     const before = productionPerSecond(after)
-    let o = { ...after, orchard: { ...after.orchard, obst: 1e6 } }
-    for (let i = 0; i < 40; i++) o = buyOrchard(o, 'apfel')
-    expect(o.orchard.owned.apfel).toBeGreaterThan(30)
-    expect(orchardGardenMult(o.orchard)).toBeGreaterThan(1.1)
+    let o = { ...after, chapters: { ...after.chapters, obstwiese: { ...after.chapters.obstwiese, cur: 1e6 } } }
+    for (let i = 0; i < 40; i++) o = buyChapterArea(o, 'obstwiese', 'apfel')
+    expect(o.chapters.obstwiese.owned.apfel).toBeGreaterThan(30)
+    expect(chaptersGardenMult(o.chapters)).toBeGreaterThan(1.1)
     expect(productionPerSecond(o)).toBeGreaterThan(before)
   })
 
-  it('grows Obst while the game ticks', () => {
-    const s = { ...createInitialState(0), orchard: { ...createInitialState(0).orchard, openedAt: 1 } }
+  it('opens the Weinberg with the first Generation', () => {
+    const s = syncChaptersOpen({ ...createInitialState(0), generation: 1 }, 5)
+    expect(s.chapters.weinberg.openedAt).toBe(5)
+  })
+
+  it('every chapter has ten areas with copy', () => {
+    for (const c of CHAPTERS) expect(c.areas).toHaveLength(10)
+  })
+
+  it('grows chapter currency while the game ticks', () => {
+    const base = createInitialState(0)
+    const s = { ...base, chapters: { ...base.chapters, weinberg: { ...base.chapters.weinberg, openedAt: 1 } } }
     const next = applyTick(s, 10)
-    expect(next.orchard.obst).toBeGreaterThan(s.orchard.obst)
+    expect(next.chapters.weinberg.cur).toBeGreaterThan(s.chapters.weinberg.cur)
+  })
+
+  it('Ilse tends the chapters for Obst', () => {
+    const base = createInitialState(0)
+    let s = { ...base, chapters: { ...base.chapters, obstwiese: { ...base.chapters.obstwiese, openedAt: 1, cur: 1e5 } } }
+    s = buyIlse(s)
+    expect(s.ilseLevel).toBe(1)
+    const r = runIlse(s, 30_000)
+    expect(r.bought).toBeGreaterThan(3)
+  })
+
+  it('Weinlese pays per ripe grape, once per hour', () => {
+    const base = createInitialState(0)
+    const s = { ...base, chapters: { ...base.chapters, weinberg: { ...base.chapters.weinberg, openedAt: 1 } } }
+    const now = 10 * 3600_000
+    const a = finishWeinlese(s, 7, now)
+    expect(a.chapters.weinberg.cur).toBeGreaterThan(s.chapters.weinberg.cur)
+    expect(finishWeinlese(a, 10, now + 1000)).toBe(a)
+    expect(finishWeinlese(a, 10, now + WEINLESE.cooldownMs)).not.toBe(a)
+  })
+})
+
+describe('Bindung', () => {
+  it('Tagesrezept: three different areas, cook once', () => {
+    const r = makeRecipe('2026-11-09', ['gemuesebeet', 'kompost', 'kraeuterspirale', 'beerenhecke'])
+    expect(new Set(r.areas).size).toBe(3)
+    const s = { ...createInitialState(0), recipe: { ...r, have: [RECIPE_NEED, RECIPE_NEED, RECIPE_NEED] } }
+    expect(recipeReady(s)).toBe(true)
+    const done = claimRecipe(s)
+    expect(done.samen).toBeGreaterThan(s.samen)
+    expect(claimRecipe(done)).toBe(done)
+  })
+
+  it('Regenbogen: spawns, tap → ×5 for a minute', () => {
+    const now = new Date(2026, 10, 9, 12).getTime()
+    const s = syncSky({ ...createInitialState(0), skyNextAt: now - 1 }, now)
+    expect(s.skyEvent?.kind).toBe('rainbow')
+    const r = catchRainbow(s, now + 1000)
+    expect(productionPerSecond(r, now + 2000) / productionPerSecond(s, now + 2000)).toBeCloseTo(5)
+  })
+
+  it('Messing-Gießkanne bridges one missed day per week', () => {
+    const mon = new Date(2026, 10, 9, 10).getTime()
+    const s = { ...createInitialState(0), dailyClaimDay: '2026-11-07', dailyStreak: 4 }
+    const a = claimDailyOps(s, mon)
+    expect(a.dailyStreak).toBe(6)
+    expect(a.shieldWeek).not.toBe('')
+  })
+
+  it('Größter Kürbis: settles the rank when the week rolls', () => {
+    const week = '2026-W1109'
+    expect(contestRank(week, 999)).toBe(1)
+    expect(contestRank(week, 0)).toBe(neighbourFinals(week).length + 1)
+    const s = syncContest({ ...createInitialState(0), contestWeek: week, contestKg: 999 }, new Date(2026, 10, 17).getTime())
+    expect(s.contestResult?.rank).toBe(1)
+    expect(s.contestKg).toBe(0)
+  })
+
+  it('Pflanzenbuch-Sets add a bonus per complete area', () => {
+    const kompost = GARDEN_VARIETIES.filter((v) => v.module === 'kompost').map((v) => v.id)
+    expect(completedSets(kompost)).toEqual(['kompost'])
+  })
+
+  it('Nachbarschaftshilfe only helps the first pass in Gartenjahr 11–14', () => {
+    const s = { ...createInitialState(0), prestiges: 12 }
+    expect(neighbourMult(s)).toBeGreaterThan(1)
+    expect(neighbourMult({ ...s, deepPrestiges: 1 })).toBe(1)
+    expect(neighbourMult({ ...s, prestiges: 5 })).toBe(1)
   })
 })
 
@@ -138,7 +230,7 @@ describe('Generationen', () => {
       deepPrestiges: GENERATION_GATE_DEEP - 1,
       helperLevel: 2,
       collection: ['wurmhumus'],
-      orchard: { ...base.orchard, openedAt: 1, owned: { ...base.orchard.owned, apfel: 40 } },
+      chapters: { ...base.chapters, obstwiese: { ...base.chapters.obstwiese, openedAt: 1, owned: { ...base.chapters.obstwiese.owned, apfel: 40 } } },
     }
     expect(doGeneration(s)).toBe(s)
     const ready = { ...s, deepPrestiges: GENERATION_GATE_DEEP, sproesslinge: 40 }
@@ -148,7 +240,8 @@ describe('Generationen', () => {
     expect(n.deepPrestiges).toBe(0)
     expect(n.sproesslinge).toBe(0)
     expect(n.helperLevel).toBe(2)
-    expect(n.orchard.owned.apfel).toBe(40)
+    expect(n.chapters.obstwiese.owned.apfel).toBe(40)
+    expect(n.chapters.weinberg.openedAt).toBeGreaterThan(0)
     expect(n.collection).toContain('wurmhumus')
   })
 
@@ -172,7 +265,9 @@ describe('Speicherstand', () => {
       legacy: { ...base.legacy, daumen: 3 },
       festTokens: 42.5,
       festBought: { boost: 2 },
-      orchard: { ...base.orchard, obst: 99, openedAt: 5, introSeen: true, owned: { ...base.orchard.owned, birne: 7 } },
+      chapters: { ...base.chapters, obstwiese: { ...base.chapters.obstwiese, cur: 99, openedAt: 5, introSeen: true, owned: { ...base.chapters.obstwiese.owned, birne: 7 } } },
+      ilseLevel: 2,
+      milestoneRecord: { 'g:kompost': 2 },
     }
     const back = parseSave(JSON.parse(JSON.stringify(s)))!
     expect(back.helperLevel).toBe(4)
@@ -181,7 +276,9 @@ describe('Speicherstand', () => {
     expect(back.legacy.daumen).toBe(3)
     expect(back.festTokens).toBe(42.5)
     expect(back.festBought).toEqual({ boost: 2 })
-    expect(back.orchard.owned.birne).toBe(7)
-    expect(back.orchard.introSeen).toBe(true)
+    expect(back.chapters.obstwiese.owned.birne).toBe(7)
+    expect(back.chapters.obstwiese.introSeen).toBe(true)
+    expect(back.ilseLevel).toBe(2)
+    expect(back.milestoneRecord).toEqual({ 'g:kompost': 2 })
   })
 })

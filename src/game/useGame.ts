@@ -95,8 +95,8 @@ import {
   buyGeneratorMany,
   buyHelper,
   buyLegacy,
-  buyOrchard,
-  buyOrchardMany,
+  buyChapterArea,
+  buyChapterMany,
   canHandDownNow,
   costForLevels,
   deepSproutPayout,
@@ -104,15 +104,31 @@ import {
   earnFest,
   generationPayout,
   helperUnlocked,
-  orchardCostOf,
-  orchardOpen,
-  orchardPerSecond,
-  syncOrchardOpen,
+  chapterCostOf,
+  openChapters,
+  chapterPerSecond,
+  chapterRateMult,
+  syncChaptersOpen,
+  buyIlse,
+  toggleIlse,
+  ilseUnlocked,
+  finishWeinlese,
+  weinleseReady,
+  clearLastChest,
+  claimRecipe,
+  recipeReady,
+  shieldReady,
+  catchRainbow,
+  makeWish,
+  claimContest,
+  growPumpkin,
+  type Wish,
   toggleHelper,
   turboMult,
   expansionGardenMult,
 } from './state'
-import type { OrchardId } from './orchard'
+import type { ChapterId } from './chapters'
+import { CONTEST_KG } from './extrasCore'
 import type { LegacyId } from './generations'
 import { FEST_EARN } from './fests'
 import { logPlaytest } from './playtestLog'
@@ -246,7 +262,7 @@ export function useGame() {
         : 23
       const shortfall = Math.max(0, g1Cost - s.ernte)
       const gained = Math.max(fromRate, shortfall, 1)
-      return earnFest(grantTapAsh(s, gained, now), FEST_EARN.water, now)
+      return growPumpkin(earnFest(grantTapAsh(s, gained, now), FEST_EARN.water, now), CONTEST_KG.water, now)
     })
   }, [])
 
@@ -401,32 +417,62 @@ export function useGame() {
     setState((s) => (s.helperReport ? { ...s, helperReport: 0 } : s))
   }, [])
 
-  const buyOrchardArea = useCallback((id: OrchardId) => {
+  const buyChapter = useCallback((id: ChapterId, area: string) => {
     setState((s) => {
-      const next = buyOrchard(s, id)
-      if (next !== s) logPlaytest('upgrade', { id, level: next.orchard.owned[id], kind: 'orchard' })
+      const next = buyChapterArea(s, id, area)
+      if (next !== s) logPlaytest('upgrade', { id: area, level: next.chapters[id].owned[area] ?? 0, kind: id })
       return next
     })
   }, [])
 
-  const buyOrchardBulk = useCallback((id: OrchardId, n: number) => {
-    const result = buyOrchardMany(stateRef.current, id, Number.isFinite(n) ? n : 1000)
+  const buyChapterBulk = useCallback((id: ChapterId, area: string, n: number) => {
+    const result = buyChapterMany(stateRef.current, id, area, Number.isFinite(n) ? n : 1000)
     if (result.bought > 0) {
       stateRef.current = result.state
       setState(result.state)
-      logPlaytest('upgrade', { id, level: result.state.orchard.owned[id], kind: 'orchard', n: result.bought })
+      logPlaytest('upgrade', { id: area, level: result.state.chapters[id].owned[area] ?? 0, kind: id, n: result.bought })
     }
     return result.bought
   }, [])
 
-  const seeOrchardIntro = useCallback(() => {
-    setState((s) => ({ ...s, orchard: { ...s.orchard, introSeen: true } }))
+  const seeChapterIntro = useCallback((id: ChapterId) => {
+    setState((s) => ({ ...s, chapters: { ...s.chapters, [id]: { ...s.chapters[id], introSeen: true } } }))
   }, [])
 
-  /** Test hook (?kapitel2=1): open Kapitel 2 without a Tiefer Winter. */
-  const forceOrchard = useCallback(() => {
-    setState((s) => syncOrchardOpen(s, Date.now(), true))
+  /** Test hook (?kapitel2=1 / ?kapitel3=1): open a chapter right away. */
+  const forceChapter = useCallback((id: ChapterId) => {
+    setState((s) => syncChaptersOpen(s, Date.now(), id))
   }, [])
+
+  const hireIlse = useCallback(() => {
+    setState((s) => {
+      const next = buyIlse(s)
+      if (next !== s) logPlaytest('upgrade', { id: 'ilse', level: next.ilseLevel, kind: 'helper' })
+      return next
+    })
+  }, [])
+
+  const switchIlse = useCallback(() => setState((s) => toggleIlse(s)), [])
+
+  const weinlese = useCallback((hits: number) => {
+    setState((s) => {
+      const next = finishWeinlese(s, hits)
+      if (next !== s) logPlaytest('weinlese', { hits })
+      return next
+    })
+  }, [])
+
+  const ackChest = useCallback(() => setState((s) => clearLastChest(s)), [])
+  const cookRecipe = useCallback(() => {
+    setState((s) => {
+      const next = claimRecipe(s)
+      if (next !== s) logPlaytest('recipe', { day: s.recipe.day })
+      return next
+    })
+  }, [])
+  const tapRainbow = useCallback(() => setState((s) => catchRainbow(s)), [])
+  const wish = useCallback((w: Wish) => setState((s) => makeWish(s, w)), [])
+  const claimPumpkin = useCallback(() => setState((s) => claimContest(s)), [])
 
   const buyFest = useCallback((itemId: string) => {
     setState((s) => {
@@ -718,9 +764,15 @@ export function useGame() {
     turboMult: turboMult(state, nowTick),
     turboMsLeft: Math.max(0, state.turboEndsAt - nowTick),
     expansionMult: expansionGardenMult(state),
-    orchardOpen: orchardOpen(state),
-    orchardRate: orchardPerSecond(state),
-    orchardCostOf: (id: OrchardId) => orchardCostOf(state, id),
+    openChapters: openChapters(state),
+    chapterRate: (id: ChapterId) => chapterPerSecond(state, id),
+    chapterCostOf: (id: ChapterId, area: string) => chapterCostOf(state, id, area),
+    chapterRateMult: chapterRateMult(state),
+    ilseUnlocked: ilseUnlocked(state),
+    weinleseReady: weinleseReady(state, nowTick),
+    recipeReady: recipeReady(state),
+    shieldReady: shieldReady(state, nowTick),
+    rainbowMsLeft: Math.max(0, state.rainbowEndsAt - nowTick),
     helperUnlocked: helperUnlocked(state),
     canHandDown: canHandDownNow(state),
     generationPayout: generationPayout(state),
@@ -734,10 +786,18 @@ export function useGame() {
     hireHelper,
     switchHelper,
     ackHelperReport,
-    buyOrchardArea,
-    buyOrchardBulk,
-    seeOrchardIntro,
-    forceOrchard,
+    buyChapter,
+    buyChapterBulk,
+    seeChapterIntro,
+    forceChapter,
+    hireIlse,
+    switchIlse,
+    weinlese,
+    ackChest,
+    cookRecipe,
+    tapRainbow,
+    wish,
+    claimPumpkin,
     buyFest,
     multiplier: mult,
     levelMult,
