@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { DEEP_GATE_YEAR, DEEP_SHOP, canDeepReset } from '../game/longLoop'
 import { LEGACY_SHOP, generationGate } from '../game/generations'
 import { HELPER_RANKS, helperInterval, helperIsPro } from '../game/state'
@@ -48,9 +48,19 @@ function shopRowPriority(
   return 3
 }
 
+const JUMPS = ['season', 'helper', 'truhe', 'deep', 'generation']
+
 export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
   const { state, nextPrestige, canPrestige, prestige, multiplier, prestigeMin, prestigeProgress } =
     game
+  // Jump chips only for sections that are on screen for this player
+  const [jumps, setJumps] = useState<string[]>([])
+  useEffect(() => {
+    const id = requestAnimationFrame(() =>
+      setJumps(JUMPS.filter((k) => document.getElementById(`jump-${k}`) != null)),
+    )
+    return () => cancelAnimationFrame(id)
+  }, [state.prestiges, state.deepPrestiges, state.generation, state.helperLevel])
   const teaser = prestigeProgress.ratio >= 0.5 && !canPrestige
   const payout = emberPayout(state.ernteSeason, state.prestiges)
   const online = modulesOnlineCount(state.owned)
@@ -122,11 +132,26 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
         </p>
       </header>
 
+      {jumps.length > 2 ? (
+      <nav className="season-jumps" aria-label={t.ux.season.jump}>
+        {jumps.map((k) => (
+          <button
+            key={k}
+            type="button"
+            className="season-jump"
+            onClick={() => document.getElementById(`jump-${k}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+          >
+            {t.ux.season.jumps[k]}
+          </button>
+        ))}
+      </nav>
+      ) : null}
+
       <div className="season-hero" aria-hidden="true">
         <WinterScene />
       </div>
 
-      <div className="prestige-block">
+      <div className="prestige-block" id="jump-season">
         <dl className="season-stats">
           <div>
             <dt>{t.prestige.credits.replace(':', '')}</dt>
@@ -135,6 +160,7 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
           <div>
             <dt>{t.prestige.multiplier.replace(':', '')}</dt>
             <dd>{formatMult(multiplier)}</dd>
+            {multiplier <= 1 ? <small className="season-stat-hint">{t.ux.season.bonusHint}</small> : null}
           </div>
           <div>
             <dt>{t.prestige.runs.replace(':', '')}</dt>
@@ -198,7 +224,7 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
         </button>
       </div>
 
-      <section className="helper-block" aria-labelledby="helper-heading">
+      <section className="helper-block" id="jump-helper" aria-labelledby="helper-heading">
         <div className="helper-head">
           <span className="helper-avatar" aria-hidden="true">
             <IconHelper />
@@ -279,7 +305,7 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
         ) : null}
       </section>
 
-      <h3 className="subhead">{t.prestige.shopTitle}</h3>
+      <h3 className="subhead" id="jump-truhe">{t.prestige.shopTitle}</h3>
       <p className="muted">{t.prestige.shopIntro}</p>
       {state.erbstuecke <= 0 ? (
         <p className="panel-empty">{t.prestige.emptyShop}</p>
@@ -431,7 +457,7 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
         })}
       </div>
 
-      <section className="long-loop-block deep-winter" aria-labelledby="deep-winter">
+      <section className="long-loop-block deep-winter" id="jump-deep" aria-labelledby="deep-winter">
         <h3 id="deep-winter" className="subhead">
           {t.longLoop.title}
         </h3>
@@ -541,7 +567,7 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
         </ul>
       </section>
 
-      <section className="long-loop-block generation-block" aria-labelledby="generation-heading">
+      <section className="long-loop-block generation-block" id="jump-generation" aria-labelledby="generation-heading">
         <h3 id="generation-heading" className="subhead">
           <IconFamily /> {t.generation.title}
         </h3>
@@ -630,6 +656,14 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
           })}
         </ul>
       </section>
+
+      {canPrestige ? (
+        <div className="prestige-sticky">
+          <button type="button" className="btn prestige" onClick={prestige}>
+            {claimLabel}
+          </button>
+        </div>
+      ) : null}
     </section>
   )
 }

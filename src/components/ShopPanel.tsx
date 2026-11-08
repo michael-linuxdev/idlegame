@@ -58,7 +58,7 @@ function Row({ name, blurb, effect, children }: { name: string; blurb?: string; 
         {blurb ? <p className="ember-shop-blurb">{blurb}</p> : null}
         {effect ? <p className="ember-shop-effect">{effect}</p> : null}
       </div>
-      {children}
+      <div className="ember-shop-action">{children}</div>
     </li>
   )
 }
@@ -139,7 +139,7 @@ export function ShopPanel({ game, onPreview }: Props) {
         <p className="muted">{t.shop.intro}</p>
       </header>
 
-      <div className="shop-wallet" aria-live="polite">
+      <div className="shop-wallet sticky-wallet" aria-live="polite">
         <div className="shop-wallet-chip">
           <span className="shop-wallet-label">{t.resources.samen}</span>
           <span className="shop-wallet-value">{state.samen}</span>
@@ -279,6 +279,7 @@ export function ShopPanel({ game, onPreview }: Props) {
               <button type="button" className="btn buy" disabled={tapReady || state.samen < WATER_REFILL_COST} onClick={buyWaterRefill}>
                 {t.shop.costObsidian(WATER_REFILL_COST)}
               </button>
+              {state.samen < WATER_REFILL_COST ? <span className="shop-need">{t.ux.shop.need(WATER_REFILL_COST - state.samen)}</span> : null}
             </Row>
             <Row
               name={t.shop.yieldBoostTitle}
@@ -288,6 +289,7 @@ export function ShopPanel({ game, onPreview }: Props) {
               <button type="button" className="btn buy" disabled={state.samen < YIELD_BOOST_COST} onClick={purchaseYieldBoost}>
                 {t.shop.yieldBoostBuy(YIELD_BOOST_COST)}
               </button>
+              {state.samen < YIELD_BOOST_COST ? <span className="shop-need">{t.ux.shop.need(YIELD_BOOST_COST - state.samen)}</span> : null}
             </Row>
             <Row
               name={CLAN_BOOST.name}
@@ -297,6 +299,7 @@ export function ShopPanel({ game, onPreview }: Props) {
               <button type="button" className="btn buy" disabled={state.samen < CLAN_BOOST.cost} onClick={purchaseClanBoost}>
                 {t.shop.costObsidian(CLAN_BOOST.cost)}
               </button>
+              {state.samen < CLAN_BOOST.cost ? <span className="shop-need">{t.ux.shop.need(CLAN_BOOST.cost - state.samen)}</span> : null}
             </Row>
           </ul>
 
@@ -314,6 +317,7 @@ export function ShopPanel({ game, onPreview }: Props) {
                   <button type="button" className="btn buy" disabled={disabled} onClick={() => purchaseTimeSkip(skip.id)}>
                     {t.shop.costObsidian(skip.cost)}
                   </button>
+              {state.samen < skip.cost ? <span className="shop-need">{t.ux.shop.need(skip.cost - state.samen)}</span> : null}
                 </Row>
               )
             })}
@@ -353,6 +357,7 @@ export function ShopPanel({ game, onPreview }: Props) {
                       <button type="button" className="btn buy" disabled={!afford || skin.cost <= 0} onClick={() => purchaseCosmetic(skin.id)}>
                         {skin.cost <= 0 ? t.shop.free : t.shop.costObsidian(skin.cost)}
                       </button>
+                      {!afford && skin.cost > 0 ? <span className="shop-need">{t.ux.shop.need(skin.cost - state.samen)}</span> : null}
                     </div>
                   )}
                 </li>

@@ -1,5 +1,24 @@
 /** Copy for the UX pass (2026-11): HUD breakdown, pill names, map signs, welcome back. */
+export const navUxStrings = {
+  groups: {
+    garden: 'Garten',
+    more: 'Mehr',
+  },
+  settings: {
+    back: 'Zurück zum Menü',
+    display: 'Anzeige',
+    sound: 'Ton & Hinweise',
+    system: 'System',
+    bigText: 'Große Schrift',
+    calm: 'Animationen reduzieren',
+    haptics: 'Vibration',
+    shortcuts: 'Tastatur: G gießen · M Menü · 1–9 Beete · Esc schließen',
+  },
+  plotsHint: 'Garten antippen, um das Grundstück zu wechseln',
+}
+
 export const uxStrings = {
+  nav: navUxStrings,
   mults: {
     title: 'Deine Ernte-Boni',
     intro: 'So setzt sich der Multiplikator zusammen.',
@@ -54,8 +73,18 @@ export const uxStrings = {
     claim: 'Einsammeln',
   },
   season: {
+    jump: 'Springen zu',
+    jumps: { season: 'Saisonende', helper: 'Jonas', truhe: 'Truhe', deep: 'Tiefer Winter', generation: 'Generation' } as Record<string, string>,
+    bonusHint: 'Steigt mit Käufen in Omas Truhe',
     eta: (time: string) => `Saisonende in ca. ${time}`,
     etaLong: 'Saisonende: noch ein Weilchen',
+  },
+  shop: {
+    need: (n: number) => `noch ${n} Samen`,
+  },
+  clan: {
+    you: 'Du',
+    flagCta: 'Vereinsfahne im Markt',
   },
   upgrade: {
     more: 'Pflege',

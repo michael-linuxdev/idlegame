@@ -20,10 +20,12 @@ const FAKE_LEADERBOARD = [
 
 interface Props {
   game: GameApi
+  /** „Keine Fahne gehisst“ links to the Markt */
+  onOpenShop?: () => void
 }
 
 
-export function ClanPanel({ game }: Props) {
+export function ClanPanel({ game, onOpenShop }: Props) {
   const { clanBoostActive, clanBoostMsLeft, clanMult } = game
 
   return (
@@ -38,13 +40,17 @@ export function ClanPanel({ game }: Props) {
         <div className="clan-card-label">{t.clan.yourClan}</div>
         <div className="clan-card-name">{t.clan.yourName}</div>
         <div className="clan-card-meta">{t.clan.seasonMeta}</div>
-        <div
-          className={`clan-boost-status${clanBoostActive ? ' active' : ' idle'}`}
-        >
-          {clanBoostActive
-            ? t.clan.boostActive(formatDecimal(clanMult, 2), formatClock(clanBoostMsLeft))
-            : t.clan.boostInactive}
-        </div>
+        {clanBoostActive || !onOpenShop ? (
+          <div className={`clan-boost-status${clanBoostActive ? ' active' : ' idle'}`}>
+            {clanBoostActive
+              ? t.clan.boostActive(formatDecimal(clanMult, 2), formatClock(clanBoostMsLeft))
+              : t.clan.boostInactive}
+          </div>
+        ) : (
+          <button type="button" className="btn ghost clan-flag-link" onClick={onOpenShop}>
+            {t.ux.clan.flagCta} →
+          </button>
+        )}
       </div>
 
       <PumpkinContest game={game} />
@@ -109,6 +115,19 @@ function PumpkinContest({ game }: { game: GameApi }) {
           </button>
         </div>
       ) : null}
+      {(() => {
+        const rank = rows.findIndex((x) => x.you) + 1
+        return (
+          <div className="contest-mine">
+            <span className="contest-mine-pumpkin" style={{ transform: `scale(${0.75 + Math.min(1, kg / 90) * 0.6})` }} aria-hidden="true" />
+            <div>
+              <p className="contest-mine-label">{t.contest.you}</p>
+              <p className="contest-mine-kg">{t.contest.kg(kg)}</p>
+            </div>
+            <p className="contest-mine-rank">#{rank}</p>
+          </div>
+        )
+      })()}
       <p className="contest-meta">
         {t.contest.endsIn(days)} · {t.contest.rewards}
       </p>

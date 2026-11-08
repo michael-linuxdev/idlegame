@@ -41,7 +41,7 @@ import { FloatPops, type FloatPopItem } from './FloatPops'
 import { BottomBar } from './hud/BottomBar'
 import { Visitors } from './Visitors'
 import { OmaHint } from './OmaHint'
-import { useOverlayOpen } from '../game/overlays'
+import { hasOpenWindow, useOverlayOpen } from '../game/overlays'
 import { MultSheet } from './hud/MultSheet'
 import { WelcomeBack } from './hud/WelcomeBack'
 import { pickHint, useHints } from '../game/hints'
@@ -175,6 +175,26 @@ export function GardenMap({
   const multRows = multBreakdown(state, game.nowTick)
   const totalMult = multRows.reduce((p, r) => p * r.mult, 1)
   const [multOpen, setMultOpen] = useState(false)
+  // Desktop shortcuts: G gießen · M Menü · 1–9 Beete (Esc is handled by every window)
+  const onRakeRef = useRef<() => void>(() => {})
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.ctrlKey || e.metaKey || e.altKey || e.repeat) return
+      const el = e.target as HTMLElement | null
+      if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable)) return
+      if (hasOpenWindow()) return
+      const k = e.key.toLowerCase()
+      if (k === 'g') onRakeRef.current()
+      else if (k === 'm') window.dispatchEvent(new Event('gartenerbe-open-menu'))
+      else if (/^[1-9]$/.test(k)) {
+        const def = GENERATORS[Number(k) - 1]
+        if (def) setSelected(def.id)
+      } else return
+      e.preventDefault()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
   // Expose the HUD's height as --hud-bottom so notes can sit right under it
   const hudRef = useRef<HTMLElement>(null)
   useEffect(() => {
@@ -480,7 +500,10 @@ export function GardenMap({
     const estimate = Math.max(rate * 45, 1)
     pushPop(`+${formatAsh(estimate)}`, 'gain')
     void before
-  }
+  }  useEffect(() => {
+    onRakeRef.current = onRake
+  })
+
 
   function claimDaily() {
     harvest.launch(document.querySelector('.hud-claim'))

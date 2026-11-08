@@ -1829,7 +1829,7 @@ html.tab-hidden .sky-event {
   display: none;
 }
 
-@media (orientation: landscape) and (max-height: 540px) {
+@media (orientation: landscape) and (max-height: 540px) and (pointer: coarse) {
   .rotate-lock {
     position: fixed;
     inset: 0;
