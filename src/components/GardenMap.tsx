@@ -10,6 +10,8 @@ import {
 import {
   GENERATORS,
   generatorRate,
+  milestoneMult,
+  milestonesReached,
   seasonsMissing,
   shortUnlockGate,
   unlockHint,
@@ -62,6 +64,10 @@ import { ProgressSheet } from './ProgressSheet'
 import { MapBackdrop } from '../theme/MapBackdrop'
 import { useAmbient } from '../theme/ambient'
 import { UpgradeSheet } from './UpgradeSheet'
+import { FestSheet } from './FestSheet'
+import { HelperWalker } from './HelperWalker'
+import { festAt } from '../game/fests'
+import { IconApple, IconHelper } from '../theme/icons'
 
 function surpriseLabel(kind: SurpriseKind, amount: string): string {
   switch (kind) {
@@ -89,6 +95,8 @@ interface Props {
   track: (task: WeeklyTaskId, n?: number) => void
   /** FTUE / ceremony / letter on screen — hold Omas hints */
   hintsBlocked?: boolean
+  /** Kapitel 2 open → switch to the Streuobstwiese */
+  onSwitchPlot?: () => void
 }
 
 export function GardenMap({
@@ -101,6 +109,7 @@ export function GardenMap({
   updateExtras,
   track,
   hintsBlocked = false,
+  onSwitchPlot,
 }: Props) {
   const {
     state,
@@ -129,13 +138,15 @@ export function GardenMap({
     return tip?.affordable ? tip.id : 'gemuesebeet'
   })
   const [progressOpen, setProgressOpen] = useState(false)
+  const [festOpen, setFestOpen] = useState(false)
   const [tickFlash, setTickFlash] = useState(false)
   const [claimFlash, setClaimFlash] = useState<string | null>(null)
   const [pops, setPops] = useState<FloatPopItem[]>([])
   const [levelPulse, setLevelPulse] = useState(false)
   const prevAsh = useRef(state.ernte)
   const prevLevel = useRef(playerLevel.level)
-  const totalMult = multiplier * levelMult * clanMult * eventMult
+  const totalMult =
+    multiplier * levelMult * clanMult * eventMult * game.expansionMult * game.turboMult
   const skinClass = equippedCosmetic?.accentClass ?? 'skin-wiese'
   const ambient = useAmbient()
   const harvest = useHarvestFlight()
@@ -383,7 +394,9 @@ export function GardenMap({
       xp > 0
         ? t.hud.claimCelebrate(formatAsh(amount), xp)
         : t.hud.claimCelebrateShort(formatAsh(amount))
-    showToast(toast)
+    const helped = state.helperReport
+    showToast(helped > 0 ? `${toast} · ${t.helper.report(helped)}` : toast)
+    if (helped > 0) game.ackHelperReport()
   }
 
   function showToast(text: string) {
@@ -470,7 +483,7 @@ export function GardenMap({
     if (!order || !orderDone) return
     const name = t.orders.customers[order.customer % t.orders.customers.length]!
     harvest.launch(document.querySelector('.pill-order'))
-    game.grant({ samen: order.seeds, ernteSeconds: 300 })
+    game.grant({ samen: order.seeds, ernteSeconds: 300, fest: 8 })
     playSfx('claim')
     showToast(t.orders.done(name))
     const now = Date.now()
@@ -518,6 +531,23 @@ export function GardenMap({
     }
     ackVariety()
   }, [state.lastVariety, ackVariety, track])
+
+  // —— Meilenstein-Sprünge: toast when an area crosses ×2 ——
+  const prevStars = useRef<Record<string, number> | null>(null)
+  useEffect(() => {
+    const now: Record<string, number> = {}
+    for (const g of GENERATORS) now[g.id] = milestonesReached(state.owned[g.id] ?? 0)
+    const before = prevStars.current
+    prevStars.current = now
+    if (!before || game.postPrestigeFocus) return
+    for (const g of GENERATORS) {
+      if ((now[g.id] ?? 0) > (before[g.id] ?? 0)) {
+        playSfx('level')
+        showToast(t.milestones.reached(g.name, formatMult(milestoneMult(state.owned[g.id] ?? 0))))
+        break
+      }
+    }
+  }, [state.owned, game.postPrestigeFocus])
 
   const hint = hintsBlocked
     ? null
@@ -591,7 +621,12 @@ export function GardenMap({
         </div>
 
         <GoalStrip goal={hudGoal} />
-        <EventPills game={game} season={seasonPill} order={orderPill} />
+        <EventPills
+          game={game}
+          season={seasonPill}
+          order={orderPill}
+          onOpenFest={() => setFestOpen(true)}
+        />
       </header>
 
       <FloatPops items={pops} onDone={removePop} />
@@ -604,6 +639,34 @@ export function GardenMap({
       ) : null}
 
       {hint ? <OmaHint id={hint} onOk={() => markSeen(hint)} /> : null}
+
+      {state.helperLevel > 0 || onSwitchPlot ? (
+        <div className="map-side">
+          {onSwitchPlot ? (
+            <button
+              type="button"
+              className="map-side-btn plot-switch"
+              onClick={onSwitchPlot}
+              aria-label={t.orchard.toOrchard}
+            >
+              <IconApple />
+              <span>{t.orchard.chipOrchard}</span>
+            </button>
+          ) : null}
+          {state.helperLevel > 0 ? (
+            <button
+              type="button"
+              className={`map-side-btn helper-chip${state.helperOn ? ' on' : ''}`}
+              onClick={game.switchHelper}
+              aria-pressed={state.helperOn}
+              aria-label={t.helper.toggleAria(state.helperOn)}
+            >
+              <IconHelper />
+              <span>{state.helperOn ? t.helper.chipOn : t.helper.chipOff}</span>
+            </button>
+          ) : null}
+        </div>
+      ) : null}
 
       <BottomBar
         game={game}
@@ -624,7 +687,13 @@ export function GardenMap({
           aria-label={t.hud.mapAria}
           onContextMenu={(e) => e.preventDefault()}
         >
-          <MapBackdrop stage={gardenStage} ambient={ambient} skin={skinClass} />
+          <MapBackdrop
+            stage={gardenStage}
+            ambient={ambient}
+            skin={skinClass}
+            fest={festAt(game.nowTick).id}
+          />
+          {state.helperLevel > 0 && state.helperOn ? <HelperWalker /> : null}
           <Visitors
             game={game}
             extras={extras}
@@ -730,6 +799,12 @@ export function GardenMap({
                       ) : (
                         <>
                           {t.hud.levelShort(level)}
+                          {milestonesReached(level) > 0 ? (
+                            <span className="plot-stars" aria-label={t.milestones.starsAria(milestonesReached(level))}>
+                              {' '}
+                              {'★'.repeat(Math.min(3, milestonesReached(level)))}
+                            </span>
+                          ) : null}
                           {producing && selectedHere ? (
                             <> · {formatRate(buildingRate)}</>
                           ) : null}
@@ -753,6 +828,8 @@ export function GardenMap({
           onUpgraded={onUpgradeBought}
         />
       ) : null}
+
+      {festOpen ? <FestSheet game={game} onClose={() => setFestOpen(false)} /> : null}
 
       {progressOpen ? (
         <ProgressSheet

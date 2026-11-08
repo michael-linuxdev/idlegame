@@ -8,11 +8,11 @@
 import { t } from '../i18n'
 
 /**
- * Real-money offers, rewarded ads and the premium pass stay hidden until
- * store IAP / an ad SDK are wired. Everything bought with Samen (earned in
- * game) stays available.
+ * Real-money offers, rewarded ads and the premium pass are placeholders (no
+ * IAP / ad SDK yet). They stay visible for testing and are labelled as
+ * Platzhalter in the Markt. Set to false to hide them for a launch build.
  */
-export const STORE_ENABLED = false
+export const STORE_ENABLED = true
 
 export const DAILY_SKIP_CAP_HOURS = 6
 export const CLAN_BOOST_MULT = 1.1
@@ -29,7 +29,15 @@ export const YIELD_BOOST_MULT = 1.15
 export const YIELD_BOOST_MS = 30 * 60 * 1000
 export const YIELD_BOOST_COST = 45
 
-export type CosmeticId = 'wiese' | 'bauerngarten' | 'bluetenmeer' | 'goldherbst'
+export type CosmeticId =
+  | 'wiese'
+  | 'bauerngarten'
+  | 'bluetenmeer'
+  | 'goldherbst'
+  | 'festFruehling'
+  | 'festSommer'
+  | 'festErntedank'
+  | 'festAdvent'
 
 export interface CosmeticDef {
   id: CosmeticId
@@ -39,6 +47,8 @@ export interface CosmeticDef {
   cost: number
   /** CSS accent class applied to the garden map */
   accentClass: string
+  /** Fest-Gartenstil — only sold in that fest's shop */
+  fest?: boolean
 }
 
 export const COSMETICS: CosmeticDef[] = [
@@ -69,6 +79,38 @@ export const COSMETICS: CosmeticDef[] = [
     blurb: t.cosmetics.goldherbst.blurb,
     cost: 200,
     accentClass: 'skin-goldherbst',
+  },
+  {
+    id: 'festFruehling',
+    name: t.cosmetics.festFruehling.name,
+    blurb: t.cosmetics.festFruehling.blurb,
+    cost: 150,
+    accentClass: 'skin-festFruehling',
+    fest: true,
+  },
+  {
+    id: 'festSommer',
+    name: t.cosmetics.festSommer.name,
+    blurb: t.cosmetics.festSommer.blurb,
+    cost: 150,
+    accentClass: 'skin-festSommer',
+    fest: true,
+  },
+  {
+    id: 'festErntedank',
+    name: t.cosmetics.festErntedank.name,
+    blurb: t.cosmetics.festErntedank.blurb,
+    cost: 150,
+    accentClass: 'skin-festErntedank',
+    fest: true,
+  },
+  {
+    id: 'festAdvent',
+    name: t.cosmetics.festAdvent.name,
+    blurb: t.cosmetics.festAdvent.blurb,
+    cost: 150,
+    accentClass: 'skin-festAdvent',
+    fest: true,
   },
 ]
 

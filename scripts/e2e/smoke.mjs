@@ -4,6 +4,7 @@
  *  1. Fresh start: Omas letter → Gemüsebeet ausbauen → Gießen
  *  2. Near the gate: Saisonende → ceremony → Glücksrad → back in the garden
  *  3. Notebook + Spielstand-sichern sheets open
+ *  4. Festladen, Kapitel 2 via ?kapitel2=1, Gartenhelfer, Update-Check
  * Fails on any uncaught page error. Run: npm run build && npm run e2e
  */
 import { spawn } from 'node:child_process'
@@ -101,6 +102,38 @@ try {
     await p.getByRole('menuitem', { name: 'Spielstand sichern' }).click()
     const code = await p.locator('.save-code').first().inputValue()
     assert(code.startsWith('GARTENERBE1:'), 'export code present')
+    await ctx.close()
+  }
+
+  // 4 — Festladen, Kapitel 2 (test hook) and the update check
+  {
+    const ctx = await browser.newContext({ ...devices['iPhone 13'], reducedMotion: 'reduce' })
+    await ctx.addInitScript(() => {
+      if (sessionStorage.getItem('seed')) return
+      const owned = { gemuesebeet: 30, kompost: 12 }
+      localStorage.setItem('gartenerbe-save-v1', JSON.stringify({ owned, ernte: 1e5, prestiges: 2, erbstuecke: 500, lastSeen: Date.now() }))
+      localStorage.setItem('gartenerbe-ftue-v1', JSON.stringify({ beat: 'done', dismissed: true, completed: [], startedAt: 1 }))
+      localStorage.setItem('gartenerbe-install-v1', JSON.stringify({ dismissed: true, installed: false, shown: true }))
+      localStorage.setItem('gartenerbe-hints-v1', JSON.stringify(['season', 'truhe', 'deep', 'visitor', 'order', 'variety', 'weekly']))
+      sessionStorage.setItem('seed', '1')
+    })
+    const p = await ctx.newPage()
+    p.on('pageerror', (e) => errors.push(e.message))
+    await p.goto(URL + '?fest=advent&kapitel2=1')
+    await p.locator('.pill-fest').click()
+    await p.getByText('Advent im Garten').first().waitFor()
+    await p.locator('.fest-sheet .upgrade-hud-close').click()
+    await p.locator('.plot-switch').click()
+    await p.locator('.orchard-intro .btn').click()
+    await p.locator('.orchard-home').waitFor()
+    await p.locator('.plot-switch').click()
+    await p.locator('.menu-fab').click()
+    await p.getByRole('menuitem', { name: 'Saison' }).click()
+    await p.getByRole('button', { name: /Einstellen/ }).click()
+    await p.getByText(/Stufe 1\/5/).waitFor()
+    await p.locator('.menu-fab').click()
+    await p.getByRole('menuitem', { name: 'Nach Updates suchen' }).click()
+    await p.locator('.nav-update-note').waitFor()
     await ctx.close()
   }
 

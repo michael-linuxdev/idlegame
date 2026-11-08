@@ -12,6 +12,8 @@ export interface SeasonEnd {
   gained: number
   /** Tiefer Winter instead of a regular Saisonende */
   deep?: boolean
+  /** Generation handed down (number of the new generation) */
+  generation?: number
 }
 
 interface Props {
@@ -28,7 +30,8 @@ type Phase = 'winter' | 'letter' | 'spring'
  * letter for the new year (if any) → spring with what was kept.
  */
 export function SeasonCeremony({ event, onDone, onSpin }: Props) {
-  const letterId = event.deep ? 'deep1' : yearLetterFor(event.year)
+  const gen = event.generation ?? 0
+  const letterId = gen ? null : event.deep ? 'deep1' : yearLetterFor(event.year)
   const [phase, setPhase] = useState<Phase>('winter')
   const corner = event.deep
     ? null
@@ -65,8 +68,8 @@ export function SeasonCeremony({ event, onDone, onSpin }: Props) {
           <span className="season-icon">
             <IconSnow />
           </span>
-          <h2>{event.deep ? t.season.deepTitle : t.season.winterTitle}</h2>
-          <p>{event.deep ? t.season.deepLine : t.season.winterLine}</p>
+          <h2>{gen ? t.generation.ceremonyTitle : event.deep ? t.season.deepTitle : t.season.winterTitle}</h2>
+          <p>{gen ? t.generation.ceremonyLine : event.deep ? t.season.deepLine : t.season.winterLine}</p>
         </div>
       ) : null}
 
@@ -86,11 +89,23 @@ export function SeasonCeremony({ event, onDone, onSpin }: Props) {
           <span className="season-icon">
             <IconSprout />
           </span>
-          <h2>{event.deep ? t.season.deepSpringTitle : t.season.springTitle(event.year)}</h2>
+          <h2>
+            {gen
+              ? t.generation.springTitle(gen)
+              : event.deep
+                ? t.season.deepSpringTitle
+                : t.season.springTitle(event.year)}
+          </h2>
           <p>{t.season.springLine}</p>
           <p className="season-gain">
             {event.deep ? <IconSprout /> : <IconChest />}{' '}
-            {t.season.gained(event.deep ? t.season.sprouts(event.gained) : t.prestige.creditsAmount(event.gained))}
+            {t.season.gained(
+              gen
+                ? t.generation.gained(event.gained)
+                : event.deep
+                  ? t.season.sprouts(event.gained)
+                  : t.prestige.creditsAmount(event.gained),
+            )}
           </p>
           {corner ? <p className="season-corner">{t.season.newCorner(corner.name)}</p> : null}
           {onSpin && !event.deep ? <LuckyWheel onSpin={onSpin} onDone={onDone} /> : (

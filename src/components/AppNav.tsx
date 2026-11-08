@@ -4,6 +4,7 @@ import { t } from '../i18n'
 import { MuteToggle } from './MuteToggle'
 import { isAmbienceOn, setAmbienceOn } from '../game/ambience'
 import { PlaytestLogControls } from './PlaytestLogControls'
+import { APP_VERSION, checkForUpdate, reloadNow } from '../game/appUpdate'
 import { IconBasket, IconFlag, IconNotebook, IconSnow, IconSprout } from '../theme/icons'
 
 export type Tab = 'fortress' | 'prestige' | 'clan' | 'shop'
@@ -75,6 +76,26 @@ export function AppNav({
 }: Props) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [ambience, setAmbience] = useState(() => isAmbienceOn())
+  const [updateNote, setUpdateNote] = useState<string | null>(null)
+  const [checking, setChecking] = useState(false)
+
+  async function onCheckUpdate() {
+    if (checking) return
+    setChecking(true)
+    setUpdateNote(t.appUpdate.checking)
+    logPlaytest('app_update', { action: 'check' })
+    const result = await checkForUpdate().catch(() => 'offline' as const)
+    setChecking(false)
+    setUpdateNote(
+      result === 'reloading'
+        ? t.appUpdate.found
+        : result === 'current'
+          ? t.appUpdate.current
+          : result === 'offline'
+            ? t.appUpdate.offline
+            : t.appUpdate.unsupported,
+    )
+  }
   const menuId = useId()
   const menuRef = useRef<HTMLDivElement>(null)
   const homeActive = tab === 'fortress'
@@ -227,6 +248,28 @@ export function AppNav({
               <span className="tab-label">{t.backup.menu}</span>
             </button>
           ) : null}
+          <div className="nav-menu-update">
+            <button
+              type="button"
+              role="menuitem"
+              className="nav-menu-item nav-menu-legal"
+              onClick={onCheckUpdate}
+              disabled={checking}
+            >
+              <span className="tab-label">{t.appUpdate.menu}</span>
+            </button>
+            {updateNote ? (
+              <p className="nav-update-note" role="status">
+                {updateNote}
+                {!checking && updateNote !== t.appUpdate.found ? (
+                  <button type="button" className="link-btn" onClick={reloadNow}>
+                    {t.appUpdate.now}
+                  </button>
+                ) : null}
+              </p>
+            ) : null}
+            <p className="nav-version">{t.appUpdate.version(APP_VERSION)}</p>
+          </div>
           {onOpenLegal ? (
             <button
               type="button"

@@ -304,10 +304,9 @@
 
 .hud-pills {
   display: flex;
-  gap: 0.35rem;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.35rem;
   max-width: 100%;
-  overflow-x: auto;
-  scrollbar-width: none;
   pointer-events: auto;
   padding-bottom: 2px;
 }
@@ -317,7 +316,9 @@
 }
 
 .hud-pill {
-  flex: none;
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
@@ -337,8 +338,37 @@
 }
 
 .hud-pill-icon {
+  flex: none;
   display: inline-flex;
   font-size: 1rem;
+}
+
+.hud-pill-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hud-pill.pill-fest {
+  border-color: var(--pill-accent, var(--hud-edge));
+  box-shadow: 0 2px 0 var(--pill-accent, var(--hud-edge));
+}
+
+.hud-pill.pill-turbo {
+  border-color: #5f9e45;
+  background: linear-gradient(180deg, #f1fbe6, #d9f0c4);
+  box-shadow: 0 2px 0 #5f9e45;
+  animation: pill-glow 1.6s ease-in-out infinite;
+}
+
+@keyframes pill-glow {
+  0%,
+  100% {
+    box-shadow: 0 2px 0 #5f9e45, 0 0 0 0 rgba(127, 191, 90, 0.5);
+  }
+  50% {
+    box-shadow: 0 2px 0 #5f9e45, 0 0 0 4px rgba(127, 191, 90, 0);
+  }
 }
 
 .hud-pill.open {

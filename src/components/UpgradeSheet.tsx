@@ -2,6 +2,8 @@ import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } f
 import {
   GENERATORS,
   generatorRate,
+  milestonesReached,
+  nextMilestone,
   unlockHint,
   type GeneratorId,
 } from '../game/generators'
@@ -24,12 +26,34 @@ interface Props {
 const HOLD_START_MS = 380
 const HOLD_REPEAT_MS = 110
 
+type BulkMode = 1 | 10 | 'max'
+const BULK_KEY = 'gartenerbe-bulk-mode'
+
+function loadBulk(): BulkMode {
+  try {
+    const v = localStorage.getItem(BULK_KEY)
+    return v === '10' ? 10 : v === 'max' ? 'max' : 1
+  } catch {
+    return 1
+  }
+}
+
+function saveBulk(mode: BulkMode) {
+  try {
+    localStorage.setItem(BULK_KEY, String(mode))
+  } catch {
+    /* private mode */
+  }
+}
+
 export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
   const def = GENERATORS.find((g) => g.id === selectedId)
   const [flash, setFlash] = useState(false)
   const holdTimer = useRef<number | null>(null)
   const holdRepeat = useRef<number | null>(null)
   const holding = useRef(false)
+  const [bulk, setBulk] = useState<BulkMode>(loadBulk)
+  const [allNote, setAllNote] = useState<string | null>(null)
 
   function clearHold() {
     holding.current = false
@@ -55,19 +79,35 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
 
   const owned = game.state.owned[def.id] ?? 0
   const unlocked = game.unlocked(def.id)
-  const cost = game.costOf(def.id)
+  const maxInfo = game.affordableLevels(def.id)
+  const bulkCount = bulk === 'max' ? Math.max(1, maxInfo.count) : bulk
+  const cost =
+    bulk === 1
+      ? game.costOf(def.id)
+      : bulk === 'max'
+        ? maxInfo.count > 0
+          ? maxInfo.cost
+          : game.costOf(def.id)
+        : game.costForLevels(def.id, bulk)
   const affordable =
     unlocked &&
     Number.isFinite(cost) &&
     cost > 0 &&
     Number.isFinite(game.state.ernte) &&
     game.state.ernte >= cost
+  const milestone = nextMilestone(owned)
+  const stars = milestonesReached(owned)
   const branch = game.state.branches[def.id] ?? { efficiency: 0, capacity: 0 }
   const lineMult =
-    game.multiplier * game.levelMult * game.clanMult * game.eventMult
+    game.multiplier *
+    game.levelMult *
+    game.clanMult *
+    game.eventMult *
+    game.expansionMult *
+    game.turboMult
   const eff = efficiencyMult(branch.efficiency)
   const lineRate = generatorRate(def, owned) * lineMult * eff
-  const nextRate = generatorRate(def, owned + 1) * lineMult * eff
+  const nextRate = generatorRate(def, owned + bulkCount) * lineMult * eff
   const safeCost = Number.isFinite(cost) && cost > 0 ? cost : 0
   const safeAsh = Number.isFinite(game.state.ernte) ? Math.max(0, game.state.ernte) : 0
   const affordRatio =
@@ -91,10 +131,39 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
     onUpgraded?.(paid)
   }
 
+  function buyBulk() {
+    const paid = cost
+    const n = game.buyMany(def!.id, bulk === 'max' ? Infinity : bulk)
+    if (n <= 0) return
+    setFlash(true)
+    window.setTimeout(() => setFlash(false), 220)
+    onUpgraded?.(paid)
+  }
+
+  function buyAll() {
+    const n = game.buyAll()
+    setAllNote(n > 0 ? t.bulk.allDone(n) : t.bulk.allNone)
+    if (n > 0) {
+      playSfx('upgrade')
+      setFlash(true)
+      window.setTimeout(() => setFlash(false), 220)
+    }
+    window.setTimeout(() => setAllNote(null), 1600)
+  }
+
+  function pickBulk(mode: BulkMode) {
+    setBulk(mode)
+    saveBulk(mode)
+  }
+
   function onBuyPointerDown(e: ReactPointerEvent) {
     if (e.button !== 0) return
     e.preventDefault()
     if (!affordable) return
+    if (bulk !== 1) {
+      buyBulk()
+      return
+    }
     buyUpgradeOnce()
     holding.current = true
     holdTimer.current = window.setTimeout(() => {
@@ -149,11 +218,52 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
           <>
             <p className="upgrade-hud-stats">
               {t.upgrade.level} {owned}
+              {stars > 0 ? (
+                <span className="milestone-stars" aria-label={t.milestones.starsAria(stars)}>
+                  {' '}
+                  {'★'.repeat(Math.min(stars, 5))}
+                  {stars > 5 ? `+${stars - 5}` : ''}
+                </span>
+              ) : null}
               {' · '}
               {formatRate(lineRate)}
               {' → '}
               {formatRate(nextRate)}
             </p>
+            <div className="milestone-line">
+              <span>{milestone ? t.milestones.next(milestone.at) : t.milestones.all}</span>
+              {milestone ? (
+                <span className="milestone-track" aria-hidden="true">
+                  <span
+                    style={{
+                      width: `${Math.round(((owned - milestone.from) / (milestone.at - milestone.from)) * 100)}%`,
+                    }}
+                  />
+                </span>
+              ) : null}
+            </div>
+            <div className="bulk-toggle" role="radiogroup" aria-label={t.bulk.groupAria}>
+              {([1, 10, 'max'] as BulkMode[]).map((mode) => (
+                <button
+                  key={String(mode)}
+                  type="button"
+                  role="radio"
+                  aria-checked={bulk === mode}
+                  className={`bulk-chip${bulk === mode ? ' on' : ''}`}
+                  onClick={() => pickBulk(mode)}
+                >
+                  {mode === 1 ? t.bulk.one : mode === 10 ? t.bulk.ten : t.bulk.max}
+                </button>
+              ))}
+              <button
+                type="button"
+                className="bulk-chip bulk-all"
+                onClick={buyAll}
+                aria-label={t.bulk.allAria}
+              >
+                {allNote ?? t.bulk.allButton}
+              </button>
+            </div>
             <div className="upgrade-afford-track upgrade-hud-track" aria-hidden="true">
               <span
                 className={`upgrade-afford-fill${affordable ? ' ready' : ''}`}
@@ -171,11 +281,15 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
                 onPointerCancel={onBuyPointerUp}
                 onContextMenu={(e) => e.preventDefault()}
               >
-                {t.upgrade.costLine(actionLabel, formatAsh(safeCost || cost))}
+                {bulk === 1
+                  ? t.upgrade.costLine(actionLabel, formatAsh(safeCost || cost))
+                  : t.bulk.buyN(actionLabel, bulkCount, formatAsh(safeCost || cost))}
               </button>
               <p className="upgrade-hold-hint">
                 {affordable
-                  ? t.upgrade.holdHint
+                  ? bulk === 1
+                    ? t.upgrade.holdHint
+                    : ''
                   : needMore > 0
                     ? t.upgrade.needMore(formatAsh(needMore))
                     : t.upgrade.holdHint}

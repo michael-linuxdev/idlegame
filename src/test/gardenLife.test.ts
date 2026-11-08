@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  GARDEN_VARIETIES,
   VARIETIES,
   collectionMult,
   rollVarietyOnUpgrade,
@@ -16,9 +17,11 @@ import { strings } from '../theme/strings'
 describe('Pflanzenbuch', () => {
   it('every variety has a German name and the bonus stays moderate', () => {
     for (const v of VARIETIES) expect(strings.plantbook.names[v.id]).toBeTruthy()
-    const all = collectionMult(VARIETIES.map((v) => v.id))
+    const all = collectionMult(GARDEN_VARIETIES.map((v) => v.id))
     expect(all).toBeGreaterThan(1.2)
     expect(all).toBeLessThan(1.45)
+    // Festsorten add a little on top, never more than ~+20 %
+    expect(collectionMult(VARIETIES.map((v) => v.id)) - all).toBeLessThan(0.2)
   })
   it('never rolls a variety twice', () => {
     const owned = VARIETIES.filter((v) => v.module === 'gemuesebeet').map((v) => v.id)

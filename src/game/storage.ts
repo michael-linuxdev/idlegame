@@ -9,7 +9,16 @@ import {
   emptyLongLoopSlice,
   type DeepMetaUpgrades,
 } from './longLoop'
-import { createInitialState, STORAGE_KEY, type GameState } from './state'
+import {
+  createInitialState,
+  emptyExpansion,
+  HELPER_RANKS,
+  STORAGE_KEY,
+  type ExpansionSlice,
+  type GameState,
+} from './state'
+import { emptyOrchard, ORCHARD_IDS, type OrchardState } from './orchard'
+import { EMPTY_LEGACY, type LegacyUpgrades } from './generations'
 import { VARIETIES, type WheelBuff } from './gardenLife'
 
 const COSMETIC_IDS = new Set(COSMETICS.map((c) => c.id))
@@ -257,6 +266,7 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
       ? Math.max(0, parsed.lastFlashAt)
       : 0
   const longLoop = parseLongLoop(parsed)
+  const expansion = parseExpansion(parsed)
 
   return {
     ernte,
@@ -312,6 +322,60 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
     flashDismissed,
     lastFlashAt,
     ...longLoop,
+    ...expansion,
+  }
+}
+
+function parseNum(raw: unknown, fallback = 0): number {
+  return typeof raw === 'number' && Number.isFinite(raw) ? Math.max(0, raw) : fallback
+}
+
+function parseOrchard(raw: unknown): OrchardState {
+  const base = emptyOrchard()
+  if (!isRecord(raw)) return base
+  const owned = { ...base.owned }
+  if (isRecord(raw.owned)) {
+    for (const id of ORCHARD_IDS) {
+      const n = raw.owned[id]
+      if (typeof n === 'number' && Number.isFinite(n) && n >= 0) owned[id] = Math.floor(n)
+    }
+  }
+  return {
+    obst: parseNum(raw.obst, base.obst),
+    obstLifetime: parseNum(raw.obstLifetime),
+    owned,
+    openedAt: parseNum(raw.openedAt),
+    introSeen: raw.introSeen === true,
+  }
+}
+
+function parseExpansion(parsed: Record<string, unknown>): ExpansionSlice {
+  const base = emptyExpansion()
+  const legacy = { ...EMPTY_LEGACY }
+  if (isRecord(parsed.legacy)) {
+    for (const key of Object.keys(legacy) as (keyof LegacyUpgrades)[]) {
+      legacy[key] = parseNonNegInt(parsed.legacy[key])
+    }
+  }
+  const festBought: Record<string, number> = {}
+  if (isRecord(parsed.festBought)) {
+    for (const [k, v] of Object.entries(parsed.festBought)) {
+      if (typeof v === 'number' && Number.isFinite(v) && v > 0) festBought[k] = Math.floor(v)
+    }
+  }
+  return {
+    helperLevel: Math.min(HELPER_RANKS.length, parseNonNegInt(parsed.helperLevel)),
+    helperOn: parsed.helperOn !== false,
+    helperCarryMs: 0,
+    helperReport: 0,
+    turboEndsAt: parseNum(parsed.turboEndsAt),
+    orchard: parseOrchard(parsed.orchard),
+    generation: parseNonNegInt(parsed.generation),
+    vermaechtnis: parseNonNegInt(parsed.vermaechtnis),
+    legacy,
+    festKey: typeof parsed.festKey === 'string' ? parsed.festKey : base.festKey,
+    festTokens: parseNum(parsed.festTokens),
+    festBought,
   }
 }
 

@@ -7,6 +7,8 @@
  * Currencies: Ernte (soft, per run) · Erbstücke (meta, survives Saisonende)
  * · Samen (premium stub). Prestige = Saisonende (Winterruhe → neues Gartenjahr).
  */
+import { expansionStrings } from './stringsExpansion'
+
 const SOFT = 'Ernte'
 const SEEDS = 'Samen'
 
@@ -93,7 +95,7 @@ export const strings = {
     prestigeReadyDetail: 'Erbstücke einlagern',
     ready: 'Bereit',
     fallback: 'Garten pflegen',
-    nearMiss: (pct: number) => `fast · ${pct}%`,
+    nearMiss: (pct: number) => `${100 - pct} % geschafft`,
   },
 
   bestBuy: {
@@ -666,6 +668,22 @@ export const strings = {
       name: 'Goldener Herbst',
       blurb: 'Laub in Gold und Kupfer — zum Angeben.',
     },
+    festFruehling: {
+      name: 'Osterwiese',
+      blurb: 'Bunte Eier, Tulpen und Weidenkätzchen. Fest-Stil Frühlingsfest.',
+    },
+    festSommer: {
+      name: 'Sommerfest',
+      blurb: 'Wimpelketten, Erdbeeren und Sonnenschirm.',
+    },
+    festErntedank: {
+      name: 'Erntekrone',
+      blurb: 'Kürbisse, Garben und eine Erntekrone an der Laube.',
+    },
+    festAdvent: {
+      name: 'Winterzauber',
+      blurb: 'Raureif, Kerzenschein und ein Tannenbaum mit Lichtern.',
+    },
   },
 
   clanBoost: {
@@ -796,6 +814,7 @@ export const strings = {
     rarity: { common: 'gewöhnlich', rare: 'selten', precious: 'kostbar' },
     bonus: (pct: string) => `+${pct} %`,
     newVariety: (name: string, pct: string) => `Neue Sorte: ${name} · +${pct} % Ernte`,
+    festGroup: 'Festsorten (nur während des Fests)',
     names: {
       radieschenEiszapfen: 'Radieschen „Eiszapfen“',
       tomateOchsenherz: 'Tomate „Ochsenherz“',
@@ -821,6 +840,19 @@ export const strings = {
       kuerbisHokkaido: 'Hokkaido-Kürbis',
       zitroneAmalfi: 'Amalfi-Zitrone',
       feigeBrunswick: 'Feige „Brunswick“',
+      christrose: 'Christrose',
+      schneegloeckchen: 'Schneeglöckchen',
+      tulpeOsterglocke: 'Osterglocke',
+      baerlauch: 'Bärlauch',
+      pfingstrose: 'Pfingstrose „Sarah Bernhardt“',
+      erdbeereMieze: 'Erdbeere „Mieze Schindler“',
+      zucchiniGold: 'Gelbe Zucchini „Goldrush“',
+      sonnenblumeRiesen: 'Riesen-Sonnenblume',
+      kuerbisMuscat: 'Muskatkürbis',
+      apfelBoskoop: 'Apfel „Boskoop“',
+      physalis: 'Physalis (Lampionblume)',
+      christstern: 'Christstern',
+      gruenkohlFrost: 'Grünkohl „Frostkönig“',
     } as Record<string, string>,
   },
 
@@ -1019,6 +1051,8 @@ export const strings = {
     notNow: 'Nicht jetzt',
     skipBrowser: 'Ohne Installation weiterspielen',
   },
+
+  ...expansionStrings,
 } as const
 
 export type Strings = typeof strings

@@ -1,4 +1,4 @@
-import { gateSeasons, sproutPayout, type DeepMetaId } from './longLoop'
+import { gateSeasons, type DeepMetaId } from './longLoop'
 import type { WheelKind } from './gardenLife'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import {
@@ -89,7 +89,32 @@ import {
   applyWheel,
   clearLastVariety,
   type Reward,
+  affordableLevels,
+  buyAllBest,
+  buyFestItem,
+  buyGeneratorMany,
+  buyHelper,
+  buyLegacy,
+  buyOrchard,
+  buyOrchardMany,
+  canHandDownNow,
+  costForLevels,
+  deepSproutPayout,
+  doGeneration,
+  earnFest,
+  generationPayout,
+  helperUnlocked,
+  orchardCostOf,
+  orchardOpen,
+  orchardPerSecond,
+  syncOrchardOpen,
+  toggleHelper,
+  turboMult,
+  expansionGardenMult,
 } from './state'
+import type { OrchardId } from './orchard'
+import type { LegacyId } from './generations'
+import { FEST_EARN } from './fests'
 import { logPlaytest } from './playtestLog'
 import { loadState, saveState } from './storage'
 
@@ -221,7 +246,7 @@ export function useGame() {
         : 23
       const shortfall = Math.max(0, g1Cost - s.ernte)
       const gained = Math.max(fromRate, shortfall, 1)
-      return grantTapAsh(s, gained, now)
+      return earnFest(grantTapAsh(s, gained, now), FEST_EARN.water, now)
     })
   }, [])
 
@@ -264,6 +289,7 @@ export function useGame() {
     year: number
     gained: number
     deep?: boolean
+    generation?: number
   } | null>(null)
 
   const prestige = useCallback(() => {
@@ -303,13 +329,109 @@ export function useGame() {
 
   const deepReset = useCallback(() => {
     setState((s) => {
-      const gain = sproutPayout(s.prestiges)
+      const gain = deepSproutPayout(s)
       const next = doDeepReset(s)
       if (next !== s) {
         logPlaytest('deep_reset', { deep: next.deepPrestiges, sprouts: gain })
         setPostPrestigeFocus(true)
         setSeasonEnd({ year: 1, gained: gain, deep: true })
       }
+      return next
+    })
+  }, [])
+
+  const handDown = useCallback(() => {
+    setState((s) => {
+      const gain = generationPayout(s)
+      const next = doGeneration(s)
+      if (next !== s) {
+        logPlaytest('generation', { generation: next.generation, vermaechtnis: gain })
+        setPostPrestigeFocus(true)
+        setSeasonEnd({ year: 1, gained: gain, deep: true, generation: next.generation + 1 })
+      }
+      return next
+    })
+  }, [])
+
+  const buyLegacyRank = useCallback((id: LegacyId) => {
+    setState((s) => {
+      const next = buyLegacy(s, id)
+      if (next !== s) logPlaytest('upgrade', { id, kind: 'legacy' })
+      return next
+    })
+  }, [])
+
+  /** Buy `n` levels (Infinity = as many as affordable). Returns levels bought. */
+  const buyMany = useCallback((id: GeneratorId, n: number) => {
+    const s = stateRef.current
+    const count = Number.isFinite(n) ? n : affordableLevels(s, id).count
+    if (count <= 0) return 0
+    const result = buyGeneratorMany(s, id, count)
+    if (result.bought > 0) {
+      stateRef.current = result.state
+      setState(result.state)
+      logPlaytest('upgrade', { id, level: result.state.owned[id] ?? 0, kind: 'module', n: result.bought })
+    }
+    return result.bought
+  }, [])
+
+  const buyAll = useCallback(() => {
+    const result = buyAllBest(stateRef.current)
+    if (result.bought > 0) {
+      stateRef.current = result.state
+      setState(result.state)
+      logPlaytest('buy_all', { n: result.bought })
+    }
+    return result.bought
+  }, [])
+
+  const hireHelper = useCallback(() => {
+    setState((s) => {
+      const next = buyHelper(s)
+      if (next !== s) logPlaytest('upgrade', { id: 'helper', level: next.helperLevel, kind: 'helper' })
+      return next
+    })
+  }, [])
+
+  const switchHelper = useCallback(() => {
+    setState((s) => toggleHelper(s))
+  }, [])
+
+  const ackHelperReport = useCallback(() => {
+    setState((s) => (s.helperReport ? { ...s, helperReport: 0 } : s))
+  }, [])
+
+  const buyOrchardArea = useCallback((id: OrchardId) => {
+    setState((s) => {
+      const next = buyOrchard(s, id)
+      if (next !== s) logPlaytest('upgrade', { id, level: next.orchard.owned[id], kind: 'orchard' })
+      return next
+    })
+  }, [])
+
+  const buyOrchardBulk = useCallback((id: OrchardId, n: number) => {
+    const result = buyOrchardMany(stateRef.current, id, Number.isFinite(n) ? n : 1000)
+    if (result.bought > 0) {
+      stateRef.current = result.state
+      setState(result.state)
+      logPlaytest('upgrade', { id, level: result.state.orchard.owned[id], kind: 'orchard', n: result.bought })
+    }
+    return result.bought
+  }, [])
+
+  const seeOrchardIntro = useCallback(() => {
+    setState((s) => ({ ...s, orchard: { ...s.orchard, introSeen: true } }))
+  }, [])
+
+  /** Test hook (?kapitel2=1): open Kapitel 2 without a Tiefer Winter. */
+  const forceOrchard = useCallback(() => {
+    setState((s) => syncOrchardOpen(s, Date.now(), true))
+  }, [])
+
+  const buyFest = useCallback((itemId: string) => {
+    setState((s) => {
+      const next = buyFestItem(s, itemId)
+      if (next !== s) logPlaytest('fest_buy', { id: itemId, key: next.festKey })
       return next
     })
   }, [])
@@ -398,7 +520,8 @@ export function useGame() {
 
   const claimDaily = useCallback(() => {
     setState((s) => {
-      const next = claimDailyOps(s)
+      const claimed = claimDailyOps(s)
+      const next = claimed === s ? s : earnFest(claimed, FEST_EARN.daily)
       if (next !== s) {
         logPlaytest('daily_claim', {
           streak: next.dailyStreak,
@@ -590,7 +713,32 @@ export function useGame() {
 
   return {
     state,
+    stateRef,
     rate: productionPerSecond(state, nowTick),
+    turboMult: turboMult(state, nowTick),
+    turboMsLeft: Math.max(0, state.turboEndsAt - nowTick),
+    expansionMult: expansionGardenMult(state),
+    orchardOpen: orchardOpen(state),
+    orchardRate: orchardPerSecond(state),
+    orchardCostOf: (id: OrchardId) => orchardCostOf(state, id),
+    helperUnlocked: helperUnlocked(state),
+    canHandDown: canHandDownNow(state),
+    generationPayout: generationPayout(state),
+    deepSprouts: deepSproutPayout(state),
+    costForLevels: (id: GeneratorId, n: number) => costForLevels(state, id, n),
+    affordableLevels: (id: GeneratorId) => affordableLevels(state, id),
+    handDown,
+    buyLegacyRank,
+    buyMany,
+    buyAll,
+    hireHelper,
+    switchHelper,
+    ackHelperReport,
+    buyOrchardArea,
+    buyOrchardBulk,
+    seeOrchardIntro,
+    forceOrchard,
+    buyFest,
     multiplier: mult,
     levelMult,
     clanMult,

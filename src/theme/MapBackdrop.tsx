@@ -13,6 +13,8 @@
 import { memo, type CSSProperties, type ReactNode } from 'react'
 import { GENERATORS } from '../game/generators'
 import type { Ambient } from './ambient'
+import type { FestId } from '../game/fests'
+import { FestDecor, FestSkinDecor } from './FestDecor'
 
 interface Props {
   /** Number of garden areas angelegt (0–10) */
@@ -21,6 +23,8 @@ interface Props {
   ambient: Ambient
   /** Gartenstil accent class (skin-wiese, skin-bauerngarten, …) */
   skin?: string
+  /** Running saisonales Fest → map decoration */
+  fest?: FestId
 }
 
 function Sonnenblume() {
@@ -415,7 +419,7 @@ function Particles({ ambient }: { ambient: Ambient }) {
 }
 
 /** Memoized: re-renders only when the stage or ambient mood changes. */
-export const MapBackdrop = memo(function MapBackdrop({ stage, ambient, skin }: Props) {
+export const MapBackdrop = memo(function MapBackdrop({ stage, ambient, skin, fest }: Props) {
   return (
     <div className="garden-ground" aria-hidden="true" data-stage={stage}>
       <svg
@@ -549,6 +553,8 @@ export const MapBackdrop = memo(function MapBackdrop({ stage, ambient, skin }: P
       ) : null}
 
       <SkinDecor skin={skin} />
+      {fest ? <FestDecor fest={fest} /> : null}
+      {fest ? <FestSkinDecor skin={skin} fest={fest} /> : null}
 
       <div className="garden-fence">
         <Zaun />
