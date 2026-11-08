@@ -67,6 +67,7 @@ import {
   eventProductionMult,
   flashProductionMult,
   claimOfflineReward,
+  creditOfflinePending,
   grantTapAsh,
   levelProductionMult,
   levelProgress,
@@ -143,23 +144,19 @@ const TICK_MS = 250
 const SAVE_MS = 4000
 
 export function useGame() {
-  const [state, setState] = useState<GameState>(() => {
-    const loaded = loadState()
-    // Short flash event may spawn on first paint (see visibility hook below).
-    return maybeStartFlashEvent(applyOfflineCatchup(loaded).state)
-  })
-  const [offlineGained, setOfflineGained] = useState<number | null>(() => {
+  // One catch-up on start: the basket (offlinePending) waits for the „Ernten“
+  // tap; short absences go straight into the wallet.
+  const [boot] = useState(() => {
     const loaded = loadState()
     const awayMs = Math.max(0, Date.now() - loaded.lastSeen)
-    if (awayMs < MIN_OFFLINE_CLAIM_AWAY_MS) return null
-    const { gained } = applyOfflineCatchup(loaded)
-    return gained > 0.01 ? gained : null
+    let next = applyOfflineCatchup(loaded).state
+    const banner = awayMs >= MIN_OFFLINE_CLAIM_AWAY_MS && next.offlinePending > 0.01
+    if (!banner) next = creditOfflinePending(next)
+    return { state: maybeStartFlashEvent(next), awayMs: banner ? awayMs : 0, pending: banner ? next.offlinePending : null }
   })
-  const [offlineAwayMs, setOfflineAwayMs] = useState<number>(() => {
-    const loaded = loadState()
-    const awayMs = Math.max(0, Date.now() - loaded.lastSeen)
-    return awayMs >= MIN_OFFLINE_CLAIM_AWAY_MS ? awayMs : 0
-  })
+  const [state, setState] = useState<GameState>(boot.state)
+  const [offlineGained, setOfflineGained] = useState<number | null>(boot.pending)
+  const [offlineAwayMs, setOfflineAwayMs] = useState<number>(boot.awayMs)
 
   const stateRef = useRef(state)
   const dirtySaveRef = useRef(false)
@@ -217,10 +214,14 @@ export function useGame() {
       document.documentElement.classList.remove('tab-hidden')
       setState((s) => {
         const awayMs = Math.max(0, Date.now() - s.lastSeen)
-        const { state: next, gained } = applyOfflineCatchup(s)
-        if (gained > 0.01 && awayMs >= MIN_OFFLINE_CLAIM_AWAY_MS) {
-          setOfflineGained(gained)
+        let next = applyOfflineCatchup(s).state
+        if (next.offlinePending > 0.01 && awayMs >= MIN_OFFLINE_CLAIM_AWAY_MS) {
+          setOfflineGained(next.offlinePending)
           setOfflineAwayMs(awayMs)
+        } else if (next.offlinePending > 0) {
+          // short switch: a waiting banner grows, otherwise straight into the wallet
+          if (s.offlinePending > 0) setOfflineGained(next.offlinePending)
+          else next = creditOfflinePending(next)
         }
         return collectReadyAchievements(next)
       })
@@ -637,9 +638,8 @@ export function useGame() {
         awayMs,
       })
     }
-    if (amount > 0.01 && awayMs >= MIN_OFFLINE_CLAIM_AWAY_MS) {
-      setState((s) => claimOfflineReward(s, amount))
-    }
+    // Always empty the basket into the wallet; XP only for real absences
+    setState((s) => (amount > 0.01 && awayMs >= MIN_OFFLINE_CLAIM_AWAY_MS ? claimOfflineReward(s, amount) : creditOfflinePending(s)))
   }, [offlineGained, offlineAwayMs])
 
   // Short flash event — try spawn when returning to the tab
@@ -885,7 +885,8 @@ export function useGame() {
     branchCostOf,
     branchMaxRank: BRANCH_MAX_RANK,
     unlocked,
-    offlineGained,
+    // Banner shows what really waits (gone after e.g. a Saisonende)
+    offlineGained: offlineGained != null && state.offlinePending > 0.01 ? state.offlinePending : null,
     offlineAwayMs,
     dismissOffline,
     playerLevel,
