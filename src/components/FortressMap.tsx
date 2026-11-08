@@ -1,6 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { computeBestBuy } from '../game/bestBuy'
-import { countAffordableEmberBuys, emberPayout } from '../game/economy'
+import {
+  countAffordableEmberBuys,
+  countAffordableEmberBuysAfterPrestige,
+  emberPayout,
+  modulesToNextEmberUnlock,
+  postPrestigeStartOwned,
+} from '../game/economy'
 import {
   GENERATORS,
   generatorRate,
@@ -137,13 +143,14 @@ export function FortressMap({ game, highlightId, onOpenTab }: Props) {
     game.clearPostPrestigeFocus()
   }, [game.postPrestigeFocus, game.clearPostPrestigeFocus, bestBuy])
 
-  /** Map CTA: spend leftover Münzen, or prestigeNear / ready. */
+  /** Map CTA: spend leftover Münzen, or honest prestige preview (never false „lohnt sich“). */
   const prestigeCta = useMemo(() => {
     const readyBuys = countAffordableEmberBuys(
       state.emberUpgrades,
       state.embers,
       state.ashEarned,
       state.owned,
+      state.prestiges,
     )
     if (readyBuys > 0 && state.embers > 0) {
       return {
@@ -159,13 +166,37 @@ export function FortressMap({ game, highlightId, onOpenTab }: Props) {
     const embers = Math.max(nextPrestige, emberPayout(state.ashEarned))
     if (embers <= 0) return null
     const ready = canPrestige || prestigeProgress.ratio >= 1
+    const postBuys = countAffordableEmberBuysAfterPrestige({
+      upgrades: state.emberUpgrades,
+      embers: state.embers,
+      ashEarned: state.ashEarned,
+      prestiges: state.prestiges,
+    })
+    if (postBuys > 0) {
+      return {
+        ready,
+        embers,
+        label: ready
+          ? t.prestige.worthItCta(embers)
+          : t.prestige.worthItNear(embers),
+        aria: t.prestige.worthItAria,
+        spend: false,
+      }
+    }
+    const mods =
+      modulesToNextEmberUnlock(
+        state.emberUpgrades,
+        0,
+        postPrestigeStartOwned(state.emberUpgrades),
+        state.prestiges + 1,
+      ) ?? 0
     return {
       ready,
       embers,
       label: ready
-        ? t.prestige.worthItCta(embers)
-        : t.prestige.worthItNear(embers),
-      aria: t.prestige.worthItAria,
+        ? t.prestige.worthItRebuild(embers, mods)
+        : t.prestige.worthItNearRebuild(embers, mods),
+      aria: t.prestige.worthItRebuildAria,
       spend: false,
     }
   }, [
@@ -176,6 +207,7 @@ export function FortressMap({ game, highlightId, onOpenTab }: Props) {
     state.embers,
     state.emberUpgrades,
     state.owned,
+    state.prestiges,
   ])
 
   useEffect(() => {
