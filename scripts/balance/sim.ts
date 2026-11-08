@@ -34,6 +34,7 @@ import {
   GENERATORS,
   generatorCost as generatorCostFor,
   isGeneratorUnlocked,
+  MILESTONE_LEVELS,
   type GeneratorId,
 } from '../../src/game/generators'
 import {
@@ -208,7 +209,13 @@ export function run(profile: Profile, hours: number) {
   let runStart = clock
   let bestPayoutRate = 0
   let gateAt = -1
-  const runs: { dur: number; payout: number; levels: number[]; meta: string; day: number }[] = []
+  const runs: { dur: number; active: number; payout: number; levels: number[]; meta: string; day: number }[] = []
+  // Ereignisdichte: aktive Spielzeit (s) jedes bedeutsamen Ereignisses
+  let activeSec = 0
+  let runActiveStart = 0
+  const events: number[] = []
+  const lastLevel: Record<string, number> = {}
+  const event = () => events.push(activeSec)
   const stageByDay: number[] = []
   const deeps: { day: number; sprouts: number; total: number }[] = []
   const gens: number[] = []
@@ -241,6 +248,7 @@ export function run(profile: Profile, hours: number) {
     }
     s = applyTick(s, dt)
     clock += dt * 1000
+    activeSec += dt
 
     const day = new Date(clock).toDateString()
     if (day !== lastDaily) {
@@ -261,6 +269,13 @@ export function run(profile: Profile, hours: number) {
       stageByDay[d] = Math.max(stageByDay[d] ?? 0, planted)
     }
     for (const g of GENERATORS) {
+      const lv = s.owned[g.id] ?? 0
+      const before = lastLevel[g.id] ?? 0
+      if (lv > before) {
+        // Neu angelegt oder Meilenstein ★ (×2) überschritten
+        if (before === 0 || MILESTONE_LEVELS.some((m) => before < m && lv >= m)) event()
+      }
+      lastLevel[g.id] = lv
       if (!seenUnlock.has(g.id) && (s.owned[g.id] ?? 0) > 0) {
         seenUnlock.add(g.id)
         if (s.prestiges === 0) note(`planted ${g.id}`)
@@ -290,6 +305,7 @@ export function run(profile: Profile, hours: number) {
       if (ready) {
         runs.push({
           dur: (clock - runStart) / 1000,
+          active: activeSec - runActiveStart,
           payout,
           day: Math.floor((clock - start) / 86400000) + 1,
           levels: GENERATORS.map((g) => s.owned[g.id] ?? 0),
@@ -298,6 +314,8 @@ export function run(profile: Profile, hours: number) {
         note(`PRESTIGE #${s.prestiges + 1} payout ${payout} (run ${fmtT((clock - runStart) / 1000)})`)
         const lastDur = (clock - runStart) / 1000
         s = doPrestige(s)
+        event()
+        for (const g of GENERATORS) lastLevel[g.id] = s.owned[g.id] ?? 0
         if (canDeepReset(s.prestiges) && (lastDur > Number(process.env.DEEP_AFTER_H ?? 12) * 3600 || s.prestiges >= Number(process.env.DEEP_AT_YEAR ?? 99) - 1)) {
           const sp = sproutPayout(s.prestiges)
           s = doDeepReset(s)
@@ -324,20 +342,46 @@ export function run(profile: Profile, hours: number) {
           }
         }
         s = spendEmbers(s)
+        for (const g of GENERATORS) lastLevel[g.id] = s.owned[g.id] ?? 0
         runStart = clock
+        runActiveStart = activeSec
         bestPayoutRate = 0
         gateAt = -1
       }
     }
   }
-  return { s, milestones, runs, hours, stageByDay, deeps, gens }
+  return { s, milestones, runs, hours, stageByDay, deeps, gens, density: eventDensity(events, profile) }
+}
+
+/** Abstände zwischen bedeutsamen Ereignissen in aktiver Spielzeit. */
+export function eventDensity(events: number[], profile: Profile) {
+  // Sitzung 1: die erste Spielsitzung (Dauerspieler: erste Stunde)
+  const s1End = (SESSIONS[profile]?.len ?? 60) * 60
+  const gaps = (from: number, to: number) => {
+    const inRange = [0, ...events].filter((t) => t >= from && t <= to)
+    const out: number[] = []
+    for (let i = 1; i < inRange.length; i++) out.push(inRange[i] - inRange[i - 1])
+    return out.sort((a, b) => a - b)
+  }
+  const q = (arr: number[], p: number) => (arr.length ? arr[Math.min(arr.length - 1, Math.floor(arr.length * p))] : NaN)
+  const g1 = gaps(0, s1End)
+  const gl = gaps(s1End, Infinity)
+  return {
+    s1Median: q(g1, 0.5),
+    s1Max: g1.length ? g1[g1.length - 1] : NaN,
+    laterMedian: q(gl, 0.5),
+    laterP90: q(gl, 0.9),
+    count: events.length,
+  }
 }
 
 function report(profile: Profile, hours: number) {
   seed = 12345
   clock = new Date(2026, 10, 9, 8, 0, 0).getTime()
-  const { s, milestones, runs, stageByDay, deeps, gens } = run(profile, hours)
+  const { s, milestones, runs, stageByDay, deeps, gens, density } = run(profile, hours)
+  const dn = (sec: number) => (Number.isFinite(sec) ? (sec >= 120 ? `${Math.round(sec / 60)}m` : `${Math.round(sec)}s`) : '-')
   if (process.env.SUMMARY) {
+    const act = runs.map((r) => Math.round(r.active / 60))
     const d = runs.map((r) => Math.round(r.dur / 60))
     const plantedAll = milestones.find((m) => m.label.includes('planted orangerie'))
     const perDay = Array.from({ length: Math.ceil(hours / 24) }, (_, d) =>
@@ -346,6 +390,9 @@ function report(profile: Profile, hours: number) {
     const garden = Array.from({ length: Math.ceil(hours / 24) }, (_, d) => stageByDay[d] ?? '-').join('/')
     console.log(
       `${profile} ${hours}h | seasons/day ${perDay} | planted/day ${garden} | seasons ${runs.length} | first ${d[0] ?? '-'}m | mins ${d.slice(0, 14).join(' ')} | payout ${runs.slice(0, 6).map((r) => r.payout).join(' ')} | last ${d.slice(-3).join(' ')} | orangerie ${plantedAll ? fmtT(plantedAll.t) : 'never(1st run)'} | end lvls ${GENERATORS.map((g) => s.owned[g.id]).join(',')}`,
+    )
+    console.log(
+      `  density s1 median ${dn(density.s1Median)} max ${dn(density.s1Max)} · later median ${dn(density.laterMedian)} p90 ${dn(density.laterP90)} | active mins ${act.slice(0, 14).join(' ')} | longest active ${Math.max(0, ...act.slice(1))}m (year ${act.indexOf(Math.max(0, ...act.slice(1)), 1) + 1})`,
     )
     if (process.env.HELPER_DAYS) console.log(`  jonas ranks bought: ${helperDays.map((d, i) => `R${i + 1}@d${d}`).join(' ')} | year ${s.prestiges + 1} | deep ${s.deepPrestiges} | gen ${s.generation}`)
     if (process.env.GEN) console.log(`  generations: ${gens.map((d, i) => `G${i + 1}@d${d}`).join(' ')}`)
@@ -369,7 +416,16 @@ for (const k of Object.keys(BALANCE) as (keyof typeof BALANCE)[]) {
   const v = process.env[k]
   if (v) BALANCE[k] = Number(v)
 }
-const args = process.argv.slice(2)
-const hours = Number(args[1] ?? 48)
-report((args[0] as Profile) ?? 'engaged', hours)
+/** For tests: fresh clock + seed, then one run. */
+export function simulate(profile: Profile, hours: number) {
+  seed = 12345
+  clock = new Date(2026, 10, 9, 8, 0, 0).getTime()
+  return run(profile, hours)
+}
+
+if (!process.env.VITEST) {
+  const args = process.argv.slice(2)
+  const hours = Number(args[1] ?? 48)
+  report((args[0] as Profile) ?? 'engaged', hours)
+}
 void realNow
