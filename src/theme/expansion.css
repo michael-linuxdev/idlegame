@@ -2316,3 +2316,154 @@ html.tab-hidden .sky-event {
   margin-top: 0.35rem;
   font-size: 0.82rem;
 }
+
+/* —— Deko frei platzieren —— */
+.decor-slot {
+  position: absolute;
+  width: calc(var(--u) * 13);
+  aspect-ratio: 1;
+  transform: translate(-50%, -100%);
+  pointer-events: none;
+}
+
+.decor-slot svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.decor-slot.edit {
+  pointer-events: auto;
+  border: 2px dashed rgba(255, 252, 240, 0.95);
+  border-radius: 50%;
+  background: rgba(255, 252, 240, 0.28);
+  color: #fffcf0;
+  font: 800 1.6rem/1 inherit;
+  cursor: pointer;
+  box-shadow: 0 0 0 3px rgba(60, 90, 30, 0.25);
+  animation: decor-pulse 1.6s ease-in-out infinite;
+}
+
+.decor-slot.edit.filled {
+  background: rgba(255, 252, 240, 0.45);
+}
+
+.decor-slot.edit.active {
+  border-color: #f5c542;
+}
+
+@keyframes decor-pulse {
+  50% { transform: translate(-50%, -100%) scale(1.06); }
+}
+
+.decor-edit-bar {
+  position: absolute;
+  left: 50%;
+  top: 80.5%;
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transform: translateX(-50%);
+  padding: 0.25rem 0.3rem 0.25rem 0.8rem;
+  font-size: 0.85rem;
+  border-radius: 999px;
+  background: #fffcf4;
+  box-shadow: 0 4px 14px rgba(40, 32, 12, 0.25);
+  font-weight: 800;
+  color: #4a3a22;
+  white-space: nowrap;
+}
+
+.decor-picker-layer {
+  z-index: 1000;
+}
+
+.decor-edit-bar .btn {
+  min-height: 40px;
+  padding: 0.2rem 0.9rem;
+}
+
+.decor-shop-grid,
+.decor-pick-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin: 0.6rem 0;
+}
+
+.decor-card,
+.decor-pick {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.45rem 0.3rem;
+  border-radius: 12px;
+  border: 2px solid #e2d4ae;
+  background: #fbf6e8;
+  font: inherit;
+  font-size: 0.78rem;
+  text-align: center;
+  color: #4a3a22;
+}
+
+.decor-card svg,
+.decor-pick svg {
+  width: 56px;
+  height: 56px;
+}
+
+.decor-card .btn {
+  min-height: 36px;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.78rem;
+}
+
+.decor-card.owned {
+  border-color: #9cc072;
+  background: #eef6e2;
+}
+
+.decor-card small {
+  color: #4a7a2e;
+  font-weight: 700;
+}
+
+.decor-pick {
+  cursor: pointer;
+}
+
+.decor-pick.current {
+  border-color: #f5c542;
+}
+
+.decor-pick.elsewhere {
+  opacity: 0.88;
+}
+
+.decor-place-btn {
+  width: 100%;
+}
+
+.decor-btn svg {
+  width: 62%;
+  height: 62%;
+}
+
+.decor-spin {
+  transform-origin: 20px 15px;
+  animation: ha-spin 5s linear infinite;
+}
+
+html.idle .decor-spin,
+html.idle .decor-slot * {
+  animation-play-state: paused !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .decor-spin,
+  .decor-slot.edit {
+    animation: none !important;
+  }
+}

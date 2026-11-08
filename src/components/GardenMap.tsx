@@ -1,4 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { DecorLayer } from './DecorLayer'
+import { DecorSheet } from './DecorSheet'
+import { decorUnlocked } from '../game/decor'
 import { computeBestBuy } from '../game/bestBuy'
 import {
   countAffordableEmberBuys,
@@ -167,6 +170,8 @@ export function GardenMap({
   const previewDef = previewSkin ? COSMETICS.find((c) => c.id === previewSkin) ?? null : null
   const skinClass = previewDef?.accentClass ?? equippedCosmetic?.accentClass ?? 'skin-wiese'
   const [recipeOpen, setRecipeOpen] = useState(false)
+  const [decorOpen, setDecorOpen] = useState(false)
+  const [decorEdit, setDecorEdit] = useState(false)
   const [wishOpen, setWishOpen] = useState(false)
   const [growing, setGrowing] = useState<string | null>(null)
   const signsAll = useSignsAlways()
@@ -706,8 +711,18 @@ export function GardenMap({
         />
       ) : null}
 
-      {state.helperLevel > 0 || game.openChapters.length > 0 ? (
+      {state.helperLevel > 0 || game.openChapters.length > 0 || decorUnlocked(state) ? (
         <div className="map-side">
+          {decorUnlocked(state) && !photoMode ? (
+            <button type="button" className="map-side-btn decor-btn" onClick={() => setDecorOpen(true)} aria-label={t.decor.openAria}>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M7 21l1-8h8l1 8z" fill="#3d6fd1" />
+                <circle cx="12" cy="10" r="3.2" fill="#f2c9a0" />
+                <path d="M8.6 9L12 1.6 15.4 9z" fill="#e2453c" />
+                <path d="M9.2 11q2.8 5 5.6 0z" fill="#fbf6e8" />
+              </svg>
+            </button>
+          ) : null}
           {onGoPlot ? <PlotButtons game={game} current="garden" onGo={onGoPlot} /> : null}
           {state.helperLevel > 0 ? (
             <button
@@ -748,6 +763,7 @@ export function GardenMap({
             skin={skinClass}
             fest={festAt(game.nowTick).id}
           />
+          <DecorLayer game={game} season={ambient.season} editing={decorEdit} onDone={() => setDecorEdit(false)} />
           {state.helperLevel > 0 && state.helperOn ? (
             <>
               <HelperWalker />
@@ -905,6 +921,16 @@ export function GardenMap({
         />
       ) : null}
 
+      {decorOpen ? (
+        <DecorSheet
+          game={game}
+          onClose={() => setDecorOpen(false)}
+          onPlace={() => {
+            setDecorOpen(false)
+            setDecorEdit(true)
+          }}
+        />
+      ) : null}
       {festOpen ? <FestSheet game={game} onClose={() => setFestOpen(false)} /> : null}
       {recipeOpen ? <RecipeSheet game={game} onClose={() => setRecipeOpen(false)} onCooked={showToast} /> : null}
       {wishOpen ? <WishSheet game={game} onClose={() => setWishOpen(false)} /> : null}

@@ -44,6 +44,7 @@ import {
   type ChaptersState,
 } from './chapters'
 import { milestonesReached, nextMilestone } from './generators'
+import { decorDef, emptySlots, type DecorId } from './decor'
 import {
   CONTEST_REWARDS,
   CONTEST_KG,
@@ -305,6 +306,10 @@ export interface GameState {
   helperOn: boolean
   /** Garden areas Jonas must not build (player's choice, default none) */
   helperBlocked: GeneratorId[]
+  /** Deko the player owns (forever) */
+  decorOwned: DecorId[]
+  /** Deko standing on each Dekoplatz (null = empty) */
+  decorSlots: (DecorId | null)[]
   /** Helper time carry (ms) between buys */
   helperCarryMs: number
   /** Transient: buys the helper made while away (for the offline toast) */
@@ -374,6 +379,10 @@ export interface ExpansionSlice {
   helperOn: boolean
   /** Garden areas Jonas must not build (player's choice, default none) */
   helperBlocked: GeneratorId[]
+  /** Deko the player owns (forever) */
+  decorOwned: DecorId[]
+  /** Deko standing on each Dekoplatz (null = empty) */
+  decorSlots: (DecorId | null)[]
   helperCarryMs: number
   helperReport: number
   turboEndsAt: number
@@ -405,6 +414,8 @@ export function emptyExpansion(now = Date.now()): ExpansionSlice {
     helperLevel: 0,
     helperOn: true,
     helperBlocked: [],
+    decorOwned: [],
+    decorSlots: emptySlots(),
     helperCarryMs: 0,
     helperReport: 0,
     turboEndsAt: 0,
@@ -438,6 +449,8 @@ export function pickExpansion(s: GameState): ExpansionSlice {
     helperLevel: s.helperLevel,
     helperOn: s.helperOn,
     helperBlocked: s.helperBlocked,
+    decorOwned: s.decorOwned,
+    decorSlots: s.decorSlots,
     helperCarryMs: 0,
     helperReport: 0,
     turboEndsAt: s.turboEndsAt,
@@ -1305,6 +1318,29 @@ export function buyHelper(state: GameState): GameState {
     helperOn: true,
     lastSeen: Date.now(),
   }
+}
+
+/* ——— Deko frei platzieren ——— */
+
+export function buyDecor(state: GameState, id: DecorId): GameState {
+  const def = decorDef(id)
+  if (!def || def.exclusive || state.decorOwned.includes(id) || state.samen < def.cost) return state
+  return { ...state, samen: state.samen - def.cost, decorOwned: [...state.decorOwned, id] }
+}
+
+/** Exclusive Deko as a reward (album, projects); no-op if already owned. */
+export function grantDecor(state: GameState, id: DecorId): GameState {
+  if (state.decorOwned.includes(id)) return state
+  return { ...state, decorOwned: [...state.decorOwned, id] }
+}
+
+/** Put owned Deko on a Dekoplatz (moves it if it stood elsewhere); null clears the spot. */
+export function placeDecor(state: GameState, slot: number, id: DecorId | null): GameState {
+  if (slot < 0 || slot >= state.decorSlots.length) return state
+  if (id != null && !state.decorOwned.includes(id)) return state
+  const slots = state.decorSlots.map((x) => (id != null && x === id ? null : x))
+  slots[slot] = id
+  return { ...state, decorSlots: slots }
 }
 
 /** Allow / forbid Jonas one garden area. */
