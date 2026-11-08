@@ -8,6 +8,7 @@ import {
 import { efficiencyMult, type BranchKind } from '../game/branches'
 import { formatAsh, formatDecimal, formatRate } from '../game/format'
 import { playSfx } from '../game/sound'
+import { gatePrestiges } from '../game/state'
 import { t } from '../i18n'
 import type { useGame } from '../game/useGame'
 
@@ -205,7 +206,7 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
           </>
         ) : (
           <div className="upgrade-hud-locked">
-            <p className="upgrade-hud-stats sheet-locked-hint">{unlockHint(def, game.state.prestiges)}</p>
+            <p className="upgrade-hud-stats sheet-locked-hint">{unlockHint(def, gatePrestiges(game.state))}</p>
             <div className="upgrade-hud-cta">
               <button type="button" className="btn buy upgrade-hud-buy" disabled>
                 {t.upgrade.locked}

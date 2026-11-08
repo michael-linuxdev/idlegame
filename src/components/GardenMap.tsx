@@ -24,6 +24,7 @@ import {
   PRESTIGE_SPIKE_RATIOS,
   type SurpriseKind,
 } from '../game/surpriseJumps'
+import { gatePrestiges } from '../game/state'
 import { t } from '../i18n'
 import type { useGame } from '../game/useGame'
 import type { Tab } from './AppNav'
@@ -508,7 +509,7 @@ export function GardenMap({
             const buildingRate =
               unlocked && level > 0 ? generatorRate(def, level) * totalMult : 0
             const producing = buildingRate > 0
-            const hint = !unlocked ? unlockHint(def, state.prestiges) : ''
+            const hint = !unlocked ? unlockHint(def, gatePrestiges(state)) : ''
             const hl = highlightId === def.id
             const ready = unlocked && level === 0
             const showSign = unlocked || selectedHere || def.id === nextWildId
@@ -561,11 +562,11 @@ export function GardenMap({
                     <span className="plot-name">{def.name}</span>
                     <span className="plot-meta">
                       {!unlocked ? (
-                        seasonsMissing(def, state.prestiges) > 0 ? (
-                          shortUnlockGate(def, state.prestiges)
+                        seasonsMissing(def, gatePrestiges(state)) > 0 ? (
+                          shortUnlockGate(def, gatePrestiges(state))
                         ) : (
                           <>
-                            {t.hud.locked} · {shortUnlockGate(def, state.prestiges)}
+                            {t.hud.locked} · {shortUnlockGate(def, gatePrestiges(state))}
                           </>
                         )
                       ) : ready ? (

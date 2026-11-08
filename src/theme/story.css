@@ -393,3 +393,8 @@
   font-size: 0.8rem;
   opacity: 0.8;
 }
+
+.season-ceremony.deep.phase-winter,
+.season-ceremony.deep.phase-letter {
+  background: linear-gradient(180deg, #1c2540 0%, #3c4f78 60%, #b9c8de 100%);
+}

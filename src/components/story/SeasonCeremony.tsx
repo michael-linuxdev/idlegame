@@ -9,6 +9,8 @@ export interface SeasonEnd {
   /** Gartenjahr that now begins */
   year: number
   gained: number
+  /** Tiefer Winter instead of a regular Saisonende */
+  deep?: boolean
 }
 
 interface Props {
@@ -23,9 +25,11 @@ type Phase = 'winter' | 'letter' | 'spring'
  * letter for the new year (if any) → spring with what was kept.
  */
 export function SeasonCeremony({ event, onDone }: Props) {
-  const letterId = yearLetterFor(event.year)
+  const letterId = event.deep ? 'deep1' : yearLetterFor(event.year)
   const [phase, setPhase] = useState<Phase>('winter')
-  const corner = GENERATORS.find((g) => (g.unlock?.seasons ?? -1) === event.year - 1)
+  const corner = event.deep
+    ? null
+    : GENERATORS.find((g) => (g.unlock?.seasons ?? -1) === event.year - 1)
 
   useEffect(() => {
     playSfx('season')
@@ -46,7 +50,7 @@ export function SeasonCeremony({ event, onDone }: Props) {
   const letter = letterId ? t.notebook.entries[letterId] : null
 
   return (
-    <div className={`season-ceremony phase-${phase}`} role="dialog" aria-modal="true" aria-live="polite" onClick={advance}>
+    <div className={`season-ceremony phase-${phase}${event.deep ? " deep" : ""}`} role="dialog" aria-modal="true" aria-live="polite" onClick={advance}>
       <div className="season-sky" aria-hidden="true">
         {Array.from({ length: 18 }, (_, i) => (
           <span key={i} style={{ left: `${(i * 37) % 100}%`, animationDelay: `${-i * 0.45}s` }} />
@@ -58,8 +62,8 @@ export function SeasonCeremony({ event, onDone }: Props) {
           <span className="season-icon">
             <IconSnow />
           </span>
-          <h2>{t.season.winterTitle}</h2>
-          <p>{t.season.winterLine}</p>
+          <h2>{event.deep ? t.season.deepTitle : t.season.winterTitle}</h2>
+          <p>{event.deep ? t.season.deepLine : t.season.winterLine}</p>
         </div>
       ) : null}
 
@@ -79,10 +83,11 @@ export function SeasonCeremony({ event, onDone }: Props) {
           <span className="season-icon">
             <IconSprout />
           </span>
-          <h2>{t.season.springTitle(event.year)}</h2>
+          <h2>{event.deep ? t.season.deepSpringTitle : t.season.springTitle(event.year)}</h2>
           <p>{t.season.springLine}</p>
           <p className="season-gain">
-            <IconChest /> {t.season.gained(t.prestige.creditsAmount(event.gained))}
+            {event.deep ? <IconSprout /> : <IconChest />}{' '}
+            {t.season.gained(event.deep ? t.season.sprouts(event.gained) : t.prestige.creditsAmount(event.gained))}
           </p>
           {corner ? <p className="season-corner">{t.season.newCorner(corner.name)}</p> : null}
           <button type="button" className="btn buy" onClick={onDone}>

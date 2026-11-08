@@ -104,7 +104,15 @@ import {
   type QuestProgress,
 } from './quests'
 import {
+  DEEP_SHOP,
+  canDeepReset,
+  deepOfflineBonusHours,
+  deepStartEmbers,
+  deepYieldMult,
   emptyLongLoopSlice,
+  gateSeasons,
+  sproutPayout,
+  type DeepMetaId,
   type DeepMetaUpgrades,
   type EraUpgrades,
 } from './longLoop'
@@ -561,7 +569,12 @@ export function productionPerSecond(state: GameState, now = Date.now()): number 
     const mEff = efficiencyMult(branch?.efficiency ?? 0)
     sum += generatorRate(def, owned) * mEff
   }
-  return sum * mPrestige * mClan * mEvent * mFlash * mLevel * mYield
+  return sum * mPrestige * mClan * mEvent * mFlash * mLevel * mYield * deepYieldMult(state.deepUpgrades)
+}
+
+/** Season count used for Gartenjahr gates (includes Gartenwissen). */
+export function gatePrestiges(state: GameState): number {
+  return gateSeasons(state.prestiges, state.deepUpgrades)
 }
 
 function withEventProgress(state: GameState, gained: number, now: number): GameState {
@@ -1003,8 +1016,14 @@ export function applyOfflineCatchup(
   let base = withQuestSync(syncEventWindow(syncMonetization(state, now), now), now)
   base = applyLevelRewards(base, now)
   const rate = productionPerSecond(base, now)
-  const caps = offlineCapsHours(base.emberUpgrades)
-  const gained = offlineCatchupAsh(rate, elapsedSec, caps.soft, caps.hard)
+  const emberCaps = offlineCapsHours(base.emberUpgrades)
+  const deepCaps = deepOfflineBonusHours(base.deepUpgrades)
+  const gained = offlineCatchupAsh(
+    rate,
+    elapsedSec,
+    emberCaps.soft + deepCaps.soft,
+    emberCaps.hard + deepCaps.hard,
+  )
   if (gained <= 0) {
     return { state: { ...base, lastSeen: now }, gained: 0 }
   }
@@ -1063,7 +1082,7 @@ export function buyGenerator(state: GameState, id: GeneratorId): GameState {
       state.owned,
       state.emberUpgrades.firstFlame > 0,
       level,
-      state.prestiges,
+      gatePrestiges(state),
     )
   ) {
     return state
@@ -1250,6 +1269,44 @@ export function doPrestige(state: GameState): GameState {
   const next = createPostPrestigeState(state)
   const withEmbers = { ...next, embers: state.embers + gain }
   return collectReadyAchievements(withEmbers)
+}
+
+/** Sprösslings-Laden purchase. */
+export function buyDeepUpgrade(state: GameState, id: DeepMetaId): GameState {
+  const item = DEEP_SHOP.find((d) => d.id === id)
+  if (!item) return state
+  const rank = state.deepUpgrades[id]
+  if (rank >= item.maxRank) return state
+  const cost = item.cost(rank)
+  if (state.deepEmbers < cost) return state
+  return {
+    ...state,
+    deepEmbers: state.deepEmbers - cost,
+    deepUpgrades: { ...state.deepUpgrades, [id]: rank + 1 },
+    lastSeen: Date.now(),
+  }
+}
+
+/**
+ * Tiefer Winter: Gartenjahre, Erbstücke and Omas Truhe reset; Sprösslinge,
+ * their boosts, Samen, Gartenstile, Gärtnerstufe and streaks stay.
+ */
+export function doDeepReset(state: GameState): GameState {
+  if (!canDeepReset(state.prestiges)) return state
+  const sprouts = sproutPayout(state.prestiges)
+  const fresh = createPostPrestigeState({
+    ...state,
+    embers: 0,
+    emberUpgrades: { ...EMPTY_EMBER_UPGRADES },
+  })
+  return collectReadyAchievements({
+    ...fresh,
+    prestiges: 0,
+    embers: deepStartEmbers(state.deepUpgrades),
+    emberUpgrades: { ...EMPTY_EMBER_UPGRADES },
+    deepEmbers: state.deepEmbers + sprouts,
+    deepPrestiges: state.deepPrestiges + 1,
+  })
 }
 
 export function grantTapAsh(

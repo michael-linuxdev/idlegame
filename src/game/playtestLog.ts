@@ -10,6 +10,7 @@ export type PlaytestEventType =
   | 'upgrade'
   | 'offline_claim'
   | 'prestige'
+  | 'deep_reset'
   | 'schub'
   | 'level_up'
   | 'shop_tap'

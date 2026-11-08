@@ -1,3 +1,4 @@
+import { gateSeasons, sproutPayout, type DeepMetaId } from './longLoop'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   emberPayout,
@@ -80,6 +81,8 @@ import {
   skipHoursRemaining,
   type GameState,
   type QuestProgress,
+  buyDeepUpgrade,
+  doDeepReset,
 } from './state'
 import { logPlaytest } from './playtestLog'
 import { loadState, saveState } from './storage'
@@ -250,7 +253,11 @@ export function useGame() {
   }, [])
 
   const [postPrestigeFocus, setPostPrestigeFocus] = useState(false)
-  const [seasonEnd, setSeasonEnd] = useState<{ year: number; gained: number } | null>(null)
+  const [seasonEnd, setSeasonEnd] = useState<{
+    year: number
+    gained: number
+    deep?: boolean
+  } | null>(null)
 
   const prestige = useCallback(() => {
     setState((s) => {
@@ -270,6 +277,23 @@ export function useGame() {
   }, [])
 
   const ackSeasonEnd = useCallback(() => setSeasonEnd(null), [])
+
+  const deepReset = useCallback(() => {
+    setState((s) => {
+      const gain = sproutPayout(s.prestiges)
+      const next = doDeepReset(s)
+      if (next !== s) {
+        logPlaytest('deep_reset', { deep: next.deepPrestiges, sprouts: gain })
+        setPostPrestigeFocus(true)
+        setSeasonEnd({ year: 1, gained: gain, deep: true })
+      }
+      return next
+    })
+  }, [])
+
+  const buyDeep = useCallback((id: DeepMetaId) => {
+    setState((s) => buyDeepUpgrade(s, id))
+  }, [])
 
   const clearPostPrestigeFocus = useCallback(() => {
     setPostPrestigeFocus(false)
@@ -529,7 +553,7 @@ export function useGame() {
         state.owned,
         state.emberUpgrades.firstFlame > 0,
         playerLevel.level,
-        state.prestiges,
+        gateSeasons(state.prestiges, state.deepUpgrades),
       )
     },
     [
@@ -538,6 +562,7 @@ export function useGame() {
       state.emberUpgrades.firstFlame,
       playerLevel.level,
       state.prestiges,
+      state.deepUpgrades,
     ],
   )
 
@@ -576,6 +601,8 @@ export function useGame() {
     postPrestigeFocus,
     seasonEnd,
     ackSeasonEnd,
+    deepReset,
+    buyDeep,
     clearPostPrestigeFocus,
     purchaseTimeSkip,
     purchaseCosmetic,
