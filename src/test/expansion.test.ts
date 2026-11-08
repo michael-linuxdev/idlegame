@@ -284,11 +284,12 @@ describe('Speicherstand', () => {
 })
 
 describe('Mengenkauf-Freischaltung', () => {
-  it('×1 zuerst, Max nach dem 1. Saisonende, ×5 ab Jahr 4, Alles ausbauen ab Jahr 6', async () => {
+  it('×1 zuerst, Max nach dem 2. Saisonende, ×5 ab Jahr 4, Alles ausbauen ab Jahr 6', async () => {
     const { bulkUnlocks } = await import('../game/state')
     const base = createInitialState(0)
     expect(bulkUnlocks(base)).toEqual({ max: false, five: false, all: false })
-    expect(bulkUnlocks({ ...base, prestiges: 1 })).toEqual({ max: true, five: false, all: false })
+    expect(bulkUnlocks({ ...base, prestiges: 1 })).toEqual({ max: false, five: false, all: false })
+    expect(bulkUnlocks({ ...base, prestiges: 2 })).toEqual({ max: true, five: false, all: false })
     expect(bulkUnlocks({ ...base, prestiges: 3 })).toEqual({ max: true, five: true, all: false })
     expect(bulkUnlocks({ ...base, prestiges: 5 })).toEqual({ max: true, five: true, all: true })
     expect(bulkUnlocks({ ...base, deepPrestiges: 1 })).toEqual({ max: true, five: true, all: true })
