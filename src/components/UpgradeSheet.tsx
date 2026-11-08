@@ -1,4 +1,7 @@
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
+import { ModuleArt } from '../theme/ModuleArt'
+import { ClearedPlot, WildPlot } from '../theme/PlotArt'
+import { IconBasket, IconFertilizer, IconSprout } from '../theme/icons'
 import {
   GENERATORS,
   generatorRate,
@@ -183,28 +186,48 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
   return (
     <div className="upgrade-hud-layer" role="presentation" onClick={onClose}>
       <div
-        className={`upgrade-hud${flash ? ' upgrade-flash' : ''}`}
+        className={`upgrade-hud gc-card${flash ? ' upgrade-flash' : ''}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="upgrade-title"
         onClick={(e) => e.stopPropagation()}
       >
-        <header className="upgrade-hud-header">
-          <div className="upgrade-hud-heading">
-            <p className="upgrade-hud-eyebrow">{t.upgrade.moduleEyebrow}</p>
-            <h2 id="upgrade-title">{def.name}</h2>
+        <div className="gc-top">
+          <div className={`gc-portrait${!unlocked ? ' locked' : ''}`} aria-hidden="true">
+            <span className="gc-portrait-art">
+              {!unlocked ? <WildPlot variant={0} /> : owned === 0 ? <ClearedPlot /> : <ModuleArt id={def.id} level={owned} producing selected={false} />}
+            </span>
+            {unlocked && owned > 0 ? <span className="gc-level">{owned}</span> : null}
           </div>
-          <button
-            type="button"
-            className="upgrade-hud-close"
-            onClick={onClose}
-            aria-label={t.upgrade.close}
-          >
+          <div className="gc-info">
+            <h2 id="upgrade-title" className="gc-name">
+              {def.name}
+            </h2>
+            {unlocked ? (
+              <>
+                <div className="gc-stars" aria-label={t.milestones.starsAria(stars)}>
+                  {Array.from({ length: 5 }, (_, i) => (
+                    <span key={i} className={i < stars ? 'on' : undefined}>
+                      ★
+                    </span>
+                  ))}
+                  {stars > 5 ? <em>+{stars - 5}</em> : null}
+                </div>
+                <p className="gc-rate">
+                  <IconBasket /> {formatRate(lineRate)}
+                  <span className="upgrade-gain"> +{formatRate(Math.max(0, nextRate - lineRate))}</span>
+                </p>
+              </>
+            ) : (
+              <p className="gc-locked-hint">{unlockHint(def, gatePrestiges(game.state))}</p>
+            )}
+          </div>
+          <button type="button" className="upgrade-hud-close" onClick={onClose} aria-label={t.upgrade.close}>
             ×
           </button>
-        </header>
+        </div>
 
-        {owned === 0 ? (
+        {owned === 0 && unlocked ? (
           <figure className="oma-note">
             <figcaption className="oma-note-label">{t.upgrade.noteLabel}</figcaption>
             <blockquote className="oma-note-text">{def.note}</blockquote>
@@ -213,89 +236,70 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
 
         {unlocked ? (
           <>
-            <p className="upgrade-hud-stats">
-              {t.upgrade.level} {owned}
-              {stars > 0 ? (
-                <span className="milestone-stars" aria-label={t.milestones.starsAria(stars)}>
-                  {' '}
-                  {'★'.repeat(Math.min(stars, 5))}
-                  {stars > 5 ? `+${stars - 5}` : ''}
+            {milestone ? (
+              <div className="gc-milestone" title={t.milestones.next(milestone.at)}>
+                <span
+                  className="gc-milestone-fill"
+                  style={{ width: `${Math.round(((owned - milestone.from) / (milestone.at - milestone.from)) * 100)}%` }}
+                />
+                <span className="gc-milestone-label">{t.milestones.short(milestone.at)}</span>
+                <span className="gc-milestone-star" aria-hidden="true">
+                  ★
                 </span>
-              ) : null}
-              {' · '}
-              {formatRate(lineRate)}
-              <span className="upgrade-gain"> +{formatRate(Math.max(0, nextRate - lineRate))}</span>
-            </p>
-            <div className="milestone-line" title={milestone ? t.milestones.next(milestone.at) : t.milestones.all}>
-              <span>{milestone ? t.milestones.short(milestone.at) : t.milestones.all}</span>
-              {milestone ? (
-                <span className="milestone-track" aria-hidden="true">
-                  <span
-                    style={{
-                      width: `${Math.round(((owned - milestone.from) / (milestone.at - milestone.from)) * 100)}%`,
-                    }}
-                  />
-                </span>
-              ) : null}
-            </div>
-            <div className="bulk-toggle" role="radiogroup" aria-label={t.bulk.groupAria}>
-              {([1, 10, 'max'] as BulkMode[]).map((mode) => (
-                <button
-                  key={String(mode)}
-                  type="button"
-                  role="radio"
-                  aria-checked={bulk === mode}
-                  className={`bulk-chip${bulk === mode ? ' on' : ''}`}
-                  onClick={() => pickBulk(mode)}
-                >
-                  {mode === 1 ? t.bulk.one : mode === 10 ? t.bulk.ten : t.bulk.max}
-                </button>
-              ))}
-              <button
-                type="button"
-                className="bulk-chip bulk-all"
-                onClick={buyAll}
-                aria-label={t.bulk.allAria}
-              >
+              </div>
+            ) : null}
+
+            <div className="gc-controls">
+              <div className="gc-segment" role="radiogroup" aria-label={t.bulk.groupAria}>
+                {([1, 10, 'max'] as BulkMode[]).map((mode) => (
+                  <button
+                    key={String(mode)}
+                    type="button"
+                    role="radio"
+                    aria-checked={bulk === mode}
+                    className={bulk === mode ? 'on' : undefined}
+                    onClick={() => pickBulk(mode)}
+                  >
+                    {mode === 1 ? t.bulk.one : mode === 10 ? t.bulk.ten : t.bulk.max}
+                  </button>
+                ))}
+              </div>
+              <button type="button" className="gc-all" onClick={buyAll} aria-label={t.bulk.allAria}>
                 {allNote ?? t.bulk.allButton}
               </button>
             </div>
-            <div className="upgrade-afford-track upgrade-hud-track" aria-hidden="true">
-              <span
-                className={`upgrade-afford-fill${affordable ? ' ready' : ''}`}
-                style={{ width: `${Math.round(affordRatio * 100)}%` }}
-              />
-            </div>
-            <div className="upgrade-hud-cta">
-              <button
-                type="button"
-                className={`btn buy upgrade-hud-buy${affordable ? ' pulse-ready' : ''}${flash ? ' just-bought' : ''}`}
-                disabled={!affordable}
-                onPointerDown={onBuyPointerDown}
-                onPointerUp={onBuyPointerUp}
-                onPointerLeave={onBuyPointerUp}
-                onPointerCancel={onBuyPointerUp}
-                onContextMenu={(e) => e.preventDefault()}
-              >
-                {bulk === 1
+
+            <button
+              type="button"
+              className={`btn buy upgrade-hud-buy gc-buy${affordable ? ' pulse-ready' : ''}${flash ? ' just-bought' : ''}`}
+              disabled={!affordable}
+              onPointerDown={onBuyPointerDown}
+              onPointerUp={onBuyPointerUp}
+              onPointerLeave={onBuyPointerUp}
+              onPointerCancel={onBuyPointerUp}
+              onContextMenu={(e) => e.preventDefault()}
+              aria-label={
+                bulk === 1
                   ? t.upgrade.costLine(actionLabel, formatAsh(safeCost || cost))
-                  : t.bulk.buyN(actionLabel, bulkCount, formatAsh(safeCost || cost))}
-              </button>
-              <p className="upgrade-hold-hint">
-                {affordable
-                  ? bulk === 1
-                    ? t.upgrade.holdHint
-                    : ''
-                  : needMore > 0
-                    ? t.upgrade.needMore(formatAsh(needMore))
-                    : t.upgrade.holdHint}
-              </p>
-            </div>
+                  : t.bulk.buyN(actionLabel, bulkCount, formatAsh(safeCost || cost))
+              }
+            >
+              <span className="gc-buy-fill" style={{ width: `${Math.round(affordRatio * 100)}%` }} aria-hidden="true" />
+              <span className="gc-buy-label">
+                {actionLabel}
+                {bulk !== 1 ? ` ×${bulkCount}` : ''}
+              </span>
+              <span className="gc-buy-cost">
+                <IconBasket /> {formatAsh(safeCost || cost)}
+              </span>
+            </button>
+            <p className="upgrade-hold-hint">
+              {affordable ? (bulk === 1 ? t.upgrade.holdHint : '') : needMore > 0 ? t.upgrade.needMore(formatAsh(needMore)) : ''}
+            </p>
 
             {owned >= 1 ? (
-              <details className="upgrade-hud-modules care-details">
-                <summary className="upgrade-hud-modules-title">{t.branches.title}</summary>
-                <BranchRow
+              <div className="gc-care" aria-label={t.branches.title}>
+                <CareTile
                   kind="efficiency"
                   rank={branch.efficiency}
                   max={game.branchMaxRank}
@@ -303,7 +307,7 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
                   ernte={game.state.ernte}
                   onBuy={() => buyBranch('efficiency')}
                 />
-                <BranchRow
+                <CareTile
                   kind="capacity"
                   rank={branch.capacity}
                   max={game.branchMaxRank}
@@ -311,25 +315,21 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
                   ernte={game.state.ernte}
                   onBuy={() => buyBranch('capacity')}
                 />
-              </details>
+              </div>
             ) : null}
           </>
         ) : (
-          <div className="upgrade-hud-locked">
-            <p className="upgrade-hud-stats sheet-locked-hint">{unlockHint(def, gatePrestiges(game.state))}</p>
-            <div className="upgrade-hud-cta">
-              <button type="button" className="btn buy upgrade-hud-buy" disabled>
-                {t.upgrade.locked}
-              </button>
-            </div>
-          </div>
+          <button type="button" className="btn buy upgrade-hud-buy gc-buy" disabled>
+            <span className="gc-buy-label">{t.upgrade.locked}</span>
+          </button>
         )}
       </div>
     </div>
   )
 }
 
-function BranchRow({
+/** Pflege-Kachel: icon, rank pips, effect, cost. Always visible. */
+function CareTile({
   kind,
   rank,
   max,
@@ -346,39 +346,36 @@ function BranchRow({
 }) {
   const maxed = rank >= max
   const name = kind === 'efficiency' ? t.branches.efficiency : t.branches.capacity
-  const perRank =
-    kind === 'efficiency'
-      ? t.branches.efficiencyPerRank
-      : t.branches.capacityPerRank
+  const perRank = kind === 'efficiency' ? t.branches.efficiencyPerRank : t.branches.capacityPerRank
   const total =
     kind === 'efficiency'
       ? t.branches.efficiencyEffect(rank * 4)
       : t.branches.capacityEffect(formatDecimal(Math.pow(0.97, rank), 3))
-
   return (
-    <div className="upgrade-hud-row">
-      <p className="upgrade-hud-row-meta" title={`${perRank} · ${total}`}>
-        <strong className="branch-name">{name}</strong>
-        <span className="branch-rank">
-          {rank}/{max}
+    <div className={`gc-care-tile ${kind}`} title={total}>
+      <div className="gc-care-head">
+        <span className="gc-care-icon" aria-hidden="true">
+          {kind === 'efficiency' ? <IconFertilizer /> : <IconSprout />}
         </span>
-        <span className="branch-sep" aria-hidden="true">
-          ·
-        </span>
-        <span className="branch-per">{perRank}</span>
-      </p>
+        <span className="gc-care-name">{name}</span>
+      </div>
+      <div className="gc-pips" aria-label={`${rank}/${max}`}>
+        {Array.from({ length: max }, (_, i) => (
+          <span key={i} className={i < rank ? 'on' : undefined} />
+        ))}
+      </div>
+      <p className="gc-care-effect">{perRank}</p>
       {maxed ? (
-        <span className="quest-badge">{t.branches.maxed}</span>
+        <span className="gc-care-max">{t.branches.maxed}</span>
       ) : (
         <button
           type="button"
-          className="btn ghost upgrade-hud-row-buy"
+          className="gc-care-buy"
           disabled={ernte < cost}
           onClick={onBuy}
-          title={t.upgrade.costLine(name, formatAsh(cost))}
           aria-label={t.upgrade.costLine(name, formatAsh(cost))}
         >
-          {formatAsh(cost)}
+          <IconBasket /> {formatAsh(cost)}
         </button>
       )}
     </div>
