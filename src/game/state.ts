@@ -10,6 +10,7 @@ import {
   prestigeMinAsh,
   prestigeMultiplier,
   prestigeStartAsh,
+  prestigeStartAshFloor,
   prestigeStartModuleLevel,
   type EmberUpgradeId,
   type EmberUpgrades,
@@ -304,12 +305,21 @@ export function createInitialState(now = Date.now()): GameState {
 
 /** Create a fresh run after prestige, keeping meta + monetization unlocks. */
 export function createPostPrestigeState(prev: GameState, now = Date.now()): GameState {
-  const startAsh = prestigeStartAsh(prev.emberUpgrades)
   const owned = emptyOwned()
   const startLevel = prestigeStartModuleLevel(prev.emberUpgrades)
   if (startLevel > 0) {
-    owned.emberPit = startLevel
+    owned.emberPit = Math.max(owned.emberPit, startLevel)
   }
+  const g1 = GENERATORS.find((g) => g.id === 'emberPit')
+  const g1Level = owned.emberPit
+  const g1Cost = g1
+    ? generatorCost(g1, g1Level, foundryDiscountMult(prev.emberUpgrades))
+    : 23
+  // Always afford the next G1 Ausbauen immediately — Seed-Purse alone can be 0.
+  const startAsh = Math.max(
+    prestigeStartAsh(prev.emberUpgrades),
+    prestigeStartAshFloor(g1Cost),
+  )
   return {
     ash: startAsh,
     ashEarned: 0,

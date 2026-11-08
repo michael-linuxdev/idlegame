@@ -55,16 +55,24 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
   const owned = game.state.owned[def.id] ?? 0
   const unlocked = game.unlocked(def.id)
   const cost = game.costOf(def.id)
-  const affordable = unlocked && game.state.ash >= cost
+  const affordable =
+    unlocked &&
+    Number.isFinite(cost) &&
+    cost > 0 &&
+    Number.isFinite(game.state.ash) &&
+    game.state.ash >= cost
   const branch = game.state.branches[def.id] ?? { efficiency: 0, capacity: 0 }
   const lineMult =
     game.multiplier * game.levelMult * game.clanMult * game.eventMult
   const eff = efficiencyMult(branch.efficiency)
   const lineRate = generatorRate(def, owned) * lineMult * eff
   const nextRate = generatorRate(def, owned + 1) * lineMult * eff
+  const safeCost = Number.isFinite(cost) && cost > 0 ? cost : 0
+  const safeAsh = Number.isFinite(game.state.ash) ? Math.max(0, game.state.ash) : 0
   const affordRatio =
-    cost > 0 ? Math.min(1, game.state.ash / cost) : unlocked ? 1 : 0
+    safeCost > 0 ? Math.min(1, safeAsh / safeCost) : unlocked ? 1 : 0
   const actionLabel = owned === 0 ? t.upgrade.online : t.upgrade.upgrade
+  const needMore = Math.max(0, safeCost - safeAsh)
   const flavor =
     def.blurb.length > 96 ? `${def.blurb.slice(0, 93).trimEnd()}…` : def.blurb
 
@@ -158,9 +166,15 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
                 onPointerCancel={onBuyPointerUp}
                 onContextMenu={(e) => e.preventDefault()}
               >
-                {t.upgrade.costLine(actionLabel, formatAsh(cost))}
+                {t.upgrade.costLine(actionLabel, formatAsh(safeCost || cost))}
               </button>
-              <p className="upgrade-hold-hint">{t.upgrade.holdHint}</p>
+              <p className="upgrade-hold-hint">
+                {affordable
+                  ? t.upgrade.holdHint
+                  : needMore > 0
+                    ? t.upgrade.needMore(formatAsh(needMore))
+                    : t.upgrade.holdHint}
+              </p>
             </div>
 
             {owned >= 1 ? (

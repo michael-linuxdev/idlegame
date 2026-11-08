@@ -124,6 +124,19 @@ export function FortressMap({ game, highlightId, onOpenTab }: Props) {
     [state, playerLevel.level, rate, game.costOf],
   )
 
+  // After Soft-Prestige the map remounts when the player leaves the Münzen
+  // tab — open the affordable Ausbauen HUD immediately so the CTA is never
+  // "missing" behind tip-exhausted shop confusion.
+  useEffect(() => {
+    if (!game.postPrestigeFocus) return
+    const id =
+      bestBuy?.affordable && bestBuy.id
+        ? bestBuy.id
+        : ('emberPit' satisfies GeneratorId)
+    setSelected(id)
+    game.clearPostPrestigeFocus()
+  }, [game.postPrestigeFocus, game.clearPostPrestigeFocus, bestBuy])
+
   /** Map CTA: spend leftover Münzen, or prestigeNear / ready. */
   const prestigeCta = useMemo(() => {
     const readyBuys = countAffordableEmberBuys(

@@ -250,7 +250,13 @@ export function isGeneratorUnlocked(
   if (needAsh != null && ashEarned >= needAsh) return true
   if (requires && (owned[requires.id] ?? 0) >= requires.level) return true
   const levelGate = LEVEL_MODULE_GATES[def.id]
-  if (levelGate != null && playerLevel >= levelGate) return true
+  if (levelGate != null && playerLevel >= levelGate) {
+    // Spieler-Level may substitute for ash / prior-level gates mid-run, but
+    // the prior module must already be online. Otherwise Soft-Prestige leaves
+    // mid-ladder husks "unlocked" at six-figure costs while G1 is the only
+    // real buy — classic "kann nicht ausbauen" with a disabled CTA.
+    if (!requires || (owned[requires.id] ?? 0) >= 1) return true
+  }
   return false
 }
 
