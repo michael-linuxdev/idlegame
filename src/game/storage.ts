@@ -259,6 +259,7 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
     Number.isFinite(parsed.rewardedAdClaims)
       ? Math.max(0, Math.floor(parsed.rewardedAdClaims))
       : 0
+  const marketGiftDay = typeof parsed.marketGiftDay === 'string' ? parsed.marketGiftDay.slice(0, 16) : ''
   const yieldBoostExpiresAt =
     typeof parsed.yieldBoostExpiresAt === 'number' &&
     Number.isFinite(parsed.yieldBoostExpiresAt)
@@ -352,6 +353,7 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
     adsRemoved,
     lastRewardedAdAt,
     rewardedAdClaims,
+    marketGiftDay,
     yieldBoostExpiresAt,
     bpWeekKey,
     bpXp,

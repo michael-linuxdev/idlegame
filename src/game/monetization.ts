@@ -270,7 +270,19 @@ export interface RewardedAdRewardDef {
   samen?: number
 }
 
-/** Rotating optional ad rewards — never gates play */
+/** What the player picks before an optional ad (shown up front, always paid). */
+export type AdChoice = 'ernte' | 'samen'
+/** Ernte choice: this many minutes of current production */
+export const AD_ERNTE_MINUTES = 10
+/** Samen choice */
+export const AD_SAMEN = 6
+
+/** Markt-Tagesgeschenk: once per calendar day, free */
+export const MARKET_GIFT_SAMEN = 3
+/** Gießkanne sofort auffüllen (skips the 5-min wait) */
+export const WATER_REFILL_COST = 2
+
+/** @deprecated old rotating ad rewards (kept for reference; ads now use AdChoice) */
 export const REWARDED_AD_REWARDS: RewardedAdRewardDef[] = [
   { kind: 'skipCrumb', minutes: 5 },
   { kind: 'obsidianCrumb', samen: 8 },

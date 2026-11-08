@@ -13,6 +13,7 @@ import {
   prestigeStartAsh,
   prestigeStartAshFloor,
   prestigeStartModuleLevel,
+  TAP_COOLDOWN_MS,
   type EmberUpgradeId,
   type EmberUpgrades,
 } from './economy'
@@ -106,6 +107,8 @@ import {
   type SurpriseJump,
 } from './surpriseJumps'
 import {
+  AD_ERNTE_MINUTES,
+  AD_SAMEN,
   BATTLE_PASS_AD_XP,
   BATTLE_PASS_DAILY_XP,
   BATTLE_PASS_MAX_XP,
@@ -114,15 +117,17 @@ import {
   CLAN_BOOST_MAX,
   COSMETICS,
   DAILY_SKIP_CAP_HOURS,
+  MARKET_GIFT_SAMEN,
+  WATER_REFILL_COST,
   TIME_SKIPS,
   YIELD_BOOST_COST,
   YIELD_BOOST_MS,
   YIELD_BOOST_MULT,
   dayKey,
-  nextRewardedAdReward,
   rewardedAdReady,
   shopOfferById,
   weekKey,
+  type AdChoice,
   type CosmeticId,
   type ShopOfferDef,
   type TimeSkipId,
@@ -249,6 +254,8 @@ export interface GameState {
   lastRewardedAdAt: number
   /** How many rewarded ads claimed (rotates reward kinds) */
   rewardedAdClaims: number
+  /** Day key of the last Markt-Tagesgeschenk ('' = never) */
+  marketGiftDay: string
   /** Personal yield boost expiry; 0 = inactive */
   yieldBoostExpiresAt: number
   /** Battle-pass lite week key */
@@ -505,6 +512,7 @@ export function createInitialState(now = Date.now()): GameState {
     adsRemoved: false,
     lastRewardedAdAt: 0,
     rewardedAdClaims: 0,
+    marketGiftDay: '',
     yieldBoostExpiresAt: 0,
     bpWeekKey: weekKey(now),
     bpXp: 0,
@@ -582,6 +590,7 @@ export function createPostPrestigeState(prev: GameState, now = Date.now()): Game
     adsRemoved: prev.adsRemoved,
     lastRewardedAdAt: prev.lastRewardedAdAt,
     rewardedAdClaims: prev.rewardedAdClaims,
+    marketGiftDay: prev.marketGiftDay,
     yieldBoostExpiresAt: prev.yieldBoostExpiresAt,
     bpWeekKey: prev.bpWeekKey,
     bpXp: prev.bpXp,
@@ -1784,28 +1793,20 @@ export type RewardedAdResult =
       obsidianGained: number
     }
 
-/** Grant optional rewarded-ad crumb after mock interstitial. Never blocks play. */
-export function claimRewardedAd(state: GameState, now = Date.now()): RewardedAdResult {
+/** Grant the optional rewarded ad the player picked (Ernte or Samen). Never blocks play. */
+export function claimRewardedAd(state: GameState, choice: AdChoice = 'ernte', now = Date.now()): RewardedAdResult {
   let next = syncMonetization(state, now)
   if (next.adsRemoved) return { ok: false, reason: 'adsRemoved' }
   if (!rewardedAdReady(next.lastRewardedAdAt, now)) {
     return { ok: false, reason: 'cooldown' }
   }
-  const reward = nextRewardedAdReward(next.rewardedAdClaims)
-  const rate = productionPerSecond(next, now)
-  let ashGained = 0
-  let obsidianGained = 0
-  if (reward.kind === 'skipCrumb' || reward.kind === 'yieldCrumb') {
-    const minutes = reward.minutes ?? 1
-    ashGained = rate * minutes * 60
-  } else if (reward.kind === 'obsidianCrumb') {
-    obsidianGained = reward.samen ?? 0
-  }
+  const ashGained = choice === 'ernte' ? productionPerSecond(next, now) * AD_ERNTE_MINUTES * 60 : 0
+  const obsidianGained = choice === 'samen' ? AD_SAMEN : 0
   next = withEventProgress(next, ashGained, now)
   const bpXp = Math.min(BATTLE_PASS_MAX_XP, next.bpXp + BATTLE_PASS_AD_XP)
   return {
     ok: true,
-    kind: reward.kind,
+    kind: choice === 'ernte' ? 'yieldCrumb' : 'obsidianCrumb',
     ashGained,
     obsidianGained,
     state: {
@@ -1820,6 +1821,23 @@ export function claimRewardedAd(state: GameState, now = Date.now()): RewardedAdR
       lastSeen: now,
     },
   }
+}
+
+/** Markt-Tagesgeschenk: a few Samen once per calendar day. */
+export function marketGiftReady(state: GameState, now = Date.now()): boolean {
+  return state.marketGiftDay !== dayKey(now)
+}
+
+export function claimMarketGift(state: GameState, now = Date.now()): GameState {
+  if (!marketGiftReady(state, now)) return state
+  return { ...state, samen: state.samen + MARKET_GIFT_SAMEN, marketGiftDay: dayKey(now), lastSeen: now }
+}
+
+/** Fill the Gießkanne right away for a few Samen (only while it is refilling). */
+export function refillWateringCan(state: GameState, now = Date.now()): GameState {
+  const waiting = state.lastTapAt > 0 && now - state.lastTapAt < TAP_COOLDOWN_MS
+  if (!waiting || state.samen < WATER_REFILL_COST) return state
+  return { ...state, samen: state.samen - WATER_REFILL_COST, lastTapAt: 0, lastSeen: now }
 }
 
 export function claimBattlePassDailyXp(state: GameState, now = Date.now()): GameState {
