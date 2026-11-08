@@ -294,6 +294,8 @@ export interface GameState {
   helperLevel: number
   /** Gartenhelfer switched on */
   helperOn: boolean
+  /** Garden areas Jonas must not build (player's choice, default none) */
+  helperBlocked: GeneratorId[]
   /** Helper time carry (ms) between buys */
   helperCarryMs: number
   /** Transient: buys the helper made while away (for the offline toast) */
@@ -354,6 +356,8 @@ export const TURBO_MULT = 3
 export interface ExpansionSlice {
   helperLevel: number
   helperOn: boolean
+  /** Garden areas Jonas must not build (player's choice, default none) */
+  helperBlocked: GeneratorId[]
   helperCarryMs: number
   helperReport: number
   turboEndsAt: number
@@ -384,6 +388,7 @@ export function emptyExpansion(now = Date.now()): ExpansionSlice {
   return {
     helperLevel: 0,
     helperOn: true,
+    helperBlocked: [],
     helperCarryMs: 0,
     helperReport: 0,
     turboEndsAt: 0,
@@ -416,6 +421,7 @@ export function pickExpansion(s: GameState): ExpansionSlice {
   return {
     helperLevel: s.helperLevel,
     helperOn: s.helperOn,
+    helperBlocked: s.helperBlocked,
     helperCarryMs: 0,
     helperReport: 0,
     turboEndsAt: s.turboEndsAt,
@@ -1281,6 +1287,12 @@ export function buyHelper(state: GameState): GameState {
   }
 }
 
+/** Allow / forbid Jonas one garden area. */
+export function toggleHelperArea(state: GameState, id: GeneratorId): GameState {
+  const blocked = state.helperBlocked.includes(id) ? state.helperBlocked.filter((x) => x !== id) : [...state.helperBlocked, id]
+  return { ...state, helperBlocked: blocked }
+}
+
 export function toggleHelper(state: GameState): GameState {
   if (state.helperLevel <= 0) return state
   return { ...state, helperOn: !state.helperOn }
@@ -1301,12 +1313,13 @@ export function bulkUnlocks(state: GameState): { max: boolean; five: boolean; al
 }
 
 /** Affordable garden area with the best Δrate / cost. */
-export function bestGardenBuy(state: GameState): GeneratorId | null {
+export function bestGardenBuy(state: GameState, skip: readonly GeneratorId[] = []): GeneratorId | null {
   const lvl = playerLevelOf(state)
   const gates = gatePrestiges(state)
   let best: GeneratorId | null = null
   let bestScore = 0
   for (const def of GENERATORS) {
+    if (skip.includes(def.id)) continue
     if (!isGeneratorUnlocked(def, state.ernteSeason, state.owned, state.emberUpgrades.firstFlame > 0, lvl, gates)) continue
     const cost = generatorCost(def, state.owned[def.id] ?? 0, lineCostMult(state, def.id))
     if (cost > state.ernte) continue
@@ -1388,7 +1401,7 @@ export function runHelper(state: GameState, dtMs: number, maxBuys = 40): { state
   let next = state
   let bought = 0
   while (carry >= interval && bought < maxBuys) {
-    const gid = bestGardenBuy(next)
+    const gid = bestGardenBuy(next, next.helperBlocked)
     if (!gid) {
       carry = Math.min(carry, interval)
       break

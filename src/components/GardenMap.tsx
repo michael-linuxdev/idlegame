@@ -596,6 +596,7 @@ export function GardenMap({
           truhe: Boolean(prestigeCta?.spend),
           weekly: state.prestiges >= 1,
           deep: canDeepReset(state.prestiges),
+          helperAreas: state.helperLevel > 0,
         },
         seenHints,
       )

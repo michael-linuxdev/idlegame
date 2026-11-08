@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { DEEP_GATE_YEAR, DEEP_SHOP, canDeepReset } from '../game/longLoop'
 import { LEGACY_SHOP, generationGate } from '../game/generations'
 import { HELPER_RANKS, helperInterval } from '../game/state'
+import { GENERATORS } from '../game/generators'
 import { IconFamily, IconHelper, IconIlse } from '../theme/icons'
 import { CHAPTERS, type ChapterId } from '../game/chapters'
 import { ILSE_RANKS } from '../game/extrasCore'
@@ -213,6 +214,33 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
               {state.helperOn ? t.helper.on : t.helper.off}
             </button>
           </p>
+        ) : null}
+        {state.helperLevel > 0 ? (
+          <details className="helper-areas">
+            <summary>{t.helper.areasTitle}</summary>
+            <p className="muted">{t.helper.areasHint}</p>
+            <div className="helper-area-chips">
+              {GENERATORS.filter((g) => (state.owned[g.id] ?? 0) > 0).map((g) => {
+                const on = !state.helperBlocked.includes(g.id)
+                return (
+                  <button
+                    key={g.id}
+                    type="button"
+                    className={`helper-area-chip${on ? ' on' : ''}`}
+                    aria-pressed={on}
+                    aria-label={t.helper.areaAria(g.name, on)}
+                    onClick={() => game.switchHelperArea(g.id)}
+                  >
+                    <span>{g.name}</span>
+                    <small>{on ? t.helper.areaOn : t.helper.areaOff}</small>
+                  </button>
+                )
+              })}
+            </div>
+            {GENERATORS.every((g) => (state.owned[g.id] ?? 0) === 0 || state.helperBlocked.includes(g.id)) ? (
+              <p className="muted">{t.helper.allBlocked}</p>
+            ) : null}
+          </details>
         ) : null}
         {game.helperUnlocked ? (
           <button
