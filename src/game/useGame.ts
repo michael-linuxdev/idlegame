@@ -101,7 +101,8 @@ const SAVE_MS = 4000
 export function useGame() {
   const [state, setState] = useState<GameState>(() => {
     const loaded = loadState()
-    return applyOfflineCatchup(loaded).state
+    // Short flash event may spawn on first paint (see visibility hook below).
+    return maybeStartFlashEvent(applyOfflineCatchup(loaded).state)
   })
   const [offlineGained, setOfflineGained] = useState<number | null>(() => {
     const loaded = loadState()
@@ -218,7 +219,7 @@ export function useGame() {
       const g1Cost = g1
         ? generatorCost(g1, g1Owned, lineCostMult(s, 'gemuesebeet'))
         : 23
-      const shortfall = Math.max(0, g1Cost - s.ash)
+      const shortfall = Math.max(0, g1Cost - s.ernte)
       const gained = Math.max(fromRate, shortfall, 1)
       return grantTapAsh(s, gained, now)
     })
@@ -267,13 +268,13 @@ export function useGame() {
 
   const prestige = useCallback(() => {
     setState((s) => {
-      const gain = emberPayout(s.ashEarned, s.prestiges)
+      const gain = emberPayout(s.ernteSeason, s.prestiges)
       const next = doPrestige(s)
       if (next !== s) {
         logPlaytest('prestige', {
           run: next.prestiges,
-          embers: gain,
-          wallet: next.embers,
+          erbstuecke: gain,
+          wallet: next.erbstuecke,
         })
         setPostPrestigeFocus(true)
         setSeasonEnd({ year: next.prestiges + 1, gained: gain })
@@ -457,9 +458,8 @@ export function useGame() {
     }
   }, [offlineGained, offlineAwayMs])
 
-  // Short flash event — try spawn on first paint + when returning to tab
+  // Short flash event — try spawn when returning to the tab
   useEffect(() => {
-    setState((s) => maybeStartFlashEvent(s))
     const onVis = () => {
       if (document.visibilityState === 'visible') {
         setState((s) => maybeStartFlashEvent(s))
@@ -529,7 +529,7 @@ export function useGame() {
     const claimed = state.claimedAchievements.includes(def.id)
     const complete = isAchievementComplete(def.id, {
       totalUpgrades: state.totalUpgrades,
-      lifetimeAshEarned: state.lifetimeAshEarned,
+      ernteLifetime: state.ernteLifetime,
       claimedDailyOnce: state.claimedDailyOnce,
       claimedOfflineOnce: state.claimedOfflineOnce,
       playerLevel: playerLevel.level,
@@ -571,7 +571,7 @@ export function useGame() {
       if (!def) return false
       return isGeneratorUnlocked(
         def,
-        state.ashEarned,
+        state.ernteSeason,
         state.owned,
         state.emberUpgrades.firstFlame > 0,
         playerLevel.level,
@@ -579,7 +579,7 @@ export function useGame() {
       )
     },
     [
-      state.ashEarned,
+      state.ernteSeason,
       state.owned,
       state.emberUpgrades.firstFlame,
       playerLevel.level,
@@ -605,7 +605,7 @@ export function useGame() {
     bpDailyXpReady,
     skipHoursRemaining: skipLeft,
     equippedCosmetic: equipped,
-    nextPrestige: nextPrestigeEmbers(state.ashEarned, state.prestiges),
+    nextPrestige: nextPrestigeEmbers(state.ernteSeason, state.prestiges),
     prestigeMin: prestigeMinAsh(state.prestiges),
     prestigeProgress: progress,
     canPrestige: canPrestigeNow(state),

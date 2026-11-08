@@ -6,10 +6,8 @@ import { emptyBranches } from './branches'
 import { emptyQuestProgress, type QuestProgress } from './quests'
 import {
   EMPTY_DEEP_META,
-  EMPTY_ERA_UPGRADES,
   emptyLongLoopSlice,
   type DeepMetaUpgrades,
-  type EraUpgrades,
 } from './longLoop'
 import { createInitialState, STORAGE_KEY, type GameState } from './state'
 import { VARIETIES, type WheelBuff } from './gardenLife'
@@ -56,16 +54,42 @@ function parseCosmetics(raw: unknown): CosmeticId[] {
   return out
 }
 
-function parseGameState(parsed: Record<string, unknown>): GameState {
-  const ash = typeof parsed.ash === 'number' ? Math.max(0, parsed.ash) : 0
-  const ashEarned =
-    typeof parsed.ashEarned === 'number' ? Math.max(0, parsed.ashEarned) : ash
+/** Field names used before the Ernte/Erbstücke/Samen rename (Nov 2026). */
+const RENAMED_FIELDS: Record<string, string> = {
+  ash: 'ernte',
+  ashEarned: 'ernteSeason',
+  lifetimeAshEarned: 'ernteLifetime',
+  embers: 'erbstuecke',
+  obsidian: 'samen',
+  deepEmbers: 'sproesslinge',
+}
 
-  let embers = 0
-  if (typeof parsed.embers === 'number') {
-    embers = Math.max(0, Math.floor(parsed.embers))
+/** Accept saves written with the old internal field names. */
+export function migrateFieldNames(raw: Record<string, unknown>): Record<string, unknown> {
+  const out: Record<string, unknown> = { ...raw }
+  for (const [oldKey, newKey] of Object.entries(RENAMED_FIELDS)) {
+    if (out[newKey] === undefined && out[oldKey] !== undefined) out[newKey] = out[oldKey]
+    delete out[oldKey]
+  }
+  return out
+}
+
+/** Parse + sanitise any JSON object into a valid GameState. */
+export function parseSave(raw: unknown): GameState | null {
+  if (!isRecord(raw)) return null
+  return parseGameState(migrateFieldNames(raw))
+}
+
+function parseGameState(parsed: Record<string, unknown>): GameState {
+  const ernte = typeof parsed.ernte === 'number' ? Math.max(0, parsed.ernte) : 0
+  const ernteSeason =
+    typeof parsed.ernteSeason === 'number' ? Math.max(0, parsed.ernteSeason) : ernte
+
+  let erbstuecke = 0
+  if (typeof parsed.erbstuecke === 'number') {
+    erbstuecke = Math.max(0, Math.floor(parsed.erbstuecke))
   } else if (typeof parsed.dominion === 'number') {
-    embers = Math.max(0, Math.floor(parsed.dominion))
+    erbstuecke = Math.max(0, Math.floor(parsed.dominion))
   }
 
   const prestiges =
@@ -85,9 +109,9 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
       ? Math.min(1.25, Math.max(1, parsed.clanMult))
       : 1
 
-  const obsidian =
-    typeof parsed.obsidian === 'number' && Number.isFinite(parsed.obsidian)
-      ? Math.max(0, Math.floor(parsed.obsidian))
+  const samen =
+    typeof parsed.samen === 'number' && Number.isFinite(parsed.samen)
+      ? Math.max(0, Math.floor(parsed.samen))
       : 20
 
   const ownedCosmetics = parseCosmetics(parsed.ownedCosmetics)
@@ -154,11 +178,11 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
     Number.isFinite(parsed.totalUpgrades)
       ? Math.max(0, Math.floor(parsed.totalUpgrades))
       : 0
-  const lifetimeAshEarned =
-    typeof parsed.lifetimeAshEarned === 'number' &&
-    Number.isFinite(parsed.lifetimeAshEarned)
-      ? Math.max(0, parsed.lifetimeAshEarned)
-      : ashEarned
+  const ernteLifetime =
+    typeof parsed.ernteLifetime === 'number' &&
+    Number.isFinite(parsed.ernteLifetime)
+      ? Math.max(0, parsed.ernteLifetime)
+      : ernteSeason
   const claimedDailyOnce = parsed.claimedDailyOnce === true
   const claimedOfflineOnce = parsed.claimedOfflineOnce === true
   const claimedAchievements = parseAchievements(parsed.claimedAchievements)
@@ -235,16 +259,16 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
   const longLoop = parseLongLoop(parsed)
 
   return {
-    ash,
-    ashEarned,
+    ernte,
+    ernteSeason,
     owned,
-    embers,
+    erbstuecke,
     emberUpgrades: parseUpgrades(parsed.emberUpgrades),
     prestiges,
     lastSeen,
     lastTapAt,
     clanMult,
-    obsidian,
+    samen,
     ownedCosmetics,
     equippedCosmetic,
     skipHoursUsedToday,
@@ -259,7 +283,7 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
     playerXp,
     claimedLevelRewards,
     totalUpgrades,
-    lifetimeAshEarned,
+    ernteLifetime,
     claimedDailyOnce,
     claimedOfflineOnce,
     claimedAchievements,
@@ -310,43 +334,12 @@ function parseDeepUpgrades(raw: unknown): DeepMetaUpgrades {
   return base
 }
 
-function parseEraUpgrades(raw: unknown): EraUpgrades {
-  const base = { ...EMPTY_ERA_UPGRADES }
-  if (!isRecord(raw)) return base
-  for (const key of Object.keys(base) as (keyof EraUpgrades)[]) {
-    const n = raw[key]
-    if (typeof n === 'number' && Number.isFinite(n) && n >= 0) {
-      base[key] = Math.floor(n)
-    }
-  }
-  return base
-}
-
 function parseLongLoop(parsed: Record<string, unknown>) {
   const defaults = emptyLongLoopSlice()
-  const yearGoalsClaimed = Array.isArray(parsed.yearGoalsClaimed)
-    ? parsed.yearGoalsClaimed.filter(
-        (id): id is string => typeof id === 'string' && id.length > 0,
-      )
-    : defaults.yearGoalsClaimed
   return {
-    seasonIndex: parseNonNegInt(parsed.seasonIndex, defaults.seasonIndex),
-    seasonStartedAt: parseNonNegInt(
-      parsed.seasonStartedAt,
-      defaults.seasonStartedAt,
-    ),
-    seasonPoints: parseNonNegInt(parsed.seasonPoints, defaults.seasonPoints),
-    deepEmbers: parseNonNegInt(parsed.deepEmbers, defaults.deepEmbers),
+    sproesslinge: parseNonNegInt(parsed.sproesslinge, defaults.sproesslinge),
     deepUpgrades: parseDeepUpgrades(parsed.deepUpgrades),
     deepPrestiges: parseNonNegInt(parsed.deepPrestiges, defaults.deepPrestiges),
-    yearIndex: parseNonNegInt(parsed.yearIndex, defaults.yearIndex),
-    yearSeasonsDone: parseNonNegInt(
-      parsed.yearSeasonsDone,
-      defaults.yearSeasonsDone,
-    ),
-    yearGoalsClaimed,
-    eraPoints: parseNonNegInt(parsed.eraPoints, defaults.eraPoints),
-    eraUpgrades: parseEraUpgrades(parsed.eraUpgrades),
     collection: Array.isArray(parsed.collection)
       ? parsed.collection.filter(
           (id): id is string => typeof id === 'string' && VARIETY_IDS.has(id),
@@ -456,7 +449,7 @@ export function loadState(): GameState {
     if (!raw) return createInitialState()
     const parsed: unknown = JSON.parse(raw)
     if (!isRecord(parsed)) return createInitialState()
-    return parseGameState(parsed)
+    return parseGameState(migrateFieldNames(parsed))
   } catch {
     return createInitialState()
   }

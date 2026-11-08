@@ -85,7 +85,7 @@ export function ProgressSheet({ game, onClose, extras, updateExtras }: Props) {
                   className={`btn ${claimed ? 'ghost' : 'buy'} quest-claim`}
                   disabled={!ready || claimed}
                   onClick={() => {
-                    game.grant({ obsidian: task.seeds })
+                    game.grant({ samen: task.seeds })
                     playSfx('claim')
                     updateExtras((s) => ({ ...s, weekClaimed: [...s.weekClaimed, task.id as WeeklyTaskId] }))
                   }}
@@ -101,14 +101,14 @@ export function ProgressSheet({ game, onClose, extras, updateExtras }: Props) {
               <li className={`quest-row weekly-bonus${extras.weekBonusClaimed ? ' done' : ''}`}>
                 <div className="quest-copy">
                   <p className="quest-label">{t.weekly.bonusTitle}</p>
-                  <p className="quest-reward">{t.weekly.bonusReward(WEEKLY_BONUS.seeds, WEEKLY_BONUS.embers)}</p>
+                  <p className="quest-reward">{t.weekly.bonusReward(WEEKLY_BONUS.seeds, WEEKLY_BONUS.erbstuecke)}</p>
                 </div>
                 <button
                   type="button"
                   className="btn buy quest-claim"
                   disabled={left > 0 || extras.weekBonusClaimed}
                   onClick={() => {
-                    game.grant({ obsidian: WEEKLY_BONUS.seeds, embers: WEEKLY_BONUS.embers })
+                    game.grant({ samen: WEEKLY_BONUS.seeds, erbstuecke: WEEKLY_BONUS.erbstuecke })
                     playSfx('streak')
                     updateExtras((s) => ({ ...s, weekBonusClaimed: true }))
                   }}

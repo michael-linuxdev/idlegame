@@ -59,15 +59,13 @@ export function FtueCoach({
   // Auto-advance when the player actually does the beat (less CTA clutter)
   const pitLevel = game.state.owned.gemuesebeet ?? 0
   const coolingOpen = game.unlocked('kompost')
-  useEffect(() => {
-    if (!active) return
-    if (ftue.beat === 'tendBed' && pitLevel > 1) {
-      setFtue((s) => advanceFtue(s, 'tendBed'))
-    }
-    if (ftue.beat === 'unlockCompost' && coolingOpen) {
-      setFtue((s) => advanceFtue(s, 'unlockCompost'))
-    }
-  }, [active, ftue.beat, pitLevel, coolingOpen])
+  // Adjusted during render (guarded): advancing changes `ftue.beat`, so this
+  // runs once per beat without an extra effect pass.
+  if (active && ftue.beat === 'tendBed' && pitLevel > 1) {
+    setFtue((s) => advanceFtue(s, 'tendBed'))
+  } else if (active && ftue.beat === 'unlockCompost' && coolingOpen) {
+    setFtue((s) => advanceFtue(s, 'unlockCompost'))
+  }
 
   function onPrimary() {
     if (ftue.beat === 'welcome') {

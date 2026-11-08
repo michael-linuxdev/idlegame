@@ -15,9 +15,9 @@ describe('Tiefer Winter', () => {
     const s = {
       ...createInitialState(0),
       prestiges: DEEP_GATE_YEAR + 2,
-      embers: 900,
-      deepEmbers: 5,
-      obsidian: 77,
+      erbstuecke: 900,
+      sproesslinge: 5,
+      samen: 77,
       playerXp: 1234,
     }
     s.emberUpgrades = { ...s.emberUpgrades, dominionYield: 9 }
@@ -25,10 +25,10 @@ describe('Tiefer Winter', () => {
     const n = doDeepReset(s)
     expect(n.prestiges).toBe(0)
     expect(n.emberUpgrades.dominionYield).toBe(0)
-    expect(n.embers).toBe(120)
-    expect(n.deepEmbers).toBe(5 + sproutPayout(DEEP_GATE_YEAR + 2))
+    expect(n.erbstuecke).toBe(120)
+    expect(n.sproesslinge).toBe(5 + sproutPayout(DEEP_GATE_YEAR + 2))
     expect(n.deepPrestiges).toBe(1)
-    expect(n.obsidian).toBeGreaterThanOrEqual(77)
+    expect(n.samen).toBeGreaterThanOrEqual(77)
     expect(n.playerXp).toBe(1234)
     expect(n.deepUpgrades.deepYield).toBe(3)
   })

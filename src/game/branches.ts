@@ -68,8 +68,8 @@ export function branchEffectLabel(kind: BranchKind, rank: number): string {
 export function canBuyBranch(
   owned: number,
   rank: number,
-  ash: number,
+  ernte: number,
   cost: number,
 ): boolean {
-  return owned >= 1 && rank < BRANCH_MAX_RANK && ash >= cost
+  return owned >= 1 && rank < BRANCH_MAX_RANK && ernte >= cost
 }

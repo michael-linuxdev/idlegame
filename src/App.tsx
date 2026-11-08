@@ -162,7 +162,7 @@ export default function App() {
       {comebackOpen && !game.seasonEnd ? (
         <ComebackLetter
           onAccept={() => {
-            game.grant({ obsidian: COMEBACK_SEEDS, ernteSeconds: 1800 })
+            game.grant({ samen: COMEBACK_SEEDS, ernteSeconds: 1800 })
             setComebackOpen(false)
           }}
         />

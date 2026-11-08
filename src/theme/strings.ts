@@ -127,7 +127,7 @@ export const strings = {
   resources: {
     compute: SOFT,
     credits: 'Erbstücke',
-    obsidian: SEEDS,
+    samen: SEEDS,
   },
 
   /**
@@ -238,9 +238,9 @@ export const strings = {
     xp: 'EP',
     bonus: (pct: string) => `+${pct} % ${SOFT}/s`,
     rewards: {
-      ash: (n: number) => `+${n} ${SOFT}`,
-      embers: (n: number) => `+${erb(n)}`,
-      obsidian: (n: number) => `+${n} ${SEEDS}`,
+      ernte: (n: number) => `+${n} ${SOFT}`,
+      erbstuecke: (n: number) => `+${erb(n)}`,
+      samen: (n: number) => `+${n} ${SEEDS}`,
       cosmetic: (name: string) => `Gartenstil: ${name}`,
     },
   },
@@ -320,8 +320,8 @@ export const strings = {
     upgradeTimes: (n: number) => `${n}× ausbauen`,
     earnAsh: (n: string) => `${n} ${SOFT} einfahren`,
     claimDaily: 'Gartenrunde abholen',
-    rewardLine: (ash: number, seeds: number) =>
-      seeds > 0 ? `+${ash} ${SOFT} · +${seeds} ${SEEDS}` : `+${ash} ${SOFT}`,
+    rewardLine: (ernte: number, seeds: number) =>
+      seeds > 0 ? `+${ernte} ${SOFT} · +${seeds} ${SEEDS}` : `+${ernte} ${SOFT}`,
   },
 
   upgrade: {

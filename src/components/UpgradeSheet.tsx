@@ -60,8 +60,8 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
     unlocked &&
     Number.isFinite(cost) &&
     cost > 0 &&
-    Number.isFinite(game.state.ash) &&
-    game.state.ash >= cost
+    Number.isFinite(game.state.ernte) &&
+    game.state.ernte >= cost
   const branch = game.state.branches[def.id] ?? { efficiency: 0, capacity: 0 }
   const lineMult =
     game.multiplier * game.levelMult * game.clanMult * game.eventMult
@@ -69,7 +69,7 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
   const lineRate = generatorRate(def, owned) * lineMult * eff
   const nextRate = generatorRate(def, owned + 1) * lineMult * eff
   const safeCost = Number.isFinite(cost) && cost > 0 ? cost : 0
-  const safeAsh = Number.isFinite(game.state.ash) ? Math.max(0, game.state.ash) : 0
+  const safeAsh = Number.isFinite(game.state.ernte) ? Math.max(0, game.state.ernte) : 0
   const affordRatio =
     safeCost > 0 ? Math.min(1, safeAsh / safeCost) : unlocked ? 1 : 0
   const actionLabel = owned === 0 ? t.upgrade.online : t.upgrade.upgrade
@@ -190,7 +190,7 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
                   rank={branch.efficiency}
                   max={game.branchMaxRank}
                   cost={game.branchCostOf(def.id, 'efficiency')}
-                  ash={game.state.ash}
+                  ernte={game.state.ernte}
                   onBuy={() => buyBranch('efficiency')}
                 />
                 <BranchRow
@@ -198,7 +198,7 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
                   rank={branch.capacity}
                   max={game.branchMaxRank}
                   cost={game.branchCostOf(def.id, 'capacity')}
-                  ash={game.state.ash}
+                  ernte={game.state.ernte}
                   onBuy={() => buyBranch('capacity')}
                 />
               </div>
@@ -224,14 +224,14 @@ function BranchRow({
   rank,
   max,
   cost,
-  ash,
+  ernte,
   onBuy,
 }: {
   kind: BranchKind
   rank: number
   max: number
   cost: number
-  ash: number
+  ernte: number
   onBuy: () => void
 }) {
   const maxed = rank >= max
@@ -267,7 +267,7 @@ function BranchRow({
         <button
           type="button"
           className="btn ghost upgrade-hud-row-buy"
-          disabled={ash < cost}
+          disabled={ernte < cost}
           onClick={onBuy}
           title={t.upgrade.costLine(name, formatAsh(cost))}
         >

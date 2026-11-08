@@ -19,7 +19,7 @@ export type AchievementId =
   | 'prestigeOnce'
   | 'upgradesFifty'
 
-export type AchievementRewardKind = 'ash' | 'embers' | 'obsidian' | 'cosmetic'
+export type AchievementRewardKind = 'ernte' | 'erbstuecke' | 'samen' | 'cosmetic'
 
 export interface AchievementDef {
   id: AchievementId
@@ -36,7 +36,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     id: 'firstUpgrade',
     name: () => t.achievements.firstUpgrade.name,
     blurb: () => t.achievements.firstUpgrade.blurb,
-    rewardKind: 'ash',
+    rewardKind: 'ernte',
     rewardAmount: 30,
     rewardLabel: () => t.achievements.rewardAsh(30),
   },
@@ -44,7 +44,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     id: 'bedTen',
     name: () => t.achievements.bedTen.name,
     blurb: () => t.achievements.bedTen.blurb,
-    rewardKind: 'ash',
+    rewardKind: 'ernte',
     rewardAmount: 120,
     rewardLabel: () => t.achievements.rewardAsh(120),
   },
@@ -52,7 +52,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     id: 'compostOnline',
     name: () => t.achievements.compostOnline.name,
     blurb: () => t.achievements.compostOnline.blurb,
-    rewardKind: 'obsidian',
+    rewardKind: 'samen',
     rewardAmount: 8,
     rewardLabel: () => t.achievements.rewardObsidian(8),
   },
@@ -60,7 +60,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     id: 'earn10k',
     name: () => t.achievements.earn10k.name,
     blurb: () => t.achievements.earn10k.blurb,
-    rewardKind: 'embers',
+    rewardKind: 'erbstuecke',
     rewardAmount: 1,
     rewardLabel: () => t.achievements.rewardEmbers(1),
   },
@@ -68,7 +68,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     id: 'dailyOnce',
     name: () => t.achievements.dailyOnce.name,
     blurb: () => t.achievements.dailyOnce.blurb,
-    rewardKind: 'ash',
+    rewardKind: 'ernte',
     rewardAmount: 60,
     rewardLabel: () => t.achievements.rewardAsh(60),
   },
@@ -76,7 +76,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     id: 'offlineOnce',
     name: () => t.achievements.offlineOnce.name,
     blurb: () => t.achievements.offlineOnce.blurb,
-    rewardKind: 'obsidian',
+    rewardKind: 'samen',
     rewardAmount: 5,
     rewardLabel: () => t.achievements.rewardObsidian(5),
   },
@@ -84,7 +84,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     id: 'fiveOnline',
     name: () => t.achievements.fiveOnline.name,
     blurb: () => t.achievements.fiveOnline.blurb,
-    rewardKind: 'ash',
+    rewardKind: 'ernte',
     rewardAmount: 400,
     rewardLabel: () => t.achievements.rewardAsh(400),
   },
@@ -92,7 +92,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     id: 'levelFive',
     name: () => t.achievements.levelFive.name,
     blurb: () => t.achievements.levelFive.blurb,
-    rewardKind: 'obsidian',
+    rewardKind: 'samen',
     rewardAmount: 15,
     rewardLabel: () => t.achievements.rewardObsidian(15),
   },
@@ -109,7 +109,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     id: 'upgradesFifty',
     name: () => t.achievements.upgradesFifty.name,
     blurb: () => t.achievements.upgradesFifty.blurb,
-    rewardKind: 'embers',
+    rewardKind: 'erbstuecke',
     rewardAmount: 2,
     rewardLabel: () => t.achievements.rewardEmbers(2),
   },
@@ -119,7 +119,7 @@ export const ACHIEVEMENT_IDS = ACHIEVEMENTS.map((a) => a.id)
 
 export interface AchievementStats {
   totalUpgrades: number
-  lifetimeAshEarned: number
+  ernteLifetime: number
   claimedDailyOnce: boolean
   claimedOfflineOnce: boolean
   playerLevel: number
@@ -139,7 +139,7 @@ export function isAchievementComplete(
     case 'compostOnline':
       return (stats.owned.kompost ?? 0) >= 1
     case 'earn10k':
-      return stats.lifetimeAshEarned >= 10_000
+      return stats.ernteLifetime >= 10_000
     case 'dailyOnce':
       return stats.claimedDailyOnce
     case 'offlineOnce':

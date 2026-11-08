@@ -63,7 +63,7 @@ export function levelProductionMult(level: number): number {
   return 1 + ranks * 0.005
 }
 
-export type LevelRewardKind = 'ash' | 'embers' | 'obsidian' | 'cosmetic'
+export type LevelRewardKind = 'ernte' | 'erbstuecke' | 'samen' | 'cosmetic'
 
 export interface LevelRewardDef {
   level: number
@@ -78,27 +78,27 @@ export interface LevelRewardDef {
 export const LEVEL_REWARDS: LevelRewardDef[] = [
   {
     level: 2,
-    kind: 'ash',
+    kind: 'ernte',
     amount: 40,
-    label: () => t.level.rewards.ash(40),
+    label: () => t.level.rewards.ernte(40),
   },
   {
     level: 3,
-    kind: 'obsidian',
+    kind: 'samen',
     amount: 10,
-    label: () => t.level.rewards.obsidian(10),
+    label: () => t.level.rewards.samen(10),
   },
   {
     level: 5,
-    kind: 'embers',
+    kind: 'erbstuecke',
     amount: 1,
-    label: () => t.level.rewards.embers(1),
+    label: () => t.level.rewards.erbstuecke(1),
   },
   {
     level: 7,
-    kind: 'ash',
+    kind: 'ernte',
     amount: 250,
-    label: () => t.level.rewards.ash(250),
+    label: () => t.level.rewards.ernte(250),
   },
   {
     level: 10,
@@ -108,9 +108,9 @@ export const LEVEL_REWARDS: LevelRewardDef[] = [
   },
   {
     level: 15,
-    kind: 'obsidian',
+    kind: 'samen',
     amount: 25,
-    label: () => t.level.rewards.obsidian(25),
+    label: () => t.level.rewards.samen(25),
   },
   {
     level: 20,
@@ -122,7 +122,7 @@ export const LEVEL_REWARDS: LevelRewardDef[] = [
 
 /** Module unlock OR-gates by Spieler-Level (theme-agnostic IDs). */
 export const LEVEL_MODULE_GATES: Partial<Record<string, number>> = {
-  // Mid/late modules: level can substitute for ash/prior gates
+  // Mid/late modules: level can substitute for ernte/prior gates
   beerenhecke: 6,
   obstwiese: 9,
   bienenstock: 12,

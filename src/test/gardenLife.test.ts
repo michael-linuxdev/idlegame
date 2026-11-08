@@ -57,12 +57,12 @@ describe('Bestellungen, Wochenplan, Belohnungen', () => {
   })
   it('grantReward pays Samen and seconds of production', () => {
     const s = createInitialState(0)
-    const n = grantReward(s, { obsidian: 5, ernteSeconds: 10 }, 0)
-    expect(n.obsidian).toBe(s.obsidian + 5)
-    expect(n.ash).toBeGreaterThan(s.ash)
+    const n = grantReward(s, { samen: 5, ernteSeconds: 10 }, 0)
+    expect(n.samen).toBe(s.samen + 5)
+    expect(n.ernte).toBeGreaterThan(s.ernte)
   })
   it('Saisonende adds a variety to the collection', () => {
-    const s = { ...createInitialState(0), ashEarned: 1e9 }
+    const s = { ...createInitialState(0), ernteSeason: 1e9 }
     s.owned = { ...s.owned, gemuesebeet: 20, kompost: 10, kraeuterspirale: 5 }
     const n = doPrestige(s)
     expect(n.collection.length).toBe(1)

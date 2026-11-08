@@ -127,7 +127,7 @@ export interface ShopOfferDef {
   /** Mock purchase label */
   label: string
   /** Obsidian granted (IAP stub credit) */
-  obsidian?: number
+  samen?: number
   /** Cosmetics unlocked on mock buy */
   cosmeticIds?: CosmeticId[]
   /** One-time; tracked via ownedOfferIds */
@@ -143,7 +143,7 @@ export const SHOP_OFFERS: ShopOfferDef[] = [
     name: t.packs.starterBundle.name,
     blurb: t.packs.starterBundle.blurb,
     label: t.packs.starterBundle.label,
-    obsidian: 200,
+    samen: 200,
     cosmeticIds: ['bauerngarten'],
     once: true,
     section: 'bundles',
@@ -163,7 +163,7 @@ export const SHOP_OFFERS: ShopOfferDef[] = [
     name: t.packs.obsidian50.name,
     blurb: t.packs.obsidian50.blurb,
     label: t.packs.obsidian50.label,
-    obsidian: 50,
+    samen: 50,
     section: 'currency',
   },
   {
@@ -172,7 +172,7 @@ export const SHOP_OFFERS: ShopOfferDef[] = [
     name: t.packs.obsidian150.name,
     blurb: t.packs.obsidian150.blurb,
     label: t.packs.obsidian150.label,
-    obsidian: 150,
+    samen: 150,
     section: 'currency',
   },
   {
@@ -181,7 +181,7 @@ export const SHOP_OFFERS: ShopOfferDef[] = [
     name: t.packs.obsidian500.name,
     blurb: t.packs.obsidian500.blurb,
     label: t.packs.obsidian500.label,
-    obsidian: 500,
+    samen: 500,
     section: 'currency',
   },
   {
@@ -218,17 +218,17 @@ export interface RewardedAdRewardDef {
   /** Minutes of production for skip/yield crumbs */
   minutes?: number
   /** Hard currency crumb */
-  obsidian?: number
+  samen?: number
 }
 
 /** Rotating optional ad rewards — never gates play */
 export const REWARDED_AD_REWARDS: RewardedAdRewardDef[] = [
   { kind: 'skipCrumb', minutes: 5 },
-  { kind: 'obsidianCrumb', obsidian: 8 },
+  { kind: 'obsidianCrumb', samen: 8 },
   { kind: 'yieldCrumb', minutes: 2 },
 ]
 
-export type BattlePassRewardKind = 'obsidian' | 'computeSec'
+export type BattlePassRewardKind = 'samen' | 'computeSec'
 
 export interface BattlePassTierDef {
   tier: number
@@ -243,8 +243,8 @@ export const BATTLE_PASS_TIERS: BattlePassTierDef[] = [
   {
     tier: 1,
     xp: 0,
-    free: { kind: 'obsidian', amount: 5 },
-    premium: { kind: 'obsidian', amount: 20 },
+    free: { kind: 'samen', amount: 5 },
+    premium: { kind: 'samen', amount: 20 },
   },
   {
     tier: 2,
@@ -255,8 +255,8 @@ export const BATTLE_PASS_TIERS: BattlePassTierDef[] = [
   {
     tier: 3,
     xp: 50,
-    free: { kind: 'obsidian', amount: 10 },
-    premium: { kind: 'obsidian', amount: 40 },
+    free: { kind: 'samen', amount: 10 },
+    premium: { kind: 'samen', amount: 40 },
   },
   {
     tier: 4,
@@ -267,8 +267,8 @@ export const BATTLE_PASS_TIERS: BattlePassTierDef[] = [
   {
     tier: 5,
     xp: 100,
-    free: { kind: 'obsidian', amount: 15 },
-    premium: { kind: 'obsidian', amount: 60 },
+    free: { kind: 'samen', amount: 15 },
+    premium: { kind: 'samen', amount: 60 },
   },
 ]
 

@@ -13,7 +13,7 @@ export interface DailyReward {
   /** Meta Credits grant */
   credits: number
   /** Hard Obsidian cosmetic crumb */
-  obsidian: number
+  samen: number
   label: string
   /** True when returning after a missed day (streak frozen, small gift) */
   comeback?: boolean
@@ -48,37 +48,37 @@ export function isComebackClaim(lastClaimDay: string, now = Date.now()): boolean
 export function comebackScale(gapDays: number): {
   computeMult: number
   computeFlat: number
-  obsidian: number
+  samen: number
   credits: number
 } {
   if (gapDays >= 5) {
-    return { computeMult: 2.0, computeFlat: 80, obsidian: 40, credits: 1 }
+    return { computeMult: 2.0, computeFlat: 80, samen: 40, credits: 1 }
   }
   if (gapDays >= 3) {
-    return { computeMult: 1.75, computeFlat: 60, obsidian: 30, credits: 0 }
+    return { computeMult: 1.75, computeFlat: 60, samen: 30, credits: 0 }
   }
-  return { computeMult: 1.5, computeFlat: 40, obsidian: 20, credits: 0 }
+  return { computeMult: 1.5, computeFlat: 40, samen: 20, credits: 0 }
 }
 
 interface StreakRow {
   computeSec: number
   credits: number
-  obsidian: number
+  samen: number
   label: string
 }
 
 /** Streak day 1…7 cycles; day N uses index (N-1) % 7 */
 const ROWS: StreakRow[] = [
-  { computeSec: 120, credits: 0, obsidian: 0, label: t.daily.rows.float2 },
-  { computeSec: 180, credits: 0, obsidian: 0, label: t.daily.rows.shift3 },
-  { computeSec: 60, credits: 0, obsidian: 20, label: t.daily.rows.crumb20 },
-  { computeSec: 240, credits: 0, obsidian: 0, label: t.daily.rows.long4 },
-  { computeSec: 90, credits: 1, obsidian: 0, label: t.daily.rows.credit1 },
-  { computeSec: 300, credits: 0, obsidian: 0, label: t.daily.rows.ot5 },
+  { computeSec: 120, credits: 0, samen: 0, label: t.daily.rows.float2 },
+  { computeSec: 180, credits: 0, samen: 0, label: t.daily.rows.shift3 },
+  { computeSec: 60, credits: 0, samen: 20, label: t.daily.rows.crumb20 },
+  { computeSec: 240, credits: 0, samen: 0, label: t.daily.rows.long4 },
+  { computeSec: 90, credits: 1, samen: 0, label: t.daily.rows.credit1 },
+  { computeSec: 300, credits: 0, samen: 0, label: t.daily.rows.ot5 },
   {
     computeSec: 120,
     credits: 1,
-    obsidian: 40,
+    samen: 40,
     label: t.daily.rows.weekSeal,
   },
 ]
@@ -95,23 +95,23 @@ export function rewardForStreak(
   const row = ROWS[dayIndex]!
   let compute = Math.max(MIN_COMPUTE, Math.floor(ratePerSec * row.computeSec))
   let credits = row.credits
-  let obsidian = row.obsidian
+  let samen = row.samen
   let label = row.label
   // Streak day-7 seal already rich; mild bump on day 3 / 5 for visible rhythm
-  if (dayIndex === 2) obsidian += 5
+  if (dayIndex === 2) samen += 5
   if (dayIndex === 4) compute = Math.floor(compute * 1.1)
   if (opts.comeback) {
     const gap = Math.max(2, opts.gapDays ?? 2)
     const scale = comebackScale(gap)
     compute = Math.floor(compute * scale.computeMult) + scale.computeFlat
-    obsidian += scale.obsidian
+    samen += scale.samen
     credits += scale.credits
     label = t.daily.comebackLabel
   }
   return {
     compute,
     credits,
-    obsidian,
+    samen,
     label,
     comeback: opts.comeback === true,
   }

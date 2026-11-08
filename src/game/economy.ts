@@ -1,14 +1,14 @@
 /**
  * Economy knobs — core formulas (R(n), C(n), offline) unchanged.
  * Player-facing names come from src/theme/strings.ts.
- * Internal save fields keep legacy names (ash / embers / obsidian).
+ * Internal save fields keep legacy names (ernte / erbstuecke / samen).
  *
  * Balance pass IG-31 (overnight): prestige was ~5 min for engaged play vs
  * design 45–90 min. Raised P_min base + slowed generator ladder (see generators.ts).
  *
  * Soft-Prestige depth (IG-53 / playtest 2026-11-07 + b + 2026-11-08 + d):
  * Münzen soft-gate every prestige; interleaved rank unlocks during rebuild;
- * steeper cost curve; √ payout soft-capped so runaway ash cannot dump the
+ * steeper cost curve; √ payout soft-capped so runaway ernte cannot dump the
  * unlocked band in ~40s. Tip band scales with lifetime prestiges so P2+ never
  * lands on an empty Münzen shop after tips are already owned.
  */
@@ -58,8 +58,8 @@ export const PRESTIGE_MIN_MODULES_ONLINE = 3
 export const EMBER_UNLOCK_PER_MODULE_LEVEL = 800
 
 /**
- * Soft ash contribution toward unlocks — √ so late-run snowball cannot open
- * the entire tree the moment Phyto explodes. Capped so ash alone never
+ * Soft ernte contribution toward unlocks — √ so late-run snowball cannot open
+ * the entire tree the moment Phyto explodes. Capped so ernte alone never
  * replaces rebuild.
  */
 export const EMBER_UNLOCK_ASH_SQRT_DIV = 100
@@ -105,16 +105,16 @@ function payoutCurve(r: number): number {
  * Erbstücke for ending the season now. Relative to this season's gate, so a
  * stronger garden doesn't turn Saisonende into a 2-minute loop.
  */
-export function emberPayout(ashEarned: number, prestiges = 0): number {
-  if (ashEarned <= 0) return 0
-  const r = ashEarned / Math.max(1, prestigeMinAsh(prestiges))
+export function emberPayout(ernteSeason: number, prestiges = 0): number {
+  if (ernteSeason <= 0) return 0
+  const r = ernteSeason / Math.max(1, prestigeMinAsh(prestiges))
   return Math.floor(payoutAtGate(prestiges) * payoutCurve(r))
 }
 
-/** Ernte needed this season to be paid `embers` (inverse of the √ band). */
-export function ashForEmberPayout(embers: number, prestiges = 0): number {
-  if (embers <= 0) return 0
-  const ratio = embers / Math.max(1, payoutAtGate(prestiges))
+/** Ernte needed this season to be paid `erbstuecke` (inverse of the √ band). */
+export function ashForEmberPayout(erbstuecke: number, prestiges = 0): number {
+  if (erbstuecke <= 0) return 0
+  const ratio = erbstuecke / Math.max(1, payoutAtGate(prestiges))
   return Math.ceil(prestigeMinAsh(prestiges) * ratio * ratio)
 }
 
@@ -260,7 +260,7 @@ export function emberRankUnlockNeed(
   const credit = Math.max(0, prestiges) * EMBER_UNLOCK_PER_PRESTIGE
 
   if (id === 'greenLattice') {
-    // Reachable mid post-P2 session (~23 module levels + soft ash, or ~60 levels alone).
+    // Reachable mid post-P2 session (~23 module levels + soft ernte, or ~60 levels alone).
     return Math.max(0, 48_000 + rank * 32_000 - credit)
   }
 
@@ -437,7 +437,7 @@ export function prestigeStartAsh(upgrades: EmberUpgrades): number {
 
 /**
  * Minimum spendable Phyto after Soft-Prestige so the primary Ausbauen CTA is
- * never disabled at run start (mirrors Day-1 ash:28 vs G1 cost ~23).
+ * never disabled at run start (mirrors Day-1 ernte:28 vs G1 cost ~23).
  */
 export function prestigeStartAshFloor(nextG1Cost: number): number {
   const cost = Math.max(1, Math.floor(nextG1Cost))
@@ -472,8 +472,8 @@ export function moduleLevelsTotal(
 }
 
 /**
- * Effective unlock progress: rebuild (module levels) primary + soft √ ash.
- * Raw ash must not open the whole tree mid-run; leftover Münzen should feel
+ * Effective unlock progress: rebuild (module levels) primary + soft √ ernte.
+ * Raw ernte must not open the whole tree mid-run; leftover Münzen should feel
  * like “waiting on next unlock”, not “shop empty”.
  */
 export function emberUnlockProgress(
@@ -514,7 +514,7 @@ export function emberRankUnlocked(
 /** How many Münzen-shop ranks are affordable + unlocked right now. */
 export function countAffordableEmberBuys(
   upgrades: EmberUpgrades,
-  embers: number,
+  erbstuecke: number,
   ashEarnedThisRun: number,
   owned: Partial<Record<GeneratorId, number>>,
   prestiges = 0,
@@ -526,7 +526,7 @@ export function countAffordableEmberBuys(
     if (!emberRankUnlocked(item, rank, ashEarnedThisRun, owned, prestiges)) {
       continue
     }
-    if (embers >= item.cost(rank)) n += 1
+    if (erbstuecke >= item.cost(rank)) n += 1
   }
   return n
 }
@@ -547,12 +547,12 @@ export function postPrestigeStartOwned(
  */
 export function countAffordableEmberBuysAfterPrestige(args: {
   upgrades: EmberUpgrades
-  embers: number
-  ashEarned: number
+  erbstuecke: number
+  ernteSeason: number
   prestiges: number
 }): number {
   const postPrestiges = args.prestiges + 1
-  const wallet = args.embers + emberPayout(args.ashEarned, args.prestiges)
+  const wallet = args.erbstuecke + emberPayout(args.ernteSeason, args.prestiges)
   return countAffordableEmberBuys(
     args.upgrades,
     wallet,
@@ -648,21 +648,21 @@ export function immediateEmberSinkCost(prestiges = 1): number {
 }
 
 export type PrestigeBlockReason =
-  | 'ash'
-  | 'embers'
+  | 'ernte'
+  | 'erbstuecke'
   | 'modules'
   | null
 
 /** Soft-gate diagnostics for UI (Münzen floor every run + rebuild on Run 2+). */
 export function prestigeBlockReason(args: {
   prestiges: number
-  ashEarned: number
+  ernteSeason: number
   owned: Partial<Record<GeneratorId, number>>
 }): PrestigeBlockReason {
   const min = prestigeMinAsh(args.prestiges)
-  if (args.ashEarned < min) return 'ash'
-  const payout = emberPayout(args.ashEarned, args.prestiges)
-  if (payout <= 0) return 'ash'
+  if (args.ernteSeason < min) return 'ernte'
+  const payout = emberPayout(args.ernteSeason, args.prestiges)
+  if (payout <= 0) return 'ernte'
   if (
     args.prestiges >= 1 &&
     modulesOnlineCount(args.owned) < PRESTIGE_MIN_MODULES_ONLINE

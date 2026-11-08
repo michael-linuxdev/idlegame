@@ -137,7 +137,7 @@ export function Visitors({ game, extras, update, onVisited }: Props) {
         game.grant({ ernteSeconds: 120 })
         break
       case 'gerda':
-        game.grant({ obsidian: 6 })
+        game.grant({ samen: 6 })
         break
       case 'schmetterling':
         game.grant({ ernteSeconds: 60, xp: 10 })
@@ -146,7 +146,7 @@ export function Visitors({ game, extras, update, onVisited }: Props) {
         game.refillWater()
         break
       case 'postbote':
-        game.grant(game.state.prestiges >= 1 ? { embers: 3 } : { obsidian: 4 })
+        game.grant(game.state.prestiges >= 1 ? { erbstuecke: 3 } : { samen: 4 })
         break
     }
     playSfx('level')
