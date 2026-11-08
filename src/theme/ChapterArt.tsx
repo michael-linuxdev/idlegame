@@ -4,6 +4,7 @@
  * five growth tiers. Backdrops are specs too (palette, water, mountains …).
  * Kapitel 2/3 keep their hand-made art (OrchardArt, VineyardArt).
  */
+import { ChapterPath } from './ChapterPaths'
 import { memo, type ReactNode } from 'react'
 import type { Animals, ArtSpec, BackdropSpec, Flowers, House, Rows, Stones, Tree, Water } from './chapterArtSpecs'
 import type { Season } from './ambient'
@@ -577,10 +578,6 @@ export const ChapterBackdrop = memo(function ChapterBackdrop({ spec, stage }: { 
           : null}
         {spec.glasshouse ? (
           <g>
-            <ellipse cx="50" cy="58" rx="11" ry="3.4" fill="#eae2d0" />
-            <ellipse cx="50" cy="58" rx="6" ry="1.8" fill="#bdb3a0" />
-            <ellipse cx="50" cy="57.8" rx="5" ry="1.4" fill="#6aa6c9" />
-            <ellipse cx="50" cy="57.2" rx=".8" ry="1" fill="#d6eef8" />
             {[
               [6, 44],
               [94, 42],
@@ -610,14 +607,18 @@ export const ChapterBackdrop = memo(function ChapterBackdrop({ spec, stage }: { 
         {spec.water === 'river' ? (
           <path d="M100 58 C90 64 96 72 86 78 C78 84 84 92 76 100" stroke="#6aa6c9" strokeWidth="14" fill="none" vectorEffect="non-scaling-stroke" />
         ) : null}
-        <path
-          d="M50 100 C46 90 40 86 44 78 C48 70 58 68 54 58 C50 50 40 48 46 40 C50 34 52 30 50 22"
-          stroke={spec.path}
-          strokeWidth="14"
-          fill="none"
-          vectorEffect="non-scaling-stroke"
-          opacity="0.9"
-        />
+        {spec.way ? (
+          <ChapterPath style={spec.way} color={spec.path} />
+        ) : (
+          <path
+            d="M50 100 C46 90 40 86 44 78 C48 70 58 68 54 58 C50 50 40 48 46 40 C50 34 52 30 50 22"
+            stroke={spec.path}
+            strokeWidth="14"
+            fill="none"
+            vectorEffect="non-scaling-stroke"
+            opacity="0.9"
+          />
+        )}
         {Array.from({ length: 30 }, (_, i) => (
           <circle key={i} cx={(i * 37) % 100} cy={26 + ((i * 53) % 72)} r="0.4" fill={['#fff', '#f5c542', '#c77dd1'][i % 3]} opacity={stage >= i % 10 ? 0.8 : 0.2} />
         ))}

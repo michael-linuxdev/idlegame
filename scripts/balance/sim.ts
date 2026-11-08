@@ -43,10 +43,14 @@ import {
   type GameState,
   gatePrestiges,
   doDeepReset,
+  canHandDownNow,
+  doGeneration,
+  buyLegacy,
   buyDeepUpgrade,
 } from '../../src/game/state'
 import { moduleTier } from '../../src/theme/tiers'
 import { DEEP_SHOP, canDeepReset, sproutPayout } from '../../src/game/longLoop'
+import { LEGACY_SHOP } from '../../src/game/generations'
 
 /* ---------- virtual clock + seeded RNG ---------- */
 // Monday 2026-11-09 08:00 local → avoids starting inside a weekend event
@@ -167,6 +171,7 @@ export function run(profile: Profile, hours: number) {
   const runs: { dur: number; payout: number; levels: number[]; meta: string; day: number }[] = []
   const stageByDay: number[] = []
   const deeps: { day: number; sprouts: number; total: number }[] = []
+  const gens: number[] = []
   const dt = 5
   const end = start + hours * 3600_000
   let lastDaily = ''
@@ -258,6 +263,21 @@ export function run(profile: Profile, hours: number) {
           s = spendSprouts(s)
           deeps.push({ day: Math.floor((clock - start) / 86400000) + 1, sprouts: sp, total: s.sproesslinge })
           note(`TIEFER WINTER #${s.deepPrestiges} +${sp} sprouts`)
+          // GEN=1: hand the garden down as soon as allowed (Generationen)
+          if (process.env.GEN && canHandDownNow(s)) {
+            s = doGeneration(s, clock)
+            for (let g = 0; g < 200; g++) {
+              let best: { id: (typeof LEGACY_SHOP)[number]['id']; cost: number } | null = null
+              for (const item of LEGACY_SHOP) {
+                const cost = item.cost(s.legacy[item.id])
+                if (cost <= s.vermaechtnis && (!best || cost < best.cost)) best = { id: item.id, cost }
+              }
+              if (!best) break
+              s = buyLegacy(s, best.id)
+            }
+            gens.push(Math.floor((clock - start) / 86400000) + 1)
+            note(`GENERATION #${s.generation}`)
+          }
         }
         s = spendEmbers(s)
         runStart = clock
@@ -266,13 +286,13 @@ export function run(profile: Profile, hours: number) {
       }
     }
   }
-  return { s, milestones, runs, hours, stageByDay, deeps }
+  return { s, milestones, runs, hours, stageByDay, deeps, gens }
 }
 
 function report(profile: Profile, hours: number) {
   seed = 12345
   clock = new Date(2026, 10, 9, 8, 0, 0).getTime()
-  const { s, milestones, runs, stageByDay, deeps } = run(profile, hours)
+  const { s, milestones, runs, stageByDay, deeps, gens } = run(profile, hours)
   if (process.env.SUMMARY) {
     const d = runs.map((r) => Math.round(r.dur / 60))
     const plantedAll = milestones.find((m) => m.label.includes('planted orangerie'))
@@ -283,6 +303,7 @@ function report(profile: Profile, hours: number) {
     console.log(
       `${profile} ${hours}h | seasons/day ${perDay} | planted/day ${garden} | seasons ${runs.length} | first ${d[0] ?? '-'}m | mins ${d.slice(0, 14).join(' ')} | payout ${runs.slice(0, 6).map((r) => r.payout).join(' ')} | last ${d.slice(-3).join(' ')} | orangerie ${plantedAll ? fmtT(plantedAll.t) : 'never(1st run)'} | end lvls ${GENERATORS.map((g) => s.owned[g.id]).join(',')}`,
     )
+    if (process.env.GEN) console.log(`  generations: ${gens.map((d, i) => `G${i + 1}@d${d}`).join(' ')}`)
     if (deeps.length || process.env.DEEP)
       console.log(
         `  deep winters: ${deeps.map((d) => `d${d.day}(+${d.sprouts})`).join(' ')} | end deep ${JSON.stringify(s.deepUpgrades)} year ${s.prestiges + 1}`,
