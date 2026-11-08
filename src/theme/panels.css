@@ -1,0 +1,280 @@
+/*
+ * Gartenerbe panels — Saison, Verein, Markt, Fortschritt and the upgrade
+ * sheet share the paper-and-wood look of the garden HUD.
+ */
+
+:root {
+  --pp-paper: #fffaf0;
+  --pp-paper-2: #f6ecd6;
+  --pp-edge: #dcc79e;
+  --pp-edge-d: #b39a6a;
+  --pp-ink: #33261a;
+  --pp-ink-soft: #6a5434;
+}
+
+/* Page background: hedge band on top, warm paper below */
+.app-main:not(.map-mode) {
+  background:
+    radial-gradient(circle at 50% 0, #4f8a3a 0 21px, transparent 22px) 0 -4px / 46px 30px repeat-x,
+    radial-gradient(circle at 50% 0, #5f9e45 0 18px, transparent 19px) 23px -2px / 46px 30px repeat-x,
+    linear-gradient(180deg, #e7f1dc 0, #f4ecd8 160px, #f1e6cc 100%);
+  padding-top: calc(var(--safe-top) + 2.6rem);
+}
+
+.app-main:not(.map-mode) .panel-header .eyebrow {
+  font-family: var(--oc-font-hand);
+  font-size: 1.15rem;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #5f7f45;
+}
+
+.app-main:not(.map-mode) .panel-header h2 {
+  font-size: 1.9rem;
+  color: var(--pp-ink);
+}
+
+.app-main:not(.map-mode) .panel-header .muted,
+.app-main:not(.map-mode) .panel-header p {
+  color: var(--pp-ink-soft);
+}
+
+.app-main:not(.map-mode) .subhead {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--pp-ink);
+}
+
+.app-main:not(.map-mode) .subhead::after {
+  content: '';
+  flex: 1;
+  height: 2px;
+  border-radius: 2px;
+  background: repeating-linear-gradient(90deg, var(--pp-edge) 0 8px, transparent 8px 13px);
+}
+
+/* Cards */
+.app-main:not(.map-mode) .prestige-block,
+.app-main:not(.map-mode) .long-loop-block,
+.app-main:not(.map-mode) .clan-card,
+.app-main:not(.map-mode) .ember-shop-row,
+.app-main:not(.map-mode) .shop-wallet-chip,
+.app-main:not(.map-mode) .cosmetic-card,
+.app-main:not(.map-mode) .leaderboard,
+.app-main:not(.map-mode) .shop-bp-row,
+.app-main:not(.map-mode) .clan-boost-row,
+.app-main:not(.map-mode) .shop-ad-row,
+.app-main:not(.map-mode) .panel-empty {
+  border: 1.5px solid var(--pp-edge);
+  border-radius: 14px;
+  background: linear-gradient(180deg, var(--pp-paper) 0%, var(--pp-paper-2) 100%);
+  box-shadow:
+    0 2px 0 var(--pp-edge),
+    0 6px 14px rgba(60, 45, 15, 0.08);
+  color: var(--pp-ink);
+}
+
+.app-main:not(.map-mode) .ember-shop-row,
+.app-main:not(.map-mode) .clan-card,
+.app-main:not(.map-mode) .shop-ad-row,
+.app-main:not(.map-mode) .clan-boost-row,
+.app-main:not(.map-mode) .shop-bp-row,
+.app-main:not(.map-mode) .cosmetic-card {
+  padding: 0.65rem 0.8rem;
+}
+
+.app-main:not(.map-mode) .leaderboard {
+  overflow: hidden;
+  padding: 0;
+}
+
+.app-main:not(.map-mode) .leaderboard-row {
+  padding-left: 0.85rem;
+  padding-right: 0.85rem;
+  border-color: color-mix(in srgb, var(--pp-edge) 70%, transparent);
+}
+
+.app-main:not(.map-mode) .ember-shop-row--ready {
+  border-color: #7fbf5a;
+  box-shadow:
+    0 2px 0 #5f9e45,
+    0 0 0 3px rgba(127, 191, 90, 0.22);
+}
+
+.app-main:not(.map-mode) .ember-shop-row--locked {
+  background:
+    repeating-linear-gradient(135deg, rgba(220, 199, 158, 0.18) 0 8px, transparent 8px 16px),
+    var(--pp-paper-2);
+  opacity: 0.85;
+}
+
+.app-main:not(.map-mode) .ember-shop-name {
+  font-family: var(--oc-font-display);
+  color: var(--pp-ink);
+}
+
+.app-main:not(.map-mode) .ember-shop-blurb,
+.app-main:not(.map-mode) .ember-shop-effect,
+.app-main:not(.map-mode) .muted {
+  color: var(--pp-ink-soft);
+}
+
+.app-main:not(.map-mode) .prestige-preview-card {
+  border-radius: 12px;
+  background: var(--pp-paper);
+}
+
+.app-main:not(.map-mode) .prestige-bar,
+.app-main:not(.map-mode) .ember-unlock-bar {
+  background: color-mix(in srgb, var(--pp-edge) 45%, transparent);
+}
+
+/* Winterruhe button: winter blue, not gold */
+.btn.prestige {
+  border-color: #4f7aa0;
+  background: linear-gradient(180deg, #e9f2fa 0%, #a9cde8 48%, #6f97b8 100%);
+  color: #1f3550;
+  box-shadow:
+    0 4px 0 #3f6585,
+    0 8px 16px rgba(30, 60, 100, 0.22);
+}
+
+.btn.prestige:disabled {
+  filter: saturate(0.4);
+  opacity: 0.75;
+}
+
+/* Leaderboard rows as allotment plaques */
+.app-main:not(.map-mode) .leaderboard-row.you {
+  background: linear-gradient(180deg, #e9f6dd, #d8ecc6);
+}
+
+/* Fortschritt sheet */
+.sheet {
+  border-top: 2px solid var(--pp-edge);
+  background: linear-gradient(180deg, var(--pp-paper) 0%, #f7efdc 100%);
+  color: var(--pp-ink);
+}
+
+.sheet .quest-row,
+.sheet .achievement-row {
+  border: 1.5px solid var(--pp-edge);
+  border-radius: 12px;
+  background: #fffcf4;
+  box-shadow: 0 2px 0 var(--pp-edge);
+}
+
+.sheet .quest-row.done,
+.sheet .achievement-row.done {
+  background: linear-gradient(180deg, #eef7e6, #e0efd2);
+  border-color: #a8cf8a;
+}
+
+.sheet .progress-subhead {
+  font-family: var(--oc-font-display);
+  color: var(--pp-ink);
+}
+
+.sheet .progress-intro {
+  font-family: var(--oc-font-hand);
+  font-size: 1.12rem;
+}
+
+/* Upgrade sheet: paper card with a wooden top edge */
+.upgrade-hud {
+  border: 1.5px solid var(--pp-edge-d);
+  border-top: 6px solid #a77d4c;
+  background: linear-gradient(180deg, var(--pp-paper) 0%, var(--pp-paper-2) 100%);
+  backdrop-filter: none;
+  box-shadow:
+    0 3px 0 var(--pp-edge-d),
+    0 12px 28px rgba(40, 30, 10, 0.28);
+}
+
+.upgrade-hud .upgrade-hud-row {
+  border: 1.5px solid var(--pp-edge);
+  background: #fffcf4;
+}
+
+.upgrade-hud .upgrade-hud-close {
+  border: 1.5px solid var(--pp-edge);
+  background: #fbf6e8;
+}
+
+/* Saison panel */
+.season-hero {
+  position: relative;
+  overflow: hidden;
+  margin: 0.2rem 0 0.7rem;
+  border: 1.5px solid var(--pp-edge-d);
+  border-radius: 16px;
+  aspect-ratio: 320 / 120;
+  box-shadow: 0 3px 0 var(--pp-edge-d);
+}
+
+.season-hero > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.season-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(2px 2px at 10% 20%, #fff 50%, transparent 51%),
+    radial-gradient(2px 2px at 30% 60%, #fff 50%, transparent 51%),
+    radial-gradient(2px 2px at 55% 30%, #fff 50%, transparent 51%),
+    radial-gradient(2px 2px at 75% 70%, #fff 50%, transparent 51%),
+    radial-gradient(2px 2px at 90% 15%, #fff 50%, transparent 51%);
+  background-size: 100% 100%;
+  animation: hero-snow 9s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes hero-snow {
+  from {
+    background-position: 0 -120px;
+  }
+  to {
+    background-position: 20px 120px;
+  }
+}
+
+.season-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.4rem;
+  margin: 0 0 0.6rem;
+}
+
+.season-stats > div {
+  padding: 0.4rem 0.3rem;
+  border: 1.5px solid var(--pp-edge);
+  border-radius: 10px;
+  background: #fffcf4;
+  text-align: center;
+}
+
+.season-stats dt {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--pp-ink-soft);
+}
+
+.season-stats dd {
+  margin: 0;
+  font-family: var(--oc-font-metric);
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: var(--pp-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .season-hero::after {
+    animation: none;
+  }
+}

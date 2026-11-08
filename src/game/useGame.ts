@@ -250,6 +250,7 @@ export function useGame() {
   }, [])
 
   const [postPrestigeFocus, setPostPrestigeFocus] = useState(false)
+  const [seasonEnd, setSeasonEnd] = useState<{ year: number; gained: number } | null>(null)
 
   const prestige = useCallback(() => {
     setState((s) => {
@@ -262,10 +263,13 @@ export function useGame() {
           wallet: next.embers,
         })
         setPostPrestigeFocus(true)
+        setSeasonEnd({ year: next.prestiges + 1, gained: gain })
       }
       return next
     })
   }, [])
+
+  const ackSeasonEnd = useCallback(() => setSeasonEnd(null), [])
 
   const clearPostPrestigeFocus = useCallback(() => {
     setPostPrestigeFocus(false)
@@ -570,6 +574,8 @@ export function useGame() {
     buyMeta,
     prestige,
     postPrestigeFocus,
+    seasonEnd,
+    ackSeasonEnd,
     clearPostPrestigeFocus,
     purchaseTimeSkip,
     purchaseCosmetic,

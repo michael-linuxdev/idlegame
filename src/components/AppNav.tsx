@@ -3,7 +3,7 @@ import { logPlaytest } from '../game/playtestLog'
 import { t } from '../i18n'
 import { MuteToggle } from './MuteToggle'
 import { PlaytestLogControls } from './PlaytestLogControls'
-import { IconBasket, IconFlag, IconSnow, IconSprout } from '../theme/icons'
+import { IconBasket, IconFlag, IconNotebook, IconSnow, IconSprout } from '../theme/icons'
 
 export type Tab = 'fortress' | 'prestige' | 'clan' | 'shop'
 
@@ -11,6 +11,8 @@ interface Props {
   tab: Tab
   ftueHighlight?: string | null
   onTabChange: (tab: Tab) => void
+  onOpenNotebook?: () => void
+  unreadLetters?: number
 }
 
 /** Overflow destinations only — never a bottom Farm/Halle tab. */
@@ -55,7 +57,13 @@ function MenuGlyph({ open }: { open: boolean }) {
 }
 
 /** One floating ☰ Menü FAB — zero bottom tab strip (no FARM|MENÜ). */
-export function AppNav({ tab, ftueHighlight, onTabChange }: Props) {
+export function AppNav({
+  tab,
+  ftueHighlight,
+  onTabChange,
+  onOpenNotebook,
+  unreadLetters = 0,
+}: Props) {
   const [menuOpen, setMenuOpen] = useState(false)
   const menuId = useId()
   const menuRef = useRef<HTMLDivElement>(null)
@@ -147,6 +155,23 @@ export function AppNav({ tab, ftueHighlight, onTabChange }: Props) {
               </button>
             )
           })}
+          {onOpenNotebook ? (
+            <button
+              type="button"
+              role="menuitem"
+              className={`nav-menu-item${unreadLetters > 0 ? ' has-new' : ''}`}
+              onClick={() => {
+                setMenuOpen(false)
+                onOpenNotebook()
+              }}
+            >
+              <span className="tab-icon">
+                <IconNotebook />
+              </span>
+              <span className="tab-label">{t.notebook.title}</span>
+              {unreadLetters > 0 ? <span className="nav-new-dot" aria-label={t.notebook.newLetter} /> : null}
+            </button>
+          ) : null}
           <div className="nav-menu-sound">
             <span className="tab-label">{t.sound.label}</span>
             <MuteToggle />

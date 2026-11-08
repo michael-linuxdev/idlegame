@@ -23,10 +23,10 @@ import {
   nextLockedEmberUnlock,
   postPrestigeStartOwned,
   prestigeBlockReason,
-  prestigeMinEmbersForRun,
 } from '../game/economy'
 import { formatAsh, formatMult } from '../game/format'
 import { t } from '../i18n'
+import { WinterScene } from '../theme/WinterScene'
 import type { useGame } from '../game/useGame'
 
 type GameApi = ReturnType<typeof useGame>
@@ -53,7 +53,6 @@ export function PrestigePanel({ game, highlight }: Props) {
   const teaser = prestigeProgress.ratio >= 0.5 && !canPrestige
   const payout = emberPayout(state.ashEarned, state.prestiges)
   const online = modulesOnlineCount(state.owned)
-  const minEmbers = prestigeMinEmbersForRun(state.prestiges)
   const block = prestigeBlockReason({
     prestiges: state.prestiges,
     ashEarned: state.ashEarned,
@@ -109,8 +108,6 @@ export function PrestigePanel({ game, highlight }: Props) {
       postBuys > 0
         ? t.prestige.claimReset(nextPrestige)
         : t.prestige.claimResetRebuild(nextPrestige, postUnlockMods)
-  } else if (block === 'embers') {
-    claimLabel = t.prestige.needEmbers(payout, minEmbers)
   } else if (block === 'modules') {
     claimLabel = t.prestige.needModules(online, PRESTIGE_MIN_MODULES_ONLINE)
   } else {
@@ -125,7 +122,7 @@ export function PrestigePanel({ game, highlight }: Props) {
       aria-labelledby="prestige-heading"
     >
       <header className="panel-header">
-        <p className="eyebrow">{t.eyebrow}</p>
+        <p className="eyebrow">{t.season.springTitle(state.prestiges + 1)}</p>
         <h2 id="prestige-heading">{t.prestige.title}</h2>
         <p className="muted">
           {t.prestige.introBefore} <strong>{t.resources.credits}</strong>{' '}
@@ -133,48 +130,28 @@ export function PrestigePanel({ game, highlight }: Props) {
         </p>
       </header>
 
+      <div className="season-hero" aria-hidden="true">
+        <WinterScene />
+      </div>
+
       <div className="prestige-block">
+        <dl className="season-stats">
+          <div>
+            <dt>{t.prestige.credits.replace(':', '')}</dt>
+            <dd>{state.embers}</dd>
+          </div>
+          <div>
+            <dt>{t.prestige.multiplier.replace(':', '')}</dt>
+            <dd>{formatMult(multiplier)}</dd>
+          </div>
+          <div>
+            <dt>{t.prestige.runs.replace(':', '')}</dt>
+            <dd>{state.prestiges}</dd>
+          </div>
+        </dl>
         <p className="prestige-stats">
-          {t.prestige.credits} <strong>{state.embers}</strong>
-          {' · '}
-          {t.prestige.multiplier} <strong>{formatMult(multiplier)}</strong>
-          {' · '}
-          {t.prestige.runs} <strong>{state.prestiges}</strong>
-        </p>
-        <p className="prestige-stats">
-          {t.prestige.thisRun} <strong>{formatAsh(state.ashEarned)}</strong>{' '}
-          {t.resources.compute}
-          {' · '}
-          {t.prestige.gate} <strong>{formatAsh(prestigeMin)}</strong>
-          {teaser || canPrestige ? (
-            <>
-              {' · '}
-              <span className="prestige-teaser">
-                {t.prestige.creditsPreview(nextPrestige)}
-              </span>
-            </>
-          ) : null}
-        </p>
-        <p className="prestige-stats">
-          {t.prestige.nextPayout}{' '}
-          <strong>{t.prestige.creditsAmount(nextPrestige)}</strong>
-          {payout < minEmbers ? (
-            <>
-              {' · '}
-              {t.prestige.needEmbers(payout, minEmbers)}
-            </>
-          ) : (
-            <>
-              {' · '}
-              {t.prestige.creditsPreview(payout)}
-            </>
-          )}
-          {state.prestiges >= 1 && online < PRESTIGE_MIN_MODULES_ONLINE ? (
-            <>
-              {' · '}
-              {t.prestige.needModules(online, PRESTIGE_MIN_MODULES_ONLINE)}
-            </>
-          ) : null}
+          {t.prestige.thisRun} <strong>{formatAsh(state.ashEarned)}</strong> /{' '}
+          {formatAsh(prestigeMin)} {t.resources.compute}
         </p>
         <div className="prestige-bar" aria-hidden="true">
           <div
@@ -183,7 +160,13 @@ export function PrestigePanel({ game, highlight }: Props) {
           />
         </div>
 
-        <div className="prestige-preview" aria-label="Prestige-Vorschau">
+        <p className="prestige-stats">
+          {t.prestige.nextPayout} <strong>{t.prestige.creditsAmount(payout)}</strong>
+          {canPrestige ? <span className="prestige-teaser"> · {t.prestige.longerHint}</span> : null}
+          {teaser ? <span className="prestige-teaser"> · {t.prestige.creditsPreview(nextPrestige)}</span> : null}
+        </p>
+
+        <div className="prestige-preview" aria-label={t.prestige.title}>
           <div className="prestige-preview-card keep">
             <p className="prestige-preview-label">{t.prestige.keepTitle}</p>
             <ul className="prestige-preview-list">
