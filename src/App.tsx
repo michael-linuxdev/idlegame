@@ -10,6 +10,7 @@ import { InstallPrompt } from './components/InstallPrompt'
 import { PrestigePanel } from './components/PrestigePanel'
 import { ShopPanel } from './components/ShopPanel'
 import { bootPlaytestLog, logPlaytest } from './game/playtestLog'
+import { SaveGuardBanner } from './components/SaveGuardBanner'
 import { useGame } from './game/useGame'
 import { GENERATORS } from './game/generators'
 import { useNotebook, yearLetterFor, type NotebookEntryId } from './game/notebook'
@@ -220,6 +221,7 @@ export default function App() {
         </svg>
         <p>{t.rotate}</p>
       </div>
+      <SaveGuardBanner />
       <main
         className={`app-main${tab === 'fortress' || wide ? ' map-mode' : ''}`}
         tabIndex={tab === 'fortress' || wide ? undefined : 0}

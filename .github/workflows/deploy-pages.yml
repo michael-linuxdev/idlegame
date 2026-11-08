@@ -30,8 +30,21 @@ jobs:
       - name: Install
         run: npm ci
 
+      # Echte Spieler: nur veröffentlichen, was alle Prüfungen besteht
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit tests
+        run: npm test
+
       - name: Build Gartenerbe
         run: npm run build
+
+      - name: Install Chromium for E2E
+        run: npx playwright install --with-deps chromium
+
+      - name: E2E smoke
+        run: npm run e2e
 
       - name: Verify Pages artifact
         run: |

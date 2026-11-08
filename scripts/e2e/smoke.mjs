@@ -8,6 +8,7 @@
  *  4. Festladen, Kapitel 2/3 via ?kapitel2=1&kapitel3=1, Weinlese, Gartenhelfer, Update-Check
  *  6. UX-Layout: Tutorial verdeckt sein Ziel nicht, Omas Notiz nie über Fenstern,
  *     Escape/Zurück schließen Fenster, Breitbild mit Seitenpanel; Screenshots in e2e-screens/
+ *  7. Spielstand-Schutz: zweites Fenster speichert nicht, neuerer Stand bleibt unberührt
  * Fails on any uncaught page error. Run: npm run build && npm run e2e
  */
 import { spawn } from 'node:child_process'
@@ -267,6 +268,41 @@ try {
       await p.screenshot({ path: `${SHOTS}/desktop.png` })
       await ctx.close()
     }
+  }
+
+  // 7 — Spielstand-Schutz: nur ein Fenster speichert; neuerer Stand wird nie überschrieben
+  {
+    const ctx = await browser.newContext({ ...devices['iPhone 13'], reducedMotion: 'reduce' })
+    const a = await ctx.newPage()
+    a.on('pageerror', (e) => errors.push(e.message))
+    await a.goto(URL)
+    await a.waitForTimeout(800)
+    const b = await ctx.newPage()
+    b.on('pageerror', (e) => errors.push(e.message))
+    await b.goto(URL)
+    await b.locator('.save-guard').waitFor()
+    assert((await a.locator('.save-guard').count()) === 0, 'first window may save')
+    await a.close()
+    await b.waitForTimeout(2500)
+    assert((await b.locator('.save-guard').count()) === 0, 'second window takes over after the first closes')
+    await ctx.close()
+
+    const ctx2 = await browser.newContext({ ...devices['iPhone 13'], reducedMotion: 'reduce' })
+    await ctx2.addInitScript(() => {
+      if (sessionStorage.getItem('seed')) return
+      sessionStorage.setItem('seed', '1')
+      const save = { saveVersion: 99, zukunft: { x: 1 }, samen: 777, ernte: 5, lastSeen: Date.now(), owned: { gemuesebeet: 3 } }
+      localStorage.setItem('gartenerbe-save-v1', JSON.stringify(save))
+    })
+    const p = await ctx2.newPage()
+    p.on('pageerror', (e) => errors.push(e.message))
+    await p.goto(URL)
+    await p.locator('.save-guard').waitFor()
+    await p.reload()
+    await p.waitForTimeout(500)
+    const kept = await p.evaluate(() => JSON.parse(localStorage.getItem('gartenerbe-save-v1') || '{}'))
+    assert(kept.saveVersion === 99 && kept.samen === 777 && kept.zukunft?.x === 1, 'newer save stays untouched')
+    await ctx2.close()
   }
 
   assert(errors.length === 0, 'page errors: ' + errors.join(' | '))

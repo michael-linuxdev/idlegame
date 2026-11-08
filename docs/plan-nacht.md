@@ -113,7 +113,7 @@ Tempo-Messung (9.1/9.2) kommt **vor** die Balance-Pakete 3 und 6, damit deren Wi
 
 ## Fortschritt
 - [x] A Export + Langzeit-Log — Abweichung: localStorage (zwei Schlüssel, Budget) statt IndexedDB; Spielstand hat Vorrang (`freePlaytestSpace` bei Platzmangel). Begründung: synchron, testbar, 180-Tage-Test < 2 KB/Tag.
-- [ ] B Spielstand-Schutz & Betrieb
+- [x] B Spielstand-Schutz & Betrieb — B4 nur `storage.persist()` (+ Log); Sicherungs-Erinnerung für iOS-Browser verschoben (gehört zu Paket G „Rückkehr“). Fund: `helperCarryMs`/`ilseCarryMs` werden absichtlich nicht geladen (Sekunden Restzeit), im Test als Ausnahme geführt.
 - [ ] C Erste Minuten & Freischaltungen
 - [ ] D Tempo messen
 - [ ] E Kernschleife

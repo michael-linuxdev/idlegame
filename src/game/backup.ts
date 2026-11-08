@@ -6,7 +6,8 @@ import { EXTRAS_STORAGE_KEY } from './extras'
 import { FTUE_STORAGE_KEY } from './ftue'
 import { NOTEBOOK_STORAGE_KEY } from './notebook'
 import { STORAGE_KEY } from './state'
-import { lockSaves, parseSave } from './storage'
+import { isNewerSave, lockSaves, parseSave, SAVE_VERSION } from './storage'
+import { APP_VERSION } from './appUpdate'
 import { saveFile, type SaveResult } from './saveFile'
 
 const PREFIX = 'GARTENERBE1:'
@@ -17,6 +18,9 @@ interface Bundle {
   v: 1
   at: number
   data: Partial<Record<(typeof KEYS)[number], string>>
+  /** App-Version und Speicherformat beim Sichern (ab 2026-11-09) */
+  appVersion?: string
+  saveVersion?: number
 }
 
 function toBase64(text: string): string {
@@ -32,6 +36,10 @@ function fromBase64(b64: string): string {
   return new TextDecoder().decode(bytes)
 }
 
+function isRecordLike(v: unknown): v is Record<string, unknown> {
+  return typeof v === 'object' && v !== null
+}
+
 export function exportCode(now = Date.now()): string {
   const data: Bundle['data'] = {}
   for (const k of KEYS) {
@@ -42,11 +50,11 @@ export function exportCode(now = Date.now()): string {
       /* ignore */
     }
   }
-  const bundle: Bundle = { app: 'gartenerbe', v: 1, at: now, data }
+  const bundle: Bundle = { app: 'gartenerbe', v: 1, at: now, data, appVersion: APP_VERSION, saveVersion: SAVE_VERSION }
   return PREFIX + toBase64(JSON.stringify(bundle))
 }
 
-export type ImportResult = { ok: true; bundle: Bundle } | { ok: false }
+export type ImportResult = { ok: true; bundle: Bundle } | { ok: false; newer?: boolean }
 
 /** Validate a code (or raw JSON file contents) without applying it. */
 export function readCode(input: string): ImportResult {
@@ -56,7 +64,11 @@ export function readCode(input: string): ImportResult {
     const bundle = JSON.parse(json) as Bundle
     if (bundle?.app !== 'gartenerbe' || bundle.v !== 1 || !bundle.data) return { ok: false }
     const save = bundle.data[STORAGE_KEY]
-    if (!save || !parseSave(JSON.parse(save))) return { ok: false }
+    if (!save) return { ok: false }
+    const raw: unknown = JSON.parse(save)
+    // Stand aus einer neueren App-Version: nicht in diese ältere einspielen
+    if ((bundle.saveVersion ?? 0) > SAVE_VERSION || (isRecordLike(raw) && isNewerSave(raw))) return { ok: false, newer: true }
+    if (!parseSave(raw)) return { ok: false }
     return { ok: true, bundle }
   } catch {
     return { ok: false }

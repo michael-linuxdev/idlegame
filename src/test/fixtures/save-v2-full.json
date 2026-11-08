@@ -1,0 +1,492 @@
+{
+  "ernte": 123456,
+  "ernteSeason": 0,
+  "owned": {
+    "gemuesebeet": 60,
+    "kompost": 25,
+    "kraeuterspirale": 30,
+    "beerenhecke": 0,
+    "obstwiese": 0,
+    "bienenstock": 0,
+    "huehnerstall": 0,
+    "gewaechshaus": 0,
+    "hofladen": 0,
+    "orangerie": 0
+  },
+  "erbstuecke": 893,
+  "emberUpgrades": {
+    "dominionYield": 0,
+    "longWatch": 0,
+    "foundryDiscount": 0,
+    "firstFlame": 0,
+    "tapMastery": 0,
+    "seedPurse": 0,
+    "canopyBoost": 0,
+    "nightSoil": 0,
+    "saplingSurge": 0,
+    "greenLattice": 0
+  },
+  "prestiges": 1,
+  "lastSeen": 1794200000000,
+  "lastTapAt": 0,
+  "clanMult": 1,
+  "samen": 4321,
+  "ownedCosmetics": [
+    "wiese",
+    "festAdvent"
+  ],
+  "equippedCosmetic": "festAdvent",
+  "skipHoursUsedToday": 0,
+  "skipDayKey": "2026-11-08",
+  "clanBoostExpiresAt": 0,
+  "dailyClaimDay": "",
+  "dailyStreak": 0,
+  "eventDismissedKey": "",
+  "eventAshProgress": 0,
+  "eventProgressKey": "",
+  "eventGoalClaimedKey": "",
+  "playerXp": 4321,
+  "claimedLevelRewards": [
+    2,
+    3,
+    5
+  ],
+  "totalUpgrades": 120,
+  "ernteLifetime": 3636869,
+  "claimedDailyOnce": false,
+  "claimedOfflineOnce": false,
+  "offlinePending": 0,
+  "claimedAchievements": [
+    "firstUpgrade",
+    "compostOnline",
+    "earn10k",
+    "bedTen",
+    "upgradesFifty",
+    "levelFive",
+    "prestigeOnce"
+  ],
+  "branches": {
+    "gemuesebeet": {
+      "efficiency": 0,
+      "capacity": 0
+    },
+    "kompost": {
+      "efficiency": 0,
+      "capacity": 0
+    },
+    "kraeuterspirale": {
+      "efficiency": 0,
+      "capacity": 0
+    },
+    "beerenhecke": {
+      "efficiency": 0,
+      "capacity": 0
+    },
+    "obstwiese": {
+      "efficiency": 0,
+      "capacity": 0
+    },
+    "bienenstock": {
+      "efficiency": 0,
+      "capacity": 0
+    },
+    "huehnerstall": {
+      "efficiency": 0,
+      "capacity": 0
+    },
+    "gewaechshaus": {
+      "efficiency": 0,
+      "capacity": 0
+    },
+    "hofladen": {
+      "efficiency": 0,
+      "capacity": 0
+    },
+    "orangerie": {
+      "efficiency": 0,
+      "capacity": 0
+    }
+  },
+  "questDayKey": "2026-11-08",
+  "quests": [
+    {
+      "id": "2026-11-08-0-earnAsh-25000",
+      "kind": "earnAsh",
+      "target": 25000,
+      "progress": 25000,
+      "rewardAsh": 500,
+      "rewardObsidian": 8,
+      "claimed": false
+    },
+    {
+      "id": "2026-11-08-1-earnAsh-5000",
+      "kind": "earnAsh",
+      "target": 5000,
+      "progress": 5000,
+      "rewardAsh": 200,
+      "rewardObsidian": 5,
+      "claimed": false
+    },
+    {
+      "id": "2026-11-08-2-upgrades-12",
+      "kind": "upgrades",
+      "target": 12,
+      "progress": 12,
+      "rewardAsh": 90,
+      "rewardObsidian": 3,
+      "claimed": false
+    }
+  ],
+  "ownedOfferIds": [],
+  "adsRemoved": false,
+  "lastRewardedAdAt": 0,
+  "rewardedAdClaims": 0,
+  "marketGiftDay": "",
+  "waterRefillDay": "2026-11-09",
+  "waterRefills": 2,
+  "yieldBoostExpiresAt": 0,
+  "bpWeekKey": "2026-W1102",
+  "bpXp": 0,
+  "bpClaimedFree": [],
+  "bpPremium": false,
+  "bpClaimedPremium": [],
+  "bpDailyXpDay": "",
+  "prestigeSpikeFlags": 0,
+  "lastSurprise": null,
+  "lastVariety": null,
+  "flashEventId": "",
+  "flashEndsAt": 0,
+  "flashProgress": 0,
+  "flashGoal": 0,
+  "flashClaimed": false,
+  "flashDismissed": false,
+  "lastFlashAt": 0,
+  "sproesslinge": 9,
+  "deepUpgrades": {
+    "deepYield": 0,
+    "deepWatch": 0,
+    "deepPurse": 0,
+    "deepStart": 0
+  },
+  "deepPrestiges": 1,
+  "collection": [
+    "wurmhumus",
+    "physalis"
+  ],
+  "wheelBuff": null,
+  "helperLevel": 2,
+  "helperOn": true,
+  "decorOwned": [
+    "zwerg",
+    "futterhaus"
+  ],
+  "residentsSeen": {
+    "amsel": 1
+  },
+  "residentNow": null,
+  "residentNextAt": 1794200319715.7166,
+  "crossing": {
+    "a": "wurmhumus",
+    "b": "physalis",
+    "endsAt": 1794210000000
+  },
+  "hybrids": [
+    "riesentomate"
+  ],
+  "projects": {
+    "pavillon": 1
+  },
+  "album": {
+    "key": "2026-autumn",
+    "base": {
+      "water": 0,
+      "seasons": 0,
+      "daily": 0,
+      "offline": 0,
+      "upgrades": 120,
+      "varieties": 2,
+      "visits": 1,
+      "species": 1,
+      "hybrids": 0,
+      "decor": 2,
+      "chapterLevels": 63,
+      "projectStages": 0
+    },
+    "counts": {
+      "water": 5
+    },
+    "claimed": [],
+    "rewarded": false
+  },
+  "weatherDecided": "2026-11-09",
+  "weatherBuff": {
+    "mult": 0.75,
+    "until": 1794207200000
+  },
+  "decorSlots": [
+    "zwerg",
+    null,
+    null,
+    "futterhaus",
+    null,
+    null,
+    null,
+    null
+  ],
+  "helperBlocked": [],
+  "helperCarryMs": 0,
+  "helperReport": 0,
+  "turboEndsAt": 1794157541389,
+  "chapters": {
+    "obstwiese": {
+      "cur": 7777,
+      "curLifetime": 0,
+      "owned": {
+        "apfel": 42,
+        "birne": 11,
+        "kirsche": 0,
+        "zwetschge": 0,
+        "schafe": 0,
+        "wildbienen": 0,
+        "walnuss": 0,
+        "mosterei": 0,
+        "doerrhaus": 0,
+        "obstmarkt": 0
+      },
+      "openedAt": 1794150000000,
+      "introSeen": true,
+      "care": {}
+    },
+    "weinberg": {
+      "cur": 20,
+      "curLifetime": 0,
+      "owned": {
+        "riesling": 1,
+        "silvaner": 0,
+        "spaetburgunder": 0,
+        "dornfelder": 0,
+        "trockenmauer": 0,
+        "wingerthaus": 0,
+        "kelter": 0,
+        "weinkeller": 0,
+        "strausse": 0,
+        "weinfest": 0
+      },
+      "openedAt": 0,
+      "introSeen": false,
+      "care": {}
+    },
+    "bauernhof": {
+      "cur": 20,
+      "curLifetime": 0,
+      "owned": {
+        "kuhweide": 1,
+        "ziegenstall": 0,
+        "schweinekoben": 0,
+        "gaensewiese": 0,
+        "kartoffelacker": 0,
+        "heuscheune": 0,
+        "melkhaus": 0,
+        "kaeserei": 0,
+        "hofbaeckerei": 0,
+        "bauernmarkt": 0
+      },
+      "openedAt": 0,
+      "introSeen": false,
+      "care": {}
+    },
+    "imkerei": {
+      "cur": 20,
+      "curLifetime": 0,
+      "owned": {
+        "bienenhaus": 1,
+        "lindenallee": 0,
+        "heide": 0,
+        "rapsfeld": 0,
+        "kirschhain": 0,
+        "wildblumen": 0,
+        "schleuder": 0,
+        "wachszieherei": 0,
+        "metkeller": 0,
+        "honigladen": 0
+      },
+      "openedAt": 0,
+      "introSeen": false,
+      "care": {}
+    },
+    "teich": {
+      "cur": 20,
+      "curLifetime": 0,
+      "owned": {
+        "seerosen": 1,
+        "schilf": 0,
+        "karpfenteich": 0,
+        "forellenbach": 0,
+        "steg": 0,
+        "fischerhuette": 0,
+        "raeucherei": 0,
+        "bootsverleih": 0,
+        "entenbucht": 0,
+        "seefest": 0
+      },
+      "openedAt": 0,
+      "introSeen": false,
+      "care": {}
+    },
+    "kraeuter": {
+      "cur": 20,
+      "curLifetime": 0,
+      "owned": {
+        "kamille": 1,
+        "pfefferminze": 0,
+        "ringelblume": 0,
+        "johanniskraut": 0,
+        "salbei": 0,
+        "trockenboden": 0,
+        "destille": 0,
+        "salbenkueche": 0,
+        "teestube": 0,
+        "apothekergarten": 0
+      },
+      "openedAt": 0,
+      "introSeen": false,
+      "care": {}
+    },
+    "botanik": {
+      "cur": 20,
+      "curLifetime": 0,
+      "owned": {
+        "palmenhaus": 1,
+        "kakteenhaus": 0,
+        "orchideenhaus": 0,
+        "victoriahaus": 0,
+        "rosarium": 0,
+        "steingarten": 0,
+        "arboretum": 0,
+        "farnschlucht": 0,
+        "herbarium": 0,
+        "glaskuppel": 0
+      },
+      "openedAt": 0,
+      "introSeen": false,
+      "care": {}
+    },
+    "alm": {
+      "cur": 20,
+      "curLifetime": 0,
+      "owned": {
+        "almwiese": 1,
+        "kuhherde": 0,
+        "sennhuette": 0,
+        "edelweiss": 0,
+        "enzian": 0,
+        "bergbach": 0,
+        "kaesekeller": 0,
+        "seilbahn": 0,
+        "gipfelhuette": 0,
+        "almfest": 0
+      },
+      "openedAt": 0,
+      "introSeen": false,
+      "care": {}
+    },
+    "lavendel": {
+      "cur": 20,
+      "curLifetime": 0,
+      "owned": {
+        "lavendelreihen": 1,
+        "sonnenblumen": 0,
+        "olivenhain": 0,
+        "rosmarin": 0,
+        "feigenbaum": 0,
+        "destillerie": 0,
+        "seifenmanufaktur": 0,
+        "marktstand": 0,
+        "mas": 0,
+        "lavendelfest": 0
+      },
+      "openedAt": 0,
+      "introSeen": false,
+      "care": {}
+    },
+    "japangarten": {
+      "cur": 20,
+      "curLifetime": 0,
+      "owned": {
+        "teestrauch": 1,
+        "moosgarten": 0,
+        "bambushain": 0,
+        "kirschallee": 0,
+        "koiteich": 0,
+        "zengarten": 0,
+        "teehaus": 0,
+        "bonsai": 0,
+        "rotebruecke": 0,
+        "laternenweg": 0
+      },
+      "openedAt": 0,
+      "introSeen": false,
+      "care": {}
+    },
+    "gartenschau": {
+      "cur": 20,
+      "curLifetime": 0,
+      "owned": {
+        "eingangstor": 1,
+        "blumenkorso": 0,
+        "rosenbogen": 0,
+        "labyrinth": 0,
+        "wasserspiele": 0,
+        "aussichtsturm": 0,
+        "festzelt": 0,
+        "seebuehne": 0,
+        "ehrenpavillon": 0,
+        "gedenkgarten": 0
+      },
+      "openedAt": 0,
+      "introSeen": false,
+      "care": {}
+    }
+  },
+  "ilseLevel": 1,
+  "ilseOn": true,
+  "ilseCarryMs": 0,
+  "weinleseAt": 0,
+  "milestoneRecord": {
+    "g:gemuesebeet": 2
+  },
+  "lastChest": null,
+  "recipe": {
+    "day": "2026-11-08",
+    "areas": [
+      "kompost",
+      "gemuesebeet"
+    ],
+    "have": [
+      8,
+      8
+    ],
+    "claimed": false,
+    "dish": 1
+  },
+  "skyEvent": null,
+  "skyNextAt": 1794150900000,
+  "rainbowEndsAt": 0,
+  "shieldWeek": "",
+  "contestWeek": "2026-W1102",
+  "contestKg": 12.5,
+  "contestResult": null,
+  "generation": 1,
+  "vermaechtnis": 4,
+  "legacy": {
+    "familie": 2,
+    "obstbau": 0,
+    "wurzelwerk": 0,
+    "daumen": 0,
+    "hausrezept": 0
+  },
+  "festKey": "laternenfest-2026",
+  "festTokens": 41.5,
+  "festBought": {},
+  "saveVersion": 2
+}

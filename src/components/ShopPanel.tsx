@@ -20,6 +20,7 @@ import {
 import { t } from '../i18n'
 import { STORE_ENABLED } from '../game/monetization'
 import type { useGame } from '../game/useGame'
+import { waterRefillsLeft } from '../game/state'
 
 type GameApi = ReturnType<typeof useGame>
 type Tab = 'free' | 'boosts' | 'styles' | 'seeds'
@@ -274,9 +275,14 @@ export function ShopPanel({ game, onPreview }: Props) {
             <Row
               name={t.shop.refillTitle}
               blurb={t.shop.refillIntro}
-              effect={tapReady ? t.shop.refillReady : t.shop.refillWaiting(formatMsLeft(tapCooldownLeftMs))}
+              effect={`${tapReady ? t.shop.refillReady : t.shop.refillWaiting(formatMsLeft(tapCooldownLeftMs))} · ${t.shop.refillLeft(waterRefillsLeft(state))}`}
             >
-              <button type="button" className="btn buy" disabled={tapReady || state.samen < WATER_REFILL_COST} onClick={buyWaterRefill}>
+              <button
+                type="button"
+                className="btn buy"
+                disabled={tapReady || state.samen < WATER_REFILL_COST || waterRefillsLeft(state) <= 0}
+                onClick={buyWaterRefill}
+              >
                 {t.shop.costObsidian(WATER_REFILL_COST)}
               </button>
               {state.samen < WATER_REFILL_COST ? <span className="shop-need">{t.ux.shop.need(WATER_REFILL_COST - state.samen)}</span> : null}
