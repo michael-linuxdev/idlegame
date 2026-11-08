@@ -241,6 +241,7 @@ export default function App() {
           onRead={markRead}
           onClose={() => setNotebookOpen(null)}
           collection={game.state.collection}
+          residentsSeen={game.state.residentsSeen}
         />
       ) : null}
 

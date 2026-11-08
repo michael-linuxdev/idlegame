@@ -9,6 +9,8 @@ import { t } from '../../i18n'
 import { GENERATORS } from '../../game/generators'
 import { RARITY_BONUS, SET_BONUS, VARIETIES, collectionMult, completedSets } from '../../game/gardenLife'
 import { formatDecimal } from '../../game/format'
+import { RESIDENTS, residentsMult, type ResidentId } from '../../game/residents'
+import { ResidentArt } from '../../theme/ResidentArt'
 
 interface Props {
   notebook: NotebookState
@@ -18,6 +20,8 @@ interface Props {
   onClose: () => void
   /** Pflanzenbuch — variety ids found */
   collection: readonly string[]
+  /** Gartenbewohner — species → visits */
+  residentsSeen?: Partial<Record<ResidentId, number>>
 }
 
 function hintFor(def: (typeof NOTEBOOK_ENTRIES)[number]): string {
@@ -28,9 +32,9 @@ function hintFor(def: (typeof NOTEBOOK_ENTRIES)[number]): string {
 }
 
 /** Omas Notizbuch — a paper notebook with all letters found so far. */
-export function NotebookSheet({ notebook, initialEntry, onRead, onClose, collection }: Props) {
+export function NotebookSheet({ notebook, initialEntry, onRead, onClose, collection, residentsSeen = {} }: Props) {
   const [open, setOpen] = useState<NotebookEntryId | null>(initialEntry ?? null)
-  const [tab, setTab] = useState<'letters' | 'plants'>('letters')
+  const [tab, setTab] = useState<'letters' | 'plants' | 'residents'>('letters')
 
   useEffect(() => {
     if (!open) return
@@ -82,10 +86,15 @@ export function NotebookSheet({ notebook, initialEntry, onRead, onClose, collect
             <button type="button" role="tab" aria-selected={tab === 'plants'} className={`notebook-tab${tab === 'plants' ? ' active' : ''}`} onClick={() => setTab('plants')}>
               {t.plantbook.tab} · {collection.length}/{VARIETIES.length}
             </button>
+            <button type="button" role="tab" aria-selected={tab === 'residents'} className={`notebook-tab${tab === 'residents' ? ' active' : ''}`} onClick={() => setTab('residents')}>
+              {t.residents.tab} · {RESIDENTS.filter((r) => (residentsSeen[r.id] ?? 0) > 0).length}/{RESIDENTS.length}
+            </button>
           </div>
         ) : null}
 
-        {!entry && tab === 'plants' ? (
+        {!entry && tab === 'residents' ? (
+          <ResidentAlbum seen={residentsSeen} />
+        ) : !entry && tab === 'plants' ? (
           <PlantBook collection={collection} />
         ) : entry ? (
           <article className="notebook-letter" aria-live="polite">
@@ -125,6 +134,34 @@ export function NotebookSheet({ notebook, initialEntry, onRead, onClose, collect
           </>
         )}
       </div>
+    </div>
+  )
+}
+
+function ResidentAlbum({ seen }: { seen: Partial<Record<ResidentId, number>> }) {
+  const found = RESIDENTS.filter((r) => (seen[r.id] ?? 0) > 0).length
+  return (
+    <div className="plantbook resident-album">
+      <p className="notebook-intro">{t.residents.intro}</p>
+      <p className="plantbook-total">{t.residents.total(formatDecimal((residentsMult(seen) - 1) * 100, 0), found, RESIDENTS.length)}</p>
+      <ul className="resident-grid">
+        {RESIDENTS.map((r) => {
+          const n = seen[r.id] ?? 0
+          const hint = [
+            r.decor ? t.residents.needDecor(t.decor.names[r.decor]!) : null,
+            r.area ? t.residents.needArea(t.modules[r.area.id].name, r.area.level) : null,
+            r.seasons ? r.seasons.map((x) => t.residents.seasons[x]).join(', ') : null,
+            r.dayparts ? r.dayparts.map((x) => t.residents.dayparts[x]).join(', ') : null,
+          ].filter(Boolean).join(' · ')
+          return (
+            <li key={r.id} className={`resident-card${n > 0 ? ' found' : ''}`}>
+              <ResidentArt id={r.id} silhouette={n === 0} />
+              <strong>{n > 0 ? t.residents.names[r.id] : t.residents.unknown}</strong>
+              <small>{n > 0 ? t.residents.visits(n) : hint}</small>
+            </li>
+          )
+        })}
+      </ul>
     </div>
   )
 }
