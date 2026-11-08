@@ -325,24 +325,25 @@ function ChapterSheet({
               {t.chapterUi.chapter(def.number)} · {copy.title}
             </p>
             <h2 id="chapter-sheet-title">{ac.name}</h2>
-            <p className="upgrade-hud-blurb">{ac.blurb}</p>
           </div>
           <button type="button" className="upgrade-hud-close" onClick={onClose} aria-label={t.upgrade.close}>
             ×
           </button>
         </header>
-        <figure className="oma-note">
-          <figcaption className="oma-note-label">{t.upgrade.noteLabel}</figcaption>
-          <blockquote className="oma-note-text">{ac.note}</blockquote>
-        </figure>
+        {level === 0 ? (
+          <figure className="oma-note">
+            <figcaption className="oma-note-label">{t.upgrade.noteLabel}</figcaption>
+            <blockquote className="oma-note-text">{ac.note}</blockquote>
+          </figure>
+        ) : null}
         {unlocked ? (
           <>
             <p className="upgrade-hud-stats">
-              {t.chapterUi.level(level)} · {t.chapterUi.rate(formatAsh(areaRate(a, level) * mult), copy.currency)} →{' '}
-              {t.chapterUi.rate(formatAsh(areaRate(a, level + 1) * mult), copy.currency)}
+              {t.chapterUi.level(level)} · {t.chapterUi.rate(formatAsh(areaRate(a, level) * mult), copy.currency)}
+              <span className="upgrade-gain"> +{formatAsh((areaRate(a, level + 1) - areaRate(a, level)) * mult)}/s</span>
             </p>
             <div className="milestone-line">
-              <span>{ms ? t.milestones.next(ms.at) : t.milestones.all}</span>
+              <span>{ms ? t.milestones.short(ms.at) : t.milestones.all}</span>
               {ms ? (
                 <span className="milestone-track" aria-hidden="true">
                   <span style={{ width: `${Math.round(((level - ms.from) / (ms.at - ms.from)) * 100)}%` }} />

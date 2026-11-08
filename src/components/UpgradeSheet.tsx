@@ -114,8 +114,6 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
     safeCost > 0 ? Math.min(1, safeAsh / safeCost) : unlocked ? 1 : 0
   const actionLabel = owned === 0 ? t.upgrade.online : t.upgrade.upgrade
   const needMore = Math.max(0, safeCost - safeAsh)
-  const flavor =
-    def.blurb.length > 96 ? `${def.blurb.slice(0, 93).trimEnd()}…` : def.blurb
 
   function buyBranch(kind: BranchKind) {
     game.buyModuleBranch(selectedId, kind)
@@ -195,9 +193,6 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
           <div className="upgrade-hud-heading">
             <p className="upgrade-hud-eyebrow">{t.upgrade.moduleEyebrow}</p>
             <h2 id="upgrade-title">{def.name}</h2>
-            <p className="upgrade-hud-blurb" title={def.blurb}>
-              {flavor}
-            </p>
           </div>
           <button
             type="button"
@@ -209,10 +204,12 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
           </button>
         </header>
 
-        <figure className="oma-note">
-          <figcaption className="oma-note-label">{t.upgrade.noteLabel}</figcaption>
-          <blockquote className="oma-note-text">{def.note}</blockquote>
-        </figure>
+        {owned === 0 ? (
+          <figure className="oma-note">
+            <figcaption className="oma-note-label">{t.upgrade.noteLabel}</figcaption>
+            <blockquote className="oma-note-text">{def.note}</blockquote>
+          </figure>
+        ) : null}
 
         {unlocked ? (
           <>
@@ -227,11 +224,10 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
               ) : null}
               {' · '}
               {formatRate(lineRate)}
-              {' → '}
-              {formatRate(nextRate)}
+              <span className="upgrade-gain"> +{formatRate(Math.max(0, nextRate - lineRate))}</span>
             </p>
-            <div className="milestone-line">
-              <span>{milestone ? t.milestones.next(milestone.at) : t.milestones.all}</span>
+            <div className="milestone-line" title={milestone ? t.milestones.next(milestone.at) : t.milestones.all}>
+              <span>{milestone ? t.milestones.short(milestone.at) : t.milestones.all}</span>
               {milestone ? (
                 <span className="milestone-track" aria-hidden="true">
                   <span
@@ -297,8 +293,8 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
             </div>
 
             {owned >= 1 ? (
-              <div className="upgrade-hud-modules">
-                <h3 className="upgrade-hud-modules-title">{t.branches.title}</h3>
+              <details className="upgrade-hud-modules care-details">
+                <summary className="upgrade-hud-modules-title">{t.branches.title}</summary>
                 <BranchRow
                   kind="efficiency"
                   rank={branch.efficiency}
@@ -315,7 +311,7 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
                   ernte={game.state.ernte}
                   onBuy={() => buyBranch('capacity')}
                 />
-              </div>
+              </details>
             ) : null}
           </>
         ) : (
@@ -361,7 +357,7 @@ function BranchRow({
 
   return (
     <div className="upgrade-hud-row">
-      <p className="upgrade-hud-row-meta">
+      <p className="upgrade-hud-row-meta" title={`${perRank} · ${total}`}>
         <strong className="branch-name">{name}</strong>
         <span className="branch-rank">
           {rank}/{max}
@@ -370,10 +366,6 @@ function BranchRow({
           ·
         </span>
         <span className="branch-per">{perRank}</span>
-        <span className="branch-sep" aria-hidden="true">
-          ·
-        </span>
-        <span className="branch-effect">{total}</span>
       </p>
       {maxed ? (
         <span className="quest-badge">{t.branches.maxed}</span>
@@ -384,8 +376,9 @@ function BranchRow({
           disabled={ernte < cost}
           onClick={onBuy}
           title={t.upgrade.costLine(name, formatAsh(cost))}
+          aria-label={t.upgrade.costLine(name, formatAsh(cost))}
         >
-          {t.upgrade.costLine(name, formatAsh(cost))}
+          {formatAsh(cost)}
         </button>
       )}
     </div>

@@ -18,5 +18,6 @@ describe('German number formatting', () => {
     expect(formatMult(1.25)).toBe('×1,25')
     expect(formatDecimal(0.5, 1)).toBe('0,5')
     expect(formatClock(65_000)).toBe('1:05')
+    expect(formatClock(1669 * 60_000)).toBe('27 h 49')
   })
 })
