@@ -3,7 +3,7 @@ import { AppNav, type Tab } from './components/AppNav'
 import { ClanPanel } from './components/ClanPanel'
 import { GardenMap } from './components/GardenMap'
 import { ChapterMap } from './components/ChapterMap'
-import type { ChapterId } from './game/chapters'
+import { CHAPTERS, type ChapterId } from './game/chapters'
 import type { CosmeticId } from './game/monetization'
 import { FtueCoach } from './components/FtueCoach'
 import { InstallPrompt } from './components/InstallPrompt'
@@ -44,6 +44,13 @@ export default function App() {
       const q = new URLSearchParams(location.search)
       if (q.get('kapitel2') === '1') forceChapter('obstwiese')
       if (q.get('kapitel3') === '1') forceChapter('weinberg')
+      // ?kapitel=all or ?kapitel=4,7 (chapter numbers)
+      const list = q.get('kapitel')
+      if (list) {
+        for (const c of CHAPTERS) {
+          if (list === 'all' || list.split(',').includes(String(c.number))) forceChapter(c.id)
+        }
+      }
     } catch {
       /* ignore */
     }

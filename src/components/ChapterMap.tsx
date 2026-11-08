@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
-import { CHAPTERS, areaRate, areaUnlocked, chapterDef, chapterLevels, chapterStage, type ChapterId } from '../game/chapters'
+import { areaRate, areaUnlocked, chapterDef, chapterLevels, chapterStage, type ChapterId } from '../game/chapters'
 import { milestonesReached, nextMilestone } from '../game/generators'
 import { formatAsh, formatClock, formatDecimal } from '../game/format'
 import { playSfx } from '../game/sound'
@@ -10,6 +10,9 @@ import { t } from '../i18n'
 import { OrchardArt, OrchardSapling, OrchardWild } from '../theme/OrchardArt'
 import { OrchardBackdrop } from '../theme/OrchardBackdrop'
 import { VineyardArt, VineyardBackdrop, VineyardStakes, VineyardWild } from '../theme/VineyardArt'
+import { ChapterAreaArt, ChapterBackdrop, ChapterReady, ChapterWild } from '../theme/ChapterArt'
+import { CHAPTER_ART } from '../theme/chapterArtSpecs'
+import { PlotButtons } from './PlotPicker'
 import { IconGrapes, IconIlse, IconSprout } from '../theme/icons'
 import { chapterCopy } from './chapterCopy'
 import { useAmbient, type Season } from '../theme/ambient'
@@ -20,11 +23,29 @@ import { GoalStrip, type HudGoal } from './hud/GoalStrip'
 type GameApi = ReturnType<typeof useGame>
 
 function AreaArt({ chapter, id, level, season }: { chapter: ChapterId; id: string; level: number; season: Season }) {
-  return chapter === 'weinberg' ? (
-    <VineyardArt id={id} level={level} season={season} />
-  ) : (
-    <OrchardArt id={id} level={level} season={season} />
-  )
+  if (chapter === 'weinberg') return <VineyardArt id={id} level={level} season={season} />
+  if (chapter === 'obstwiese') return <OrchardArt id={id} level={level} season={season} />
+  const spec = CHAPTER_ART[chapter]?.areas[id]
+  return spec ? <ChapterAreaArt spec={spec} level={level} season={season} /> : <ChapterReady />
+}
+
+function Backdrop({ chapter, stage }: { chapter: ChapterId; stage: number }) {
+  if (chapter === 'weinberg') return <VineyardBackdrop stage={stage} />
+  if (chapter === 'obstwiese') return <OrchardBackdrop stage={stage} />
+  const spec = CHAPTER_ART[chapter]?.backdrop
+  return spec ? <ChapterBackdrop spec={spec} stage={stage} /> : <OrchardBackdrop stage={stage} />
+}
+
+function WildSpot({ chapter, seed }: { chapter: ChapterId; seed: number }) {
+  if (chapter === 'weinberg') return <VineyardWild seed={seed} />
+  if (chapter === 'obstwiese') return <OrchardWild seed={seed} />
+  return <ChapterWild seed={seed} />
+}
+
+function ReadySpot({ chapter }: { chapter: ChapterId }) {
+  if (chapter === 'weinberg') return <VineyardStakes />
+  if (chapter === 'obstwiese') return <OrchardSapling />
+  return <ChapterReady />
 }
 
 interface Props {
@@ -87,7 +108,6 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
     onActivate: () => setSelected(target),
   }
 
-  const otherChapters = CHAPTERS.filter((d) => d.id !== chapter && game.openChapters.includes(d.id))
 
   return (
     <section className={`fortress-home orchard-home chapter-${chapter}`} aria-labelledby="chapter-heading">
@@ -143,19 +163,7 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
       ) : null}
 
       <div className="map-side">
-        <button type="button" className="map-side-btn plot-switch back" onClick={() => onGo('garden')} aria-label={t.chapterUi.toGarden}>
-          <IconSprout />
-          <span>{t.chapterUi.chipGarden}</span>
-        </button>
-        {otherChapters.map((d) => {
-          const o = chapterCopy(d.id)
-          return (
-            <button key={d.id} type="button" className="map-side-btn plot-switch" onClick={() => onGo(d.id)} aria-label={o.to}>
-              {o.icon}
-              <span>{o.chip}</span>
-            </button>
-          )
-        })}
+        <PlotButtons game={game} current={chapter} onGo={onGo} />
         {state.ilseLevel > 0 ? (
           <button
             type="button"
@@ -172,7 +180,7 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
 
       <div className={`garden-stage orchard-stage stage-${chapter}`} data-daypart={ambient.daypart} data-season={ambient.season}>
         <div className="garden-map" role="application" aria-label={copy.title}>
-          {chapter === 'weinberg' ? <VineyardBackdrop stage={stage} /> : <OrchardBackdrop stage={stage} />}
+          <Backdrop chapter={chapter} stage={stage} />
           {state.ilseLevel > 0 && state.ilseOn ? (
             <>
               <HelperWalker variant="ilse" />
@@ -199,9 +207,9 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
               >
                 <span className="plot-visual">
                   {!unlocked ? (
-                    chapter === 'weinberg' ? <VineyardWild seed={index} /> : <OrchardWild seed={index} />
+                    <WildSpot chapter={chapter} seed={index} />
                   ) : ready ? (
-                    chapter === 'weinberg' ? <VineyardStakes /> : <OrchardSapling />
+                    <ReadySpot chapter={chapter} />
                   ) : (
                     <AreaArt chapter={chapter} id={a.id} level={level} season={ambient.season} />
                   )}

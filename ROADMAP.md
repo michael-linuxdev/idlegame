@@ -74,19 +74,23 @@ Werkzeug: `npm run balance -- <engaged|regular|casual> <stunden>` — spielt die
     - **Oma Ilse** pflegt alle Kapitel (bezahlt in Obst), Jonas nur noch den Garten; beide mit Sprechblasen.
     - **Meilenstein-Truhen** (neuer Lebenszeit-Rekord je Bereich → Zufallsbelohnung), **Pflanzenbuch-Sets** (+2 % je komplettem Bereich), **Omas Tagesrezept**, **Regenbogen** (×5 für 60 s) / **Sternschnuppe** (Wunsch), **Messing-Gießkanne** (1 verpasster Tag/Woche zählt), **Größter Kürbis** (wöchentliche Offline-Vereinsrunde gegen 9 Nachbarn, Samen-Preise).
     - **Grafik:** Bäume nach echtem Kalender (Blüte, Laub, Schnee — Garten und Obstwiese), Zeitraffer-Wachsen beim Stufen-Sprung, pickende Hühner, Bienenflug, Glühwürmchen und Igel nachts, Morgennebel, Gartenstil-Vorschau live auf der Karte, **Foto-Modus** (Postkarte speichern/teilen).
-15. Multiplayer-Architektur (Kleingartenverein mit echtem Backend; Kürbis-Runde umstellen).
-16. Store-IAP, Impressum-Daten, Namensprüfung „Gartenerbe“, Store-Assets, Soft-Launch. Vor Launch: `STORE_ENABLED` prüfen (Platzhalter).
+15. ✅ **Migration aktiv + alle Kapitel:**
+    - **Spielstand-Migration** (ab 2026-11-08): `SAVE_VERSION`, Migrationskette, Fixtures `src/test/fixtures/save-v*.json`, Sicherungskopie vor jeder Migration und bei kaputtem Stand, Regeln in `CLAUDE.md`.
+    - **Kapitel 4–12** im Baukasten: Bauernhof, Imkerei am Waldrand, Teich & Fischerhütte, Kräuterapotheke, Botanischer Garten, Alpen-Alm, Lavendelfeld, Japanischer Garten, Gartenschau (Finale mit Omas Gedenkgarten). Je 10 Bereiche, eigene Währung, Brief, Hintergrund und Grafik (generisches Grafik-System mit 5 Stufen). Freischaltung: Generation N und der 8. Bereich des vorigen Kapitels gepflanzt → über Monate gestaffelt.
+    - **Grundstücke-Auswahl** auf der Karte, sobald mehr als zwei Grundstücke offen sind. Test: `?kapitel=all` oder `?kapitel=4,7`.
+16. Multiplayer-Architektur (Kleingartenverein mit echtem Backend; Kürbis-Runde umstellen).
+17. Store-IAP, Impressum-Daten, Namensprüfung „Gartenerbe“, Store-Assets, Soft-Launch. Vor Launch: `STORE_ENABLED` prüfen (Platzhalter).
 
 ## 5-Jahres-Plan (Inhalt)
 
 - Ein Kapitel trägt ~6–10 Wochen neue Ziele; Feste erneuern sich jährlich.
 - Ziel: **10–12 große Kapitel** in 5 Jahren (≈ alle 4–6 Monate), dazwischen je ein System-/Fest-Update. Ohne Zwischen-Updates wären ~20 Kapitel nötig.
-- Kapitel-Ideen in Reihenfolge: 4 Bauernhof (Tiere), 5 Imkerei am Waldrand, 6 Teich & Fischerhütte, 7 Kräuterapotheke, 8 Botanischer Garten (Gewächshäuser), 9 Alpen-Alm, 10 Lavendelfeld (Provence-Reise), 11 Japanischer Garten, 12 Gartenschau (Finale).
+- Kapitel 2–12 sind gebaut. Die Freischaltung staffelt sie über Generationen; spätere Updates ergänzen Kapitel 13+ (z. B. Wintergarten, Schlossgarten, Gemeinschaftsgarten) als reine Daten.
 - Freischaltung staffeln über Prestige-Ebenen (Tiefer Winter / Generation N), damit jedes Kapitel ein neues Ziel nach einem Reset ist.
 
 ## Ideen-Backlog (nächste Updates)
 
-- Kapitel 4 *Bauernhof* (Daten im Kapitel-Baukasten).
+- Kapitel 13+ als Daten (Wintergarten, Schlossgarten, Gemeinschaftsgarten in der Stadt).
 - Echter Online-Wettbewerb für den Kürbis (mit Multiplayer-Backend).
 - Ilse-/Jonas-Geschichten als kurze Briefe im Notizbuch.
 - Gartenstile für Kapitel-Karten.

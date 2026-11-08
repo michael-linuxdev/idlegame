@@ -1166,3 +1166,68 @@ html.tab-hidden .sky-event {
   text-align: center;
   line-height: 1.15;
 }
+
+/* Grundstücke picker */
+.plot-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.plot-row {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  margin: 0;
+  padding: 0.5rem 0.65rem;
+  border: 1.5px solid #c9b48a;
+  border-radius: 12px;
+  background: #fffcf4;
+  color: #33261a;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.plot-row.current {
+  border-color: #3f7a30;
+  background: #eef7e6;
+}
+
+.plot-row.locked {
+  border-style: dashed;
+  cursor: default;
+  font-size: 0.78rem;
+  color: #6a5434;
+}
+
+.plot-row-icon {
+  display: inline-flex;
+  font-size: 1.5rem;
+}
+
+.plot-row-name {
+  flex: 1;
+  font-weight: 700;
+  font-size: 0.86rem;
+}
+
+.plot-row-meta {
+  font-family: var(--oc-font-metric);
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #6a5434;
+}
+
+.fountain-jet {
+  animation: fest-twinkle 1.2s ease-in-out infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fountain-jet {
+    animation: none !important;
+  }
+}

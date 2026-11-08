@@ -401,7 +401,9 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
             <dd>+{deepPayout}</dd>
           </div>
         </dl>
-        {CHAPTERS.map((d) => {
+        {CHAPTERS.filter(
+          (d) => game.openChapters.includes(d.id) || d.id === CHAPTERS.find((c) => !game.openChapters.includes(c.id))?.id,
+        ).map((d) => {
           const copy = chapterCopy(d.id)
           return game.openChapters.includes(d.id) ? (
             <button key={d.id} type="button" className="btn ghost orchard-entry" onClick={() => onOpenChapter?.(d.id)}>
@@ -409,7 +411,7 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
             </button>
           ) : (
             <p key={d.id} className="orchard-teaser">
-              {copy.icon} {t.chapters[d.id].teaser}
+              {copy.icon} {copy.teaser}
             </p>
           )
         })}

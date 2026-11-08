@@ -9,10 +9,25 @@
  *
  *  Kapitel 2 · Streuobstwiese — after the first Tiefer Winter
  *  Kapitel 3 · Weinberg       — after the first Generation
+ *  Kapitel 4–12               — Generation N and the previous chapter's
+ *                               8th area planted (staggered over months)
+ *
+ * IDs are part of the save format — never rename (see CLAUDE.md).
  */
 import { milestoneMult } from './generators'
 
-export type ChapterId = 'obstwiese' | 'weinberg'
+export type ChapterId =
+  | 'obstwiese'
+  | 'weinberg'
+  | 'bauernhof'
+  | 'imkerei'
+  | 'teich'
+  | 'kraeuter'
+  | 'botanik'
+  | 'alm'
+  | 'lavendel'
+  | 'japangarten'
+  | 'gartenschau'
 
 export interface AreaDef {
   id: string
@@ -32,8 +47,14 @@ export interface ChapterDef {
   areas: AreaDef[]
   /** Garden Ernte bonus per chapter level (uncapped) */
   gardenBonusPerLevel: number
-  /** Opens when … (deep / generation counters) */
-  unlock: (s: { deepPrestiges: number; generation: number }) => boolean
+  /** Opens when … */
+  unlock: (s: UnlockCtx) => boolean
+}
+
+export interface UnlockCtx {
+  deepPrestiges: number
+  generation: number
+  chapters: Record<string, { owned: Record<string, number>; openedAt: number }>
 }
 
 /** Standard ten-area ladder, scaled per chapter. */
@@ -64,6 +85,39 @@ const ZIGZAG: [string, string][] = [
   ['72%', '29%'],
 ]
 
+/** Kapitel N+1 opens with Generation `gen` once `prev` has its 8th area planted. */
+function after(prev: ChapterId, prevAreas: string[], gen: number) {
+  const eighth = prevAreas[7]!
+  return (s: UnlockCtx) =>
+    s.generation >= gen && (s.chapters[prev]?.openedAt ?? 0) > 0 && (s.chapters[prev]?.owned[eighth] ?? 0) >= 1
+}
+
+const AREAS = {
+  weinberg: ['riesling', 'silvaner', 'spaetburgunder', 'dornfelder', 'trockenmauer', 'wingerthaus', 'kelter', 'weinkeller', 'strausse', 'weinfest'],
+  bauernhof: ['kuhweide', 'ziegenstall', 'schweinekoben', 'gaensewiese', 'kartoffelacker', 'heuscheune', 'melkhaus', 'kaeserei', 'hofbaeckerei', 'bauernmarkt'],
+  imkerei: ['bienenhaus', 'lindenallee', 'heide', 'rapsfeld', 'kirschhain', 'wildblumen', 'schleuder', 'wachszieherei', 'metkeller', 'honigladen'],
+  teich: ['seerosen', 'schilf', 'karpfenteich', 'forellenbach', 'steg', 'fischerhuette', 'raeucherei', 'bootsverleih', 'entenbucht', 'seefest'],
+  kraeuter: ['kamille', 'pfefferminze', 'ringelblume', 'johanniskraut', 'salbei', 'trockenboden', 'destille', 'salbenkueche', 'teestube', 'apothekergarten'],
+  botanik: ['palmenhaus', 'kakteenhaus', 'orchideenhaus', 'victoriahaus', 'rosarium', 'steingarten', 'arboretum', 'farnschlucht', 'herbarium', 'glaskuppel'],
+  alm: ['almwiese', 'kuhherde', 'sennhuette', 'edelweiss', 'enzian', 'bergbach', 'kaesekeller', 'seilbahn', 'gipfelhuette', 'almfest'],
+  lavendel: ['lavendelreihen', 'sonnenblumen', 'olivenhain', 'rosmarin', 'feigenbaum', 'destillerie', 'seifenmanufaktur', 'marktstand', 'mas', 'lavendelfest'],
+  japangarten: ['teestrauch', 'moosgarten', 'bambushain', 'kirschallee', 'koiteich', 'zengarten', 'teehaus', 'bonsai', 'rotebruecke', 'laternenweg'],
+  gartenschau: ['eingangstor', 'blumenkorso', 'rosenbogen', 'labyrinth', 'wasserspiele', 'aussichtsturm', 'festzelt', 'seebuehne', 'ehrenpavillon', 'gedenkgarten'],
+} as const
+
+const RING: [string, string][] = [
+  ['50%', '88%'],
+  ['22%', '80%'],
+  ['78%', '78%'],
+  ['30%', '67%'],
+  ['70%', '64%'],
+  ['22%', '52%'],
+  ['78%', '50%'],
+  ['34%', '39%'],
+  ['66%', '37%'],
+  ['50%', '27%'],
+]
+
 const TERRACES: [string, string][] = [
   ['26%', '86%'],
   ['70%', '83%'],
@@ -76,6 +130,20 @@ const TERRACES: [string, string][] = [
   ['26%', '32%'],
   ['70%', '30%'],
 ]
+
+const later: [ChapterId, number, [string, string][], number][] = [
+  ['bauernhof', 4, ZIGZAG, 2],
+  ['imkerei', 5, RING, 3],
+  ['teich', 6, ZIGZAG, 4.5],
+  ['kraeuter', 7, TERRACES, 7],
+  ['botanik', 8, RING, 10],
+  ['alm', 9, TERRACES, 15],
+  ['lavendel', 10, ZIGZAG, 22],
+  ['japangarten', 11, RING, 33],
+  ['gartenschau', 12, RING, 50],
+]
+
+const ORDER: ChapterId[] = ['weinberg', 'bauernhof', 'imkerei', 'teich', 'kraeuter', 'botanik', 'alm', 'lavendel', 'japangarten', 'gartenschau']
 
 export const CHAPTERS: ChapterDef[] = [
   {
@@ -92,14 +160,20 @@ export const CHAPTERS: ChapterDef[] = [
   {
     id: 'weinberg',
     number: 3,
-    areas: ladder(
-      ['riesling', 'silvaner', 'spaetburgunder', 'dornfelder', 'trockenmauer', 'wingerthaus', 'kelter', 'weinkeller', 'strausse', 'weinfest'],
-      TERRACES,
-      1.5,
-    ),
+    areas: ladder([...AREAS.weinberg], TERRACES, 1.5),
     gardenBonusPerLevel: 0.005,
     unlock: (s) => s.generation >= 1,
   },
+  ...later.map(([id, number, slots, scale]): ChapterDef => {
+    const prev = ORDER[ORDER.indexOf(id) - 1]!
+    return {
+      id,
+      number,
+      areas: ladder([...AREAS[id as keyof typeof AREAS]], slots, scale),
+      gardenBonusPerLevel: 0.004 + 0.0005 * (number - 3),
+      unlock: after(prev, [...AREAS[prev as keyof typeof AREAS]], number - 2),
+    }
+  }),
 ]
 
 export const CHAPTER_IDS: ChapterId[] = CHAPTERS.map((c) => c.id)
