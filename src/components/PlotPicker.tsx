@@ -28,7 +28,6 @@ export function PlotButtons({ game, current, onGo }: { game: GameApi; current: P
             return (
               <button key="garden" type="button" className="map-side-btn plot-switch back" onClick={() => onGo('garden')} aria-label={t.chapterUi.toGarden}>
                 <IconSprout />
-                <span>{t.chapterUi.chipGarden}</span>
               </button>
             )
           }
@@ -36,7 +35,6 @@ export function PlotButtons({ game, current, onGo }: { game: GameApi; current: P
           return (
             <button key={p} type="button" className="map-side-btn plot-switch" onClick={() => onGo(p)} aria-label={c.to}>
               {c.icon}
-              <span>{c.chip}</span>
             </button>
           )
         })}
@@ -47,7 +45,6 @@ export function PlotButtons({ game, current, onGo }: { game: GameApi; current: P
     <>
       <button type="button" className="map-side-btn plot-switch" onClick={() => setOpen(true)} aria-label={t.plots.aria}>
         <IconMap />
-        <span>{t.plots.button}</span>
       </button>
       {open ? (
         <PlotSheet

@@ -173,7 +173,6 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
             aria-label={t.ilse.toggleAria(state.ilseOn)}
           >
             <IconIlse />
-            <span>{state.ilseOn ? t.ilse.chipOn : t.ilse.chipOff}</span>
           </button>
         ) : null}
       </div>
@@ -193,7 +192,7 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
             const ac = copy.areas[a.id]!
             const ready = unlocked && level === 0
             const isSel = selected === a.id
-            const showSign = unlocked || isSel || a.id === nextId
+            const showSign = isSel || ready || a.id === nextId
             const stars = milestonesReached(level)
             return (
               <button
@@ -214,6 +213,12 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
                     <AreaArt chapter={chapter} id={a.id} level={level} season={ambient.season} />
                   )}
                 </span>
+                {!showSign && unlocked && level > 0 ? (
+                  <span className="plot-badge" aria-hidden="true">
+                    {level}
+                    {stars > 0 ? <span className="plot-badge-stars">{'★'.repeat(Math.min(3, stars))}</span> : null}
+                  </span>
+                ) : null}
                 {showSign ? (
                   <span className="plot-sign">
                     <span className="plot-name">{ac.name}</span>

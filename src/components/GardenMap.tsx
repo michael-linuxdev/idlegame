@@ -347,7 +347,7 @@ export function GardenMap({
   /** Saisonende in sight but not yet the main goal → small pill. */
   const seasonPill =
     prestigeCta && !prestigeCta.ready && !prestigeCta.spend
-      ? { label: t.prestige.pill(prestigeCta.erbstuecke), onOpen: openPrestigeCta }
+      ? { label: t.prestige.pill(prestigeCta.erbstuecke), short: `+${prestigeCta.erbstuecke}`, onOpen: openPrestigeCta }
       : null
 
   useEffect(() => {
@@ -715,7 +715,6 @@ export function GardenMap({
               aria-label={t.helper.toggleAria(state.helperOn)}
             >
               <IconHelper />
-              <span>{state.helperOn ? t.helper.chipOn : t.helper.chipOff}</span>
             </button>
           ) : null}
         </div>
@@ -793,7 +792,9 @@ export function GardenMap({
             const hint = !unlocked ? unlockHint(def, gatePrestiges(state)) : ''
             const hl = highlightId === def.id
             const ready = unlocked && level === 0
-            const showSign = unlocked || selectedHere || def.id === nextWildId
+            // Calm map: full signs only for the selected, new or next corner
+            const showSign = selectedHere || ready || def.id === nextWildId
+            const stars = milestonesReached(level)
             const cls =
               'garden-plot' +
               (selectedHere ? ' selected' : '') +
@@ -848,6 +849,12 @@ export function GardenMap({
                     window.setTimeout(() => setGrowing((g) => (g === def.id ? null : g)), 1300)
                   }}
                 />
+                {!showSign && unlocked && level > 0 ? (
+                  <span className="plot-badge" aria-hidden="true">
+                    {level}
+                    {stars > 0 ? <span className="plot-badge-stars">{'★'.repeat(Math.min(3, stars))}</span> : null}
+                  </span>
+                ) : null}
                 {showSign ? (
                   <span className="plot-sign">
                     <span className="plot-name">{def.name}</span>
