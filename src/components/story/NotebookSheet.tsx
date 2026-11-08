@@ -25,10 +25,18 @@ interface Props {
 }
 
 function hintFor(def: (typeof NOTEBOOK_ENTRIES)[number]): string {
+  if (def.helper != null) return t.notebook.lockedHintHelper(def.helper)
+  if (def.ilse != null) return t.notebook.lockedHintIlse(def.ilse)
+  if (def.generation != null) return t.notebook.lockedHintGeneration
   if (def.deep != null) return t.notebook.lockedHintDeep
   if (def.year != null) return t.notebook.lockedHintYear(def.year)
   if (def.stage != null) return t.notebook.lockedHintStage(t.gardenStage.names[def.stage])
   return t.notebook.lockedEntry
+}
+
+function signatureFor(id: NotebookEntryId | null): string {
+  const from = NOTEBOOK_ENTRIES.find((e) => e.id === id)?.from
+  return from === 'jonas' ? t.notebook.signatureJonas : from === 'ilse' ? t.notebook.signatureIlse : t.notebook.signature
 }
 
 /** Omas Notizbuch — a paper notebook with all letters found so far. */
@@ -100,7 +108,7 @@ export function NotebookSheet({ notebook, initialEntry, onRead, onClose, collect
           <article className="notebook-letter" aria-live="polite">
             <h3 id={open ? 'notebook-title' : undefined}>{entry.title}</h3>
             <p>{entry.body}</p>
-            <p className="notebook-signature">{t.notebook.signature}</p>
+            <p className="notebook-signature">{signatureFor(open)}</p>
           </article>
         ) : (
           <>
@@ -118,6 +126,9 @@ export function NotebookSheet({ notebook, initialEntry, onRead, onClose, collect
                         className={`notebook-page${unread ? ' unread' : ''}`}
                         onClick={() => setOpen(def.id)}
                       >
+                        {def.from && def.from !== 'oma' ? (
+                          <span className="notebook-page-from">{def.from === 'jonas' ? t.notebook.fromJonas : t.notebook.fromIlse}</span>
+                        ) : null}
                         <span className="notebook-page-title">{copy.title}</span>
                         <span className="notebook-page-snippet">{copy.body.slice(0, 64)}…</span>
                       </button>

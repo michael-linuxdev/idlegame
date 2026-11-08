@@ -757,6 +757,13 @@ export const strings = {
     lockedHintStage: (name: string) => `Öffnet sich beim ${name}.`,
     lockedHintYear: (year: number) => `Öffnet sich im ${year}. Gartenjahr.`,
     lockedHintDeep: 'Öffnet sich nach dem ersten Tiefen Winter.',
+    lockedHintHelper: (n: number) => `Ein Brief von Jonas — kommt, wenn er Stufe ${n} erreicht.`,
+    lockedHintIlse: (n: number) => `Ein Brief von Ilse — kommt, wenn sie Stufe ${n} erreicht.`,
+    lockedHintGeneration: 'Ein Brief von Ilse — kommt, wenn du den Garten weitergibst.',
+    signatureJonas: '— Dein Jonas',
+    signatureIlse: '— Deine Ilse',
+    fromJonas: 'Brief von Jonas',
+    fromIlse: 'Brief von Ilse',
     close: 'Notizbuch schließen',
     read: 'Gelesen',
     signature: '— Deine Oma',
@@ -809,6 +816,30 @@ export const strings = {
       year10: {
         title: 'Ein eigener Hofladen',
         body: 'Du erntest mehr, als du essen kannst — das ist ein gutes Zeichen. Stell ein paar Kisten an den Zaun und eine Kasse des Vertrauens. Die Leute sind ehrlicher, als man denkt.',
+      },
+      jonas1: {
+        title: 'Hallo von nebenan!',
+        body: 'Ich bin Jonas, ich wohne zwei Gärten weiter. Ihre Oma hat mir früher immer Erdbeeren geschenkt, wenn ich beim Unkrautzupfen geholfen hab. Jetzt helfe ich Ihnen — ich bin noch langsam, aber ich lerne schnell. Versprochen!',
+      },
+      jonas3: {
+        title: 'Ich hab was gelernt',
+        body: 'Ich weiß jetzt, welche Beete sich lohnen und welche warten können. Gestern hat mir Frau Ilse gezeigt, wie man Kompost richtig umsetzt. Meine Mama sagt, ich rieche nach Garten. Ich finde, das ist ein Kompliment.',
+      },
+      jonas5: {
+        title: 'Jetzt mach ich das richtig',
+        body: 'Ich plane jetzt den ganzen Garten selbst, so wie Ihre Oma es gemacht hätte: erst das Neue anlegen, dann auf die großen Sprünge sparen. Sie können sich zurücklehnen. Ich pass auf alles auf — auch wenn Sie nicht da sind.',
+      },
+      ilse1: {
+        title: 'Von einer alten Freundin',
+        body: 'Deine Oma und ich haben fünfzig Jahre lang über den Zaun geredet. Über Äpfel, über Männer, über das Wetter. Jetzt pflege ich ihre Wiesen ein bisschen mit — das bin ich ihr schuldig. Und du bringst mir dafür ab und zu Obst, ja?',
+      },
+      ilse3: {
+        title: 'Was sie dir nie gesagt hat',
+        body: 'Sie war so stolz auf dich. Jedes Mal, wenn du zu Besuch warst, hat sie danach eine neue Sorte gepflanzt — „für später, wenn das Kind mal soweit ist“. Schau dich um. Das hier ist dieses Später.',
+      },
+      gen1: {
+        title: 'Weitergeben',
+        body: 'So hat sie es auch gemacht: Irgendwann gibt man den Garten weiter, mit allem, was man weiß. Die Beete fangen wieder klein an, aber die Familie wird jedes Mal ein bisschen reicher. Ich bleibe übrigens. Unkraut wächst schließlich auch weiter.',
       },
       deep1: {
         title: 'Ein neues Kapitel',

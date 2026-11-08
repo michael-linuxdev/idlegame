@@ -2,6 +2,7 @@
  * Omas Notizbuch — narrative letters unlocked by progress.
  *  - stage letters: highest garden stage ever reached (areas angelegt)
  *  - year letters: Gartenjahr reached (Saisonenden + 1)
+ *  - letters from Jonas / Ilse: their ranks and the first Generation
  * Persisted separately from the run save so letters survive Saisonende.
  */
 import { useCallback, useEffect, useState } from 'react'
@@ -23,6 +24,12 @@ export type NotebookEntryId =
   | 'year10'
   | 'year14'
   | 'deep1'
+  | 'jonas1'
+  | 'jonas3'
+  | 'jonas5'
+  | 'ilse1'
+  | 'ilse3'
+  | 'gen1'
 
 export interface NotebookEntryDef {
   id: NotebookEntryId
@@ -32,6 +39,21 @@ export interface NotebookEntryDef {
   year?: number
   /** Unlock by Tiefe Winter completed */
   deep?: number
+  /** Unlock by Gartenhelfer rank (Jonas) */
+  helper?: number
+  /** Unlock by Ilse rank */
+  ilse?: number
+  /** Unlock by Generation handed down */
+  generation?: number
+  /** Who wrote it (default Oma) */
+  from?: 'oma' | 'jonas' | 'ilse'
+}
+
+/** Extra progress for the Ilse/Jonas letters. */
+export interface NotebookExtra {
+  helper?: number
+  ilse?: number
+  generation?: number
 }
 
 /** Story order — the notebook lists pages in this sequence. */
@@ -40,16 +62,22 @@ export const NOTEBOOK_ENTRIES: NotebookEntryDef[] = [
   { id: 'stage2', stage: 2 },
   { id: 'stage4', stage: 4 },
   { id: 'year2', year: 2 },
+  { id: 'jonas1', helper: 1, from: 'jonas' },
   { id: 'stage5', stage: 5 },
   { id: 'year3', year: 3 },
   { id: 'year5', year: 5 },
   { id: 'stage7', stage: 7 },
   { id: 'year7', year: 7 },
+  { id: 'jonas3', helper: 3, from: 'jonas' },
   { id: 'year10', year: 10 },
   { id: 'stage9', stage: 9 },
   { id: 'year14', year: 14 },
   { id: 'stage10', stage: 10 },
   { id: 'deep1', deep: 1 },
+  { id: 'ilse1', ilse: 1, from: 'ilse' },
+  { id: 'jonas5', helper: 5, from: 'jonas' },
+  { id: 'gen1', generation: 1, from: 'ilse' },
+  { id: 'ilse3', ilse: 3, from: 'ilse' },
 ]
 
 /** Letter Oma sends when a given Gartenjahr begins (for the ceremony). */
@@ -100,6 +128,7 @@ export function unlockFor(
   stage: number,
   year: number,
   deep = 0,
+  extra: NotebookExtra = {},
 ): NotebookState {
   const maxStage = Math.max(s.maxStage, stage)
   const unlocked = [...s.unlocked]
@@ -108,7 +137,10 @@ export function unlockFor(
     if (
       (e.stage != null && maxStage >= e.stage) ||
       (e.year != null && year >= e.year) ||
-      (e.deep != null && deep >= e.deep)
+      (e.deep != null && deep >= e.deep) ||
+      (e.helper != null && (extra.helper ?? 0) >= e.helper) ||
+      (e.ilse != null && (extra.ilse ?? 0) >= e.ilse) ||
+      (e.generation != null && (extra.generation ?? 0) >= e.generation)
     ) {
       unlocked.push(e.id)
     }
@@ -117,11 +149,11 @@ export function unlockFor(
   return { ...s, unlocked, maxStage }
 }
 
-export function useNotebook(stage: number, year: number, deep = 0) {
+export function useNotebook(stage: number, year: number, deep = 0, extra: NotebookExtra = {}) {
   const [base, setBase] = useState<NotebookState>(() => loadNotebook())
   // Unlock during render (guarded) so letters found this season stay
   // unlocked after Saisonende resets the garden stage.
-  const nb = unlockFor(base, stage, year, deep)
+  const nb = unlockFor(base, stage, year, deep, extra)
   if (nb !== base) setBase(nb)
 
   useEffect(() => {

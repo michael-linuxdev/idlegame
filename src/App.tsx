@@ -131,7 +131,7 @@ export default function App() {
     (g) => (game.state.owned[g.id] ?? 0) > 0 && game.unlocked(g.id),
   ).length
   const year = game.state.prestiges + 1
-  const { notebook, unread, markRead } = useNotebook(gardenStage, year, game.state.deepPrestiges)
+  const { notebook, unread, markRead } = useNotebook(gardenStage, year, game.state.deepPrestiges, { helper: game.state.helperLevel, ilse: game.state.ilseLevel, generation: game.state.generation })
   const openNotebook = useCallback(
     (entry: NotebookEntryId | null = null) => setNotebookOpen({ entry }),
     [],
