@@ -1768,3 +1768,46 @@ html.tab-hidden .sky-event {
   transform: scale(1.35) translateY(4%);
   transform-origin: 50% 60%;
 }
+
+/* —— Nur Hochformat: Hinweis, wenn ein Handy quer gehalten wird —— */
+.rotate-lock {
+  display: none;
+}
+
+@media (orientation: landscape) and (max-height: 540px) {
+  .rotate-lock {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    padding: 1.5rem;
+    background: linear-gradient(180deg, #e8f0e4, #dce8d6);
+    color: #33261a;
+    font-family: var(--oc-font-display);
+    font-size: 1.1rem;
+    text-align: center;
+  }
+
+  .rotate-lock svg {
+    animation: rotate-hint 2.4s ease-in-out infinite;
+  }
+
+  .rotate-lock ~ * {
+    visibility: hidden;
+  }
+}
+
+@keyframes rotate-hint {
+  0%, 30% { transform: rotate(-90deg); }
+  60%, 100% { transform: rotate(0deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rotate-lock svg {
+    animation: none;
+  }
+}

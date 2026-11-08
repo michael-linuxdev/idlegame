@@ -141,6 +141,15 @@ export default function App() {
 
   return (
     <div className="app-shell">
+      <div className="rotate-lock" role="alert">
+        <svg viewBox="0 0 64 64" width="64" height="64" aria-hidden="true">
+          <rect x="20" y="8" width="24" height="44" rx="5" fill="#fbf6e8" stroke="#6e4a2b" strokeWidth="3" />
+          <circle cx="32" cy="45" r="2.4" fill="#6e4a2b" />
+          <path d="M10 34a22 22 0 0 1 8-17M54 30a22 22 0 0 1-8 17" stroke="#5f9e45" strokeWidth="3" fill="none" strokeLinecap="round" />
+          <path d="M14 14l4 3-5 2zM50 50l-4-3 5-2z" fill="#5f9e45" />
+        </svg>
+        <p>{t.rotate}</p>
+      </div>
       <main
         className={`app-main${tab === 'fortress' ? ' map-mode' : ''}`}
         tabIndex={tab === 'fortress' ? undefined : 0}
