@@ -5,7 +5,9 @@ import type { Daypart } from '../theme/ambient'
 /**
  * Chapter life (pure CSS animation, see expansion.css):
  * Bauernhof — chickens + a wandering cat; Imkerei — bee swarms;
- * Teich — ducks crossing the lake, jumping fish, dragonflies.
+ * Teich — ducks crossing the lake, jumping fish, dragonflies;
+ * Kräuter — butterflies + a hopping blackbird; Botanik — strolling peacock +
+ * blue butterflies; Alm — marmot on the lookout + circling eagle.
  */
 export const ChapterCritters = memo(function ChapterCritters({ chapter, daypart }: { chapter: ChapterId; daypart: Daypart }) {
   const night = daypart === 'night'
@@ -89,6 +91,78 @@ export const ChapterCritters = memo(function ChapterCritters({ chapter, daypart 
           </>
         ) : (
           Array.from({ length: 6 }, (_, i) => <span key={i} className="firefly" style={{ left: `${12 + i * 14}%`, top: `${36 + ((i * 13) % 30)}%` }} />)
+        )}
+      </div>
+    )
+  }
+  if (chapter === 'kraeuter' || chapter === 'botanik') {
+    const blue = chapter === 'botanik'
+    return (
+      <div className="critters" aria-hidden="true">
+        {!night
+          ? [0, 1, 2].map((i) => (
+              <div key={i} className={`critter butterfly-flit f${i}`}>
+                <svg viewBox="0 0 12 8" focusable="false">
+                  <path className="wing" d="M6 4c-3-4-6-3-5 0 1 2 4 1 5 0zM6 4c3-4 6-3 5 0-1 2-4 1-5 0z" fill={blue ? ['#3d6fd1', '#5fb0e0', '#f5e08a'][i] : ['#fbf6e8', '#f5e08a', '#f08a2c'][i]} stroke="#4a3a2a" strokeWidth=".3" />
+                </svg>
+              </div>
+            ))
+          : Array.from({ length: 6 }, (_, i) => <span key={i} className="firefly" style={{ left: `${12 + i * 14}%`, top: `${40 + ((i * 13) % 34)}%` }} />)}
+        {!night && !blue ? (
+          <div className="critter blackbird">
+            <svg viewBox="0 0 16 10" focusable="false">
+              <ellipse cx="7" cy="6" rx="5" ry="3" fill="#2a2a2a" />
+              <circle cx="12" cy="4" r="2.2" fill="#2a2a2a" />
+              <path d="M14 4l2 .6-2 .6z" fill="#f0a020" />
+              <path d="M2 5l-2 -2v3z" fill="#2a2a2a" />
+              <path d="M6 9v1M8 9v1" stroke="#f0a020" strokeWidth=".6" />
+            </svg>
+          </div>
+        ) : null}
+        {!night && blue ? (
+          <div className="critter peacock">
+            <svg viewBox="0 0 30 20" focusable="false">
+              <path d="M2 16 Q0 4 12 6 L16 14z" fill="#2f7a5a" />
+              {[4, 7, 10].map((x) => (
+                <circle key={x} cx={x} cy={10 + (x % 2)} r="1.2" fill="#3d6fd1" stroke="#f5c542" strokeWidth=".4" />
+              ))}
+              <ellipse cx="17" cy="14" rx="5" ry="3.4" fill="#2e5fc4" />
+              <path d="M20 12 Q22 6 21 3" stroke="#2e5fc4" strokeWidth="2" fill="none" />
+              <path d="M21 3l2.2 .8-2.2.6z" fill="#e8b422" />
+              <path d="M20.6 2.6l-.6-2M21.4 2.6l.6-2" stroke="#2e5fc4" strokeWidth=".4" />
+              <path d="M16 17v3M19 17v3" stroke="#8a6a40" strokeWidth=".8" />
+            </svg>
+          </div>
+        ) : null}
+      </div>
+    )
+  }
+  if (chapter === 'alm') {
+    return (
+      <div className="critters" aria-hidden="true">
+        {!night ? (
+          <>
+            <div className="critter marmot">
+              <svg viewBox="0 0 12 16" focusable="false">
+                <ellipse cx="6" cy="15" rx="5" ry="1.6" fill="#7a5a34" />
+                <ellipse cx="6" cy="10" rx="3.6" ry="5" fill="#a5733f" />
+                <circle cx="6" cy="4.4" r="2.8" fill="#a5733f" />
+                <ellipse cx="6" cy="10.6" rx="2" ry="3" fill="#d9b48a" />
+                <circle cx="5" cy="4" r=".5" fill="#2a1a0a" />
+                <circle cx="7" cy="4" r=".5" fill="#2a1a0a" />
+                <path d="M4.6 8.4l-1 1.4M7.4 8.4l1 1.4" stroke="#8a5a32" strokeWidth=".8" />
+              </svg>
+            </div>
+            <div className="critter eagle">
+              <svg viewBox="0 0 24 8" focusable="false">
+                <path d="M12 4 Q6 0 0 2 Q6 3 10 5z M12 4 Q18 0 24 2 Q18 3 14 5z" fill="#4a3a2a" />
+                <ellipse cx="12" cy="4.6" rx="2" ry="1.4" fill="#5a4a3a" />
+                <circle cx="12" cy="3.2" r=".9" fill="#efe6d4" />
+              </svg>
+            </div>
+          </>
+        ) : (
+          Array.from({ length: 10 }, (_, i) => <span key={i} className="star-twinkle" style={{ left: `${6 + i * 9.4}%`, top: `${2 + ((i * 7) % 9)}%` }} />)
         )}
       </div>
     )

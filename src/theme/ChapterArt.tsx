@@ -559,6 +559,53 @@ export const ChapterBackdrop = memo(function ChapterBackdrop({ spec, stage }: { 
             <ellipse cx="42" cy="55" rx="12" ry="3" fill="#fff" opacity=".18" />
           </g>
         ) : null}
+        {spec.herbGarden
+          ? [
+              [1, 42, 10, 4.4],
+              [89, 40, 10, 4.4],
+              [1, 66, 10, 4.4],
+              [89, 64, 10, 4.4],
+            ].map(([x, y, w, h], i) => (
+              <g key={`hb${i}`}>
+                <rect x={x} y={y} width={w} height={h} fill="#4f8a3a" />
+                <rect x={x! + 1} y={y! + 0.6} width={w! - 2} height={h! - 1.2} fill="#8a6a40" />
+                {Array.from({ length: 3 }, (_, k) => (
+                  <ellipse key={k} cx={x! + 2.4 + k * ((w! - 4.8) / 2)} cy={y! + h! / 2} rx="1" ry=".5" fill={['#c77dd1', '#f5c542', '#fbf6e8'][(i + k) % 3]} />
+                ))}
+              </g>
+            ))
+          : null}
+        {spec.glasshouse ? (
+          <g>
+            <ellipse cx="50" cy="58" rx="11" ry="3.4" fill="#eae2d0" />
+            <ellipse cx="50" cy="58" rx="6" ry="1.8" fill="#bdb3a0" />
+            <ellipse cx="50" cy="57.8" rx="5" ry="1.4" fill="#6aa6c9" />
+            <ellipse cx="50" cy="57.2" rx=".8" ry="1" fill="#d6eef8" />
+            {[
+              [6, 44],
+              [94, 42],
+              [8, 72],
+              [92, 70],
+            ].map(([x, y], i) => (
+              <ellipse key={i} cx={x} cy={y} rx="4" ry="1.9" fill={i % 2 ? '#4f8f3c' : '#5f9e45'} />
+            ))}
+          </g>
+        ) : null}
+        {spec.alps
+          ? [
+              [5, 42, 0],
+              [95, 40, 1],
+              [4, 70, 2],
+              [96, 74, 0],
+              [50, 96, 1],
+            ].map(([x, y, k], i) =>
+              k === 1 ? (
+                <path key={`al${i}`} d={`M${x} ${y} l-3 6 h6z`} fill="#2f6a3a" />
+              ) : (
+                <path key={`al${i}`} d={`M${x! - 3} ${y} l1.6 -2.4 h2.6 l1.8 2.4z`} fill="#a69a8a" />
+              ),
+            )
+          : null}
         {spec.water === 'lake' ? <ellipse cx="50" cy="62" rx="16" ry="7" fill="#6aa6c9" opacity="0.9" /> : null}
         {spec.water === 'river' ? (
           <path d="M100 58 C90 64 96 72 86 78 C78 84 84 92 76 100" stroke="#6aa6c9" strokeWidth="14" fill="none" vectorEffect="non-scaling-stroke" />
@@ -583,7 +630,55 @@ export const ChapterBackdrop = memo(function ChapterBackdrop({ spec, stage }: { 
               <path d="M50 14 L60 6 L70 14 M160 8 L170 0 L180 8 M290 18 L300 10 L310 18" stroke="#fff" strokeWidth="5" fill="none" />
             </g>
           ) : null}
+          {spec.alps ? (
+            <g>
+              <path d="M0 60 L50 4 L96 34 L150 0 L214 40 L262 6 L330 36 L372 12 L400 24 V60z" fill="#8a9aae" />
+              <path d="M0 60 L50 4 L70 26 L60 60z M150 0 L176 22 L160 60 L130 60z M262 6 L290 30 L276 60 L240 60z" fill="#7a8a9e" />
+              <path d="M38 18 L50 4 L64 20 L56 17 L50 22 L44 16z M136 16 L150 0 L166 18 L157 14 L150 20 L143 13z M250 20 L262 6 L276 22 L268 18 L262 24 L256 18z M364 20 L372 12 L382 20 L376 18z" fill="#fff" />
+            </g>
+          ) : null}
           <path d="M0 60 V30 Q60 8 140 26 T280 18 T400 24 V60z" fill={spec.hills[0]} />
+          {spec.herbGarden ? (
+            <g>
+              <rect x="0" y="34" width="400" height="14" fill="#b8654a" />
+              {Array.from({ length: 20 }, (_, i) => (
+                <path key={i} d={`M${i * 20} 34v14M${i * 20 + 10} 41v7M0 41h400`} stroke="#8a4a32" strokeWidth="1" />
+              ))}
+              <rect x="0" y="31" width="400" height="4" fill="#d9c0a0" />
+              <path d="M188 48 V34 a12 12 0 0 1 24 0 V48z" fill="#5a3d22" />
+              <path d="M200 22 v26" stroke="#3a2a1a" strokeWidth="1" />
+              <rect x="300" y="16" width="38" height="24" fill="#f5f0e0" />
+              <path d="M296 16 L319 2 L342 16z" fill="#7a5ab8" />
+              <rect x="314" y="26" width="10" height="14" fill="#7a5532" />
+              <rect x="306" y="20" width="6" height="5" fill="#8fd0ec" />
+              <rect x="326" y="20" width="6" height="5" fill="#8fd0ec" />
+            </g>
+          ) : null}
+          {spec.glasshouse ? (
+            <g>
+              <path d="M130 44 V26 Q200 -14 270 26 V44z" fill="#cfe8f4" opacity=".85" stroke="#fff" strokeWidth="1.6" />
+              <path d="M170 44 V14 M200 44 V6 M230 44 V14 M130 32 H270" stroke="#fff" strokeWidth="1.2" />
+              <path d="M184 18 Q200 -2 216 18z" fill="#e8f4fa" stroke="#fff" strokeWidth="1.2" />
+              <path d="M200 2 v-6" stroke="#6e4a2b" strokeWidth="1.4" />
+              <path d="M150 40 q6 -14 12 -12 M244 40 q-4 -14 -10 -14" stroke="#4f9a3a" strokeWidth="3" fill="none" />
+              {[40, 80, 330, 370].map((x) => (
+                <circle key={x} cx={x} cy={30} r="12" fill="#4f8f3c" />
+              ))}
+            </g>
+          ) : null}
+          {spec.alps ? (
+            <g>
+              {Array.from({ length: 9 }, (_, i) => {
+                const x = 10 + i * 44 + (i % 2) * 8
+                return <path key={i} d={`M${x} 46 L${x + 6} 28 L${x + 12} 46z`} fill="#2f5a2e" />
+              })}
+              <rect x="300" y="26" width="16" height="14" fill="#f5f0e0" />
+              <path d="M298 26 L308 16 L318 26z" fill="#8a3a2a" />
+              <rect x="304" y="12" width="5" height="10" fill="#f5f0e0" />
+              <path d="M303 12 L306.5 4 L310 12z" fill="#8a3a2a" />
+            </g>
+          ) : null}
+
           {spec.forest
             ? Array.from({ length: 26 }, (_, i) => {
                 const x = i * 16 - 4
