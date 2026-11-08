@@ -103,8 +103,8 @@ export const LEVEL_REWARDS: LevelRewardDef[] = [
   {
     level: 10,
     kind: 'cosmetic',
-    cosmeticId: 'amberPad',
-    label: () => t.level.rewards.cosmetic(t.cosmetics.amberPad.name),
+    cosmeticId: 'bauerngarten',
+    label: () => t.level.rewards.cosmetic(t.cosmetics.bauerngarten.name),
   },
   {
     level: 15,
@@ -115,19 +115,19 @@ export const LEVEL_REWARDS: LevelRewardDef[] = [
   {
     level: 20,
     kind: 'cosmetic',
-    cosmeticId: 'iceAisle',
-    label: () => t.level.rewards.cosmetic(t.cosmetics.iceAisle.name),
+    cosmeticId: 'bluetenmeer',
+    label: () => t.level.rewards.cosmetic(t.cosmetics.bluetenmeer.name),
   },
 ]
 
 /** Module unlock OR-gates by Spieler-Level (theme-agnostic IDs). */
 export const LEVEL_MODULE_GATES: Partial<Record<string, number>> = {
   // Mid/late modules: level can substitute for ash/prior gates
-  cinderVault: 6,
-  ashWatch: 9,
-  dominionKeep: 12,
-  batteryBank: 16,
-  edgeCache: 20,
-  quantumCooler: 25,
-  packetScrubber: 30,
+  beerenhecke: 6,
+  obstwiese: 9,
+  bienenstock: 12,
+  huehnerstall: 16,
+  gewaechshaus: 20,
+  hofladen: 25,
+  orangerie: 30,
 }

@@ -238,7 +238,7 @@ export function emptyOwned(): Record<GeneratorId, number> {
     owned[id] = 0
   }
   // G1 (first module) starts online — producing immediately (economy Day-1)
-  owned.emberPit = 1
+  owned.gemuesebeet = 1
   return owned
 }
 
@@ -258,8 +258,8 @@ export function createInitialState(now = Date.now()): GameState {
     clanMult: 1,
     // Day-1 login gift: 20 Obsidian (economy.md §10)
     obsidian: 20,
-    ownedCosmetics: ['steelDeck'],
-    equippedCosmetic: 'steelDeck',
+    ownedCosmetics: ['wiese'],
+    equippedCosmetic: 'wiese',
     skipHoursUsedToday: 0,
     skipDayKey: dayKey(now),
     clanBoostExpiresAt: 0,
@@ -308,10 +308,10 @@ export function createPostPrestigeState(prev: GameState, now = Date.now()): Game
   const owned = emptyOwned()
   const startLevel = prestigeStartModuleLevel(prev.emberUpgrades)
   if (startLevel > 0) {
-    owned.emberPit = Math.max(owned.emberPit, startLevel)
+    owned.gemuesebeet = Math.max(owned.gemuesebeet, startLevel)
   }
-  const g1 = GENERATORS.find((g) => g.id === 'emberPit')
-  const g1Level = owned.emberPit
+  const g1 = GENERATORS.find((g) => g.id === 'gemuesebeet')
+  const g1Level = owned.gemuesebeet
   const g1Cost = g1
     ? generatorCost(g1, g1Level, foundryDiscountMult(prev.emberUpgrades))
     : 23

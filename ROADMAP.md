@@ -24,7 +24,9 @@ Stand: 2026-11-08.
 | Premium | Samen |
 | Prestige | Saisonende |
 
-Modul-Kandidaten (10 Plätze): Gemüsebeet, Kompost, Regentonne, Kräuterspirale, Obstbäume, Bienenstock, Gewächshaus, Teich, Hofladen, Orangerie.
+Module (10 Plätze, G1 → G10): Gemüsebeet, Kompost, Kräuterspirale, Beerenhecke, Obstwiese, Bienenstock, Hühnerstall, Gewächshaus, Hofladen, Orangerie. Regentonne, Teich und Laube sind Deko auf der Karte.
+
+Weitere Begriffe: Gärtnerstufe (Spieler-Level), Gießen (Burst), Kleingartenverein (Clan), Markt (Shop), Omas Truhe (Meta-Shop), Gartenstile (Skins), Sonnenfenster (Blitz-Event), Erntefest (Wochenend-Event), Tägliche Gartenrunde (Daily).
 
 ## Prinzipien
 
@@ -37,7 +39,7 @@ Modul-Kandidaten (10 Plätze): Gemüsebeet, Kompost, Regentonne, Kräuterspirale
 ## Pipeline
 
 1. ✅ **Aufräumen:** nur noch ein Thema; Tokenhalle/Arcade, Theme-Weiche und Alt-Speicherstände entfernt.
-2. **Texte & Erzählung:** Begriffe, 10 Garten-Module (neue IDs), Omas Notizbuch als FTUE, Saisonende.
+2. ✅ **Texte & Erzählung:** Begriffe, 10 Garten-Module (neue IDs), Omas Notizbuch als FTUE, Saisonende.
 3. **Karte:** Garten-Grundstück (Draufsicht / leichtes Iso), Wildnis auf gesperrten Plätzen, Plätze frei vom HUD.
 4. **Modulgrafik:** 4–5 sichtbare Ausbaustufen pro Modul.
 5. **HUD:** drei Zonen, Event-Leiste, keine Überlappungen (verwaistes ×, abgeschnittene Texte, widersprüchliche Ziele).

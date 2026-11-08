@@ -1925,6 +1925,47 @@
   overflow: hidden;
 }
 
+.upgrade-hud-eyebrow {
+  margin: 0;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--oc-ink-faint);
+}
+
+/* Omas Notizbuch — handwritten note on lined paper */
+.oma-note {
+  margin: 0.4rem 0 0.5rem;
+  padding: 0.45rem 0.65rem 0.5rem;
+  border-radius: 6px;
+  background:
+    repeating-linear-gradient(
+      180deg,
+      transparent 0 1.15rem,
+      color-mix(in srgb, var(--oc-note-line, #9bb7d4) 45%, transparent) 1.15rem 1.2rem
+    ),
+    var(--oc-paper, #fdf8ec);
+  border-left: 3px solid var(--oc-note-margin, #d98c7a);
+  box-shadow: 0 1px 3px rgba(60, 50, 30, 0.12);
+}
+
+.oma-note-label {
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--oc-ink-faint);
+}
+
+.oma-note-text {
+  margin: 0.1rem 0 0;
+  font-family: var(--oc-font-hand, var(--oc-font-display));
+  font-size: 0.95rem;
+  line-height: 1.2rem;
+  color: var(--oc-ink-ink, #2b3a55);
+}
+
 .upgrade-hud-close {
   appearance: none;
   flex-shrink: 0;
@@ -3252,19 +3293,19 @@
   border: 1px solid var(--oc-stroke-strong);
 }
 
-.cosmetic-swatch.skin-steel {
+.cosmetic-swatch.skin-wiese {
   background: linear-gradient(145deg, #e8eef4, #c5d0dc);
 }
 
-.cosmetic-swatch.skin-amber {
+.cosmetic-swatch.skin-bauerngarten {
   background: linear-gradient(145deg, #f0d4a8, #d4893a);
 }
 
-.cosmetic-swatch.skin-ice {
+.cosmetic-swatch.skin-bluetenmeer {
   background: linear-gradient(145deg, #cfe8f4, #3d8eb8);
 }
 
-.cosmetic-swatch.skin-gold {
+.cosmetic-swatch.skin-goldherbst {
   background: linear-gradient(145deg, #e8d9a8, #8a7348);
 }
 
@@ -3334,30 +3375,30 @@
   transition: opacity 0.35s ease;
 }
 
-.fortress-stage.skin-amber .map-skin-wash {
+.fortress-stage.skin-bauerngarten .map-skin-wash {
   opacity: 1;
   background:
     radial-gradient(60% 50% at 50% 55%, rgba(212, 137, 58, 0.28), transparent 70%);
 }
 
-.fortress-stage.skin-ice .map-skin-wash {
+.fortress-stage.skin-bluetenmeer .map-skin-wash {
   opacity: 1;
   background:
     radial-gradient(70% 55% at 50% 40%, rgba(61, 142, 184, 0.26), transparent 72%);
 }
 
-.fortress-stage.skin-ice .map-walls .wall-segment,
-.fortress-stage.skin-ice .map-walls .wall-tower {
+.fortress-stage.skin-bluetenmeer .map-walls .wall-segment,
+.fortress-stage.skin-bluetenmeer .map-walls .wall-tower {
   box-shadow: 0 0 0 1px rgba(126, 184, 212, 0.55);
 }
 
-.fortress-stage.skin-gold .map-skin-wash {
+.fortress-stage.skin-goldherbst .map-skin-wash {
   opacity: 1;
   background:
     radial-gradient(55% 48% at 50% 48%, rgba(184, 154, 92, 0.3), transparent 68%);
 }
 
-.fortress-stage.skin-gold .map-keep-silhouette {
+.fortress-stage.skin-goldherbst .map-keep-silhouette {
   filter: sepia(0.35) saturate(1.1);
 }
 

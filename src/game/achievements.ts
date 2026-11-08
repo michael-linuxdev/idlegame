@@ -9,8 +9,8 @@ import type { GeneratorId } from './generators'
 
 export type AchievementId =
   | 'firstUpgrade'
-  | 'greenhouseTen'
-  | 'pumpOnline'
+  | 'bedTen'
+  | 'compostOnline'
   | 'earn10k'
   | 'dailyOnce'
   | 'offlineOnce'
@@ -41,17 +41,17 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     rewardLabel: () => t.achievements.rewardAsh(30),
   },
   {
-    id: 'greenhouseTen',
-    name: () => t.achievements.greenhouseTen.name,
-    blurb: () => t.achievements.greenhouseTen.blurb,
+    id: 'bedTen',
+    name: () => t.achievements.bedTen.name,
+    blurb: () => t.achievements.bedTen.blurb,
     rewardKind: 'ash',
     rewardAmount: 120,
     rewardLabel: () => t.achievements.rewardAsh(120),
   },
   {
-    id: 'pumpOnline',
-    name: () => t.achievements.pumpOnline.name,
-    blurb: () => t.achievements.pumpOnline.blurb,
+    id: 'compostOnline',
+    name: () => t.achievements.compostOnline.name,
+    blurb: () => t.achievements.compostOnline.blurb,
     rewardKind: 'obsidian',
     rewardAmount: 8,
     rewardLabel: () => t.achievements.rewardObsidian(8),
@@ -101,9 +101,9 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     name: () => t.achievements.prestigeOnce.name,
     blurb: () => t.achievements.prestigeOnce.blurb,
     rewardKind: 'cosmetic',
-    cosmeticId: 'goldOps',
+    cosmeticId: 'goldherbst',
     rewardLabel: () =>
-      t.achievements.rewardCosmetic(t.cosmetics.goldOps.name),
+      t.achievements.rewardCosmetic(t.cosmetics.goldherbst.name),
   },
   {
     id: 'upgradesFifty',
@@ -134,10 +134,10 @@ export function isAchievementComplete(
   switch (id) {
     case 'firstUpgrade':
       return stats.totalUpgrades >= 1
-    case 'greenhouseTen':
-      return (stats.owned.emberPit ?? 0) >= 10
-    case 'pumpOnline':
-      return (stats.owned.ashForge ?? 0) >= 1
+    case 'bedTen':
+      return (stats.owned.gemuesebeet ?? 0) >= 10
+    case 'compostOnline':
+      return (stats.owned.kompost ?? 0) >= 1
     case 'earn10k':
       return stats.lifetimeAshEarned >= 10_000
     case 'dailyOnce':

@@ -123,12 +123,11 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
       >
         <header className="upgrade-hud-header">
           <div className="upgrade-hud-heading">
+            <p className="upgrade-hud-eyebrow">{t.upgrade.moduleEyebrow}</p>
             <h2 id="upgrade-title">{def.name}</h2>
-            {unlocked ? (
-              <p className="upgrade-hud-blurb" title={def.blurb}>
-                {flavor}
-              </p>
-            ) : null}
+            <p className="upgrade-hud-blurb" title={def.blurb}>
+              {flavor}
+            </p>
           </div>
           <button
             type="button"
@@ -139,6 +138,11 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
             ×
           </button>
         </header>
+
+        <figure className="oma-note">
+          <figcaption className="oma-note-label">{t.upgrade.noteLabel}</figcaption>
+          <blockquote className="oma-note-text">{def.note}</blockquote>
+        </figure>
 
         {unlocked ? (
           <>

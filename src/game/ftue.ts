@@ -7,9 +7,9 @@ import { t } from '../i18n'
 
 export type FtueBeatId =
   | 'welcome'
-  | 'upgradePit'
+  | 'tendBed'
   | 'claimOffline'
-  | 'unlockForge'
+  | 'unlockCompost'
   | 'visitClan'
   | 'prestigeTeaser'
   | 'done'
@@ -25,9 +25,9 @@ export const FTUE_STORAGE_KEY = 'gartenerbe-ftue-v1'
 
 const BEAT_ORDER: FtueBeatId[] = [
   'welcome',
-  'upgradePit',
+  'tendBed',
   'claimOffline',
-  'unlockForge',
+  'unlockCompost',
   'visitClan',
   'prestigeTeaser',
   'done',
@@ -95,7 +95,7 @@ export interface FtueCopy {
   cta: string
   /** Secondary — advance without the primary action */
   skipLabel?: string
-  highlight?: 'emberPit' | 'ashForge' | 'clan' | 'prestige' | 'offline'
+  highlight?: 'gemuesebeet' | 'kompost' | 'clan' | 'prestige' | 'offline'
 }
 
 export function ftueCopy(beat: FtueBeatId): FtueCopy | null {
@@ -106,12 +106,12 @@ export function ftueCopy(beat: FtueBeatId): FtueCopy | null {
         body: t.ftue.welcome.body,
         cta: t.ftue.welcome.cta,
       }
-    case 'upgradePit':
+    case 'tendBed':
       return {
-        title: t.ftue.upgradePit.title,
-        body: t.ftue.upgradePit.body,
-        cta: t.ftue.upgradePit.cta,
-        highlight: 'emberPit',
+        title: t.ftue.tendBed.title,
+        body: t.ftue.tendBed.body,
+        cta: t.ftue.tendBed.cta,
+        highlight: 'gemuesebeet',
       }
     case 'claimOffline':
       return {
@@ -120,12 +120,12 @@ export function ftueCopy(beat: FtueBeatId): FtueCopy | null {
         cta: t.ftue.claimOffline.cta,
         highlight: 'offline',
       }
-    case 'unlockForge':
+    case 'unlockCompost':
       return {
-        title: t.ftue.unlockForge.title,
-        body: t.ftue.unlockForge.body,
-        cta: t.ftue.unlockForge.cta,
-        highlight: 'ashForge',
+        title: t.ftue.unlockCompost.title,
+        body: t.ftue.unlockCompost.body,
+        cta: t.ftue.unlockCompost.cta,
+        highlight: 'kompost',
       }
     case 'visitClan':
       return {

@@ -22,7 +22,7 @@ export const YIELD_BOOST_MULT = 1.15
 export const YIELD_BOOST_MS = 30 * 60 * 1000
 export const YIELD_BOOST_COST = 45
 
-export type CosmeticId = 'steelDeck' | 'amberPad' | 'iceAisle' | 'goldOps'
+export type CosmeticId = 'wiese' | 'bauerngarten' | 'bluetenmeer' | 'goldherbst'
 
 export interface CosmeticDef {
   id: CosmeticId
@@ -36,36 +36,36 @@ export interface CosmeticDef {
 
 export const COSMETICS: CosmeticDef[] = [
   {
-    id: 'steelDeck',
-    name: t.cosmetics.steelDeck.name,
-    blurb: t.cosmetics.steelDeck.blurb,
+    id: 'wiese',
+    name: t.cosmetics.wiese.name,
+    blurb: t.cosmetics.wiese.blurb,
     cost: 0,
-    accentClass: 'skin-steel',
+    accentClass: 'skin-wiese',
   },
   {
-    id: 'amberPad',
-    name: t.cosmetics.amberPad.name,
-    blurb: t.cosmetics.amberPad.blurb,
+    id: 'bauerngarten',
+    name: t.cosmetics.bauerngarten.name,
+    blurb: t.cosmetics.bauerngarten.blurb,
     cost: 80,
-    accentClass: 'skin-amber',
+    accentClass: 'skin-bauerngarten',
   },
   {
-    id: 'iceAisle',
-    name: t.cosmetics.iceAisle.name,
-    blurb: t.cosmetics.iceAisle.blurb,
+    id: 'bluetenmeer',
+    name: t.cosmetics.bluetenmeer.name,
+    blurb: t.cosmetics.bluetenmeer.blurb,
     cost: 120,
-    accentClass: 'skin-ice',
+    accentClass: 'skin-bluetenmeer',
   },
   {
-    id: 'goldOps',
-    name: t.cosmetics.goldOps.name,
-    blurb: t.cosmetics.goldOps.blurb,
+    id: 'goldherbst',
+    name: t.cosmetics.goldherbst.name,
+    blurb: t.cosmetics.goldherbst.blurb,
     cost: 200,
-    accentClass: 'skin-gold',
+    accentClass: 'skin-goldherbst',
   },
 ]
 
-export type TimeSkipId = 'cycleHour' | 'orbitSurge'
+export type TimeSkipId = 'harvestHour' | 'growthDay'
 
 export interface TimeSkipDef {
   id: TimeSkipId
@@ -78,23 +78,23 @@ export interface TimeSkipDef {
 /** Time-skip stubs — DE copy via i18n */
 export const TIME_SKIPS: TimeSkipDef[] = [
   {
-    id: 'cycleHour',
-    name: t.timeSkips.cycleHour.name,
-    blurb: t.timeSkips.cycleHour.blurb,
+    id: 'harvestHour',
+    name: t.timeSkips.harvestHour.name,
+    blurb: t.timeSkips.harvestHour.blurb,
     hours: 1,
     cost: 40,
   },
   {
-    id: 'orbitSurge',
-    name: t.timeSkips.orbitSurge.name,
-    blurb: t.timeSkips.orbitSurge.blurb,
+    id: 'growthDay',
+    name: t.timeSkips.growthDay.name,
+    blurb: t.timeSkips.growthDay.blurb,
     hours: 4,
     cost: 120,
   },
 ]
 
 export interface ClanBoostDef {
-  id: 'uplinkBanner'
+  id: 'vereinsfahne'
   name: string
   blurb: string
   cost: number
@@ -103,7 +103,7 @@ export interface ClanBoostDef {
 }
 
 export const CLAN_BOOST: ClanBoostDef = {
-  id: 'uplinkBanner',
+  id: 'vereinsfahne',
   name: t.clanBoost.name,
   blurb: t.clanBoost.blurb,
   cost: 60,
@@ -144,7 +144,7 @@ export const SHOP_OFFERS: ShopOfferDef[] = [
     blurb: t.packs.starterBundle.blurb,
     label: t.packs.starterBundle.label,
     obsidian: 200,
-    cosmeticIds: ['amberPad'],
+    cosmeticIds: ['bauerngarten'],
     once: true,
     section: 'bundles',
   },
@@ -190,7 +190,7 @@ export const SHOP_OFFERS: ShopOfferDef[] = [
     name: t.packs.cosmeticPackLeaf.name,
     blurb: t.packs.cosmeticPackLeaf.blurb,
     label: t.packs.cosmeticPackLeaf.label,
-    cosmeticIds: ['iceAisle', 'goldOps'],
+    cosmeticIds: ['bluetenmeer', 'goldherbst'],
     once: true,
     section: 'cosmetics',
   },

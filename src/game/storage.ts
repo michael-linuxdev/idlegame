@@ -44,14 +44,14 @@ function parseUpgrades(raw: unknown): EmberUpgrades {
 }
 
 function parseCosmetics(raw: unknown): CosmeticId[] {
-  if (!Array.isArray(raw)) return ['steelDeck']
+  if (!Array.isArray(raw)) return ['wiese']
   const out: CosmeticId[] = []
   for (const item of raw) {
     if (typeof item === 'string' && COSMETIC_IDS.has(item as CosmeticId)) {
       out.push(item as CosmeticId)
     }
   }
-  if (!out.includes('steelDeck')) out.unshift('steelDeck')
+  if (!out.includes('wiese')) out.unshift('wiese')
   return out
 }
 
@@ -90,7 +90,7 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
       : 20
 
   const ownedCosmetics = parseCosmetics(parsed.ownedCosmetics)
-  let equippedCosmetic: CosmeticId = 'steelDeck'
+  let equippedCosmetic: CosmeticId = 'wiese'
   if (
     typeof parsed.equippedCosmetic === 'string' &&
     COSMETIC_IDS.has(parsed.equippedCosmetic as CosmeticId) &&
@@ -136,7 +136,7 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
 
   const owned = parseOwned(parsed.owned)
   if (!isRecord(parsed.owned) || Object.keys(parsed.owned).length === 0) {
-    owned.emberPit = 1
+    owned.gemuesebeet = 1
   }
 
   const playerXp =

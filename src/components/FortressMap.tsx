@@ -88,7 +88,7 @@ export function FortressMap({ game, highlightId, onOpenTab }: Props) {
   const prevAsh = useRef(state.ash)
   const prevLevel = useRef(playerLevel.level)
   const totalMult = multiplier * levelMult * clanMult * eventMult
-  const skinClass = equippedCosmetic?.accentClass ?? 'skin-steel'
+  const skinClass = equippedCosmetic?.accentClass ?? 'skin-wiese'
   const bonusPct = ((levelMult - 1) * 100).toFixed(1)
   const questReady = game.questRows.some((q: { ready: boolean }) => q.ready)
 
@@ -138,7 +138,7 @@ export function FortressMap({ game, highlightId, onOpenTab }: Props) {
     const id =
       bestBuy?.affordable && bestBuy.id
         ? bestBuy.id
-        : ('emberPit' satisfies GeneratorId)
+        : ('gemuesebeet' satisfies GeneratorId)
     setSelected(id)
     game.clearPostPrestigeFocus()
   }, [game.postPrestigeFocus, game.clearPostPrestigeFocus, bestBuy])
@@ -242,7 +242,7 @@ export function FortressMap({ game, highlightId, onOpenTab }: Props) {
       setLevelPulse(true)
       playSfx('level')
       logPlaytest('level_up', { level: playerLevel.level })
-      pushPop(`Level ${playerLevel.level}!`, 'upgrade')
+      pushPop(t.hud.levelUp(playerLevel.level), 'upgrade')
       const timer = window.setTimeout(() => setLevelPulse(false), 900)
       prevLevel.current = playerLevel.level
       return () => window.clearTimeout(timer)
