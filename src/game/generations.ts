@@ -10,8 +10,13 @@
  * Gartenhelfer stay with the family.
  */
 
-/** Tiefe Winter needed before the garden can be handed down. */
+/** Tiefe Winter needed before the first hand-down … */
 export const GENERATION_GATE_DEEP = 3
+
+/** … plus one more for every generation already handed down (3, 4, 5 …). */
+export function generationGate(generation: number): number {
+  return GENERATION_GATE_DEEP + Math.max(0, generation)
+}
 
 export type LegacyId = 'familie' | 'obstbau' | 'wurzelwerk' | 'daumen' | 'hausrezept'
 
@@ -39,17 +44,17 @@ export const LEGACY_SHOP: LegacyItem[] = [
   { id: 'daumen', cost: (r) => 4 + 2 * r },
 ]
 
-export function canHandDown(deepPrestiges: number): boolean {
-  return deepPrestiges >= GENERATION_GATE_DEEP
+export function canHandDown(deepPrestiges: number, generation = 0): boolean {
+  return deepPrestiges >= generationGate(generation)
 }
 
 /**
  * Vermächtnis for handing the garden down now: grows with every Tiefer
  * Winter beyond the gate and with the orchard's size.
  */
-export function legacyPayout(deepPrestiges: number, orchardLevels: number): number {
-  if (!canHandDown(deepPrestiges)) return 0
-  const over = deepPrestiges - GENERATION_GATE_DEEP + 1
+export function legacyPayout(deepPrestiges: number, orchardLevels: number, generation = 0): number {
+  if (!canHandDown(deepPrestiges, generation)) return 0
+  const over = deepPrestiges - generationGate(generation) + 1
   return Math.floor(3 * Math.pow(over, 1.25)) + Math.floor(orchardLevels / 100)
 }
 

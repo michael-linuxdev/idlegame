@@ -340,11 +340,11 @@ export interface GameState {
 
 /** Gartenhelfer ranks: Erbstücke cost and time between two Ausbauten. */
 export const HELPER_RANKS = [
-  { cost: 40, intervalMs: 2500 },
-  { cost: 150, intervalMs: 1500 },
-  { cost: 400, intervalMs: 900 },
-  { cost: 900, intervalMs: 500 },
-  { cost: 2000, intervalMs: 250 },
+  { cost: 50, intervalMs: 30_000 },
+  { cost: 300, intervalMs: 12_000 },
+  { cost: 1200, intervalMs: 5000 },
+  { cost: 4000, intervalMs: 2000 },
+  { cost: 12000, intervalMs: 800 },
 ] as const
 
 /** Frühlingsschub after every Saisonende / Tiefer Winter / Generation. */
@@ -1151,11 +1151,11 @@ export { CONTEST_KG }
 /* ———————————— Generationen ———————————— */
 
 export function generationPayout(state: GameState): number {
-  return legacyPayout(state.deepPrestiges, totalChapterLevels(state.chapters))
+  return legacyPayout(state.deepPrestiges, totalChapterLevels(state.chapters), state.generation)
 }
 
 export function canHandDownNow(state: GameState): boolean {
-  return canHandDown(state.deepPrestiges)
+  return canHandDown(state.deepPrestiges, state.generation)
 }
 
 /**

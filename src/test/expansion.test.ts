@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { GENERATORS, generatorRate, milestoneMult, nextMilestone } from '../game/generators'
 import { FESTS, festAt, festKeyAt, festShop } from '../game/fests'
-import { GENERATION_GATE_DEEP, legacyPayout } from '../game/generations'
+import { GENERATION_GATE_DEEP, generationGate, legacyPayout } from '../game/generations'
 import { CHAPTERS, chaptersGardenMult } from '../game/chapters'
 import { contestRank, makeRecipe, neighbourFinals, RECIPE_NEED, WEINLESE } from '../game/extrasCore'
 import { completedSets, GARDEN_VARIETIES } from '../game/gardenLife'
@@ -98,8 +98,10 @@ describe('Gartenhelfer', () => {
     const s = buyHelper({ ...fresh, prestiges: 1 })
     expect(s.helperLevel).toBe(1)
     const rich = { ...s, ernte: 1e6 }
-    const { state, bought } = runHelper(rich, 30_000)
-    expect(bought).toBeGreaterThan(5)
+    // Rank 1 is slow on purpose: one Ausbau every 30 s
+    const { state, bought } = runHelper(rich, 5 * 60_000)
+    expect(bought).toBeGreaterThanOrEqual(9)
+    expect(bought).toBeLessThanOrEqual(10)
     expect(state.ernte).toBeLessThan(rich.ernte)
   })
 
@@ -223,6 +225,18 @@ describe('Bindung', () => {
 })
 
 describe('Generationen', () => {
+  it('needs one more Tiefer Winter per generation (3, 4, 5 …)', () => {
+    expect(generationGate(0)).toBe(3)
+    expect(generationGate(1)).toBe(4)
+    expect(generationGate(7)).toBe(10)
+    const base = createInitialState(0)
+    const g2 = { ...base, generation: 2, deepPrestiges: 4 }
+    expect(doGeneration(g2)).toBe(g2)
+    const ready = { ...g2, deepPrestiges: 5 }
+    expect(doGeneration(ready).generation).toBe(3)
+    expect(legacyPayout(5, 0, 2)).toBe(legacyPayout(3, 0, 0))
+  })
+
   it('needs three Tiefe Winter and keeps orchard, helper and Pflanzenbuch', () => {
     const base = createInitialState(0)
     const s: GameState = {
