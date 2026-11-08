@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { DEEP_GATE_YEAR, DEEP_SHOP, canDeepReset } from '../game/longLoop'
-import { GENERATION_GATE_DEEP, LEGACY_SHOP } from '../game/generations'
+import { LEGACY_SHOP, generationGate } from '../game/generations'
 import { HELPER_RANKS, helperInterval } from '../game/state'
 import { IconFamily, IconHelper, IconIlse } from '../theme/icons'
 import { CHAPTERS, type ChapterId } from '../game/chapters'
@@ -207,7 +207,7 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
         <p className="muted">{game.helperUnlocked ? t.helper.intro : t.helper.locked}</p>
         {state.helperLevel > 0 ? (
           <p className="helper-speed">
-            {t.helper.speed(formatDecimal(helperInterval(state.helperLevel) / 1000, 2))}
+            {t.helper.speed(formatDecimal(helperInterval(state.helperLevel) / 1000, helperInterval(state.helperLevel) % 1000 ? 1 : 0))}
             {' · '}
             <button type="button" className="link-btn" onClick={game.switchHelper}>
               {state.helperOn ? t.helper.on : t.helper.off}
@@ -545,7 +545,7 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
           }}
         >
           {!game.canHandDown
-            ? t.generation.gate(state.deepPrestiges, GENERATION_GATE_DEEP)
+            ? t.generation.gate(state.deepPrestiges, generationGate(state.generation))
             : genArmed
               ? t.generation.confirmCta
               : t.generation.cta(game.generationPayout)}

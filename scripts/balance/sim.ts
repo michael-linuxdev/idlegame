@@ -44,6 +44,7 @@ import {
   gatePrestiges,
   doDeepReset,
   canHandDownNow,
+  buyHelper,
   doGeneration,
   buyLegacy,
   buyDeepUpgrade,
@@ -142,6 +143,12 @@ function spendSprouts(s: GameState): GameState {
 }
 
 function spendEmbers(s: GameState): GameState {
+  // Jonas first (players hire him as soon as they can; NO_HELPER=1 to skip)
+  if (!process.env.NO_HELPER) for (let g = 0; g < 5; g++) {
+    const n = buyHelper(s)
+    if (n === s) break
+    s = n
+  }
   for (let guard = 0; guard < 200; guard++) {
     let best: { id: (typeof EMBER_SHOP)[number]['id']; cost: number } | null = null
     for (const item of EMBER_SHOP) {
