@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { AD_SAMEN, MARKET_GIFT_SAMEN, REWARDED_AD_COOLDOWN_MS, WATER_REFILL_COST } from '../game/monetization'
+import { AD_SAMEN, MARKET_GIFT_SAMEN, REWARDED_AD_COOLDOWN_MS, WATER_REFILL_COST, WATER_REFILL_PER_DAY } from '../game/monetization'
 import { TAP_COOLDOWN_MS } from '../game/economy'
-import { claimMarketGift, claimRewardedAd, createInitialState, refillWateringCan } from '../game/state'
+import { claimMarketGift, claimRewardedAd, createInitialState, refillWateringCan, waterRefillsLeft } from '../game/state'
 import { parseSave } from '../game/storage'
 
 describe('Markt', () => {
@@ -31,6 +31,25 @@ describe('Markt', () => {
     expect(r.samen).toBe(10 - WATER_REFILL_COST)
     expect(r.lastTapAt).toBe(0)
     expect(refillWateringCan({ ...base, lastTapAt: now - TAP_COOLDOWN_MS - 1 }, now).samen).toBe(10)
+  })
+
+  it('Gießkanne auffüllen höchstens 3× pro Tag', () => {
+    let s = { ...base, samen: 100 }
+    for (let i = 0; i < WATER_REFILL_PER_DAY; i++) {
+      s = refillWateringCan({ ...s, lastTapAt: now - 1000 }, now + i)
+      expect(s.lastTapAt).toBe(0)
+    }
+    expect(waterRefillsLeft(s, now)).toBe(0)
+    const blocked = { ...s, lastTapAt: now - 1000 }
+    expect(refillWateringCan(blocked, now + 10)).toBe(blocked)
+    // nächster Tag: wieder 3
+    expect(waterRefillsLeft(s, now + 86_400_000)).toBe(WATER_REFILL_PER_DAY)
+    const tomorrow = now + 86_400_000
+    expect(refillWateringCan({ ...s, lastTapAt: tomorrow - 1000 }, tomorrow).lastTapAt).toBe(0)
+    // Spielstand behält den Zähler
+    const back = parseSave(JSON.parse(JSON.stringify(s)))!
+    expect(back.waterRefills).toBe(WATER_REFILL_PER_DAY)
+    expect(back.waterRefillDay).toBe(s.waterRefillDay)
   })
 
   it('old saves load without a gift day', () => {

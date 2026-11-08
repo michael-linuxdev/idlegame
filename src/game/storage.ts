@@ -29,6 +29,7 @@ import { GENERATOR_IDS as GEN_IDS } from './generators'
 import { EMPTY_LEGACY, type LegacyUpgrades } from './generations'
 import { VARIETIES, type WheelBuff } from './gardenLife'
 import { freePlaytestSpace } from './playtestLog'
+import { getSaveBlock, setSaveBlock } from './saveGuard'
 
 const COSMETIC_IDS = new Set(COSMETICS.map((c) => c.id))
 
@@ -267,6 +268,9 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
       ? Math.max(0, Math.floor(parsed.rewardedAdClaims))
       : 0
   const marketGiftDay = typeof parsed.marketGiftDay === 'string' ? parsed.marketGiftDay.slice(0, 16) : ''
+  // Gießkanne-Limit (2026-11-09; ältere Stände → heute noch nichts gekauft)
+  const waterRefillDay = typeof parsed.waterRefillDay === 'string' ? parsed.waterRefillDay.slice(0, 16) : ''
+  const waterRefills = parseNonNegInt(parsed.waterRefills)
   const yieldBoostExpiresAt =
     typeof parsed.yieldBoostExpiresAt === 'number' &&
     Number.isFinite(parsed.yieldBoostExpiresAt)
@@ -361,6 +365,8 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
     lastRewardedAdAt,
     rewardedAdClaims,
     marketGiftDay,
+    waterRefillDay,
+    waterRefills,
     yieldBoostExpiresAt,
     bpWeekKey,
     bpXp,
@@ -639,9 +645,26 @@ function parseQuests(
   return { dayKey: key, quests }
 }
 
+/** Felder, die diese App-Version nicht kennt (aus einer neueren Version) — beim Speichern unverändert mitschreiben. */
+let passthrough: Record<string, unknown> = {}
+
+/** Keys of a stored save this version does not know (kept on save). */
+export function unknownFields(raw: Record<string, unknown>): Record<string, unknown> {
+  const known = new Set<string>([...Object.keys(createInitialState(0)), 'saveVersion'])
+  const out: Record<string, unknown> = {}
+  for (const [k, v] of Object.entries(raw)) if (!known.has(k)) out[k] = v
+  return out
+}
+
+/** Stored save from a newer app version than this one? */
+export function isNewerSave(raw: Record<string, unknown>): boolean {
+  return typeof raw.saveVersion === 'number' && raw.saveVersion > SAVE_VERSION
+}
+
 export function loadState(): GameState {
+  let raw: string | null = null
   try {
-    const raw = localStorage.getItem(STORAGE_KEY)
+    raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return createInitialState()
     let parsed: unknown
     try {
@@ -654,10 +677,18 @@ export function loadState(): GameState {
       keepCopy(`${STORAGE_KEY}-broken`, raw)
       return createInitialState()
     }
+    if (isNewerSave(parsed)) {
+      // Neuere Version hat gespeichert: lesen ja, überschreiben nie
+      setSaveBlock('newer')
+      return parseGameState(migrateFieldNames(parsed))
+    }
     // Keep the last pre-migration save around, just in case
     if (parsed.saveVersion !== SAVE_VERSION) keepCopy(`${STORAGE_KEY}-before-v${SAVE_VERSION}`, raw)
-    return parseGameState(migrateSave(parsed))
+    const migrated = migrateSave(parsed)
+    passthrough = unknownFields(migrated)
+    return parseGameState(migrated)
   } catch {
+    if (raw) keepCopy(`${STORAGE_KEY}-broken`, raw)
     return createInitialState()
   }
 }
@@ -677,15 +708,20 @@ export function lockSaves(): void {
   savesLocked = true
 }
 
+/** JSON as stored: unknown fields of newer versions survive. */
+export function serializeSave(state: GameState, extra: Record<string, unknown> = passthrough): string {
+  return JSON.stringify({ ...extra, ...state, saveVersion: SAVE_VERSION })
+}
+
 export function saveState(state: GameState): void {
-  if (savesLocked) return
+  if (savesLocked || getSaveBlock() !== null) return
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...state, saveVersion: SAVE_VERSION }))
+    localStorage.setItem(STORAGE_KEY, serializeSave(state))
   } catch {
     // Platz knapp: zuerst das Playtest-Log freigeben, Spielstand geht vor
     try {
       freePlaytestSpace()
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...state, saveVersion: SAVE_VERSION }))
+      localStorage.setItem(STORAGE_KEY, serializeSave(state))
     } catch {
       /* private mode */
     }

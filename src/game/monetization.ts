@@ -281,6 +281,8 @@ export const AD_SAMEN = 6
 export const MARKET_GIFT_SAMEN = 3
 /** Gießkanne sofort auffüllen (skips the 5-min wait) */
 export const WATER_REFILL_COST = 2
+/** Höchstens so oft pro Tag (Playtest: Endlos-Gießen über den Markt) */
+export const WATER_REFILL_PER_DAY = 3
 
 /** @deprecated old rotating ad rewards (kept for reference; ads now use AdChoice) */
 export const REWARDED_AD_REWARDS: RewardedAdRewardDef[] = [

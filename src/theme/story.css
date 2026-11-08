@@ -646,3 +646,53 @@
   text-transform: uppercase;
   color: #a5733f;
 }
+
+/* Spielstand-Schutz: dieses Fenster speichert nicht */
+.save-guard {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0px) + 0.5rem);
+  left: 0.75rem;
+  right: 0.75rem;
+  z-index: var(--z-overlay);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: 14px;
+  background: #fff4dc;
+  border: 2px solid #c9893a;
+  color: #4a3420;
+  box-shadow: 0 6px 18px rgba(60, 40, 20, 0.18);
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.save-guard p {
+  margin: 0;
+  flex: 1 1 14rem;
+}
+
+/* Fehlerbildschirm statt weißer Seite */
+.crash-screen {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem;
+  padding: 2rem 1rem;
+  text-align: center;
+  background: #f3ecd9;
+  color: #3d2c1c;
+}
+
+.crash-screen h1 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.crash-screen p {
+  margin: 0;
+  max-width: 26rem;
+}

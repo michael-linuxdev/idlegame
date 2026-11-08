@@ -72,6 +72,20 @@ export const strings = {
     unmuteAria: 'Soundeffekte einschalten',
   },
 
+  saveGuard: {
+    newer: 'Dein Spielstand ist neuer als diese App-Version. Bis zum Aktualisieren wird hier nichts gespeichert — dein Fortschritt bleibt sicher.',
+    otherTab: 'Gartenerbe ist schon in einem anderen Fenster offen. Hier wird nichts gespeichert; schließ das andere Fenster, dann geht es hier weiter.',
+    update: 'Jetzt aktualisieren',
+  },
+
+  crash: {
+    title: 'Da ist etwas schiefgegangen',
+    body: 'Dein Garten ist gespeichert. Zur Sicherheit kannst du den Spielstand-Code kopieren und dann neu laden.',
+    copy: 'Spielstand-Code kopieren',
+    copied: 'Kopiert ✓',
+    reload: 'Neu laden',
+  },
+
   playtest: {
     title: 'Playtest-Log',
     on: 'An',
@@ -588,6 +602,7 @@ export const strings = {
     refillIntro: 'Sofort wieder gießen, statt 5 Minuten zu warten.',
     refillReady: 'Gießkanne ist voll',
     refillWaiting: (left: string) => `Voll in ${left}`,
+    refillLeft: (n: number) => (n > 0 ? `noch ${n}× heute` : 'Für heute aufgebraucht — morgen wieder'),
     adsTitle: 'Bonus-Werbung',
     adsIntro: 'Freiwillig — spielen geht immer ohne. Du siehst vorher, was du bekommst.',
     adsWatch: 'Werbung ansehen',
@@ -1026,6 +1041,7 @@ export const strings = {
     import: 'Wiederherstellen',
     confirm: 'Wirklich? Ersetzt den aktuellen Garten',
     invalid: 'Das ist kein gültiger Gartenerbe-Code.',
+    newer: 'Dieser Spielstand stammt aus einer neueren Version. Bitte zuerst die App aktualisieren (Menü → Nach Updates suchen).',
     found: (when: string) => `Gültiger Spielstand vom ${when}.`,
     close: 'Schließen',
   },

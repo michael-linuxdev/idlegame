@@ -102,7 +102,7 @@ export function SaveSheet({ onClose }: Props) {
             {armed ? t.backup.confirm : t.backup.import}
           </button>
         </div>
-        {error || (parsed && !parsed.ok) ? <p className="save-error" role="alert">{t.backup.invalid}</p> : null}
+        {error || (parsed && !parsed.ok) ? <p className="save-error" role="alert">{parsed && !parsed.ok && parsed.newer ? t.backup.newer : t.backup.invalid}</p> : null}
         {parsed && parsed.ok ? (
           <p className="save-ok">{t.backup.found(new Date(parsed.bundle.at).toLocaleString('de-DE'))}</p>
         ) : null}

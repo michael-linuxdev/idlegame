@@ -6,6 +6,7 @@
 import { describe, expect, it } from 'vitest'
 import v1 from './fixtures/save-v1.json'
 import v2 from './fixtures/save-v2.json'
+import v2full from './fixtures/save-v2-full.json'
 import { SAVE_VERSION, migrateSave, parseSave } from '../game/storage'
 import { CHAPTERS } from '../game/chapters'
 
@@ -49,5 +50,31 @@ describe('Spielstand-Migration', () => {
     expect(migrateSave(v1 as Record<string, unknown>).saveVersion).toBe(SAVE_VERSION)
     const s = parseSave(v2)!
     for (const c of CHAPTERS) expect(s.chapters[c.id]).toBeDefined()
+  })
+})
+
+describe('Spielstand v2 mit allen Feldern (Stand 2026-11-09)', () => {
+  it('lädt Deko, Bewohner, Kreuzen, Projekte, Album, Wetter und Gießkanne verlustfrei', () => {
+    const s = parseSave(v2full)!
+    expect(s.decorOwned).toEqual(['zwerg', 'futterhaus'])
+    expect(s.decorSlots[0]).toBe('zwerg')
+    expect(s.decorSlots[3]).toBe('futterhaus')
+    expect(s.residentsSeen.amsel).toBe(1)
+    expect(s.crossing).toEqual(v2full.crossing)
+    expect(s.hybrids).toEqual(['riesentomate'])
+    expect(s.projects).toEqual({ pavillon: 1 })
+    expect(s.album.key).toBe(v2full.album.key)
+    expect(s.weatherDecided).toBe('2026-11-09')
+    expect(s.weatherBuff).toEqual(v2full.weatherBuff)
+    expect(s.waterRefills).toBe(2)
+    expect(s.waterRefillDay).toBe('2026-11-09')
+    expect(s.samen).toBe(4321)
+    expect(s.chapters.obstwiese.owned.birne).toBe(11)
+  })
+
+  it('round-trips ohne Verlust', () => {
+    const once = parseSave(v2full)!
+    const twice = parseSave(JSON.parse(JSON.stringify({ ...once, saveVersion: SAVE_VERSION })))!
+    expect(twice).toEqual(once)
   })
 })

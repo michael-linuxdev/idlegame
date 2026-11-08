@@ -125,6 +125,7 @@ import {
   DAILY_SKIP_CAP_HOURS,
   MARKET_GIFT_SAMEN,
   WATER_REFILL_COST,
+  WATER_REFILL_PER_DAY,
   TIME_SKIPS,
   YIELD_BOOST_COST,
   YIELD_BOOST_MS,
@@ -262,6 +263,10 @@ export interface GameState {
   rewardedAdClaims: number
   /** Day key of the last Markt-Tagesgeschenk ('' = never) */
   marketGiftDay: string
+  /** Day key of the last bought Gießkanne refill ('' = never) */
+  waterRefillDay: string
+  /** Refills bought on waterRefillDay (max WATER_REFILL_PER_DAY) */
+  waterRefills: number
   /** Personal yield boost expiry; 0 = inactive */
   yieldBoostExpiresAt: number
   /** Battle-pass lite week key */
@@ -592,6 +597,8 @@ export function createInitialState(now = Date.now()): GameState {
     lastRewardedAdAt: 0,
     rewardedAdClaims: 0,
     marketGiftDay: '',
+    waterRefillDay: '',
+    waterRefills: 0,
     yieldBoostExpiresAt: 0,
     bpWeekKey: weekKey(now),
     bpXp: 0,
@@ -670,6 +677,8 @@ export function createPostPrestigeState(prev: GameState, now = Date.now()): Game
     lastRewardedAdAt: prev.lastRewardedAdAt,
     rewardedAdClaims: prev.rewardedAdClaims,
     marketGiftDay: prev.marketGiftDay,
+    waterRefillDay: prev.waterRefillDay,
+    waterRefills: prev.waterRefills,
     yieldBoostExpiresAt: prev.yieldBoostExpiresAt,
     bpWeekKey: prev.bpWeekKey,
     bpXp: prev.bpXp,
@@ -2158,11 +2167,26 @@ export function claimMarketGift(state: GameState, now = Date.now()): GameState {
   return { ...state, samen: state.samen + MARKET_GIFT_SAMEN, marketGiftDay: dayKey(now), lastSeen: now }
 }
 
-/** Fill the Gießkanne right away for a few Samen (only while it is refilling). */
+/** Gekaufte Auffüllungen, die heute noch gehen. */
+export function waterRefillsLeft(state: GameState, now = Date.now()): number {
+  const used = state.waterRefillDay === dayKey(now) ? state.waterRefills : 0
+  return Math.max(0, WATER_REFILL_PER_DAY - used)
+}
+
+/** Fill the Gießkanne right away for a few Samen (only while it is refilling, max 3 per day). */
 export function refillWateringCan(state: GameState, now = Date.now()): GameState {
   const waiting = state.lastTapAt > 0 && now - state.lastTapAt < TAP_COOLDOWN_MS
-  if (!waiting || state.samen < WATER_REFILL_COST) return state
-  return { ...state, samen: state.samen - WATER_REFILL_COST, lastTapAt: 0, lastSeen: now }
+  if (!waiting || state.samen < WATER_REFILL_COST || waterRefillsLeft(state, now) <= 0) return state
+  const today = dayKey(now)
+  const used = state.waterRefillDay === today ? state.waterRefills : 0
+  return {
+    ...state,
+    samen: state.samen - WATER_REFILL_COST,
+    lastTapAt: 0,
+    lastSeen: now,
+    waterRefillDay: today,
+    waterRefills: used + 1,
+  }
 }
 
 export function claimBattlePassDailyXp(state: GameState, now = Date.now()): GameState {
