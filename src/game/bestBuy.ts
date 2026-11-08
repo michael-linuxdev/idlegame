@@ -12,6 +12,7 @@ import {
 } from './generators'
 import type { GameState } from './state'
 import { efficiencyMult } from './branches'
+import { gateSeasons } from './longLoop'
 
 export interface BestBuyHint {
   id: GeneratorId
@@ -46,7 +47,7 @@ export function computeBestBuy(
       state.owned,
       state.emberUpgrades.firstFlame > 0,
       opts.playerLevel,
-      state.prestiges,
+      gateSeasons(state.prestiges, state.deepUpgrades),
     )
     if (!unlocked) continue
     const owned = state.owned[def.id] ?? 0

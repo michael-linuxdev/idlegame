@@ -41,8 +41,12 @@ import {
   playerLevelOf,
   productionPerSecond,
   type GameState,
+  gatePrestiges,
+  doDeepReset,
+  buyDeepUpgrade,
 } from '../../src/game/state'
 import { moduleTier } from '../../src/theme/tiers'
+import { DEEP_SHOP, canDeepReset, sproutPayout } from '../../src/game/longLoop'
 
 /* ---------- virtual clock + seeded RNG ---------- */
 // Monday 2026-11-09 08:00 local → avoids starting inside a weekend event
@@ -79,7 +83,7 @@ const fmtN = (n: number) =>
 
 function unlocked(s: GameState, id: GeneratorId): boolean {
   const def = GENERATORS.find((g) => g.id === id)!
-  return isGeneratorUnlocked(def, s.ashEarned, s.owned, s.emberUpgrades.firstFlame > 0, playerLevelOf(s), s.prestiges)
+  return isGeneratorUnlocked(def, s.ashEarned, s.owned, s.emberUpgrades.firstFlame > 0, playerLevelOf(s), gatePrestiges(s))
 }
 
 function water(s: GameState): GameState {
@@ -118,6 +122,21 @@ function buyBest(s: GameState, maxBuys = 40): GameState {
   return s
 }
 
+function spendSprouts(s: GameState): GameState {
+  for (let guard = 0; guard < 100; guard++) {
+    let best: { id: (typeof DEEP_SHOP)[number]['id']; cost: number } | null = null
+    for (const item of DEEP_SHOP) {
+      const rank = s.deepUpgrades[item.id]
+      if (rank >= item.maxRank) continue
+      const cost = item.cost(rank)
+      if (cost <= s.deepEmbers && (!best || cost < best.cost)) best = { id: item.id, cost }
+    }
+    if (!best) break
+    s = buyDeepUpgrade(s, best.id)
+  }
+  return s
+}
+
 function spendEmbers(s: GameState): GameState {
   for (let guard = 0; guard < 200; guard++) {
     let best: { id: (typeof EMBER_SHOP)[number]['id']; cost: number } | null = null
@@ -147,6 +166,7 @@ export function run(profile: Profile, hours: number) {
   let gateAt = -1
   const runs: { dur: number; payout: number; levels: number[]; meta: string; day: number }[] = []
   const stageByDay: number[] = []
+  const deeps: { day: number; sprouts: number; total: number }[] = []
   const dt = 5
   const end = start + hours * 3600_000
   let lastDaily = ''
@@ -230,7 +250,15 @@ export function run(profile: Profile, hours: number) {
           meta: `@d${Math.floor((clock - start) / 86400000) + 1} ${new Date(runStart).getHours()}h→${new Date(clock).getHours()}h x${prestigeMultiplier(s.emberUpgrades).toFixed(2)} disc${foundryDiscountMult(s.emberUpgrades).toFixed(2)} lvl${playerLevelOf(s)} ${Object.entries(s.emberUpgrades).filter(([, v]) => v > 0).map(([k, v]) => k.slice(0, 5) + v).join(' ')}`,
         })
         note(`PRESTIGE #${s.prestiges + 1} payout ${payout} (run ${fmtT((clock - runStart) / 1000)})`)
+        const lastDur = (clock - runStart) / 1000
         s = doPrestige(s)
+        if (canDeepReset(s.prestiges) && lastDur > 18 * 3600) {
+          const sp = sproutPayout(s.prestiges)
+          s = doDeepReset(s)
+          s = spendSprouts(s)
+          deeps.push({ day: Math.floor((clock - start) / 86400000) + 1, sprouts: sp, total: s.deepEmbers })
+          note(`TIEFER WINTER #${s.deepPrestiges} +${sp} sprouts`)
+        }
         s = spendEmbers(s)
         runStart = clock
         bestPayoutRate = 0
@@ -238,13 +266,13 @@ export function run(profile: Profile, hours: number) {
       }
     }
   }
-  return { s, milestones, runs, hours, stageByDay }
+  return { s, milestones, runs, hours, stageByDay, deeps }
 }
 
 function report(profile: Profile, hours: number) {
   seed = 12345
   clock = new Date(2026, 10, 9, 8, 0, 0).getTime()
-  const { s, milestones, runs, stageByDay } = run(profile, hours)
+  const { s, milestones, runs, stageByDay, deeps } = run(profile, hours)
   if (process.env.SUMMARY) {
     const d = runs.map((r) => Math.round(r.dur / 60))
     const plantedAll = milestones.find((m) => m.label.includes('planted orangerie'))
@@ -255,6 +283,10 @@ function report(profile: Profile, hours: number) {
     console.log(
       `${profile} ${hours}h | seasons/day ${perDay} | planted/day ${garden} | seasons ${runs.length} | first ${d[0] ?? '-'}m | mins ${d.slice(0, 14).join(' ')} | payout ${runs.slice(0, 6).map((r) => r.payout).join(' ')} | last ${d.slice(-3).join(' ')} | orangerie ${plantedAll ? fmtT(plantedAll.t) : 'never(1st run)'} | end lvls ${GENERATORS.map((g) => s.owned[g.id]).join(',')}`,
     )
+    if (deeps.length || process.env.DEEP)
+      console.log(
+        `  deep winters: ${deeps.map((d) => `d${d.day}(+${d.sprouts})`).join(' ')} | end deep ${JSON.stringify(s.deepUpgrades)} year ${s.prestiges + 1}`,
+      )
     return
   }
   console.log(`\n=== ${profile} · ${hours}h simulated ===`)

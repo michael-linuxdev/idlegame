@@ -278,3 +278,29 @@
     animation: none;
   }
 }
+
+/* Tiefer Winter */
+.app-main:not(.map-mode) .deep-winter {
+  margin-top: 1.4rem;
+  padding: 0.9rem 0.9rem 1rem;
+  border-color: #8fa3c4;
+  background:
+    radial-gradient(120% 60% at 50% 0%, rgba(143, 163, 196, 0.25), transparent 70%),
+    linear-gradient(180deg, #f6f8fc 0%, #e8eef7 100%);
+}
+
+.btn.prestige.deep {
+  border-color: #3c4f78;
+  background: linear-gradient(180deg, #dfe6f3 0%, #8fa3c4 50%, #4a5f86 100%);
+  color: #fff;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  box-shadow:
+    0 4px 0 #2c3a5c,
+    0 8px 16px rgba(30, 40, 80, 0.25);
+}
+
+.app-main:not(.map-mode) .deep-winter .prestige-branch-title {
+  margin: 1.1rem 0 0.5rem;
+  font-family: var(--oc-font-display);
+  font-size: 1.05rem;
+}

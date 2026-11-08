@@ -1,13 +1,5 @@
-import {
-  DEEP_SHOP,
-  ERA_SHOP,
-  YEAR_SEASONS_TARGET,
-  deepGateOpen,
-  deepGatePrestigesLeft,
-  emberShopFillRatio,
-  eraGateOpen,
-  previewDeepPayout,
-} from '../game/longLoop'
+import { useState } from 'react'
+import { DEEP_GATE_YEAR, DEEP_SHOP, canDeepReset, sproutPayout } from '../game/longLoop'
 import {
   EMBER_SHOP,
   PRESTIGE_BRANCHES,
@@ -79,20 +71,9 @@ export function PrestigePanel({ game, highlight }: Props) {
     prestiges: state.prestiges,
   })
 
-  const fill = emberShopFillRatio(state.emberUpgrades)
-  const deepOpen = deepGateOpen({
-    prestiges: state.prestiges,
-    emberUpgrades: state.emberUpgrades,
-  })
-  const prestigesLeft = deepGatePrestigesLeft(
-    state.prestiges,
-    state.emberUpgrades,
-  )
-  const eraOpen = eraGateOpen({
-    yearIndex: state.yearIndex,
-    lifetimePrestiges: state.prestiges,
-  })
-  const deepPreview = previewDeepPayout(state.seasonPoints)
+  const deepOpen = canDeepReset(state.prestiges)
+  const [deepArmed, setDeepArmed] = useState(false)
+  const deepPayout = sproutPayout(state.prestiges)
 
   const postUnlockMods =
     modulesToNextEmberUnlock(
@@ -350,109 +331,94 @@ export function PrestigePanel({ game, highlight }: Props) {
         })}
       </div>
 
-      {/* L3–L5 scaffold — gated teasers; no purchases yet (balance PRs). */}
-      <section className="long-loop-block" aria-labelledby="long-loop-season">
-        <h3 id="long-loop-season" className="subhead">
-          {t.longLoop.seasonTitle}
+      <section className="long-loop-block deep-winter" aria-labelledby="deep-winter">
+        <h3 id="deep-winter" className="subhead">
+          {t.longLoop.title}
         </h3>
-        <p className="muted">{t.longLoop.seasonIntro}</p>
-        <p className="prestige-stats">
-          {t.longLoop.seasonLabel(state.seasonIndex + 1)}
-          {' · '}
-          {t.longLoop.seasonPoints(state.seasonPoints)}
-          {' · '}
-          {t.longLoop.sproutLabel} <strong>{state.deepEmbers}</strong>
-          {' · '}
-          {t.longLoop.deepRuns} <strong>{state.deepPrestiges}</strong>
-        </p>
-        <p className="muted">
-          {deepOpen
-            ? t.longLoop.gateOpen
-            : t.longLoop.gateClosed(
-                prestigesLeft,
-                Math.round(fill * 100),
-              )}
-        </p>
-        {deepOpen && deepPreview > 0 ? (
-          <p className="prestige-stats">
-            {t.prestige.nextPayout}{' '}
-            <strong>
-              +{deepPreview} {t.longLoop.sproutLabel.replace(':', '')}
-            </strong>
-          </p>
-        ) : null}
-        <h4 className="prestige-branch-title">{t.longLoop.deepShopTitle}</h4>
+        <p className="muted">{t.longLoop.intro}</p>
+        <dl className="season-stats">
+          <div>
+            <dt>{t.longLoop.sprouts}</dt>
+            <dd>{state.deepEmbers}</dd>
+          </div>
+          <div>
+            <dt>{t.longLoop.winters}</dt>
+            <dd>{state.deepPrestiges}</dd>
+          </div>
+          <div>
+            <dt>{t.longLoop.payout}</dt>
+            <dd>+{deepPayout}</dd>
+          </div>
+        </dl>
+        <div className="prestige-preview">
+          <div className="prestige-preview-card keep">
+            <p className="prestige-preview-label">{t.prestige.keepTitle}</p>
+            <ul className="prestige-preview-list">
+              {t.longLoop.keepItems.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </div>
+          <div className="prestige-preview-card lose">
+            <p className="prestige-preview-label">{t.longLoop.loseTitle}</p>
+            <ul className="prestige-preview-list">
+              {t.longLoop.loseItems.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        <button
+          type="button"
+          className="btn prestige deep"
+          disabled={!deepOpen}
+          onClick={() => {
+            if (deepArmed) {
+              setDeepArmed(false)
+              game.deepReset()
+            } else {
+              setDeepArmed(true)
+              window.setTimeout(() => setDeepArmed(false), 4000)
+            }
+          }}
+        >
+          {!deepOpen
+            ? t.longLoop.gateClosed(DEEP_GATE_YEAR)
+            : deepArmed
+              ? t.longLoop.confirmCta
+              : t.longLoop.cta(deepPayout)}
+        </button>
+
+        <h4 className="prestige-branch-title">{t.longLoop.shopTitle}</h4>
         <ul className="ember-shop long-loop-shop">
           {DEEP_SHOP.map((item) => {
             const rank = state.deepUpgrades[item.id]
-            const label =
-              item.id === 'deepYield'
-                ? t.longLoop.deepYield
-                : item.id === 'deepWatch'
-                  ? t.longLoop.deepWatch
-                  : t.longLoop.deepPurse
+            const copy = t.longLoop.items[item.id]
+            const maxed = rank >= item.maxRank
+            const cost = item.cost(rank)
+            const affordable = !maxed && state.deepEmbers >= cost
             return (
-              <li key={item.id} className="ember-shop-row">
+              <li
+                key={item.id}
+                className={`ember-shop-row${affordable ? ' ember-shop-row--ready' : ''}`}
+              >
                 <div className="ember-shop-info">
                   <div className="ember-shop-name">
-                    {label}{' '}
+                    {copy.name}{' '}
                     <span className="ember-shop-rank">
-                      {t.longLoop.stubRank(rank, item.maxRank)}
+                      {t.longLoop.rank(rank, item.maxRank)}
                     </span>
                   </div>
-                  <p className="ember-shop-blurb">{t.longLoop.deepShopLocked}</p>
+                  <p className="ember-shop-blurb">{copy.blurb}</p>
+                  <p className="ember-shop-effect">{copy.effect(rank)}</p>
                 </div>
-                <button type="button" className="btn buy" disabled>
-                  {t.longLoop.deepShopLocked}
-                </button>
-              </li>
-            )
-          })}
-        </ul>
-      </section>
-
-      <section className="long-loop-block" aria-labelledby="long-loop-year">
-        <h3 id="long-loop-year" className="subhead">
-          {t.longLoop.yearTitle}
-        </h3>
-        <p className="prestige-stats">
-          {t.longLoop.yearLabel(state.yearIndex + 1)}
-          {' · '}
-          {t.longLoop.yearProgress(state.yearSeasonsDone, YEAR_SEASONS_TARGET)}
-        </p>
-        <p className="muted">{t.longLoop.yearLocked}</p>
-      </section>
-
-      <section className="long-loop-block" aria-labelledby="long-loop-era">
-        <h3 id="long-loop-era" className="subhead">
-          {t.longLoop.eraTitle}
-        </h3>
-        <p className="muted">{t.longLoop.eraIntro}</p>
-        <p className="prestige-stats">
-          {t.longLoop.eraPoints} <strong>{state.eraPoints}</strong>
-        </p>
-        <p className="muted">
-          {eraOpen ? t.longLoop.eraGateOpen : t.longLoop.eraGateClosed}
-        </p>
-        <ul className="ember-shop long-loop-shop">
-          {ERA_SHOP.map((item) => {
-            const rank = state.eraUpgrades[item.id]
-            const label =
-              item.id === 'rootYield'
-                ? t.longLoop.rootYield
-                : t.longLoop.rootBanner
-            return (
-              <li key={item.id} className="ember-shop-row">
-                <div className="ember-shop-info">
-                  <div className="ember-shop-name">
-                    {label}{' '}
-                    <span className="ember-shop-rank">
-                      {t.longLoop.stubRank(rank, item.maxRank)}
-                    </span>
-                  </div>
-                </div>
-                <button type="button" className="btn buy" disabled>
-                  {eraOpen ? t.longLoop.eraGateOpen : t.longLoop.eraGateClosed}
+                <button
+                  type="button"
+                  className="btn buy"
+                  disabled={!affordable}
+                  onClick={() => game.buyDeep(item.id)}
+                >
+                  {maxed ? t.prestige.max : t.longLoop.cost(cost)}
                 </button>
               </li>
             )

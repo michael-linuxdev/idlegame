@@ -16,6 +16,7 @@ interface Props {
 }
 
 function hintFor(def: (typeof NOTEBOOK_ENTRIES)[number]): string {
+  if (def.deep != null) return t.notebook.lockedHintDeep
   if (def.year != null) return t.notebook.lockedHintYear(def.year)
   if (def.stage != null) return t.notebook.lockedHintStage(t.gardenStage.names[def.stage])
   return t.notebook.lockedEntry

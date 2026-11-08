@@ -31,7 +31,7 @@ export default function App() {
     (g) => (game.state.owned[g.id] ?? 0) > 0 && game.unlocked(g.id),
   ).length
   const year = game.state.prestiges + 1
-  const { notebook, unread, markRead } = useNotebook(gardenStage, year)
+  const { notebook, unread, markRead } = useNotebook(gardenStage, year, game.state.deepPrestiges)
   const openNotebook = useCallback(
     (entry: NotebookEntryId | null = null) => setNotebookOpen({ entry }),
     [],
@@ -102,7 +102,7 @@ export default function App() {
         <SeasonCeremony
           event={game.seasonEnd}
           onDone={() => {
-            const letter = yearLetterFor(game.seasonEnd!.year)
+            const letter = game.seasonEnd!.deep ? 'deep1' : yearLetterFor(game.seasonEnd!.year)
             if (letter) markRead(letter)
             game.ackSeasonEnd()
             onTabChange('fortress')

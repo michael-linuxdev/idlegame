@@ -22,6 +22,7 @@ export type NotebookEntryId =
   | 'year7'
   | 'year10'
   | 'year14'
+  | 'deep1'
 
 export interface NotebookEntryDef {
   id: NotebookEntryId
@@ -29,6 +30,8 @@ export interface NotebookEntryDef {
   stage?: number
   /** Unlock by Gartenjahr (prestiges + 1) */
   year?: number
+  /** Unlock by Tiefe Winter completed */
+  deep?: number
 }
 
 /** Story order — the notebook lists pages in this sequence. */
@@ -46,6 +49,7 @@ export const NOTEBOOK_ENTRIES: NotebookEntryDef[] = [
   { id: 'stage9', stage: 9 },
   { id: 'year14', year: 14 },
   { id: 'stage10', stage: 10 },
+  { id: 'deep1', deep: 1 },
 ]
 
 /** Letter Oma sends when a given Gartenjahr begins (for the ceremony). */
@@ -91,12 +95,21 @@ function saveNotebook(s: NotebookState) {
 }
 
 /** Pure: entries newly unlocked for the given progress. */
-export function unlockFor(s: NotebookState, stage: number, year: number): NotebookState {
+export function unlockFor(
+  s: NotebookState,
+  stage: number,
+  year: number,
+  deep = 0,
+): NotebookState {
   const maxStage = Math.max(s.maxStage, stage)
   const unlocked = [...s.unlocked]
   for (const e of NOTEBOOK_ENTRIES) {
     if (unlocked.includes(e.id)) continue
-    if ((e.stage != null && maxStage >= e.stage) || (e.year != null && year >= e.year)) {
+    if (
+      (e.stage != null && maxStage >= e.stage) ||
+      (e.year != null && year >= e.year) ||
+      (e.deep != null && deep >= e.deep)
+    ) {
       unlocked.push(e.id)
     }
   }
@@ -104,11 +117,11 @@ export function unlockFor(s: NotebookState, stage: number, year: number): Notebo
   return { ...s, unlocked, maxStage }
 }
 
-export function useNotebook(stage: number, year: number) {
+export function useNotebook(stage: number, year: number, deep = 0) {
   const [base, setBase] = useState<NotebookState>(() => loadNotebook())
   // Unlock during render (guarded) so letters found this season stay
   // unlocked after Saisonende resets the garden stage.
-  const nb = unlockFor(base, stage, year)
+  const nb = unlockFor(base, stage, year, deep)
   if (nb !== base) setBase(nb)
 
   useEffect(() => {
