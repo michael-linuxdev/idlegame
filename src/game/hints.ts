@@ -3,6 +3,7 @@
  * Seen ids persist; at most one hint is shown at a time.
  */
 import { useCallback, useState } from 'react'
+import type { FeatureId } from './featureUnlocks'
 
 export const HINTS_STORAGE_KEY = 'gartenerbe-hints-v1'
 
@@ -18,9 +19,49 @@ export type HintId =
   | 'bulk5'
   | 'buyAll'
   | 'helperAreas'
+  | 'recipeNew'
+  | 'festNew'
+  | 'weatherNew'
+  | 'clanNew'
 
 /** Priority order when several are pending. */
-export const HINT_ORDER: HintId[] = ['season', 'truhe', 'deep', 'visitor', 'order', 'variety', 'weekly', 'bulkMax', 'bulk5', 'buyAll', 'helperAreas']
+export const HINT_ORDER: HintId[] = [
+  'season',
+  'truhe',
+  'deep',
+  'visitor',
+  'order',
+  'variety',
+  'weekly',
+  'recipeNew',
+  'festNew',
+  'weatherNew',
+  'clanNew',
+  'bulkMax',
+  'bulk5',
+  'buyAll',
+  'helperAreas',
+]
+
+/** Omas Hinweis, wenn ein System neu freigeschaltet wird (featureUnlocks.ts). */
+export const FEATURE_HINTS: Partial<Record<FeatureId, HintId>> = {
+  recipe: 'recipeNew',
+  fest: 'festNew',
+  weather: 'weatherNew',
+  clan: 'clanNew',
+}
+
+/** Mark hints as already seen (veterans on the first start with a new version). */
+export function seedHintsSeen(ids: readonly HintId[]): void {
+  if (ids.length === 0) return
+  const cur = load()
+  const next = [...cur, ...ids.filter((id) => !cur.includes(id))]
+  try {
+    localStorage.setItem(HINTS_STORAGE_KEY, JSON.stringify(next))
+  } catch {
+    /* ignore */
+  }
+}
 
 function load(): HintId[] {
   try {

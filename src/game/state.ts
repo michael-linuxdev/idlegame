@@ -267,6 +267,8 @@ export interface GameState {
   waterRefillDay: string
   /** Refills bought on waterRefillDay (max WATER_REFILL_PER_DAY) */
   waterRefills: number
+  /** Echte Sitzungen (neu erst nach ≥ 30 min Pause) — steuert das Freischalten */
+  sessions: number
   /** Personal yield boost expiry; 0 = inactive */
   yieldBoostExpiresAt: number
   /** Battle-pass lite week key */
@@ -599,6 +601,7 @@ export function createInitialState(now = Date.now()): GameState {
     marketGiftDay: '',
     waterRefillDay: '',
     waterRefills: 0,
+    sessions: 1,
     yieldBoostExpiresAt: 0,
     bpWeekKey: weekKey(now),
     bpXp: 0,
@@ -679,6 +682,7 @@ export function createPostPrestigeState(prev: GameState, now = Date.now()): Game
     marketGiftDay: prev.marketGiftDay,
     waterRefillDay: prev.waterRefillDay,
     waterRefills: prev.waterRefills,
+    sessions: prev.sessions,
     yieldBoostExpiresAt: prev.yieldBoostExpiresAt,
     bpWeekKey: prev.bpWeekKey,
     bpXp: prev.bpXp,
@@ -2165,6 +2169,14 @@ export function marketGiftReady(state: GameState, now = Date.now()): boolean {
 export function claimMarketGift(state: GameState, now = Date.now()): GameState {
   if (!marketGiftReady(state, now)) return state
   return { ...state, samen: state.samen + MARKET_GIFT_SAMEN, marketGiftDay: dayKey(now), lastSeen: now }
+}
+
+/** Eine neue Sitzung beginnt erst nach dieser Pause (Neuladen zählt nicht). */
+export const SESSION_GAP_MS = 30 * 60_000
+
+/** Count a new session when the player comes back after a real break. */
+export function countSession(state: GameState, awayMs: number): GameState {
+  return awayMs >= SESSION_GAP_MS ? { ...state, sessions: state.sessions + 1 } : state
 }
 
 /** Gekaufte Auffüllungen, die heute noch gehen. */

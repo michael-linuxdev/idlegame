@@ -271,6 +271,16 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
   // Gießkanne-Limit (2026-11-09; ältere Stände → heute noch nichts gekauft)
   const waterRefillDay = typeof parsed.waterRefillDay === 'string' ? parsed.waterRefillDay.slice(0, 16) : ''
   const waterRefills = parseNonNegInt(parsed.waterRefills)
+  // Sitzungszähler (2026-11-09). Ältere Stände: aus dem Fortschritt ableiten,
+  // damit bestehende Spieler nichts wieder verlieren, was sie schon kannten.
+  const sessions =
+    typeof parsed.sessions === 'number' && Number.isFinite(parsed.sessions) && parsed.sessions >= 1
+      ? Math.floor(parsed.sessions)
+      : prestiges > 0 || parseNonNegInt(parsed.deepPrestiges) > 0 || parseNonNegInt(parsed.generation) > 0
+        ? 10
+        : totalUpgrades > 0
+          ? 2
+          : 1
   const yieldBoostExpiresAt =
     typeof parsed.yieldBoostExpiresAt === 'number' &&
     Number.isFinite(parsed.yieldBoostExpiresAt)
@@ -367,6 +377,7 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
     marketGiftDay,
     waterRefillDay,
     waterRefills,
+    sessions,
     yieldBoostExpiresAt,
     bpWeekKey,
     bpXp,

@@ -210,8 +210,7 @@ export function GardenMap({
   // Welcome-back card: once per app start, only after a real break
   const [welcomeDone, setWelcomeDone] = useState(false)
   /** First minutes: only Ernte, goal, Gießen and the menu — events come once Kompost grows */
-  const earlyGame =
-    state.prestiges === 0 && state.deepPrestiges === 0 && state.generation === 0 && (state.owned.kompost ?? 0) === 0
+  const earlyGame = !game.features.has('events')
   const previewDef = previewSkin ? COSMETICS.find((c) => c.id === previewSkin) ?? null : null
   const skinClass = previewDef?.accentClass ?? equippedCosmetic?.accentClass ?? 'skin-wiese'
   const [recipeOpen, setRecipeOpen] = useState(false)
@@ -289,7 +288,8 @@ export function GardenMap({
       state.owned,
       state.prestiges,
     )
-    if (readyBuys > 0 && state.erbstuecke > 0) {
+    // Truhe erst nach dem ersten Saisonende als Ziel (vorher verwirrt sie nur)
+    if (readyBuys > 0 && state.erbstuecke > 0 && (state.prestiges > 0 || state.deepPrestiges > 0 || state.generation > 0)) {
       return {
         ready: true,
         erbstuecke: state.erbstuecke,
@@ -345,6 +345,8 @@ export function GardenMap({
     state.emberUpgrades,
     state.owned,
     state.prestiges,
+    state.deepPrestiges,
+    state.generation,
   ])
 
   const stageName =
@@ -666,6 +668,10 @@ export function GardenMap({
           weekly: state.prestiges >= 1,
           deep: canDeepReset(state.prestiges),
           helperAreas: state.helperLevel > 0,
+          recipeNew: !earlyGame && game.features.has('recipe') && state.recipe.areas.length > 0,
+          festNew: !earlyGame && game.features.has('fest'),
+          weatherNew: !earlyGame && game.features.has('weather'),
+          clanNew: game.features.has('clan'),
         },
         seenHints,
       )
@@ -814,7 +820,7 @@ export function GardenMap({
         </div>
       ) : null}
 
-      {!photoMode ? <WeatherDecision game={game} onToast={showToast} /> : null}
+      {!photoMode && game.features.has('weather') ? <WeatherDecision game={game} onToast={showToast} /> : null}
 
       <BottomBar
         game={game}

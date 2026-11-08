@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { AppNav, type Tab } from './components/AppNav'
 import { ClanPanel } from './components/ClanPanel'
 import { GardenMap } from './components/GardenMap'
@@ -17,8 +17,7 @@ import { useNotebook, yearLetterFor, type NotebookEntryId } from './game/noteboo
 import { NotebookSheet } from './components/story/NotebookSheet'
 import { ProjectSheet } from './components/ProjectSheet'
 import { AlbumSheet } from './components/AlbumSheet'
-import { decorUnlocked } from './game/decor'
-import { crossingUnlocked } from './game/crossing'
+import { getFeaturesSeen, markFeatureSeen, MENU_FEATURES, subscribeFeaturesSeen, type FeatureId } from './game/featureUnlocks'
 import { SeasonCeremony } from './components/story/SeasonCeremony'
 import { LegalSheet } from './components/LegalSheet'
 import { SaveSheet } from './components/SaveSheet'
@@ -41,6 +40,8 @@ import './theme/ux.css'
 
 export default function App() {
   const game = useGame()
+  const featuresSeen = useSyncExternalStore(subscribeFeaturesSeen, getFeaturesSeen)
+  const newMenuKeys = new Set<string>(MENU_FEATURES.filter((id) => game.features.has(id) && !featuresSeen.includes(id)))
   const [tab, setTab] = useState<Tab>('fortress')
   const [plot, setPlot] = useState<'garden' | ChapterId>('garden')
   const [previewSkin, setPreviewSkin] = useState<CosmeticId | null>(null)
@@ -285,12 +286,17 @@ export default function App() {
         onOpenNotebook={() => openNotebook(null)}
         onOpenLegal={() => setLegalOpen(true)}
         onOpenBackup={() => setBackupOpen(true)}
-        onOpenDecor={decorUnlocked(game.state) ? () => { goPlot('garden'); setMapSheet('decor') } : undefined}
-        onOpenCross={crossingUnlocked(game.state.collection) ? () => { goPlot('garden'); setMapSheet('cross') } : undefined}
+        onOpenDecor={game.features.has('decor') ? () => { goPlot('garden'); setMapSheet('decor') } : undefined}
+        onOpenCross={game.features.has('cross') ? () => { goPlot('garden'); setMapSheet('cross') } : undefined}
         crossReady={!!game.state.crossing && game.state.crossing.endsAt <= game.nowTick}
-        onOpenAlbum={game.state.prestiges >= 1 || game.state.deepPrestiges > 0 || game.state.generation > 0 ? () => setAlbumOpen(true) : undefined}
+        onOpenAlbum={game.features.has('album') ? () => setAlbumOpen(true) : undefined}
         albumReady={game.albumReady}
-        onOpenProjects={game.openChapters.length > 0 ? () => setProjectsOpen(true) : undefined}
+        onOpenProjects={game.features.has('projects') ? () => setProjectsOpen(true) : undefined}
+        clanOpen={game.features.has('clan')}
+        newKeys={newMenuKeys}
+        onTileOpen={(key) => {
+          if ((MENU_FEATURES as string[]).includes(key)) markFeatureSeen(key as FeatureId)
+        }}
         onOpenPhoto={() => {
           setPlot('garden')
           onTabChange('fortress')

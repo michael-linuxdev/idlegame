@@ -32,6 +32,12 @@ interface Props {
   unreadLetters?: number
   reminders?: boolean
   onToggleReminders?: () => void
+  /** Verein im Menü (frei ab featureUnlocks 'clan') */
+  clanOpen?: boolean
+  /** Menüpunkte, die neu frei sind und noch nie geöffnet wurden */
+  newKeys?: ReadonlySet<string>
+  /** Called when a menu tile is opened (to clear its „Neu“-Abzeichen) */
+  onTileOpen?: (key: string) => void
   /** Red dots on the tab bar */
   seasonReady?: boolean
   shopReady?: boolean
@@ -126,9 +132,12 @@ export function AppNav({
   onToggleReminders,
   seasonReady = false,
   shopReady = false,
+  clanOpen = true,
+  newKeys,
+  onTileOpen,
 }: Props) {
   const [menuOpen, setMenuOpen] = useState(false)
-  const menuNew = unreadLetters > 0 || crossReady || albumReady > 0
+  const menuNew = unreadLetters > 0 || crossReady || albumReady > 0 || (newKeys?.size ?? 0) > 0
 
   function openMenu() {
     logPlaytest('menu_open')
@@ -192,7 +201,9 @@ export function AppNav({
             setMenuOpen(false)
             fn()
           }}
-          tabClan={() => onTabChange('clan')}
+          tabClan={clanOpen ? () => onTabChange('clan') : undefined}
+          newKeys={newKeys}
+          onTileOpen={onTileOpen}
           clanFtue={ftueHighlight === 'clan'}
           onOpenNotebook={onOpenNotebook}
           onOpenLegal={onOpenLegal}
@@ -218,6 +229,8 @@ function MenuSheet({
   pick,
   tabClan,
   clanFtue,
+  newKeys,
+  onTileOpen,
   onOpenNotebook,
   onOpenLegal,
   onOpenBackup,
@@ -234,8 +247,10 @@ function MenuSheet({
 }: {
   onClose: () => void
   pick: (fn: () => void) => void
-  tabClan: () => void
+  tabClan?: () => void
   clanFtue: boolean
+  newKeys?: ReadonlySet<string>
+  onTileOpen?: (key: string) => void
   onOpenNotebook?: () => void
   onOpenLegal?: () => void
   onOpenBackup?: () => void
@@ -299,14 +314,18 @@ function MenuSheet({
                     <button
                       type="button"
                       role="menuitem"
-                      className={`nav-tile nav-menu-item${x.dot ? ' has-new' : ''}${x.ftue ? ' ftue-tab' : ''}`}
-                      onClick={() => pick(x.on!)}
+                      className={`nav-tile nav-menu-item${x.dot || newKeys?.has(x.key) ? ' has-new' : ''}${x.ftue ? ' ftue-tab' : ''}`}
+                      onClick={() => {
+                        onTileOpen?.(x.key)
+                        pick(x.on!)
+                      }}
                     >
                       <span className="nav-tile-icon">
                         {x.icon}
                         {x.dot ? <span className="nav-new-dot" aria-label={t.notebook.newLetter} /> : null}
                       </span>
                       <span className="tab-label">{x.label}</span>
+                      {newKeys?.has(x.key) && !x.dot ? <span className="nav-tile-new">{t.features.newBadge}</span> : null}
                     </button>
                   </li>
                 ))}

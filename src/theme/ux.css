@@ -718,6 +718,7 @@ html.idle .plot-canbuy {
 }
 
 .nav-sheet .nav-tile {
+  position: relative;
   width: 100%;
   min-height: 4.6rem;
   display: flex;
@@ -1172,4 +1173,18 @@ html.pref-calm *::after {
 .clan-flag-link {
   margin-top: 0.5rem;
   min-height: 2.75rem;
+}
+
+/* „Neu“-Abzeichen an frisch freigeschalteten Menüpunkten */
+.nav-tile-new {
+  position: absolute;
+  top: 0.3rem;
+  right: 0.3rem;
+  padding: 0.05rem 0.4rem;
+  border-radius: 999px;
+  background: #e5484d;
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  line-height: 1.4;
 }

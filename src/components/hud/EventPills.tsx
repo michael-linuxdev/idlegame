@@ -117,7 +117,8 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
     })
   }
 
-  if (onOpenRecipe && state.recipe.areas.length > 0 && !state.recipe.claimed) {
+  const { features } = game
+  if (onOpenRecipe && features.has('recipe') && state.recipe.areas.length > 0 && !state.recipe.claimed) {
     const done = state.recipe.areas.filter((_, i) => (state.recipe.have[i] ?? 0) >= RECIPE_NEED).length
     pills.push({
       key: 'recipe',
@@ -129,7 +130,7 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
     })
   }
 
-  if (onOpenFest) {
+  if (onOpenFest && features.has('fest')) {
     const fest = festAt(game.nowTick)
     const n = Math.floor(state.festTokens)
     pills.push({
@@ -142,7 +143,7 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
     })
   }
 
-  {
+  if (features.has('weather')) {
     const now = game.nowTick
     const today = weatherAt(now)
     const tomorrow = weatherTomorrow(now)
