@@ -75,6 +75,9 @@ export function FtueCoach({
     setFtue((s) => advanceFtue(s, 'tendBed'))
   } else if (active && ftue.beat === 'unlockCompost' && coolingOpen) {
     setFtue((s) => advanceFtue(s, 'unlockCompost'))
+  } else if (active && ftue.beat === 'visitClan' && !game.features.has('clan')) {
+    // Der Verein kommt erst später (featureUnlocks) — Schritt überspringen
+    setFtue((s) => advanceFtue(s, 'visitClan'))
   }
 
   function onPrimary() {

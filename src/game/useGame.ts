@@ -48,6 +48,7 @@ import {
 import { questLabel } from './quests'
 import {
   applyOfflineCatchup,
+  countSession,
   applyTick,
   buyBranch,
   buyClanBoost,
@@ -161,6 +162,8 @@ import { CONTEST_KG } from './extrasCore'
 import type { LegacyId } from './generations'
 import { FEST_EARN } from './fests'
 import { logPlaytest, registerPlaytestSnapshot } from './playtestLog'
+import { ensureFeaturesSeen, loadFeaturesSeen, openFeatures, usedFeatures } from './featureUnlocks'
+import { FEATURE_HINTS, seedHintsSeen, type HintId } from './hints'
 import { loadState, saveState } from './storage'
 
 /** Economy + React UI cadence. 100ms was overheating iPhone Safari PWAs. */
@@ -183,12 +186,30 @@ export function useGame() {
   const [boot] = useState(() => {
     const loaded = loadState()
     const awayMs = Math.max(0, Date.now() - loaded.lastSeen)
-    let next = applyOfflineCatchup(loaded).state
+    let next = applyOfflineCatchup(countSession(loaded, awayMs)).state
     const banner = awayMs >= MIN_OFFLINE_CLAIM_AWAY_MS && next.offlinePending > 0.01
     if (!banner) next = creditOfflinePending(next)
     return { state: maybeStartFlashEvent(next), awayMs: banner ? awayMs : 0, pending: banner ? next.offlinePending : null }
   })
   const [state, setState] = useState<GameState>(boot.state)
+  // „Neu“-Abzeichen: bestehende Spieler kennen schon, was offen ist
+  useState(() => {
+    const s = boot.state
+    const ctx = {
+      prestiges: s.prestiges,
+      deepPrestiges: s.deepPrestiges,
+      generation: s.generation,
+      sessions: s.sessions,
+      owned: s.owned,
+      collection: s.collection,
+      openChapters: openChapters(s).length,
+      used: usedFeatures(s),
+    }
+    const fresh = loadFeaturesSeen() === null
+    const seen = ensureFeaturesSeen(ctx)
+    if (fresh) seedHintsSeen(seen.map((id) => FEATURE_HINTS[id]).filter((h): h is HintId => h != null))
+    return true
+  })
   const [offlineGained, setOfflineGained] = useState<number | null>(boot.pending)
   const [offlineAwayMs, setOfflineAwayMs] = useState<number>(boot.awayMs)
 
@@ -276,7 +297,7 @@ export function useGame() {
       document.documentElement.classList.remove('tab-hidden')
       setState((s) => {
         const awayMs = Math.max(0, Date.now() - s.lastSeen)
-        let next = applyOfflineCatchup(s).state
+        let next = applyOfflineCatchup(countSession(s, awayMs)).state
         if (next.offlinePending > 0.01 && awayMs >= MIN_OFFLINE_CLAIM_AWAY_MS) {
           setOfflineGained(next.offlinePending)
           setOfflineAwayMs(awayMs)
@@ -957,9 +978,22 @@ export function useGame() {
     ],
   )
 
+  const featureCtx = {
+    prestiges: state.prestiges,
+    deepPrestiges: state.deepPrestiges,
+    generation: state.generation,
+    sessions: state.sessions,
+    owned: state.owned,
+    collection: state.collection,
+    openChapters: openChapters(state).length,
+    used: usedFeatures(state),
+  }
+  const features = openFeatures(featureCtx)
+
   return {
     state,
     stateRef,
+    features,
     rate: productionPerSecond(state, nowTick),
     turboMult: turboMult(state, nowTick),
     turboMsLeft: Math.max(0, state.turboEndsAt - nowTick),

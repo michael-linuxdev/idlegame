@@ -72,6 +72,10 @@ export const strings = {
     unmuteAria: 'Soundeffekte einschalten',
   },
 
+  features: {
+    newBadge: 'Neu',
+  },
+
   saveGuard: {
     newer: 'Dein Spielstand ist neuer als diese App-Version. Bis zum Aktualisieren wird hier nichts gespeichert — dein Fortschritt bleibt sicher.',
     otherTab: 'Gartenerbe ist schon in einem anderen Fenster offen. Hier wird nichts gespeichert; schließ das andere Fenster, dann geht es hier weiter.',
@@ -1022,6 +1026,10 @@ export const strings = {
     bulkMax: 'Neu: „Max“. Damit baust du dieses Beet so oft aus, wie deine Ernte gerade reicht — ein Tipp statt vieler.',
     bulk5: 'Neu: „×5“. Kauft genau fünf Stufen auf einmal — praktisch, um gezielt auf den nächsten Meilenstein zuzugehen.',
     buyAll: 'Neu: „Alles ausbauen“. Verteilt deine ganze Ernte auf alle Beete — immer zuerst dort, wo sie am meisten Ernte pro Sekunde bringt. Pflege und Kapitel kauft es nicht.',
+    recipeNew: 'Neu: Omas Tagesrezept. Oben in der Leiste steht, welche Beete heute etwas fürs Rezept liefern — fertig gekocht gibt es einen Bonus.',
+    festNew: 'Neu: Gartenfeste. Zu jeder Jahreszeit gibt es ein Fest mit Festmarken und einem eigenen Laden — tipp oben auf die Fest-Pille.',
+    weatherNew: 'Neu: das Wetter. Es ändert die Ernte ein wenig, und manchmal fragt der Himmel, was du tun willst — oben siehst du auch morgen.',
+    clanNew: 'Neu: der Kleingartenverein. Im Menü unter „Verein“ wiegst du jede Woche deinen größten Kürbis gegen die Nachbarn.',
     helperAreas: 'Jonas hilft jetzt mit. Du bestimmst, was er ausbauen darf: Unter „Saison“ → Gartenhelfer → „Was Jonas ausbauen darf“ kannst du einzelne Bereiche sperren und wieder freigeben.',
   },
 

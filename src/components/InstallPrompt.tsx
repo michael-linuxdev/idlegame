@@ -1,3 +1,4 @@
+import { useOverlayOpen } from '../game/overlays'
 import { useEffect, useRef, useState } from 'react'
 import {
   detectInstallMode,
@@ -35,6 +36,8 @@ export function InstallPrompt({ holdForFtue = false }: Props) {
     return loaded
   })
   const [visible, setVisible] = useState(false)
+  // Nie über einem offenen Fenster, Brief oder Menü (wartet, bis es zu ist)
+  const overlayOpen = useOverlayOpen()
   const [mode, setMode] = useState<InstallMode>('manual')
   const [bipReady, setBipReady] = useState(false)
   const deferred = useRef<BeforeInstallPromptEvent | null>(null)
@@ -65,7 +68,7 @@ export function InstallPrompt({ holdForFtue = false }: Props) {
   useEffect(() => {
     if (prefs.dismissed || prefs.installed || prefs.shown) return
     if (isStandaloneDisplay()) return
-    if (holdForFtue) return
+    if (holdForFtue || overlayOpen) return
 
     const timer = window.setTimeout(() => {
       const nextMode = detectInstallMode(Boolean(deferred.current))
@@ -83,6 +86,7 @@ export function InstallPrompt({ holdForFtue = false }: Props) {
     prefs.installed,
     prefs.shown,
     holdForFtue,
+    overlayOpen,
     bipReady,
   ])
 
