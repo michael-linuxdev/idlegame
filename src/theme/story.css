@@ -636,3 +636,13 @@
   min-height: 2.4rem;
   padding: 0.3rem 1rem;
 }
+
+/* Briefe von Jonas / Ilse */
+.notebook-page-from {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #a5733f;
+}
