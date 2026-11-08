@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
-import { areaRate, areaUnlocked, chapterDef, chapterLevels, chapterStage, type ChapterId } from '../game/chapters'
+import { areaCost, areaRate, areaUnlocked, chapterDef, chapterLevels, chapterStage, type ChapterId } from '../game/chapters'
 import { milestonesReached, nextMilestone } from '../game/generators'
 import { formatAsh, formatClock, formatDecimal } from '../game/format'
 import { playSfx } from '../game/sound'
@@ -259,6 +259,8 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
   )
 }
 
+type ChapterBulk = 1 | 5 | 'max'
+
 function ChapterSheet({
   game,
   chapter,
@@ -277,12 +279,42 @@ function ChapterSheet({
   const c = game.state.chapters[chapter]
   const level = c.owned[area] ?? 0
   const unlocked = areaUnlocked(a, c.owned)
-  const cost = game.chapterCostOf(chapter, area)
-  const affordable = unlocked && c.cur >= cost
+  const nextCost = game.chapterCostOf(chapter, area)
+  const costMult = nextCost / Math.max(1, areaCost(a, level))
   const mult = game.chapterRateMult
   const ms = nextMilestone(level)
+  const stars = milestonesReached(level)
+  const ambient = useAmbient()
+  const [bulk, setBulk] = useState<ChapterBulk>(1)
   const [flash, setFlash] = useState(false)
   const hold = useRef<number | null>(null)
+
+  // Cost / count for the chosen amount
+  let count = 1
+  let cost = nextCost
+  if (bulk === 5) {
+    count = 5
+    cost = 0
+    for (let i = 0; i < 5; i++) cost += areaCost(a, level + i, costMult)
+  } else if (bulk === 'max') {
+    let left = c.cur
+    let n = 0
+    let sum = 0
+    while (n < 1000) {
+      const step = areaCost(a, level + n, costMult)
+      if (step > left) break
+      left -= step
+      sum += step
+      n += 1
+    }
+    count = Math.max(1, n)
+    cost = n > 0 ? sum : nextCost
+  }
+  const affordable = unlocked && c.cur >= cost
+  const affordRatio = cost > 0 ? Math.min(1, c.cur / cost) : 1
+  const rate = areaRate(a, level) * mult
+  const gain = (areaRate(a, level + count) - areaRate(a, level)) * mult
+  const action = level === 0 ? t.chapterUi.plant : t.chapterUi.upgrade
 
   useEffect(
     () => () => {
@@ -291,16 +323,24 @@ function ChapterSheet({
     [],
   )
 
-  function once() {
-    game.buyChapter(chapter, area)
+  function pop() {
     playSfx('upgrade')
     setFlash(true)
     window.setTimeout(() => setFlash(false), 200)
   }
 
+  function once() {
+    game.buyChapter(chapter, area)
+    pop()
+  }
+
   function down(e: ReactPointerEvent) {
     if (e.button !== 0 || !affordable) return
     e.preventDefault()
+    if (bulk !== 1) {
+      if (game.buyChapterBulk(chapter, area, bulk === 5 ? 5 : Infinity) > 0) pop()
+      return
+    }
     once()
     hold.current = window.setInterval(once, 140)
   }
@@ -313,85 +353,122 @@ function ChapterSheet({
   return (
     <div className="upgrade-hud-layer" role="presentation" onClick={onClose}>
       <div
-        className={`upgrade-hud${flash ? ' upgrade-flash' : ''}`}
+        className={`upgrade-hud gc-card chapter-card${flash ? ' upgrade-flash' : ''}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="chapter-sheet-title"
         onClick={(e) => e.stopPropagation()}
       >
-        <header className="upgrade-hud-header">
-          <div className="upgrade-hud-heading">
-            <p className="upgrade-hud-eyebrow">
+        <div className="gc-top">
+          <div className={`gc-portrait${!unlocked ? ' locked' : ''}`} aria-hidden="true">
+            <span className="gc-portrait-art">
+              {!unlocked ? (
+                <WildSpot chapter={chapter} seed={0} />
+              ) : level === 0 ? (
+                <ReadySpot chapter={chapter} />
+              ) : (
+                <AreaArt chapter={chapter} id={area} level={level} season={ambient.season} />
+              )}
+            </span>
+            {unlocked && level > 0 ? <span className="gc-level">{level}</span> : null}
+          </div>
+          <div className="gc-info">
+            <p className="gc-eyebrow">
               {t.chapterUi.chapter(def.number)} · {copy.title}
             </p>
-            <h2 id="chapter-sheet-title">{ac.name}</h2>
+            <h2 id="chapter-sheet-title" className="gc-name">
+              {ac.name}
+            </h2>
+            {unlocked ? (
+              <>
+                <div className="gc-stars" aria-label={t.milestones.starsAria(stars)}>
+                  {Array.from({ length: 5 }, (_, i) => (
+                    <span key={i} className={i < stars ? 'on' : undefined}>
+                      ★
+                    </span>
+                  ))}
+                  {stars > 5 ? <em>+{stars - 5}</em> : null}
+                </div>
+                <p className="gc-rate">
+                  {copy.icon} {formatAsh(rate)}/s
+                  <span className="upgrade-gain"> +{formatAsh(gain)}/s</span>
+                </p>
+              </>
+            ) : (
+              <p className="gc-locked-hint">{t.chapterUi.locked(copy.areas[a.requires!.id]!.name)}</p>
+            )}
           </div>
           <button type="button" className="upgrade-hud-close" onClick={onClose} aria-label={t.upgrade.close}>
             ×
           </button>
-        </header>
-        {level === 0 ? (
+        </div>
+
+        {level === 0 && unlocked ? (
           <figure className="oma-note">
             <figcaption className="oma-note-label">{t.upgrade.noteLabel}</figcaption>
             <blockquote className="oma-note-text">{ac.note}</blockquote>
           </figure>
         ) : null}
+
         {unlocked ? (
           <>
-            <p className="upgrade-hud-stats">
-              {t.chapterUi.level(level)} · {t.chapterUi.rate(formatAsh(areaRate(a, level) * mult), copy.currency)}
-              <span className="upgrade-gain"> +{formatAsh((areaRate(a, level + 1) - areaRate(a, level)) * mult)}/s</span>
-            </p>
-            <div className="milestone-line">
-              <span>{ms ? t.milestones.short(ms.at) : t.milestones.all}</span>
-              {ms ? (
-                <span className="milestone-track" aria-hidden="true">
-                  <span style={{ width: `${Math.round(((level - ms.from) / (ms.at - ms.from)) * 100)}%` }} />
+            {ms ? (
+              <div className="gc-milestone" title={t.milestones.next(ms.at)}>
+                <span className="gc-milestone-fill" style={{ width: `${Math.round(((level - ms.from) / (ms.at - ms.from)) * 100)}%` }} />
+                <span className="gc-milestone-label">{t.milestones.short(ms.at)}</span>
+                <span className="gc-milestone-star" aria-hidden="true">
+                  ★
                 </span>
-              ) : null}
-            </div>
-            <div className="upgrade-hud-cta">
-              <button
-                type="button"
-                className={`btn buy upgrade-hud-buy${affordable ? ' pulse-ready' : ''}`}
-                disabled={!affordable}
-                onPointerDown={down}
-                onPointerUp={up}
-                onPointerLeave={up}
-                onPointerCancel={up}
-                onContextMenu={(e) => e.preventDefault()}
-              >
-                {t.chapterUi.cost(level === 0 ? t.chapterUi.plant : t.chapterUi.upgrade, formatAsh(cost), copy.currency)}
-              </button>
-              <div className="bulk-toggle">
-                <button
-                  type="button"
-                  className="bulk-chip"
-                  disabled={!affordable}
-                  onClick={() => {
-                    if (game.buyChapterBulk(chapter, area, 5) > 0) playSfx('upgrade')
-                  }}
-                >
-                  {t.bulk.five}
-                </button>
-                <button
-                  type="button"
-                  className="bulk-chip"
-                  disabled={!affordable}
-                  onClick={() => {
-                    if (game.buyChapterBulk(chapter, area, Infinity) > 0) playSfx('upgrade')
-                  }}
-                >
-                  {t.bulk.max}
-                </button>
               </div>
-              <p className="upgrade-hold-hint">
-                {affordable ? t.upgrade.holdHint : t.chapterUi.needMore(formatAsh(Math.max(0, cost - c.cur)), copy.currency)}
-              </p>
+            ) : null}
+            <div className="gc-controls">
+              <div className="gc-segment" role="radiogroup" aria-label={t.bulk.groupAria}>
+                {([1, 5, 'max'] as ChapterBulk[]).map((m) => (
+                  <button
+                    key={String(m)}
+                    type="button"
+                    role="radio"
+                    aria-checked={bulk === m}
+                    className={bulk === m ? 'on' : undefined}
+                    onClick={() => setBulk(m)}
+                  >
+                    {m === 1 ? t.bulk.one : m === 5 ? t.bulk.five : t.bulk.max}
+                  </button>
+                ))}
+              </div>
             </div>
+            <button
+              type="button"
+              className={`btn buy upgrade-hud-buy gc-buy${affordable ? ' pulse-ready' : ''}`}
+              disabled={!affordable}
+              onPointerDown={down}
+              onPointerUp={up}
+              onPointerLeave={up}
+              onPointerCancel={up}
+              onContextMenu={(e) => e.preventDefault()}
+              aria-label={t.chapterUi.cost(action, formatAsh(cost), copy.currency)}
+            >
+              <span className="gc-buy-fill" style={{ width: `${Math.round(affordRatio * 100)}%` }} aria-hidden="true" />
+              <span className="gc-buy-label">
+                {action}
+                {bulk !== 1 ? ` ×${count}` : ''}
+              </span>
+              <span className="gc-buy-cost">
+                {copy.icon} {formatAsh(cost)}
+              </span>
+            </button>
+            <p className="upgrade-hold-hint">
+              {affordable
+                ? bulk === 1
+                  ? t.upgrade.holdHint
+                  : ''
+                : t.chapterUi.needMore(formatAsh(Math.max(0, cost - c.cur)), copy.currency)}
+            </p>
           </>
         ) : (
-          <p className="upgrade-hud-stats sheet-locked-hint">{t.chapterUi.locked(copy.areas[a.requires!.id]!.name)}</p>
+          <button type="button" className="btn buy upgrade-hud-buy gc-buy" disabled>
+            <span className="gc-buy-label">{t.upgrade.locked}</span>
+          </button>
         )}
       </div>
     </div>
