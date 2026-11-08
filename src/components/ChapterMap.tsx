@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
+import { careNamesFor } from '../theme/careNames'
 import {
   CHAPTER_CARE_MAX,
   areaRateWithCare,
@@ -327,7 +328,7 @@ function ChapterSheet({
   const rate = areaRateWithCare(a, level, c) * mult
   const gain = (areaRateWithCare(a, level + count, c) - areaRateWithCare(a, level, c)) * mult
   const care = careOf(c, area)
-  const careNames = t.chapterCare.names[chapter] ?? ['Pflege', 'Sparen']
+  const careNames = careNamesFor(area, t.chapterCare.names[chapter] ?? ['Pflege', 'Sparen'])
   const action = level === 0 ? t.chapterUi.plant : t.chapterUi.upgrade
 
   useEffect(

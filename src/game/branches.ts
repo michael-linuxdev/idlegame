@@ -4,6 +4,7 @@
  * Main Upgrade CTA stays primary — branches are secondary sinks.
  */
 
+import { careNamesFor } from '../theme/careNames'
 import { t } from '../i18n'
 import type { GeneratorDef, GeneratorId } from './generators'
 
@@ -45,8 +46,9 @@ export function branchCost(
   return Math.max(25, Math.floor(raw))
 }
 
-export function branchLabel(kind: BranchKind): string {
-  return kind === 'efficiency' ? t.branches.efficiency : t.branches.capacity
+export function branchLabel(kind: BranchKind, area?: string): string {
+  const names = careNamesFor(area ?? '', [t.branches.efficiency, t.branches.capacity])
+  return kind === 'efficiency' ? names[0] : names[1]
 }
 
 export function branchBlurb(kind: BranchKind): string {
