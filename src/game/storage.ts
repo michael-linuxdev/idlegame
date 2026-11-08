@@ -387,6 +387,7 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
     bpDailyXpDay,
     prestigeSpikeFlags,
     lastSurprise: null,
+    lastSurpriseAt: parseNum(parsed.lastSurpriseAt),
     lastVariety: null,
     flashEventId,
     flashEndsAt,
