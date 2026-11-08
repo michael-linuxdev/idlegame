@@ -85,10 +85,54 @@ export function migrateFieldNames(raw: Record<string, unknown>): Record<string, 
   return out
 }
 
+/**
+ * Spielstand-Migration (aktiv seit 2026-11-08 — echte Spieler):
+ *  - Jede Format-Änderung bekommt einen Schritt in MIGRATIONS und erhöht
+ *    SAVE_VERSION. Felder werden nie still umbenannt oder entfernt.
+ *  - src/test/fixtures/save-v*.json hält echte Stände jeder Version fest;
+ *    src/test/migration.test.ts muss sie verlustfrei laden.
+ */
+export const SAVE_VERSION = 2
+
+type Raw = Record<string, unknown>
+
+const MIGRATIONS: Record<number, (raw: Raw) => Raw> = {
+  // v1 → v2: Streuobstwiese lived in `orchard` before the Kapitel-Baukasten
+  1: (raw) => {
+    const out = { ...raw }
+    const o = raw.orchard
+    if (isRecord(o) && !isRecord(raw.chapters)) {
+      out.chapters = {
+        obstwiese: {
+          cur: o.obst,
+          curLifetime: o.obstLifetime,
+          owned: o.owned,
+          openedAt: o.openedAt,
+          introSeen: o.introSeen,
+        },
+      }
+    }
+    delete out.orchard
+    return out
+  },
+}
+
+/** Bring any stored save up to SAVE_VERSION (field renames + version steps). */
+export function migrateSave(raw: Raw): Raw {
+  let out = migrateFieldNames(raw)
+  let v = typeof out.saveVersion === 'number' && out.saveVersion >= 1 ? Math.floor(out.saveVersion) : 1
+  while (v < SAVE_VERSION) {
+    const step = MIGRATIONS[v]
+    if (step) out = step(out)
+    v += 1
+  }
+  return { ...out, saveVersion: SAVE_VERSION }
+}
+
 /** Parse + sanitise any JSON object into a valid GameState. */
 export function parseSave(raw: unknown): GameState | null {
   if (!isRecord(raw)) return null
-  return parseGameState(migrateFieldNames(raw))
+  return parseGameState(migrateSave(raw))
 }
 
 function parseGameState(parsed: Record<string, unknown>): GameState {
@@ -559,11 +603,30 @@ export function loadState(): GameState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return createInitialState()
-    const parsed: unknown = JSON.parse(raw)
-    if (!isRecord(parsed)) return createInitialState()
-    return parseGameState(migrateFieldNames(parsed))
+    let parsed: unknown
+    try {
+      parsed = JSON.parse(raw)
+    } catch {
+      keepCopy(`${STORAGE_KEY}-broken`, raw)
+      return createInitialState()
+    }
+    if (!isRecord(parsed)) {
+      keepCopy(`${STORAGE_KEY}-broken`, raw)
+      return createInitialState()
+    }
+    // Keep the last pre-migration save around, just in case
+    if (parsed.saveVersion !== SAVE_VERSION) keepCopy(`${STORAGE_KEY}-before-v${SAVE_VERSION}`, raw)
+    return parseGameState(migrateSave(parsed))
   } catch {
     return createInitialState()
+  }
+}
+
+function keepCopy(key: string, raw: string): void {
+  try {
+    if (!localStorage.getItem(key)) localStorage.setItem(key, raw)
+  } catch {
+    /* quota — nothing we can do */
   }
 }
 
@@ -577,7 +640,7 @@ export function lockSaves(): void {
 export function saveState(state: GameState): void {
   if (savesLocked) return
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...state, saveVersion: SAVE_VERSION }))
   } catch {
     // Quota / private mode — ignore for MVP
   }

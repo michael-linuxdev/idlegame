@@ -4,6 +4,8 @@
  * and the update check. Spread into `strings` (see strings.ts).
  */
 
+import { laterChapterStrings } from './stringsChapters'
+
 function obst(n: string): string {
   return `${n} Obst`
 }
@@ -105,6 +107,15 @@ export const expansionStrings = {
     },
   },
 
+  plots: {
+    button: 'Grundstücke',
+    title: 'Deine Grundstücke',
+    garden: 'Omas Garten',
+    open: (cur: string, amount: string) => `${amount} ${cur}`,
+    locked: 'Noch nicht entdeckt',
+    aria: 'Grundstück wählen',
+  },
+
   chapterUi: {
     chapter: (n: number) => `Kapitel ${n}`,
     toGarden: 'Zu Omas Garten',
@@ -161,6 +172,7 @@ export const expansionStrings = {
         weinfest: { name: 'Weinfest-Platz', blurb: 'Bänke, Lichter, Musik im Herbst.', note: '„Am Weinfest kommt das ganze Tal.“' },
       },
     },
+    ...laterChapterStrings,
   },
 
   ilse: {

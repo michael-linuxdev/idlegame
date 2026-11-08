@@ -68,7 +68,7 @@ import { FestSheet } from './FestSheet'
 import { HelperWalker } from './HelperWalker'
 import { festAt } from '../game/fests'
 import { IconHelper } from '../theme/icons'
-import { chapterCopy } from './chapterCopy'
+import { PlotButtons } from './PlotPicker'
 import type { ChapterId } from '../game/chapters'
 import { COSMETICS, type CosmeticId } from '../game/monetization'
 import { SpeechBubble } from './SpeechBubble'
@@ -705,21 +705,7 @@ export function GardenMap({
 
       {state.helperLevel > 0 || game.openChapters.length > 0 ? (
         <div className="map-side">
-          {game.openChapters.map((id) => {
-            const copy = chapterCopy(id)
-            return (
-              <button
-                key={id}
-                type="button"
-                className="map-side-btn plot-switch"
-                onClick={() => onGoPlot?.(id)}
-                aria-label={copy.to}
-              >
-                {copy.icon}
-                <span>{copy.chip}</span>
-              </button>
-            )
-          })}
+          {onGoPlot ? <PlotButtons game={game} current="garden" onGo={onGoPlot} /> : null}
           {state.helperLevel > 0 ? (
             <button
               type="button"

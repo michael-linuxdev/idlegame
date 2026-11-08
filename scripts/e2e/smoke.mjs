@@ -4,6 +4,7 @@
  *  1. Fresh start: Omas letter → Gemüsebeet ausbauen → Gießen
  *  2. Near the gate: Saisonende → ceremony → Glücksrad → back in the garden
  *  3. Notebook + Spielstand-sichern sheets open
+ *  5. Alle Kapitel (?kapitel=all), Grundstücke-Auswahl, Gartenschau-Karte
  *  4. Festladen, Kapitel 2/3 via ?kapitel2=1&kapitel3=1, Weinlese, Gartenhelfer, Update-Check
  * Fails on any uncaught page error. Run: npm run build && npm run e2e
  */
@@ -141,6 +142,29 @@ try {
     await p.locator('.menu-fab').click()
     await p.getByRole('menuitem', { name: 'Nach Updates suchen' }).click()
     await p.locator('.nav-update-note').waitFor()
+    await ctx.close()
+  }
+
+  // 5 — all chapters via ?kapitel=all, Grundstücke picker, a generic chapter map
+  {
+    const ctx = await browser.newContext({ ...devices['iPhone 13'], reducedMotion: 'reduce' })
+    await ctx.addInitScript(() => {
+      if (sessionStorage.getItem('seed')) return
+      localStorage.setItem('gartenerbe-save-v1', JSON.stringify({ owned: { gemuesebeet: 20 }, ernte: 1e4, lastSeen: Date.now(), saveVersion: 2 }))
+      localStorage.setItem('gartenerbe-ftue-v1', JSON.stringify({ beat: 'done', dismissed: true, completed: [], startedAt: 1 }))
+      localStorage.setItem('gartenerbe-install-v1', JSON.stringify({ dismissed: true, installed: false, shown: true }))
+      localStorage.setItem('gartenerbe-hints-v1', JSON.stringify(['season', 'truhe', 'deep', 'visitor', 'order', 'variety', 'weekly']))
+      sessionStorage.setItem('seed', '1')
+    })
+    const p = await ctx.newPage()
+    p.on('pageerror', (e) => errors.push(e.message))
+    await p.goto(URL + '?kapitel=all')
+    await p.getByRole('button', { name: 'Grundstück wählen' }).click()
+    await p.getByRole('button', { name: /Kapitel 12/ }).click()
+    await p.locator('.orchard-intro .btn').click()
+    await p.locator('.chapter-gartenschau').waitFor()
+    await p.locator('.garden-plot').first().click()
+    await p.locator('.upgrade-hud-buy').waitFor()
     await ctx.close()
   }
 

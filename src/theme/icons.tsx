@@ -363,3 +363,98 @@ export function IconIlse() {
     </Svg>
   )
 }
+
+/** Currency icon for Kapitel 4–12 */
+export function IconChapterCurrency({ chapter }: { chapter: string }) {
+  switch (chapter) {
+    case 'bauernhof': // Milch
+      return (
+        <Svg>
+          <path d="M9 3h6v3l2 3v11a1.5 1.5 0 0 1-1.5 1.5h-7A1.5 1.5 0 0 1 7 20V9l2-3z" fill="#fbf6e8" stroke="#6a8aa8" strokeWidth="1.1" />
+          <rect x="9" y="2" width="6" height="2" rx=".6" fill="#3d8db8" />
+          <path d="M7 12h10v4H7z" fill="#3d8db8" opacity=".7" />
+        </Svg>
+      )
+    case 'imkerei': // Honig
+      return (
+        <Svg>
+          <rect x="6" y="8" width="12" height="13" rx="3" fill="#e8b422" stroke="#a5733f" strokeWidth="1" />
+          <rect x="5" y="5" width="14" height="4" rx="1" fill="#c4553f" />
+          <path d="M9 12h6M9 15h6" stroke="#fff" strokeWidth=".8" opacity=".6" />
+        </Svg>
+      )
+    case 'teich': // Fisch
+      return (
+        <Svg>
+          <ellipse cx="11" cy="12" rx="8" ry="4.6" fill="#6aa6c9" stroke="#3d6f8a" strokeWidth="1" />
+          <path d="M18 12l4-4v8z" fill="#6aa6c9" stroke="#3d6f8a" strokeWidth="1" />
+          <circle cx="7" cy="11" r="1" fill="#1f2a3a" />
+        </Svg>
+      )
+    case 'kraeuter':
+      return (
+        <Svg>
+          <path d="M12 21V8" stroke="#3f7a30" strokeWidth="1.4" />
+          <path d="M12 8c-5 0-7-3-7-6 4 0 7 2 7 6zM12 12c4 0 7-2 7-5-4 0-7 2-7 5zM12 16c-4 0-6-2-6-4 3 0 6 1 6 4z" fill="#5f9e45" />
+        </Svg>
+      )
+    case 'botanik':
+      return (
+        <Svg>
+          {Array.from({ length: 6 }, (_, i) => (
+            <ellipse key={i} cx="12" cy="6" rx="2.8" ry="4.2" fill="#e85d8a" transform={`rotate(${i * 60} 12 12)`} />
+          ))}
+          <circle cx="12" cy="12" r="2.6" fill="#f5c542" />
+        </Svg>
+      )
+    case 'alm': // Käse
+      return (
+        <Svg>
+          <path d="M3 16 L19 6 L21 16z" fill="#f5c542" stroke="#b8862a" strokeWidth="1" />
+          <path d="M3 16h18v4H3z" fill="#e8b422" stroke="#b8862a" strokeWidth="1" />
+          <circle cx="12" cy="13" r="1.3" fill="#d9a020" />
+          <circle cx="16" cy="11" r="1" fill="#d9a020" />
+        </Svg>
+      )
+    case 'lavendel':
+      return (
+        <Svg>
+          <path d="M12 22V6" stroke="#5f7a4a" strokeWidth="1.2" />
+          {[4, 7, 10, 13].map((y) => (
+            <g key={y}>
+              <ellipse cx="10.4" cy={y} rx="1.6" ry="2" fill="#7a5ab8" />
+              <ellipse cx="13.6" cy={y + 1} rx="1.6" ry="2" fill="#9a7ac4" />
+            </g>
+          ))}
+        </Svg>
+      )
+    case 'japangarten': // Tee
+      return (
+        <Svg>
+          <path d="M4 10h14v4a6 6 0 0 1-6 6h-2a6 6 0 0 1-6-6z" fill="#7fae58" stroke="#3f7a30" strokeWidth="1" />
+          <path d="M18 11h1.5a2.5 2.5 0 0 1 0 5H17" stroke="#3f7a30" strokeWidth="1.2" fill="none" />
+          <path d="M8 7c0-2 2-2 2-4M12 7c0-2 2-2 2-4" stroke="#9fb7c9" strokeWidth="1" fill="none" />
+        </Svg>
+      )
+    default: // Gartenschau: Besucher-Medaille
+      return (
+        <Svg>
+          <path d="M8 2l4 7 4-7" stroke="#c4553f" strokeWidth="2.4" fill="none" />
+          <circle cx="12" cy="15" r="6.5" fill="#f5c542" stroke="#b8862a" strokeWidth="1.2" />
+          <path d="M12 11.5l1.1 2.3 2.5.3-1.8 1.7.5 2.5-2.3-1.2-2.3 1.2.5-2.5-1.8-1.7 2.5-.3z" fill="#fff8d0" />
+        </Svg>
+      )
+  }
+}
+
+/** Grundstücke — folded map */
+export function IconMap() {
+  return (
+    <Svg>
+      <path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z" fill="#f3e6c8" stroke="#8a6a40" strokeWidth="1.1" strokeLinejoin="round" />
+      <path d="M9 4v14M15 6v14" stroke="#8a6a40" strokeWidth="1" />
+      <path d="M5 13c2-2 3 1 5-1s3 1 5-1 3 1 4 0" stroke="#5f9e45" strokeWidth="1.2" fill="none" />
+      <circle cx="17" cy="9" r="1.6" fill="#e0485e" />
+    </Svg>
+  )
+}
