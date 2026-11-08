@@ -44,6 +44,12 @@ export function formatRate(n: number): string {
 /** m:ss for short countdowns */
 export function formatClock(ms: number): string {
   const total = Math.max(0, Math.ceil(ms / 1000))
+  // Long timers read as hours (27 h 49) instead of „1669:00“
+  if (total >= 3600) {
+    const h = Math.floor(total / 3600)
+    const min = Math.floor((total % 3600) / 60)
+    return h >= 24 && min === 0 ? `${h} h` : `${h} h ${String(min).padStart(2, '0')}`
+  }
   const m = Math.floor(total / 60)
   const s = total % 60
   return `${m}:${String(s).padStart(2, '0')}`

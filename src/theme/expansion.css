@@ -1332,3 +1332,37 @@ html.tab-hidden .sky-event {
   padding-left: 0.3rem;
   border-left: 2px solid color-mix(in srgb, var(--oc-ember) 30%, transparent);
 }
+
+/* —— Ausbau-Fenster kompakt —— */
+.upgrade-gain {
+  color: #3f7a30;
+  font-weight: 700;
+}
+
+.care-details > summary {
+  cursor: pointer;
+  list-style: none;
+}
+
+.care-details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.care-details > summary::after {
+  content: ' ▸';
+  font-size: 0.8em;
+}
+
+.care-details[open] > summary::after {
+  content: ' ▾';
+}
+
+.care-details[open] {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.upgrade-hud .upgrade-hud-row-buy {
+  min-width: 4.5rem;
+}

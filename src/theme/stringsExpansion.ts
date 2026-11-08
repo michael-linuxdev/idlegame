@@ -54,6 +54,7 @@ export const expansionStrings = {
 
   milestones: {
     next: (at: number) => `Nächster Meilenstein: Stufe ${at} → ×2 Ernte`,
+    short: (at: number) => `×2 bei ${at}`,
     all: 'Alle Meilensteine erreicht',
     reached: (name: string, mult: string) => `Meilenstein! ${name} erntet jetzt ${mult}`,
     starsAria: (n: number) => `${n} Meilensteine`,
