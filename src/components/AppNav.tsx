@@ -19,6 +19,8 @@ interface Props {
   onOpenBackup?: () => void
   onOpenPhoto?: () => void
   onOpenProjects?: () => void
+  onOpenAlbum?: () => void
+  albumReady?: number
   unreadLetters?: number
   reminders?: boolean
   onToggleReminders?: () => void
@@ -75,6 +77,8 @@ export function AppNav({
   onOpenBackup,
   onOpenPhoto,
   onOpenProjects,
+  onOpenAlbum,
+  albumReady = 0,
   unreadLetters = 0,
   reminders = false,
   onToggleReminders,
@@ -208,6 +212,27 @@ export function AppNav({
               </span>
               <span className="tab-label">{t.notebook.title}</span>
               {unreadLetters > 0 ? <span className="nav-new-dot" aria-label={t.notebook.newLetter} /> : null}
+            </button>
+          ) : null}
+          {onOpenAlbum ? (
+            <button
+              type="button"
+              role="menuitem"
+              className={`nav-menu-item${albumReady > 0 ? ' has-new' : ''}`}
+              onClick={() => {
+                setMenuOpen(false)
+                onOpenAlbum()
+              }}
+            >
+              <span className="tab-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true" width="22" height="22">
+                  <rect x="4" y="3" width="16" height="18" rx="2" fill="none" stroke="currentColor" strokeWidth="2" />
+                  <circle cx="12" cy="11" r="3.4" fill="none" stroke="currentColor" strokeWidth="2" />
+                  <path d="M8 17h8" stroke="currentColor" strokeWidth="2" />
+                </svg>
+              </span>
+              <span className="tab-label">{t.album.menu}</span>
+              {albumReady > 0 ? <span className="nav-new-dot" aria-hidden="true" /> : null}
             </button>
           ) : null}
           {onOpenProjects ? (
