@@ -310,13 +310,19 @@ export const farmStrings = {
     emptyShop: 'Erst prestigieren — dann Münzen-Shop.',
     shopTitle: 'Münzen-Baum',
     shopIntro:
-      'Drei Äste mit frühen Käufen in jedem Ast. Weitere Ränge öffnen sich beim Neuaufbau — Münzen nur aus Prestige.',
+      'Wenige Ränge sofort — der Rest öffnet sich über Modul-Stufen und Phyto in diesem Lauf. Münzen nur aus Prestige.',
     shopReady: (n: number) =>
       n === 1
         ? '1 Münzen-Kauf bereit — Neuaufbau schaltet mehr frei.'
         : `${n} Münzen-Käufe bereit — Neuaufbau schaltet mehr frei.`,
+    shopWaiting: (name: string, nextRank: number, pct: number) =>
+      `Münzen warten: als Nächstes ${name} Rang ${nextRank} (${pct}%) — weiter ausbauen.`,
+    shopUnlockAria: (name: string) => `Fortschritt bis ${name}`,
+    shopNextTag: 'Als Nächstes',
     shopRankLocked: (need: string) =>
-      `Freischalten: ${need} ${SOFT_CURRENCY} oder Modul-Stufen in diesem Lauf`,
+      `Freischalten: noch ${need} Fortschritt (Module / Phyto)`,
+    shopRankLockedProgress: (pct: number, left: string) =>
+      `${pct}% — noch ${left} Fortschritt bis Freischalten`,
     shopModulesLocked: (need: number) =>
       `Freischalten: ${need} Module online in diesem Lauf`,
     max: 'Max',

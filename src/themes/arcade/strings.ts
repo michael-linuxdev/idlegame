@@ -316,13 +316,19 @@ export const arcadeStrings = {
     emptyShop: 'Noch keine Tickets — einmal prestigieren, dann füllt sich der Shop.',
     shopTitle: 'Ticket-Baum',
     shopIntro:
-      'Drei Äste mit frühen Käufen in jedem Ast. Weitere Ränge öffnen sich beim Neuaufbau — Tickets nur aus Prestige.',
+      'Wenige Ränge sofort — der Rest öffnet sich über Automaten-Stufen und Tokens in diesem Lauf. Tickets nur aus Prestige.',
     shopReady: (n: number) =>
       n === 1
         ? '1 Ticket-Kauf bereit — Neuaufbau schaltet mehr frei.'
         : `${n} Ticket-Käufe bereit — Neuaufbau schaltet mehr frei.`,
+    shopWaiting: (name: string, nextRank: number, pct: number) =>
+      `Tickets warten: als Nächstes ${name} Rang ${nextRank} (${pct}%) — weiter ausbauen.`,
+    shopUnlockAria: (name: string) => `Fortschritt bis ${name}`,
+    shopNextTag: 'Als Nächstes',
     shopRankLocked: (need: string) =>
-      `Freischalten: ${need} Tokens oder Automaten-Stufen in diesem Lauf`,
+      `Freischalten: noch ${need} Fortschritt (Automaten / Tokens)`,
+    shopRankLockedProgress: (pct: number, left: string) =>
+      `${pct}% — noch ${left} Fortschritt bis Freischalten`,
     shopModulesLocked: (need: number) =>
       `Freischalten: ${need} Automaten online in diesem Lauf`,
     max: 'Max',

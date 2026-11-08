@@ -17,6 +17,7 @@ import {
   emberRankUnlocked,
   emberUnlockProgress,
   modulesOnlineCount,
+  nextLockedEmberUnlock,
   prestigeBlockReason,
   prestigeMinEmbersForRun,
 } from '../game/economy'
@@ -58,6 +59,11 @@ export function PrestigePanel({ game, highlight }: Props) {
   const readyBuys = countAffordableEmberBuys(
     state.emberUpgrades,
     state.embers,
+    state.ashEarned,
+    state.owned,
+  )
+  const nextUnlock = nextLockedEmberUnlock(
+    state.emberUpgrades,
     state.ashEarned,
     state.owned,
   )
@@ -192,6 +198,29 @@ export function PrestigePanel({ game, highlight }: Props) {
         <p className="panel-empty">{t.prestige.emptyShop}</p>
       ) : readyBuys > 0 ? (
         <p className="prestige-shop-ready">{t.prestige.shopReady(readyBuys)}</p>
+      ) : nextUnlock ? (
+        <div className="prestige-shop-waiting">
+          <p className="prestige-shop-ready prestige-shop-ready--wait">
+            {t.prestige.shopWaiting(
+              nextUnlock.item.name,
+              nextUnlock.rank + 1,
+              Math.round(nextUnlock.ratio * 100),
+            )}
+          </p>
+          <div
+            className="ember-unlock-bar"
+            role="progressbar"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={Math.round(nextUnlock.ratio * 100)}
+            aria-label={t.prestige.shopUnlockAria(nextUnlock.item.name)}
+          >
+            <div
+              className="ember-unlock-bar-fill"
+              style={{ width: `${Math.round(nextUnlock.ratio * 100)}%` }}
+            />
+          </div>
+        </div>
       ) : null}
 
       <div className="prestige-tree">
@@ -208,6 +237,10 @@ export function PrestigePanel({ game, highlight }: Props) {
                 state.owned,
               )
               const affordable = state.embers >= cost && !maxed && unlocked
+              const isNext =
+                !!nextUnlock &&
+                nextUnlock.item.id === item.id &&
+                nextUnlock.rank === rank
               return {
                 item,
                 rank,
@@ -215,10 +248,14 @@ export function PrestigePanel({ game, highlight }: Props) {
                 cost,
                 unlocked,
                 affordable,
+                isNext,
                 priority: shopRowPriority(affordable, unlocked, maxed),
               }
             })
-            .sort((a, b) => a.priority - b.priority || a.item.id.localeCompare(b.item.id))
+            .sort((a, b) => {
+              if (a.isNext !== b.isNext) return a.isNext ? -1 : 1
+              return a.priority - b.priority || a.item.id.localeCompare(b.item.id)
+            })
           return (
             <section key={branch.id} className="prestige-branch" aria-labelledby={`branch-${branch.id}`}>
               <h4 id={`branch-${branch.id}`} className="prestige-branch-title">
@@ -226,22 +263,26 @@ export function PrestigePanel({ game, highlight }: Props) {
               </h4>
               <p className="prestige-branch-blurb">{branch.blurb}</p>
               <ul className="ember-shop">
-                {items.map(({ item, rank, maxed, cost, unlocked, affordable }) => {
+                {items.map(({ item, rank, maxed, cost, unlocked, affordable, isNext }) => {
                   const needAsh = item.rankUnlockAsh?.(rank) ?? 0
                   const needMods = item.unlockModulesOnline
                   let lockHint: string | null = null
+                  let unlockRatio = 0
                   if (!maxed && !unlocked) {
                     if (needMods != null && online < needMods) {
                       lockHint = t.prestige.shopModulesLocked(needMods)
                     } else if (needAsh > 0) {
-                      const left = Math.max(0, needAsh - unlockProgress)
-                      lockHint = t.prestige.shopRankLocked(formatAsh(left > 0 ? left : needAsh))
+                      unlockRatio = Math.min(1, unlockProgress / needAsh)
+                      lockHint = t.prestige.shopRankLockedProgress(
+                        Math.round(unlockRatio * 100),
+                        formatAsh(Math.max(0, needAsh - unlockProgress)),
+                      )
                     }
                   }
                   return (
                     <li
                       key={item.id}
-                      className={`ember-shop-row${affordable ? ' ember-shop-row--ready' : ''}${!unlocked && !maxed ? ' ember-shop-row--locked' : ''}`}
+                      className={`ember-shop-row${affordable ? ' ember-shop-row--ready' : ''}${!unlocked && !maxed ? ' ember-shop-row--locked' : ''}${isNext ? ' ember-shop-row--next' : ''}`}
                     >
                       <div className="ember-shop-info">
                         <div className="ember-shop-name">
@@ -249,11 +290,32 @@ export function PrestigePanel({ game, highlight }: Props) {
                           <span className="ember-shop-rank">
                             {rank}/{item.maxRank}
                           </span>
+                          {isNext ? (
+                            <span className="ember-shop-next-tag">
+                              {t.prestige.shopNextTag}
+                            </span>
+                          ) : null}
                         </div>
                         <p className="ember-shop-blurb">{item.blurb}</p>
                         <p className="ember-shop-effect">{item.effectLabel(rank)}</p>
                         {lockHint ? (
                           <p className="ember-shop-lock muted">{lockHint}</p>
+                        ) : null}
+                        {!maxed && !unlocked && needAsh > 0 ? (
+                          <div
+                            className="ember-unlock-bar ember-unlock-bar--row"
+                            role="progressbar"
+                            aria-valuemin={0}
+                            aria-valuemax={100}
+                            aria-valuenow={Math.round(unlockRatio * 100)}
+                          >
+                            <div
+                              className="ember-unlock-bar-fill"
+                              style={{
+                                width: `${Math.round(unlockRatio * 100)}%`,
+                              }}
+                            />
+                          </div>
                         ) : null}
                       </div>
                       <button
