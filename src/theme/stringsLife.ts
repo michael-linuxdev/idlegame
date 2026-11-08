@@ -148,4 +148,31 @@ export const lifeStrings = {
       projectStages: (n: number) => `${n} Bauabschnitt bei Großprojekten`,
     } as Record<string, (n: number) => string>,
   },
+  weatherEvent: {
+    sturm: {
+      title: 'Sturm zieht auf!',
+      safe: 'Beete sichern · 10 min Ernte',
+      risk: 'Riskieren',
+      safeDone: 'Alles gesichert — der Sturm kann kommen.',
+      riskGood: 'Glück gehabt — der Sturm zog vorbei.',
+      riskBad: 'Der Sturm hat Spuren hinterlassen: −25 % Ernte für 2 Stunden.',
+    },
+    hitze: {
+      title: 'Hitzewelle!',
+      safe: 'Schattennetz · 5 Samen',
+      risk: 'Früh gießen',
+      safeDone: 'Schattennetz gespannt: +10 % Ernte für 4 Stunden.',
+      riskGood: 'Früh gegossen: +20 % Ernte für 2 Stunden (die Gießkanne ist leer).',
+      riskBad: '',
+    },
+    frost: {
+      title: 'Spätfrost droht!',
+      safe: 'Vlies auslegen · 5 Samen',
+      risk: 'Riskieren',
+      safeDone: 'Vlies liegt — die Pflanzen sind geschützt.',
+      riskGood: 'Glück gehabt — kein Frost heute Nacht.',
+      riskBad: 'Frost! −30 % Ernte für 2 Stunden.',
+    },
+    aria: 'Wetter-Entscheidung',
+  },
 }

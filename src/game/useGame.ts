@@ -6,6 +6,7 @@ import type { DecorId } from './decor'
 import type { ResidentId } from './residents'
 import type { ProjectId } from './projects'
 import { ALBUM_GOALS, albumProgress, type AlbumStat } from './album'
+import type { WeatherChoice } from './weatherEvents'
 import {
   emberPayout,
   foundryDiscountMult,
@@ -144,6 +145,8 @@ import {
   startCrossing,
   buildProjectStage,
   claimAlbumStamp,
+  decideWeather,
+  pendingWeatherEvent,
   albumStats,
   syncAlbum,
   skipCrossing,
@@ -451,6 +454,15 @@ export function useGame() {
       if (next !== s) logPlaytest('upgrade', { id: 'helper', level: next.helperLevel, kind: 'helper' })
       return next
     })
+  }, [])
+
+  /** Answer today's weather question; returns whether it went well. */
+  const chooseWeather = useCallback((choice: WeatherChoice): boolean => {
+    const roll = Math.random()
+    const r = decideWeather(stateRef.current, choice, Date.now(), roll)
+    if (r.state === stateRef.current) return true
+    setState((s) => decideWeather(s, choice, Date.now(), roll).state)
+    return r.good
   }, [])
 
   const claimStamp = useCallback((id: AlbumStat) => {
@@ -920,6 +932,8 @@ export function useGame() {
     crossStart,
     buildProject,
     claimStamp,
+    chooseWeather,
+    weatherEvent: pendingWeatherEvent(state, nowTick),
     crossSkip,
     crossHarvest,
     residentLeft,

@@ -5,6 +5,7 @@ import { parseResidentVisit, parseResidentsSeen } from './residents'
 import { parseCrossing, parseHybrids } from './crossing'
 import { parseProjects } from './projects'
 import { parseAlbum } from './album'
+import { parseWeatherBuff } from './weatherEvents'
 import { COSMETICS, dayKey, weekKey, type CosmeticId } from './monetization'
 import { ACHIEVEMENT_IDS, type AchievementId } from './achievements'
 import { emptyBranches } from './branches'
@@ -476,6 +477,8 @@ function parseExpansion(parsed: Record<string, unknown>): ExpansionSlice {
     hybrids: parseHybrids(parsed.hybrids),
     projects: parseProjects(parsed.projects),
     album: parseAlbum(parsed.album),
+    weatherDecided: typeof parsed.weatherDecided === 'string' ? parsed.weatherDecided.slice(0, 16) : '',
+    weatherBuff: parseWeatherBuff(parsed.weatherBuff),
     decorSlots: parseDecorSlots(parsed.decorSlots, parseDecorOwned(parsed.decorOwned)),
     helperBlocked: Array.isArray(parsed.helperBlocked)
       ? GENERATOR_IDS.filter((id) => (parsed.helperBlocked as unknown[]).includes(id))

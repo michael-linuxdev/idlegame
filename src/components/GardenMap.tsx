@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { WeatherDecision } from './WeatherDecision'
 import { CrossSheet } from './CrossSheet'
 import { crossingUnlocked } from '../game/crossing'
 import { Residents } from './Residents'
@@ -756,6 +757,8 @@ export function GardenMap({
           ) : null}
         </div>
       ) : null}
+
+      {!photoMode ? <WeatherDecision game={game} onToast={showToast} /> : null}
 
       <BottomBar
         game={game}
