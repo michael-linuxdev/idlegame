@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useDismiss } from '../game/overlays'
 import { CHAPTERS, type ChapterId } from '../game/chapters'
 import { formatAsh } from '../game/format'
 import type { useGame } from '../game/useGame'
@@ -28,6 +29,7 @@ export function PlotButtons({ game, current, onGo }: { game: GameApi; current: P
             return (
               <button key="garden" type="button" className="map-side-btn plot-switch back" onClick={() => onGo('garden')} aria-label={t.chapterUi.toGarden}>
                 <IconSprout />
+                <span className="map-side-label">{t.chapterUi.chipGarden}</span>
               </button>
             )
           }
@@ -35,6 +37,7 @@ export function PlotButtons({ game, current, onGo }: { game: GameApi; current: P
           return (
             <button key={p} type="button" className="map-side-btn plot-switch" onClick={() => onGo(p)} aria-label={c.to}>
               {c.icon}
+              <span className="map-side-label">{c.chip}</span>
             </button>
           )
         })}
@@ -45,6 +48,7 @@ export function PlotButtons({ game, current, onGo }: { game: GameApi; current: P
     <>
       <button type="button" className="map-side-btn plot-switch" onClick={() => setOpen(true)} aria-label={t.plots.aria}>
         <IconMap />
+        <span className="map-side-label">{t.plots.button}</span>
       </button>
       {open ? (
         <PlotSheet
@@ -62,6 +66,7 @@ export function PlotButtons({ game, current, onGo }: { game: GameApi; current: P
 }
 
 function PlotSheet({ game, current, onGo, onClose }: { game: GameApi; current: Plot; onGo: (p: Plot) => void; onClose: () => void }) {
+  useDismiss(onClose)
   const nextLocked = CHAPTERS.find((c) => !game.openChapters.includes(c.id))
   return (
     <div className="upgrade-hud-layer" role="presentation" onClick={onClose}>

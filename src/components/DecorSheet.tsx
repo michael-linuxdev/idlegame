@@ -1,4 +1,5 @@
 import { DECOR } from '../game/decor'
+import { useDismiss } from '../game/overlays'
 import type { useGame } from '../game/useGame'
 import { t } from '../i18n'
 import { DecorArt } from '../theme/DecorArt'
@@ -7,6 +8,7 @@ type GameApi = ReturnType<typeof useGame>
 
 /** Deko-Fenster: buy pieces (Samen), see what you own, jump into placing. */
 export function DecorSheet({ game, onClose, onPlace }: { game: GameApi; onClose: () => void; onPlace: () => void }) {
+  useDismiss(onClose)
   const { state } = game
   const placed = new Set(state.decorSlots.filter(Boolean))
   const visible = DECOR.filter((d) => !d.exclusive || state.decorOwned.includes(d.id))

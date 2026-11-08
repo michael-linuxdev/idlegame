@@ -1,4 +1,5 @@
 import { IMPRESSUM, PRIVACY, impressumComplete } from '../theme/legal'
+import { useDismiss } from '../game/overlays'
 import { t } from '../i18n'
 
 interface Props {
@@ -7,6 +8,7 @@ interface Props {
 
 /** Datenschutz (+ Impressum once filled in) on notebook paper. */
 export function LegalSheet({ onClose }: Props) {
+  useDismiss(onClose)
   return (
     <div className="notebook-layer" role="presentation" onClick={onClose}>
       <div

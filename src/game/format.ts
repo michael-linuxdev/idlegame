@@ -66,3 +66,25 @@ export function formatClock(ms: number): string {
 export function formatMult(m: number): string {
   return `×${de(m, 2)}`
 }
+
+/** „12 Minuten“, „3 Stunden“, „2 Tage“ — how long the player was away. */
+export function formatAway(ms: number): string {
+  const min = Math.max(1, Math.round(ms / 60_000))
+  if (min < 60) return min === 1 ? '1 Minute' : `${min} Minuten`
+  const h = Math.round(min / 60)
+  if (h < 24) return h === 1 ? '1 Stunde' : `${h} Stunden`
+  const d = Math.round(h / 24)
+  return d === 1 ? '1 Tag' : `${d} Tage`
+}
+
+/** Time until a goal at the current rate: „38 min“, „5 h 10 min“; null if far / unknown. */
+export function formatEta(remaining: number, perSecond: number): string | null {
+  if (!(remaining > 0) || !(perSecond > 0)) return null
+  const ms = (remaining / perSecond) * 1000
+  if (ms > 48 * 3600_000) return null
+  const min = Math.max(1, Math.ceil(ms / 60_000))
+  if (min < 60) return `${min} min`
+  const h = Math.floor(min / 60)
+  const m = min % 60
+  return m === 0 ? `${h} h` : `${h} h ${m} min`
+}

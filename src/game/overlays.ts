@@ -6,7 +6,7 @@
  * watch the DOM for a modal surface: any `[role="dialog"]` (except the FTUE
  * coach, which is a guide, not a window) or the open menu.
  */
-import { useEffect, useSyncExternalStore } from 'react'
+import { useEffect, useRef, useSyncExternalStore } from 'react'
 
 export const OVERLAY_SELECTOR = '[role="dialog"]:not(.ftue-coach), .nav-menu, .nav-sheet'
 
@@ -53,16 +53,37 @@ export function useOverlayOpen(): boolean {
   )
 }
 
+/** Open windows, oldest first — Escape / Zurück only closes the top one. */
+const dismissStack: { current: () => void }[] = []
+
+function onGlobalKey(e: KeyboardEvent) {
+  if (e.key !== 'Escape' || e.defaultPrevented) return
+  const top = dismissStack.at(-1)
+  if (!top) return
+  e.preventDefault()
+  top.current()
+}
+
 /** Escape closes the topmost window. Every sheet calls this with its onClose. */
 export function useDismiss(onClose: (() => void) | undefined, active = true): void {
+  const ref = useRef(onClose)
   useEffect(() => {
-    if (!active || !onClose) return
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key !== 'Escape' || e.defaultPrevented) return
-      e.preventDefault()
-      onClose()
+    ref.current = onClose
+  })
+  useEffect(() => {
+    if (!active) return
+    const entry = { current: () => ref.current?.() }
+    dismissStack.push(entry)
+    if (dismissStack.length === 1) window.addEventListener('keydown', onGlobalKey)
+    return () => {
+      const i = dismissStack.indexOf(entry)
+      if (i >= 0) dismissStack.splice(i, 1)
+      if (dismissStack.length === 0) window.removeEventListener('keydown', onGlobalKey)
     }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [onClose, active])
+  }, [active])
+}
+
+/** True while at least one window has registered with useDismiss. */
+export function hasOpenWindow(): boolean {
+  return dismissStack.length > 0
 }

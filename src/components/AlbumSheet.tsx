@@ -1,4 +1,5 @@
 import { ALBUM_GOALS, ALBUM_REWARD_AT, SEASON_DECOR, albumProgress, seasonKey, seasonOfKey } from '../game/album'
+import { useDismiss } from '../game/overlays'
 import { formatAsh } from '../game/format'
 import { albumStats, syncAlbum } from '../game/state'
 import { playSfx } from '../game/sound'
@@ -10,6 +11,7 @@ type GameApi = ReturnType<typeof useGame>
 
 /** Jahreszeiten-Album: 12 goals of the real season, stamps, season Deko. */
 export function AlbumSheet({ game, onClose }: { game: GameApi; onClose: () => void }) {
+  useDismiss(onClose)
   const s = syncAlbum(game.state, game.nowTick)
   const key = s.album.key || seasonKey(game.nowTick)
   const season = seasonOfKey(key)

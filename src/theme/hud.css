@@ -22,7 +22,7 @@
   top: 0;
   left: 0;
   right: 0;
-  z-index: 6;
+  z-index: var(--z-hud);
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
@@ -605,7 +605,7 @@
   position: absolute;
   left: 50%;
   bottom: calc(var(--safe-bottom) + 6.2rem);
-  z-index: 7;
+  z-index: var(--z-toast);
   transform: translateX(-50%);
   max-width: calc(100% - 2rem);
   padding: 0.5rem 0.9rem;

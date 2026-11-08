@@ -25,6 +25,7 @@ import { ComebackLetter, COMEBACK_SEEDS } from './components/story/ComebackLette
 import { useExtras, waterReminderDelay } from './game/extras'
 import { armAmbienceOnFirstGesture } from './game/ambience'
 import { t } from './i18n'
+import { applyPrefClasses } from './game/prefs'
 import './App.css'
 import './theme/garden.css'
 import './theme/hud.css'
@@ -142,6 +143,7 @@ export default function App() {
   )
 
   useEffect(() => bootPlaytestLog(), [])
+  useEffect(() => applyPrefClasses(), [])
   useEffect(() => armAmbienceOnFirstGesture(), [])
 
   const onFtueActiveChange = useCallback((hold: boolean) => {

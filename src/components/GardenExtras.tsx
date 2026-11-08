@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useDismiss } from '../game/overlays'
 import { toPng } from 'html-to-image'
 import { GENERATORS } from '../game/generators'
 import { RECIPE_NEED } from '../game/extrasCore'
@@ -12,6 +13,7 @@ type GameApi = ReturnType<typeof useGame>
 
 /** Omas Tagesrezept — three ingredients, cook once a day. */
 export function RecipeSheet({ game, onClose, onCooked }: { game: GameApi; onClose: () => void; onCooked: (msg: string) => void }) {
+  useDismiss(onClose)
   const r = game.state.recipe
   const dish = t.recipe.dishes[r.dish % t.recipe.dishes.length]!
   return (
@@ -100,6 +102,7 @@ export function SkyEventButton({ game, onWish }: { game: GameApi; onWish: () => 
 }
 
 export function WishSheet({ game, onClose }: { game: GameApi; onClose: () => void }) {
+  useDismiss(onClose)
   function pick(w: Wish) {
     game.wish(w)
     playSfx('claim')

@@ -1,4 +1,5 @@
 import { formatAsh, formatDecimal } from '../game/format'
+import { useDismiss } from '../game/overlays'
 import { PROJECTS, PROJECT_STAGES, projectsMult, stageCost } from '../game/projects'
 import { projectOpen } from '../game/state'
 import { playSfx } from '../game/sound'
@@ -13,6 +14,7 @@ const ART = { pavillon: 'pavillon', brunnen: 'brunnen', dorffest: 'lampions', ro
 
 /** Großprojekte: build stages with chapter currencies. */
 export function ProjectSheet({ game, onClose }: { game: GameApi; onClose: () => void }) {
+  useDismiss(onClose)
   const { state } = game
   return (
     <div className="upgrade-hud-layer project-layer" onClick={onClose}>

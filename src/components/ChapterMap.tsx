@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
+import { useDismiss } from '../game/overlays'
 import { careNamesFor } from '../theme/careNames'
 import {
   CHAPTER_CARE_MAX,
@@ -209,11 +210,12 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
             const isSel = selected === a.id
             const showSign = isSel || ready || a.id === nextId || (signsAll && unlocked)
             const stars = milestonesReached(level)
+            const canBuy = unlocked && game.chapterCostOf(chapter, a.id) <= c.cur
             return (
               <button
                 key={a.id}
                 type="button"
-                className={`garden-plot${isSel ? ' selected' : ''}${!unlocked ? ' wild' : ready ? ' ready' : ' planted producing'}`}
+                className={`garden-plot${isSel ? ' selected' : ''}${!unlocked ? ' wild' : ready ? ' ready' : ' planted producing'}${canBuy ? ' can-buy' : ''}${a.id === target ? ' goal-target' : ''}`}
                 style={{ left: a.slot.left, top: a.slot.top, zIndex: 2 + Math.round(Number.parseFloat(a.slot.top)) }}
                 aria-label={`${ac.name}, ${unlocked ? t.chapterUi.level(level) : t.hud.locked}`}
                 aria-pressed={isSel}
@@ -230,8 +232,12 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
                 </span>
                 {!showSign && unlocked && level > 0 ? (
                   <span className="plot-badge" aria-hidden="true">
-                    {level}
-                    {stars > 0 ? <span className="plot-badge-stars">{'★'.repeat(Math.min(3, stars))}</span> : null}
+                    {canBuy ? <span className="plot-canbuy in-badge" /> : null}
+                    <span className="plot-badge-name">{ac.name}</span>
+                    <span className="plot-badge-level">
+                      {level}
+                      {stars > 0 ? <span className="plot-badge-stars">{'★'.repeat(Math.min(3, stars))}</span> : null}
+                    </span>
                   </span>
                 ) : null}
                 {showSign ? (
@@ -285,6 +291,7 @@ function ChapterSheet({
   area: string
   onClose: () => void
 }) {
+  useDismiss(onClose)
   const def = chapterDef(chapter)
   const a = def.areas.find((x) => x.id === area)!
   const copy = chapterCopy(chapter)

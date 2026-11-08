@@ -194,7 +194,7 @@
   margin: 0 auto;
   background: rgba(40, 60, 80, 0.35);
   /* Above game-chrome (30) so panel CTAs stay primary */
-  z-index: 40;
+  z-index: var(--z-sheet);
   display: flex;
   align-items: flex-end;
   animation: fade-in var(--oc-motion-sheet) ease-out;
@@ -255,7 +255,7 @@
   inset: 0;
   max-width: 480px;
   margin: 0 auto;
-  z-index: 40;
+  z-index: var(--z-sheet);
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -850,7 +850,7 @@
   width: 100%;
   max-width: 480px;
   height: 0;
-  z-index: 30;
+  z-index: var(--z-chrome);
   pointer-events: none;
 }
 
@@ -1115,7 +1115,7 @@
   bottom: calc(3.35rem + var(--safe-bottom));
   width: calc(100% - 1.25rem);
   max-width: 460px;
-  z-index: 35;
+  z-index: var(--z-coach);
   pointer-events: none;
   animation: sheet-up 0.28s ease-out;
 }
@@ -1191,7 +1191,7 @@
 .install-gate {
   position: fixed;
   inset: 0;
-  z-index: 50;
+  z-index: var(--z-modal);
   display: flex;
   align-items: flex-end;
   justify-content: center;
@@ -1773,7 +1773,7 @@
   left: 50%;
   top: 7.5rem;
   transform: translateX(-50%);
-  z-index: 12;
+  z-index: var(--z-pops);
   width: 0;
   height: 0;
 }

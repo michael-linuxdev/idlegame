@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState } from 'react'
+import { useDismiss } from '../game/overlays'
 import { applyBundle, downloadBackup, exportCode, readCode } from '../game/backup'
 import { t } from '../i18n'
 
@@ -8,6 +9,7 @@ interface Props {
 
 /** Spielstand sichern — export as code/file, import on a new device. */
 export function SaveSheet({ onClose }: Props) {
+  useDismiss(onClose)
   const code = useMemo(() => exportCode(), [])
   const [copied, setCopied] = useState(false)
   const [input, setInput] = useState('')

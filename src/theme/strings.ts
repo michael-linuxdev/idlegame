@@ -9,6 +9,7 @@
  */
 import { expansionStrings } from './stringsExpansion'
 import { lifeStrings } from './stringsLife'
+import { uxStrings } from './stringsUx'
 
 const SOFT = 'Ernte'
 const SEEDS = 'Samen'
@@ -91,7 +92,7 @@ export const strings = {
     unlockPlayerLevel: (have: number, need: number) =>
       `Gärtnerstufe ${have}/${need}`,
     levelTitle: (n: number) => `Gärtnerstufe ${n}`,
-    levelDetail: (into: number, need: number) => `${into}/${need} EP`,
+    levelDetail: (into: number, need: number) => `${into}/${need} Erfahrung`,
     prestigeTitle: 'Saisonende',
     prestigeDetail: (left: string) => `noch ${left} ${SOFT}`,
     prestigeReady: 'Saisonende bereit',
@@ -216,7 +217,7 @@ export const strings = {
     claim: 'Ernten',
     claimToast: 'Ernte eingefahren',
     claimCelebrate: (amount: string, xp: number) =>
-      `+${amount} ${SOFT} · +${xp} EP`,
+      `+${amount} ${SOFT} · +${xp} Erfahrung`,
     claimCelebrateShort: (amount: string) => `+${amount} ${SOFT}`,
     mapAria: 'Dein Garten',
     mapHint: 'Beet antippen → anlegen oder ausbauen.',
@@ -228,7 +229,7 @@ export const strings = {
     buildingAriaLocked: (name: string, hint: string) =>
       `${name}, noch Wildnis. ${hint}`,
     playerLevelAria: (level: number, xp: number, need: number) =>
-      `Gärtnerstufe ${level}, ${xp} von ${need} EP`,
+      `Gärtnerstufe ${level}, ${xp} von ${need} Erfahrung`,
     progressOpen: 'Ziele & Meilensteine',
     progressClose: 'Schließen',
     levelUp: (n: number) => `Gärtnerstufe ${n}!`,
@@ -257,10 +258,10 @@ export const strings = {
     title: 'Pflege',
     efficiency: 'Düngen',
     capacity: 'Mulchen',
-    efficiencyBlurb: '+4 % Ernte/s je Rang (max. 5).',
-    capacityBlurb: '−3 % Ausbaukosten je Rang (max. 5).',
-    efficiencyPerRank: '+4 %/Rang',
-    capacityPerRank: '−3 %/Rang',
+    efficiencyBlurb: '+4 % Ernte/s je Stufe (max. 5).',
+    capacityBlurb: '−3 % Ausbaukosten je Stufe (max. 5).',
+    efficiencyPerRank: '+4 % Ernte je Stufe',
+    capacityPerRank: 'Ausbauen 3 % billiger je Stufe',
     efficiencyEffect: (pct: number) => `+${pct} % Ertrag`,
     capacityEffect: (mult: string) => `×${mult} Kosten`,
     rank: (n: number, max: number) => `Rang ${n}/${max}`,
@@ -348,7 +349,7 @@ export const strings = {
     needMore: (amount: string) => `Noch ${amount} ${SOFT}`,
     costLine: (action: string, cost: string) => `${action} · ${cost} ${SOFT}`,
     branchHint: 'Pflege ist ein Extra — Ausbauen bringt am meisten.',
-    holdHint: 'Halten = mehrfach ausbauen',
+    holdHint: 'Gedrückt halten für mehr',
   },
 
   prestige: {
@@ -1108,6 +1109,7 @@ export const strings = {
 
   ...expansionStrings,
   ...lifeStrings,
+  ux: uxStrings,
 } as const
 
 export type Strings = typeof strings
