@@ -1,17 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useState, useSyncExternalStore } from 'react'
 import { checkForUpdate, reloadNow } from '../game/appUpdate'
 import { getSaveBlock, subscribeSaveBlock, type SaveBlock } from '../game/saveGuard'
 import { t } from '../i18n'
 
 /** Hinweis, solange dieses Fenster nicht speichern darf. */
 export function SaveGuardBanner() {
-  const [block, setBlock] = useState<SaveBlock>(() => getSaveBlock())
+  const block: SaveBlock = useSyncExternalStore(subscribeSaveBlock, getSaveBlock)
   const [busy, setBusy] = useState(false)
-  useEffect(() => {
-    const off = subscribeSaveBlock(setBlock)
-    setBlock(getSaveBlock()) // Änderung zwischen erstem Rendern und Abo nicht verpassen
-    return off
-  }, [])
 
   if (block !== 'newer' && block !== 'otherTab') return null
 
