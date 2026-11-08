@@ -20,6 +20,8 @@ interface Props {
   onTabChange: (tab: Tab) => void
   onHighlightChange: (id: string | null) => void
   onFtueActiveChange?: (active: boolean) => void
+  /** True while any FTUE beat is on screen */
+  onCoachVisible?: (visible: boolean) => void
 }
 
 function advanceFtue(s: FtueState, from: FtueBeatId): FtueState {
@@ -33,6 +35,7 @@ export function FtueCoach({
   onTabChange,
   onHighlightChange,
   onFtueActiveChange,
+  onCoachVisible,
 }: Props) {
   const [ftue, setFtue] = useState<FtueState>(() => loadFtue())
 
@@ -45,6 +48,10 @@ export function FtueCoach({
   useEffect(() => {
     onFtueActiveChange?.(active && ftueBlocksInstall(ftue.beat, ftue.dismissed))
   }, [active, ftue.beat, ftue.dismissed, onFtueActiveChange])
+
+  useEffect(() => {
+    onCoachVisible?.(active)
+  }, [active, onCoachVisible])
 
   // Sync map/tab highlight with current beat (advances only via CTAs / auto — never blocks idle)
   useEffect(() => {

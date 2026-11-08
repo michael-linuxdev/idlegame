@@ -58,6 +58,9 @@ export const strings = {
 
   sound: {
     label: 'Ton',
+    ambience: 'Naturgeräusche',
+    on: 'An',
+    off: 'Aus',
     mute: 'Ton aus',
     unmute: 'Ton an',
     muteAria: 'Soundeffekte stummschalten',
@@ -536,7 +539,7 @@ export const strings = {
 
   shop: {
     title: 'Markt',
-    intro: 'Komfort & Gartenstile — Fortschritt bleibt gratis. Käufe sind Platzhalter.',
+    intro: 'Tausch deine Samen gegen Gartenstile, Dünger und mehr. Samen gibt es von Besuchern, Bestellungen und Omas Wochenplan.',
     skipLeftToday: 'Zeitsprung heute',
     skipHours: (left: number, cap: number) => `${left}/${cap} h`,
     packsTitle: 'Pakete & Samen',
@@ -901,6 +904,38 @@ export const strings = {
 
   milestone: {
     tier: (name: string, tier: number) => `${name}: Ausbaustufe ${tier} erreicht!`,
+  },
+
+  hints: {
+    label: 'Omas Hinweis',
+    ok: 'Verstanden',
+    visitor: 'Besuch im Garten! Tipp Gäste an — sie bringen immer eine Kleinigkeit mit.',
+    order: 'Eine Bestellung für den Hofladen. Fahr die Ernte ein, solange sie offen ist, und tipp dann auf „Abliefern“.',
+    variety: 'Eine neue Sorte! Im Notizbuch unter „Pflanzenbuch“ siehst du alle — jede bringt für immer etwas mehr Ernte.',
+    season: 'Die Saison kann enden. Im Winter ruht der Garten, aber du nimmst Erbstücke mit — damit wird jedes Gartenjahr reicher.',
+    truhe: 'In Omas Truhe warten Schätze. Tausch deine Erbstücke gegen Boni, die jeden Winter überdauern.',
+    weekly: 'Neu: Omas Wochenplan. Tipp oben links auf deine Gartenstufe — dort stehen sieben Aufgaben für diese Woche.',
+    deep: 'Alle Ecken sind offen. Wenn du magst, kann der Garten jetzt einen Tiefen Winter ruhen — für Sprösslinge, die für immer bleiben.',
+  },
+
+  backup: {
+    title: 'Spielstand sichern',
+    menu: 'Spielstand sichern',
+    intro: 'Dein Garten liegt nur auf diesem Gerät. Speichere den Code oder die Datei an einem sicheren Ort — damit holst du ihn auf jedes Gerät zurück.',
+    exportTitle: 'Sichern',
+    importTitle: 'Wiederherstellen',
+    codeAria: 'Dein Spielstand-Code',
+    importAria: 'Spielstand-Code einfügen',
+    copy: 'Code kopieren',
+    copied: 'Kopiert!',
+    download: 'Als Datei speichern',
+    placeholder: 'Code hier einfügen …',
+    pickFile: 'Datei wählen',
+    import: 'Wiederherstellen',
+    confirm: 'Wirklich? Ersetzt den aktuellen Garten',
+    invalid: 'Das ist kein gültiger Gartenerbe-Code.',
+    found: (when: string) => `Gültiger Spielstand vom ${when}.`,
+    close: 'Schließen',
   },
 
   legal: {

@@ -33,6 +33,9 @@ import { ClearedPlot, WildPlot } from '../theme/PlotArt'
 import { FloatPops, type FloatPopItem } from './FloatPops'
 import { BottomBar } from './hud/BottomBar'
 import { Visitors } from './Visitors'
+import { OmaHint } from './OmaHint'
+import { pickHint, useHints } from '../game/hints'
+import { canDeepReset } from '../game/longLoop'
 import {
   ORDER_PAUSE_MS,
   makeOrder,
@@ -84,6 +87,8 @@ interface Props {
   extras: ExtrasState
   updateExtras: (fn: (s: ExtrasState) => ExtrasState) => void
   track: (task: WeeklyTaskId, n?: number) => void
+  /** FTUE / ceremony / letter on screen — hold Omas hints */
+  hintsBlocked?: boolean
 }
 
 export function GardenMap({
@@ -95,6 +100,7 @@ export function GardenMap({
   extras,
   updateExtras,
   track,
+  hintsBlocked = false,
 }: Props) {
   const {
     state,
@@ -133,6 +139,8 @@ export function GardenMap({
   const skinClass = equippedCosmetic?.accentClass ?? 'skin-wiese'
   const ambient = useAmbient()
   const harvest = useHarvestFlight()
+  const { seen: seenHints, markSeen } = useHints()
+  const [visitorPresent, setVisitorPresent] = useState(false)
   const gardenStage = GENERATORS.filter(
     (g) => (state.owned[g.id] ?? 0) > 0 && game.unlocked(g.id),
   ).length
@@ -511,6 +519,21 @@ export function GardenMap({
     ackVariety()
   }, [state.lastVariety, ackVariety, track])
 
+  const hint = hintsBlocked
+    ? null
+    : pickHint(
+        {
+          visitor: visitorPresent,
+          order: Boolean(extras.order),
+          variety: state.collection.length > 0,
+          season: canPrestige && state.prestiges === 0,
+          truhe: Boolean(prestigeCta?.spend),
+          weekly: state.prestiges >= 1,
+          deep: canDeepReset(state.prestiges),
+        },
+        seenHints,
+      )
+
   return (
     <section className="fortress-home" aria-labelledby="ernte-heading">
       <h1 id="ernte-heading" className="sr-only">
@@ -580,6 +603,8 @@ export function GardenMap({
         </div>
       ) : null}
 
+      {hint ? <OmaHint id={hint} onOk={() => markSeen(hint)} /> : null}
+
       <BottomBar
         game={game}
         highlightOffline={highlightId === 'offline'}
@@ -599,8 +624,14 @@ export function GardenMap({
           aria-label={t.hud.mapAria}
           onContextMenu={(e) => e.preventDefault()}
         >
-          <MapBackdrop stage={gardenStage} ambient={ambient} />
-          <Visitors game={game} extras={extras} update={updateExtras} onVisited={showToast} />
+          <MapBackdrop stage={gardenStage} ambient={ambient} skin={skinClass} />
+          <Visitors
+            game={game}
+            extras={extras}
+            update={updateExtras}
+            onVisited={showToast}
+            onPresence={setVisitorPresent}
+          />
 
           <button
             type="button"

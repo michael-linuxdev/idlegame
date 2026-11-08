@@ -455,7 +455,15 @@ export function loadState(): GameState {
   }
 }
 
+let savesLocked = false
+
+/** Stop all further saves (used right before an import reloads the page). */
+export function lockSaves(): void {
+  savesLocked = true
+}
+
 export function saveState(state: GameState): void {
+  if (savesLocked) return
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
   } catch {

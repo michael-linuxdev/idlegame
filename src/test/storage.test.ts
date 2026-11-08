@@ -20,3 +20,26 @@ describe('save compatibility', () => {
     expect(parseSave('nope')).toBeNull()
   })
 })
+
+import { exportCode, readCode } from '../game/backup'
+import { createInitialState, STORAGE_KEY } from '../game/state'
+
+describe('Spielstand sichern', () => {
+  it('round-trips a save through the export code', () => {
+    const store = new Map<string, string>()
+    const ls = {
+      getItem: (k: string) => store.get(k) ?? null,
+      setItem: (k: string, v: string) => void store.set(k, v),
+      removeItem: (k: string) => void store.delete(k),
+    }
+    ;(globalThis as unknown as { localStorage: typeof ls }).localStorage = ls
+    const s = { ...createInitialState(0), samen: 99 }
+    ls.setItem(STORAGE_KEY, JSON.stringify(s))
+    const code = exportCode(0)
+    expect(code.startsWith('GARTENERBE1:')).toBe(true)
+    const r = readCode(code)
+    expect(r.ok).toBe(true)
+    if (r.ok) expect(JSON.parse(r.bundle.data[STORAGE_KEY]!).samen).toBe(99)
+    expect(readCode('GARTENERBE1:kaputt').ok).toBe(false)
+  })
+})

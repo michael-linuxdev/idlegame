@@ -95,6 +95,7 @@ interface Props {
   extras: ExtrasState
   update: (fn: (s: ExtrasState) => ExtrasState) => void
   onVisited: (line: string) => void
+  onPresence?: (present: boolean) => void
 }
 
 interface Active {
@@ -106,8 +107,12 @@ interface Active {
 const ORDER: VisitorId[] = ['igel', 'gerda', 'schmetterling', 'rotkehlchen', 'postbote', 'igel', 'gerda']
 
 /** Occasional garden visitors — tap them for a small gift. */
-export function Visitors({ game, extras, update, onVisited }: Props) {
+export function Visitors({ game, extras, update, onVisited, onPresence }: Props) {
   const [active, setActive] = useState<Active | null>(null)
+
+  useEffect(() => {
+    onPresence?.(active != null)
+  }, [active, onPresence])
 
   useEffect(() => {
     const id = window.setInterval(() => {

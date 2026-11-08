@@ -7,6 +7,13 @@
 
 import { t } from '../i18n'
 
+/**
+ * Real-money offers, rewarded ads and the premium pass stay hidden until
+ * store IAP / an ad SDK are wired. Everything bought with Samen (earned in
+ * game) stays available.
+ */
+export const STORE_ENABLED = false
+
 export const DAILY_SKIP_CAP_HOURS = 6
 export const CLAN_BOOST_MULT = 1.1
 export const CLAN_BOOST_MAX = 1.25

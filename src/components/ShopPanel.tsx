@@ -15,6 +15,7 @@ import {
   type ShopOfferDef,
 } from '../game/monetization'
 import { t } from '../i18n'
+import { STORE_ENABLED } from '../game/monetization'
 import type { useGame } from '../game/useGame'
 
 type GameApi = ReturnType<typeof useGame>
@@ -162,6 +163,8 @@ export function ShopPanel({ game }: Props) {
         ) : null}
       </div>
 
+      {STORE_ENABLED ? (
+        <>
       {!state.adsRemoved ? (
         <>
           <h3 className="subhead">{t.shop.adsTitle}</h3>
@@ -235,6 +238,9 @@ export function ShopPanel({ game }: Props) {
         ))}
       </ul>
 
+        </>
+      ) : null}
+
       <h3 className="subhead">{t.shop.yieldBoostTitle}</h3>
       <p className="muted">{t.shop.yieldBoostIntro}</p>
       <div className="clan-boost-row">
@@ -294,6 +300,8 @@ export function ShopPanel({ game }: Props) {
         })}
       </ul>
 
+      {STORE_ENABLED ? (
+        <>
       <h3 className="subhead">{t.shop.cosmeticPacksTitle}</h3>
       <p className="muted">{t.shop.cosmeticPacksIntro}</p>
       <ul className="ember-shop shop-list">
@@ -306,6 +314,9 @@ export function ShopPanel({ game }: Props) {
           />
         ))}
       </ul>
+
+        </>
+      ) : null}
 
       <h3 className="subhead">{t.shop.skinsTitle}</h3>
       <p className="muted">{t.shop.skinsIntro}</p>
@@ -350,6 +361,8 @@ export function ShopPanel({ game }: Props) {
         })}
       </ul>
 
+      {STORE_ENABLED ? (
+        <>
       <h3 className="subhead">{t.shop.battlePassTitle}</h3>
       <p className="muted">{t.shop.battlePassIntro}</p>
       <div className="shop-bp-header">
@@ -431,6 +444,9 @@ export function ShopPanel({ game }: Props) {
           )
         })}
       </ul>
+
+        </>
+      ) : null}
 
       <h3 className="subhead">{t.shop.clanBoostTitle}</h3>
       <p className="muted">{t.shop.clanBoostIntro}</p>

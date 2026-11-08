@@ -250,3 +250,17 @@
     display: none;
   }
 }
+
+/* Gartenstile */
+.garden-stage.skin-bauerngarten .garden-fence > svg {
+  filter: sepia(0.6) saturate(1.3) brightness(0.92);
+}
+
+.garden-stage.skin-goldherbst .decor-tree > svg,
+.garden-stage.skin-goldherbst .garden-hedge > svg {
+  filter: hue-rotate(-55deg) saturate(1.35) brightness(1.05);
+}
+
+.skin-petals > span {
+  animation-duration: 19s;
+}

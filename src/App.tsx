@@ -13,8 +13,10 @@ import { useNotebook, yearLetterFor, type NotebookEntryId } from './game/noteboo
 import { NotebookSheet } from './components/story/NotebookSheet'
 import { SeasonCeremony } from './components/story/SeasonCeremony'
 import { LegalSheet } from './components/LegalSheet'
+import { SaveSheet } from './components/SaveSheet'
 import { ComebackLetter, COMEBACK_SEEDS } from './components/story/ComebackLetter'
 import { useExtras } from './game/extras'
+import { armAmbienceOnFirstGesture } from './game/ambience'
 import { t } from './i18n'
 import './App.css'
 import './theme/garden.css'
@@ -28,7 +30,9 @@ export default function App() {
   const [tab, setTab] = useState<Tab>('fortress')
   const [ftueHighlight, setFtueHighlight] = useState<string | null>(null)
   const [holdInstall, setHoldInstall] = useState(false)
+  const [coachVisible, setCoachVisible] = useState(true)
   const [legalOpen, setLegalOpen] = useState(false)
+  const [backupOpen, setBackupOpen] = useState(false)
   const { extras, update: updateExtras, track } = useExtras()
   const [comebackOpen, setComebackOpen] = useState(
     () => Date.now() - extras.lastVisit >= 48 * 3600_000,
@@ -90,6 +94,7 @@ export default function App() {
   )
 
   useEffect(() => bootPlaytestLog(), [])
+  useEffect(() => armAmbienceOnFirstGesture(), [])
 
   const onFtueActiveChange = useCallback((hold: boolean) => {
     setHoldInstall(hold)
@@ -118,6 +123,7 @@ export default function App() {
             extras={extras}
             updateExtras={updateExtras}
             track={track}
+            hintsBlocked={coachVisible || Boolean(game.seasonEnd) || comebackOpen}
           />
         ) : null}
         {tab === 'prestige' ? (
@@ -132,6 +138,7 @@ export default function App() {
         onTabChange={onTabChange}
         onHighlightChange={setFtueHighlight}
         onFtueActiveChange={onFtueActiveChange}
+        onCoachVisible={setCoachVisible}
       />
 
       <InstallPrompt holdForFtue={holdInstall} />
@@ -142,6 +149,7 @@ export default function App() {
         onTabChange={onTabChange}
         onOpenNotebook={() => openNotebook(null)}
         onOpenLegal={() => setLegalOpen(true)}
+        onOpenBackup={() => setBackupOpen(true)}
         reminders={extras.notify}
         onToggleReminders={toggleReminders}
         unreadLetters={unread.length}
@@ -158,6 +166,7 @@ export default function App() {
       ) : null}
 
       {legalOpen ? <LegalSheet onClose={() => setLegalOpen(false)} /> : null}
+      {backupOpen ? <SaveSheet onClose={() => setBackupOpen(false)} /> : null}
 
       {comebackOpen && !game.seasonEnd ? (
         <ComebackLetter
