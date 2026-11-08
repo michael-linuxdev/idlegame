@@ -42,6 +42,7 @@ import {
 } from '../theme/icons'
 import { ProgressSheet } from './ProgressSheet'
 import { MapBackdrop } from '../theme/MapBackdrop'
+import { useAmbient } from '../theme/ambient'
 import { UpgradeSheet } from './UpgradeSheet'
 
 function surpriseLabel(kind: SurpriseKind, amount: string): string {
@@ -94,6 +95,7 @@ export function GardenMap({ game, highlightId, onOpenTab }: Props) {
   const prevLevel = useRef(playerLevel.level)
   const totalMult = multiplier * levelMult * clanMult * eventMult
   const skinClass = equippedCosmetic?.accentClass ?? 'skin-wiese'
+  const ambient = useAmbient()
   const gardenStage = GENERATORS.filter(
     (g) => (state.owned[g.id] ?? 0) > 0 && game.unlocked(g.id),
   ).length
@@ -460,14 +462,18 @@ export function GardenMap({ game, highlightId, onOpenTab }: Props) {
         onWater={onRake}
       />
 
-      <div className={`garden-stage ${skinClass}`}>
+      <div
+        className={`garden-stage ${skinClass}`}
+        data-daypart={ambient.daypart}
+        data-season={ambient.season}
+      >
         <div
           className="garden-map"
           role="application"
           aria-label={t.hud.mapAria}
           onContextMenu={(e) => e.preventDefault()}
         >
-          <MapBackdrop stage={gardenStage} />
+          <MapBackdrop stage={gardenStage} ambient={ambient} />
 
           {GENERATORS.map((def, index) => {
             const level = state.owned[def.id] ?? 0

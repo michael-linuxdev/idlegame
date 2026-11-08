@@ -2,7 +2,6 @@
  * Gartenerbe palette — hell, luftig, Grün/Weiß/Soft-Earth.
  * Interim palette from the prototype; garden art direction follows.
  */
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;700&family=Nunito+Sans:wght@400;600;700&family=DM+Sans:wght@500;700&display=swap');
 
 :root {
   /* Surfaces — airy greenhouse / rooftop light */
@@ -43,6 +42,7 @@
   --oc-font-display: 'Fraunces', 'Georgia', serif;
   --oc-font-ui: 'Nunito Sans', 'Helvetica Neue', sans-serif;
   --oc-font-metric: 'DM Sans', 'Helvetica Neue', sans-serif;
+  --oc-font-hand: 'Caveat', 'Segoe Print', 'Bradley Hand', cursive;
   --oc-radius: 8px;
   --oc-space-xs: 0.35rem;
   --oc-space-sm: 0.55rem;

@@ -11,6 +11,7 @@ import { useGame } from './game/useGame'
 import './App.css'
 import './theme/garden.css'
 import './theme/hud.css'
+import './theme/polish.css'
 
 export default function App() {
   const game = useGame()

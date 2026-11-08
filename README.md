@@ -14,10 +14,11 @@ Produktnotizen & Plan: [`ROADMAP.md`](./ROADMAP.md).
 
 ```bash
 npm install
-npm run dev
+npm run dev            # Stimmung testen: ?ambient=night-winter
 npm run build
 npm run preview
 npm run lint
+python3 scripts/generate-pwa-icons.py   # App-Icons neu erzeugen (Pillow)
 ```
 
 ## Code-Aufbau
@@ -25,8 +26,8 @@ npm run lint
 | Pfad | Inhalt |
 |---|---|
 | `src/game/` | Spielkern: Wirtschaft, Module, Prestige, Tagesziele, Events, Speicherstand |
-| `src/theme/` | Gartenerbe-Präsentation: Texte (`strings.ts`), Farben (`tokens.css`), Karte, Modulgrafik |
-| `src/components/` | UI (Karte, HUD, Sheets, Panels) |
+| `src/theme/` | Gartenerbe-Präsentation: Texte (`strings.ts`), Farben (`tokens.css`), Karte (`MapBackdrop`, `PlotArt`), Modulgrafik mit 5 Ausbaustufen (`ModuleArt`), Icons, Schriften, Stimmung (`ambient.ts`), Styles (`garden.css`, `hud.css`, `polish.css`) |
+| `src/components/` | UI: `GardenMap` + `hud/` (Ziel, Event-Leiste, Gießen/Ernten), Sheets, Panels |
 | `src/i18n/` | Zugriff auf die deutschen Texte (`t`) |
 
 ## Hosting

@@ -12,10 +12,13 @@
  */
 import type { CSSProperties, ReactNode } from 'react'
 import { GENERATORS } from '../game/generators'
+import type { Ambient } from './ambient'
 
 interface Props {
   /** Number of garden areas angelegt (0–10) */
   stage: number
+  /** Local time of day + season (cosmetic) */
+  ambient: Ambient
 }
 
 const pct = (v: string) => Number.parseFloat(v)
@@ -280,7 +283,29 @@ const FLOWERS = [
   { left: '10%', top: '82%', from: 10 },
 ]
 
-export function MapBackdrop({ stage }: Props) {
+/** Seasonal particles — a handful of transform-only elements. */
+function Particles({ ambient }: { ambient: Ambient }) {
+  const kind =
+    ambient.season === 'winter'
+      ? 'snow'
+      : ambient.season === 'autumn'
+        ? 'leaf'
+        : ambient.season === 'spring'
+          ? 'petal'
+          : ambient.daypart === 'night' || ambient.daypart === 'evening'
+            ? 'firefly'
+            : null
+  if (!kind) return null
+  return (
+    <div className={`ambient-particles p-${kind}`}>
+      {Array.from({ length: 8 }, (_, i) => (
+        <span key={i} style={{ left: `${(i * 13 + 7) % 100}%`, animationDelay: `${-i * 2.1}s` }} />
+      ))}
+    </div>
+  )
+}
+
+export function MapBackdrop({ stage, ambient }: Props) {
   return (
     <div className="garden-ground" aria-hidden="true" data-stage={stage}>
       <svg
@@ -360,6 +385,7 @@ export function MapBackdrop({ stage }: Props) {
       </Decor>
       <Decor className="decor-laube" left="50%" top="26.5%" w={22}>
         <Laube />
+        <span className="laube-glow" />
       </Decor>
       <Decor className="decor-tonne" left="5%" top="29%" w={7}>
         <Regentonne />
@@ -415,6 +441,9 @@ export function MapBackdrop({ stage }: Props) {
       <div className="garden-fence">
         <Zaun />
       </div>
+
+      <div className="ambient-tint" />
+      <Particles ambient={ambient} />
     </div>
   )
 }

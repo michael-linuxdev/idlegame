@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { registerSW } from 'virtual:pwa-register'
 import App from './App'
 import { purgeLegacyStorage } from './game/legacyStorage'
+import './theme/fonts'
 import './index.css'
 
 purgeLegacyStorage()

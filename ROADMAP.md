@@ -43,7 +43,7 @@ Weitere Begriffe: Gärtnerstufe (Spieler-Level), Gießen (Burst), Kleingartenver
 3. ✅ **Karte:** Garten-Grundstück (Draufsicht / leichtes Iso), Wildnis auf gesperrten Plätzen, Plätze frei vom HUD.
 4. ✅ **Modulgrafik:** 4–5 sichtbare Ausbaustufen pro Modul.
 5. ✅ **HUD:** drei Zonen, Event-Leiste, keine Überlappungen (verwaistes ×, abgeschnittene Texte, widersprüchliche Ziele).
-6. **Politur:** Schriften lokal (offline), Garten-Icon, Tages- und Jahreszeiten-Stimmung.
+6. ✅ **Politur:** Schriften lokal (offline), Garten-Icon, Tages- und Jahreszeiten-Stimmung.
 7. Balance-Pass, Multiplayer-Architektur (Clan → Kleingartenverein), Store-IAP, Soft-Launch.
 
 ## Fertig-Produkt?

@@ -1,0 +1,252 @@
+/*
+ * Gartenerbe polish — ambient mood (time of day + season) and the
+ * handwritten notebook look for Omas Notizbuch.
+ */
+
+/* —— Ambient tint: sits over ground + decor, under the plots —— */
+.ambient-tint {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  opacity: 0;
+  transition:
+    opacity 1.2s ease,
+    background-color 1.2s ease;
+}
+
+.garden-stage[data-season='spring'] .ambient-tint {
+  background: #fff2f6;
+  opacity: 0.55;
+}
+
+.garden-stage[data-season='autumn'] .ambient-tint {
+  background: #f6dcae;
+  opacity: 0.7;
+}
+
+.garden-stage[data-season='winter'] .ambient-tint {
+  background: #dfe8ef;
+  opacity: 0.75;
+}
+
+.garden-stage[data-daypart='morning'] .ambient-tint {
+  background: #fff0cf;
+  opacity: 0.6;
+}
+
+.garden-stage[data-daypart='evening'] .ambient-tint {
+  background: #f4c7a6;
+  opacity: 0.7;
+}
+
+.garden-stage[data-daypart='night'] .ambient-tint {
+  background: #6f7fae;
+  opacity: 0.62;
+}
+
+/* seasonal foliage */
+.garden-stage[data-season='autumn'] .decor-tree > svg,
+.garden-stage[data-season='autumn'] .garden-hedge > svg {
+  filter: hue-rotate(-48deg) saturate(1.25) brightness(1.04);
+}
+
+.garden-stage[data-season='winter'] .decor-tree > svg,
+.garden-stage[data-season='winter'] .garden-hedge > svg {
+  filter: saturate(0.45) brightness(1.12);
+}
+
+.garden-stage[data-season='winter'] .garden-ground-svg {
+  filter: saturate(0.7) brightness(1.06);
+}
+
+.garden-stage[data-season='spring'] .decor-tree > svg {
+  filter: saturate(1.1) brightness(1.04);
+}
+
+/* Omas Laube lights up at dusk */
+.laube-glow {
+  position: absolute;
+  left: 14%;
+  top: 46%;
+  width: 72%;
+  height: 34%;
+  border-radius: 50%;
+  background:
+    radial-gradient(closest-side at 26% 45%, rgba(255, 214, 110, 0.95), transparent),
+    radial-gradient(closest-side at 74% 45%, rgba(255, 214, 110, 0.9), transparent);
+  mix-blend-mode: screen;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+  pointer-events: none;
+}
+
+.garden-stage[data-daypart='night'] .laube-glow {
+  opacity: 1;
+}
+
+.garden-stage[data-daypart='evening'] .laube-glow {
+  opacity: 0.55;
+}
+
+.garden-stage[data-daypart='night'] .garden-bulb {
+  filter: drop-shadow(0 0 2px #ffd36b);
+}
+
+/* —— Seasonal particles (8 spans, transform/opacity only) —— */
+.ambient-particles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.ambient-particles > span {
+  position: absolute;
+  top: -4%;
+  display: block;
+  animation: particle-fall 16s linear infinite;
+  will-change: transform;
+}
+
+.ambient-particles > span:nth-child(3n) {
+  animation-duration: 21s;
+}
+
+.ambient-particles > span:nth-child(3n + 1) {
+  animation-duration: 18s;
+}
+
+.p-snow > span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 3px rgba(255, 255, 255, 0.9);
+  opacity: 0.9;
+}
+
+.p-petal > span {
+  width: 9px;
+  height: 6px;
+  border-radius: 60% 40% 60% 40%;
+  background: #f7b8cc;
+  opacity: 0.9;
+}
+
+.p-leaf > span {
+  width: 10px;
+  height: 7px;
+  border-radius: 0 70% 0 70%;
+  background: #d9822b;
+  opacity: 0.95;
+}
+
+.p-leaf > span:nth-child(even) {
+  background: #c4553f;
+}
+
+.p-firefly > span {
+  top: auto;
+  bottom: 20%;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #fff3a0;
+  box-shadow: 0 0 8px 2px rgba(255, 236, 120, 0.85);
+  animation: firefly 7s ease-in-out infinite alternate;
+}
+
+.p-firefly > span:nth-child(odd) {
+  bottom: 48%;
+}
+
+@keyframes particle-fall {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(28px, 55vh, 0) rotate(180deg);
+  }
+  100% {
+    transform: translate3d(-10px, 110vh, 0) rotate(360deg);
+  }
+}
+
+@keyframes firefly {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(26px, -34px);
+    opacity: 0.35;
+  }
+}
+
+/* —— Omas Notizbuch (FTUE) —— */
+.ftue-coach .ftue-coach-inner {
+  position: relative;
+  border: 1.5px solid #c9b48a;
+  border-radius: 6px 14px 14px 6px;
+  background:
+    linear-gradient(90deg, transparent 2.1rem, rgba(217, 140, 122, 0.55) 2.1rem, rgba(217, 140, 122, 0.55) 2.2rem, transparent 2.2rem),
+    repeating-linear-gradient(
+      180deg,
+      transparent 0 1.55rem,
+      rgba(155, 183, 212, 0.45) 1.55rem 1.62rem
+    ),
+    #fdf8ec;
+  box-shadow:
+    -5px 0 0 #7d9f5a,
+    0 10px 28px rgba(40, 32, 12, 0.28);
+  padding-left: 2.7rem;
+}
+
+.ftue-coach .ftue-coach-inner::before {
+  /* washi tape */
+  content: '';
+  position: absolute;
+  top: -0.6rem;
+  right: 1.4rem;
+  width: 4.5rem;
+  height: 1.2rem;
+  background: rgba(245, 197, 66, 0.7);
+  transform: rotate(4deg);
+  border-radius: 2px;
+}
+
+.ftue-coach .ftue-title {
+  font-family: var(--oc-font-hand);
+  font-weight: 700;
+  font-size: 1.65rem;
+  line-height: 1.55rem;
+  color: #2b3a55;
+}
+
+.ftue-coach .ftue-body {
+  font-family: var(--oc-font-hand);
+  font-weight: 500;
+  font-size: 1.32rem;
+  line-height: 1.55rem;
+  color: #2b3a55;
+}
+
+.ftue-coach .ftue-eyebrow {
+  color: #6a5434;
+}
+
+/* module sheet note: Caveat runs small — bump it */
+.oma-note-text {
+  font-size: 1.18rem;
+  line-height: 1.2rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ambient-particles {
+    display: none;
+  }
+}
