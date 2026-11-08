@@ -469,6 +469,36 @@
   font-weight: 700;
 }
 
+.prestige-shop-ready--wait {
+  background: color-mix(in srgb, var(--oc-accent, #2a7a4b) 12%, transparent);
+  color: var(--text);
+  font-weight: 650;
+}
+
+.prestige-shop-waiting {
+  margin: 0.35rem 0 0.4rem;
+}
+
+.ember-unlock-bar {
+  margin-top: 0.35rem;
+  height: 0.4rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--text) 12%, transparent);
+  overflow: hidden;
+}
+
+.ember-unlock-bar--row {
+  margin-top: 0.3rem;
+  max-width: 12rem;
+}
+
+.ember-unlock-bar-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: color-mix(in srgb, var(--oc-gain) 70%, var(--oc-accent, #2a7a4b));
+  transition: width 0.25s ease-out;
+}
+
 .ember-shop-row--ready {
   background: color-mix(in srgb, var(--oc-gain) 8%, transparent);
   margin: 0 -0.35rem;
@@ -479,6 +509,23 @@
 
 .ember-shop-row--locked {
   opacity: 0.78;
+}
+
+.ember-shop-row--next {
+  opacity: 1;
+  outline: 1px solid color-mix(in srgb, var(--oc-gain) 35%, transparent);
+  outline-offset: 1px;
+  border-radius: 0.45rem;
+  padding-left: 0.35rem;
+  padding-right: 0.35rem;
+  margin: 0 -0.35rem;
+}
+
+.ember-shop-next-tag {
+  margin-left: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--oc-gain);
 }
 
 .ember-shop-lock {
