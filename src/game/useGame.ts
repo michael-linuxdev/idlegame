@@ -126,6 +126,7 @@ import {
   growPumpkin,
   type Wish,
   toggleHelper,
+  toggleHelperArea,
   turboMult,
   expansionGardenMult,
 } from './state'
@@ -409,6 +410,10 @@ export function useGame() {
       if (next !== s) logPlaytest('upgrade', { id: 'helper', level: next.helperLevel, kind: 'helper' })
       return next
     })
+  }, [])
+
+  const switchHelperArea = useCallback((id: GeneratorId) => {
+    setState((s) => toggleHelperArea(s, id))
   }, [])
 
   const switchHelper = useCallback(() => {
@@ -796,6 +801,7 @@ export function useGame() {
     buyAll,
     hireHelper,
     switchHelper,
+    switchHelperArea,
     ackHelperReport,
     buyChapter,
     buyChapterBulk,

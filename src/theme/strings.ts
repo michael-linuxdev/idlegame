@@ -76,6 +76,7 @@ export const strings = {
     off: 'Aus',
     export: 'Log exportieren',
     clear: 'Log leeren',
+    clearConfirm: 'Wirklich leeren? Nochmal tippen',
   },
 
   goal: {
@@ -952,6 +953,7 @@ export const strings = {
     bulkMax: 'Neu: „Max“. Damit baust du dieses Beet so oft aus, wie deine Ernte gerade reicht — ein Tipp statt vieler.',
     bulk5: 'Neu: „×5“. Kauft genau fünf Stufen auf einmal — praktisch, um gezielt auf den nächsten Meilenstein zuzugehen.',
     buyAll: 'Neu: „Alles ausbauen“. Verteilt deine ganze Ernte auf alle Beete — immer zuerst dort, wo sie am meisten Ernte pro Sekunde bringt. Pflege und Kapitel kauft es nicht.',
+    helperAreas: 'Jonas hilft jetzt mit. Du bestimmst, was er ausbauen darf: Unter „Saison“ → Gartenhelfer → „Was Jonas ausbauen darf“ kannst du einzelne Bereiche sperren und wieder freigeben.',
   },
 
   backup: {

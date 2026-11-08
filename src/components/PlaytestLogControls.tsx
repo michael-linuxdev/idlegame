@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   clearPlaytestLog,
   exportPlaytestLog,
@@ -25,8 +25,21 @@ export function PlaytestLogControls() {
     setCount(getPlaytestEventCount())
   }
 
+  // Two taps: first asks, second (within 4 s) really clears the log
+  const [confirmClear, setConfirmClear] = useState(false)
+  useEffect(() => {
+    if (!confirmClear) return
+    const id = window.setTimeout(() => setConfirmClear(false), 4000)
+    return () => window.clearTimeout(id)
+  }, [confirmClear])
+
   function onClear() {
+    if (!confirmClear) {
+      setConfirmClear(true)
+      return
+    }
     clearPlaytestLog()
+    setConfirmClear(false)
     setCount(getPlaytestEventCount())
   }
 
@@ -64,10 +77,10 @@ export function PlaytestLogControls() {
           <button
             type="button"
             role="menuitem"
-            className="nav-menu-item playtest-action"
+            className={`nav-menu-item playtest-action playtest-clear${confirmClear ? ' confirm' : ''}`}
             onClick={onClear}
           >
-            <span className="tab-label">{t.playtest.clear}</span>
+            <span className="tab-label">{confirmClear ? t.playtest.clearConfirm : t.playtest.clear}</span>
           </button>
         </>
       ) : null}

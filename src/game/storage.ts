@@ -459,6 +459,9 @@ function parseExpansion(parsed: Record<string, unknown>): ExpansionSlice {
   return {
     helperLevel: Math.min(HELPER_RANKS.length, parseNonNegInt(parsed.helperLevel)),
     helperOn: parsed.helperOn !== false,
+    helperBlocked: Array.isArray(parsed.helperBlocked)
+      ? GENERATOR_IDS.filter((id) => (parsed.helperBlocked as unknown[]).includes(id))
+      : [],
     helperCarryMs: 0,
     helperReport: 0,
     turboEndsAt: parseNum(parsed.turboEndsAt),

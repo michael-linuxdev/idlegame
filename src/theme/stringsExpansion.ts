@@ -33,6 +33,13 @@ export const expansionStrings = {
     chipOff: 'Pause',
     toggleAria: (on: boolean) => (on ? 'Gartenhelfer pausieren' : 'Gartenhelfer weiterarbeiten lassen'),
     report: (n: number) => `Jonas hat ${n}× ausgebaut, während du weg warst`,
+    areasTitle: 'Was Jonas ausbauen darf',
+    areasHint:
+      'Tippe einen Bereich an, um ihn für Jonas zu sperren — dann baut er ihn nicht mehr aus, auch nicht, wenn du weg bist. So kannst du selbst für einen Bereich sparen. Nochmal tippen gibt ihn wieder frei.',
+    areaOn: 'erlaubt',
+    areaOff: 'gesperrt',
+    areaAria: (name: string, on: boolean) => `${name}: Jonas ${on ? 'darf ausbauen' : 'gesperrt'}`,
+    allBlocked: 'Alles gesperrt — Jonas wartet.',
   },
 
   turbo: {

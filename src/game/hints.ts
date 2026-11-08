@@ -17,9 +17,10 @@ export type HintId =
   | 'bulkMax'
   | 'bulk5'
   | 'buyAll'
+  | 'helperAreas'
 
 /** Priority order when several are pending. */
-export const HINT_ORDER: HintId[] = ['season', 'truhe', 'deep', 'visitor', 'order', 'variety', 'weekly', 'bulkMax', 'bulk5', 'buyAll']
+export const HINT_ORDER: HintId[] = ['season', 'truhe', 'deep', 'visitor', 'order', 'variety', 'weekly', 'bulkMax', 'bulk5', 'buyAll', 'helperAreas']
 
 function load(): HintId[] {
   try {

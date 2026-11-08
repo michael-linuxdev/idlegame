@@ -2132,3 +2132,66 @@ html.tab-hidden .sky-event {
   transform: scale(1.35);
   transform-origin: 50% 88%;
 }
+
+/* Jonas: Bereiche erlauben / sperren */
+.helper-areas {
+  margin: 0.5rem 0;
+}
+
+.helper-areas summary {
+  cursor: pointer;
+  font-weight: 800;
+  color: #4a6a2e;
+  padding: 0.35rem 0;
+}
+
+.helper-area-chips {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.4rem;
+  margin-top: 0.4rem;
+}
+
+.helper-area-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.05rem;
+  min-height: 44px;
+  padding: 0.35rem 0.6rem;
+  border-radius: 12px;
+  border: 2px solid #c9b48a;
+  background: #efe6d4;
+  color: #6e5a3a;
+  font: inherit;
+  font-size: 0.8rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.helper-area-chip small {
+  font-weight: 700;
+  color: #a0503a;
+}
+
+.helper-area-chip.on {
+  border-color: #6f9a48;
+  background: #e4f1d2;
+  color: #2f4a1e;
+}
+
+.helper-area-chip.on small {
+  color: #4a7a2e;
+}
+
+/* Log leeren: abgesetzt von den übrigen Menüpunkten, zweistufig bestätigen */
+.nav-menu-item.playtest-clear {
+  margin: 0.5rem 0 0.9rem;
+  color: #a0503a;
+}
+
+.nav-menu-item.playtest-clear.confirm {
+  background: #f6dcd4;
+  color: #8a2a1a;
+  font-weight: 800;
+}
