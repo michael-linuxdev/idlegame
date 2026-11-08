@@ -32,6 +32,17 @@ import { ModuleArt } from '../theme/ModuleArt'
 import { ClearedPlot, WildPlot } from '../theme/PlotArt'
 import { FloatPops, type FloatPopItem } from './FloatPops'
 import { BottomBar } from './hud/BottomBar'
+import { Visitors } from './Visitors'
+import {
+  ORDER_PAUSE_MS,
+  makeOrder,
+  orderProgress,
+  type ExtrasState,
+  type WeeklyTaskId,
+} from '../game/extras'
+import { RARITY_BONUS, VARIETIES } from '../game/gardenLife'
+import { TIER_LEVELS, moduleTier } from '../theme/tiers'
+import { formatClock, formatDecimal } from '../game/format'
 import { PlotFx } from './PlotFx'
 import { useHarvestFlight } from './HarvestFlight'
 import { EventPills } from './hud/EventPills'
@@ -70,6 +81,9 @@ interface Props {
   onOpenTab?: (tab: Tab) => void
   unreadLetters?: number
   onOpenNotebook?: () => void
+  extras: ExtrasState
+  updateExtras: (fn: (s: ExtrasState) => ExtrasState) => void
+  track: (task: WeeklyTaskId, n?: number) => void
 }
 
 let popSeq = 0
@@ -80,6 +94,9 @@ export function GardenMap({
   onOpenTab,
   unreadLetters = 0,
   onOpenNotebook,
+  extras,
+  updateExtras,
+  track,
 }: Props) {
   const {
     state,
@@ -93,6 +110,7 @@ export function GardenMap({
     equippedCosmetic,
     playerLevel,
     ackSurprise,
+    ackVariety,
     nextPrestige,
     canPrestige,
     prestigeProgress,
@@ -356,6 +374,7 @@ export function GardenMap({
   function onRake() {
     if (!tapReady) return
     harvest.launch(document.querySelector('.hud-water'))
+    track('water')
     const before = state.ash
     playSfx('tap')
     logPlaytest('schub')
@@ -374,6 +393,7 @@ export function GardenMap({
     if (preview.credits > 0) bits.push(t.daily.rewardCredits(preview.credits))
     if (preview.obsidian > 0) bits.push(t.daily.rewardObsidian(preview.obsidian))
     game.claimDaily()
+    track('daily')
     playSfx('streak')
     showToast(bits.length ? `${t.daily.claimToast} · +${bits.join(' · +')}` : t.daily.claimToast)
   }
@@ -398,9 +418,86 @@ export function GardenMap({
   }
 
   function onUpgradeBought(deltaCost: number) {
+    track('upgrades')
     playSfx('upgrade')
     pushPop(`−${formatAsh(deltaCost)}`, 'upgrade')
   }
+
+  // —— Hofladen-Bestellungen ——
+  const order = extras.order
+  const orderHave = order ? orderProgress(order, state.lifetimeAshEarned) : 0
+  const orderDone = order ? orderHave >= order.need : false
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      const now = Date.now()
+      if (!extras.order && now >= extras.nextOrderAt && rate > 0) {
+        updateExtras((s) =>
+          s.order ? s : { ...s, order: makeOrder(now, rate, state.lifetimeAshEarned, now) },
+        )
+      } else if (
+        extras.order &&
+        now > extras.order.expiresAt &&
+        orderProgress(extras.order, state.lifetimeAshEarned) < extras.order.need
+      ) {
+        updateExtras((s) => ({ ...s, order: null, nextOrderAt: now + ORDER_PAUSE_MS }))
+        showToast(t.orders.expired)
+      }
+    }, 2000)
+    return () => window.clearInterval(id)
+  }, [extras.order, extras.nextOrderAt, rate, state.lifetimeAshEarned, updateExtras])
+
+  function claimOrder() {
+    if (!order || !orderDone) return
+    const name = t.orders.customers[order.customer % t.orders.customers.length]!
+    harvest.launch(document.querySelector('.pill-order'))
+    game.grant({ obsidian: order.seeds, ernteSeconds: 300 })
+    playSfx('claim')
+    showToast(t.orders.done(name))
+    const now = Date.now()
+    updateExtras((s) => ({
+      ...s,
+      order: null,
+      nextOrderAt: now + ORDER_PAUSE_MS,
+      week: { ...s.week, orders: s.week.orders + 1 },
+    }))
+  }
+
+  const orderPill = order
+    ? (() => {
+        const name = t.orders.customers[order.customer % t.orders.customers.length]!
+        return {
+          label: orderDone
+            ? t.orders.claim(name)
+            : t.orders.progress(
+                formatAsh(Math.min(orderHave, order.need)),
+                formatAsh(order.need),
+                formatClock(order.expiresAt - game.nowTick),
+              ),
+          detail: `${t.orders.label(name)} — ${t.orders.detail(formatAsh(order.need))} ${t.orders.reward(order.seeds)}`,
+          ratio: Math.min(1, orderHave / order.need),
+          claim: orderDone,
+          onClaim: claimOrder,
+        }
+      })()
+    : null
+
+  // —— Pflanzenbuch: new variety pop ——
+  useEffect(() => {
+    const id = state.lastVariety
+    if (!id) return
+    const def = VARIETIES.find((v) => v.id === id)
+    if (def) {
+      showToast(
+        t.plantbook.newVariety(
+          t.plantbook.names[id] ?? id,
+          formatDecimal(RARITY_BONUS[def.rarity] * 100, 1),
+        ),
+      )
+      playSfx('streak')
+      track('varieties')
+    }
+    ackVariety()
+  }, [state.lastVariety, ackVariety, track])
 
   return (
     <section className="fortress-home" aria-labelledby="ash-heading">
@@ -459,7 +556,7 @@ export function GardenMap({
         </div>
 
         <GoalStrip goal={hudGoal} />
-        <EventPills game={game} season={seasonPill} />
+        <EventPills game={game} season={seasonPill} order={orderPill} />
       </header>
 
       <FloatPops items={pops} onDone={removePop} />
@@ -491,6 +588,7 @@ export function GardenMap({
           onContextMenu={(e) => e.preventDefault()}
         >
           <MapBackdrop stage={gardenStage} ambient={ambient} />
+          <Visitors game={game} extras={extras} update={updateExtras} onVisited={showToast} />
 
           <button
             type="button"
@@ -564,7 +662,14 @@ export function GardenMap({
                     />
                   )}
                 </span>
-                <PlotFx unlocked={unlocked} planted={level > 0} />
+                <PlotFx
+                  unlocked={unlocked}
+                  planted={level > 0}
+                  tier={moduleTier(level)}
+                  onTier={(tier) => {
+                    if (tier >= 2) showToast(t.milestone.tier(def.name, tier))
+                  }}
+                />
                 {showSign ? (
                   <span className="plot-sign">
                     <span className="plot-name">{def.name}</span>
@@ -585,6 +690,7 @@ export function GardenMap({
                           {producing && selectedHere ? (
                             <> · {formatRate(buildingRate)}</>
                           ) : null}
+                          <TierBar level={level} />
                         </>
                       )}
                     </span>
@@ -606,8 +712,27 @@ export function GardenMap({
       ) : null}
 
       {progressOpen ? (
-        <ProgressSheet game={game} onClose={() => setProgressOpen(false)} />
+        <ProgressSheet
+          game={game}
+          onClose={() => setProgressOpen(false)}
+          extras={extras}
+          updateExtras={updateExtras}
+        />
       ) : null}
     </section>
+  )
+}
+
+/** Thin progress bar on the plant sign toward the next growth tier. */
+function TierBar({ level }: { level: number }) {
+  const tier = moduleTier(level)
+  if (tier >= TIER_LEVELS.length) return null
+  const from = tier === 0 ? 0 : TIER_LEVELS[tier - 1]!
+  const to = TIER_LEVELS[tier]!
+  const pct = Math.round(((level - from) / (to - from)) * 100)
+  return (
+    <span className="plot-tierbar" aria-hidden="true">
+      <span style={{ width: `${pct}%` }} />
+    </span>
   )
 }

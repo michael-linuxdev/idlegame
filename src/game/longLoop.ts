@@ -12,6 +12,7 @@
  */
 
 import { EMBER_SHOP, type EmberUpgrades } from './economy'
+import type { WheelBuff } from './gardenLife'
 
 /** L3 season length — 7 weeks wall-clock (calendar stub; not forced logout). */
 export const SEASON_LENGTH_MS = 7 * 7 * 24 * 60 * 60 * 1000
@@ -147,6 +148,10 @@ export interface LongLoopStateSlice {
   /** Era currency — Wurzelsterne. */
   eraPoints: number
   eraUpgrades: EraUpgrades
+  /** Pflanzenbuch — variety ids found (permanent) */
+  collection: string[]
+  /** Glücksrad buff for one Gartenjahr */
+  wheelBuff: WheelBuff | null
 }
 
 export function emptyLongLoopSlice(): LongLoopStateSlice {
@@ -162,6 +167,8 @@ export function emptyLongLoopSlice(): LongLoopStateSlice {
     yearGoalsClaimed: [],
     eraPoints: 0,
     eraUpgrades: { ...EMPTY_ERA_UPGRADES },
+    collection: [],
+    wheelBuff: null,
   }
 }
 

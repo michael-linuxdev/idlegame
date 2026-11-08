@@ -398,3 +398,153 @@
 .season-ceremony.deep.phase-letter {
   background: linear-gradient(180deg, #1c2540 0%, #3c4f78 60%, #b9c8de 100%);
 }
+
+.comeback-layer {
+  align-items: center;
+  padding: 1rem;
+}
+
+/* Glücksrad */
+.lucky-wheel {
+  margin-top: 0.8rem;
+  text-align: center;
+}
+
+.lucky-title {
+  margin: 0 0 0.3rem !important;
+  font-family: var(--oc-font-hand);
+  font-weight: 700;
+  font-size: 1.4rem !important;
+  color: #3b4f2a !important;
+}
+
+.lucky-dial {
+  position: relative;
+  width: 9rem;
+  height: 9rem;
+  margin: 0 auto;
+}
+
+.lucky-dial > svg {
+  width: 100%;
+  height: 100%;
+  transition: transform 2.2s cubic-bezier(0.15, 0.85, 0.25, 1);
+  filter: drop-shadow(0 4px 6px rgba(40, 30, 10, 0.25));
+}
+
+.lucky-pointer {
+  position: absolute;
+  left: 50%;
+  top: -6px;
+  z-index: 1;
+  width: 0;
+  height: 0;
+  transform: translateX(-50%);
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-top: 16px solid #5e3b25;
+}
+
+.lucky-result {
+  margin: 0.5rem 0 0 !important;
+  font-weight: 700;
+  color: #3f7a30 !important;
+}
+
+/* Notebook tabs + Pflanzenbuch */
+.notebook-tabs {
+  display: flex;
+  gap: 0.4rem;
+  margin: 0 0 0.6rem;
+}
+
+.notebook-tab {
+  flex: 1;
+  padding: 0.4rem 0.5rem;
+  border: 1.5px solid #dcc79e;
+  border-radius: 10px;
+  background: #fbf6e8;
+  font-family: var(--oc-font-hand);
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #6a5434;
+  cursor: pointer;
+}
+
+.notebook-tab.active {
+  border-color: #7d9f5a;
+  background: #eef7e6;
+  color: #3b4f2a;
+}
+
+.plantbook-total {
+  margin: 0 0 0.6rem;
+  font-weight: 700;
+  color: #3f7a30;
+}
+
+.plantbook-group h4 {
+  margin: 0.6rem 0 0.25rem;
+  font-family: var(--oc-font-display);
+  font-size: 0.95rem;
+  color: #33261a;
+}
+
+.plantbook-group ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.plantbook-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.35rem 0.6rem;
+  border: 1.5px dashed #dcc79e;
+  border-radius: 8px;
+  background: rgba(255, 252, 244, 0.7);
+  font-size: 0.82rem;
+  color: #8a8270;
+}
+
+.plantbook-item.found {
+  border-style: solid;
+  background: #fffcf4;
+  color: #33261a;
+}
+
+.plantbook-item.found.rarity-rare {
+  border-color: #6aa6c9;
+}
+
+.plantbook-item.found.rarity-precious {
+  border-color: #c9a24a;
+  background: linear-gradient(90deg, #fff8e0, #fffcf4);
+}
+
+.plantbook-name {
+  font-weight: 700;
+}
+
+.plantbook-meta {
+  white-space: nowrap;
+  font-size: 0.74rem;
+}
+
+.weekly-list .quest-label {
+  margin: 0;
+  font-weight: 700;
+}
+
+.weekly-list p {
+  margin: 0;
+}
+
+.weekly-bonus {
+  border-color: #c9a24a !important;
+  background: linear-gradient(180deg, #fff8e0, #fffcf4) !important;
+}

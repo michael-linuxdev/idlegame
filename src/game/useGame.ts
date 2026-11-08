@@ -1,4 +1,5 @@
 import { gateSeasons, sproutPayout, type DeepMetaId } from './longLoop'
+import type { WheelKind } from './gardenLife'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   emberPayout,
@@ -83,6 +84,11 @@ import {
   type QuestProgress,
   buyDeepUpgrade,
   doDeepReset,
+  waterMult,
+  grantReward,
+  applyWheel,
+  clearLastVariety,
+  type Reward,
 } from './state'
 import { logPlaytest } from './playtestLog'
 import { loadState, saveState } from './storage'
@@ -204,7 +210,7 @@ export function useGame() {
       const now = Date.now()
       if (s.lastTapAt > 0 && now - s.lastTapAt < TAP_COOLDOWN_MS) return s
       const rate = productionPerSecond(s, now)
-      const fromRate = rate * tapBonusSeconds(s.emberUpgrades)
+      const fromRate = rate * tapBonusSeconds(s.emberUpgrades) * waterMult(s, now)
       // Cold post-prestige: one Schub must cover the next G1 Ausbauen if the
       // wallet is still short (rate alone can be ~1/s → 60 Phyto).
       const g1 = GENERATORS.find((g) => g.id === 'gemuesebeet')
@@ -277,6 +283,22 @@ export function useGame() {
   }, [])
 
   const ackSeasonEnd = useCallback(() => setSeasonEnd(null), [])
+
+  const grant = useCallback((reward: Reward) => {
+    setState((s) => grantReward(s, reward))
+  }, [])
+
+  const spinWheel = useCallback((kind: WheelKind) => {
+    setState((s) => applyWheel(s, kind))
+  }, [])
+
+  const refillWater = useCallback(() => {
+    setState((s) => ({ ...s, lastTapAt: 0 }))
+  }, [])
+
+  const ackVariety = useCallback(() => {
+    setState((s) => clearLastVariety(s))
+  }, [])
 
   const deepReset = useCallback(() => {
     setState((s) => {
@@ -601,6 +623,11 @@ export function useGame() {
     postPrestigeFocus,
     seasonEnd,
     ackSeasonEnd,
+    nowTick,
+    grant,
+    spinWheel,
+    refillWater,
+    ackVariety,
     deepReset,
     buyDeep,
     clearPostPrestigeFocus,

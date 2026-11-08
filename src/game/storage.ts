@@ -12,6 +12,7 @@ import {
   type EraUpgrades,
 } from './longLoop'
 import { createInitialState, STORAGE_KEY, type GameState } from './state'
+import { VARIETIES, type WheelBuff } from './gardenLife'
 
 const COSMETIC_IDS = new Set(COSMETICS.map((c) => c.id))
 
@@ -278,6 +279,7 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
     bpDailyXpDay,
     prestigeSpikeFlags,
     lastSurprise: null,
+    lastVariety: null,
     flashEventId,
     flashEndsAt,
     flashProgress,
@@ -345,7 +347,22 @@ function parseLongLoop(parsed: Record<string, unknown>) {
     yearGoalsClaimed,
     eraPoints: parseNonNegInt(parsed.eraPoints, defaults.eraPoints),
     eraUpgrades: parseEraUpgrades(parsed.eraUpgrades),
+    collection: Array.isArray(parsed.collection)
+      ? parsed.collection.filter(
+          (id): id is string => typeof id === 'string' && VARIETY_IDS.has(id),
+        )
+      : [],
+    wheelBuff: parseWheelBuff(parsed.wheelBuff),
   }
+}
+
+const VARIETY_IDS = new Set(VARIETIES.map((v) => v.id))
+
+function parseWheelBuff(raw: unknown): WheelBuff | null {
+  if (!isRecord(raw)) return null
+  const kind = raw.kind
+  if (kind !== 'yield' && kind !== 'water' && kind !== 'seeds' && kind !== 'variety') return null
+  return { kind, prestige: parseNonNegInt(raw.prestige, 0) }
 }
 
 function parseAchievements(raw: unknown): AchievementId[] {

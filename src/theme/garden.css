@@ -436,3 +436,113 @@
     display: none;
   }
 }
+
+.plot-fx.fx-tier > span {
+  width: 6px;
+  height: 9px;
+  border-radius: 1px;
+  animation-duration: 1.3s;
+}
+
+.plot-fx.fx-tier > span:nth-child(4n) {
+  background: #e0485e;
+}
+
+.plot-fx.fx-tier > span:nth-child(4n + 1) {
+  background: #f5c542;
+}
+
+.plot-fx.fx-tier > span:nth-child(4n + 2) {
+  background: #6aa6c9;
+}
+
+.plot-fx.fx-tier > span:nth-child(4n + 3) {
+  background: #7fbf5a;
+}
+
+/* Progress to the next growth tier on the plant sign */
+.plot-tierbar {
+  display: block;
+  width: 100%;
+  height: 3px;
+  margin-top: 1px;
+  border-radius: 2px;
+  background: rgba(138, 106, 64, 0.25);
+  overflow: hidden;
+}
+
+.plot-tierbar > span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #5f9e45, #8fcf5f);
+}
+
+/* —— Visitors —— */
+.garden-visitor {
+  position: absolute;
+  z-index: 70;
+  width: calc(var(--u) * 11);
+  padding: 0;
+  border: 0;
+  background: none;
+  transform: translate(-50%, -80%);
+  cursor: pointer;
+  animation: visitor-in 600ms cubic-bezier(0.2, 1.3, 0.4, 1), visitor-bob 2.4s 600ms ease-in-out infinite;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.garden-visitor.visitor-gerda,
+.garden-visitor.visitor-postbote {
+  width: calc(var(--u) * 9);
+}
+
+.garden-visitor > svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 0 4px rgba(255, 246, 176, 0.95));
+}
+
+.visitor-spark {
+  position: absolute;
+  right: -6px;
+  top: -8px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0 25%, #f5c542 26% 45%, transparent 46%);
+  animation: hud-dot 1.2s ease-in-out infinite;
+}
+
+.garden-visitor:focus-visible {
+  outline: 3px solid var(--oc-focus);
+  outline-offset: 2px;
+}
+
+@keyframes visitor-in {
+  from {
+    transform: translate(-50%, -40%) scale(0.3);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, -80%) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes visitor-bob {
+  0%,
+  100% {
+    transform: translate(-50%, -80%);
+  }
+  50% {
+    transform: translate(-50%, -88%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .garden-visitor,
+  .visitor-spark {
+    animation: none !important;
+  }
+}

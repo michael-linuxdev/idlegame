@@ -14,6 +14,8 @@ interface Props {
   onOpenNotebook?: () => void
   onOpenLegal?: () => void
   unreadLetters?: number
+  reminders?: boolean
+  onToggleReminders?: () => void
 }
 
 /** Overflow destinations only — never a bottom Farm/Halle tab. */
@@ -65,6 +67,8 @@ export function AppNav({
   onOpenNotebook,
   onOpenLegal,
   unreadLetters = 0,
+  reminders = false,
+  onToggleReminders,
 }: Props) {
   const [menuOpen, setMenuOpen] = useState(false)
   const menuId = useId()
@@ -178,6 +182,19 @@ export function AppNav({
             <span className="tab-label">{t.sound.label}</span>
             <MuteToggle />
           </div>
+          {onToggleReminders && typeof Notification !== 'undefined' ? (
+            <button
+              type="button"
+              role="menuitemcheckbox"
+              aria-checked={reminders}
+              className="nav-menu-sound nav-menu-reminders"
+              title={t.reminders.hint}
+              onClick={onToggleReminders}
+            >
+              <span className="tab-label">{t.reminders.label}</span>
+              <span className="nav-toggle-state">{reminders ? t.reminders.on : t.reminders.off}</span>
+            </button>
+          ) : null}
           <PlaytestLogControls />
           {onOpenLegal ? (
             <button

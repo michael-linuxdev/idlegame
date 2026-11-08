@@ -13,6 +13,9 @@ import { useNotebook, yearLetterFor, type NotebookEntryId } from './game/noteboo
 import { NotebookSheet } from './components/story/NotebookSheet'
 import { SeasonCeremony } from './components/story/SeasonCeremony'
 import { LegalSheet } from './components/LegalSheet'
+import { ComebackLetter, COMEBACK_SEEDS } from './components/story/ComebackLetter'
+import { useExtras } from './game/extras'
+import { t } from './i18n'
 import './App.css'
 import './theme/garden.css'
 import './theme/hud.css'
@@ -26,6 +29,55 @@ export default function App() {
   const [ftueHighlight, setFtueHighlight] = useState<string | null>(null)
   const [holdInstall, setHoldInstall] = useState(false)
   const [legalOpen, setLegalOpen] = useState(false)
+  const { extras, update: updateExtras, track } = useExtras()
+  const [comebackOpen, setComebackOpen] = useState(
+    () => Date.now() - extras.lastVisit >= 48 * 3600_000,
+  )
+
+  // Remember the last visit (for Omas comeback letter)
+  useEffect(() => {
+    const mark = () => updateExtras((s) => ({ ...s, lastVisit: Date.now() }))
+    mark()
+    const id = window.setInterval(mark, 60_000)
+    document.addEventListener('visibilitychange', mark)
+    return () => {
+      window.clearInterval(id)
+      document.removeEventListener('visibilitychange', mark)
+    }
+  }, [updateExtras])
+
+  // Reminder: Gießkanne full while the app sits in the background
+  const waterLeft = game.tapCooldownLeftMs
+  useEffect(() => {
+    if (!extras.notify || typeof Notification === 'undefined') return
+    let timer: number | undefined
+    const onVis = () => {
+      window.clearTimeout(timer)
+      if (!document.hidden || Notification.permission !== 'granted') return
+      const delay = Math.max(1000, waterLeft)
+      timer = window.setTimeout(() => {
+        const body = t.reminders.water
+        navigator.serviceWorker?.ready
+          .then((reg) => reg.showNotification(t.brand, { body, icon: './pwa-192.png', tag: 'water' }))
+          .catch(() => new Notification(t.brand, { body }))
+      }, delay)
+    }
+    document.addEventListener('visibilitychange', onVis)
+    return () => {
+      window.clearTimeout(timer)
+      document.removeEventListener('visibilitychange', onVis)
+    }
+  }, [extras.notify, waterLeft])
+
+  const toggleReminders = useCallback(async () => {
+    if (extras.notify) {
+      updateExtras((s) => ({ ...s, notify: false }))
+      return
+    }
+    if (typeof Notification === 'undefined') return
+    const perm = await Notification.requestPermission()
+    if (perm === 'granted') updateExtras((s) => ({ ...s, notify: true }))
+  }, [extras.notify, updateExtras])
   const [notebookOpen, setNotebookOpen] = useState<{ entry: NotebookEntryId | null } | null>(null)
   const gardenStage = GENERATORS.filter(
     (g) => (game.state.owned[g.id] ?? 0) > 0 && game.unlocked(g.id),
@@ -63,6 +115,9 @@ export default function App() {
             onOpenTab={onTabChange}
             unreadLetters={unread.length}
             onOpenNotebook={() => openNotebook(unread[0] ?? null)}
+            extras={extras}
+            updateExtras={updateExtras}
+            track={track}
           />
         ) : null}
         {tab === 'prestige' ? (
@@ -87,6 +142,8 @@ export default function App() {
         onTabChange={onTabChange}
         onOpenNotebook={() => openNotebook(null)}
         onOpenLegal={() => setLegalOpen(true)}
+        reminders={extras.notify}
+        onToggleReminders={toggleReminders}
         unreadLetters={unread.length}
       />
 
@@ -96,18 +153,30 @@ export default function App() {
           initialEntry={notebookOpen.entry}
           onRead={markRead}
           onClose={() => setNotebookOpen(null)}
+          collection={game.state.collection}
         />
       ) : null}
 
       {legalOpen ? <LegalSheet onClose={() => setLegalOpen(false)} /> : null}
 
+      {comebackOpen && !game.seasonEnd ? (
+        <ComebackLetter
+          onAccept={() => {
+            game.grant({ obsidian: COMEBACK_SEEDS, ernteSeconds: 1800 })
+            setComebackOpen(false)
+          }}
+        />
+      ) : null}
+
       {game.seasonEnd ? (
         <SeasonCeremony
           event={game.seasonEnd}
+          onSpin={game.spinWheel}
           onDone={() => {
             const letter = game.seasonEnd!.deep ? 'deep1' : yearLetterFor(game.seasonEnd!.year)
             if (letter) markRead(letter)
             game.ackSeasonEnd()
+            track('seasons')
             onTabChange('fortress')
           }}
         />

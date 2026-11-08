@@ -6,6 +6,9 @@ import {
   type NotebookState,
 } from '../../game/notebook'
 import { t } from '../../i18n'
+import { GENERATORS } from '../../game/generators'
+import { RARITY_BONUS, VARIETIES, collectionMult } from '../../game/gardenLife'
+import { formatDecimal } from '../../game/format'
 
 interface Props {
   notebook: NotebookState
@@ -13,6 +16,8 @@ interface Props {
   initialEntry?: NotebookEntryId | null
   onRead: (id: NotebookEntryId) => void
   onClose: () => void
+  /** Pflanzenbuch — variety ids found */
+  collection: readonly string[]
 }
 
 function hintFor(def: (typeof NOTEBOOK_ENTRIES)[number]): string {
@@ -23,8 +28,9 @@ function hintFor(def: (typeof NOTEBOOK_ENTRIES)[number]): string {
 }
 
 /** Omas Notizbuch — a paper notebook with all letters found so far. */
-export function NotebookSheet({ notebook, initialEntry, onRead, onClose }: Props) {
+export function NotebookSheet({ notebook, initialEntry, onRead, onClose, collection }: Props) {
   const [open, setOpen] = useState<NotebookEntryId | null>(initialEntry ?? null)
+  const [tab, setTab] = useState<'letters' | 'plants'>('letters')
 
   useEffect(() => {
     if (!open) return
@@ -68,7 +74,20 @@ export function NotebookSheet({ notebook, initialEntry, onRead, onClose }: Props
           </button>
         </header>
 
-        {entry ? (
+        {!entry ? (
+          <div className="notebook-tabs" role="tablist">
+            <button type="button" role="tab" aria-selected={tab === 'letters'} className={`notebook-tab${tab === 'letters' ? ' active' : ''}`} onClick={() => setTab('letters')}>
+              {t.plantbook.lettersTab}
+            </button>
+            <button type="button" role="tab" aria-selected={tab === 'plants'} className={`notebook-tab${tab === 'plants' ? ' active' : ''}`} onClick={() => setTab('plants')}>
+              {t.plantbook.tab} · {collection.length}/{VARIETIES.length}
+            </button>
+          </div>
+        ) : null}
+
+        {!entry && tab === 'plants' ? (
+          <PlantBook collection={collection} />
+        ) : entry ? (
           <article className="notebook-letter" aria-live="polite">
             <h3 id={open ? 'notebook-title' : undefined}>{entry.title}</h3>
             <p>{entry.body}</p>
@@ -106,6 +125,40 @@ export function NotebookSheet({ notebook, initialEntry, onRead, onClose }: Props
           </>
         )}
       </div>
+    </div>
+  )
+}
+
+function PlantBook({ collection }: { collection: readonly string[] }) {
+  const total = (collectionMult(collection) - 1) * 100
+  return (
+    <div className="plantbook">
+      <p className="notebook-intro">{t.plantbook.intro}</p>
+      <p className="plantbook-total">
+        {t.plantbook.total(formatDecimal(total, 1))} · {t.plantbook.found(collection.length, VARIETIES.length)}
+      </p>
+      {GENERATORS.map((g) => {
+        const list = VARIETIES.filter((v) => v.module === g.id)
+        if (list.length === 0) return null
+        return (
+          <section key={g.id} className="plantbook-group">
+            <h4>{g.name}</h4>
+            <ul>
+              {list.map((v) => {
+                const have = collection.includes(v.id)
+                return (
+                  <li key={v.id} className={`plantbook-item rarity-${v.rarity}${have ? ' found' : ''}`}>
+                    <span className="plantbook-name">{have ? t.plantbook.names[v.id] : t.plantbook.unknown}</span>
+                    <span className="plantbook-meta">
+                      {t.plantbook.rarity[v.rarity]} · {t.plantbook.bonus(formatDecimal(RARITY_BONUS[v.rarity] * 100, 1))}
+                    </span>
+                  </li>
+                )
+              })}
+            </ul>
+          </section>
+        )
+      })}
     </div>
   )
 }

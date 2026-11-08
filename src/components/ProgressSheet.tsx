@@ -1,5 +1,7 @@
 import { formatAsh, formatDecimal } from '../game/format'
 import { t } from '../i18n'
+import { WEEKLY_BONUS, WEEKLY_TASKS, type ExtrasState, type WeeklyTaskId } from '../game/extras'
+import { playSfx } from '../game/sound'
 import type { useGame } from '../game/useGame'
 
 type GameApi = ReturnType<typeof useGame>
@@ -7,9 +9,11 @@ type GameApi = ReturnType<typeof useGame>
 interface Props {
   game: GameApi
   onClose: () => void
+  extras: ExtrasState
+  updateExtras: (fn: (s: ExtrasState) => ExtrasState) => void
 }
 
-export function ProgressSheet({ game, onClose }: Props) {
+export function ProgressSheet({ game, onClose, extras, updateExtras }: Props) {
   const { playerLevel, levelMult, questRows, achievementRows, claimQuest } =
     game
   const bonusPct = formatDecimal((levelMult - 1) * 100, 1)
@@ -61,6 +65,60 @@ export function ProgressSheet({ game, onClose }: Props) {
             />
           </div>
         </div>
+
+        <h3 className="progress-subhead">{t.weekly.title}</h3>
+        <p className="muted progress-intro">{t.weekly.intro}</p>
+        <ul className="quest-list weekly-list">
+          {WEEKLY_TASKS.map((task) => {
+            const have = Math.min(extras.week[task.id], task.target)
+            const ready = have >= task.target
+            const claimed = extras.weekClaimed.includes(task.id)
+            return (
+              <li key={task.id} className={`quest-row${claimed ? ' done' : ''}`}>
+                <div className="quest-copy">
+                  <p className="quest-label">{t.weekly.tasks[task.id](task.target)}</p>
+                  <p className="quest-progress">{have} / {task.target}</p>
+                  <p className="quest-reward">{t.weekly.reward(task.seeds)}</p>
+                </div>
+                <button
+                  type="button"
+                  className={`btn ${claimed ? 'ghost' : 'buy'} quest-claim`}
+                  disabled={!ready || claimed}
+                  onClick={() => {
+                    game.grant({ obsidian: task.seeds })
+                    playSfx('claim')
+                    updateExtras((s) => ({ ...s, weekClaimed: [...s.weekClaimed, task.id as WeeklyTaskId] }))
+                  }}
+                >
+                  {claimed ? t.weekly.done : t.weekly.claim}
+                </button>
+              </li>
+            )
+          })}
+          {(() => {
+            const left = WEEKLY_TASKS.length - extras.weekClaimed.length
+            return (
+              <li className={`quest-row weekly-bonus${extras.weekBonusClaimed ? ' done' : ''}`}>
+                <div className="quest-copy">
+                  <p className="quest-label">{t.weekly.bonusTitle}</p>
+                  <p className="quest-reward">{t.weekly.bonusReward(WEEKLY_BONUS.seeds, WEEKLY_BONUS.embers)}</p>
+                </div>
+                <button
+                  type="button"
+                  className="btn buy quest-claim"
+                  disabled={left > 0 || extras.weekBonusClaimed}
+                  onClick={() => {
+                    game.grant({ obsidian: WEEKLY_BONUS.seeds, embers: WEEKLY_BONUS.embers })
+                    playSfx('streak')
+                    updateExtras((s) => ({ ...s, weekBonusClaimed: true }))
+                  }}
+                >
+                  {extras.weekBonusClaimed ? t.weekly.done : left > 0 ? t.weekly.bonusLocked(left) : t.weekly.claim}
+                </button>
+              </li>
+            )
+          })()}
+        </ul>
 
         <h3 className="progress-subhead">{t.quests.title}</h3>
         <p className="muted progress-intro">{t.quests.intro}</p>

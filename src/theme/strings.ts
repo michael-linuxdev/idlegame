@@ -782,6 +782,127 @@ export const strings = {
     },
   },
 
+  /** Pflanzenbuch — rare varieties with permanent Ernte bonus. */
+  plantbook: {
+    tab: 'Pflanzenbuch',
+    lettersTab: 'Briefe',
+    intro: 'Seltene Sorten tauchen beim Ausbauen auf — und jedes Saisonende bringt eine neue. Jede Sorte gibt dauerhaft mehr Ernte, auch nach jedem Winter.',
+    total: (pct: string) => `Sortenbonus: +${pct} % Ernte/s`,
+    found: (n: number, max: number) => `${n} von ${max} Sorten`,
+    unknown: '???',
+    rarity: { common: 'gewöhnlich', rare: 'selten', precious: 'kostbar' },
+    bonus: (pct: string) => `+${pct} %`,
+    newVariety: (name: string, pct: string) => `Neue Sorte: ${name} · +${pct} % Ernte`,
+    names: {
+      radieschenEiszapfen: 'Radieschen „Eiszapfen“',
+      tomateOchsenherz: 'Tomate „Ochsenherz“',
+      bohneBlauhilde: 'Stangenbohne „Blauhilde“',
+      wurmhumus: 'Wurmhumus',
+      bokashi: 'Bokashi-Ferment',
+      thymianZitrone: 'Zitronenthymian',
+      lavendelHidcote: 'Lavendel „Hidcote“',
+      safranKrokus: 'Safran-Krokus',
+      johannisbeereRosetta: 'Johannisbeere „Rosetta“',
+      stachelbeereHinnonmaeki: 'Stachelbeere „Hinnonmäki“',
+      apfelGoldparmaene: 'Apfel „Goldparmäne“',
+      birneGuteLuise: 'Birne „Gute Luise“',
+      zwetschgeHauszwetschge: 'Hauszwetschge',
+      honigLinde: 'Lindenhonig',
+      honigHeide: 'Heidehonig',
+      huhnSulmtaler: 'Sulmtaler Huhn',
+      huhnAraucana: 'Araucana (grüne Eier)',
+      paprikaSpitz: 'Spitzpaprika',
+      gurkeSchlange: 'Schlangengurke',
+      chiliHabanero: 'Chili „Habanero“',
+      kartoffelBamberger: 'Bamberger Hörnchen',
+      kuerbisHokkaido: 'Hokkaido-Kürbis',
+      zitroneAmalfi: 'Amalfi-Zitrone',
+      feigeBrunswick: 'Feige „Brunswick“',
+    } as Record<string, string>,
+  },
+
+  visitors: {
+    aria: (name: string) => `${name} ist zu Besuch — antippen`,
+    igel: { name: 'Igel', line: 'Der Igel hat Schnecken gefressen — mehr Ernte!' },
+    gerda: { name: 'Nachbarin Gerda', line: 'Gerda bringt Samen aus ihrem Garten mit.' },
+    schmetterling: { name: 'Schwalbenschwanz', line: 'Ein seltener Falter! Die Blüten danken es dir.' },
+    rotkehlchen: { name: 'Rotkehlchen', line: 'Das Rotkehlchen singt — die Gießkanne ist wieder voll!' },
+    postbote: { name: 'Postbote Kalle', line: 'Ein Paket vom Saatgut-Versand — ein paar Erbstücke!' },
+  },
+
+  orders: {
+    label: (name: string) => `Bestellung: ${name}`,
+    progress: (have: string, need: string, left: string) => `${have} / ${need} · ${left}`,
+    claim: (name: string) => `${name}: Abliefern!`,
+    reward: (seeds: number) => `Lohn: +${seeds} Samen und ein Korb Ernte`,
+    done: (name: string) => `${name} ist begeistert — danke!`,
+    expired: 'Bestellung verpasst — die nächste kommt bald.',
+    customers: ['Frau Gerda', 'Herr Albers', 'Kita Sonnenschein', 'Café Laube', 'Familie Yilmaz', 'Bäckerei Korn'],
+    detail: (need: string) => `Fahre ${need} Ernte ein, solange die Bestellung offen ist.`,
+  },
+
+  weekly: {
+    title: 'Omas Wochenplan',
+    intro: 'Sieben Aufgaben bis Sonntag — alle geschafft, gibt es Omas Wochenkorb.',
+    claim: 'Abholen',
+    done: 'Erledigt',
+    bonusTitle: 'Omas Wochenkorb',
+    bonusReward: (seeds: number, erb: number) => `+${seeds} Samen · +${erb} Erbstücke`,
+    bonusLocked: (n: number) => `Noch ${n} Aufgaben`,
+    reward: (seeds: number) => `+${seeds} Samen`,
+    tasks: {
+      water: (n: number) => `${n}× gießen`,
+      upgrades: (n: number) => `${n}× ausbauen`,
+      orders: (n: number) => `${n} Bestellungen abliefern`,
+      visitors: (n: number) => `${n} Besucher begrüßen`,
+      seasons: (n: number) => (n === 1 ? '1 Saisonende feiern' : `${n} Saisonenden feiern`),
+      daily: (n: number) => `${n}× Gartenrunde`,
+      varieties: (n: number) => (n === 1 ? '1 neue Sorte finden' : `${n} neue Sorten finden`),
+    },
+  },
+
+  weather: {
+    sonne: { name: 'Sonne', effect: '+10 % Ernte' },
+    regen: { name: 'Regen', effect: 'Gießen ×2' },
+    wind: { name: 'Wind', effect: 'mehr Besucher' },
+    mild: { name: 'Mild', effect: 'ruhiger Tag' },
+    pill: (name: string, effect: string) => `${name} · ${effect}`,
+    tomorrow: (name: string, effect: string) => `Morgen: ${name} (${effect})`,
+  },
+
+  wheel: {
+    title: 'Glücksrad',
+    spin: 'Drehen',
+    spinning: 'Dreht…',
+    results: {
+      yield: '+25 % Ernte das ganze Gartenjahr',
+      water: 'Gießen ×2 das ganze Gartenjahr',
+      seeds: '+30 Samen',
+      variety: 'Eine neue Sorte fürs Pflanzenbuch',
+    },
+    activePill: { yield: 'Glücksrad: +25 % Ernte', water: 'Glücksrad: Gießen ×2' },
+  },
+
+  comeback: {
+    title: 'Da bist du ja wieder!',
+    body: 'Ich hab schon gedacht, die Schnecken hätten dich geholt. Der Garten hat auf dich gewartet — und ein kleines Willkommensgeschenk liegt auf der Bank.',
+    gift: (seeds: number) => `Geschenk: +${seeds} Samen und 30 Minuten Ernte`,
+    cta: 'Danke, Oma',
+  },
+
+  reminders: {
+    label: 'Erinnerungen',
+    on: 'An',
+    off: 'Aus',
+    hint: 'Benachrichtigt dich, wenn die Gießkanne voll ist (solange die App im Hintergrund geöffnet ist).',
+    water: 'Die Gießkanne ist wieder voll — Zeit zum Gießen!',
+    denied: 'Benachrichtigungen sind im Browser blockiert.',
+  },
+
+  milestone: {
+    tier: (name: string, tier: number) => `${name}: Ausbaustufe ${tier} erreicht!`,
+  },
+
   legal: {
     title: 'Rechtliches',
     impressum: 'Impressum',
