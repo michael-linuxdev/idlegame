@@ -1,6 +1,7 @@
 import { gateSeasons, type DeepMetaId } from './longLoop'
 import type { WheelKind } from './gardenLife'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { isIdle, onIdleChange, startIdleWatch } from './idle'
 import {
   emberPayout,
   foundryDiscountMult,
@@ -145,6 +146,8 @@ import { loadState, saveState } from './storage'
 
 /** Economy + React UI cadence. 100ms was overheating iPhone Safari PWAs. */
 const TICK_MS = 250
+/** Ruhemodus (no touch for a while, see idle.ts): one tick per second */
+const IDLE_TICK_MS = 1000
 /** Persist less often than the tick — localStorage stringify is expensive. */
 const SAVE_MS = 4000
 
@@ -200,14 +203,22 @@ export function useGame() {
     const startTick = () => {
       if (tickTimer != null) return
       lastTickAt = Date.now()
+      const every = isIdle() ? IDLE_TICK_MS : TICK_MS
       tickTimer = window.setInterval(() => {
         const now = Date.now()
-        const dt = Math.min(Math.max((now - lastTickAt) / 1000, TICK_MS / 1000), 2)
+        const dt = Math.min(Math.max((now - lastTickAt) / 1000, every / 1000), 2)
         lastTickAt = now
         setNowTick(now)
         setState((s) => applyTick(s, dt))
-      }, TICK_MS)
+      }, every)
     }
+    // Ruhemodus: restart the tick at the new pace
+    startIdleWatch()
+    const offIdle = onIdleChange(() => {
+      if (tickTimer == null) return
+      stopTick()
+      startTick()
+    })
 
     const onVis = () => {
       if (document.visibilityState === 'hidden') {
@@ -244,6 +255,7 @@ export function useGame() {
     window.addEventListener('pagehide', flush)
     document.addEventListener('visibilitychange', onVis)
     return () => {
+      offIdle()
       stopTick()
       window.clearInterval(saveTimer)
       window.removeEventListener('pagehide', flush)

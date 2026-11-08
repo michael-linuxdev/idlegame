@@ -264,3 +264,27 @@
 .skin-petals > span {
   animation-duration: 19s;
 }
+
+/* Ruhemodus (idle.ts): no touch for a while → decorative map animations
+   pause; the first touch resumes them where they stopped. Game feedback
+   (Ausbau, Ernte-Flug, Pops, HUD) keeps running. */
+html.idle .critters,
+html.idle .critters *,
+html.idle .ambient-particles > span,
+html.idle .garden-decor,
+html.idle .garden-decor *,
+html.idle .helper-walker,
+html.idle .helper-walker *,
+html.idle .fest-glow,
+html.idle .smoke,
+html.idle .bee,
+html.idle .orchard-stream,
+html.idle .ha-graze,
+html.idle .ha-swim,
+html.idle .ha-fish,
+html.idle .ha-jump,
+html.idle .ha-wheel,
+html.idle .morning-mist,
+html.idle .laube-letter {
+  animation-play-state: paused !important;
+}

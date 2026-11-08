@@ -2,12 +2,14 @@ import { memo } from 'react'
 
 /**
  * Jonas, the Gartenhelfer, pushing a wheelbarrow up and down the garden path
- * while he is switched on. Pure CSS animation (see polish.css .helper-walker).
+ * while he is switched on. Pure CSS animation (expansion.css .helper-walker):
+ * moved with transform inside a size container (no layout per frame).
  */
 export const HelperWalker = memo(function HelperWalker({ variant = 'garden' }: { variant?: 'garden' | 'orchard' | 'ilse' }) {
   if (variant === 'ilse') return <IlseWalker />
   return (
-    <div className={`helper-walker ${variant}`} aria-hidden="true">
+    <div className="helper-track" aria-hidden="true">
+    <div className={`helper-walker ${variant}`}>
       <svg viewBox="0 0 48 40" focusable="false">
         <ellipse cx="24" cy="37" rx="18" ry="2.6" fill="rgba(40,32,12,0.22)" />
         {/* wheelbarrow */}
@@ -29,13 +31,15 @@ export const HelperWalker = memo(function HelperWalker({ variant = 'garden' }: {
         <path d="M30.8 9.8c.3-2.4 1.4-3.4 3.2-3.4s2.9 1 3.2 3.4z" fill="#f0d488" stroke="#8a6a40" strokeWidth=".8" />
       </svg>
     </div>
+    </div>
   )
 })
 
 /** Oma Ilse with headscarf and a basket, slowly walking the chapter path. */
 function IlseWalker() {
   return (
-    <div className="helper-walker ilse" aria-hidden="true">
+    <div className="helper-track" aria-hidden="true">
+    <div className="helper-walker ilse">
       <svg viewBox="0 0 48 40" focusable="false">
         <ellipse cx="24" cy="37" rx="14" ry="2.4" fill="rgba(40,32,12,0.22)" />
         <g className="helper-legs">
@@ -50,6 +54,7 @@ function IlseWalker() {
         <circle cx="35.6" cy="22.4" r="1.6" fill="#d9483b" />
         <circle cx="39" cy="22.6" r="1.6" fill="#6b3a78" />
       </svg>
+    </div>
     </div>
   )
 }

@@ -45,7 +45,7 @@ export const GardenCritters = memo(function GardenCritters({ chickens, bees, day
           ))
         : null}
       {daypart === 'night' || daypart === 'evening'
-        ? Array.from({ length: 10 }, (_, i) => (
+        ? Array.from({ length: 6 }, (_, i) => (
             <span
               key={i}
               className="firefly"
