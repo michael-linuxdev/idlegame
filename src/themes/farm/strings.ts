@@ -301,6 +301,10 @@ export const farmStrings = {
     nextPayout: 'Nächste Auszahlung:',
     creditsAmount: (n: number) => `+${n} Münzen`,
     claimReset: (n: number) => `+${n} Münzen & Reset`,
+    claimResetRebuild: (n: number, mods: number) =>
+      mods > 0
+        ? `+${n} Münzen & Reset — Käufe nach ~${mods} Modul-Stufen`
+        : `+${n} Münzen & Reset — Käufe nach Neuaufbau`,
     needMore: (amount: string) => `Noch ${amount} ${SOFT_CURRENCY} nötig`,
     needEmbers: (have: number, need: number) =>
       `Noch ${need - have} Münzen-Wert (min. ${need}) — Lauf lohnt sich noch nicht`,
@@ -310,7 +314,7 @@ export const farmStrings = {
     emptyShop: 'Erst prestigieren — dann Münzen-Shop.',
     shopTitle: 'Münzen-Baum',
     shopIntro:
-      'Wenige Ränge sofort — der Rest öffnet sich über Modul-Stufen und Phyto in diesem Lauf. Münzen nur aus Prestige.',
+      'Jeder Soft-Reset öffnet frische Tip-Ränge. Weitere Ränge folgen über Modul-Stufen und Phyto in diesem Lauf.',
     shopReady: (n: number) =>
       n === 1
         ? '1 Münzen-Kauf bereit — Neuaufbau schaltet mehr frei.'
@@ -350,6 +354,16 @@ export const farmStrings = {
     worthItCta: (n: number) => `Jetzt lohnt sich · +${n} Münzen`,
     worthItNear: (n: number) => `Prestige nah · Vorschau +${n} Münzen`,
     worthItAria: 'Prestige öffnen — Münzen-Vorschau',
+    worthItRebuild: (n: number, mods: number) =>
+      mods > 0
+        ? `Prestige bereit · +${n} Münzen — nächste Käufe nach ~${mods} Modul-Stufen`
+        : `Prestige bereit · +${n} Münzen — Shop öffnet mit Neuaufbau`,
+    worthItNearRebuild: (n: number, mods: number) =>
+      mods > 0
+        ? `Prestige nah · +${n} Münzen — Käufe nach ~${mods} Modul-Stufen`
+        : `Prestige nah · +${n} Münzen — Käufe erst nach Neuaufbau`,
+    worthItRebuildAria:
+      'Prestige öffnen — Münzen kommen, Käufe nach Neuaufbau',
   },
 
   longLoop: {

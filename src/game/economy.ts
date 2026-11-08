@@ -6,10 +6,11 @@
  * Balance pass IG-31 (overnight): prestige was ~5 min for engaged play vs
  * design 45–90 min. Raised P_min base + slowed generator ladder (see generators.ts).
  *
- * Soft-Prestige depth (IG-53 / playtest 2026-11-07 + b + 2026-11-08):
+ * Soft-Prestige depth (IG-53 / playtest 2026-11-07 + b + 2026-11-08 + d):
  * Münzen soft-gate every prestige; interleaved rank unlocks during rebuild;
  * steeper cost curve; √ payout soft-capped so runaway ash cannot dump the
- * unlocked band in ~40s or leave a 39k wallet with an empty shop.
+ * unlocked band in ~40s. Tip band scales with lifetime prestiges so P2+ never
+ * lands on an empty Münzen shop after tips are already owned.
  */
 
 import { t } from '../i18n'
@@ -180,7 +181,11 @@ const EMBER_UNLOCK_OFFSET: Record<EmberUpgradeId, number> = {
   saplingSurge: 22_000,
 }
 
-/** Immediate post-prestige band — one tip per branch + Start-Bonus. */
+/**
+ * Base tip ids — rank 0 always free on the first Soft-Prestige.
+ * Each completed prestige opens one additional tip rank on these ids so P2+
+ * never greets an already-owned empty shop (playtest-d).
+ */
 const EMBER_IMMEDIATE_IDS: ReadonlySet<EmberUpgradeId> = new Set([
   'dominionYield',
   'foundryDiscount',
@@ -189,20 +194,64 @@ const EMBER_IMMEDIATE_IDS: ReadonlySet<EmberUpgradeId> = new Set([
   'firstFlame',
 ])
 
-/** Progress needed before purchasing `rank` (0-based) of this item. */
+/**
+ * Wave-2 tip ids: join the prestige tip band from Soft-Prestige count ≥ 2
+ * (rank depth = prestiges − 1) so mid-branch tips arrive without a full rebuild.
+ */
+const EMBER_WAVE2_TIP_IDS: ReadonlySet<EmberUpgradeId> = new Set([
+  'tapMastery',
+  'canopyBoost',
+])
+
+/** Lifetime prestige credit toward rebuild-gated ranks (not a full dump). */
+export const EMBER_UNLOCK_PER_PRESTIGE = 8_000
+
+/** Tip ranks opened immediately after `prestiges` Soft-Resets (min 1). */
+export function tipBandDepth(prestiges: number): number {
+  return Math.max(1, Math.floor(Math.max(0, prestiges)))
+}
+
+/** Whether this rank is in the free post-prestige tip band. */
+export function isEmberTipRank(
+  id: EmberUpgradeId,
+  rank: number,
+  prestiges: number,
+): boolean {
+  if (rank < 0) return false
+  if (id === 'firstFlame') return rank === 0
+  const depth = tipBandDepth(prestiges)
+  if (EMBER_IMMEDIATE_IDS.has(id) && rank < depth) return true
+  if (EMBER_WAVE2_TIP_IDS.has(id) && prestiges >= 2 && rank < depth - 1) {
+    return true
+  }
+  return false
+}
+
+/**
+ * Progress needed before purchasing `rank` (0-based) of this item.
+ * `prestiges` = Soft-Resets completed (post-prestige state.prestiges).
+ */
 export function emberRankUnlockNeed(
   id: EmberUpgradeId,
   rank: number,
+  prestiges = 0,
 ): number {
   if (id === 'firstFlame') return 0
+  if (isEmberTipRank(id, rank, prestiges)) return 0
+
+  const credit = Math.max(0, prestiges) * EMBER_UNLOCK_PER_PRESTIGE
+
   if (id === 'greenLattice') {
     // Reachable mid post-P2 session (~23 module levels + soft ash, or ~60 levels alone).
-    return 48_000 + rank * 32_000
+    return Math.max(0, 48_000 + rank * 32_000 - credit)
   }
-  if (rank === 0 && EMBER_IMMEDIATE_IDS.has(id)) return 0
+
   const offset = EMBER_UNLOCK_OFFSET[id]
-  if (rank === 0) return 12_000 + Math.floor(offset / 2)
-  return offset + 28_000 + (rank - 1) * (32_000 + rank * 3_000)
+  const raw =
+    rank === 0
+      ? 12_000 + Math.floor(offset / 2)
+      : offset + 28_000 + (rank - 1) * (32_000 + rank * 3_000)
+  return Math.max(0, raw - credit)
 }
 
 export const EMBER_SHOP: EmberShopItem[] = [
@@ -430,6 +479,7 @@ export function emberRankUnlocked(
   rank: number,
   ashEarnedThisRun: number,
   owned: Partial<Record<GeneratorId, number>>,
+  prestiges = 0,
 ): boolean {
   if (rank < 0 || rank >= item.maxRank) return false
   const modulesOnline = modulesOnlineCount(owned)
@@ -439,7 +489,7 @@ export function emberRankUnlocked(
   ) {
     return false
   }
-  const needAsh = item.rankUnlockAsh?.(rank) ?? 0
+  const needAsh = emberRankUnlockNeed(item.id, rank, prestiges)
   return emberUnlockProgress(ashEarnedThisRun, owned) >= needAsh
 }
 
@@ -449,15 +499,68 @@ export function countAffordableEmberBuys(
   embers: number,
   ashEarnedThisRun: number,
   owned: Partial<Record<GeneratorId, number>>,
+  prestiges = 0,
 ): number {
   let n = 0
   for (const item of EMBER_SHOP) {
     const rank = upgrades[item.id]
     if (rank >= item.maxRank) continue
-    if (!emberRankUnlocked(item, rank, ashEarnedThisRun, owned)) continue
+    if (!emberRankUnlocked(item, rank, ashEarnedThisRun, owned, prestiges)) {
+      continue
+    }
     if (embers >= item.cost(rank)) n += 1
   }
   return n
+}
+
+/** Starting owned modules right after Soft-Prestige (saplingSurge only). */
+export function postPrestigeStartOwned(
+  upgrades: EmberUpgrades,
+): Partial<Record<GeneratorId, number>> {
+  const owned: Partial<Record<GeneratorId, number>> = {}
+  const startLevel = prestigeStartModuleLevel(upgrades)
+  if (startLevel > 0) owned.emberPit = startLevel
+  return owned
+}
+
+/**
+ * Affordable Münzen buys immediately after Soft-Prestige with current wallet
+ * + pending payout. Used so “lohnt sich” never fires into an empty tip band.
+ */
+export function countAffordableEmberBuysAfterPrestige(args: {
+  upgrades: EmberUpgrades
+  embers: number
+  ashEarned: number
+  prestiges: number
+}): number {
+  const postPrestiges = args.prestiges + 1
+  const wallet = args.embers + emberPayout(args.ashEarned)
+  return countAffordableEmberBuys(
+    args.upgrades,
+    wallet,
+    0,
+    postPrestigeStartOwned(args.upgrades),
+    postPrestiges,
+  )
+}
+
+/** Approx. module levels still needed for the nearest locked Münzen rank. */
+export function modulesToNextEmberUnlock(
+  upgrades: EmberUpgrades,
+  ashEarnedThisRun: number,
+  owned: Partial<Record<GeneratorId, number>>,
+  prestiges = 0,
+): number | null {
+  const next = nextLockedEmberUnlock(
+    upgrades,
+    ashEarnedThisRun,
+    owned,
+    prestiges,
+  )
+  if (!next) return null
+  const deficit = Math.max(0, next.need - next.have)
+  if (deficit <= 0) return 0
+  return Math.ceil(deficit / EMBER_UNLOCK_PER_MODULE_LEVEL)
 }
 
 export interface NextEmberUnlock {
@@ -477,6 +580,7 @@ export function nextLockedEmberUnlock(
   upgrades: EmberUpgrades,
   ashEarnedThisRun: number,
   owned: Partial<Record<GeneratorId, number>>,
+  prestiges = 0,
 ): NextEmberUnlock | null {
   const have = emberUnlockProgress(ashEarnedThisRun, owned)
   const online = modulesOnlineCount(owned)
@@ -488,7 +592,7 @@ export function nextLockedEmberUnlock(
       item.unlockModulesOnline != null &&
       online < item.unlockModulesOnline
     ) {
-      const need = item.rankUnlockAsh?.(rank) ?? 0
+      const need = emberRankUnlockNeed(item.id, rank, prestiges)
       const candidate: NextEmberUnlock = {
         item,
         rank,
@@ -499,7 +603,7 @@ export function nextLockedEmberUnlock(
       if (!best || candidate.need < best.need) best = candidate
       continue
     }
-    const need = item.rankUnlockAsh?.(rank) ?? 0
+    const need = emberRankUnlockNeed(item.id, rank, prestiges)
     if (have >= need) continue
     const candidate: NextEmberUnlock = {
       item,
@@ -513,12 +617,12 @@ export function nextLockedEmberUnlock(
   return best
 }
 
-/** Immediate-band Münzen sink (progress 0) — balance probe / docs. */
-export function immediateEmberSinkCost(): number {
+/** Immediate tip-band Münzen sink at a given prestige count — balance probe. */
+export function immediateEmberSinkCost(prestiges = 1): number {
   let total = 0
   for (const item of EMBER_SHOP) {
     for (let rank = 0; rank < item.maxRank; rank++) {
-      if ((item.rankUnlockAsh?.(rank) ?? 0) > 0) break
+      if (emberRankUnlockNeed(item.id, rank, prestiges) > 0) break
       total += item.cost(rank)
     }
   }

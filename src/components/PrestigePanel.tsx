@@ -13,11 +13,15 @@ import {
   PRESTIGE_BRANCHES,
   PRESTIGE_MIN_MODULES_ONLINE,
   countAffordableEmberBuys,
+  countAffordableEmberBuysAfterPrestige,
   emberPayout,
   emberRankUnlocked,
+  emberRankUnlockNeed,
   emberUnlockProgress,
   modulesOnlineCount,
+  modulesToNextEmberUnlock,
   nextLockedEmberUnlock,
+  postPrestigeStartOwned,
   prestigeBlockReason,
   prestigeMinEmbersForRun,
 } from '../game/economy'
@@ -61,12 +65,20 @@ export function PrestigePanel({ game, highlight }: Props) {
     state.embers,
     state.ashEarned,
     state.owned,
+    state.prestiges,
   )
   const nextUnlock = nextLockedEmberUnlock(
     state.emberUpgrades,
     state.ashEarned,
     state.owned,
+    state.prestiges,
   )
+  const postBuys = countAffordableEmberBuysAfterPrestige({
+    upgrades: state.emberUpgrades,
+    embers: state.embers,
+    ashEarned: state.ashEarned,
+    prestiges: state.prestiges,
+  })
 
   const fill = emberShopFillRatio(state.emberUpgrades)
   const deepOpen = deepGateOpen({
@@ -83,9 +95,20 @@ export function PrestigePanel({ game, highlight }: Props) {
   })
   const deepPreview = previewDeepPayout(state.seasonPoints)
 
+  const postUnlockMods =
+    modulesToNextEmberUnlock(
+      state.emberUpgrades,
+      0,
+      postPrestigeStartOwned(state.emberUpgrades),
+      state.prestiges + 1,
+    ) ?? 0
+
   let claimLabel: string
   if (canPrestige) {
-    claimLabel = t.prestige.claimReset(nextPrestige)
+    claimLabel =
+      postBuys > 0
+        ? t.prestige.claimReset(nextPrestige)
+        : t.prestige.claimResetRebuild(nextPrestige, postUnlockMods)
   } else if (block === 'embers') {
     claimLabel = t.prestige.needEmbers(payout, minEmbers)
   } else if (block === 'modules') {
@@ -235,6 +258,7 @@ export function PrestigePanel({ game, highlight }: Props) {
                 rank,
                 state.ashEarned,
                 state.owned,
+                state.prestiges,
               )
               const affordable = state.embers >= cost && !maxed && unlocked
               const isNext =
@@ -264,7 +288,11 @@ export function PrestigePanel({ game, highlight }: Props) {
               <p className="prestige-branch-blurb">{branch.blurb}</p>
               <ul className="ember-shop">
                 {items.map(({ item, rank, maxed, cost, unlocked, affordable, isNext }) => {
-                  const needAsh = item.rankUnlockAsh?.(rank) ?? 0
+                  const needAsh = emberRankUnlockNeed(
+                    item.id,
+                    rank,
+                    state.prestiges,
+                  )
                   const needMods = item.unlockModulesOnline
                   let lockHint: string | null = null
                   let unlockRatio = 0

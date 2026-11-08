@@ -1219,7 +1219,17 @@ export function buyEmberUpgrade(state: GameState, id: EmberUpgradeId): GameState
   if (!item) return state
   const rank = state.emberUpgrades[id]
   if (rank >= item.maxRank) return state
-  if (!emberRankUnlocked(item, rank, state.ashEarned, state.owned)) return state
+  if (
+    !emberRankUnlocked(
+      item,
+      rank,
+      state.ashEarned,
+      state.owned,
+      state.prestiges,
+    )
+  ) {
+    return state
+  }
   const cost = item.cost(rank)
   if (state.embers < cost) return state
   return {

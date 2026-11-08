@@ -305,6 +305,10 @@ export const arcadeStrings = {
     nextPayout: 'Nächste Auszahlung:',
     creditsAmount: (n: number) => `+${n} Tickets`,
     claimReset: (n: number) => `+${n} Tickets holen & resetten`,
+    claimResetRebuild: (n: number, mods: number) =>
+      mods > 0
+        ? `+${n} Tickets & Reset — Käufe nach ~${mods} Automaten-Stufen`
+        : `+${n} Tickets & Reset — Käufe nach Neuaufbau`,
     needMore: (amount: string) =>
       `Noch ${amount} Tokens in diesem Lauf nötig`,
     needEmbers: (have: number, need: number) =>
@@ -316,7 +320,7 @@ export const arcadeStrings = {
     emptyShop: 'Noch keine Tickets — einmal prestigieren, dann füllt sich der Shop.',
     shopTitle: 'Ticket-Baum',
     shopIntro:
-      'Wenige Ränge sofort — der Rest öffnet sich über Automaten-Stufen und Tokens in diesem Lauf. Tickets nur aus Prestige.',
+      'Jeder Soft-Reset öffnet frische Tip-Ränge. Weitere Ränge folgen über Automaten-Stufen und Tokens in diesem Lauf.',
     shopReady: (n: number) =>
       n === 1
         ? '1 Ticket-Kauf bereit — Neuaufbau schaltet mehr frei.'
@@ -356,6 +360,16 @@ export const arcadeStrings = {
     worthItCta: (n: number) => `Jetzt lohnt sich · +${n} Tickets`,
     worthItNear: (n: number) => `Prestige nah · Vorschau +${n} Tickets`,
     worthItAria: 'Prestige öffnen — Ticket-Vorschau',
+    worthItRebuild: (n: number, mods: number) =>
+      mods > 0
+        ? `Prestige bereit · +${n} Tickets — nächste Käufe nach ~${mods} Automaten-Stufen`
+        : `Prestige bereit · +${n} Tickets — Shop öffnet mit Neuaufbau`,
+    worthItNearRebuild: (n: number, mods: number) =>
+      mods > 0
+        ? `Prestige nah · +${n} Tickets — Käufe nach ~${mods} Automaten-Stufen`
+        : `Prestige nah · +${n} Tickets — Käufe erst nach Neuaufbau`,
+    worthItRebuildAria:
+      'Prestige öffnen — Tickets kommen, Käufe nach Neuaufbau',
   },
 
   longLoop: {
