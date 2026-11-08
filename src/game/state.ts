@@ -1,5 +1,6 @@
 import {
   EMBER_SHOP,
+  payoutAtGate,
   emberPayout,
   emberRankUnlocked,
   EMPTY_EMBER_UPGRADES,
@@ -23,6 +24,32 @@ import {
   isGeneratorUnlocked,
   type GeneratorId,
 } from './generators'
+import {
+  ORCHARD,
+  emptyOrchard,
+  orchardAreaRate,
+  orchardBaseRate,
+  orchardCost,
+  orchardGardenMult,
+  orchardLevels,
+  orchardUnlocked,
+  type OrchardId,
+  type OrchardState,
+} from './orchard'
+import {
+  EMPTY_LEGACY,
+  LEGACY_SHOP,
+  canHandDown,
+  legacyCostMult,
+  legacyGardenMult,
+  legacyOrchardMult,
+  legacyPayout,
+  legacySproutMult,
+  legacyWaterMult,
+  type LegacyId,
+  type LegacyUpgrades,
+} from './generations'
+import { FEST_EARN, festAt, festKeyAt, festShop } from './fests'
 import {
   canClaimDaily,
   daysSinceClaim,
@@ -117,6 +144,7 @@ import {
 } from './quests'
 import {
   DEEP_SHOP,
+  EMPTY_DEEP_META,
   canDeepReset,
   deepOfflineBonusHours,
   deepStartEmbers,
@@ -238,6 +266,92 @@ export interface GameState {
   collection: string[]
   /** Glücksrad buff for one Gartenjahr */
   wheelBuff: WheelBuff | null
+  /** Gartenhelfer rank (0 = none) — permanent, bought with Erbstücke */
+  helperLevel: number
+  /** Gartenhelfer switched on */
+  helperOn: boolean
+  /** Helper time carry (ms) between buys */
+  helperCarryMs: number
+  /** Transient: buys the helper made while away (for the offline toast) */
+  helperReport: number
+  /** Frühlingsschub end (×3 right after Saisonende) */
+  turboEndsAt: number
+  /** Kapitel 2 — Streuobstwiese */
+  orchard: OrchardState
+  /** Generationen handed down */
+  generation: number
+  /** Vermächtnis — Generation currency */
+  vermaechtnis: number
+  legacy: LegacyUpgrades
+  /** Running fest instance (fests.ts festKeyAt) */
+  festKey: string
+  /** Festmarken (fractional; UI floors) */
+  festTokens: number
+  /** Fest shop purchases this fest: item id → count */
+  festBought: Record<string, number>
+}
+
+/** Gartenhelfer ranks: Erbstücke cost and time between two Ausbauten. */
+export const HELPER_RANKS = [
+  { cost: 40, intervalMs: 2500 },
+  { cost: 150, intervalMs: 1500 },
+  { cost: 400, intervalMs: 900 },
+  { cost: 900, intervalMs: 500 },
+  { cost: 2000, intervalMs: 250 },
+] as const
+
+/** Frühlingsschub after every Saisonende / Tiefer Winter / Generation. */
+export const TURBO_MS = 2 * 60 * 1000
+export const TURBO_MULT = 3
+
+export interface ExpansionSlice {
+  helperLevel: number
+  helperOn: boolean
+  helperCarryMs: number
+  helperReport: number
+  turboEndsAt: number
+  orchard: OrchardState
+  generation: number
+  vermaechtnis: number
+  legacy: LegacyUpgrades
+  festKey: string
+  festTokens: number
+  festBought: Record<string, number>
+}
+
+export function emptyExpansion(now = Date.now()): ExpansionSlice {
+  return {
+    helperLevel: 0,
+    helperOn: true,
+    helperCarryMs: 0,
+    helperReport: 0,
+    turboEndsAt: 0,
+    orchard: emptyOrchard(),
+    generation: 0,
+    vermaechtnis: 0,
+    legacy: { ...EMPTY_LEGACY },
+    festKey: festKeyAt(now),
+    festTokens: 0,
+    festBought: {},
+  }
+}
+
+/** Expansion fields survive Saisonende (copied as-is). */
+export function pickExpansion(s: GameState): ExpansionSlice {
+  return {
+    helperLevel: s.helperLevel,
+    helperOn: s.helperOn,
+    helperCarryMs: 0,
+    helperReport: 0,
+    turboEndsAt: s.turboEndsAt,
+    orchard: s.orchard,
+    generation: s.generation,
+    vermaechtnis: s.vermaechtnis,
+    legacy: { ...s.legacy },
+    festKey: s.festKey,
+    festTokens: s.festTokens,
+    festBought: { ...s.festBought },
+  }
 }
 
 export const STORAGE_KEY = 'gartenerbe-save-v1'
@@ -311,6 +425,7 @@ export function createInitialState(now = Date.now()): GameState {
     flashDismissed: false,
     lastFlashAt: 0,
     ...emptyLongLoopSlice(),
+    ...emptyExpansion(now),
   }
 }
 
@@ -392,6 +507,8 @@ export function createPostPrestigeState(prev: GameState, now = Date.now()): Game
     deepPrestiges: prev.deepPrestiges,
     collection: [...prev.collection],
     wheelBuff: prev.wheelBuff,
+    ...pickExpansion(prev),
+    turboEndsAt: now + TURBO_MS,
   }
 }
 
@@ -553,6 +670,15 @@ export function flashProductionMult(state: GameState, now = Date.now()): number 
   return FLASH_MULT
 }
 
+export function turboMult(state: GameState, now = Date.now()): number {
+  return state.turboEndsAt > now ? TURBO_MULT : 1
+}
+
+/** Permanent multipliers from Kapitel 2 and Generationen (shown in HUD). */
+export function expansionGardenMult(state: GameState): number {
+  return orchardGardenMult(state.orchard) * legacyGardenMult(state.legacy)
+}
+
 export function productionPerSecond(state: GameState, now = Date.now()): number {
   const mPrestige = prestigeMultiplier(state.emberUpgrades)
   const mClan = effectiveClanMult(state, now)
@@ -578,8 +704,349 @@ export function productionPerSecond(state: GameState, now = Date.now()): number 
     deepYieldMult(state.deepUpgrades) *
     collectionMult(state.collection) *
     weatherYieldMult(now) *
-    wheelYieldMult(state.wheelBuff, state.prestiges)
+    wheelYieldMult(state.wheelBuff, state.prestiges) *
+    expansionGardenMult(state) *
+    turboMult(state, now)
   )
+}
+
+/* ———————————— Kapitel 2: Streuobstwiese ———————————— */
+
+export function orchardOpen(state: GameState): boolean {
+  return state.orchard.openedAt > 0
+}
+
+/** Opens Kapitel 2 once the first Tiefer Winter (or a Generation) is done. */
+export function syncOrchardOpen(state: GameState, now = Date.now(), force = false): GameState {
+  if (state.orchard.openedAt > 0) return state
+  if (!force && state.deepPrestiges < 1 && state.generation < 1) return state
+  return { ...state, orchard: { ...state.orchard, openedAt: now } }
+}
+
+export function orchardRateMult(state: GameState): number {
+  return (
+    legacyOrchardMult(state.legacy) *
+    (1 + 0.05 * state.deepPrestiges) *
+    (1 + 0.1 * state.generation) *
+    levelProductionMult(playerLevelOf(state))
+  )
+}
+
+export function orchardPerSecond(state: GameState): number {
+  if (!orchardOpen(state)) return 0
+  return orchardBaseRate(state.orchard) * orchardRateMult(state)
+}
+
+function withObst(state: GameState, gained: number): GameState {
+  if (gained <= 0) return state
+  return {
+    ...state,
+    orchard: {
+      ...state.orchard,
+      obst: state.orchard.obst + gained,
+      obstLifetime: state.orchard.obstLifetime + gained,
+    },
+  }
+}
+
+export function orchardCostOf(state: GameState, id: OrchardId): number {
+  const def = ORCHARD.find((o) => o.id === id)
+  if (!def) return Infinity
+  return orchardCost(def, state.orchard.owned[id] ?? 0, legacyCostMult(state.legacy))
+}
+
+export function buyOrchard(state: GameState, id: OrchardId, fromHelper = false): GameState {
+  if (!orchardOpen(state)) return state
+  const def = ORCHARD.find((o) => o.id === id)
+  if (!def || !orchardUnlocked(def, state.orchard.owned)) return state
+  const cost = orchardCostOf(state, id)
+  if (state.orchard.obst < cost) return state
+  const owned = state.orchard.owned[id] ?? 0
+  const next: GameState = {
+    ...state,
+    orchard: {
+      ...state.orchard,
+      obst: state.orchard.obst - cost,
+      owned: { ...state.orchard.owned, [id]: owned + 1 },
+    },
+    totalUpgrades: state.totalUpgrades + 1,
+    lastSeen: Date.now(),
+  }
+  return earnFest(withXp(next, fromHelper ? 1 : XP_PER_UPGRADE), fromHelper ? FEST_EARN.helperUpgrade : FEST_EARN.upgrade)
+}
+
+/** Buy up to `n` orchard levels (stops when Obst runs out). */
+export function buyOrchardMany(state: GameState, id: OrchardId, n: number): { state: GameState; bought: number } {
+  let next = state
+  let bought = 0
+  for (let i = 0; i < n; i++) {
+    const after = buyOrchard(next, id)
+    if (after === next) break
+    next = after
+    bought += 1
+  }
+  return { state: next, bought }
+}
+
+/** Best Obst buy by Δrate / cost (affordable only). */
+export function bestOrchardBuy(state: GameState): OrchardId | null {
+  let best: OrchardId | null = null
+  let bestScore = 0
+  for (const def of ORCHARD) {
+    if (!orchardUnlocked(def, state.orchard.owned)) continue
+    const cost = orchardCostOf(state, def.id)
+    if (cost > state.orchard.obst) continue
+    const n = state.orchard.owned[def.id] ?? 0
+    const score = (orchardAreaRate(def, n + 1) - orchardAreaRate(def, n)) / cost
+    if (score > bestScore) {
+      bestScore = score
+      best = def.id
+    }
+  }
+  return best
+}
+
+/* ———————————— Generationen ———————————— */
+
+export function generationPayout(state: GameState): number {
+  return legacyPayout(state.deepPrestiges, orchardLevels(state.orchard))
+}
+
+export function canHandDownNow(state: GameState): boolean {
+  return canHandDown(state.deepPrestiges)
+}
+
+/**
+ * Hand the garden down: Gartenjahre, Erbstücke, Truhe, Sprösslinge and the
+ * Sprösslings-Laden reset. Vermächtnis, orchard, Pflanzenbuch, Samen,
+ * Gartenstile, Gärtnerstufe and the Gartenhelfer stay.
+ */
+export function doGeneration(state: GameState, now = Date.now()): GameState {
+  if (!canHandDownNow(state)) return state
+  const gain = generationPayout(state)
+  const fresh = createPostPrestigeState(
+    { ...state, erbstuecke: 0, emberUpgrades: { ...EMPTY_EMBER_UPGRADES } },
+    now,
+  )
+  return collectReadyAchievements({
+    ...fresh,
+    prestiges: 0,
+    erbstuecke: 0,
+    emberUpgrades: { ...EMPTY_EMBER_UPGRADES },
+    sproesslinge: 0,
+    deepUpgrades: { ...EMPTY_DEEP_META },
+    deepPrestiges: 0,
+    generation: state.generation + 1,
+    vermaechtnis: state.vermaechtnis + gain,
+    wheelBuff: null,
+  })
+}
+
+export function buyLegacy(state: GameState, id: LegacyId): GameState {
+  const item = LEGACY_SHOP.find((l) => l.id === id)
+  if (!item) return state
+  const rank = state.legacy[id]
+  const cost = item.cost(rank)
+  if (state.vermaechtnis < cost) return state
+  return {
+    ...state,
+    vermaechtnis: state.vermaechtnis - cost,
+    legacy: { ...state.legacy, [id]: rank + 1 },
+    lastSeen: Date.now(),
+  }
+}
+
+/* ———————————— Saisonale Feste ———————————— */
+
+export function syncFest(state: GameState, now = Date.now()): GameState {
+  const key = festKeyAt(now)
+  if (state.festKey === key) return state
+  return { ...state, festKey: key, festTokens: 0, festBought: {} }
+}
+
+export function earnFest(state: GameState, amount: number, now = Date.now()): GameState {
+  if (amount <= 0) return state
+  const synced = syncFest(state, now)
+  return { ...synced, festTokens: synced.festTokens + amount }
+}
+
+export function buyFestItem(state: GameState, itemId: string, now = Date.now()): GameState {
+  const base = syncFest(state, now)
+  const fest = festAt(now)
+  const item = festShop(fest).find((i) => i.id === itemId)
+  if (!item) return state
+  const bought = base.festBought[item.id] ?? 0
+  if (bought >= item.limit) return state
+  if (item.kind === 'variety' && item.variety && base.collection.includes(item.variety)) return state
+  if (item.kind === 'skin' && item.skin && base.ownedCosmetics.includes(item.skin)) return state
+  if (base.festTokens < item.tokens || base.samen < item.samen) return state
+  let next: GameState = {
+    ...base,
+    festTokens: base.festTokens - item.tokens,
+    samen: base.samen - item.samen,
+    festBought: { ...base.festBought, [item.id]: bought + 1 },
+    lastSeen: now,
+  }
+  switch (item.kind) {
+    case 'variety':
+      next = { ...next, collection: [...next.collection, item.variety!], lastVariety: item.variety! }
+      break
+    case 'skin':
+      next = { ...next, ownedCosmetics: grantCosmetic(next.ownedCosmetics, item.skin!), equippedCosmetic: item.skin! }
+      break
+    case 'seeds':
+      next = { ...next, samen: next.samen + (item.amount ?? 0) }
+      break
+    case 'tokenPack':
+      next = { ...next, festTokens: next.festTokens + (item.amount ?? 0) }
+      break
+    case 'heirlooms': {
+      const gain = Math.max(5, Math.round(payoutAtGate(next.prestiges) * 0.5))
+      next = { ...next, erbstuecke: next.erbstuecke + gain }
+      break
+    }
+    case 'boost': {
+      const active = next.yieldBoostExpiresAt > now
+      next = { ...next, yieldBoostExpiresAt: (active ? next.yieldBoostExpiresAt : now) + YIELD_BOOST_MS }
+      break
+    }
+  }
+  return next
+}
+
+/* ———————————— Gartenhelfer & Mengenkauf ———————————— */
+
+export function helperUnlocked(state: GameState): boolean {
+  return state.prestiges >= 1 || state.deepPrestiges > 0 || state.generation > 0 || state.helperLevel > 0
+}
+
+export function helperInterval(level: number): number {
+  if (level <= 0) return Infinity
+  return HELPER_RANKS[Math.min(HELPER_RANKS.length, level) - 1]!.intervalMs
+}
+
+export function buyHelper(state: GameState): GameState {
+  if (!helperUnlocked(state)) return state
+  const rank = HELPER_RANKS[state.helperLevel]
+  if (!rank) return state
+  if (state.erbstuecke < rank.cost) return state
+  return {
+    ...state,
+    erbstuecke: state.erbstuecke - rank.cost,
+    helperLevel: state.helperLevel + 1,
+    helperOn: true,
+    lastSeen: Date.now(),
+  }
+}
+
+export function toggleHelper(state: GameState): GameState {
+  if (state.helperLevel <= 0) return state
+  return { ...state, helperOn: !state.helperOn }
+}
+
+/** Affordable garden area with the best Δrate / cost. */
+export function bestGardenBuy(state: GameState): GeneratorId | null {
+  const lvl = playerLevelOf(state)
+  const gates = gatePrestiges(state)
+  let best: GeneratorId | null = null
+  let bestScore = 0
+  for (const def of GENERATORS) {
+    if (!isGeneratorUnlocked(def, state.ernteSeason, state.owned, state.emberUpgrades.firstFlame > 0, lvl, gates)) continue
+    const cost = generatorCost(def, state.owned[def.id] ?? 0, lineCostMult(state, def.id))
+    if (cost > state.ernte) continue
+    const n = state.owned[def.id] ?? 0
+    const eff = efficiencyMult(state.branches[def.id]?.efficiency ?? 0)
+    const score = ((generatorRate(def, n + 1) - generatorRate(def, n)) * eff) / cost
+    if (score > bestScore) {
+      bestScore = score
+      best = def.id
+    }
+  }
+  return best
+}
+
+/** Buy up to `n` levels of one area (stops when Ernte runs out). */
+export function buyGeneratorMany(state: GameState, id: GeneratorId, n: number): { state: GameState; bought: number } {
+  let next = state
+  let bought = 0
+  for (let i = 0; i < n; i++) {
+    const after = buyGenerator(next, id, i === 0 ? 'manual' : 'bulk')
+    if (after === next) break
+    next = after
+    bought += 1
+  }
+  return { state: next, bought }
+}
+
+/** How many levels of `id` the current Ernte pays for (capped). */
+export function affordableLevels(state: GameState, id: GeneratorId, cap = 1000): { count: number; cost: number } {
+  const def = GENERATORS.find((g) => g.id === id)
+  if (!def) return { count: 0, cost: 0 }
+  const mult = lineCostMult(state, id)
+  let owned = state.owned[id] ?? 0
+  let left = state.ernte
+  let count = 0
+  let cost = 0
+  while (count < cap) {
+    const c = generatorCost(def, owned, mult)
+    if (c > left) break
+    left -= c
+    cost += c
+    owned += 1
+    count += 1
+  }
+  return { count, cost }
+}
+
+/** Total cost of the next `n` levels of `id`. */
+export function costForLevels(state: GameState, id: GeneratorId, n: number): number {
+  const def = GENERATORS.find((g) => g.id === id)
+  if (!def) return Infinity
+  const mult = lineCostMult(state, id)
+  const owned = state.owned[id] ?? 0
+  let sum = 0
+  for (let i = 0; i < n; i++) sum += generatorCost(def, owned + i, mult)
+  return sum
+}
+
+/** „Alles ausbauen“ — spend Ernte on the best buys until nothing is affordable. */
+export function buyAllBest(state: GameState, cap = 400): { state: GameState; bought: number } {
+  let next = state
+  let bought = 0
+  while (bought < cap) {
+    const id = bestGardenBuy(next)
+    if (!id) break
+    const after = buyGenerator(next, id, bought === 0 ? 'manual' : 'bulk')
+    if (after === next) break
+    next = after
+    bought += 1
+  }
+  return { state: next, bought }
+}
+
+/** Run the Gartenhelfer for `dtMs` (garden first, then Streuobstwiese). */
+export function runHelper(state: GameState, dtMs: number, maxBuys = 40): { state: GameState; bought: number } {
+  if (state.helperLevel <= 0 || !state.helperOn) return { state, bought: 0 }
+  const interval = helperInterval(state.helperLevel)
+  let carry = state.helperCarryMs + dtMs
+  let next = state
+  let bought = 0
+  while (carry >= interval && bought < maxBuys) {
+    const gid = bestGardenBuy(next)
+    if (gid) {
+      next = buyGenerator(next, gid, 'helper')
+    } else {
+      const oid = orchardOpen(next) ? bestOrchardBuy(next) : null
+      if (!oid) {
+        carry = Math.min(carry, interval)
+        break
+      }
+      next = buyOrchard(next, oid, true)
+    }
+    carry -= interval
+    bought += 1
+  }
+  return { state: { ...next, helperCarryMs: Math.min(carry, interval * 2) }, bought }
 }
 
 /** Season count used for Gartenjahr gates (includes Gartenwissen). */
@@ -607,7 +1074,7 @@ function withEventProgress(state: GameState, gained: number, now: number): GameS
 }
 
 function maybePrestigeSpike(state: GameState, now: number): GameState {
-  const rate = productionPerSecond(state, now)
+  const rate = productionPerSecond(state, now) / turboMult(state, now)
   const spike = rollPrestigeSpike(
     state.ernteSeason,
     state.prestiges,
@@ -724,6 +1191,11 @@ export function applyTick(state: GameState, dtSeconds: number): GameState {
   if (dtSeconds <= 0) return state
   const now = Date.now()
   let synced = withQuestSync(syncEventWindow(syncMonetization(state, now), now), now)
+  synced = syncFest(syncOrchardOpen(synced, now), now)
+  synced = withObst(synced, orchardPerSecond(synced) * dtSeconds)
+  if (synced.helperLevel > 0 && synced.helperOn) {
+    synced = runHelper(synced, dtSeconds * 1000).state
+  }
   const gained = productionPerSecond(synced, now) * dtSeconds
   if (gained <= 0) {
     return maybePrestigeSpike({ ...synced, lastSeen: now }, now)
@@ -1034,6 +1506,18 @@ export function applyOfflineCatchup(
     emberCaps.soft + deepCaps.soft,
     emberCaps.hard + deepCaps.hard,
   )
+  // Streuobstwiese grows offline with the same caps
+  base = syncFest(syncOrchardOpen(base, now), now)
+  const obstRate = orchardPerSecond(base)
+  if (obstRate > 0) {
+    base = withObst(
+      base,
+      offlineCatchupAsh(obstRate, elapsedSec, emberCaps.soft + deepCaps.soft, emberCaps.hard + deepCaps.hard),
+    )
+  }
+  if (elapsedSec >= 3600) {
+    base = earnFest(base, Math.min(FEST_EARN.offlineCap, Math.floor(elapsedSec / 3600) * FEST_EARN.offlineHour), now)
+  }
   if (gained <= 0) {
     return { state: { ...base, lastSeen: now }, gained: 0 }
   }
@@ -1050,6 +1534,11 @@ export function applyOfflineCatchup(
     lastSurprise: jackpot ?? withProg.lastSurprise,
   }
   withProg = bumpQuest(withProg, 'earnAsh', total, now)
+  // Gartenhelfer keeps working while you are away (spends the catch-up)
+  if (withProg.helperLevel > 0 && withProg.helperOn && elapsedMs > 60_000) {
+    const helper = runHelper(withProg, Math.min(elapsedMs, 8 * 3600_000), 300)
+    withProg = { ...helper.state, helperReport: helper.bought }
+  }
   // XP for offline is granted when the player taps Abholen (claimOfflineReward)
   return { state: withProg, gained: total }
 }
@@ -1076,11 +1565,21 @@ export function lineCostMult(state: GameState, id: GeneratorId): number {
   const branch = state.branches[id]
   return (
     foundryDiscountMult(state.emberUpgrades) *
-    capacityCostMult(branch?.capacity ?? 0)
+    capacityCostMult(branch?.capacity ?? 0) *
+    legacyCostMult(state.legacy)
   )
 }
 
-export function buyGenerator(state: GameState, id: GeneratorId): GameState {
+/**
+ * `mode`: 'manual' rolls surprises; 'bulk' (2nd+ level of a Mengenkauf) and
+ * 'helper' (Gartenhelfer) never do — otherwise fast buying would chain the
+ * every-5th-Ausbau crumbs into an exponential snowball.
+ */
+export type BuyMode = 'manual' | 'bulk' | 'helper'
+
+export function buyGenerator(state: GameState, id: GeneratorId, mode: BuyMode | boolean = 'manual'): GameState {
+  const buyMode: BuyMode = mode === true ? 'helper' : mode === false ? 'manual' : mode
+  const fromHelper = buyMode === 'helper'
   const def = GENERATORS.find((g) => g.id === id)
   if (!def) return state
   const now = Date.now()
@@ -1107,12 +1606,10 @@ export function buyGenerator(state: GameState, id: GeneratorId): GameState {
     totalUpgrades: state.totalUpgrades + 1,
     lastSeen: now,
   }
-  const rate = productionPerSecond(next, now)
-  const surprise = rollUpgradeSurprise(
-    next.totalUpgrades,
-    rate,
-    next.ernteSeason,
-  )
+  // Surprises scale with the steady rate — never with the Frühlingsschub
+  const rate = productionPerSecond(next, now) / turboMult(next, now)
+  const surprise =
+    buyMode === 'manual' ? rollUpgradeSurprise(next.totalUpgrades, rate, next.ernteSeason) : null
   if (surprise) {
     next = {
       ...next,
@@ -1128,7 +1625,8 @@ export function buyGenerator(state: GameState, id: GeneratorId): GameState {
   }
   next = bumpQuest(next, 'upgrades', 1, now)
   if (surprise) next = bumpQuest(next, 'earnAsh', surprise.amount, now)
-  next = withXp(next, XP_PER_UPGRADE, now)
+  next = withXp(next, fromHelper ? 2 : XP_PER_UPGRADE, now)
+  next = earnFest(next, fromHelper ? FEST_EARN.helperUpgrade : FEST_EARN.upgrade, now)
   return collectReadyAchievements(next, now)
 }
 
@@ -1286,7 +1784,12 @@ export function doPrestige(state: GameState): GameState {
     variety ? { ...state, collection: [...state.collection, variety] } : state,
   )
   const withEmbers = { ...next, erbstuecke: state.erbstuecke + gain, lastVariety: variety }
-  return collectReadyAchievements(withEmbers)
+  return collectReadyAchievements(earnFest(withEmbers, FEST_EARN.seasonEnd))
+}
+
+/** Sprösslinge for a Tiefer Winter now (incl. Wurzelwerk). */
+export function deepSproutPayout(state: GameState): number {
+  return Math.floor(sproutPayout(state.prestiges) * legacySproutMult(state.legacy))
 }
 
 /** Sprösslings-Laden purchase. */
@@ -1311,25 +1814,31 @@ export function buyDeepUpgrade(state: GameState, id: DeepMetaId): GameState {
  */
 export function doDeepReset(state: GameState): GameState {
   if (!canDeepReset(state.prestiges)) return state
-  const sprouts = sproutPayout(state.prestiges)
+  const sprouts = deepSproutPayout(state)
   const fresh = createPostPrestigeState({
     ...state,
     erbstuecke: 0,
     emberUpgrades: { ...EMPTY_EMBER_UPGRADES },
   })
-  return collectReadyAchievements({
-    ...fresh,
-    prestiges: 0,
-    erbstuecke: deepStartEmbers(state.deepUpgrades),
-    emberUpgrades: { ...EMPTY_EMBER_UPGRADES },
-    sproesslinge: state.sproesslinge + sprouts,
-    deepPrestiges: state.deepPrestiges + 1,
-  })
+  return collectReadyAchievements(
+    syncOrchardOpen({
+      ...fresh,
+      prestiges: 0,
+      erbstuecke: deepStartEmbers(state.deepUpgrades),
+      emberUpgrades: { ...EMPTY_EMBER_UPGRADES },
+      sproesslinge: state.sproesslinge + sprouts,
+      deepPrestiges: state.deepPrestiges + 1,
+    }),
+  )
 }
 
 /** Gießen multiplier from weather (Regen) and the Glücksrad. */
 export function waterMult(state: GameState, now = Date.now()): number {
-  return weatherWaterMult(now) * wheelWaterMult(state.wheelBuff, state.prestiges)
+  return (
+    weatherWaterMult(now) *
+    wheelWaterMult(state.wheelBuff, state.prestiges) *
+    legacyWaterMult(state.legacy)
+  )
 }
 
 export interface Reward {
@@ -1338,6 +1847,8 @@ export interface Reward {
   samen?: number
   erbstuecke?: number
   xp?: number
+  /** Festmarken */
+  fest?: number
 }
 
 /** Generic reward for visitors, orders, weekly plan, comeback gifts. */
@@ -1354,6 +1865,7 @@ export function grantReward(state: GameState, reward: Reward, now = Date.now()):
   }
   if (ernte > 0) next = bumpQuest(next, 'earnAsh', ernte, now)
   if (reward.xp) next = withXp(next, reward.xp, now)
+  if (reward.fest) next = earnFest(next, reward.fest, now)
   return next
 }
 

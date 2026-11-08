@@ -139,19 +139,19 @@ export function Visitors({ game, extras, update, onVisited, onPresence }: Props)
     const now = Date.now()
     switch (active.id) {
       case 'igel':
-        game.grant({ ernteSeconds: 120 })
+        game.grant({ ernteSeconds: 120, fest: 2 })
         break
       case 'gerda':
-        game.grant({ samen: 6 })
+        game.grant({ samen: 6, fest: 2 })
         break
       case 'schmetterling':
-        game.grant({ ernteSeconds: 60, xp: 10 })
+        game.grant({ ernteSeconds: 60, xp: 10, fest: 2 })
         break
       case 'rotkehlchen':
         game.refillWater()
         break
       case 'postbote':
-        game.grant(game.state.prestiges >= 1 ? { erbstuecke: 3 } : { samen: 4 })
+        game.grant(game.state.prestiges >= 1 ? { erbstuecke: 3, fest: 2 } : { samen: 4, fest: 2 })
         break
     }
     playSfx('level')

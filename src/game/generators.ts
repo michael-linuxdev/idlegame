@@ -217,13 +217,40 @@ export function generatorCost(def: GeneratorDef, owned: number, discountMult = 1
 }
 
 /**
+ * Meilenstein-Sprünge: every listed level doubles that area's Ernte. Gives a
+ * visible goal inside each season (×2 at 25, 50, 100 …) instead of a flat
+ * +2 % per ten levels.
+ */
+export const MILESTONE_LEVELS = [25, 50, 100, 150, 200, 300, 400, 500, 750, 1000] as const
+export const MILESTONE_FACTOR = 2
+
+export function milestonesReached(level: number): number {
+  let n = 0
+  for (const m of MILESTONE_LEVELS) if (level >= m) n += 1
+  return n
+}
+
+export function milestoneMult(level: number): number {
+  return Math.pow(MILESTONE_FACTOR, milestonesReached(level))
+}
+
+/** Next Meilenstein level above `level`, or null when all are reached. */
+export function nextMilestone(level: number): { at: number; from: number } | null {
+  let from = 0
+  for (const m of MILESTONE_LEVELS) {
+    if (level < m) return { at: m, from }
+    from = m
+  }
+  return null
+}
+
+/**
  * Production at level n (n ≥ 1):
- * R(n) = r0 · n · (1 + 0.02 · floor(n/10))
+ * R(n) = r0 · n · 2^(Meilensteine erreicht)
  */
 export function generatorRate(def: GeneratorDef, owned: number): number {
   if (owned <= 0) return 0
-  const milestone = 1 + 0.02 * Math.floor(owned / 10)
-  return def.baseRate * owned * milestone
+  return def.baseRate * owned * milestoneMult(owned)
 }
 
 export function isGeneratorUnlocked(

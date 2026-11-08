@@ -15,7 +15,10 @@ import {
   IconFlag,
   IconSnow,
   IconSun,
+  IconFestToken,
+  IconSprout,
 } from '../../theme/icons'
+import { festAt } from '../../game/fests'
 
 type GameApi = ReturnType<typeof useGame>
 
@@ -23,6 +26,8 @@ interface Pill {
   key: string
   icon: ReactNode
   label: string
+  aria?: string
+  color?: string
   claim?: boolean
   detail?: { line: string; ratio: number; aria: string }
   onClick?: () => void
@@ -34,6 +39,8 @@ interface Props {
   season?: { label: string; onOpen: () => void } | null
   /** Hofladen-Bestellung */
   order?: { label: string; detail: string; ratio: number; claim: boolean; onClaim: () => void } | null
+  /** Open the Festladen */
+  onOpenFest?: () => void
 }
 
 const WEATHER_ICON = {
@@ -44,7 +51,7 @@ const WEATHER_ICON = {
 } as const
 
 /** Compact event bar — every timed bonus is one small pill, never a card. */
-export function EventPills({ game, season, order }: Props) {
+export function EventPills({ game, season, order, onOpenFest }: Props) {
   const [open, setOpen] = useState<string | null>(null)
   const { surge, surgeVisible, surgeGoalDone, surgeGoalClaimed, state, eventMult, flash } = game
   const pills: Pill[] = []
@@ -57,6 +64,28 @@ export function EventPills({ game, season, order }: Props) {
       claim: order.claim,
       onClick: order.claim ? order.onClaim : undefined,
       detail: { line: order.detail, ratio: order.ratio, aria: order.label },
+    })
+  }
+
+  if (game.turboMsLeft > 0) {
+    pills.push({
+      key: 'turbo',
+      icon: <IconSprout />,
+      label: t.turbo.pill(formatClock(game.turboMsLeft)),
+      detail: { line: t.turbo.detail, ratio: 0, aria: t.turbo.detail },
+    })
+  }
+
+  if (onOpenFest) {
+    const fest = festAt(game.nowTick)
+    const n = Math.floor(state.festTokens)
+    pills.push({
+      key: 'fest',
+      icon: <IconFestToken fest={fest.id} />,
+      label: t.fest.pill(t.fest.names[fest.id]!, n),
+      aria: t.fest.pillAria(t.fest.names[fest.id]!, n, t.fest.tokens[fest.id]!),
+      color: fest.color,
+      onClick: onOpenFest,
     })
   }
 
@@ -168,6 +197,8 @@ export function EventPills({ game, season, order }: Props) {
               setOpen((o) => (o === p.key ? null : p.key))
             }}
             aria-expanded={p.detail && !p.onClick ? open === p.key : undefined}
+            aria-label={p.aria}
+            style={p.color ? { ['--pill-accent' as string]: p.color } : undefined}
           >
             <span className="hud-pill-icon">{p.icon}</span>
             <span className="hud-pill-label">{p.label}</span>

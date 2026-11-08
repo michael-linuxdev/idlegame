@@ -38,7 +38,7 @@ export const PRESTIGE_GROWTH = 1.8
  * writes to it.
  */
 export const BALANCE = {
-  prestigeBase: 12_000_000,
+  prestigeBase: 25_000_000,
   prestigeGrowth: 3.2,
   /** Seasons that still open new garden corners — steep phase */
   prestigeKnee: 13,

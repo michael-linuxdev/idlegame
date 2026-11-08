@@ -137,11 +137,11 @@ function PlantBook({ collection }: { collection: readonly string[] }) {
       <p className="plantbook-total">
         {t.plantbook.total(formatDecimal(total, 1))} · {t.plantbook.found(collection.length, VARIETIES.length)}
       </p>
-      {GENERATORS.map((g) => {
-        const list = VARIETIES.filter((v) => v.module === g.id)
+      {[...GENERATORS.map((g) => ({ key: g.id as string, name: g.name })), { key: 'fest', name: t.plantbook.festGroup }].map((g) => {
+        const list = VARIETIES.filter((v) => (g.key === 'fest' ? Boolean(v.fest) : !v.fest && v.module === g.key))
         if (list.length === 0) return null
         return (
-          <section key={g.id} className="plantbook-group">
+          <section key={g.key} className={`plantbook-group${g.key === 'fest' ? ' fest' : ''}`}>
             <h4>{g.name}</h4>
             <ul>
               {list.map((v) => {
@@ -150,6 +150,7 @@ function PlantBook({ collection }: { collection: readonly string[] }) {
                   <li key={v.id} className={`plantbook-item rarity-${v.rarity}${have ? ' found' : ''}`}>
                     <span className="plantbook-name">{have ? t.plantbook.names[v.id] : t.plantbook.unknown}</span>
                     <span className="plantbook-meta">
+                      {v.fest ? `${t.fest.names[v.fest]} · ` : ''}
                       {t.plantbook.rarity[v.rarity]} · {t.plantbook.bonus(formatDecimal(RARITY_BONUS[v.rarity] * 100, 1))}
                     </span>
                   </li>

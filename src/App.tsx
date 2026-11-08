@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { AppNav, type Tab } from './components/AppNav'
 import { ClanPanel } from './components/ClanPanel'
 import { GardenMap } from './components/GardenMap'
+import { OrchardMap } from './components/OrchardMap'
 import { FtueCoach } from './components/FtueCoach'
 import { InstallPrompt } from './components/InstallPrompt'
 import { PrestigePanel } from './components/PrestigePanel'
@@ -24,10 +25,31 @@ import './theme/hud.css'
 import './theme/polish.css'
 import './theme/panels.css'
 import './theme/story.css'
+import './theme/expansion.css'
 
 export default function App() {
   const game = useGame()
   const [tab, setTab] = useState<Tab>('fortress')
+  const [plot, setPlot] = useState<'garden' | 'orchard'>('garden')
+  const orchardOpen = game.orchardOpen
+
+  // Test hook: ?kapitel2=1 opens the Streuobstwiese without a Tiefer Winter
+  const { forceOrchard } = game
+  useEffect(() => {
+    try {
+      if (new URLSearchParams(location.search).get('kapitel2') === '1') forceOrchard()
+    } catch {
+      /* ignore */
+    }
+  }, [forceOrchard])
+
+  const switchPlot = useCallback(() => {
+    setPlot((p) => {
+      const next = p === 'garden' ? 'orchard' : 'garden'
+      logPlaytest('plot_switch', { to: next })
+      return next
+    })
+  }, [])
   const [ftueHighlight, setFtueHighlight] = useState<string | null>(null)
   const [holdInstall, setHoldInstall] = useState(false)
   const [coachVisible, setCoachVisible] = useState(true)
@@ -113,7 +135,10 @@ export default function App() {
         className={`app-main${tab === 'fortress' ? ' map-mode' : ''}`}
         tabIndex={tab === 'fortress' ? undefined : 0}
       >
-        {tab === 'fortress' ? (
+        {tab === 'fortress' && plot === 'orchard' && orchardOpen ? (
+          <OrchardMap game={game} onSwitchPlot={switchPlot} />
+        ) : null}
+        {tab === 'fortress' && (plot === 'garden' || !orchardOpen) ? (
           <GardenMap
             game={game}
             highlightId={ftueHighlight}
@@ -124,10 +149,22 @@ export default function App() {
             updateExtras={updateExtras}
             track={track}
             hintsBlocked={coachVisible || Boolean(game.seasonEnd) || comebackOpen}
+            onSwitchPlot={orchardOpen ? switchPlot : undefined}
           />
         ) : null}
         {tab === 'prestige' ? (
-          <PrestigePanel game={game} highlight={ftueHighlight === 'prestige'} />
+          <PrestigePanel
+            game={game}
+            highlight={ftueHighlight === 'prestige'}
+            onOpenOrchard={
+              orchardOpen
+                ? () => {
+                    setPlot('orchard')
+                    onTabChange('fortress')
+                  }
+                : undefined
+            }
+          />
         ) : null}
         {tab === 'clan' ? <ClanPanel game={game} /> : null}
         {tab === 'shop' ? <ShopPanel game={game} /> : null}

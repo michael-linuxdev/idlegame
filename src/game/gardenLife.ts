@@ -7,6 +7,7 @@
  *  - Glücksrad: one spin at Saisonende, buff for the coming Gartenjahr
  */
 import type { GeneratorId } from './generators'
+import type { FestId } from './fests'
 
 /* ———————————————— Pflanzenbuch ———————————————— */
 
@@ -16,6 +17,8 @@ export interface VarietyDef {
   id: string
   module: GeneratorId
   rarity: Rarity
+  /** Festsorte — only from the fest shop while that fest runs */
+  fest?: FestId
 }
 
 export const RARITY_BONUS: Record<Rarity, number> = {
@@ -56,7 +59,24 @@ export const VARIETIES: VarietyDef[] = [
   { id: 'kuerbisHokkaido', module: 'hofladen', rarity: 'rare' },
   { id: 'zitroneAmalfi', module: 'orangerie', rarity: 'rare' },
   { id: 'feigeBrunswick', module: 'orangerie', rarity: 'precious' },
+  // Festsorten (fest shop only)
+  { id: 'christrose', module: 'kraeuterspirale', rarity: 'rare', fest: 'raunaechte' },
+  { id: 'schneegloeckchen', module: 'gemuesebeet', rarity: 'rare', fest: 'lichtmess' },
+  { id: 'tulpeOsterglocke', module: 'gemuesebeet', rarity: 'common', fest: 'fruehlingsfest' },
+  { id: 'baerlauch', module: 'kraeuterspirale', rarity: 'rare', fest: 'fruehlingsfest' },
+  { id: 'pfingstrose', module: 'beerenhecke', rarity: 'rare', fest: 'bluetenfest' },
+  { id: 'erdbeereMieze', module: 'beerenhecke', rarity: 'common', fest: 'sommerfest' },
+  { id: 'zucchiniGold', module: 'gemuesebeet', rarity: 'rare', fest: 'sommerfest' },
+  { id: 'sonnenblumeRiesen', module: 'gemuesebeet', rarity: 'rare', fest: 'sonnenblumen' },
+  { id: 'kuerbisMuscat', module: 'hofladen', rarity: 'common', fest: 'erntedank' },
+  { id: 'apfelBoskoop', module: 'obstwiese', rarity: 'rare', fest: 'erntedank' },
+  { id: 'physalis', module: 'gewaechshaus', rarity: 'rare', fest: 'laternenfest' },
+  { id: 'christstern', module: 'gewaechshaus', rarity: 'common', fest: 'advent' },
+  { id: 'gruenkohlFrost', module: 'gemuesebeet', rarity: 'rare', fest: 'advent' },
 ]
+
+/** Varieties that can be found by gardening (no Festsorten). */
+export const GARDEN_VARIETIES: VarietyDef[] = VARIETIES.filter((v) => !v.fest)
 
 export function collectionMult(collection: readonly string[]): number {
   let bonus = 0
@@ -70,7 +90,7 @@ export function rollVarietyOnUpgrade(
   collection: readonly string[],
   rng = Math.random,
 ): string | null {
-  const open = VARIETIES.filter((v) => v.module === module && !collection.includes(v.id))
+  const open = GARDEN_VARIETIES.filter((v) => v.module === module && !collection.includes(v.id))
   for (const v of open) if (rng() < RARITY_CHANCE[v.rarity]) return v.id
   return null
 }
@@ -81,7 +101,7 @@ export function varietyForSeasonEnd(
   collection: readonly string[],
   rng = Math.random,
 ): string | null {
-  const open = VARIETIES.filter((v) => planted.includes(v.module) && !collection.includes(v.id))
+  const open = GARDEN_VARIETIES.filter((v) => planted.includes(v.module) && !collection.includes(v.id))
   if (open.length === 0) return null
   // commons first, so the book fills in a satisfying order
   const pool = open.filter((v) => v.rarity === 'common')

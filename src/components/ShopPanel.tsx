@@ -165,6 +165,9 @@ export function ShopPanel({ game }: Props) {
 
       {STORE_ENABLED ? (
         <>
+      <p className="shop-placeholder-note" role="note">
+        {t.shopNote.placeholder}
+      </p>
       {!state.adsRemoved ? (
         <>
           <h3 className="subhead">{t.shop.adsTitle}</h3>
@@ -321,7 +324,7 @@ export function ShopPanel({ game }: Props) {
       <h3 className="subhead">{t.shop.skinsTitle}</h3>
       <p className="muted">{t.shop.skinsIntro}</p>
       <ul className="cosmetic-grid">
-        {COSMETICS.map((skin) => {
+        {COSMETICS.filter((c) => !c.fest || state.ownedCosmetics.includes(c.id)).map((skin) => {
           const owned = state.ownedCosmetics.includes(skin.id)
           const equipped = state.equippedCosmetic === skin.id
           const afford = state.samen >= skin.cost

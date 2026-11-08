@@ -20,6 +20,11 @@ export type PlaytestEventType =
   | 'flash_event'
   | 'daily_claim'
   | 'best_buy_tap'
+  | 'generation'
+  | 'buy_all'
+  | 'fest_buy'
+  | 'plot_switch'
+  | 'app_update'
 
 export type PlaytestPayload = Record<
   string,

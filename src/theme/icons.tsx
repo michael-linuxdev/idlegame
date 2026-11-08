@@ -212,3 +212,125 @@ export function IconWheel() {
     </Svg>
   )
 }
+
+/** Obst — apple with leaf (Streuobstwiese currency) */
+export function IconApple() {
+  return (
+    <Svg>
+      <path d="M12 7.5c-1.6-1.4-6-1.6-6.8 2.6-.8 4.2 2 9.4 4.4 9.4 1.1 0 1.5-.6 2.4-.6s1.3.6 2.4.6c2.4 0 5.2-5.2 4.4-9.4C18 5.9 13.6 6.1 12 7.5z" fill="#d9483b" stroke="#8a2a20" strokeWidth="1" />
+      <path d="M12 7.6V4.4" stroke="#6e4a2b" strokeWidth="1.4" strokeLinecap="round" />
+      <path d="M12.3 5.2c1.2-1.8 3.3-1.9 4.3-1.3-.6 1.5-2.4 2.3-4.3 1.3z" fill="#5f9e45" />
+      <ellipse cx="9" cy="10.6" rx="1.1" ry="1.8" fill="#fff" opacity="0.35" />
+    </Svg>
+  )
+}
+
+/** Gartenhelfer — straw hat over a friendly face */
+export function IconHelper() {
+  return (
+    <Svg>
+      <circle cx="12" cy="13.5" r="5" fill="#f2c9a0" stroke="#8a6a40" strokeWidth="1" />
+      <ellipse cx="12" cy="9.6" rx="8.5" ry="2.2" fill="#e8c770" stroke="#8a6a40" strokeWidth="1" />
+      <path d="M8 9.4c.4-3 1.8-4.4 4-4.4s3.6 1.4 4 4.4z" fill="#f0d488" stroke="#8a6a40" strokeWidth="1" />
+      <path d="M8.2 8.6h7.6" stroke="#c4553f" strokeWidth="1.2" />
+      <circle cx="10.2" cy="13.6" r=".8" fill="#4a3208" />
+      <circle cx="13.8" cy="13.6" r=".8" fill="#4a3208" />
+      <path d="M10.4 15.8c1 .8 2.2.8 3.2 0" stroke="#4a3208" strokeWidth=".9" fill="none" strokeLinecap="round" />
+    </Svg>
+  )
+}
+
+/** Generationen — family tree */
+export function IconFamily() {
+  return (
+    <Svg>
+      <path d="M12 21v-7M12 14l-4-3M12 14l4-3" stroke="#6e4a2b" strokeWidth="1.6" strokeLinecap="round" />
+      <circle cx="12" cy="8" r="5.5" fill="#5f9e45" />
+      <circle cx="7" cy="11" r="3.2" fill="#7fbf5a" />
+      <circle cx="17" cy="11" r="3.2" fill="#7fbf5a" />
+      <path d="M12 6.2c.8-1.4 3-1 2.7.9-.2 1.2-2.7 2.6-2.7 2.6s-2.5-1.4-2.7-2.6c-.3-1.9 1.9-2.3 2.7-.9z" fill="#e0485e" />
+    </Svg>
+  )
+}
+
+/** Festmarke — themed token per fest */
+export function IconFestToken({ fest }: { fest: string }) {
+  switch (fest) {
+    case 'laternenfest':
+      return (
+        <Svg>
+          <path d="M12 2v3" stroke="#6e4a2b" strokeWidth="1.2" />
+          <ellipse cx="12" cy="13" rx="6.5" ry="7.5" fill="#f5a83a" stroke="#b8862a" strokeWidth="1" />
+          <ellipse cx="12" cy="13" rx="3.4" ry="7.5" fill="none" stroke="#e07a1f" strokeWidth="1" />
+          <ellipse cx="12" cy="13" rx="3" ry="3.6" fill="#fff3b0" opacity="0.8" />
+          <rect x="9" y="4.5" width="6" height="1.8" rx=".6" fill="#6e4a2b" />
+        </Svg>
+      )
+    case 'fruehlingsfest':
+      return (
+        <Svg>
+          <ellipse cx="12" cy="13" rx="6.5" ry="8.5" fill="#f28ab2" stroke="#b44f7a" strokeWidth="1" />
+          <path d="M5.8 11.5l2.2-1.5 2 1.5 2-1.5 2 1.5 2-1.5 2.2 1.5" stroke="#fff" strokeWidth="1.3" fill="none" />
+          <circle cx="9" cy="16" r="1" fill="#f5c542" />
+          <circle cx="15" cy="16" r="1" fill="#7fbf5a" />
+        </Svg>
+      )
+    case 'sommerfest':
+      return (
+        <Svg>
+          <path d="M12 21c-5-2-7-7-6-10 1-3 4-3 6-2 2-1 5-1 6 2 1 3-1 8-6 10z" fill="#e2453c" stroke="#9a2a24" strokeWidth="1" />
+          <path d="M8 6.5l4 2.5 4-2.5-2 -1.5-2 1-2-1z" fill="#5f9e45" />
+          {[9, 12, 15, 10.5, 13.5].map((x, i) => (
+            <circle key={i} cx={x} cy={12 + (i > 2 ? 3 : 0)} r=".6" fill="#ffe08a" />
+          ))}
+        </Svg>
+      )
+    case 'erntedank':
+      return (
+        <Svg>
+          <ellipse cx="12" cy="14" rx="8.5" ry="6.5" fill="#f08a2c" stroke="#a5531a" strokeWidth="1" />
+          <path d="M9 8.5c-1.5 3-1.5 8 0 11M15 8.5c1.5 3 1.5 8 0 11M12 8v12" stroke="#c4651f" strokeWidth="1" fill="none" />
+          <path d="M12 8c0-2 1-3.5 2.5-4" stroke="#5f7a2e" strokeWidth="1.6" strokeLinecap="round" />
+        </Svg>
+      )
+    case 'advent':
+      return (
+        <Svg>
+          <path d="M12 2.5l2.4 4.6 5.1.4-3.9 3.4 1.3 5-4.9-2.8-4.9 2.8 1.3-5-3.9-3.4 5.1-.4z" fill="#d9a35b" stroke="#8a5a28" strokeWidth="1" transform="translate(0 2.5)" />
+          <circle cx="12" cy="11.5" r="1.4" fill="#c4553f" />
+        </Svg>
+      )
+    case 'raunaechte':
+      return (
+        <Svg>
+          <path d="M12 2l2.6 6.4L21 9l-5 4.3 1.6 6.7L12 16.5 6.4 20 8 13.3 3 9l6.4-.6z" fill="#f5d76e" stroke="#b8962a" strokeWidth="1" />
+        </Svg>
+      )
+    case 'lichtmess':
+      return (
+        <Svg>
+          <path d="M12 21V9" stroke="#5f9e45" strokeWidth="1.4" />
+          <path d="M12 9c-3 0-4.5 3-4 6 2-1 4-3 4-6zM12 9c3 0 4.5 3 4 6-2-1-4-3-4-6zM12 9c-1 2-1 5 0 7 1-2 1-5 0-7z" fill="#fff" stroke="#9fb7c9" strokeWidth=".8" />
+          <path d="M12 9c0-2 1-3.5 3-4" stroke="#5f9e45" strokeWidth="1.2" fill="none" />
+        </Svg>
+      )
+    case 'sonnenblumen':
+      return (
+        <Svg>
+          {Array.from({ length: 10 }, (_, i) => (
+            <ellipse key={i} cx="12" cy="5" rx="1.8" ry="3.4" fill="#f5c542" transform={`rotate(${i * 36} 12 12)`} />
+          ))}
+          <circle cx="12" cy="12" r="4.2" fill="#6e4a2b" />
+        </Svg>
+      )
+    default:
+      return (
+        <Svg>
+          {Array.from({ length: 5 }, (_, i) => (
+            <circle key={i} cx="12" cy="6.5" r="3.6" fill="#e9a3d3" stroke="#b46a9e" strokeWidth=".7" transform={`rotate(${i * 72} 12 12)`} />
+          ))}
+          <circle cx="12" cy="12" r="2.6" fill="#f5c542" />
+        </Svg>
+      )
+  }
+}
