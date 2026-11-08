@@ -5,6 +5,7 @@ import { isIdle, onIdleChange, startIdleWatch } from './idle'
 import type { DecorId } from './decor'
 import type { ResidentId } from './residents'
 import type { ProjectId } from './projects'
+import { ALBUM_GOALS, albumProgress, type AlbumStat } from './album'
 import {
   emberPayout,
   foundryDiscountMult,
@@ -142,6 +143,9 @@ import {
   spawnResident,
   startCrossing,
   buildProjectStage,
+  claimAlbumStamp,
+  albumStats,
+  syncAlbum,
   skipCrossing,
   harvestCrossing,
   residentGone,
@@ -162,6 +166,13 @@ const TICK_MS = 250
 const IDLE_TICK_MS = 1000
 /** Persist less often than the tick — localStorage stringify is expensive. */
 const SAVE_MS = 4000
+
+/** Album goals finished but not yet stamped (menu dot). */
+function albumReadyCount(state: GameState, now: number): number {
+  const s = syncAlbum(state, now)
+  const stats = albumStats(s)
+  return ALBUM_GOALS.filter((g) => !s.album.claimed.includes(g.id) && albumProgress(s.album, stats, g.id) >= g.need).length
+}
 
 export function useGame() {
   // One catch-up on start: the basket (offlinePending) waits for the „Ernten“
@@ -440,6 +451,10 @@ export function useGame() {
       if (next !== s) logPlaytest('upgrade', { id: 'helper', level: next.helperLevel, kind: 'helper' })
       return next
     })
+  }, [])
+
+  const claimStamp = useCallback((id: AlbumStat) => {
+    setState((s) => claimAlbumStamp(s, id))
   }, [])
 
   const buildProject = useCallback((id: ProjectId) => {
@@ -904,6 +919,7 @@ export function useGame() {
     letResidentIn,
     crossStart,
     buildProject,
+    claimStamp,
     crossSkip,
     crossHarvest,
     residentLeft,
@@ -976,6 +992,7 @@ export function useGame() {
     adResult,
     claimGift,
     giftReady: marketGiftReady(state, nowTick),
+    albumReady: albumReadyCount(state, nowTick),
     buyWaterRefill,
     claimBpDailyXp,
     claimBpTier,

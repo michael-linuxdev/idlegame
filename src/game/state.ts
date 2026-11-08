@@ -45,6 +45,7 @@ import {
 } from './chapters'
 import { milestonesReached, nextMilestone } from './generators'
 import { decorDef, emptySlots, type DecorId } from './decor'
+import { ALBUM_GOALS, ALBUM_REWARD_AT, ALBUM_REWARD_FALLBACK_SAMEN, ALBUM_STAMP_SAMEN, SEASON_DECOR, albumProgress, emptyAlbum, seasonKey, seasonOfKey, type AlbumStat, type AlbumState } from './album'
 import { PROJECT_STAGES, projectDef, projectsMult, stageCost, type ProjectId } from './projects'
 import { CROSS_MISS_SAMEN, CROSS_MS, CROSS_SKIP_SAMEN, hybridFor, hybridsMult, type Crossing, type HybridId } from './crossing'
 import { RESIDENT_FIRST_SAMEN, RESIDENT_GAP_MS, RESIDENT_REPEAT_SEC, RESIDENT_STAY_MS, residentsMult, type ResidentId, type ResidentVisit } from './residents'
@@ -325,6 +326,8 @@ export interface GameState {
   hybrids: HybridId[]
   /** Großprojekte: stages built per project */
   projects: Partial<Record<ProjectId, number>>
+  /** Jahreszeiten-Album of the current real season */
+  album: AlbumState
   /** Helper time carry (ms) between buys */
   helperCarryMs: number
   /** Transient: buys the helper made while away (for the offline toast) */
@@ -410,6 +413,8 @@ export interface ExpansionSlice {
   hybrids: HybridId[]
   /** Großprojekte: stages built per project */
   projects: Partial<Record<ProjectId, number>>
+  /** Jahreszeiten-Album of the current real season */
+  album: AlbumState
   helperCarryMs: number
   helperReport: number
   turboEndsAt: number
@@ -449,6 +454,7 @@ export function emptyExpansion(now = Date.now()): ExpansionSlice {
     crossing: null,
     hybrids: [],
     projects: {},
+    album: emptyAlbum(),
     helperCarryMs: 0,
     helperReport: 0,
     turboEndsAt: 0,
@@ -490,6 +496,7 @@ export function pickExpansion(s: GameState): ExpansionSlice {
     crossing: s.crossing,
     hybrids: s.hybrids,
     projects: s.projects,
+    album: s.album,
     helperCarryMs: 0,
     helperReport: 0,
     turboEndsAt: s.turboEndsAt,
@@ -1359,6 +1366,62 @@ export function buyHelper(state: GameState): GameState {
   }
 }
 
+/* ——— Jahreszeiten-Album ——— */
+
+/** Lifetime values the album measures from the season's start. */
+export function albumStats(state: GameState): Record<AlbumStat, number> {
+  let visits = 0
+  let species = 0
+  for (const n of Object.values(state.residentsSeen)) {
+    visits += n ?? 0
+    if ((n ?? 0) > 0) species += 1
+  }
+  let stages = 0
+  for (const n of Object.values(state.projects)) stages += n ?? 0
+  return {
+    water: 0,
+    seasons: 0,
+    daily: 0,
+    offline: 0,
+    upgrades: state.totalUpgrades,
+    varieties: state.collection.length,
+    visits,
+    species,
+    hybrids: state.hybrids.length,
+    decor: state.decorOwned.length,
+    chapterLevels: totalChapterLevels(state.chapters),
+    projectStages: stages,
+  }
+}
+
+/** Start a fresh album when the real season changed. */
+export function syncAlbum(state: GameState, now = Date.now()): GameState {
+  const key = seasonKey(now)
+  if (state.album.key === key) return state
+  return { ...state, album: { key, base: albumStats(state), counts: {}, claimed: [], rewarded: false } }
+}
+
+/** Count one of the game-bumped album stats. */
+export function albumCount(state: GameState, id: AlbumStat, n = 1, now = Date.now()): GameState {
+  const s = syncAlbum(state, now)
+  return { ...s, album: { ...s.album, counts: { ...s.album.counts, [id]: (s.album.counts[id] ?? 0) + n } } }
+}
+
+/** Claim a finished goal's stamp (+Samen); the ALBUM_REWARD_AT-th stamp brings the season Deko. */
+export function claimAlbumStamp(state: GameState, id: AlbumStat, now = Date.now()): GameState {
+  const s = syncAlbum(state, now)
+  const goal = ALBUM_GOALS.find((g) => g.id === id)
+  if (!goal || s.album.claimed.includes(id)) return state
+  if (albumProgress(s.album, albumStats(s), id) < goal.need) return state
+  let next: GameState = { ...s, samen: s.samen + ALBUM_STAMP_SAMEN, album: { ...s.album, claimed: [...s.album.claimed, id] } }
+  if (!next.album.rewarded && next.album.claimed.length >= ALBUM_REWARD_AT) {
+    const decor = SEASON_DECOR[seasonOfKey(next.album.key)]
+    next = next.decorOwned.includes(decor) ? { ...next, samen: next.samen + ALBUM_REWARD_FALLBACK_SAMEN } : grantDecor(next, decor)
+    next = { ...next, album: { ...next.album, rewarded: true } }
+  }
+  return next
+}
+
 /* ——— Großprojekte ——— */
 
 export function projectOpen(state: GameState, id: ProjectId): boolean {
@@ -1792,6 +1855,7 @@ export function applyTick(state: GameState, dtSeconds: number): GameState {
   let synced = withQuestSync(syncEventWindow(syncMonetization(state, now), now), now)
   synced = syncContest(syncSky(syncFest(syncChaptersOpen(synced, now), now), now), now)
   synced = tickChapters(synced, (rate) => rate * dtSeconds)
+  synced = syncAlbum(synced, now)
   if (synced.helperLevel > 0 && synced.helperOn) {
     synced = runHelper(synced, dtSeconds * 1000).state
   }
@@ -1885,7 +1949,7 @@ export function claimDailyOps(state: GameState, now = Date.now()): GameState {
   next = bumpQuest(next, 'claimDaily', 1, now)
   next = bumpQuest(next, 'earnAsh', reward.compute, now)
   next = withXp(next, XP_PER_DAILY, now)
-  return collectReadyAchievements(next, now)
+  return albumCount(collectReadyAchievements(next, now), 'daily', 1, now)
 }
 
 export function dismissBandwidthSurge(state: GameState, now = Date.now()): GameState {
@@ -2189,7 +2253,7 @@ export function claimOfflineReward(
     lastSeen: now,
   }
   next = withXp(next, xpFromOfflineClaim(gained), now)
-  return collectReadyAchievements(next, now)
+  return albumCount(collectReadyAchievements(next, now), 'offline', 1, now)
 }
 
 export function lineCostMult(state: GameState, id: GeneratorId): number {
@@ -2418,7 +2482,7 @@ export function doPrestige(state: GameState): GameState {
     variety ? { ...state, collection: [...state.collection, variety] } : state,
   )
   const withEmbers = { ...next, erbstuecke: state.erbstuecke + gain, lastVariety: variety }
-  return collectReadyAchievements(earnFest(withEmbers, FEST_EARN.seasonEnd))
+  return albumCount(collectReadyAchievements(earnFest(withEmbers, FEST_EARN.seasonEnd)), 'seasons')
 }
 
 /** Sprösslinge for a Tiefer Winter now (incl. Wurzelwerk). */
@@ -2541,7 +2605,7 @@ export function grantTapAsh(
     lastTapAt: now,
     lastSeen: now,
   }
-  return bumpQuest(next, 'earnAsh', gained, now)
+  return albumCount(bumpQuest(next, 'earnAsh', gained, now), 'water', 1, now)
 }
 
 export {
