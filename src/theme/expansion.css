@@ -271,15 +271,36 @@
 .fest-sheet {
   --fest: #e39a2d;
   border-top: 6px solid var(--fest) !important;
-  max-height: calc(100dvh - var(--safe-top, 0px) - 4.6rem);
+  max-height: calc(100dvh - var(--safe-top, 0px) - var(--safe-bottom, 0px) - 5.4rem);
   overflow-y: auto;
   overscroll-behavior: contain;
 }
 
-/* Long sheets (Festladen, Streuobst) never run off the top */
+/* Long sheets never run off the top: room for the status bar, the home
+   indicator (safe-bottom) and the Menü button below the sheet */
 .upgrade-hud {
-  max-height: calc(100dvh - var(--safe-top, 0px) - 4.6rem);
+  max-height: calc(100dvh - var(--safe-top, 0px) - var(--safe-bottom, 0px) - 5.4rem);
   overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.upgrade-hud > * {
+  flex-shrink: 0;
+}
+
+/* Title + × stay reachable while a long sheet scrolls */
+.decor-sheet > .upgrade-hud-header,
+.decor-picker > .upgrade-hud-header,
+.cross-sheet > .upgrade-hud-header,
+.project-sheet > .upgrade-hud-header,
+.album-sheet > .upgrade-hud-header {
+  position: sticky;
+  top: -0.55rem;
+  z-index: 2;
+  margin: -0.55rem -0.7rem 0;
+  padding: 0.55rem 0.7rem 0.4rem;
+  background: var(--oc-bg-raised, #fffcf4);
+  border-bottom: 1px solid rgba(138, 106, 64, 0.15);
 }
 
 .fest-header .upgrade-hud-eyebrow {
