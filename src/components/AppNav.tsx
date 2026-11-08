@@ -81,6 +81,7 @@ export function AppNav({
   const [ambience, setAmbience] = useState(() => isAmbienceOn())
   const [updateNote, setUpdateNote] = useState<string | null>(null)
   const signs = useSignsAlways()
+  const [settingsOpen, setSettingsOpen] = useState(false)
   const [checking, setChecking] = useState(false)
 
   async function onCheckUpdate() {
@@ -207,6 +208,45 @@ export function AppNav({
               {unreadLetters > 0 ? <span className="nav-new-dot" aria-label={t.notebook.newLetter} /> : null}
             </button>
           ) : null}
+          {onOpenBackup ? (
+            <button
+              type="button"
+              role="menuitem"
+              className="nav-menu-item nav-menu-legal"
+              onClick={() => {
+                setMenuOpen(false)
+                onOpenBackup()
+              }}
+            >
+              <span className="tab-label">{t.backup.menu}</span>
+            </button>
+          ) : null}
+          {onOpenPhoto ? (
+            <button
+              type="button"
+              role="menuitem"
+              className="nav-menu-item nav-menu-legal"
+              onClick={() => {
+                setMenuOpen(false)
+                onOpenPhoto()
+              }}
+            >
+              <span className="tab-label">{t.photo.menu}</span>
+            </button>
+          ) : null}
+          <button
+            type="button"
+            className={`nav-menu-item nav-menu-settings${settingsOpen ? ' open' : ''}`}
+            aria-expanded={settingsOpen}
+            onClick={() => setSettingsOpen((o) => !o)}
+          >
+            <span className="tab-label">{t.nav.settings}</span>
+            <span className="nav-chevron" aria-hidden="true">
+              {settingsOpen ? '▾' : '▸'}
+            </span>
+          </button>
+          {settingsOpen ? (
+            <div className="nav-menu-group" role="group" aria-label={t.nav.settings}>
           <button
             type="button"
             role="menuitemcheckbox"
@@ -250,32 +290,6 @@ export function AppNav({
             </button>
           ) : null}
           <PlaytestLogControls />
-          {onOpenBackup ? (
-            <button
-              type="button"
-              role="menuitem"
-              className="nav-menu-item nav-menu-legal"
-              onClick={() => {
-                setMenuOpen(false)
-                onOpenBackup()
-              }}
-            >
-              <span className="tab-label">{t.backup.menu}</span>
-            </button>
-          ) : null}
-          {onOpenPhoto ? (
-            <button
-              type="button"
-              role="menuitem"
-              className="nav-menu-item nav-menu-legal"
-              onClick={() => {
-                setMenuOpen(false)
-                onOpenPhoto()
-              }}
-            >
-              <span className="tab-label">{t.photo.menu}</span>
-            </button>
-          ) : null}
           <div className="nav-menu-update">
             <button
               type="button"
@@ -310,6 +324,8 @@ export function AppNav({
             >
               <span className="tab-label">{t.legal.title}</span>
             </button>
+          ) : null}
+            </div>
           ) : null}
         </div>
       ) : null}

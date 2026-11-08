@@ -1271,3 +1271,64 @@ html.tab-hidden .sky-event {
 .hud-pill:not(:has(.hud-pill-label)) {
   padding: 0 0.4rem;
 }
+
+/* —— Menü: passt immer ins Bild —— */
+.nav-menu {
+  top: auto;
+  max-height: calc(100dvh - var(--safe-top, 0px) - var(--safe-bottom, 0px) - 5rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  width: min(17rem, calc(100vw - 1.4rem));
+}
+
+.nav-menu .nav-menu-item {
+  min-height: 2.5rem;
+  padding: 0.35rem 0.65rem;
+}
+
+/* toggle rows are <button>s: no browser blue, same type as the menu */
+.nav-menu button.nav-menu-sound {
+  appearance: none;
+  width: 100%;
+  margin: 0;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--oc-ink);
+  font-family: var(--oc-font-ui, inherit);
+  font-size: 0.8rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.nav-menu .nav-menu-sound {
+  min-height: 2.4rem;
+  font-size: 0.8rem;
+  color: var(--oc-ink);
+}
+
+.nav-menu .nav-toggle-state {
+  color: #3f7a30;
+  font-weight: 700;
+}
+
+.nav-menu-settings {
+  justify-content: space-between;
+  margin-top: 0.2rem;
+  border-top: 1px solid var(--oc-stroke) !important;
+  border-radius: 0 0 8px 8px;
+}
+
+.nav-chevron {
+  font-size: 0.8rem;
+  color: var(--oc-ink-muted, #6a5434);
+}
+
+.nav-menu-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding-left: 0.3rem;
+  border-left: 2px solid color-mix(in srgb, var(--oc-ember) 30%, transparent);
+}
