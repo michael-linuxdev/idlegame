@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
 import { ModuleArt } from '../theme/ModuleArt'
+import { useHints, type HintId } from '../game/hints'
 import { ClearedPlot, WildPlot } from '../theme/PlotArt'
 import { IconBasket, IconFertilizer, IconSprout } from '../theme/icons'
 import {
@@ -29,13 +30,13 @@ interface Props {
 const HOLD_START_MS = 380
 const HOLD_REPEAT_MS = 110
 
-type BulkMode = 1 | 10 | 'max'
+type BulkMode = 1 | 5 | 'max'
 const BULK_KEY = 'gartenerbe-bulk-mode'
 
 function loadBulk(): BulkMode {
   try {
     const v = localStorage.getItem(BULK_KEY)
-    return v === '10' ? 10 : v === 'max' ? 'max' : 1
+    return v === '5' ? 5 : v === 'max' ? 'max' : 1
   } catch {
     return 1
   }
@@ -55,7 +56,20 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
   const holdTimer = useRef<number | null>(null)
   const holdRepeat = useRef<number | null>(null)
   const holding = useRef(false)
-  const [bulk, setBulk] = useState<BulkMode>(loadBulk)
+  const [bulkPref, setBulk] = useState<BulkMode>(loadBulk)
+  const unlocks = game.bulkUnlocks
+  const modes: BulkMode[] = [1, ...(unlocks.five ? [5 as const] : []), ...(unlocks.max ? ['max' as const] : [])]
+  const bulk: BulkMode = modes.includes(bulkPref) ? bulkPref : 1
+  const { seen: seenHints, markSeen } = useHints()
+  const newHint: HintId | null = !unlocks.max
+    ? null
+    : !seenHints.includes('bulkMax')
+      ? 'bulkMax'
+      : unlocks.five && !seenHints.includes('bulk5')
+        ? 'bulk5'
+        : unlocks.all && !seenHints.includes('buyAll')
+          ? 'buyAll'
+          : null
   const [allNote, setAllNote] = useState<string | null>(null)
 
   function clearHold() {
@@ -249,9 +263,10 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
               </div>
             ) : null}
 
+            {modes.length > 1 || unlocks.all ? (
             <div className="gc-controls">
               <div className="gc-segment" role="radiogroup" aria-label={t.bulk.groupAria}>
-                {([1, 10, 'max'] as BulkMode[]).map((mode) => (
+                {modes.map((mode) => (
                   <button
                     key={String(mode)}
                     type="button"
@@ -260,14 +275,27 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
                     className={bulk === mode ? 'on' : undefined}
                     onClick={() => pickBulk(mode)}
                   >
-                    {mode === 1 ? t.bulk.one : mode === 10 ? t.bulk.ten : t.bulk.max}
+                    {mode === 1 ? t.bulk.one : mode === 5 ? t.bulk.five : t.bulk.max}
                   </button>
                 ))}
               </div>
-              <button type="button" className="gc-all" onClick={buyAll} aria-label={t.bulk.allAria}>
-                {allNote ?? t.bulk.allButton}
-              </button>
+              {unlocks.all ? (
+                <button type="button" className="gc-all" onClick={buyAll} aria-label={t.bulk.allAria}>
+                  {allNote ?? t.bulk.allButton}
+                </button>
+              ) : null}
             </div>
+            ) : null}
+            {newHint && owned >= 1 ? (
+              <aside className="gc-tip" role="status">
+                <p>
+                  <strong>{t.hints.label}:</strong> {t.hints[newHint]}
+                </p>
+                <button type="button" className="gc-tip-ok" onClick={() => markSeen(newHint)}>
+                  {t.hints.ok}
+                </button>
+              </aside>
+            ) : null}
 
             <button
               type="button"

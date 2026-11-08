@@ -1811,3 +1811,36 @@ html.tab-hidden .sky-event {
     animation: none;
   }
 }
+
+/* Omas Tipp im Ausbau-Fenster (neue Kaufoptionen) */
+.gc-tip {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.6rem;
+  border: 1.5px dashed #c4553f;
+  border-radius: 12px;
+  background: #fff6ea;
+  animation: claim-pop 200ms ease-out;
+}
+
+.gc-tip p {
+  margin: 0;
+  flex: 1;
+  font-size: 0.74rem;
+  line-height: 1.3;
+  color: #4a3208;
+}
+
+.gc-tip-ok {
+  flex: none;
+  min-height: 2rem;
+  padding: 0 0.7rem;
+  border: 2px solid #3f7a30;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #8fcf5f, #5f9e45);
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.72rem;
+  cursor: pointer;
+}
