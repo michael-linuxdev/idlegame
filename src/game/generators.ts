@@ -1,16 +1,9 @@
 /**
  * Module definitions — Bau-Map content depth (10 slots) + economy.md formulas for G1–G3.
- * Tone: Urban Vertical Farm / TurmFarm. Loop unchanged.
+ * Display names come from src/theme/strings.ts (DE).
  *
- * Stable IDs (map worker + content depth):
- *   emberPit, ashForge, cinderBarracks, cinderVault, ashWatch, dominionKeep,
- *   batteryBank, edgeCache, quantumCooler, packetScrubber
- *
- * Display names (DE via i18n) + silhouettes:
- *   Kraftwerk (power), Kühlanlage (cool), Rack-Bucht (rack),
- *   Uplink (uplink), Strahl-Relais (relay), Core-Switch (switch),
- *   Batteriebank (battery), Edge-Cache (cache), Quantenkühler (quantum),
- *   Paketfilter (scrub)
+ * IDs and silhouette kinds are legacy prototype names (emberPit … packetScrubber);
+ * they are replaced together with the garden module set in the copy/narrative PR.
  */
 
 import { t } from '../i18n'

@@ -129,7 +129,7 @@ export interface GameState {
   obsidian: number
   /** Owned cosmetic ids (survives prestige) */
   ownedCosmetics: CosmeticId[]
-  /** Equipped station skin */
+  /** Equipped garden skin */
   equippedCosmetic: CosmeticId
   /** Hours of paid time-skip used on skipDayKey */
   skipHoursUsedToday: number
@@ -230,14 +230,14 @@ export interface GameState {
   eraUpgrades: EraUpgrades
 }
 
-export const STORAGE_KEY = 'orbit-rack-save-v2'
+export const STORAGE_KEY = 'gartenerbe-save-v1'
 
 export function emptyOwned(): Record<GeneratorId, number> {
   const owned = {} as Record<GeneratorId, number>
   for (const id of GENERATOR_IDS) {
     owned[id] = 0
   }
-  // G1 Power Plant starts online — producing immediately (economy Day-1)
+  // G1 (first module) starts online — producing immediately (economy Day-1)
   owned.emberPit = 1
   return owned
 }

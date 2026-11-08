@@ -30,7 +30,7 @@ export interface CosmeticDef {
   blurb: string
   /** Obsidian cost; 0 = free starter */
   cost: number
-  /** CSS accent class applied to the station map */
+  /** CSS accent class applied to the garden map */
   accentClass: string
 }
 
@@ -75,7 +75,7 @@ export interface TimeSkipDef {
   cost: number
 }
 
-/** Time-skip stubs — TurmFarm DE copy via i18n */
+/** Time-skip stubs — DE copy via i18n */
 export const TIME_SKIPS: TimeSkipDef[] = [
   {
     id: 'cycleHour',

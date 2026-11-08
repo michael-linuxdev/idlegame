@@ -1,7 +1,7 @@
 /**
  * Economy knobs — core formulas (R(n), C(n), offline) unchanged.
- * Player-facing: soft Phyto (TurmFarm) / Tokens (Tokenhalle) + meta.
- * Internal save fields still map to Ash/Embers.
+ * Player-facing names come from src/theme/strings.ts.
+ * Internal save fields keep legacy names (ash / embers / obsidian).
  *
  * Balance pass IG-31 (overnight): prestige was ~5 min for engaged play vs
  * design 45–90 min. Raised P_min base + slowed generator ladder (see generators.ts).

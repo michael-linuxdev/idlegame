@@ -1,11 +1,10 @@
 /**
- * TurmFarm palette — hell, luftig, Grün/Weiß/Soft-Earth.
- * Overrides shared --oc-* tokens when data-theme="farm" (default).
+ * Gartenerbe palette — hell, luftig, Grün/Weiß/Soft-Earth.
+ * Interim palette from the prototype; garden art direction follows.
  */
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;700&family=Nunito+Sans:wght@400;600;700&family=DM+Sans:wght@500;700&display=swap');
 
-:root,
-[data-theme='farm'] {
+:root {
   /* Surfaces — airy greenhouse / rooftop light */
   --oc-bg-deep: #dce8d6;
   --oc-bg-field: #e8f0e4;

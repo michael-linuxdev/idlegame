@@ -6,7 +6,7 @@ type GameApi = ReturnType<typeof useGame>
 const FAKE_LEADERBOARD = [
   { rank: 1, clan: 'Dachgrün Nord', score: 18420 },
   { rank: 2, clan: 'Hydro Quartier', score: 15110 },
-  { rank: 3, clan: 'TurmFarm', score: 9780, you: true },
+  { rank: 3, clan: 'Gartenerbe', score: 9780, you: true },
   { rank: 4, clan: 'Blattwerk KG', score: 8120 },
   { rank: 5, clan: 'Soft-Earth Co.', score: 6405 },
   { rank: 6, clan: 'LED-Hof Ost', score: 4210 },

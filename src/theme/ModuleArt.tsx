@@ -1,4 +1,4 @@
-import type { SilhouetteKind } from '../../game/generators'
+import type { SilhouetteKind } from '../game/generators'
 
 interface Props {
   kind: SilhouetteKind
@@ -8,8 +8,8 @@ interface Props {
   selected?: boolean
 }
 
-/** Premium casual farm modules — glass, leafy greens, soft earth, readable at phone scale. */
-export function FarmSilhouettes({
+/** Module art on the map. Placeholder art — replaced by tiered garden modules in the module-art PR. */
+export function ModuleArt({
   kind,
   level,
   locked = false,

@@ -1,7 +1,7 @@
 /**
  * Daily Ops — claimable login reward (Compute / Credits / Obsidian crumb).
  * Optional streak; miss freezes (does not reset). Never energy/lives walls.
- * Player-facing copy: German via i18n (TurmFarm).
+ * Player-facing copy: German via i18n (src/theme/strings.ts).
  */
 
 import { t } from '../i18n'

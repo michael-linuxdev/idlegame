@@ -3,7 +3,7 @@
  * No assets; safe to call from UI feedback loops.
  */
 
-const MUTE_KEY = 'turmfarm-sfx-muted'
+const MUTE_KEY = 'gartenerbe-sfx-muted'
 
 export type SfxKind = 'tap' | 'upgrade' | 'claim' | 'level' | 'streak' | 'tick'
 

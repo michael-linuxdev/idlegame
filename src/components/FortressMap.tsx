@@ -25,10 +25,10 @@ import {
 } from '../game/surpriseJumps'
 import { t } from '../i18n'
 import type { useGame } from '../game/useGame'
-import { activeTheme } from '../themes'
+import { MAP_CLASS } from '../theme'
 import type { Tab } from './AppNav'
 import { BestBuyChip } from './BestBuyChip'
-import { BuildingSilhouette } from './BuildingSilhouette'
+import { ModuleArt } from '../theme/ModuleArt'
 import { DailyOpsBanner } from './DailyOpsBanner'
 import { EventBanner } from './EventBanner'
 import { FlashEventBanner } from './FlashEventBanner'
@@ -36,7 +36,7 @@ import { FloatPops, type FloatPopItem } from './FloatPops'
 import { MuteToggle } from './MuteToggle'
 import { NextGoalStrip } from './NextGoalStrip'
 import { ProgressSheet } from './ProgressSheet'
-import { ThemeMapBackdrop } from './ThemeMapBackdrop'
+import { MapBackdrop } from '../theme/MapBackdrop'
 import { UpgradeSheet } from './UpgradeSheet'
 
 function surpriseLabel(kind: SurpriseKind, amount: string): string {
@@ -437,14 +437,14 @@ export function FortressMap({ game, highlightId, onOpenTab }: Props) {
       <EventBanner game={game} />
       <FlashEventBanner game={game} />
 
-      <div className={`fortress-stage ${skinClass} ${activeTheme.mapClass}`}>
+      <div className={`fortress-stage ${skinClass} ${MAP_CLASS}`}>
         <div
           className="fortress-map slots-10"
           role="application"
           aria-label={t.hud.mapAria}
           onContextMenu={(e) => e.preventDefault()}
         >
-          <ThemeMapBackdrop />
+          <MapBackdrop />
 
           {GENERATORS.map((def) => {
             const level = state.owned[def.id] ?? 0
@@ -475,7 +475,7 @@ export function FortressMap({ game, highlightId, onOpenTab }: Props) {
                 onContextMenu={(e) => e.preventDefault()}
                 onDragStart={(e) => e.preventDefault()}
               >
-                <BuildingSilhouette
+                <ModuleArt
                   kind={def.silhouette}
                   level={level}
                   locked={!unlocked}

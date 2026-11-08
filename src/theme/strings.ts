@@ -1,15 +1,17 @@
 /**
- * German player-facing copy — TurmFarm (Urban Vertical Farm) theme skin.
- * Soft resource: Phyto (artificial currency). Meta: Münzen. Premium stub: Samen.
+ * German player-facing copy — Gartenerbe.
+ * Interim copy carried over from the vertical-farm prototype; the garden
+ * narrative rewrite (Ernte / Erbstücke / Omas Notizbuch) lands in a follow-up.
  * Soft label wired via SOFT_CURRENCY + resources.compute.
  */
 const SOFT_CURRENCY = 'Phyto'
 
-export const farmStrings = {
-  brand: 'TurmFarm',
+export const strings = {
+  brand: 'Gartenerbe',
   meta: {
-    title: 'TurmFarm',
-    description: 'TurmFarm — urbane Vertikalfarm. Idle-Phyto, Prestige, Clans.',
+    title: 'Gartenerbe',
+    description:
+      'Gartenerbe — vom Schrebergarten zum Gartenpark. Dein Garten wächst auch offline.',
     pwaDescription: 'Module erzeugen Phyto offline. Prestige für Münzen.',
   },
 
@@ -685,7 +687,7 @@ export const farmStrings = {
   },
 
   install: {
-    title: 'TurmFarm installieren',
+    title: 'Gartenerbe installieren',
     iosBefore: 'iPhone: tippe',
     iosShare: 'Teilen',
     iosMid: '→',
@@ -703,4 +705,4 @@ export const farmStrings = {
   },
 } as const
 
-export type FarmStrings = typeof farmStrings
+export type Strings = typeof strings

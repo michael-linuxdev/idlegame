@@ -13,12 +13,6 @@ import {
 } from './longLoop'
 import { createInitialState, STORAGE_KEY, type GameState } from './state'
 
-const LEGACY_KEYS = [
-  'orbital-claim-save-v2',
-  'ash-dominion-save-v2',
-  'ash-dominion-save-v1',
-] as const
-
 const COSMETIC_IDS = new Set(COSMETICS.map((c) => c.id))
 
 function isRecord(v: unknown): v is Record<string, unknown> {
@@ -441,13 +435,7 @@ function parseQuests(
 
 export function loadState(): GameState {
   try {
-    let raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) {
-      for (const key of LEGACY_KEYS) {
-        raw = localStorage.getItem(key)
-        if (raw) break
-      }
-    }
+    const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return createInitialState()
     const parsed: unknown = JSON.parse(raw)
     if (!isRecord(parsed)) return createInitialState()
@@ -460,7 +448,6 @@ export function loadState(): GameState {
 export function saveState(state: GameState): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
-    for (const key of LEGACY_KEYS) localStorage.removeItem(key)
   } catch {
     // Quota / private mode — ignore for MVP
   }

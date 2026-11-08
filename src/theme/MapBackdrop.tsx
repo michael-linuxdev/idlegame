@@ -1,5 +1,5 @@
-/** Rich rooftop vertical-farm yard — soft daylight, soil beds, glass, city hint. */
-export function FarmMapBackdrop() {
+/** Gartenerbe map backdrop. Placeholder art — replaced by the garden plot in the map PR. */
+export function MapBackdrop() {
   return (
     <div className="map-terrain map-terrain-farm" aria-hidden="true">
       <svg

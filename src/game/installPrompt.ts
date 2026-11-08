@@ -3,13 +3,7 @@
  * Android beforeinstallprompt + iOS Share tip. Dismiss persists; never blocks play forever.
  */
 
-export const INSTALL_STORAGE_KEY = 'turmfarm-install-v1'
-
-const LEGACY_INSTALL_KEYS = [
-  'orbit-rack-install-v1',
-  'orbital-claim-install-v1',
-  'ash-dominion-install-v1',
-] as const
+export const INSTALL_STORAGE_KEY = 'gartenerbe-install-v1'
 
 /** Soft delay before first-launch cue — lets the shell paint. */
 export const FIRST_LAUNCH_DELAY_MS = 700
@@ -23,13 +17,7 @@ export interface InstallPrefs {
 
 export function loadInstallPrefs(): InstallPrefs {
   try {
-    let raw = localStorage.getItem(INSTALL_STORAGE_KEY)
-    if (!raw) {
-      for (const key of LEGACY_INSTALL_KEYS) {
-        raw = localStorage.getItem(key)
-        if (raw) break
-      }
-    }
+    const raw = localStorage.getItem(INSTALL_STORAGE_KEY)
     if (!raw) return { dismissed: false, installed: false, shown: false }
     const p = JSON.parse(raw) as Record<string, unknown>
     return {
@@ -45,7 +33,6 @@ export function loadInstallPrefs(): InstallPrefs {
 export function saveInstallPrefs(prefs: InstallPrefs): void {
   try {
     localStorage.setItem(INSTALL_STORAGE_KEY, JSON.stringify(prefs))
-    for (const key of LEGACY_INSTALL_KEYS) localStorage.removeItem(key)
   } catch {
     // ignore
   }

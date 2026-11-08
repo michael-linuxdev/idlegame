@@ -1,16 +1,13 @@
 {
-  "name": "turmfarm",
+  "name": "gartenerbe",
   "private": true,
   "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:arcade": "VITE_THEME=arcade vite",
     "build": "tsc -b && vite build",
-    "build:arcade": "VITE_THEME=arcade tsc -b && VITE_THEME=arcade vite build",
     "lint": "oxlint",
-    "preview": "vite preview",
-    "preview:arcade": "VITE_THEME=arcade vite preview"
+    "preview": "vite preview"
   },
   "dependencies": {
     "react": "^19.3.1",
