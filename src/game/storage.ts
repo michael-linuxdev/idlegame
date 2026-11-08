@@ -240,6 +240,7 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
       : ernteSeason
   const claimedDailyOnce = parsed.claimedDailyOnce === true
   const claimedOfflineOnce = parsed.claimedOfflineOnce === true
+  const offlinePending = parseNum(parsed.offlinePending)
   const claimedAchievements = parseAchievements(parsed.claimedAchievements)
   const branches = parseBranches(parsed.branches)
   const questBundle = parseQuests(parsed.questDayKey, parsed.quests)
@@ -342,6 +343,7 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
     ernteLifetime,
     claimedDailyOnce,
     claimedOfflineOnce,
+    offlinePending,
     claimedAchievements,
     branches,
     questDayKey: questBundle.dayKey,

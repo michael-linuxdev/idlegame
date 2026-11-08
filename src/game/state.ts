@@ -231,6 +231,8 @@ export interface GameState {
   /** Achievement flags */
   claimedDailyOnce: boolean
   claimedOfflineOnce: boolean
+  /** Ernte from being away that waits for the „Ernten“ tap (0 = nothing waiting) */
+  offlinePending: number
   /** Claimed achievement ids */
   claimedAchievements: AchievementId[]
   /** Branch ranks — reset on prestige */
@@ -494,6 +496,7 @@ export function createInitialState(now = Date.now()): GameState {
     ernteLifetime: 0,
     claimedDailyOnce: false,
     claimedOfflineOnce: false,
+    offlinePending: 0,
     claimedAchievements: [],
     branches: emptyBranches(GENERATOR_IDS),
     questDayKey: quests.dayKey,
@@ -569,6 +572,7 @@ export function createPostPrestigeState(prev: GameState, now = Date.now()): Game
     ernteLifetime: prev.ernteLifetime,
     claimedDailyOnce: prev.claimedDailyOnce,
     claimedOfflineOnce: prev.claimedOfflineOnce,
+    offlinePending: 0,
     claimedAchievements: [...prev.claimedAchievements],
     // Branches reset with the run — soft sinks stay fair
     branches: emptyBranches(GENERATOR_IDS),
@@ -1910,17 +1914,28 @@ export function applyOfflineCatchup(
     lastSurprise: jackpot ?? withProg.lastSurprise,
   }
   withProg = bumpQuest(withProg, 'earnAsh', total, now)
-  // Gartenhelfer keeps working while you are away (spends the catch-up)
+  // Gartenhelfer keeps working while you are away (spends part of the catch-up)
+  const ernteBefore = withProg.ernte - total
   if (withProg.helperLevel > 0 && withProg.helperOn && elapsedMs > 60_000) {
     const helper = runHelper(withProg, Math.min(elapsedMs, 8 * 3600_000), 300)
     withProg = { ...helper.state, helperReport: helper.bought }
   }
-  // XP for offline is granted when the player taps Abholen (claimOfflineReward)
+  // What Jonas left over waits in the basket until the player taps „Ernten“
+  const left = Math.max(0, Math.min(total, withProg.ernte - ernteBefore))
+  withProg = { ...withProg, ernte: withProg.ernte - left, offlinePending: withProg.offlinePending + left }
+  // XP + the basket are granted when the player taps Ernten (claimOfflineReward)
   return { state: withProg, gained: total }
 }
 
+/** Put the waiting basket straight into the wallet (short absences, no banner). */
+export function creditOfflinePending(state: GameState): GameState {
+  if (state.offlinePending <= 0) return state
+  return { ...state, ernte: state.ernte + state.offlinePending, offlinePending: 0 }
+}
+
 /**
- * Player tapped Abholen on the offline banner — grant XP + mark achievement flag.
+ * Player tapped Ernten on the offline banner — add the waiting basket, grant XP
+ * and mark the achievement flag.
  * Pass the claimed amount so EP scales with the catchup.
  */
 export function claimOfflineReward(
@@ -1929,7 +1944,7 @@ export function claimOfflineReward(
   now = Date.now(),
 ): GameState {
   let next: GameState = {
-    ...state,
+    ...creditOfflinePending(state),
     claimedOfflineOnce: true,
     lastSeen: now,
   }
