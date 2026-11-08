@@ -45,6 +45,7 @@ import {
 } from './chapters'
 import { milestonesReached, nextMilestone } from './generators'
 import { decorDef, emptySlots, type DecorId } from './decor'
+import { SAFE_COST, weatherBuffMult, weatherEventAt, weatherOutcome, type WeatherBuff, type WeatherChoice, type WeatherEventKind } from './weatherEvents'
 import { ALBUM_GOALS, ALBUM_REWARD_AT, ALBUM_REWARD_FALLBACK_SAMEN, ALBUM_STAMP_SAMEN, SEASON_DECOR, albumProgress, emptyAlbum, seasonKey, seasonOfKey, type AlbumStat, type AlbumState } from './album'
 import { PROJECT_STAGES, projectDef, projectsMult, stageCost, type ProjectId } from './projects'
 import { CROSS_MISS_SAMEN, CROSS_MS, CROSS_SKIP_SAMEN, hybridFor, hybridsMult, type Crossing, type HybridId } from './crossing'
@@ -328,6 +329,10 @@ export interface GameState {
   projects: Partial<Record<ProjectId, number>>
   /** Jahreszeiten-Album of the current real season */
   album: AlbumState
+  /** Day key of the last Wetter-Entscheidung ('' = none yet) */
+  weatherDecided: string
+  /** Effect of the last decision */
+  weatherBuff: WeatherBuff | null
   /** Helper time carry (ms) between buys */
   helperCarryMs: number
   /** Transient: buys the helper made while away (for the offline toast) */
@@ -415,6 +420,10 @@ export interface ExpansionSlice {
   projects: Partial<Record<ProjectId, number>>
   /** Jahreszeiten-Album of the current real season */
   album: AlbumState
+  /** Day key of the last Wetter-Entscheidung ('' = none yet) */
+  weatherDecided: string
+  /** Effect of the last decision */
+  weatherBuff: WeatherBuff | null
   helperCarryMs: number
   helperReport: number
   turboEndsAt: number
@@ -455,6 +464,8 @@ export function emptyExpansion(now = Date.now()): ExpansionSlice {
     hybrids: [],
     projects: {},
     album: emptyAlbum(),
+    weatherDecided: '',
+    weatherBuff: null,
     helperCarryMs: 0,
     helperReport: 0,
     turboEndsAt: 0,
@@ -497,6 +508,8 @@ export function pickExpansion(s: GameState): ExpansionSlice {
     hybrids: s.hybrids,
     projects: s.projects,
     album: s.album,
+    weatherDecided: s.weatherDecided,
+    weatherBuff: s.weatherBuff,
     helperCarryMs: 0,
     helperReport: 0,
     turboEndsAt: s.turboEndsAt,
@@ -894,6 +907,7 @@ export function productionPerSecond(state: GameState, now = Date.now()): number 
     deepYieldMult(state.deepUpgrades) *
     collectionMult(state.collection) *
     weatherYieldMult(now) *
+    weatherBuffMult(state.weatherBuff, now) *
     wheelYieldMult(state.wheelBuff, state.prestiges) *
     expansionGardenMult(state) *
     neighbourMult(state) *
@@ -1364,6 +1378,31 @@ export function buyHelper(state: GameState): GameState {
     helperOn: true,
     lastSeen: Date.now(),
   }
+}
+
+/* ——— Wetter-Entscheidungen ——— */
+
+/** Today's open weather decision, if any. */
+export function pendingWeatherEvent(state: GameState, now = Date.now()): WeatherEventKind | null {
+  if (state.weatherDecided === dayKey(now)) return null
+  return weatherEventAt(now)
+}
+
+export function decideWeather(state: GameState, choice: WeatherChoice, now = Date.now(), roll = Math.random()): { state: GameState; good: boolean } {
+  const kind = pendingWeatherEvent(state, now)
+  if (!kind) return { state, good: true }
+  const cost = SAFE_COST[kind]
+  let next: GameState = state
+  if (choice === 'safe') {
+    if (cost.samen) {
+      if (state.samen < cost.samen) return { state, good: true }
+      next = { ...next, samen: next.samen - cost.samen }
+    }
+    if (cost.minutes) next = { ...next, ernte: Math.max(0, next.ernte - productionPerSecond(state, now) * cost.minutes * 60) }
+  }
+  if (kind === 'hitze' && choice === 'risk') next = { ...next, lastTapAt: now }
+  const out = weatherOutcome(kind, choice, roll, now)
+  return { good: out.good, state: { ...next, weatherDecided: dayKey(now), weatherBuff: out.buff ?? next.weatherBuff } }
 }
 
 /* ——— Jahreszeiten-Album ——— */

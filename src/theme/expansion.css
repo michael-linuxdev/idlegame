@@ -2903,3 +2903,53 @@ html.idle .resident-hover {
   padding: 0.2rem 0.7rem;
   font-size: 0.82rem;
 }
+
+/* —— Wetter-Entscheidungen —— */
+.weather-card {
+  position: absolute;
+  left: 50%;
+  top: 24.5%;
+  z-index: 110;
+  display: grid;
+  gap: 0.4rem;
+  width: min(92%, 22rem);
+  transform: translateX(-50%);
+  padding: 0.55rem 0.7rem 0.6rem;
+  border-radius: 16px;
+  border: 2px solid #c9d8e4;
+  background: #f6fbff;
+  box-shadow: 0 6px 16px rgba(30, 50, 70, 0.22);
+  color: #23384a;
+  animation: claim-pop 240ms ease-out;
+}
+
+.weather-card.weather-hitze {
+  border-color: #f0d08a;
+  background: #fffaf0;
+  color: #5a3d12;
+}
+
+.weather-card strong {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 1rem;
+}
+
+.weather-icon svg {
+  display: block;
+  width: 24px;
+  height: 24px;
+}
+
+.weather-actions {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 0.4rem;
+}
+
+.weather-actions .btn {
+  min-height: 42px;
+  padding: 0.2rem 0.4rem;
+  font-size: 0.82rem;
+}
