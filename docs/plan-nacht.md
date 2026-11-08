@@ -115,7 +115,7 @@ Tempo-Messung (9.1/9.2) kommt **vor** die Balance-Pakete 3 und 6, damit deren Wi
 - [x] A Export + Langzeit-Log — Abweichung: localStorage (zwei Schlüssel, Budget) statt IndexedDB; Spielstand hat Vorrang (`freePlaytestSpace` bei Platzmangel). Begründung: synchron, testbar, 180-Tage-Test < 2 KB/Tag.
 - [x] B Spielstand-Schutz & Betrieb — B4 nur `storage.persist()` (+ Log); Sicherungs-Erinnerung für iOS-Browser verschoben (gehört zu Paket G „Rückkehr“). Fund: `helperCarryMs`/`ilseCarryMs` werden absichtlich nicht geladen (Sekunden Restzeit), im Test als Ausnahme geführt.
 - [x] C Erste Minuten & Freischaltungen — Tutorial-Schritt „Verein besuchen“ wird übersprungen, solange der Verein noch zu ist; Wetter wirkt weiter auf die Ernte, nur Pille und Wetter-Frage kommen später.
-- [ ] D Tempo messen
+- [x] D Tempo messen — Hänger Jahr 13/14 toleriert (aktiv 138 min, Rest Nacht); Ziel Sitzung-1-Dichte ≤ 90 s noch offen (Basis 2 min) → Pakete E/F.
 - [ ] E Kernschleife
 - [ ] F Probe-Winter
 - [ ] G Rückkehr
