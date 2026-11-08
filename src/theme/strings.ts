@@ -193,6 +193,9 @@ export const strings = {
     computeEarned: (n: string) => `${n} ${SOFT} geerntet`,
     levelOf: (name: string, level: number) => `${name} Stufe ${level}`,
     playerLevel: (level: number) => `Gärtnerstufe ${level}`,
+    seasonGate: (year: number) =>
+      `Diese Ecke roden wir erst im ${year}. Gartenjahr.`,
+    seasonShort: (year: number) => `ab Gartenjahr ${year}`,
   },
 
   hud: {
@@ -351,7 +354,8 @@ export const strings = {
     thisRun: 'Diese Saison:',
     gate: 'Ab:',
     creditsPreview: (n: number) => `Vorschau +${erb(n)}`,
-    nextPayout: 'Nächstes Saisonende:',
+    nextPayout: 'Jetzt einlagern:',
+    longerHint: 'länger gärtnern bringt bis zu doppelt so viel',
     creditsAmount: (n: number) => `+${erb(n)}`,
     claimReset: (n: number) => `Winterruhe · +${erb(n)}`,
     claimResetRebuild: (n: number, mods: number) =>
@@ -692,6 +696,93 @@ export const strings = {
       cta: 'Danke, Oma',
       skipLabel: 'Schließen',
     },
+  },
+
+  /** Omas Notizbuch — letters unlocked by garden stages and Gartenjahre. */
+  notebook: {
+    title: 'Omas Notizbuch',
+    intro: 'Briefe und Notizen, die Oma dir hinterlassen hat. Neue Seiten finden sich, wenn der Garten wächst.',
+    open: 'Notizbuch öffnen',
+    newLetter: 'Brief von Oma',
+    newLetterAria: 'Neuer Brief von Oma — lesen',
+    lockedEntry: 'Diese Seite ist noch zugeklebt.',
+    lockedHintStage: (name: string) => `Öffnet sich beim ${name}.`,
+    lockedHintYear: (year: number) => `Öffnet sich im ${year}. Gartenjahr.`,
+    close: 'Notizbuch schließen',
+    read: 'Gelesen',
+    signature: '— Deine Oma',
+    laubeAria: 'Omas Laube — Notizbuch öffnen',
+    entries: {
+      welcome: {
+        title: 'Mein liebes Enkelkind,',
+        body: 'der Garten gehört jetzt dir. Er ist ziemlich verwildert — aber unter den Brombeeren steckt gute Erde. Fang beim Gemüsebeet an, der Rest kommt mit der Zeit. Ich habe dir Notizen in die Laube gelegt.',
+      },
+      stage2: {
+        title: 'Es riecht nach Erde',
+        body: 'Zwei Ecken gerodet, und schon summt es wieder. Opa hat immer gesagt: Ein Garten merkt, wenn jemand zurückkommt. Er hat sich gemerkt, dass du da bist.',
+      },
+      stage4: {
+        title: 'Ein richtiger Nutzgarten',
+        body: 'Kräuter, Beeren, Kompost — so sah es aus, als deine Mutter klein war. Sie hat die Johannisbeeren immer direkt vom Strauch genascht. Lass ruhig ein paar hängen.',
+      },
+      stage5: {
+        title: 'Fast schon eine Gärtnerei',
+        body: 'Die Nachbarn bleiben am Zaun stehen und schauen. Lass sie schauen! Und wenn jemand fragt, ob er ein paar Äpfel haben darf: Teilen macht die Ernte nicht kleiner.',
+      },
+      stage7: {
+        title: 'Der Hof wird lebendig',
+        body: 'Hühner gackern, Bienen summen, und abends brennt Licht in der Laube. Genau so habe ich mir das immer vorgestellt. Ich bin sehr stolz auf dich.',
+      },
+      stage9: {
+        title: 'Ein Schaugarten',
+        body: 'Im Verein reden sie von nichts anderem mehr. Lass dir nichts einreden: Die schönsten Gärten sind nicht die ordentlichsten, sondern die, in denen gelebt wird.',
+      },
+      stage10: {
+        title: 'Der Gartenpark',
+        body: 'Jetzt ist er fertig — oder besser: Jetzt fängt er erst richtig an. Ein Garten ist nie fertig, und das ist das Schöne daran. Er gehört jetzt ganz dir. Pass gut auf ihn auf, und auf dich.',
+      },
+      year2: {
+        title: 'Der erste Winter',
+        body: 'Keine Sorge, im Winter schläft der Garten nur. Was du gelernt hast, nimmt dir keiner. Im Frühling roden wir die Wiese hinter dem Kompost — dort standen früher Obstbäume.',
+      },
+      year3: {
+        title: 'Platz für die Bienen',
+        body: 'In der alten Kiste im Schuppen liegt Opas Imkerhut. Neben der Hecke ist es windstill — das mögen Bienen. Ohne sie kein Obst, vergiss das nie.',
+      },
+      year5: {
+        title: 'Hühner!',
+        body: 'Der alte Stall hinter der Laube muss nur ausgebessert werden. Hühner fressen Schnecken und geben Eier — bessere Nachbarn gibt es nicht. Nenn eins nach mir, wenn du magst.',
+      },
+      year7: {
+        title: 'Glas für den Sommer',
+        body: 'Unter dem Efeu an der Mauer liegen noch die Scheiben vom alten Gewächshaus. Damit wird der Sommer länger. Lüften nicht vergessen, sonst kochen die Tomaten!',
+      },
+      year10: {
+        title: 'Ein eigener Hofladen',
+        body: 'Du erntest mehr, als du essen kannst — das ist ein gutes Zeichen. Stell ein paar Kisten an den Zaun und eine Kasse des Vertrauens. Die Leute sind ehrlicher, als man denkt.',
+      },
+      year14: {
+        title: 'Meine Orangerie',
+        body: 'Davon habe ich mein Leben lang geträumt: Zitronen und Feigen unter Glas, mitten im Kleingarten. Ich habe es nie geschafft. Jetzt hast du den Platz dafür. Mach es für uns beide.',
+      },
+    },
+  },
+
+  legal: {
+    title: 'Rechtliches',
+    impressum: 'Impressum',
+    close: 'Schließen',
+  },
+
+  season: {
+    winterTitle: 'Winterruhe',
+    winterLine: 'Der Garten schläft. Was gewachsen ist, bleibt in deinen Händen.',
+    springTitle: (year: number) => `Gartenjahr ${year}`,
+    springLine: 'Der Schnee schmilzt — Zeit, wieder anzupacken.',
+    gained: (text: string) => `Eingelagert: ${text}`,
+    newCorner: (name: string) => `Neu zu roden: ${name}`,
+    cta: 'Ins neue Gartenjahr',
+    skip: 'Weiter',
   },
 
   daily: {

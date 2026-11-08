@@ -36,6 +36,11 @@ export type EconomyId =
   | 'G10'
 
 export interface UnlockGate {
+  /**
+   * Gartenjahr gate (hard, AND): Saisonenden completed before this corner of
+   * Omas garden can be cleared at all. Paces content across seasons.
+   */
+  seasons?: number
   /** Lifetime Compute earned this run (economy Ash) */
   ashEarned?: number
   /** Prior module at least this level (OR with ashEarned) */
@@ -130,7 +135,7 @@ export const GENERATORS: GeneratorDef[] = [
     baseRate: 900,
     baseCost: 200_000,
     costScale: 1.14,
-    unlock: { ashEarned: 4_000_000, requires: { id: 'beerenhecke', level: 10 } },
+    unlock: { seasons: 1, ashEarned: 4_000_000, requires: { id: 'beerenhecke', level: 10 } },
   },
   {
     id: 'bienenstock',
@@ -142,7 +147,7 @@ export const GENERATORS: GeneratorDef[] = [
     baseRate: 5_000,
     baseCost: 1_500_000,
     costScale: 1.13,
-    unlock: { ashEarned: 25_000_000, requires: { id: 'obstwiese', level: 10 } },
+    unlock: { seasons: 2, ashEarned: 25_000_000, requires: { id: 'obstwiese', level: 10 } },
   },
   {
     id: 'huehnerstall',
@@ -154,7 +159,7 @@ export const GENERATORS: GeneratorDef[] = [
     baseRate: 30_000,
     baseCost: 12_000_000,
     costScale: 1.12,
-    unlock: { ashEarned: 150_000_000, requires: { id: 'bienenstock', level: 10 } },
+    unlock: { seasons: 4, ashEarned: 150_000_000, requires: { id: 'bienenstock', level: 10 } },
   },
   {
     id: 'gewaechshaus',
@@ -166,7 +171,7 @@ export const GENERATORS: GeneratorDef[] = [
     baseRate: 180_000,
     baseCost: 90_000_000,
     costScale: 1.115,
-    unlock: { ashEarned: 1_000_000_000, requires: { id: 'huehnerstall', level: 10 } },
+    unlock: { seasons: 6, ashEarned: 1_000_000_000, requires: { id: 'huehnerstall', level: 10 } },
   },
   {
     id: 'hofladen',
@@ -178,7 +183,7 @@ export const GENERATORS: GeneratorDef[] = [
     baseRate: 1_100_000,
     baseCost: 700_000_000,
     costScale: 1.11,
-    unlock: {
+    unlock: { seasons: 9,
       ashEarned: 8_000_000_000,
       requires: { id: 'gewaechshaus', level: 10 },
     },
@@ -193,7 +198,7 @@ export const GENERATORS: GeneratorDef[] = [
     baseRate: 7_000_000,
     baseCost: 5_000_000_000,
     costScale: 1.105,
-    unlock: {
+    unlock: { seasons: 13,
       ashEarned: 50_000_000_000,
       requires: { id: 'hofladen', level: 10 },
     },
@@ -227,8 +232,10 @@ export function isGeneratorUnlocked(
   owned: Record<GeneratorId, number>,
   firstBeacon = false,
   playerLevel = 1,
+  prestiges = 0,
 ): boolean {
   if (!def.unlock) return true
+  if ((def.unlock.seasons ?? 0) > prestiges) return false
   if (firstBeacon && def.id === 'kompost') return true
   const { ashEarned: needAsh, requires } = def.unlock
   if (needAsh != null && ashEarned >= needAsh) return true
@@ -251,12 +258,21 @@ export function isUnlocked(
   firstFlame: boolean,
   owned: Record<GeneratorId, number> = {} as Record<GeneratorId, number>,
   playerLevel = 1,
+  prestiges = 0,
 ): boolean {
-  return isGeneratorUnlocked(def, ashEarned, owned, firstFlame, playerLevel)
+  return isGeneratorUnlocked(def, ashEarned, owned, firstFlame, playerLevel, prestiges)
 }
 
-export function unlockHint(def: GeneratorDef): string {
+/** Gartenjahr still missing for this corner (0 = no season gate left). */
+export function seasonsMissing(def: GeneratorDef, prestiges: number): number {
+  return Math.max(0, (def.unlock?.seasons ?? 0) - prestiges)
+}
+
+export function unlockHint(def: GeneratorDef, prestiges = 0): string {
   if (!def.unlock) return ''
+  if (seasonsMissing(def, prestiges) > 0) {
+    return t.unlock.seasonGate(def.unlock.seasons! + 1)
+  }
   const parts: string[] = []
   if (def.unlock.ashEarned != null) {
     parts.push(
@@ -280,8 +296,9 @@ export function unlockHint(def: GeneratorDef): string {
 }
 
 /** Compact unlock gate for map plaques (phone-scale labels). */
-export function shortUnlockGate(def: GeneratorDef): string {
+export function shortUnlockGate(def: GeneratorDef, prestiges = 0): string {
   if (!def.unlock) return t.hud.locked
+  if (seasonsMissing(def, prestiges) > 0) return t.unlock.seasonShort(def.unlock.seasons! + 1)
   if (def.unlock.ashEarned != null) {
     return t.hud.gateCompute(formatAsh(def.unlock.ashEarned).replace(/,0+(?=\D|$)/, ''))
   }

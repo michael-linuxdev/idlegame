@@ -46,6 +46,7 @@ export function computeBestBuy(
       state.owned,
       state.emberUpgrades.firstFlame > 0,
       opts.playerLevel,
+      state.prestiges,
     )
     if (!unlocked) continue
     const owned = state.owned[def.id] ?? 0

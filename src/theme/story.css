@@ -1,0 +1,395 @@
+/*
+ * Gartenerbe story layer — Omas Notizbuch, letters on the Laube and the
+ * Saisonende ceremony.
+ */
+
+/* —— Laube hotspot + letter —— */
+.laube-hotspot {
+  position: absolute;
+  left: 50%;
+  top: 26.5%;
+  z-index: 30;
+  width: calc(var(--u) * 20);
+  height: calc(var(--u) * 16);
+  transform: translate(-50%, -50%);
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.laube-hotspot:focus-visible {
+  outline: 3px solid var(--oc-focus);
+  outline-offset: 2px;
+}
+
+.laube-letter {
+  position: absolute;
+  left: 90%;
+  top: 22%;
+  width: calc(var(--u) * 9);
+  height: calc(var(--u) * 7);
+  filter: drop-shadow(0 3px 4px rgba(40, 30, 10, 0.35));
+  animation: letter-bob 1.8s ease-in-out infinite;
+}
+
+.laube-letter::after {
+  content: '';
+  position: absolute;
+  inset: -30%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 246, 176, 0.75), transparent);
+  z-index: -1;
+}
+
+@keyframes letter-bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-6deg);
+  }
+  50% {
+    transform: translateY(-5px) rotate(4deg);
+  }
+}
+
+.nav-menu-item.has-new {
+  position: relative;
+}
+
+.nav-new-dot {
+  width: 0.6rem;
+  height: 0.6rem;
+  margin-left: auto;
+  border-radius: 50%;
+  background: #e5484d;
+}
+
+/* —— Notebook —— */
+.notebook-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(30, 24, 10, 0.42);
+  animation: fade-in 180ms ease-out;
+}
+
+.notebook {
+  position: relative;
+  width: min(100%, 480px);
+  max-height: min(88dvh, 760px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0.9rem 1.1rem calc(1.2rem + var(--safe-bottom)) 3rem;
+  border-radius: 18px 18px 0 0;
+  background:
+    linear-gradient(90deg, transparent 2.15rem, rgba(217, 140, 122, 0.55) 2.15rem, rgba(217, 140, 122, 0.55) 2.25rem, transparent 2.25rem),
+    repeating-linear-gradient(180deg, transparent 0 1.6rem, rgba(155, 183, 212, 0.4) 1.6rem 1.66rem),
+    #fdf8ec;
+  box-shadow: 0 -10px 30px rgba(30, 24, 10, 0.3);
+  color: #2b3a55;
+  animation: sheet-up 220ms ease-out;
+}
+
+.notebook::before {
+  /* binding */
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0.7rem;
+  border-radius: 18px 0 0 0;
+  background: linear-gradient(90deg, #5f7f45, #7d9f5a);
+}
+
+.notebook-head {
+  position: sticky;
+  top: -0.9rem;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin: -0.9rem -1.1rem 0.4rem -3rem;
+  padding: 0.9rem 1.1rem 0.4rem 3rem;
+  background: linear-gradient(180deg, #fdf8ec 70%, rgba(253, 248, 236, 0));
+}
+
+.notebook-title {
+  margin: 0;
+  font-family: var(--oc-font-hand);
+  font-weight: 700;
+  font-size: 1.9rem;
+  color: #3b4f2a;
+}
+
+.notebook-back {
+  padding: 0.3rem 0;
+  border: 0;
+  background: none;
+  font-family: var(--oc-font-hand);
+  font-weight: 700;
+  font-size: 1.35rem;
+  color: #3b4f2a;
+  cursor: pointer;
+}
+
+.notebook-close {
+  width: 2.4rem;
+  height: 2.4rem;
+  border: 1.5px solid #c9b48a;
+  border-radius: 50%;
+  background: #fbf6e8;
+  font-size: 1.3rem;
+  color: #6a5434;
+  cursor: pointer;
+}
+
+.notebook-intro {
+  margin: 0 0 0.6rem;
+  font-family: var(--oc-font-hand);
+  font-size: 1.2rem;
+  line-height: 1.6rem;
+}
+
+.notebook-pages {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.notebook-page {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  width: 100%;
+  padding: 0.5rem 0.7rem 0.55rem;
+  border: 1.5px solid #e2d3b2;
+  border-radius: 6px;
+  background: rgba(255, 252, 244, 0.92);
+  box-shadow: 0 2px 0 #e2d3b2;
+  color: #2b3a55;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+.notebook-page.unread::after {
+  content: '';
+  position: absolute;
+  top: 0.55rem;
+  right: 0.6rem;
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: #c4553f;
+}
+
+.notebook-page-title {
+  font-family: var(--oc-font-hand);
+  font-weight: 700;
+  font-size: 1.3rem;
+  line-height: 1.4rem;
+}
+
+.notebook-page-snippet {
+  font-size: 0.78rem;
+  color: #5a6478;
+}
+
+.notebook-page.locked {
+  cursor: default;
+  background:
+    linear-gradient(105deg, transparent 40%, rgba(245, 197, 66, 0.45) 40% 52%, transparent 52%),
+    #f3ecdc;
+  color: #8a8270;
+}
+
+.notebook-letter h3,
+.season-letter h2 {
+  margin: 0.2rem 0 0.3rem;
+  font-family: var(--oc-font-hand);
+  font-weight: 700;
+  font-size: 1.75rem;
+  line-height: 1.6rem;
+}
+
+.notebook-letter p,
+.season-letter p {
+  margin: 0;
+  font-family: var(--oc-font-hand);
+  font-weight: 500;
+  font-size: 1.38rem;
+  line-height: 1.6rem;
+}
+
+.notebook-signature {
+  margin-top: 0.8rem !important;
+  text-align: right;
+  font-weight: 700 !important;
+}
+
+/* —— Saisonende ceremony —— */
+.season-ceremony {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.2rem;
+  overflow: hidden;
+  background: linear-gradient(180deg, #33456b 0%, #6f86ad 55%, #dfe8ef 100%);
+  transition: background 1.2s ease;
+  animation: fade-in 400ms ease-out;
+  cursor: pointer;
+}
+
+.season-ceremony.phase-letter {
+  background: linear-gradient(180deg, #4f6690 0%, #9fb4d0 60%, #eef3f6 100%);
+}
+
+.season-ceremony.phase-spring {
+  background: linear-gradient(180deg, #bfe3f2 0%, #dff0d6 55%, #9fd07d 100%);
+}
+
+.season-sky {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.season-sky > span {
+  position: absolute;
+  top: -5%;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #fff;
+  opacity: 0.9;
+  animation: particle-fall 7s linear infinite;
+}
+
+.phase-spring .season-sky > span {
+  width: 9px;
+  height: 6px;
+  border-radius: 60% 40% 60% 40%;
+  background: #f7b8cc;
+}
+
+.season-card,
+.season-letter {
+  position: relative;
+  width: min(100%, 24rem);
+  padding: 1.3rem 1.3rem 1.2rem;
+  border: 1.5px solid #c9b48a;
+  border-radius: 16px;
+  background: #fdf8ec;
+  box-shadow: 0 16px 40px rgba(20, 20, 40, 0.35);
+  text-align: center;
+  color: #2b3a55;
+  cursor: default;
+  animation: claim-pop 420ms cubic-bezier(0.2, 1.3, 0.4, 1);
+}
+
+.season-card h2 {
+  margin: 0.3rem 0 0.3rem;
+  font-family: var(--oc-font-display);
+  font-size: 1.6rem;
+  color: #33261a;
+}
+
+.season-card p {
+  margin: 0.2rem 0;
+  font-size: 0.95rem;
+  color: #4a4030;
+}
+
+.season-icon {
+  display: inline-flex;
+  font-size: 3rem;
+}
+
+.season-gain {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.6rem !important;
+  font-family: var(--oc-font-metric);
+  font-weight: 700;
+  font-size: 1rem !important;
+  color: #6a4a1a !important;
+}
+
+.season-gain .g-icon {
+  font-size: 1.4rem;
+}
+
+.season-corner {
+  font-weight: 700;
+  color: #3f7a30 !important;
+}
+
+.season-card .btn,
+.season-letter .btn {
+  width: 100%;
+  margin-top: 0.9rem;
+}
+
+.season-letter {
+  text-align: left;
+  background:
+    repeating-linear-gradient(180deg, transparent 0 1.6rem, rgba(155, 183, 212, 0.4) 1.6rem 1.66rem),
+    #fdf8ec;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .laube-letter,
+  .season-sky > span {
+    animation: none !important;
+  }
+}
+
+/* Rechtliches */
+.legal-sheet h3 {
+  margin: 0.8rem 0 0.2rem;
+  font-family: var(--oc-font-display);
+  font-size: 1.1rem;
+  color: #33261a;
+}
+
+.legal-sheet h4 {
+  margin: 0.6rem 0 0.1rem;
+  font-size: 0.9rem;
+  color: #3b4f2a;
+}
+
+.legal-sheet p {
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.6rem;
+  color: #3a3428;
+}
+
+.nav-menu-legal .tab-label {
+  font-size: 0.8rem;
+  opacity: 0.8;
+}

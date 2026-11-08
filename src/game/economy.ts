@@ -29,13 +29,24 @@ export const PRESTIGE_BASE_ASH = 2_000_000
 export const PRESTIGE_GROWTH = 1.8
 
 /**
- * Soft-Prestige Münzen floor — reject tiny “curiosity” resets.
- * First prestige: 120 Münzen ⇒ ashEarned ≥ 120²·10_000 = 144M this run
- * (playtest-b: 38-Münzen first reset emptied early pool and felt dead).
- * Run 2+: 180 Münzen ⇒ 324M this run.
+ * Saisonende balance knobs (tuned with scripts/balance/sim.ts).
+ *  - gate(p)   = prestigeBase · prestigeGrowth^min(p, knee) · lateGrowth^max(0, p − knee)
+ *  - payout    = payoutBase · payoutGrowth^p · f(ernte / gate)
+ *    f(r) = √r up to r = 4 (2× base), then +0.5 per doubling — staying a
+ *    bit longer pays, spamming at the gate pays the base, nothing explodes.
+ * Mutable on purpose so the simulator can sweep values; the game never
+ * writes to it.
  */
-export const PRESTIGE_MIN_EMBERS_FIRST = 120
-export const PRESTIGE_MIN_EMBERS_FROM_RUN = 180
+export const BALANCE = {
+  prestigeBase: 12_000_000,
+  prestigeGrowth: 3.2,
+  /** Seasons that still open new garden corners — steep phase */
+  prestigeKnee: 13,
+  /** Growth per season after the knee (meta-paced, avoids a content wall) */
+  prestigeLateGrowth: 1.12,
+  payoutBase: 100,
+  payoutGrowth: 1.12,
+}
 
 /** Modules that must be online (owned ≥ 1) before Run 2+ Soft-Prestige. */
 export const PRESTIGE_MIN_MODULES_ONLINE = 3
@@ -64,40 +75,47 @@ export const EMBER_UNLOCK_ASH_PER_MODULE_LEVEL = EMBER_UNLOCK_PER_MODULE_LEVEL
 export const EMBER_PAYOUT_SOFT = 500
 export const EMBER_PAYOUT_CEIL = 1_600
 
-/** Min Münzen payout required before Soft-Prestige at this prestige count. */
-export function prestigeMinEmbersForRun(prestiges: number): number {
-  return prestiges < 1 ? PRESTIGE_MIN_EMBERS_FIRST : PRESTIGE_MIN_EMBERS_FROM_RUN
+/** Base Erbstücke paid exactly at the gate for this season. */
+export function payoutAtGate(prestiges: number): number {
+  return Math.round(BALANCE.payoutBase * Math.pow(BALANCE.payoutGrowth, Math.max(0, prestiges)))
 }
 
-/** Prestige gate: P_min = PRESTIGE_BASE_ASH · PRESTIGE_GROWTH^p */
+/** Min payout before Saisonende — the gate payout (kept for UI copy). */
+export function prestigeMinEmbersForRun(prestiges: number): number {
+  return payoutAtGate(prestiges)
+}
+
+/** Saisonende gate: Ernte this season ≥ prestigeBase · prestigeGrowth^p */
 export function prestigeMinAsh(prestiges: number): number {
   return Math.floor(
-    PRESTIGE_BASE_ASH * Math.pow(PRESTIGE_GROWTH, Math.max(0, prestiges)),
+    BALANCE.prestigeBase *
+      Math.pow(BALANCE.prestigeGrowth, Math.min(Math.max(0, prestiges), BALANCE.prestigeKnee)) *
+      Math.pow(BALANCE.prestigeLateGrowth, Math.max(0, prestiges - BALANCE.prestigeKnee)),
   )
 }
 
-/**
- * Credits payout: soft-capped √ — E_raw = floor(sqrt(A / 10_000)), then
- * diminish above EMBER_PAYOUT_SOFT toward EMBER_PAYOUT_CEIL.
- */
-export function emberPayout(ashEarned: number): number {
-  if (ashEarned <= 0) return 0
-  const raw = Math.floor(Math.sqrt(ashEarned / 10_000))
-  if (raw <= EMBER_PAYOUT_SOFT) return raw
-  const over = raw - EMBER_PAYOUT_SOFT
-  const softened =
-    EMBER_PAYOUT_SOFT + Math.floor(Math.sqrt(over * 45))
-  return Math.min(EMBER_PAYOUT_CEIL, softened)
+/** Payout curve over r = ernte / gate. */
+function payoutCurve(r: number): number {
+  if (r <= 0) return 0
+  if (r <= 4) return Math.sqrt(r)
+  return 2 + 0.5 * Math.log2(r / 4)
 }
 
 /**
- * Ash this run required to earn `embers` Münzen before soft-cap.
- * Valid inverse for gate values (≤ EMBER_PAYOUT_SOFT); above soft-cap the
- * true ash need is higher — callers only use this for min-gate copy.
+ * Erbstücke for ending the season now. Relative to this season's gate, so a
+ * stronger garden doesn't turn Saisonende into a 2-minute loop.
  */
-export function ashForEmberPayout(embers: number): number {
+export function emberPayout(ashEarned: number, prestiges = 0): number {
+  if (ashEarned <= 0) return 0
+  const r = ashEarned / Math.max(1, prestigeMinAsh(prestiges))
+  return Math.floor(payoutAtGate(prestiges) * payoutCurve(r))
+}
+
+/** Ernte needed this season to be paid `embers` (inverse of the √ band). */
+export function ashForEmberPayout(embers: number, prestiges = 0): number {
   if (embers <= 0) return 0
-  return embers * embers * 10_000
+  const ratio = embers / Math.max(1, payoutAtGate(prestiges))
+  return Math.ceil(prestigeMinAsh(prestiges) * ratio * ratio)
 }
 
 export interface EmberUpgrades {
@@ -534,7 +552,7 @@ export function countAffordableEmberBuysAfterPrestige(args: {
   prestiges: number
 }): number {
   const postPrestiges = args.prestiges + 1
-  const wallet = args.embers + emberPayout(args.ashEarned)
+  const wallet = args.embers + emberPayout(args.ashEarned, args.prestiges)
   return countAffordableEmberBuys(
     args.upgrades,
     wallet,
@@ -643,9 +661,8 @@ export function prestigeBlockReason(args: {
 }): PrestigeBlockReason {
   const min = prestigeMinAsh(args.prestiges)
   if (args.ashEarned < min) return 'ash'
-  const payout = emberPayout(args.ashEarned)
+  const payout = emberPayout(args.ashEarned, args.prestiges)
   if (payout <= 0) return 'ash'
-  if (payout < prestigeMinEmbersForRun(args.prestiges)) return 'embers'
   if (
     args.prestiges >= 1 &&
     modulesOnlineCount(args.owned) < PRESTIGE_MIN_MODULES_ONLINE

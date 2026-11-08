@@ -1,0 +1,277 @@
+/**
+ * Headless balance simulator — drives the real game reducers with a virtual
+ * clock and seeded randomness.
+ *
+ * Profiles:
+ *  - engaged: plays continuously, buys the best ROI upgrade every few
+ *    seconds, waters whenever ready, prestiges near the payout-rate peak.
+ *  - casual:  short sessions every few hours, offline catch-up in between.
+ *
+ * Build + run:  npm run balance   (see package.json)
+ */
+import { computeBestBuy } from '../../src/game/bestBuy'
+import {
+  BALANCE,
+  EMBER_SHOP,
+  emberPayout,
+  emberRankUnlocked,
+  foundryDiscountMult,
+  payoutAtGate,
+  prestigeMultiplier,
+  tapBonusSeconds,
+} from '../../src/game/economy'
+import {
+  GENERATORS,
+  generatorCost as generatorCostFor,
+  isGeneratorUnlocked,
+  type GeneratorId,
+} from '../../src/game/generators'
+import {
+  applyOfflineCatchup,
+  applyTick,
+  buyEmberUpgrade,
+  buyGenerator,
+  canPrestigeNow,
+  claimDailyOps,
+  claimOfflineReward,
+  createInitialState,
+  doPrestige,
+  grantTapAsh,
+  lineCostMult,
+  playerLevelOf,
+  productionPerSecond,
+  type GameState,
+} from '../../src/game/state'
+import { moduleTier } from '../../src/theme/tiers'
+
+/* ---------- virtual clock + seeded RNG ---------- */
+// Monday 2026-11-09 08:00 local → avoids starting inside a weekend event
+let clock = new Date(2026, 10, 9, 8, 0, 0).getTime()
+const realNow = Date.now
+Date.now = () => clock
+let seed = 12345
+Math.random = () => {
+  seed = (seed * 1664525 + 1013904223) >>> 0
+  return seed / 4294967296
+}
+
+type Profile = 'engaged' | 'regular' | 'casual'
+
+/** Session pattern per profile (local hours 08–23; nights offline). */
+const SESSIONS: Record<Profile, { every: number; len: number } | null> = {
+  engaged: null, // plays continuously 08–24
+  regular: { every: 120, len: 15 },
+  casual: { every: 180, len: 4 },
+}
+
+interface Milestone {
+  t: number
+  label: string
+}
+
+const fmtT = (sec: number) => {
+  const h = Math.floor(sec / 3600)
+  const m = Math.floor((sec % 3600) / 60)
+  return h > 0 ? `${h}h${String(m).padStart(2, '0')}` : `${m}m`
+}
+const fmtN = (n: number) =>
+  n >= 1e12 ? `${(n / 1e12).toFixed(1)}T` : n >= 1e9 ? `${(n / 1e9).toFixed(1)}B` : n >= 1e6 ? `${(n / 1e6).toFixed(1)}M` : n >= 1e3 ? `${(n / 1e3).toFixed(1)}K` : n.toFixed(0)
+
+function unlocked(s: GameState, id: GeneratorId): boolean {
+  const def = GENERATORS.find((g) => g.id === id)!
+  return isGeneratorUnlocked(def, s.ashEarned, s.owned, s.emberUpgrades.firstFlame > 0, playerLevelOf(s), s.prestiges)
+}
+
+function water(s: GameState): GameState {
+  const now = Date.now()
+  const rate = productionPerSecond(s, now)
+  const g1 = GENERATORS[0]
+  const cost = generatorCostFor(g1, s.owned.gemuesebeet ?? 0, lineCostMult(s, 'gemuesebeet'))
+  const gained = Math.max(rate * tapBonusSeconds(s.emberUpgrades), Math.max(0, cost - s.ash), 1)
+  return grantTapAsh(s, gained, now)
+}
+
+function buyBest(s: GameState, maxBuys = 40): GameState {
+  for (let i = 0; i < maxBuys; i++) {
+    const hint = computeBestBuy(s, {
+      playerLevel: playerLevelOf(s),
+      ratePerSec: productionPerSecond(s, Date.now()),
+      costOf: (id) => {
+        const def = GENERATORS.find((g) => g.id === id)!
+        return generatorCostFor(def, s.owned[id] ?? 0, lineCostMult(s, id))
+      },
+    })
+    let target: GeneratorId | null = hint?.affordable ? hint.id : null
+    // Always plant a freshly unlocked area (players do, it's the visible goal)
+    for (const g of GENERATORS) {
+      if ((s.owned[g.id] ?? 0) === 0 && unlocked(s, g.id)) {
+        const c = generatorCostFor(g, 0, lineCostMult(s, g.id))
+        if (c <= s.ash) target = g.id
+        break
+      }
+    }
+    if (!target) break
+    const next = buyGenerator(s, target)
+    if (next === s) break
+    s = next
+  }
+  return s
+}
+
+function spendEmbers(s: GameState): GameState {
+  for (let guard = 0; guard < 200; guard++) {
+    let best: { id: (typeof EMBER_SHOP)[number]['id']; cost: number } | null = null
+    for (const item of EMBER_SHOP) {
+      const rank = s.emberUpgrades[item.id]
+      if (rank >= item.maxRank) continue
+      if (!emberRankUnlocked(item, rank, s.ashEarned, s.owned, s.prestiges)) continue
+      const cost = item.cost(rank)
+      if (cost <= s.embers && (!best || cost < best.cost)) best = { id: item.id, cost }
+    }
+    if (!best) break
+    const next = buyEmberUpgrade(s, best.id)
+    if (next === s) break
+    s = next
+  }
+  return s
+}
+
+export function run(profile: Profile, hours: number) {
+  const start = clock
+  let s = createInitialState(clock)
+  const milestones: Milestone[] = []
+  const seenUnlock = new Set<string>()
+  const seenTier = new Set<string>()
+  let runStart = clock
+  let bestPayoutRate = 0
+  let gateAt = -1
+  const runs: { dur: number; payout: number; levels: number[]; meta: string; day: number }[] = []
+  const stageByDay: number[] = []
+  const dt = 5
+  const end = start + hours * 3600_000
+  let lastDaily = ''
+  const inSession = (t: number) => {
+    const d = new Date(t)
+    const h = d.getHours()
+    const pattern = SESSIONS[profile]
+    if (!pattern) return h >= 8 && h < 24
+    if (h < 8 || h >= 23) return false
+    const minuteOfDay = h * 60 + d.getMinutes()
+    return (minuteOfDay - 8 * 60) % pattern.every < pattern.len
+  }
+  let wasActive = true
+
+  const note = (label: string) => milestones.push({ t: (clock - start) / 1000, label })
+
+  while (clock < end) {
+    const active = inSession(clock)
+    if (active && !wasActive) {
+      const { state, gained } = applyOfflineCatchup(s, clock)
+      s = claimOfflineReward(state, gained, clock)
+    }
+    wasActive = active
+    if (!active) {
+      clock += 60_000
+      continue
+    }
+    s = applyTick(s, dt)
+    clock += dt * 1000
+
+    const day = new Date(clock).toDateString()
+    if (day !== lastDaily) {
+      const n = claimDailyOps(s, clock)
+      if (n !== s) {
+        s = n
+        lastDaily = day
+      }
+    }
+    if (s.lastTapAt <= 0 || clock - s.lastTapAt >= 5 * 60_000) s = water(s)
+    s = buyBest(s)
+    s = spendEmbers(s)
+
+    {
+      const d = Math.floor((clock - start) / 86400000)
+      const planted = GENERATORS.filter((g) => (s.owned[g.id] ?? 0) > 0).length
+      stageByDay[d] = Math.max(stageByDay[d] ?? 0, planted)
+    }
+    for (const g of GENERATORS) {
+      if (!seenUnlock.has(g.id) && (s.owned[g.id] ?? 0) > 0) {
+        seenUnlock.add(g.id)
+        if (s.prestiges === 0) note(`planted ${g.id}`)
+      }
+      const tier = moduleTier(s.owned[g.id] ?? 0)
+      for (let k = 2; k <= tier; k++) {
+        const key = `${g.id}:${k}`
+        if (!seenTier.has(key)) {
+          seenTier.add(key)
+          if (k >= 4) note(`tier${k} ${g.id}`)
+        }
+      }
+    }
+
+    if (process.env.TRACE && s.prestiges === 0 && Math.round((clock - start) / 1000) % 900 === 0)
+      note(`trace ash ${fmtN(s.ashEarned)} rate ${fmtN(productionPerSecond(s, clock))}/s`)
+    if (canPrestigeNow(s) && gateAt < 0) {
+      gateAt = clock
+      note(`gate reached (season ${s.prestiges + 1})`)
+    }
+    if (canPrestigeNow(s)) {
+      const runMin = (clock - runStart) / 60_000
+      const payout = emberPayout(s.ashEarned, s.prestiges)
+      const rate = payout / Math.max(1, runMin)
+      bestPayoutRate = Math.max(bestPayoutRate, rate)
+      const ready = profile === 'engaged' ? rate < bestPayoutRate * 0.92 : payout >= 1.6 * payoutAtGate(s.prestiges) || runMin > 60 * 30
+      if (ready) {
+        runs.push({
+          dur: (clock - runStart) / 1000,
+          payout,
+          day: Math.floor((clock - start) / 86400000) + 1,
+          levels: GENERATORS.map((g) => s.owned[g.id] ?? 0),
+          meta: `@d${Math.floor((clock - start) / 86400000) + 1} ${new Date(runStart).getHours()}h→${new Date(clock).getHours()}h x${prestigeMultiplier(s.emberUpgrades).toFixed(2)} disc${foundryDiscountMult(s.emberUpgrades).toFixed(2)} lvl${playerLevelOf(s)} ${Object.entries(s.emberUpgrades).filter(([, v]) => v > 0).map(([k, v]) => k.slice(0, 5) + v).join(' ')}`,
+        })
+        note(`PRESTIGE #${s.prestiges + 1} payout ${payout} (run ${fmtT((clock - runStart) / 1000)})`)
+        s = doPrestige(s)
+        s = spendEmbers(s)
+        runStart = clock
+        bestPayoutRate = 0
+        gateAt = -1
+      }
+    }
+  }
+  return { s, milestones, runs, hours, stageByDay }
+}
+
+function report(profile: Profile, hours: number) {
+  seed = 12345
+  clock = new Date(2026, 10, 9, 8, 0, 0).getTime()
+  const { s, milestones, runs, stageByDay } = run(profile, hours)
+  if (process.env.SUMMARY) {
+    const d = runs.map((r) => Math.round(r.dur / 60))
+    const plantedAll = milestones.find((m) => m.label.includes('planted orangerie'))
+    const perDay = Array.from({ length: Math.ceil(hours / 24) }, (_, d) =>
+      runs.filter((r) => r.day === d + 1).length,
+    ).join('/')
+    const garden = Array.from({ length: Math.ceil(hours / 24) }, (_, d) => stageByDay[d] ?? '-').join('/')
+    console.log(
+      `${profile} ${hours}h | seasons/day ${perDay} | planted/day ${garden} | seasons ${runs.length} | first ${d[0] ?? '-'}m | mins ${d.slice(0, 14).join(' ')} | payout ${runs.slice(0, 6).map((r) => r.payout).join(' ')} | last ${d.slice(-3).join(' ')} | orangerie ${plantedAll ? fmtT(plantedAll.t) : 'never(1st run)'} | end lvls ${GENERATORS.map((g) => s.owned[g.id]).join(',')}`,
+    )
+    return
+  }
+  console.log(`\n=== ${profile} · ${hours}h simulated ===`)
+  for (const m of milestones.slice(0, 80)) console.log(`${fmtT(m.t).padStart(7)}  ${m.label}`)
+  console.log('runs:')
+  for (const [i, r] of runs.entries())
+    console.log(`  #${i + 1} ${fmtT(r.dur).padStart(6)} payout ${String(r.payout).padStart(5)} levels ${r.levels.join(',')} | ${r.meta}`)
+  console.log(
+    `end: prestiges ${s.prestiges}, embers ${s.embers}, lvl ${playerLevelOf(s)}, ash ${fmtN(s.ash)}, owned ${GENERATORS.map((g) => s.owned[g.id]).join(',')}`,
+  )
+}
+
+for (const k of Object.keys(BALANCE) as (keyof typeof BALANCE)[]) {
+  const v = process.env[k]
+  if (v) BALANCE[k] = Number(v)
+}
+const args = process.argv.slice(2)
+const hours = Number(args[1] ?? 48)
+report((args[0] as Profile) ?? 'engaged', hours)
+void realNow

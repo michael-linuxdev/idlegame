@@ -250,10 +250,11 @@ export function useGame() {
   }, [])
 
   const [postPrestigeFocus, setPostPrestigeFocus] = useState(false)
+  const [seasonEnd, setSeasonEnd] = useState<{ year: number; gained: number } | null>(null)
 
   const prestige = useCallback(() => {
     setState((s) => {
-      const gain = emberPayout(s.ashEarned)
+      const gain = emberPayout(s.ashEarned, s.prestiges)
       const next = doPrestige(s)
       if (next !== s) {
         logPlaytest('prestige', {
@@ -262,10 +263,13 @@ export function useGame() {
           wallet: next.embers,
         })
         setPostPrestigeFocus(true)
+        setSeasonEnd({ year: next.prestiges + 1, gained: gain })
       }
       return next
     })
   }, [])
+
+  const ackSeasonEnd = useCallback(() => setSeasonEnd(null), [])
 
   const clearPostPrestigeFocus = useCallback(() => {
     setPostPrestigeFocus(false)
@@ -525,6 +529,7 @@ export function useGame() {
         state.owned,
         state.emberUpgrades.firstFlame > 0,
         playerLevel.level,
+        state.prestiges,
       )
     },
     [
@@ -532,6 +537,7 @@ export function useGame() {
       state.owned,
       state.emberUpgrades.firstFlame,
       playerLevel.level,
+      state.prestiges,
     ],
   )
 
@@ -552,7 +558,7 @@ export function useGame() {
     bpDailyXpReady,
     skipHoursRemaining: skipLeft,
     equippedCosmetic: equipped,
-    nextPrestige: nextPrestigeEmbers(state.ashEarned),
+    nextPrestige: nextPrestigeEmbers(state.ashEarned, state.prestiges),
     prestigeMin: prestigeMinAsh(state.prestiges),
     prestigeProgress: progress,
     canPrestige: canPrestigeNow(state),
@@ -568,6 +574,8 @@ export function useGame() {
     buyMeta,
     prestige,
     postPrestigeFocus,
+    seasonEnd,
+    ackSeasonEnd,
     clearPostPrestigeFocus,
     purchaseTimeSkip,
     purchaseCosmetic,

@@ -10,6 +10,7 @@ import {
 import {
   GENERATORS,
   generatorRate,
+  seasonsMissing,
   shortUnlockGate,
   unlockHint,
   type GeneratorId,
@@ -64,11 +65,19 @@ interface Props {
   game: GameApi
   highlightId?: string | null
   onOpenTab?: (tab: Tab) => void
+  unreadLetters?: number
+  onOpenNotebook?: () => void
 }
 
 let popSeq = 0
 
-export function GardenMap({ game, highlightId, onOpenTab }: Props) {
+export function GardenMap({
+  game,
+  highlightId,
+  onOpenTab,
+  unreadLetters = 0,
+  onOpenNotebook,
+}: Props) {
   const {
     state,
     rate,
@@ -174,7 +183,7 @@ export function GardenMap({ game, highlightId, onOpenTab }: Props) {
     }
     const nearTier = PRESTIGE_SPIKE_RATIOS.findIndex((r) => prestigeProgress.ratio >= r)
     if (nearTier < 0 && !canPrestige) return null
-    const embers = Math.max(nextPrestige, emberPayout(state.ashEarned))
+    const embers = Math.max(nextPrestige, emberPayout(state.ashEarned, state.prestiges))
     if (embers <= 0) return null
     const ready = canPrestige || prestigeProgress.ratio >= 1
     const postBuys = countAffordableEmberBuysAfterPrestige({
@@ -475,6 +484,23 @@ export function GardenMap({ game, highlightId, onOpenTab }: Props) {
         >
           <MapBackdrop stage={gardenStage} ambient={ambient} />
 
+          <button
+            type="button"
+            className={`laube-hotspot${unreadLetters > 0 ? ' has-letter' : ''}`}
+            onClick={onOpenNotebook}
+            aria-label={unreadLetters > 0 ? t.notebook.newLetterAria : t.notebook.laubeAria}
+          >
+            {unreadLetters > 0 ? (
+              <span className="laube-letter" aria-hidden="true">
+                <svg viewBox="0 0 32 24" width="100%" height="100%">
+                  <rect x="1.5" y="1.5" width="29" height="21" rx="2.5" fill="#fdf8ec" stroke="#8a6a40" strokeWidth="1.6" />
+                  <path d="M2 3 L16 14 L30 3" fill="none" stroke="#8a6a40" strokeWidth="1.6" />
+                  <circle cx="16" cy="14" r="3.4" fill="#c4553f" />
+                </svg>
+              </span>
+            ) : null}
+          </button>
+
           {GENERATORS.map((def, index) => {
             const level = state.owned[def.id] ?? 0
             const unlocked = game.unlocked(def.id)
@@ -482,7 +508,7 @@ export function GardenMap({ game, highlightId, onOpenTab }: Props) {
             const buildingRate =
               unlocked && level > 0 ? generatorRate(def, level) * totalMult : 0
             const producing = buildingRate > 0
-            const hint = !unlocked ? unlockHint(def) : ''
+            const hint = !unlocked ? unlockHint(def, state.prestiges) : ''
             const hl = highlightId === def.id
             const ready = unlocked && level === 0
             const showSign = unlocked || selectedHere || def.id === nextWildId
@@ -535,9 +561,13 @@ export function GardenMap({ game, highlightId, onOpenTab }: Props) {
                     <span className="plot-name">{def.name}</span>
                     <span className="plot-meta">
                       {!unlocked ? (
-                        <>
-                          {t.hud.locked} · {shortUnlockGate(def)}
-                        </>
+                        seasonsMissing(def, state.prestiges) > 0 ? (
+                          shortUnlockGate(def, state.prestiges)
+                        ) : (
+                          <>
+                            {t.hud.locked} · {shortUnlockGate(def, state.prestiges)}
+                          </>
+                        )
                       ) : ready ? (
                         t.upgrade.online
                       ) : (
