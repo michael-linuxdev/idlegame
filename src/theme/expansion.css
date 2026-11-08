@@ -2682,3 +2682,109 @@ html.idle .resident-hover {
   font-size: 0.68rem;
   line-height: 1.2;
 }
+
+/* —— Großprojekte —— */
+.project-layer {
+  z-index: 60;
+}
+
+.project-total {
+  margin: 0.2rem 0 0.4rem;
+  font-weight: 800;
+  color: #4a7a2e;
+}
+
+.project-list {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.project-card {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 0.6rem;
+  padding: 0.6rem;
+  border-radius: 14px;
+  border: 2px solid #e2d4ae;
+  background: #fbf6e8;
+}
+
+.project-card.done {
+  border-color: #e0a21a;
+  background: #fbf0d0;
+}
+
+.project-card.locked {
+  opacity: 0.75;
+}
+
+.project-art svg {
+  width: 64px;
+  height: 64px;
+}
+
+.project-info {
+  display: grid;
+  gap: 0.25rem;
+  font-size: 0.82rem;
+  color: #4a3a22;
+}
+
+.project-info strong {
+  font-size: 0.98rem;
+}
+
+.project-stages {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.project-stages span {
+  width: 28px;
+  height: 8px;
+  border-radius: 999px;
+  background: #e8dcc0;
+}
+
+.project-stages span.on {
+  background: #5f9e45;
+}
+
+.project-reward {
+  color: #8a6a20;
+  font-weight: 700;
+}
+
+.project-lock {
+  color: #a0503a;
+  font-weight: 700;
+}
+
+.project-done {
+  color: #4a7a2e;
+  font-weight: 800;
+}
+
+.project-costs {
+  display: grid;
+  gap: 0.15rem;
+  margin: 0.2rem 0;
+  padding: 0;
+  list-style: none;
+  font-weight: 700;
+  color: #a0503a;
+}
+
+.project-costs li.ok {
+  color: #4a7a2e;
+}
+
+.project-cur svg {
+  width: 14px;
+  height: 14px;
+  vertical-align: -2px;
+  margin-right: 0.25rem;
+}

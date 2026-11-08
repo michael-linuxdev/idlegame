@@ -14,6 +14,7 @@ import { useGame } from './game/useGame'
 import { GENERATORS } from './game/generators'
 import { useNotebook, yearLetterFor, type NotebookEntryId } from './game/notebook'
 import { NotebookSheet } from './components/story/NotebookSheet'
+import { ProjectSheet } from './components/ProjectSheet'
 import { SeasonCeremony } from './components/story/SeasonCeremony'
 import { LegalSheet } from './components/LegalSheet'
 import { SaveSheet } from './components/SaveSheet'
@@ -122,6 +123,7 @@ export default function App() {
     const perm = await Notification.requestPermission()
     if (perm === 'granted') updateExtras((s) => ({ ...s, notify: true }))
   }, [extras.notify, updateExtras])
+  const [projectsOpen, setProjectsOpen] = useState(false)
   const [notebookOpen, setNotebookOpen] = useState<{ entry: NotebookEntryId | null } | null>(null)
   const gardenStage = GENERATORS.filter(
     (g) => (game.state.owned[g.id] ?? 0) > 0 && game.unlocked(g.id),
@@ -224,6 +226,7 @@ export default function App() {
         onOpenNotebook={() => openNotebook(null)}
         onOpenLegal={() => setLegalOpen(true)}
         onOpenBackup={() => setBackupOpen(true)}
+        onOpenProjects={game.openChapters.length > 0 ? () => setProjectsOpen(true) : undefined}
         onOpenPhoto={() => {
           setPlot('garden')
           onTabChange('fortress')
@@ -234,6 +237,7 @@ export default function App() {
         unreadLetters={unread.length}
       />
 
+      {projectsOpen ? <ProjectSheet game={game} onClose={() => setProjectsOpen(false)} /> : null}
       {notebookOpen ? (
         <NotebookSheet
           notebook={notebook}
