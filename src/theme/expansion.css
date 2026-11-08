@@ -1844,3 +1844,17 @@ html.tab-hidden .sky-event {
   font-size: 0.72rem;
   cursor: pointer;
 }
+
+/* Kapitel-Karte: kleine Kapitel-Zeile über dem Namen */
+.gc-eyebrow {
+  margin: 0 0 0.05rem;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #8a6a40;
+}
+
+.chapter-card .gc-portrait {
+  background: radial-gradient(circle at 50% 70%, #cfe3a8, #93c167);
+}
