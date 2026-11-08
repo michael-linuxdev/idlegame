@@ -558,6 +558,10 @@ export function useGame() {
     canPrestige: canPrestigeNow(state),
     tapReady,
     tapCooldownMs: TAP_COOLDOWN_MS,
+    tapCooldownLeftMs:
+      state.lastTapAt <= 0
+        ? 0
+        : Math.max(0, TAP_COOLDOWN_MS - (nowTick - state.lastTapAt)),
     rake,
     buy,
     buyModuleBranch,

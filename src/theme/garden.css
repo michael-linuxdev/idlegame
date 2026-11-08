@@ -106,9 +106,9 @@
 
 .garden-lights {
   position: absolute;
-  left: 34%;
-  right: 34%;
-  top: 9.5%;
+  left: 33%;
+  right: 33%;
+  top: 19.5%;
   height: calc(var(--u) * 5);
 }
 

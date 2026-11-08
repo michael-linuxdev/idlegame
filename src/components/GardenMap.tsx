@@ -14,7 +14,7 @@ import {
   unlockHint,
   type GeneratorId,
 } from '../game/generators'
-import { formatAsh, formatRate } from '../game/format'
+import { formatAsh, formatMult, formatRate } from '../game/format'
 import { computeNextGoal } from '../game/nextGoal'
 import { xpFromOfflineClaim } from '../game/progression'
 import { logPlaytest } from '../game/playtestLog'
@@ -26,15 +26,20 @@ import {
 import { t } from '../i18n'
 import type { useGame } from '../game/useGame'
 import type { Tab } from './AppNav'
-import { BestBuyChip } from './BestBuyChip'
 import { ModuleArt } from '../theme/ModuleArt'
 import { ClearedPlot, WildPlot } from '../theme/PlotArt'
-import { DailyOpsBanner } from './DailyOpsBanner'
-import { EventBanner } from './EventBanner'
-import { FlashEventBanner } from './FlashEventBanner'
 import { FloatPops, type FloatPopItem } from './FloatPops'
-import { MuteToggle } from './MuteToggle'
-import { NextGoalStrip } from './NextGoalStrip'
+import { BottomBar } from './hud/BottomBar'
+import { EventPills } from './hud/EventPills'
+import { GoalStrip, type HudGoal } from './hud/GoalStrip'
+import {
+  IconBasket,
+  IconChest,
+  IconNotebook,
+  IconSeeds,
+  IconSnow,
+  IconSprout,
+} from '../theme/icons'
 import { ProgressSheet } from './ProgressSheet'
 import { MapBackdrop } from '../theme/MapBackdrop'
 import { UpgradeSheet } from './UpgradeSheet'
@@ -94,7 +99,6 @@ export function GardenMap({ game, highlightId, onOpenTab }: Props) {
   ).length
   /** Only the next wild corner shows its sign — keeps the map calm. */
   const nextWildId = GENERATORS.find((g) => !game.unlocked(g.id))?.id ?? null
-  const bonusPct = ((levelMult - 1) * 100).toFixed(1)
   const questReady = game.questRows.some((q: { ready: boolean }) => q.ready)
 
   const pushPop = useCallback((text: string, kind?: FloatPopItem['kind']) => {
@@ -215,6 +219,66 @@ export function GardenMap({ game, highlightId, onOpenTab }: Props) {
     state.prestiges,
   ])
 
+  const stageName =
+    t.gardenStage.names[Math.min(gardenStage, t.gardenStage.names.length - 1)]
+
+  /**
+   * One goal line, no contradictions: Saisonende/Truhe wins when ready,
+   * otherwise Omas best-buy tip replaces a generic „ausbauen“ goal, else the
+   * next unlock / level goal.
+   */
+  const hudGoal: HudGoal = (() => {
+    if (prestigeCta && (prestigeCta.ready || prestigeCta.spend)) {
+      return {
+        key: 'season',
+        title: prestigeCta.spend ? t.prestige.shopTitle : t.goal.prestigeReady,
+        detail: prestigeCta.spend
+          ? prestigeCta.label.replace(`${t.prestige.shopTitle} · `, '')
+          : t.prestige.creditsAmount(prestigeCta.embers),
+        ratio: 1,
+        tone: 'season',
+        icon: prestigeCta.spend ? <IconChest /> : <IconSnow />,
+        aria: prestigeCta.aria,
+        onActivate: openPrestigeCta,
+      }
+    }
+    if (nextGoal.kind === 'upgrade' && bestBuy) {
+      const cost = bestBuy.cost
+      const owned = state.owned[bestBuy.id] ?? 0
+      const action = owned === 0 ? t.upgrade.online : t.upgrade.upgrade
+      return {
+        key: `tip-${bestBuy.id}`,
+        title: t.goal.upgradeTitle(action, bestBuy.name),
+        detail: t.goal.upgradeDetail(formatAsh(cost)),
+        ratio: cost > 0 ? Math.min(1, state.ash / cost) : 1,
+        tone: bestBuy.affordable ? 'tip' : 'goal',
+        icon: <IconSprout />,
+        aria: `${t.bestBuy.aria}: ${bestBuy.name}`,
+        onActivate: () => {
+          logPlaytest('best_buy_tap', { id: bestBuy.id, affordable: bestBuy.affordable })
+          setSelected(bestBuy.id)
+        },
+      }
+    }
+    return {
+      key: `goal-${nextGoal.kind}`,
+      title: nextGoal.title,
+      detail: nextGoal.detail,
+      ratio: nextGoal.ratio,
+      tone: 'goal',
+      nearMiss: nextGoal.nearMiss,
+      icon: nextGoal.kind === 'prestige' ? <IconSnow /> : <IconNotebook />,
+      aria: `${t.goal.stripAria}: ${nextGoal.title}. ${nextGoal.detail}`,
+      onActivate: onGoalActivate,
+    }
+  })()
+
+  /** Saisonende in sight but not yet the main goal → small pill. */
+  const seasonPill =
+    prestigeCta && !prestigeCta.ready && !prestigeCta.spend
+      ? { label: t.prestige.pill(prestigeCta.embers), onOpen: openPrestigeCta }
+      : null
+
   useEffect(() => {
     // Ignore passive economy ticks — flashing every 250ms forces layout/paint on iPhone.
     const jump = state.ash - prevAsh.current
@@ -265,8 +329,12 @@ export function GardenMap({ game, highlightId, onOpenTab }: Props) {
       xp > 0
         ? t.hud.claimCelebrate(formatAsh(amount), xp)
         : t.hud.claimCelebrateShort(formatAsh(amount))
-    setClaimFlash(toast)
-    window.setTimeout(() => setClaimFlash(null), 1600)
+    showToast(toast)
+  }
+
+  function showToast(text: string) {
+    setClaimFlash(text)
+    window.setTimeout(() => setClaimFlash(null), 1800)
   }
 
   function onRake() {
@@ -279,6 +347,17 @@ export function GardenMap({ game, highlightId, onOpenTab }: Props) {
     const estimate = Math.max(rate * 45, 1)
     pushPop(`+${formatAsh(estimate)}`, 'gain')
     void before
+  }
+
+  function claimDaily() {
+    const preview = game.dailyPreview
+    const bits: string[] = []
+    if (preview.compute > 0) bits.push(t.daily.rewardCompute(formatAsh(preview.compute)))
+    if (preview.credits > 0) bits.push(t.daily.rewardCredits(preview.credits))
+    if (preview.obsidian > 0) bits.push(t.daily.rewardObsidian(preview.obsidian))
+    game.claimDaily()
+    playSfx('streak')
+    showToast(bits.length ? `${t.daily.claimToast} · +${bits.join(' · +')}` : t.daily.claimToast)
   }
 
   function onGoalActivate() {
@@ -311,136 +390,75 @@ export function GardenMap({ game, highlightId, onOpenTab }: Props) {
         {t.brand}
       </h1>
       {/* Clash HUD: floating chips only — no white card tiles */}
-      <header className="map-hud">
-        <button
-          type="button"
-          className={`hud-chip level${questReady ? ' has-claim' : ''}${levelPulse ? ' level-up' : ''}`}
-          onClick={() => setProgressOpen(true)}
-          aria-label={t.hud.playerLevelAria(
-            playerLevel.level,
-            playerLevel.intoLevel,
-            playerLevel.need,
-          )}
-        >
-          <span className="hud-chip-title">
-            {t.level.label} {playerLevel.level}
-          </span>
-          <span className="hud-chip-bar" aria-hidden="true">
-            <span
-              className="hud-chip-fill"
-              style={{ width: `${Math.round(playerLevel.ratio * 100)}%` }}
-            />
-          </span>
-          <span className="hud-chip-meta">
-            {playerLevel.intoLevel}/{playerLevel.need}
-            {levelMult > 1 ? ` · ${t.level.bonus(bonusPct)}` : ''}
-          </span>
-        </button>
+      <header className="hud">
+        <div className="hud-row">
+          <button
+            type="button"
+            className={`hud-card hud-garden${levelPulse ? ' level-up' : ''}`}
+            onClick={() => setProgressOpen(true)}
+            aria-label={t.hud.gardenAria(stageName, playerLevel.level)}
+          >
+            <span className="hud-stage">{stageName}</span>
+            <span className="hud-level">
+              <span className="hud-level-label">
+                {t.level.short} {playerLevel.level}
+              </span>
+              <span className="hud-xp" aria-hidden="true">
+                <span style={{ width: `${Math.round(playerLevel.ratio * 100)}%` }} />
+              </span>
+            </span>
+            {questReady ? (
+              <span className="hud-dot" title={t.hud.questReady} aria-hidden="true" />
+            ) : null}
+          </button>
 
-        <div className="hud-chip resources" aria-live="polite">
-          <div className={`hud-res-main${tickFlash ? ' ticking' : ''}`}>
-            <span className={`ash-value${tickFlash ? ' tick' : ''}`}>
+          <div
+            className="hud-card hud-wallet"
+            role="status"
+            aria-label={t.hud.walletAria(formatAsh(state.ash), formatRate(rate))}
+          >
+            <span className={`hud-amount${tickFlash ? ' tick' : ''}`}>
+              <span className="hud-amount-icon">
+                <IconBasket />
+              </span>
               {formatAsh(state.ash)}
             </span>
-            <span className="ash-label">{t.resources.compute}</span>
-          </div>
-          <p className="rate-line">
-            {formatRate(rate)}
-            {totalMult > 1 ? (
-              <span className="mult"> · ×{totalMult.toFixed(2)}</span>
-            ) : null}
-          </p>
-          <div className="hud-res-meta">
-            {state.embers > 0 ? (
-              <span className="embers-line">
-                {state.embers} {t.resources.credits}
-              </span>
-            ) : null}
-            <span className="obsidian-line">
-              {state.obsidian} {t.resources.obsidian}
+            <span className="hud-rate">
+              {formatRate(rate)}
+              {totalMult > 1 ? <span className="hud-mult"> {formatMult(totalMult)}</span> : null}
             </span>
-            <MuteToggle />
+            <span className="hud-sub">
+              {state.embers > 0 ? (
+                <span className="hud-sub-item" title={t.resources.credits}>
+                  <IconChest /> {state.embers}
+                </span>
+              ) : null}
+              <span className="hud-sub-item" title={t.resources.obsidian}>
+                <IconSeeds /> {state.obsidian}
+              </span>
+            </span>
           </div>
         </div>
 
-        <NextGoalStrip goal={nextGoal} onActivate={onGoalActivate} />
-
-        {bestBuy ? (
-          <BestBuyChip
-            hint={bestBuy}
-            onActivate={() => {
-              logPlaytest('best_buy_tap', {
-                id: bestBuy.id,
-                affordable: bestBuy.affordable,
-              })
-              setSelected(bestBuy.id)
-            }}
-          />
-        ) : null}
-
-        {prestigeCta ? (
-          <button
-            type="button"
-            className={`prestige-map-cta${prestigeCta.ready ? ' ready pulse-ready' : ''}${prestigeCta.spend ? ' spend' : ''}`}
-            onClick={openPrestigeCta}
-            aria-label={prestigeCta.aria}
-          >
-            {prestigeCta.label}
-          </button>
-        ) : null}
-
-        {tapReady ? (
-          <button
-            type="button"
-            className="btn rake pulse-ready hud-schub"
-            onClick={onRake}
-            title={t.hud.burstReadyTitle}
-          >
-            {t.hud.burstReady}
-          </button>
-        ) : null}
+        <GoalStrip goal={hudGoal} />
+        <EventPills game={game} season={seasonPill} />
       </header>
 
       <FloatPops items={pops} onDone={removePop} />
 
-      {game.offlineGained != null ? (
-        <div
-          className={`banner offline map-banner claim-fab celebrate${highlightId === 'offline' ? ' ftue-target' : ''}`}
-          role="status"
-        >
-          {/* Map-mode: single Abholen CTA only — no kicker ghost text */}
-          <div className="banner-copy claim-detail">
-            <p>
-              {t.hud.offlineBefore}{' '}
-              <strong className="offline-amount">
-                {formatAsh(game.offlineGained)}
-              </strong>{' '}
-              {t.hud.offlineAfter}
-            </p>
-          </div>
-          <button
-            type="button"
-            className="btn buy claim-cta pulse-ready"
-            onClick={claimOffline}
-            aria-label={`${t.hud.claim}: ${formatAsh(game.offlineGained)} ${t.resources.compute}`}
-          >
-            {t.hud.claim}
-          </button>
-        </div>
-      ) : null}
-
       {claimFlash ? (
-        <div className="claim-toast celebrate" role="status">
+        <div className="hud-toast" role="status">
           {claimFlash}
         </div>
       ) : null}
 
-      {/* One Abholen row: offline claim wins over daily chip */}
-      {game.offlineGained == null ? (
-        <DailyOpsBanner game={game} onClaimed={() => playSfx('streak')} />
-      ) : null}
-      <EventBanner game={game} />
-      <FlashEventBanner game={game} />
+      <BottomBar
+        game={game}
+        highlightOffline={highlightId === 'offline'}
+        onClaimOffline={claimOffline}
+        onClaimDaily={claimDaily}
+        onWater={onRake}
+      />
 
       <div className={`garden-stage ${skinClass}`}>
         <div

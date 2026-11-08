@@ -1,21 +1,37 @@
-/** Compact number formatting for idle games */
+/**
+ * Compact German number formatting for idle values.
+ * Decimal comma; K / M for thousands / millions, then Mrd / Bio / Brd
+ * (German long scale — never the English „B“ for a Milliarde).
+ */
+const UNITS = [
+  { v: 1e18, s: ' Trd' },
+  { v: 1e15, s: ' Brd' },
+  { v: 1e12, s: ' Bio' },
+  { v: 1e9, s: ' Mrd' },
+  { v: 1e6, s: 'M' },
+  { v: 1e3, s: 'K' },
+]
+
+/** Fixed decimals with a German decimal comma. */
+export function formatDecimal(n: number, digits: number): string {
+  return de(n, digits)
+}
+
+function de(n: number, digits: number): string {
+  return n.toFixed(digits).replace('.', ',')
+}
+
 export function formatAsh(n: number): string {
   if (!Number.isFinite(n)) return '0'
   const abs = Math.abs(n)
   if (abs < 1000) {
-    return n < 10 && n % 1 !== 0 ? n.toFixed(1) : Math.floor(n).toString()
+    return abs < 10 && n % 1 !== 0 ? de(n, 1) : Math.floor(n).toString()
   }
-  const units = [
-    { v: 1e15, s: 'Qa' },
-    { v: 1e12, s: 'T' },
-    { v: 1e9, s: 'B' },
-    { v: 1e6, s: 'M' },
-    { v: 1e3, s: 'K' },
-  ]
-  for (const u of units) {
+  for (const u of UNITS) {
     if (abs >= u.v) {
       const val = n / u.v
-      return `${val >= 100 ? val.toFixed(0) : val.toFixed(2)}${u.s}`
+      const a = Math.abs(val)
+      return `${de(val, a >= 100 ? 0 : a >= 10 ? 1 : 2)}${u.s}`
     }
   }
   return Math.floor(n).toString()
@@ -23,4 +39,17 @@ export function formatAsh(n: number): string {
 
 export function formatRate(n: number): string {
   return `${formatAsh(n)}/s`
+}
+
+/** m:ss for short countdowns */
+export function formatClock(ms: number): string {
+  const total = Math.max(0, Math.ceil(ms / 1000))
+  const m = Math.floor(total / 60)
+  const s = total % 60
+  return `${m}:${String(s).padStart(2, '0')}`
+}
+
+/** „×1,25“ */
+export function formatMult(m: number): string {
+  return `×${de(m, 2)}`
 }

@@ -1,3 +1,4 @@
+import { formatClock, formatDecimal } from '../game/format'
 import { t } from '../i18n'
 import type { useGame } from '../game/useGame'
 
@@ -18,12 +19,6 @@ interface Props {
   game: GameApi
 }
 
-function formatMsLeft(ms: number): string {
-  const totalSec = Math.ceil(ms / 1000)
-  const m = Math.floor(totalSec / 60)
-  const s = totalSec % 60
-  return `${m}:${String(s).padStart(2, '0')}`
-}
 
 export function ClanPanel({ game }: Props) {
   const { clanBoostActive, clanBoostMsLeft, clanMult } = game
@@ -44,7 +39,7 @@ export function ClanPanel({ game }: Props) {
           className={`clan-boost-status${clanBoostActive ? ' active' : ' idle'}`}
         >
           {clanBoostActive
-            ? t.clan.boostActive(clanMult.toFixed(2), formatMsLeft(clanBoostMsLeft))
+            ? t.clan.boostActive(formatDecimal(clanMult, 2), formatClock(clanBoostMsLeft))
             : t.clan.boostInactive}
         </div>
       </div>

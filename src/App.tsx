@@ -10,6 +10,7 @@ import { bootPlaytestLog, logPlaytest } from './game/playtestLog'
 import { useGame } from './game/useGame'
 import './App.css'
 import './theme/garden.css'
+import './theme/hud.css'
 
 export default function App() {
   const game = useGame()

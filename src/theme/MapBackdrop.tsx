@@ -22,7 +22,7 @@ const pct = (v: string) => Number.parseFloat(v)
 
 /** Spine of the garden: gate (bottom) → Omas Laube (top). */
 const MAIN_PATH =
-  'M50 104 C50 95 52 88 50 81 S44 70 47 61 S54 50 49 43 S45 33 49 27 L49 20'
+  'M50 104 C50 97 52 91 50 85 S44 75 47 67 S54 57 49 51 S45 42 49 37 L50 31'
 
 function stubPath(x: number, y: number): string {
   const yy = y + 2.5
@@ -256,30 +256,28 @@ function Schmetterling({ hue }: { hue: string }) {
 
 /** Wild clumps vanish one by one as the garden is angelegt. */
 const WILD_CLUMPS = [
-  { left: '48%', top: '72%', until: 1 },
-  { left: '8%', top: '58%', until: 2 },
-  { left: '88%', top: '42%', until: 3 },
-  { left: '46%', top: '50%', until: 4 },
-  { left: '6%', top: '30%', until: 5 },
-  { left: '90%', top: '30%', until: 6 },
-  { left: '52%', top: '30%', until: 7 },
-  { left: '14%', top: '88%', until: 2 },
+  { left: '47%', top: '77%', until: 1 },
+  { left: '7%', top: '63%', until: 2 },
+  { left: '92%', top: '47%', until: 3 },
+  { left: '56%', top: '57%', until: 4 },
+  { left: '6%', top: '37%', until: 5 },
+  { left: '93%', top: '37%', until: 6 },
+  { left: '8%', top: '51%', until: 7 },
 ]
 
 /** Flower clusters bloom in as the garden grows. */
 const FLOWERS = [
-  { left: '12%', top: '91%', from: 1 },
-  { left: '86%', top: '89%', from: 2 },
-  { left: '50%', top: '72%', from: 2 },
-  { left: '8%', top: '60%', from: 3 },
-  { left: '44%', top: '52%', from: 4 },
-  { left: '92%', top: '58%', from: 4 },
-  { left: '90%', top: '40%', from: 5 },
-  { left: '7%', top: '47%', from: 6 },
-  { left: '54%', top: '28%', from: 7 },
-  { left: '8%', top: '30%', from: 8 },
-  { left: '92%', top: '27%', from: 9 },
-  { left: '40%', top: '86%', from: 10 },
+  { left: '72%', top: '91%', from: 1 },
+  { left: '51%', top: '75%', from: 2 },
+  { left: '7%', top: '63%', from: 3 },
+  { left: '56%', top: '57%', from: 4 },
+  { left: '92%', top: '59%', from: 4 },
+  { left: '92%', top: '47%', from: 5 },
+  { left: '56%', top: '50%', from: 6 },
+  { left: '8%', top: '51%', from: 7 },
+  { left: '6%', top: '37%', from: 8 },
+  { left: '93%', top: '37%', from: 9 },
+  { left: '10%', top: '82%', from: 10 },
 ]
 
 export function MapBackdrop({ stage }: Props) {
@@ -360,10 +358,10 @@ export function MapBackdrop({ stage }: Props) {
       <Decor className="decor-tree" left="103%" top="14%" w={32}>
         <Baum tone={0} />
       </Decor>
-      <Decor className="decor-laube" left="49%" top="16%" w={26}>
+      <Decor className="decor-laube" left="50%" top="26.5%" w={22}>
         <Laube />
       </Decor>
-      <Decor className="decor-tonne" left="38%" top="17.5%" w={7}>
+      <Decor className="decor-tonne" left="5%" top="29%" w={7}>
         <Regentonne />
       </Decor>
 
@@ -377,7 +375,7 @@ export function MapBackdrop({ stage }: Props) {
         <Teich />
       </Decor>
       {stage >= 6 ? (
-        <Decor className="decor-bank" left="87%" top="58.5%" w={11}>
+        <Decor className="decor-bank" left="93%" top="75%" w={11}>
           <Bank />
         </Decor>
       ) : null}
@@ -400,16 +398,16 @@ export function MapBackdrop({ stage }: Props) {
       ) : null}
       {stage >= 4 ? (
         <>
-          <Decor className="decor-butterfly b1" left="44%" top="60%" w={4}>
+          <Decor className="decor-butterfly b1" left="44%" top="63%" w={4}>
             <Schmetterling hue="#f5c542" />
           </Decor>
-          <Decor className="decor-butterfly b2" left="56%" top="44%" w={3.6}>
+          <Decor className="decor-butterfly b2" left="56%" top="48%" w={3.6}>
             <Schmetterling hue="#ffffff" />
           </Decor>
         </>
       ) : null}
       {stage >= 7 ? (
-        <Decor className="decor-butterfly b3" left="40%" top="32%" w={3.6}>
+        <Decor className="decor-butterfly b3" left="40%" top="38%" w={3.6}>
           <Schmetterling hue="#f28ab2" />
         </Decor>
       ) : null}

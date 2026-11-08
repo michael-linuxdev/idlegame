@@ -1,0 +1,663 @@
+/*
+ * Gartenerbe HUD — three calm zones on top of the garden:
+ *  1. top row: Gartenstufe (left) · Ernte wallet (right)
+ *  2. one goal line + a compact event pill bar
+ *  3. bottom: claim slot · Gießen · (Menü FAB from AppNav)
+ * Paper/wood look, never stacked white cards over the map.
+ */
+
+.fortress-home {
+  --hud-paper: #fbf6e8;
+  --hud-paper-2: #f3e9d2;
+  --hud-edge: #c9b48a;
+  --hud-edge-d: #9c845a;
+  --hud-ink: #33261a;
+  --hud-ink-soft: #6a5434;
+  --hud-water: #3d8db8;
+  --hud-water-l: #8fd0ec;
+}
+
+.hud {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: calc(var(--safe-top) + 0.5rem) 0.6rem 0;
+  pointer-events: none;
+}
+
+.hud > *,
+.hud-row > * {
+  pointer-events: auto;
+}
+
+.hud-row {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 0.5rem;
+  pointer-events: none;
+}
+
+.hud-card {
+  position: relative;
+  margin: 0;
+  padding: 0.35rem 0.65rem 0.4rem;
+  border: 1.5px solid var(--hud-edge);
+  border-radius: 14px;
+  background: linear-gradient(180deg, var(--hud-paper) 0%, var(--hud-paper-2) 100%);
+  box-shadow:
+    0 2px 0 var(--hud-edge),
+    0 5px 12px rgba(40, 32, 12, 0.16);
+  color: var(--hud-ink);
+  font: inherit;
+}
+
+/* Gartenstufe */
+.hud-garden {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.18rem;
+  min-width: 0;
+  max-width: 56%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.hud-stage {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--oc-font-display);
+  font-weight: 700;
+  font-size: 0.86rem;
+  line-height: 1.1;
+}
+
+.hud-level {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: 100%;
+}
+
+.hud-level-label {
+  flex: none;
+  font-family: var(--oc-font-metric);
+  font-size: 0.66rem;
+  font-weight: 700;
+  color: var(--hud-ink-soft);
+}
+
+.hud-xp {
+  flex: 1;
+  min-width: 2.6rem;
+  height: 0.36rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--hud-edge) 45%, transparent);
+  overflow: hidden;
+}
+
+.hud-xp > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #5f9e45, #8fcf5f);
+  transition: width 400ms ease-out;
+}
+
+.hud-dot {
+  position: absolute;
+  top: -0.25rem;
+  right: -0.25rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  border: 2px solid var(--hud-paper);
+  border-radius: 50%;
+  background: #e5484d;
+  animation: hud-dot 1.6s ease-in-out infinite;
+}
+
+.hud-garden.level-up {
+  animation: level-pop 0.55s ease-out;
+}
+
+/* Wallet */
+.hud-wallet {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0.05rem;
+  min-width: 7rem;
+  text-align: right;
+}
+
+.hud-amount {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: var(--oc-font-metric);
+  font-weight: 700;
+  font-size: 1.22rem;
+  line-height: 1.05;
+  white-space: nowrap;
+  transition: color 200ms;
+}
+
+.hud-amount.tick {
+  color: #3f7a30;
+}
+
+.hud-amount-icon {
+  font-size: 1.15rem;
+  display: inline-flex;
+}
+
+.hud-rate {
+  font-family: var(--oc-font-metric);
+  font-weight: 700;
+  font-size: 0.68rem;
+  color: var(--hud-ink-soft);
+  white-space: nowrap;
+}
+
+.hud-mult {
+  color: #3f7a30;
+}
+
+.hud-sub {
+  display: flex;
+  gap: 0.55rem;
+  font-family: var(--oc-font-metric);
+  font-weight: 700;
+  font-size: 0.66rem;
+  color: var(--hud-ink-soft);
+}
+
+.hud-sub-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.hud-sub-item .g-icon {
+  font-size: 0.9rem;
+}
+
+/* Goal line */
+.hud-goal {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  min-height: 2.6rem;
+  margin: 0;
+  padding: 0.3rem 0.7rem 0.5rem 0.45rem;
+  border: 1.5px solid var(--hud-edge);
+  border-radius: 12px;
+  background: linear-gradient(180deg, var(--hud-paper) 0%, var(--hud-paper-2) 100%);
+  box-shadow:
+    0 2px 0 var(--hud-edge),
+    0 5px 12px rgba(40, 32, 12, 0.14);
+  color: var(--hud-ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.hud-goal-icon {
+  flex: none;
+  display: inline-flex;
+  font-size: 1.35rem;
+}
+
+.hud-goal-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.hud-goal-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--oc-font-display);
+  font-weight: 700;
+  font-size: 0.84rem;
+}
+
+.hud-goal-detail {
+  flex: none;
+  font-family: var(--oc-font-metric);
+  font-weight: 700;
+  font-size: 0.72rem;
+  color: var(--hud-ink-soft);
+  white-space: nowrap;
+}
+
+.hud-goal-track {
+  position: absolute;
+  left: 0.6rem;
+  right: 0.6rem;
+  bottom: 0.25rem;
+  height: 0.22rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--hud-edge) 40%, transparent);
+  overflow: hidden;
+}
+
+.hud-goal-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #5f9e45, #8fcf5f);
+  transition: width 300ms ease-out;
+}
+
+.hud-goal.tone-tip {
+  border-color: #5f9e45;
+  box-shadow:
+    0 2px 0 #3f7a30,
+    0 0 0 3px rgba(127, 191, 90, 0.28),
+    0 5px 12px rgba(40, 32, 12, 0.14);
+}
+
+.hud-goal.tone-tip.ready {
+  animation: hud-glow 1.8s ease-in-out infinite;
+}
+
+.hud-goal.tone-season {
+  border-color: #8fb3d1;
+  background: linear-gradient(180deg, #f4f9fd 0%, #e2eef8 100%);
+  box-shadow:
+    0 2px 0 #6f97b8,
+    0 5px 12px rgba(20, 40, 70, 0.16);
+}
+
+.hud-goal.tone-season .hud-goal-fill {
+  background: linear-gradient(90deg, #6f97b8, #a9cde8);
+}
+
+.hud-goal.near .hud-goal-fill {
+  background: linear-gradient(90deg, #f0a530, #f5c542);
+}
+
+/* Event pills */
+.hud-pills-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.3rem;
+  pointer-events: none;
+}
+
+.hud-pills {
+  display: flex;
+  gap: 0.35rem;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+  pointer-events: auto;
+  padding-bottom: 2px;
+}
+
+.hud-pills::-webkit-scrollbar {
+  display: none;
+}
+
+.hud-pill {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  height: 1.7rem;
+  margin: 0;
+  padding: 0 0.6rem 0 0.4rem;
+  border: 1.5px solid var(--hud-edge);
+  border-radius: 999px;
+  background: var(--hud-paper);
+  box-shadow: 0 2px 0 var(--hud-edge);
+  color: var(--hud-ink);
+  font-family: var(--oc-font-metric);
+  font-weight: 700;
+  font-size: 0.68rem;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.hud-pill-icon {
+  display: inline-flex;
+  font-size: 1rem;
+}
+
+.hud-pill.open {
+  border-color: var(--hud-edge-d);
+  background: var(--hud-paper-2);
+}
+
+.hud-pill.claim {
+  border-color: var(--oc-ember-dim);
+  background: linear-gradient(180deg, var(--oc-ember-hot), var(--oc-ember));
+  box-shadow: 0 2px 0 var(--oc-ember-dim);
+  color: #fff;
+  animation: hud-glow 1.6s ease-in-out infinite;
+}
+
+.hud-pill.pill-season {
+  border-color: #8fb3d1;
+  background: #eef5fb;
+  box-shadow: 0 2px 0 #8fb3d1;
+}
+
+.hud-pill-detail {
+  max-width: min(100%, 22rem);
+  padding: 0.35rem 0.6rem 0.45rem;
+  border: 1.5px solid var(--hud-edge);
+  border-radius: 10px;
+  background: var(--hud-paper);
+  box-shadow: 0 4px 10px rgba(40, 32, 12, 0.16);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--hud-ink);
+  pointer-events: auto;
+  animation: claim-pop 160ms ease-out;
+}
+
+.hud-pill-detail p {
+  margin: 0;
+}
+
+.hud-pill-track {
+  margin-top: 0.3rem;
+  height: 0.3rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--hud-edge) 40%, transparent);
+  overflow: hidden;
+}
+
+.hud-pill-track > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #5f9e45, #8fcf5f);
+}
+
+/* Bottom zone */
+.hud-bottom {
+  position: absolute;
+  left: 0.6rem;
+  right: 0.6rem;
+  bottom: calc(var(--safe-bottom) + 0.6rem);
+  z-index: 6;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: end;
+  gap: 0.5rem;
+  pointer-events: none;
+}
+
+.hud-bottom > * {
+  pointer-events: auto;
+}
+
+.hud-claim-slot {
+  justify-self: start;
+  min-width: 0;
+  pointer-events: none;
+}
+
+.hud-claim {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  max-width: 100%;
+  min-height: 3rem;
+  margin: 0;
+  padding: 0.3rem 0.85rem 0.3rem 0.45rem;
+  border: 2px solid #b8862a;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ffe08a 0%, #f5c542 100%);
+  box-shadow:
+    0 3px 0 #b8862a,
+    0 6px 14px rgba(60, 40, 0, 0.25);
+  color: #4a3208;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  pointer-events: auto;
+  animation: hud-bob 2.2s ease-in-out infinite;
+}
+
+.hud-claim.daily {
+  border-color: var(--oc-ember-dim);
+  background: linear-gradient(180deg, var(--oc-ember-hot), var(--oc-ember));
+  box-shadow:
+    0 3px 0 var(--oc-ember-dim),
+    0 6px 14px rgba(20, 60, 20, 0.25);
+  color: #fff;
+}
+
+.hud-claim:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #b8862a;
+}
+
+.hud-claim.ftue-target {
+  outline: 3px solid #fff6b0;
+  outline-offset: 3px;
+}
+
+.hud-claim-icon {
+  display: inline-flex;
+  font-size: 1.7rem;
+  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.5));
+}
+
+.hud-claim-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.1;
+}
+
+.hud-claim-title {
+  font-family: var(--oc-font-display);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.hud-claim-sub {
+  font-family: var(--oc-font-metric);
+  font-weight: 700;
+  font-size: 0.7rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Gießen */
+.hud-water {
+  --p: 1;
+  position: relative;
+  justify-self: center;
+  width: 4.6rem;
+  height: 4.6rem;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.05rem;
+  border: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--hud-water-l) 0%, #5aaad3 45%, var(--hud-water) 100%);
+  box-shadow:
+    0 4px 0 #285f7e,
+    0 8px 18px rgba(20, 50, 70, 0.32);
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+.hud-water-ring {
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  background: conic-gradient(#fff6b0 calc(var(--p) * 360deg), rgba(255, 255, 255, 0.35) 0);
+  -webkit-mask: radial-gradient(closest-side, transparent calc(100% - 5px), #000 calc(100% - 4px));
+  mask: radial-gradient(closest-side, transparent calc(100% - 5px), #000 calc(100% - 4px));
+}
+
+.hud-water-icon {
+  display: inline-flex;
+  font-size: 2rem;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.25));
+}
+
+.hud-water-icon .g-icon path:first-child {
+  fill: #ffffff;
+}
+
+.hud-water-label {
+  font-family: var(--oc-font-display);
+  font-weight: 700;
+  font-size: 0.72rem;
+  line-height: 1;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+.hud-water.ready {
+  animation: hud-water-ready 2.4s ease-in-out infinite;
+}
+
+.hud-water.ready .hud-water-ring {
+  background: #fff6b0;
+}
+
+.hud-water.cooling {
+  cursor: default;
+  filter: saturate(0.45) brightness(0.98);
+}
+
+.hud-water:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #285f7e;
+}
+
+.hud-water:focus-visible,
+.hud-claim:focus-visible,
+.hud-goal:focus-visible,
+.hud-pill:focus-visible,
+.hud-garden:focus-visible {
+  outline: 3px solid var(--oc-focus);
+  outline-offset: 2px;
+}
+
+/* Toast + pops */
+.hud-toast {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--safe-bottom) + 6.2rem);
+  z-index: 7;
+  transform: translateX(-50%);
+  max-width: calc(100% - 2rem);
+  padding: 0.5rem 0.9rem;
+  border: 1.5px solid var(--hud-edge);
+  border-radius: 12px;
+  background: var(--hud-paper);
+  box-shadow: 0 6px 16px rgba(40, 32, 12, 0.22);
+  font-family: var(--oc-font-display);
+  font-weight: 700;
+  font-size: 0.86rem;
+  color: var(--hud-ink);
+  text-align: center;
+  animation: claim-pop 220ms ease-out;
+  pointer-events: none;
+}
+
+.fortress-home .float-pops {
+  top: 42%;
+}
+
+/* Menü FAB matches the HUD paper */
+.game-chrome.map-home .menu-fab {
+  bottom: calc(var(--safe-bottom) + 0.6rem);
+  right: 0.6rem;
+  border: 1.5px solid var(--oc-stroke-strong);
+  background: #fbf6e8;
+}
+
+.nav-menu-sound {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.35rem 0.55rem;
+  font-weight: 700;
+}
+
+@keyframes hud-dot {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.25);
+  }
+}
+
+@keyframes hud-glow {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.08);
+  }
+}
+
+@keyframes hud-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes hud-water-ready {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hud-dot,
+  .hud-goal,
+  .hud-pill,
+  .hud-claim,
+  .hud-water,
+  .hud-garden {
+    animation: none !important;
+  }
+}

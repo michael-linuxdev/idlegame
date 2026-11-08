@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { formatAsh } from '../game/format'
+import { formatAsh, formatDecimal, formatMult } from '../game/format'
 import {
   BATTLE_PASS_MAX_XP,
   BATTLE_PASS_TIERS,
@@ -243,13 +243,13 @@ export function ShopPanel({ game }: Props) {
           <p className="ember-shop-effect">
             {yieldBoostActive
               ? t.shop.yieldBoostActive(
-                  yieldBoostMult.toFixed(2),
+                  formatDecimal(yieldBoostMult, 2),
                   formatMsLeft(yieldBoostMsLeft),
                 )
               : t.shop.yieldBoostInactive}
           </p>
           <p className="ember-shop-blurb">
-            ×{YIELD_BOOST_MULT.toFixed(2)} · 30 Min
+            {formatMult(YIELD_BOOST_MULT)} · 30 Min
           </p>
         </div>
         <button
@@ -441,7 +441,7 @@ export function ShopPanel({ game }: Props) {
           <p className="ember-shop-effect">
             {clanBoostActive
               ? t.shop.boostActiveShort(
-                  game.clanMult.toFixed(2),
+                  formatDecimal(game.clanMult, 2),
                   formatMsLeft(clanBoostMsLeft),
                 )
               : t.shop.boostInactiveShort}

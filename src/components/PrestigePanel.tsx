@@ -25,7 +25,7 @@ import {
   prestigeBlockReason,
   prestigeMinEmbersForRun,
 } from '../game/economy'
-import { formatAsh } from '../game/format'
+import { formatAsh, formatMult } from '../game/format'
 import { t } from '../i18n'
 import type { useGame } from '../game/useGame'
 
@@ -137,7 +137,7 @@ export function PrestigePanel({ game, highlight }: Props) {
         <p className="prestige-stats">
           {t.prestige.credits} <strong>{state.embers}</strong>
           {' · '}
-          {t.prestige.multiplier} <strong>×{multiplier.toFixed(2)}</strong>
+          {t.prestige.multiplier} <strong>{formatMult(multiplier)}</strong>
           {' · '}
           {t.prestige.runs} <strong>{state.prestiges}</strong>
         </p>
@@ -169,7 +169,7 @@ export function PrestigePanel({ game, highlight }: Props) {
               {t.prestige.creditsPreview(payout)}
             </>
           )}
-          {state.prestiges >= 1 ? (
+          {state.prestiges >= 1 && online < PRESTIGE_MIN_MODULES_ONLINE ? (
             <>
               {' · '}
               {t.prestige.needModules(online, PRESTIGE_MIN_MODULES_ONLINE)}

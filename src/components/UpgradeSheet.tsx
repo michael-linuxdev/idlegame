@@ -6,7 +6,7 @@ import {
   type GeneratorId,
 } from '../game/generators'
 import { efficiencyMult, type BranchKind } from '../game/branches'
-import { formatAsh, formatRate } from '../game/format'
+import { formatAsh, formatDecimal, formatRate } from '../game/format'
 import { playSfx } from '../game/sound'
 import { t } from '../i18n'
 import type { useGame } from '../game/useGame'
@@ -242,7 +242,7 @@ function BranchRow({
   const total =
     kind === 'efficiency'
       ? t.branches.efficiencyEffect(rank * 4)
-      : t.branches.capacityEffect(Math.pow(0.97, rank).toFixed(3))
+      : t.branches.capacityEffect(formatDecimal(Math.pow(0.97, rank), 3))
 
   return (
     <div className="upgrade-hud-row">

@@ -7,6 +7,7 @@
  */
 
 import { t } from '../i18n'
+import { formatAsh } from './format'
 import { LEVEL_MODULE_GATES } from './progression'
 
 export type GeneratorId =
@@ -78,7 +79,7 @@ export const GENERATORS: GeneratorDef[] = [
     blurb: t.modules.gemuesebeet.blurb,
     note: t.modules.gemuesebeet.note,
     /* Plot lattice: zig-zag along the garden path, gate (bottom) → Laube (top). See theme/MapBackdrop. */
-    slot: { left: '34%', top: '83%' },
+    slot: { left: '34%', top: '84%' },
     baseRate: 1,
     baseCost: 20,
     costScale: 1.18,
@@ -89,7 +90,7 @@ export const GENERATORS: GeneratorDef[] = [
     name: t.modules.kompost.name,
     blurb: t.modules.kompost.blurb,
     note: t.modules.kompost.note,
-    slot: { left: '74%', top: '79%' },
+    slot: { left: '74%', top: '80%' },
     baseRate: 4,
     baseCost: 150,
     costScale: 1.17,
@@ -101,7 +102,7 @@ export const GENERATORS: GeneratorDef[] = [
     name: t.modules.kraeuterspirale.name,
     blurb: t.modules.kraeuterspirale.blurb,
     note: t.modules.kraeuterspirale.note,
-    slot: { left: '20%', top: '68%' },
+    slot: { left: '20%', top: '71%' },
     baseRate: 25,
     baseCost: 1_800,
     costScale: 1.16,
@@ -113,7 +114,7 @@ export const GENERATORS: GeneratorDef[] = [
     name: t.modules.beerenhecke.name,
     blurb: t.modules.beerenhecke.blurb,
     note: t.modules.beerenhecke.note,
-    slot: { left: '62%', top: '65%' },
+    slot: { left: '62%', top: '68%' },
     baseRate: 150,
     baseCost: 25_000,
     costScale: 1.15,
@@ -125,7 +126,7 @@ export const GENERATORS: GeneratorDef[] = [
     name: t.modules.obstwiese.name,
     blurb: t.modules.obstwiese.blurb,
     note: t.modules.obstwiese.note,
-    slot: { left: '30%', top: '53%' },
+    slot: { left: '30%', top: '58%' },
     baseRate: 900,
     baseCost: 200_000,
     costScale: 1.14,
@@ -137,7 +138,7 @@ export const GENERATORS: GeneratorDef[] = [
     name: t.modules.bienenstock.name,
     blurb: t.modules.bienenstock.blurb,
     note: t.modules.bienenstock.note,
-    slot: { left: '76%', top: '50%' },
+    slot: { left: '76%', top: '55%' },
     baseRate: 5_000,
     baseCost: 1_500_000,
     costScale: 1.13,
@@ -149,7 +150,7 @@ export const GENERATORS: GeneratorDef[] = [
     name: t.modules.huehnerstall.name,
     blurb: t.modules.huehnerstall.blurb,
     note: t.modules.huehnerstall.note,
-    slot: { left: '20%', top: '39%' },
+    slot: { left: '20%', top: '45%' },
     baseRate: 30_000,
     baseCost: 12_000_000,
     costScale: 1.12,
@@ -161,7 +162,7 @@ export const GENERATORS: GeneratorDef[] = [
     name: t.modules.gewaechshaus.name,
     blurb: t.modules.gewaechshaus.blurb,
     note: t.modules.gewaechshaus.note,
-    slot: { left: '62%', top: '36%' },
+    slot: { left: '62%', top: '42%' },
     baseRate: 180_000,
     baseCost: 90_000_000,
     costScale: 1.115,
@@ -173,7 +174,7 @@ export const GENERATORS: GeneratorDef[] = [
     name: t.modules.hofladen.name,
     blurb: t.modules.hofladen.blurb,
     note: t.modules.hofladen.note,
-    slot: { left: '27%', top: '25%' },
+    slot: { left: '27%', top: '32%' },
     baseRate: 1_100_000,
     baseCost: 700_000_000,
     costScale: 1.11,
@@ -188,7 +189,7 @@ export const GENERATORS: GeneratorDef[] = [
     name: t.modules.orangerie.name,
     blurb: t.modules.orangerie.blurb,
     note: t.modules.orangerie.note,
-    slot: { left: '72%', top: '23%' },
+    slot: { left: '72%', top: '30%' },
     baseRate: 7_000_000,
     baseCost: 5_000_000_000,
     costScale: 1.105,
@@ -282,16 +283,7 @@ export function unlockHint(def: GeneratorDef): string {
 export function shortUnlockGate(def: GeneratorDef): string {
   if (!def.unlock) return t.hud.locked
   if (def.unlock.ashEarned != null) {
-    const n = def.unlock.ashEarned
-    const label =
-      n >= 1_000_000_000
-        ? `${n / 1_000_000_000}B`
-        : n >= 1_000_000
-          ? `${n / 1_000_000}M`
-          : n >= 1_000
-            ? `${Math.round(n / 1_000)}k`
-            : `${n}`
-    return t.hud.gateCompute(label)
+    return t.hud.gateCompute(formatAsh(def.unlock.ashEarned).replace(/,0+(?=\D|$)/, ''))
   }
   if (def.unlock.requires) {
     const prior = GENERATORS.find((g) => g.id === def.unlock!.requires!.id)

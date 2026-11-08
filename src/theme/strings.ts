@@ -57,6 +57,7 @@ export const strings = {
   },
 
   sound: {
+    label: 'Ton',
     mute: 'Ton aus',
     unmute: 'Ton an',
     muteAria: 'Soundeffekte stummschalten',
@@ -220,6 +221,12 @@ export const strings = {
     progressOpen: 'Ziele & Meilensteine',
     progressClose: 'Schließen',
     levelUp: (n: number) => `Gärtnerstufe ${n}!`,
+    waterCooling: (clock: string) => `Kanne füllt sich · ${clock}`,
+    claimAria: (amount: string) => `Ernte einfahren: ${amount}`,
+    walletAria: (amount: string, rate: string) => `${amount} Ernte, ${rate}`,
+    gardenAria: (stage: string, level: number) =>
+      `${stage}, Gärtnerstufe ${level}. Ziele und Meilensteine öffnen`,
+    questReady: 'Aufgabe erledigt — abholen',
   },
 
   level: {
@@ -401,6 +408,8 @@ export const strings = {
       mods > 0
         ? `Saisonende naht · +${erb(n)} — Truhe nach ~${mods} Ausbauten`
         : `Saisonende naht · +${erb(n)} — Truhe beim Neuanlegen`,
+    pill: (n: number) => `Saisonende · +${erb(n)}`,
+    pillReady: 'Omas Truhe',
     worthItRebuildAria:
       'Saisonende öffnen — Erbstücke kommen, Truhe beim Neuanlegen',
   },
@@ -450,7 +459,7 @@ export const strings = {
     foundryDiscount: {
       name: 'Saatgutkiste',
       blurb: '−2 % auf alle Ausbaukosten pro Rang.',
-      effect: (rank: number) => `×${Math.pow(0.98, rank).toFixed(3)} Kosten`,
+      effect: (rank: number) => `×${Math.pow(0.98, rank).toFixed(3).replace('.', ',')} Kosten`,
     },
     firstFlame: {
       name: 'Kompost vom Vorjahr',
@@ -476,7 +485,7 @@ export const strings = {
     nightSoil: {
       name: 'Laterne',
       blurb: '+30 Min weich und +1 h max. offline pro Rang.',
-      effect: (rank: number) => `+${rank * 0.5} h / +${rank} h max.`,
+      effect: (rank: number) => `+${String(rank * 0.5).replace('.', ',')} h / +${rank} h max.`,
     },
     saplingSurge: {
       name: 'Gute Erde',
@@ -487,7 +496,7 @@ export const strings = {
     greenLattice: {
       name: 'Rosenbogen',
       blurb: '+1,5 % Ernte/s — öffnet sich beim Neuanlegen.',
-      effect: (rank: number) => `+${(rank * 1.5).toFixed(1)} % ${SOFT}/s`,
+      effect: (rank: number) => `+${(rank * 1.5).toFixed(1).replace('.', ',')} % ${SOFT}/s`,
     },
   },
 
@@ -687,6 +696,8 @@ export const strings = {
 
   daily: {
     kicker: 'Tägliche Gartenrunde',
+    short: 'Gartenrunde',
+    dayOf: (n: number) => `Tag ${n}/7`,
     firstShift: 'Tag 1/7 · Los geht’s',
     streakNext: (n: number) => {
       const day = (Math.max(0, n) % 7) + 1
