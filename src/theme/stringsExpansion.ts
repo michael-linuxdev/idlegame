@@ -40,6 +40,11 @@ export const expansionStrings = {
     areaOff: 'gesperrt',
     areaAria: (name: string, on: boolean) => `${name}: Jonas ${on ? 'darf ausbauen' : 'gesperrt'}`,
     allBlocked: 'Alles gesperrt — Jonas wartet.',
+    proTitle: 'Profi-Jonas',
+    proHint:
+      'Auf der letzten Stufe plant Jonas selbst über alle Bereiche: Er pflanzt Neues zuerst, spart auf Meilensteine (×2) und baut aus, was sich langfristig am meisten lohnt. Eine Sperrliste gibt es dann nicht mehr.',
+    proUpgrade: (cost: number) => `Profi werden · ${cost} Erbstücke`,
+    proNote: 'Letzte Stufe: Jonas plant dann selbst — die Sperrliste entfällt.',
   },
 
   turbo: {

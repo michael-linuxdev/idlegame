@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { DEEP_GATE_YEAR, DEEP_SHOP, canDeepReset } from '../game/longLoop'
 import { LEGACY_SHOP, generationGate } from '../game/generations'
-import { HELPER_RANKS, helperInterval } from '../game/state'
+import { HELPER_RANKS, helperInterval, helperIsPro } from '../game/state'
 import { GENERATORS } from '../game/generators'
 import { IconFamily, IconHelper, IconIlse } from '../theme/icons'
 import { CHAPTERS, type ChapterId } from '../game/chapters'
@@ -215,7 +215,12 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
             </button>
           </p>
         ) : null}
-        {state.helperLevel > 0 ? (
+        {helperIsPro(state.helperLevel) ? (
+          <div className="helper-pro" role="note">
+            <strong>{t.helper.proTitle}</strong>
+            <p className="muted">{t.helper.proHint}</p>
+          </div>
+        ) : state.helperLevel > 0 ? (
           <details className="helper-areas">
             <summary>{t.helper.areasTitle}</summary>
             <p className="muted">{t.helper.areasHint}</p>
@@ -253,8 +258,13 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
               ? t.helper.maxed
               : state.helperLevel === 0
                 ? t.helper.hire(helperRank.cost)
-                : t.helper.upgrade(helperRank.cost)}
+                : helperIsPro(state.helperLevel + 1)
+                  ? t.helper.proUpgrade(helperRank.cost)
+                  : t.helper.upgrade(helperRank.cost)}
           </button>
+        ) : null}
+        {game.helperUnlocked && helperRank && helperIsPro(state.helperLevel + 1) ? (
+          <p className="muted helper-pro-note">{t.helper.proNote}</p>
         ) : null}
       </section>
 

@@ -3,7 +3,7 @@ import { bestGardenBuy, createInitialState, runHelper, toggleHelperArea } from '
 import { parseSave } from '../game/storage'
 
 describe('Jonas: Bereiche sperren', () => {
-  const base = { ...createInitialState(0), prestiges: 1, helperLevel: 5, helperOn: true, ernte: 1e9 }
+  const base = { ...createInitialState(0), prestiges: 1, helperLevel: 4, helperOn: true, ernte: 1e9 }
   const s = { ...base, owned: { ...base.owned, gemuesebeet: 10, kompost: 5 } }
 
   it('starts with nothing blocked', () => {

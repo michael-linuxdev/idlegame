@@ -2297,3 +2297,22 @@ html.tab-hidden .sky-event {
 .shop-ad-choices .btn {
   width: 100%;
 }
+
+/* Profi-Jonas (letzte Stufe) */
+.helper-pro {
+  margin: 0.5rem 0;
+  padding: 0.55rem 0.7rem;
+  border-radius: 12px;
+  border: 2px solid #e0a21a;
+  background: #fbf0d0;
+  color: #5a3d12;
+}
+
+.helper-pro p {
+  margin: 0.2rem 0 0;
+}
+
+.helper-pro-note {
+  margin-top: 0.35rem;
+  font-size: 0.82rem;
+}

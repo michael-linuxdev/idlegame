@@ -43,7 +43,7 @@ import {
   type ChapterId,
   type ChaptersState,
 } from './chapters'
-import { milestonesReached } from './generators'
+import { milestonesReached, nextMilestone } from './generators'
 import {
   CONTEST_REWARDS,
   CONTEST_KG,
@@ -1347,6 +1347,60 @@ export function bestGardenBuy(state: GameState, skip: readonly GeneratorId[] = [
   return best
 }
 
+/** Profi-Jonas looks this far ahead for a Meilenstein (levels). */
+const PLAN_HORIZON_LEVELS = 60
+/** … and saves up when the planned buy is at most this far away (seconds). */
+const PLAN_SAVE_SEC = 120
+
+/**
+ * Profi-Jonas (last rank): plans across all garden areas, ignores the
+ * Sperrliste. A freshly unlocked area is planted first; otherwise every area
+ * is scored by its best package — one level, or all levels up to the next
+ * Meilenstein (×2) if that is within PLAN_HORIZON_LEVELS — as Δrate / cost.
+ * He buys the next level of the best package, saves for it when it is only
+ * a short wait away, else takes the best affordable package.
+ */
+export function planGardenBuy(state: GameState, now = Date.now()): GeneratorId | null {
+  const lvl = playerLevelOf(state)
+  const gates = gatePrestiges(state)
+  type Cand = { id: GeneratorId; score: number; nextCost: number }
+  const cands: Cand[] = []
+  for (const def of GENERATORS) {
+    if (!isGeneratorUnlocked(def, state.ernteSeason, state.owned, state.emberUpgrades.firstFlame > 0, lvl, gates)) continue
+    const n = state.owned[def.id] ?? 0
+    const mult = lineCostMult(state, def.id)
+    const nextCost = generatorCost(def, n, mult)
+    if (n === 0) {
+      if (nextCost <= state.ernte) return def.id
+      continue
+    }
+    const eff = efficiencyMult(state.branches[def.id]?.efficiency ?? 0)
+    const steps = [1]
+    const m = nextMilestone(n)
+    if (m && m.at - n > 1 && m.at - n <= PLAN_HORIZON_LEVELS) steps.push(m.at - n)
+    let best = 0
+    for (const k of steps) {
+      let cost = 0
+      for (let i = 0; i < k; i++) cost += generatorCost(def, n + i, mult)
+      const gain = (generatorRate(def, n + k) - generatorRate(def, n)) * eff
+      if (cost > 0) best = Math.max(best, gain / cost)
+    }
+    if (best > 0) cands.push({ id: def.id, score: best, nextCost })
+  }
+  if (cands.length === 0) return null
+  cands.sort((a, b) => b.score - a.score)
+  const top = cands[0]!
+  if (top.nextCost <= state.ernte) return top.id
+  const rate = productionPerSecond(state, now)
+  if (rate > 0 && (top.nextCost - state.ernte) / rate <= PLAN_SAVE_SEC) return null
+  return cands.find((c) => c.nextCost <= state.ernte)?.id ?? null
+}
+
+/** Profi-Jonas: the last Gartenhelfer rank plans by himself (no Sperrliste). */
+export function helperIsPro(level: number): boolean {
+  return level >= HELPER_RANKS.length
+}
+
 /** Buy up to `n` levels of one area (stops when Ernte runs out). */
 export function buyGeneratorMany(state: GameState, id: GeneratorId, n: number): { state: GameState; bought: number } {
   let next = state
@@ -1414,7 +1468,7 @@ export function runHelper(state: GameState, dtMs: number, maxBuys = 40): { state
   let next = state
   let bought = 0
   while (carry >= interval && bought < maxBuys) {
-    const gid = bestGardenBuy(next, next.helperBlocked)
+    const gid = helperIsPro(next.helperLevel) ? planGardenBuy(next) : bestGardenBuy(next, next.helperBlocked)
     if (!gid) {
       carry = Math.min(carry, interval)
       break
