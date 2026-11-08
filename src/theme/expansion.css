@@ -2195,3 +2195,71 @@ html.tab-hidden .sky-event {
   color: #8a2a1a;
   font-weight: 800;
 }
+
+/* Markt: Reiter + Werbung mit Auswahl */
+.shop-tabs {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 0.3rem;
+  margin: 0.6rem 0 0.4rem;
+  padding: 0.3rem;
+  border-radius: 14px;
+  background: #e8dcc0;
+  box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.08);
+}
+
+.shop-tab {
+  position: relative;
+  min-height: 44px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: #6e5a3a;
+  font: inherit;
+  font-weight: 800;
+  font-size: 0.86rem;
+  cursor: pointer;
+}
+
+.shop-tab.active {
+  background: #fbf6e8;
+  color: #2f4a1e;
+  box-shadow: 0 2px 0 #c9b48a;
+}
+
+.shop-tab.has-new::after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #e0485e;
+}
+
+.shop-ad-box {
+  padding: 0.7rem;
+  border-radius: 14px;
+  background: #fbf6e8;
+  border: 2px solid #e2d4ae;
+}
+
+.shop-ad-status {
+  margin: 0 0 0.5rem;
+  font-weight: 700;
+  color: #6e5a3a;
+}
+
+.shop-ad-choices {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.shop-ad-choices .btn {
+  width: 100%;
+}

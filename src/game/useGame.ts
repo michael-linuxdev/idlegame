@@ -16,10 +16,12 @@ import {
   type GeneratorId,
 } from './generators'
 import {
+  REWARDED_AD_DELAY_MS,
   cosmeticById,
   dayKey,
   rewardedAdCooldownMsLeft,
   rewardedAdReady,
+  type AdChoice,
   type CosmeticId,
   type ShopOfferDef,
   type TimeSkipId,
@@ -56,6 +58,9 @@ import {
   claimFlashEventGoal,
   claimQuestReward,
   claimRewardedAd,
+  claimMarketGift,
+  marketGiftReady,
+  refillWateringCan,
   clearLastSurprise,
   collectReadyAchievements,
   dismissBandwidthSurge,
@@ -564,12 +569,37 @@ export function useGame() {
     })
   }, [])
 
-  const watchRewardedAd = useCallback(() => {
-    setState((s) => {
-      const result = claimRewardedAd(s)
-      if (result.ok) logPlaytest('shop_tap', { action: 'rewarded_ad' })
-      return result.ok ? result.state : s
-    })
+  // Optional ad: runs here (not in the Markt panel) so closing the panel
+  // mid-ad can't swallow the reward; the result is shown afterwards.
+  const [adWatching, setAdWatching] = useState(false)
+  const [adResult, setAdResult] = useState<{ choice: AdChoice; ernte: number; samen: number; at: number } | null>(null)
+  const adTimer = useRef<number | null>(null)
+  useEffect(() => () => {
+    if (adTimer.current != null) window.clearTimeout(adTimer.current)
+  }, [])
+  const watchRewardedAd = useCallback((choice: AdChoice) => {
+    if (adTimer.current != null) return
+    setAdWatching(true)
+    setAdResult(null)
+    adTimer.current = window.setTimeout(() => {
+      adTimer.current = null
+      setAdWatching(false)
+      setState((s) => {
+        const result = claimRewardedAd(s, choice)
+        if (!result.ok) return s
+        logPlaytest('shop_tap', { action: 'rewarded_ad', choice })
+        setAdResult({ choice, ernte: result.ashGained, samen: result.obsidianGained, at: Date.now() })
+        return result.state
+      })
+    }, REWARDED_AD_DELAY_MS)
+  }, [])
+
+  const claimGift = useCallback(() => {
+    setState((s) => claimMarketGift(s))
+  }, [])
+
+  const buyWaterRefill = useCallback(() => {
+    setState((s) => refillWateringCan(s))
   }, [])
 
   const claimBpDailyXp = useCallback(() => {
@@ -865,6 +895,11 @@ export function useGame() {
     purchaseOffer,
     purchaseYieldBoost,
     watchRewardedAd,
+    adWatching,
+    adResult,
+    claimGift,
+    giftReady: marketGiftReady(state, nowTick),
+    buyWaterRefill,
     claimBpDailyXp,
     claimBpTier,
     claimDaily,
