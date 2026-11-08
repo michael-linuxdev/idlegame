@@ -350,13 +350,20 @@ export interface GameState {
 }
 
 /** Gartenhelfer ranks: Erbstücke cost and time between two Ausbauten. */
-export const HELPER_RANKS = [
-  { cost: 50, intervalMs: 30_000 },
-  { cost: 300, intervalMs: 12_000 },
-  { cost: 1200, intervalMs: 5000 },
-  { cost: 4000, intervalMs: 2000 },
-  { cost: 12000, intervalMs: 800 },
-] as const
+export type HelperCurrency = 'erbstuecke' | 'sproesslinge' | 'vermaechtnis'
+
+/**
+ * Jonas stays through every reset, so the later ranks are paid in the
+ * currency of the layer they need: Erbstücke → Sprösslinge (Tiefer Winter)
+ * → Vermächtnis (Generation, Profi-Jonas).
+ */
+export const HELPER_RANKS: readonly { cost: number; currency: HelperCurrency; intervalMs: number }[] = [
+  { cost: 50, currency: 'erbstuecke', intervalMs: 30_000 },
+  { cost: 250, currency: 'erbstuecke', intervalMs: 12_000 },
+  { cost: 800, currency: 'erbstuecke', intervalMs: 5000 },
+  { cost: 20, currency: 'sproesslinge', intervalMs: 2000 },
+  { cost: 3, currency: 'vermaechtnis', intervalMs: 800 },
+]
 
 /** Frühlingsschub after every Saisonende / Tiefer Winter / Generation. */
 export const TURBO_MS = 2 * 60 * 1000
@@ -1290,10 +1297,10 @@ export function buyHelper(state: GameState): GameState {
   if (!helperUnlocked(state)) return state
   const rank = HELPER_RANKS[state.helperLevel]
   if (!rank) return state
-  if (state.erbstuecke < rank.cost) return state
+  if (state[rank.currency] < rank.cost) return state
   return {
     ...state,
-    erbstuecke: state.erbstuecke - rank.cost,
+    [rank.currency]: state[rank.currency] - rank.cost,
     helperLevel: state.helperLevel + 1,
     helperOn: true,
     lastSeen: Date.now(),
