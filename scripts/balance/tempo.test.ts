@@ -8,7 +8,7 @@
  * Ziel der Bindungs-Runde: Sitzung 1 ≤ 90 s Median (Pakete E/F).
  */
 import { describe, expect, it } from 'vitest'
-import { simulate } from '../../scripts/balance/sim'
+import { simulate } from './sim'
 
 describe('Tempo (Balance-Simulator)', () => {
   it('Dauerspieler 72 h: keine Saison zu kurz oder zu lang', () => {
