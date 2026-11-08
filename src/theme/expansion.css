@@ -2039,6 +2039,94 @@ html.tab-hidden .sky-event {
   }
 }
 
+/* —— Kapitel 10–12: Tierleben —— */
+.koi-swim {
+  width: calc(var(--u) * 4);
+  top: 60%;
+  left: 40%;
+  animation: koi-swim 14s ease-in-out infinite alternate;
+}
+
+.koi-swim.k1 { top: 64%; left: 52%; animation-delay: -6s; animation-direction: alternate-reverse; }
+
+@keyframes koi-swim {
+  from { transform: translateX(calc(var(--u) * -6)); }
+  49% { transform: translateX(calc(var(--u) * 6)) scaleX(1); }
+  50% { transform: translateX(calc(var(--u) * 6)) scaleX(-1); }
+  to { transform: translateX(calc(var(--u) * -6)) scaleX(-1); }
+}
+
+.heron {
+  width: calc(var(--u) * 4);
+  top: 54%;
+  left: 62%;
+  animation: sheep-bob 4s ease-in-out infinite;
+}
+
+.petal-fall {
+  position: absolute;
+  top: 18%;
+  width: 6px;
+  height: 4px;
+  border-radius: 50% 0;
+  background: #f7c6d9;
+  animation: petal-fall 9s linear infinite;
+}
+
+@keyframes petal-fall {
+  from { transform: translate(0, 0) rotate(0); opacity: 0; }
+  10% { opacity: 1; }
+  to { transform: translate(40px, 70vh) rotate(540deg); opacity: 0; }
+}
+
+.visitor {
+  width: calc(var(--u) * 2.4);
+  top: 84%;
+  left: 47%;
+  animation: visitor-walk 30s linear infinite;
+}
+
+.visitor.v1 { animation-delay: -10s; }
+.visitor.v2 { animation-delay: -20s; }
+
+@keyframes visitor-walk {
+  0% { transform: translate(0, 0); opacity: 0; }
+  5% { opacity: 1; }
+  45% { transform: translate(0, calc(var(--u) * -40)); }
+  55% { transform: translate(calc(var(--u) * 2), calc(var(--u) * -48)); opacity: 1; }
+  60%, 100% { transform: translate(calc(var(--u) * 2), calc(var(--u) * -48)); opacity: 0; }
+}
+
+.balloon {
+  width: calc(var(--u) * 2.4);
+  top: 70%;
+  left: 30%;
+  animation: balloon-rise 16s linear infinite;
+}
+
+.balloon.l1 { left: 66%; animation-delay: -8s; }
+
+@keyframes balloon-rise {
+  from { transform: translate(0, 0); opacity: 0; }
+  10% { opacity: 1; }
+  to { transform: translate(calc(var(--u) * 4), calc(var(--u) * -70)); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .koi-swim,
+  .heron,
+  .petal-fall,
+  .visitor,
+  .balloon {
+    animation: none !important;
+  }
+
+  .petal-fall,
+  .balloon {
+    display: none;
+  }
+}
+
 /* Kapitel 4–12: Motive füllen ihren Platz (Zeichnungen sitzen unten im viewBox) */
 .orchard-home:not(.chapter-obstwiese):not(.chapter-weinberg) .garden-plot .plot-visual svg {
   transform: scale(1.35);

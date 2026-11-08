@@ -11,7 +11,7 @@ type P = { id: string; tier: number; season?: Season }
 
 /* ————————————— small parts ————————————— */
 
-function Soil({ cx = 40, cy = 58, rx = 32, ry = 10, winter }: { cx?: number; cy?: number; rx?: number; ry?: number; winter?: boolean }) {
+export function Soil({ cx = 40, cy = 58, rx = 32, ry = 10, winter }: { cx?: number; cy?: number; rx?: number; ry?: number; winter?: boolean }) {
   return (
     <g>
       <ellipse cx={cx} cy={cy + 1.4} rx={rx + 1.5} ry={ry + 1.5} fill="#7a5a34" opacity=".55" />
@@ -21,7 +21,7 @@ function Soil({ cx = 40, cy = 58, rx = 32, ry = 10, winter }: { cx?: number; cy?
 }
 
 /** Raised wooden bed */
-function Bed({ x, y, w, h = 8, winter }: { x: number; y: number; w: number; h?: number; winter?: boolean }) {
+export function Bed({ x, y, w, h = 8, winter }: { x: number; y: number; w: number; h?: number; winter?: boolean }) {
   return (
     <g>
       <rect x={x} y={y} width={w} height={h} fill="#a5733f" stroke="#6e4a2b" strokeWidth=".7" />
@@ -31,7 +31,7 @@ function Bed({ x, y, w, h = 8, winter }: { x: number; y: number; w: number; h?: 
   )
 }
 
-function Flower({ x, y, c, r = 1.7, center = '#f5c542' }: { x: number; y: number; c: string; r?: number; center?: string }) {
+export function Flower({ x, y, c, r = 1.7, center = '#f5c542' }: { x: number; y: number; c: string; r?: number; center?: string }) {
   return (
     <g>
       <path d={`M${x} ${y + 4.5}v-4.5`} stroke="#4f7a2e" strokeWidth=".6" />
@@ -41,7 +41,7 @@ function Flower({ x, y, c, r = 1.7, center = '#f5c542' }: { x: number; y: number
   )
 }
 
-function Pot({ x, y, s = 1 }: { x: number; y: number; s?: number }) {
+export function Pot({ x, y, s = 1 }: { x: number; y: number; s?: number }) {
   return (
     <g transform={`translate(${x} ${y}) scale(${s})`}>
       <path d="M-4 0h8l-1.2 6h-5.6z" fill="#c4683a" stroke="#8a4220" strokeWidth=".5" />
@@ -50,7 +50,7 @@ function Pot({ x, y, s = 1 }: { x: number; y: number; s?: number }) {
   )
 }
 
-function Jar({ x, y, c = '#efe1c2', lid = '#8a6a40' }: { x: number; y: number; c?: string; lid?: string }) {
+export function Jar({ x, y, c = '#efe1c2', lid = '#8a6a40' }: { x: number; y: number; c?: string; lid?: string }) {
   return (
     <g>
       <rect x={x} y={y} width="4.2" height="5" rx="1" fill={c} stroke="#6e4a2b" strokeWidth=".45" />
@@ -69,7 +69,7 @@ function Bundle({ x, y, c }: { x: number; y: number; c: string }) {
   )
 }
 
-function Butterfly({ x, y, c = '#fbf6e8' }: { x: number; y: number; c?: string }) {
+export function Butterfly({ x, y, c = '#fbf6e8' }: { x: number; y: number; c?: string }) {
   return (
     <g className="bee">
       <path d={`M${x} ${y}c-2.4-2.6-4-1-3 1 1 1.4 3 0 3-1zM${x} ${y}c2.4-2.6 4-1 3 1-1 1.4-3 0-3-1z`} fill={c} stroke="#6e4a2b" strokeWidth=".3" />
@@ -77,7 +77,7 @@ function Butterfly({ x, y, c = '#fbf6e8' }: { x: number; y: number; c?: string }
   )
 }
 
-function Glasshouse({ x, w, h, roofH = 10, tint = '#cfe8f4', ground = 64, curved = false, alpha = 0.72 }: { x: number; w: number; h: number; roofH?: number; tint?: string; ground?: number; curved?: boolean; alpha?: number }) {
+export function Glasshouse({ x, w, h, roofH = 10, tint = '#cfe8f4', ground = 64, curved = false, alpha = 0.72 }: { x: number; w: number; h: number; roofH?: number; tint?: string; ground?: number; curved?: boolean; alpha?: number }) {
   const top = ground - h
   const panes = Math.max(2, Math.round(w / 6))
   return (
@@ -119,7 +119,7 @@ function Cactus({ x, y, h = 10, flower }: { x: number; y: number; h?: number; fl
   )
 }
 
-function Rock({ x, y, w = 12, h = 7, snow }: { x: number; y: number; w?: number; h?: number; snow?: boolean }) {
+export function Rock({ x, y, w = 12, h = 7, snow }: { x: number; y: number; w?: number; h?: number; snow?: boolean }) {
   return (
     <g>
       <path d={`M${x} ${y} L${x + w * 0.2} ${y - h} L${x + w * 0.62} ${y - h * 1.1} L${x + w} ${y}z`} fill="#a69a8a" stroke="#7a6e5e" strokeWidth=".6" />
@@ -129,7 +129,7 @@ function Rock({ x, y, w = 12, h = 7, snow }: { x: number; y: number; w?: number;
   )
 }
 
-function Conifer({ x, y, s = 1, snow }: { x: number; y: number; s?: number; snow?: boolean }) {
+export function Conifer({ x, y, s = 1, snow }: { x: number; y: number; s?: number; snow?: boolean }) {
   return (
     <g transform={`translate(${x} ${y}) scale(${s})`}>
       <rect x="-1" y="-3" width="2" height="3" fill="#6e4a2b" />
@@ -161,7 +161,7 @@ function Gentian({ x, y }: { x: number; y: number }) {
   )
 }
 
-function Bunting({ y = 26, n = 7, x0 = 4, x1 = 76 }: { y?: number; n?: number; x0?: number; x1?: number }) {
+export function Bunting({ y = 26, n = 7, x0 = 4, x1 = 76 }: { y?: number; n?: number; x0?: number; x1?: number }) {
   const step = (x1 - x0) / n
   return (
     <g>
@@ -176,7 +176,7 @@ function Bunting({ y = 26, n = 7, x0 = 4, x1 = 76 }: { y?: number; n?: number; x
   )
 }
 
-function Snowcap({ d }: { d: string }) {
+export function Snowcap({ d }: { d: string }) {
   return <path d={d} stroke="#fff" strokeWidth="2.2" fill="none" strokeLinecap="round" />
 }
 

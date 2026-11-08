@@ -603,6 +603,42 @@ export const ChapterBackdrop = memo(function ChapterBackdrop({ spec, stage }: { 
               ),
             )
           : null}
+        {spec.provence
+          ? [
+              [4, 44],
+              [96, 40],
+              [3, 72],
+              [97, 70],
+            ].map(([x, y], i) => <path key={`pv${i}`} d={`M${x} ${y} q-2 -4 0 -9 q2 5 0 9z`} fill="#2f5a3a" />)
+          : null}
+        {spec.japan ? (
+          <g>
+            <ellipse cx="50" cy="62" rx="20" ry="9" stroke="#e8e2d0" strokeWidth="2" fill="none" vectorEffect="non-scaling-stroke" opacity=".8" />
+            <ellipse cx="50" cy="62" rx="24" ry="11" stroke="#e8e2d0" strokeWidth="1.4" fill="none" vectorEffect="non-scaling-stroke" opacity=".6" />
+            {[
+              [5, 44],
+              [95, 42],
+              [6, 74],
+              [94, 72],
+            ].map(([x, y], i) => (
+              <ellipse key={i} cx={x} cy={y} rx="2.8" ry="1.3" fill={i % 2 ? '#c4402a' : '#a83a2a'} opacity=".85" />
+            ))}
+          </g>
+        ) : null}
+        {spec.showground
+          ? [
+              [5, 44, '#e0485e'],
+              [95, 42, '#f5c542'],
+              [5, 74, '#c77dd1'],
+              [95, 72, '#f08a2c'],
+            ].map(([x, y, c], i) => (
+              <g key={`sg${i}`}>
+                <ellipse cx={x as number} cy={y as number} rx="4.4" ry="2.1" fill="#4f8a3a" />
+                <ellipse cx={x as number} cy={y as number} rx="3.4" ry="1.5" fill={c as string} />
+                <ellipse cx={x as number} cy={y as number} rx="1.4" ry=".7" fill="#fbf6e8" />
+              </g>
+            ))
+          : null}
         {spec.water === 'lake' ? <ellipse cx="50" cy="62" rx="16" ry="7" fill="#6aa6c9" opacity="0.9" /> : null}
         {spec.water === 'river' ? (
           <path d="M100 58 C90 64 96 72 86 78 C78 84 84 92 76 100" stroke="#6aa6c9" strokeWidth="14" fill="none" vectorEffect="non-scaling-stroke" />
@@ -638,7 +674,64 @@ export const ChapterBackdrop = memo(function ChapterBackdrop({ spec, stage }: { 
               <path d="M38 18 L50 4 L64 20 L56 17 L50 22 L44 16z M136 16 L150 0 L166 18 L157 14 L150 20 L143 13z M250 20 L262 6 L276 22 L268 18 L262 24 L256 18z M364 20 L372 12 L382 20 L376 18z" fill="#fff" />
             </g>
           ) : null}
+          {spec.japan ? (
+            <g>
+              <path d="M150 60 L230 4 Q240 0 250 4 L330 60z" fill="#8a9aae" />
+              <path d="M216 14 L230 4 Q240 0 250 4 L264 14 L254 12 L246 18 L238 11 L228 17z" fill="#fff" />
+            </g>
+          ) : null}
           <path d="M0 60 V30 Q60 8 140 26 T280 18 T400 24 V60z" fill={spec.hills[0]} />
+          {spec.provence ? (
+            <g>
+              {[40, 60, 76, 340, 360].map((x, i) => (
+                <path key={i} d={`M${x} 48 q-5 -14 0 -30 q5 16 0 30z`} fill="#2f5a3a" />
+              ))}
+              <rect x="150" y="26" width="22" height="14" fill="#e8d4a8" />
+              <path d="M148 26 L161 18 L174 26z" fill="#c4553f" />
+              <rect x="176" y="22" width="26" height="18" fill="#efe1c2" />
+              <path d="M174 22 L189 14 L204 22z" fill="#c4553f" />
+              <rect x="206" y="10" width="10" height="30" fill="#e8d4a8" />
+              <path d="M204 10 L211 2 L218 10z" fill="#c4553f" />
+              <rect x="220" y="28" width="20" height="12" fill="#e8d4a8" />
+              <path d="M218 28 L230 20 L242 28z" fill="#c4553f" />
+            </g>
+          ) : null}
+          {spec.japan ? (
+            <g>
+              <rect x="56" y="30" width="16" height="16" fill="#a83a2a" />
+              <path d="M48 32 Q64 24 80 32z M50 22 Q64 14 78 22z M52 12 Q64 6 76 12z" fill="#3a3a3a" />
+              <rect x="58" y="22" width="12" height="8" fill="#a83a2a" />
+              <rect x="60" y="12" width="8" height="8" fill="#a83a2a" />
+              <path d="M64 6v-6" stroke="#3a3a3a" strokeWidth="1.6" />
+              {[320, 344, 370].map((x) => (
+                <circle key={x} cx={x} cy={32} r="11" fill="#c4402a" />
+              ))}
+            </g>
+          ) : null}
+          {spec.showground ? (
+            <g>
+              <circle cx="70" cy="24" r="20" fill="none" stroke="#fbf6e8" strokeWidth="2" />
+              {Array.from({ length: 8 }, (_, i) => {
+                const a = (i / 8) * Math.PI * 2
+                return (
+                  <g key={i}>
+                    <path d={`M70 24 L${70 + Math.cos(a) * 20} ${24 + Math.sin(a) * 20}`} stroke="#fbf6e8" strokeWidth="1" />
+                    <rect x={70 + Math.cos(a) * 20 - 3} y={24 + Math.sin(a) * 20} width="6" height="5" rx="1" fill={['#e0485e', '#3d6fd1', '#f5c542', '#5f9e45'][i % 4]} />
+                  </g>
+                )
+              })}
+              <path d="M60 50 L70 24 L80 50" stroke="#fbf6e8" strokeWidth="2" fill="none" />
+              <path d="M300 44 V26 L330 12 L360 26 V44z" fill="#fbf6e8" />
+              <path d="M300 26 L330 12 L360 26" stroke="#e2453c" strokeWidth="3" fill="none" />
+              {[150, 190, 230, 270].map((x, i) => (
+                <g key={x}>
+                  <path d={`M${x} 46 V14`} stroke="#8a6a40" strokeWidth="1.4" />
+                  <path d={`M${x} 14 l12 4 -12 4z`} fill={['#e0485e', '#3d6fd1', '#f5c542', '#c77dd1'][i]} />
+                </g>
+              ))}
+            </g>
+          ) : null}
+
           {spec.herbGarden ? (
             <g>
               <rect x="0" y="34" width="400" height="14" fill="#b8654a" />
