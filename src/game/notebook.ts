@@ -5,6 +5,7 @@
  *  - letters from Jonas / Ilse: their ranks and the first Generation
  * Persisted separately from the run save so letters survive Saisonende.
  */
+import { logPlaytest } from './playtestLog'
 import { useCallback, useEffect, useState } from 'react'
 
 export const NOTEBOOK_STORAGE_KEY = 'gartenerbe-notebook-v1'
@@ -162,7 +163,11 @@ export function useNotebook(stage: number, year: number, deep = 0, extra: Notebo
 
   const markRead = useCallback(
     (id: NotebookEntryId) => {
-      setBase((s) => (s.read.includes(id) ? s : { ...s, read: [...s.read, id] }))
+      setBase((s) => {
+        if (s.read.includes(id)) return s
+        logPlaytest('letter', { id })
+        return { ...s, read: [...s.read, id] }
+      })
     },
     [],
   )

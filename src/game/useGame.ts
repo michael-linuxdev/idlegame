@@ -160,7 +160,7 @@ import type { CareKind, ChapterId } from './chapters'
 import { CONTEST_KG } from './extrasCore'
 import type { LegacyId } from './generations'
 import { FEST_EARN } from './fests'
-import { logPlaytest } from './playtestLog'
+import { logPlaytest, registerPlaytestSnapshot } from './playtestLog'
 import { loadState, saveState } from './storage'
 
 /** Economy + React UI cadence. 100ms was overheating iPhone Safari PWAs. */
@@ -198,6 +198,26 @@ export function useGame() {
     stateRef.current = state
     dirtySaveRef.current = true
   }, [state])
+
+  // Playtest-Log: Fortschritts-Stand des Tages (nur wenn das Log an ist)
+  useEffect(() => {
+    registerPlaytestSnapshot(() => {
+      const s = stateRef.current
+      return {
+        saisons: s.prestiges,
+        tieferWinter: s.deepPrestiges,
+        generation: s.generation,
+        stufe: playerLevelOf(s),
+        erntePerS: Math.round(productionPerSecond(s)),
+        erbstuecke: s.erbstuecke,
+        samen: s.samen,
+        jonas: s.helperLevel,
+        kapitel: Object.values(s.chapters).filter((c) => c.openedAt > 0).length,
+        bereiche: Object.values(s.owned).filter((n) => n > 0).length,
+      }
+    })
+    return () => registerPlaytestSnapshot(null)
+  }, [])
 
   const [nowTick, setNowTick] = useState(() => Date.now())
 
@@ -379,10 +399,15 @@ export function useGame() {
   }, [])
 
   const spinWheel = useCallback((kind: WheelKind) => {
-    setState((s) => applyWheel(s, kind))
+    setState((s) => {
+      const next = applyWheel(s, kind)
+      if (next !== s) logPlaytest('wheel', { kind })
+      return next
+    })
   }, [])
 
   const refillWater = useCallback(() => {
+    logPlaytest('water_refill', { source: 'free' })
     setState((s) => ({ ...s, lastTapAt: 0 }))
   }, [])
 
@@ -461,36 +486,58 @@ export function useGame() {
     const roll = Math.random()
     const r = decideWeather(stateRef.current, choice, Date.now(), roll)
     if (r.state === stateRef.current) return true
+    logPlaytest('weather_choice', { choice, good: r.good })
     setState((s) => decideWeather(s, choice, Date.now(), roll).state)
     return r.good
   }, [])
 
   const claimStamp = useCallback((id: AlbumStat) => {
-    setState((s) => claimAlbumStamp(s, id))
+    setState((s) => {
+      const next = claimAlbumStamp(s, id)
+      if (next !== s) logPlaytest('album', { id })
+      return next
+    })
   }, [])
 
   const buildProject = useCallback((id: ProjectId) => {
-    setState((s) => buildProjectStage(s, id))
+    setState((s) => {
+      const next = buildProjectStage(s, id)
+      if (next !== s) logPlaytest('project', { id })
+      return next
+    })
   }, [])
 
   const crossStart = useCallback((a: string, b: string) => {
-    setState((s) => startCrossing(s, a, b))
+    setState((s) => {
+      const next = startCrossing(s, a, b)
+      if (next !== s) logPlaytest('crossing', { action: 'start', a, b })
+      return next
+    })
   }, [])
 
   const crossSkip = useCallback(() => {
-    setState((s) => skipCrossing(s))
+    setState((s) => {
+      const next = skipCrossing(s)
+      if (next !== s) logPlaytest('crossing', { action: 'skip' })
+      return next
+    })
   }, [])
 
   /** Harvest the crossing; returns the result for the reveal. */
   const crossHarvest = useCallback((): { hybrid: string | null; samen: number } | null => {
     const r = harvestCrossing(stateRef.current)
     if (r.state === stateRef.current) return null
+    logPlaytest('crossing', { action: 'harvest', id: r.hybrid, samen: r.samen })
     setState((s) => harvestCrossing(s).state)
     return { hybrid: r.hybrid, samen: r.samen }
   }, [])
 
   const letResidentIn = useCallback((id: ResidentId) => {
-    setState((s) => spawnResident(s, id))
+    setState((s) => {
+      const next = spawnResident(s, id)
+      if (next !== s) logPlaytest('resident', { action: 'arrive', id })
+      return next
+    })
   }, [])
 
   const residentLeft = useCallback(() => {
@@ -501,16 +548,25 @@ export function useGame() {
   const greetVisitorAnimal = useCallback((): { first: boolean; ernte: number } | null => {
     const r = greetResident(stateRef.current)
     if (r.state === stateRef.current) return null
+    logPlaytest('resident', { action: 'greet', first: r.first })
     setState((s) => greetResident(s).state)
     return { first: r.first, ernte: r.ernte }
   }, [])
 
   const purchaseDecor = useCallback((id: DecorId) => {
-    setState((s) => buyDecor(s, id))
+    setState((s) => {
+      const next = buyDecor(s, id)
+      if (next !== s) logPlaytest('decor', { action: 'buy', id })
+      return next
+    })
   }, [])
 
   const setDecor = useCallback((slot: number, id: DecorId | null) => {
-    setState((s) => placeDecor(s, slot, id))
+    setState((s) => {
+      const next = placeDecor(s, slot, id)
+      if (next !== s) logPlaytest('decor', { action: id ? 'place' : 'remove', id: id ?? undefined, slot })
+      return next
+    })
   }, [])
 
   const switchHelperArea = useCallback((id: GeneratorId) => {
@@ -694,7 +750,11 @@ export function useGame() {
   }, [])
 
   const buyWaterRefill = useCallback(() => {
-    setState((s) => refillWateringCan(s))
+    setState((s) => {
+      const next = refillWateringCan(s)
+      if (next !== s) logPlaytest('water_refill', { source: 'samen', samen: next.samen })
+      return next
+    })
   }, [])
 
   const claimBpDailyXp = useCallback(() => {

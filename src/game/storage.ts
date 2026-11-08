@@ -28,6 +28,7 @@ import { emptyRecipe, ILSE_RANKS, type ContestResult, type Recipe, type SkyEvent
 import { GENERATOR_IDS as GEN_IDS } from './generators'
 import { EMPTY_LEGACY, type LegacyUpgrades } from './generations'
 import { VARIETIES, type WheelBuff } from './gardenLife'
+import { freePlaytestSpace } from './playtestLog'
 
 const COSMETIC_IDS = new Set(COSMETICS.map((c) => c.id))
 
@@ -681,7 +682,13 @@ export function saveState(state: GameState): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...state, saveVersion: SAVE_VERSION }))
   } catch {
-    // Quota / private mode — ignore for MVP
+    // Platz knapp: zuerst das Playtest-Log freigeben, Spielstand geht vor
+    try {
+      freePlaytestSpace()
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...state, saveVersion: SAVE_VERSION }))
+    } catch {
+      /* private mode */
+    }
   }
 }
 

@@ -7,6 +7,7 @@ import { FTUE_STORAGE_KEY } from './ftue'
 import { NOTEBOOK_STORAGE_KEY } from './notebook'
 import { STORAGE_KEY } from './state'
 import { lockSaves, parseSave } from './storage'
+import { saveFile, type SaveResult } from './saveFile'
 
 const PREFIX = 'GARTENERBE1:'
 const KEYS = [STORAGE_KEY, NOTEBOOK_STORAGE_KEY, EXTRAS_STORAGE_KEY, FTUE_STORAGE_KEY] as const
@@ -77,13 +78,8 @@ export function applyBundle(bundle: Bundle): void {
   window.location.reload()
 }
 
-export function downloadBackup(code: string, now = Date.now()): void {
+export function downloadBackup(code: string, now = Date.now()): Promise<SaveResult> {
   const d = new Date(now)
   const name = `gartenerbe-spielstand-${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}.txt`
-  const url = URL.createObjectURL(new Blob([code], { type: 'text/plain' }))
-  const a = document.createElement('a')
-  a.href = url
-  a.download = name
-  a.click()
-  window.setTimeout(() => URL.revokeObjectURL(url), 1000)
+  return saveFile(name, code, 'text/plain')
 }
