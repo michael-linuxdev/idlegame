@@ -930,7 +930,7 @@ export const strings = {
     label: 'Erinnerungen',
     on: 'An',
     off: 'Aus',
-    hint: 'Benachrichtigt dich, wenn die Gießkanne voll ist (solange die App im Hintergrund geöffnet ist).',
+    hint: 'Benachrichtigt dich höchstens alle 4 Stunden, wenn die Gießkanne voll ist (solange die App im Hintergrund geöffnet ist).',
     water: 'Die Gießkanne ist wieder voll — Zeit zum Gießen!',
     denied: 'Benachrichtigungen sind im Browser blockiert.',
   },

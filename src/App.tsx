@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { AppNav, type Tab } from './components/AppNav'
 import { ClanPanel } from './components/ClanPanel'
 import { GardenMap } from './components/GardenMap'
@@ -18,7 +18,7 @@ import { SeasonCeremony } from './components/story/SeasonCeremony'
 import { LegalSheet } from './components/LegalSheet'
 import { SaveSheet } from './components/SaveSheet'
 import { ComebackLetter, COMEBACK_SEEDS } from './components/story/ComebackLetter'
-import { useExtras } from './game/extras'
+import { useExtras, waterReminderDelay } from './game/extras'
 import { armAmbienceOnFirstGesture } from './game/ambience'
 import { t } from './i18n'
 import './App.css'
@@ -82,16 +82,24 @@ export default function App() {
     }
   }, [updateExtras])
 
-  // Reminder: Gießkanne full while the app sits in the background
-  const waterLeft = game.tapCooldownLeftMs
+  // Reminder: Gießkanne full while the app sits in the background —
+  // at most every 4 h and never on a quick app switch (waterReminderDelay)
+  const waterLeftRef = useRef(game.tapCooldownLeftMs)
+  const lastWaterNotifyRef = useRef(extras.lastWaterNotify)
+  useEffect(() => {
+    waterLeftRef.current = game.tapCooldownLeftMs
+    lastWaterNotifyRef.current = extras.lastWaterNotify
+  })
   useEffect(() => {
     if (!extras.notify || typeof Notification === 'undefined') return
     let timer: number | undefined
     const onVis = () => {
       window.clearTimeout(timer)
       if (!document.hidden || Notification.permission !== 'granted') return
-      const delay = Math.max(1000, waterLeft)
+      const delay = waterReminderDelay(Date.now(), lastWaterNotifyRef.current, waterLeftRef.current)
       timer = window.setTimeout(() => {
+        if (!document.hidden) return
+        updateExtras((s) => ({ ...s, lastWaterNotify: Date.now() }))
         const body = t.reminders.water
         navigator.serviceWorker?.ready
           .then((reg) => reg.showNotification(t.brand, { body, icon: './pwa-192.png', tag: 'water' }))
@@ -103,7 +111,7 @@ export default function App() {
       window.clearTimeout(timer)
       document.removeEventListener('visibilitychange', onVis)
     }
-  }, [extras.notify, waterLeft])
+  }, [extras.notify, updateExtras])
 
   const toggleReminders = useCallback(async () => {
     if (extras.notify) {
