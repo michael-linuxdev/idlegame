@@ -174,10 +174,6 @@
   animation: plot-ready 1.8s ease-in-out infinite;
 }
 
-.garden-plot.producing:not(.selected) .plot-visual {
-  animation: plot-breathe 4s ease-in-out infinite;
-}
-
 /* Wooden plant sign */
 .plot-sign {
   display: flex;
@@ -244,20 +240,11 @@
   }
 }
 
-@keyframes plot-breathe {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.015);
-  }
-}
-
 /* —— Ambient life —— */
 
 .decor-butterfly {
   animation: butterfly-drift 11s ease-in-out infinite alternate;
+  will-change: transform;
 }
 
 .decor-butterfly.b2 {
@@ -277,16 +264,16 @@
 
 @keyframes butterfly-drift {
   0% {
-    transform: translate(-50%, -50%) translate(0, 0);
+    transform: translate(-50%, -50%);
   }
   33% {
-    transform: translate(-50%, -50%) translate(calc(var(--u) * 9), calc(var(--u) * -5));
+    transform: translate(175%, -175%);
   }
   66% {
-    transform: translate(-50%, -50%) translate(calc(var(--u) * -6), calc(var(--u) * -10));
+    transform: translate(-200%, -300%);
   }
   100% {
-    transform: translate(-50%, -50%) translate(calc(var(--u) * 5), calc(var(--u) * 4));
+    transform: translate(75%, 50%);
   }
 }
 
@@ -299,17 +286,15 @@
   }
 }
 
-.garden-bulb {
+/* Lights pulse as one composited layer, not per SVG circle. */
+.garden-lights {
   animation: bulb-glow 2.6s ease-in-out infinite alternate;
-}
-
-.garden-bulb:nth-child(odd) {
-  animation-delay: -1.3s;
+  will-change: opacity;
 }
 
 @keyframes bulb-glow {
   from {
-    opacity: 0.55;
+    opacity: 0.7;
   }
   to {
     opacity: 1;
@@ -320,54 +305,18 @@
   .garden-plot .plot-visual,
   .decor-butterfly,
   .decor-butterfly > svg,
-  .garden-bulb {
+  .garden-lights {
     animation: none !important;
   }
 }
 
 /* —— Module art life —— */
 
-.module-art .ma-bee {
-  animation: bee-buzz 2.4s ease-in-out infinite alternate;
-}
-
-.module-art .ma-bee:nth-of-type(2n) {
-  animation-duration: 3.1s;
-  animation-delay: -1.2s;
-}
-
-.module-art .ma-steam {
-  animation: steam-rise 3.4s ease-in-out infinite;
-}
+/* Bees and compost steam stay static: animating SVG children runs on the
+   main thread every frame (measured ~9 % of a throttled CPU). */
 
 .module-art.tier-up {
   animation: tier-pop 0.9s cubic-bezier(0.2, 1.4, 0.4, 1);
-}
-
-@keyframes bee-buzz {
-  0% {
-    transform: translate(0, 0);
-  }
-  50% {
-    transform: translate(4px, -3px);
-  }
-  100% {
-    transform: translate(-3px, 2px);
-  }
-}
-
-@keyframes steam-rise {
-  0% {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-  40% {
-    opacity: 0.7;
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(-6px);
-  }
 }
 
 @keyframes tier-pop {
@@ -385,9 +334,105 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .module-art .ma-bee,
-  .module-art .ma-steam,
   .module-art.tier-up {
     animation: none !important;
+  }
+}
+
+/* —— Plot bursts —— */
+.plot-fx {
+  position: absolute;
+  left: 50%;
+  top: 55%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.plot-fx > span {
+  position: absolute;
+  left: -5px;
+  top: -4px;
+  width: 10px;
+  height: 7px;
+  border-radius: 0 70% 0 70%;
+  background: #5f9e45;
+  animation: plot-burst 1.1s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+}
+
+.plot-fx > span:nth-child(3n) {
+  background: #7a5a3a;
+  height: 3px;
+  border-radius: 2px;
+}
+
+.plot-fx > span:nth-child(3n + 1) {
+  background: #8fcf5f;
+}
+
+.plot-fx.fx-plant > span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #fff3a0;
+  box-shadow: 0 0 6px 2px rgba(255, 236, 140, 0.9);
+}
+
+@keyframes plot-burst {
+  0% {
+    transform: rotate(var(--a)) translateY(0) scale(0.6);
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(var(--a)) translateY(calc(-60px * var(--d))) scale(1);
+    opacity: 0;
+  }
+}
+
+/* —— Harvest flying into the basket —— */
+.harvest-flight {
+  position: fixed;
+  inset: 0;
+  z-index: 8;
+  pointer-events: none;
+}
+
+.harvest-wave {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+.harvest-wave > span {
+  position: absolute;
+  left: -6px;
+  top: -6px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(61, 47, 31, 0.6);
+  opacity: 0;
+  animation: harvest-fly 0.8s cubic-bezier(0.5, 0, 0.75, 0.4) forwards;
+}
+
+@keyframes harvest-fly {
+  0% {
+    opacity: 1;
+    transform: translate(var(--ox), 0) scale(1);
+  }
+  40% {
+    transform: translate(calc(var(--ox) + var(--dx) * 0.3), calc(var(--dy) * 0.25 - 50px)) scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(var(--dx), var(--dy)) scale(0.5);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plot-fx,
+  .harvest-flight {
+    display: none;
   }
 }

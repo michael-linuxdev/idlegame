@@ -95,3 +95,9 @@ strong {
   font-weight: 600;
   color: var(--oc-ink);
 }
+
+/* Pinch-zoom stays available (WCAG 1.4.4); double-tap zoom is disabled so
+   fast taps on Gießen / Ausbauen never zoom the page. */
+html {
+  touch-action: manipulation;
+}

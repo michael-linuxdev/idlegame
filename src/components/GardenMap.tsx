@@ -32,6 +32,8 @@ import { ModuleArt } from '../theme/ModuleArt'
 import { ClearedPlot, WildPlot } from '../theme/PlotArt'
 import { FloatPops, type FloatPopItem } from './FloatPops'
 import { BottomBar } from './hud/BottomBar'
+import { PlotFx } from './PlotFx'
+import { useHarvestFlight } from './HarvestFlight'
 import { EventPills } from './hud/EventPills'
 import { GoalStrip, type HudGoal } from './hud/GoalStrip'
 import {
@@ -106,6 +108,7 @@ export function GardenMap({
   const totalMult = multiplier * levelMult * clanMult * eventMult
   const skinClass = equippedCosmetic?.accentClass ?? 'skin-wiese'
   const ambient = useAmbient()
+  const harvest = useHarvestFlight()
   const gardenStage = GENERATORS.filter(
     (g) => (state.owned[g.id] ?? 0) > 0 && game.unlocked(g.id),
   ).length
@@ -332,6 +335,7 @@ export function GardenMap({
   }, [playerLevel.level, pushPop])
 
   function claimOffline() {
+    harvest.launch(document.querySelector('.hud-claim'))
     const amount = game.offlineGained ?? 0
     const xp = xpFromOfflineClaim(amount)
     game.dismissOffline()
@@ -351,6 +355,7 @@ export function GardenMap({
 
   function onRake() {
     if (!tapReady) return
+    harvest.launch(document.querySelector('.hud-water'))
     const before = state.ash
     playSfx('tap')
     logPlaytest('schub')
@@ -362,6 +367,7 @@ export function GardenMap({
   }
 
   function claimDaily() {
+    harvest.launch(document.querySelector('.hud-claim'))
     const preview = game.dailyPreview
     const bits: string[] = []
     if (preview.compute > 0) bits.push(t.daily.rewardCompute(formatAsh(preview.compute)))
@@ -457,6 +463,7 @@ export function GardenMap({
       </header>
 
       <FloatPops items={pops} onDone={removePop} />
+      {harvest.layer}
 
       {claimFlash ? (
         <div className="hud-toast" role="status">
@@ -557,6 +564,7 @@ export function GardenMap({
                     />
                   )}
                 </span>
+                <PlotFx unlocked={unlocked} planted={level > 0} />
                 {showSign ? (
                   <span className="plot-sign">
                     <span className="plot-name">{def.name}</span>

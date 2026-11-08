@@ -52,7 +52,10 @@ export default function App() {
 
   return (
     <div className="app-shell">
-      <main className={`app-main${tab === 'fortress' ? ' map-mode' : ''}`}>
+      <main
+        className={`app-main${tab === 'fortress' ? ' map-mode' : ''}`}
+        tabIndex={tab === 'fortress' ? undefined : 0}
+      >
         {tab === 'fortress' ? (
           <GardenMap
             game={game}

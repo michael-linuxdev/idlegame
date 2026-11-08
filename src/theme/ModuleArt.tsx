@@ -5,7 +5,7 @@
  * what came before and adds to it, so the garden visibly fills up.
  * All art shares the 100×86 plot viewBox with PlotArt (shadow at y≈76).
  */
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { memo, useEffect, useRef, useState, type ReactNode } from 'react'
 import type { GeneratorId } from '../game/generators'
 import { moduleTier } from './tiers'
 
@@ -995,7 +995,7 @@ function renderModule(id: GeneratorId, tier: number, producing: boolean): ReactN
   }
 }
 
-export function ModuleArt({ id, level, producing = false, selected = false }: Props) {
+function ModuleArtImpl({ id, level, producing = false, selected = false }: Props) {
   const tier = Math.max(1, moduleTier(level))
   const prevTier = useRef(tier)
   const [tierUp, setTierUp] = useState(false)
@@ -1022,3 +1022,11 @@ export function ModuleArt({ id, level, producing = false, selected = false }: Pr
     </svg>
   )
 }
+
+/** Memoized on tier (not raw level) so per-level buys don't redraw the SVG. */
+export const ModuleArt = memo(ModuleArtImpl, (a, b) =>
+  a.id === b.id &&
+  moduleTier(a.level) === moduleTier(b.level) &&
+  a.producing === b.producing &&
+  a.selected === b.selected,
+)
