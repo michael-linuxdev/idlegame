@@ -193,7 +193,7 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
       <div className={`garden-stage orchard-stage stage-${chapter}`} data-daypart={ambient.daypart} data-season={ambient.season}>
         <div className="garden-map" role="application" aria-label={copy.title}>
           <Backdrop chapter={chapter} stage={stage} />
-          <ChapterCritters chapter={chapter} daypart={ambient.daypart} />
+          <ChapterCritters chapter={chapter} daypart={ambient.daypart} season={ambient.season} />
           {state.ilseLevel > 0 && state.ilseOn ? (
             <>
               <HelperWalker variant="ilse" />

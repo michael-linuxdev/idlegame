@@ -1,13 +1,14 @@
 /**
  * Hand-drawn art for Kapitel 4–6 (Bauernhof, Imkerei, Teich) — Kapitel 7–9 live
- * in HandArtA.tsx. One motif per area with visible growth over the five tiers
- * (1 / 10 / 25 / 50 / 100). Other chapters use the generic ChapterArt.
+ * in HandArtA.tsx, Kapitel 10–12 in HandArtB.tsx. One motif per area with
+ * visible growth over the five tiers (1 / 10 / 25 / 50 / 100).
  */
 import { memo, type ReactNode } from 'react'
 import type { ChapterId } from '../game/chapters'
 import type { Season } from './ambient'
 import { moduleTier } from './tiers'
 import { Alm, Botanik, Kraeuter, WildA } from './HandArtA'
+import { Gartenschau, Japan, Lavendel, WildB } from './HandArtB'
 
 import { Svg, Shadow, Meadow, Fence, Cow, Goat, Pig, Bird, Roof, Window, Smoke, Crate, Pond, Lily, Reed, Fish, Boat, Hive, Bees, BlossomTree, House } from './HandParts'
 
@@ -547,6 +548,9 @@ const HAND: Partial<Record<ChapterId, (p: { id: string; tier: number; season?: S
   kraeuter: Kraeuter,
   botanik: Botanik,
   alm: Alm,
+  lavendel: Lavendel,
+  japangarten: Japan,
+  gartenschau: Gartenschau,
 }
 
 export const HandArt = memo(function HandArt({
@@ -568,6 +572,7 @@ export const HandArt = memo(function HandArt({
 /** Locked corner, per chapter: brambles + rubble (Hof), dead wood (Imkerei), mud + reeds (Teich). */
 export function HandWild({ chapter, seed = 0 }: { chapter: ChapterId; seed?: number }) {
   if (chapter === 'kraeuter' || chapter === 'botanik' || chapter === 'alm') return <WildA chapter={chapter} seed={seed} />
+  if (chapter === 'lavendel' || chapter === 'japangarten' || chapter === 'gartenschau') return <WildB chapter={chapter} seed={seed} />
   if (chapter === 'teich') {
     return (
       <Svg>
