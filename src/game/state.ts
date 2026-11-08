@@ -45,6 +45,7 @@ import {
 } from './chapters'
 import { milestonesReached, nextMilestone } from './generators'
 import { decorDef, emptySlots, type DecorId } from './decor'
+import { CROSS_MISS_SAMEN, CROSS_MS, CROSS_SKIP_SAMEN, hybridFor, hybridsMult, type Crossing, type HybridId } from './crossing'
 import { RESIDENT_FIRST_SAMEN, RESIDENT_GAP_MS, RESIDENT_REPEAT_SEC, RESIDENT_STAY_MS, residentsMult, type ResidentId, type ResidentVisit } from './residents'
 import {
   CONTEST_REWARDS,
@@ -317,6 +318,10 @@ export interface GameState {
   residentNow: ResidentVisit | null
   /** No new visitor before this time */
   residentNextAt: number
+  /** Saatgut kreuzen: the running crossing */
+  crossing: Crossing | null
+  /** Kreuzungen found (forever) */
+  hybrids: HybridId[]
   /** Helper time carry (ms) between buys */
   helperCarryMs: number
   /** Transient: buys the helper made while away (for the offline toast) */
@@ -396,6 +401,10 @@ export interface ExpansionSlice {
   residentNow: ResidentVisit | null
   /** No new visitor before this time */
   residentNextAt: number
+  /** Saatgut kreuzen: the running crossing */
+  crossing: Crossing | null
+  /** Kreuzungen found (forever) */
+  hybrids: HybridId[]
   helperCarryMs: number
   helperReport: number
   turboEndsAt: number
@@ -432,6 +441,8 @@ export function emptyExpansion(now = Date.now()): ExpansionSlice {
     residentsSeen: {},
     residentNow: null,
     residentNextAt: 0,
+    crossing: null,
+    hybrids: [],
     helperCarryMs: 0,
     helperReport: 0,
     turboEndsAt: 0,
@@ -470,6 +481,8 @@ export function pickExpansion(s: GameState): ExpansionSlice {
     residentsSeen: s.residentsSeen,
     residentNow: s.residentNow,
     residentNextAt: s.residentNextAt,
+    crossing: s.crossing,
+    hybrids: s.hybrids,
     helperCarryMs: 0,
     helperReport: 0,
     turboEndsAt: s.turboEndsAt,
@@ -839,7 +852,7 @@ export function turboMult(state: GameState, now = Date.now()): number {
 
 /** Permanent multipliers from Kapitel 2 and Generationen (shown in HUD). */
 export function expansionGardenMult(state: GameState): number {
-  return chaptersGardenMult(state.chapters) * legacyGardenMult(state.legacy) * residentsMult(state.residentsSeen)
+  return chaptersGardenMult(state.chapters) * legacyGardenMult(state.legacy) * residentsMult(state.residentsSeen) * hybridsMult(state.hybrids)
 }
 
 export function productionPerSecond(state: GameState, now = Date.now()): number {
@@ -1336,6 +1349,33 @@ export function buyHelper(state: GameState): GameState {
     helperLevel: state.helperLevel + 1,
     helperOn: true,
     lastSeen: Date.now(),
+  }
+}
+
+/* ——— Saatgut kreuzen ——— */
+
+export function startCrossing(state: GameState, a: string, b: string, now = Date.now()): GameState {
+  if (state.crossing || a === b) return state
+  if (!state.collection.includes(a) || !state.collection.includes(b)) return state
+  return { ...state, crossing: { a, b, endsAt: now + CROSS_MS } }
+}
+
+/** Finish the wait right away for a few Samen. */
+export function skipCrossing(state: GameState, now = Date.now()): GameState {
+  if (!state.crossing || state.crossing.endsAt <= now || state.samen < CROSS_SKIP_SAMEN) return state
+  return { ...state, samen: state.samen - CROSS_SKIP_SAMEN, crossing: { ...state.crossing, endsAt: now } }
+}
+
+/** Harvest a finished crossing: a new Kreuzung, or a handful of Samen. */
+export function harvestCrossing(state: GameState, now = Date.now()): { state: GameState; hybrid: HybridId | null; samen: number } {
+  const c = state.crossing
+  if (!c || c.endsAt > now) return { state, hybrid: null, samen: 0 }
+  const hybrid = hybridFor(c.a, c.b, state.hybrids)
+  const samen = hybrid ? 0 : CROSS_MISS_SAMEN
+  return {
+    hybrid,
+    samen,
+    state: { ...state, crossing: null, hybrids: hybrid ? [...state.hybrids, hybrid] : state.hybrids, samen: state.samen + samen },
   }
 }
 

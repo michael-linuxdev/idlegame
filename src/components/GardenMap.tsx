@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { CrossSheet } from './CrossSheet'
+import { crossingUnlocked } from '../game/crossing'
 import { Residents } from './Residents'
 import { DecorLayer } from './DecorLayer'
 import { DecorSheet } from './DecorSheet'
@@ -172,6 +174,7 @@ export function GardenMap({
   const skinClass = previewDef?.accentClass ?? equippedCosmetic?.accentClass ?? 'skin-wiese'
   const [recipeOpen, setRecipeOpen] = useState(false)
   const [decorOpen, setDecorOpen] = useState(false)
+  const [crossOpen, setCrossOpen] = useState(false)
   const [decorEdit, setDecorEdit] = useState(false)
   const [wishOpen, setWishOpen] = useState(false)
   const [growing, setGrowing] = useState<string | null>(null)
@@ -712,8 +715,23 @@ export function GardenMap({
         />
       ) : null}
 
-      {state.helperLevel > 0 || game.openChapters.length > 0 || decorUnlocked(state) ? (
+      {state.helperLevel > 0 || game.openChapters.length > 0 || decorUnlocked(state) || crossingUnlocked(state.collection) ? (
         <div className="map-side">
+          {crossingUnlocked(state.collection) && !photoMode ? (
+            <button
+              type="button"
+              className={`map-side-btn cross-btn${state.crossing && state.crossing.endsAt <= game.nowTick ? ' has-new' : ''}`}
+              onClick={() => setCrossOpen(true)}
+              aria-label={t.crossing.openAria}
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 22V11" stroke="#4f7a2e" strokeWidth="2" strokeLinecap="round" />
+                <path d="M12 13Q5 12 5 5q7 0 7 8z" fill="#7fbf5a" />
+                <path d="M12 11q7-1 7-8-7 0-7 8z" fill="#5f9e45" />
+                <circle cx="17.5" cy="17" r="3" fill="#e0485e" />
+              </svg>
+            </button>
+          ) : null}
           {decorUnlocked(state) && !photoMode ? (
             <button type="button" className="map-side-btn decor-btn" onClick={() => setDecorOpen(true)} aria-label={t.decor.openAria}>
               <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -923,6 +941,7 @@ export function GardenMap({
         />
       ) : null}
 
+      {crossOpen ? <CrossSheet game={game} onClose={() => setCrossOpen(false)} onToast={showToast} /> : null}
       {decorOpen ? (
         <DecorSheet
           game={game}

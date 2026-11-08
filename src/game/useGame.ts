@@ -139,6 +139,9 @@ import {
   buyDecor,
   placeDecor,
   spawnResident,
+  startCrossing,
+  skipCrossing,
+  harvestCrossing,
   residentGone,
   greetResident,
   turboMult,
@@ -435,6 +438,22 @@ export function useGame() {
       if (next !== s) logPlaytest('upgrade', { id: 'helper', level: next.helperLevel, kind: 'helper' })
       return next
     })
+  }, [])
+
+  const crossStart = useCallback((a: string, b: string) => {
+    setState((s) => startCrossing(s, a, b))
+  }, [])
+
+  const crossSkip = useCallback(() => {
+    setState((s) => skipCrossing(s))
+  }, [])
+
+  /** Harvest the crossing; returns the result for the reveal. */
+  const crossHarvest = useCallback((): { hybrid: string | null; samen: number } | null => {
+    const r = harvestCrossing(stateRef.current)
+    if (r.state === stateRef.current) return null
+    setState((s) => harvestCrossing(s).state)
+    return { hybrid: r.hybrid, samen: r.samen }
   }, [])
 
   const letResidentIn = useCallback((id: ResidentId) => {
@@ -877,6 +896,9 @@ export function useGame() {
     switchHelperArea,
     purchaseDecor,
     letResidentIn,
+    crossStart,
+    crossSkip,
+    crossHarvest,
     residentLeft,
     greetVisitorAnimal,
     setDecor,
