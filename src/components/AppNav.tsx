@@ -20,6 +20,9 @@ interface Props {
   onOpenPhoto?: () => void
   onOpenProjects?: () => void
   onOpenAlbum?: () => void
+  onOpenDecor?: () => void
+  onOpenCross?: () => void
+  crossReady?: boolean
   albumReady?: number
   unreadLetters?: number
   reminders?: boolean
@@ -78,6 +81,9 @@ export function AppNav({
   onOpenPhoto,
   onOpenProjects,
   onOpenAlbum,
+  onOpenDecor,
+  onOpenCross,
+  crossReady = false,
   albumReady = 0,
   unreadLetters = 0,
   reminders = false,
@@ -214,6 +220,45 @@ export function AppNav({
               {unreadLetters > 0 ? <span className="nav-new-dot" aria-label={t.notebook.newLetter} /> : null}
             </button>
           ) : null}
+          {onOpenDecor ? (
+            <button
+              type="button"
+              role="menuitem"
+              className="nav-menu-item"
+              onClick={() => {
+                setMenuOpen(false)
+                onOpenDecor()
+              }}
+            >
+              <span className="tab-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true" width="16" height="16">
+                  <path d="M7 21l1-8h8l1 8z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+                  <path d="M8.6 9L12 2l3.4 7z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+                </svg>
+              </span>
+              <span className="tab-label">{t.decor.title}</span>
+            </button>
+          ) : null}
+          {onOpenCross ? (
+            <button
+              type="button"
+              role="menuitem"
+              className={`nav-menu-item${crossReady ? ' has-new' : ''}`}
+              onClick={() => {
+                setMenuOpen(false)
+                onOpenCross()
+              }}
+            >
+              <span className="tab-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true" width="16" height="16">
+                  <path d="M12 22V11" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                  <path d="M12 13Q5 12 5 5q7 0 7 8zM12 11q7-1 7-8-7 0-7 8z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+                </svg>
+              </span>
+              <span className="tab-label">{t.crossing.title}</span>
+              {crossReady ? <span className="nav-new-dot" aria-hidden="true" /> : null}
+            </button>
+          ) : null}
           {onOpenAlbum ? (
             <button
               type="button"
@@ -225,7 +270,7 @@ export function AppNav({
               }}
             >
               <span className="tab-icon">
-                <svg viewBox="0 0 24 24" aria-hidden="true" width="22" height="22">
+                <svg viewBox="0 0 24 24" aria-hidden="true" width="16" height="16">
                   <rect x="4" y="3" width="16" height="18" rx="2" fill="none" stroke="currentColor" strokeWidth="2" />
                   <circle cx="12" cy="11" r="3.4" fill="none" stroke="currentColor" strokeWidth="2" />
                   <path d="M8 17h8" stroke="currentColor" strokeWidth="2" />
@@ -246,7 +291,7 @@ export function AppNav({
               }}
             >
               <span className="tab-icon">
-                <svg viewBox="0 0 24 24" aria-hidden="true" width="22" height="22">
+                <svg viewBox="0 0 24 24" aria-hidden="true" width="16" height="16">
                   <path d="M3 21h18M5 21V10l7-6 7 6v11" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
                   <path d="M10 21v-6h4v6" fill="none" stroke="currentColor" strokeWidth="2" />
                 </svg>
@@ -378,7 +423,7 @@ export function AppNav({
 
       <button
         type="button"
-        className={`menu-fab${menuOpen || !homeActive ? ' active' : ''}${ftueMenu ? ' ftue-tab' : ''}`}
+        className={`menu-fab${menuOpen || !homeActive ? ' active' : ''}${ftueMenu ? ' ftue-tab' : ''}${!menuOpen && (crossReady || albumReady > 0) ? ' has-new' : ''}`}
         aria-haspopup="menu"
         aria-expanded={menuOpen}
         aria-controls={menuOpen ? menuId : undefined}
