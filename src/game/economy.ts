@@ -358,10 +358,24 @@ export function tapBonusSeconds(upgrades: EmberUpgrades): number {
   return TAP_BONUS_SECONDS + upgrades.tapMastery * 15
 }
 
-/** Soft wallet granted at the start of a prestige run. */
+/**
+ * Soft wallet granted at the start of a prestige run (Seed-Purse meta).
+ * Callers must still floor against the next G1 Ausbauen cost — see
+ * `prestigeStartAshFloor` / `createPostPrestigeState`.
+ */
 export function prestigeStartAsh(upgrades: EmberUpgrades): number {
   // Slightly juicier start crumbs so post-prestige Phyto doesn't feel flat.
   return upgrades.seedPurse * 80
+}
+
+/**
+ * Minimum spendable Phyto after Soft-Prestige so the primary Ausbauen CTA is
+ * never disabled at run start (mirrors Day-1 ash:28 vs G1 cost ~23).
+ */
+export function prestigeStartAshFloor(nextG1Cost: number): number {
+  const cost = Math.max(1, Math.floor(nextG1Cost))
+  // +5 matches createInitialState float; also covers tiny foundry rounding.
+  return cost + 5
 }
 
 /** Starting G1 module level after Soft-Prestige (saplingSurge). */

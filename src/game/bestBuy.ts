@@ -78,8 +78,19 @@ export function computeBestBuy(
     }
 
     if (affordable) {
-      if (!bestAffordable || hint.score > bestAffordable.score) {
+      if (!bestAffordable) {
         bestAffordable = hint
+      } else {
+        const bestOwned = state.owned[bestAffordable.id] ?? 0
+        // Prefer an already-online line when scores are close so Soft-Prestige
+        // with firstFlame doesn't spotlight an empty G2 over G1 Ausbauen.
+        const preferOnline =
+          owned >= 1 &&
+          bestOwned < 1 &&
+          hint.score >= bestAffordable.score * 0.85
+        if (preferOnline || hint.score > bestAffordable.score) {
+          bestAffordable = hint
+        }
       }
     } else if (etaSec > 0 && etaSec <= 180) {
       if (

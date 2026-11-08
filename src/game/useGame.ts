@@ -201,7 +201,16 @@ export function useGame() {
       const now = Date.now()
       if (s.lastTapAt > 0 && now - s.lastTapAt < TAP_COOLDOWN_MS) return s
       const rate = productionPerSecond(s, now)
-      const gained = Math.max(rate * tapBonusSeconds(s.emberUpgrades), 1)
+      const fromRate = rate * tapBonusSeconds(s.emberUpgrades)
+      // Cold post-prestige: one Schub must cover the next G1 Ausbauen if the
+      // wallet is still short (rate alone can be ~1/s → 60 Phyto).
+      const g1 = GENERATORS.find((g) => g.id === 'emberPit')
+      const g1Owned = s.owned.emberPit ?? 0
+      const g1Cost = g1
+        ? generatorCost(g1, g1Owned, lineCostMult(s, 'emberPit'))
+        : 23
+      const shortfall = Math.max(0, g1Cost - s.ash)
+      const gained = Math.max(fromRate, shortfall, 1)
       return grantTapAsh(s, gained, now)
     })
   }, [])
@@ -240,6 +249,8 @@ export function useGame() {
     })
   }, [])
 
+  const [postPrestigeFocus, setPostPrestigeFocus] = useState(false)
+
   const prestige = useCallback(() => {
     setState((s) => {
       const gain = emberPayout(s.ashEarned)
@@ -250,9 +261,14 @@ export function useGame() {
           embers: gain,
           wallet: next.embers,
         })
+        setPostPrestigeFocus(true)
       }
       return next
     })
+  }, [])
+
+  const clearPostPrestigeFocus = useCallback(() => {
+    setPostPrestigeFocus(false)
   }, [])
 
   const purchaseTimeSkip = useCallback((id: TimeSkipId) => {
@@ -547,6 +563,8 @@ export function useGame() {
     buyModuleBranch,
     buyMeta,
     prestige,
+    postPrestigeFocus,
+    clearPostPrestigeFocus,
     purchaseTimeSkip,
     purchaseCosmetic,
     setEquippedCosmetic,
