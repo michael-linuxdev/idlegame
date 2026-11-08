@@ -1715,7 +1715,7 @@ export function costForLevels(state: GameState, id: GeneratorId, n: number): num
   return sum
 }
 
-/** „Alles ausbauen“ — spend Ernte on the best buys until nothing is affordable. */
+/** „Alles ausbauen“ — spend Ernte on the best buys until nothing is affordable (no longer in the UI). */
 export function buyAllBest(state: GameState, cap = 400): { state: GameState; bought: number } {
   let next = state
   let bought = 0

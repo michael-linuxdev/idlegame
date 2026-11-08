@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
+import { careNamesFor } from '../theme/careNames'
 import { ModuleArt } from '../theme/ModuleArt'
 import { useHints, type HintId } from '../game/hints'
 import { ClearedPlot, WildPlot } from '../theme/PlotArt'
@@ -67,10 +68,7 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
       ? 'bulkMax'
       : unlocks.five && !seenHints.includes('bulk5')
         ? 'bulk5'
-        : unlocks.all && !seenHints.includes('buyAll')
-          ? 'buyAll'
           : null
-  const [allNote, setAllNote] = useState<string | null>(null)
 
   function clearHold() {
     holding.current = false
@@ -153,17 +151,6 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
     setFlash(true)
     window.setTimeout(() => setFlash(false), 220)
     onUpgraded?.(paid)
-  }
-
-  function buyAll() {
-    const n = game.buyAll()
-    setAllNote(n > 0 ? t.bulk.allDone(n) : t.bulk.allNone)
-    if (n > 0) {
-      playSfx('upgrade')
-      setFlash(true)
-      window.setTimeout(() => setFlash(false), 220)
-    }
-    window.setTimeout(() => setAllNote(null), 1600)
   }
 
   function pickBulk(mode: BulkMode) {
@@ -263,7 +250,7 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
               </div>
             ) : null}
 
-            {modes.length > 1 || unlocks.all ? (
+            {modes.length > 1 ? (
             <div className="gc-controls">
               <div className="gc-segment" role="radiogroup" aria-label={t.bulk.groupAria}>
                 {modes.map((mode) => (
@@ -279,11 +266,6 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
                   </button>
                 ))}
               </div>
-              {unlocks.all ? (
-                <button type="button" className="gc-all" onClick={buyAll} aria-label={t.bulk.allAria}>
-                  {allNote ?? t.bulk.allButton}
-                </button>
-              ) : null}
             </div>
             ) : null}
             {newHint && owned >= 1 ? (
@@ -328,6 +310,7 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
             {owned >= 1 ? (
               <div className="gc-care" aria-label={t.branches.title}>
                 <CareTile
+                  area={def.id}
                   kind="efficiency"
                   rank={branch.efficiency}
                   max={game.branchMaxRank}
@@ -336,6 +319,7 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
                   onBuy={() => buyBranch('efficiency')}
                 />
                 <CareTile
+                  area={def.id}
                   kind="capacity"
                   rank={branch.capacity}
                   max={game.branchMaxRank}
@@ -358,6 +342,7 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
 
 /** Pflege-Kachel: icon, rank pips, effect, cost. Always visible. */
 function CareTile({
+  area,
   kind,
   rank,
   max,
@@ -365,6 +350,7 @@ function CareTile({
   ernte,
   onBuy,
 }: {
+  area: string
   kind: BranchKind
   rank: number
   max: number
@@ -373,7 +359,8 @@ function CareTile({
   onBuy: () => void
 }) {
   const maxed = rank >= max
-  const name = kind === 'efficiency' ? t.branches.efficiency : t.branches.capacity
+  const names = careNamesFor(area, [t.branches.efficiency, t.branches.capacity])
+  const name = kind === 'efficiency' ? names[0] : names[1]
   const perRank = kind === 'efficiency' ? t.branches.efficiencyPerRank : t.branches.capacityPerRank
   const total =
     kind === 'efficiency'
