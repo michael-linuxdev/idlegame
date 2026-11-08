@@ -110,6 +110,7 @@ import {
   rollOfflineJackpot,
   rollPrestigeSpike,
   rollUpgradeSurprise,
+  SURPRISE_MIN_GAP_MS,
   type SurpriseJump,
 } from './surpriseJumps'
 import {
@@ -287,6 +288,8 @@ export interface GameState {
   prestigeSpikeFlags: number
   /** Last surprise juice for HUD (cleared by UI) */
   lastSurprise: SurpriseJump | null
+  /** Zeit des letzten Ausbau-Krümels (Drossel SURPRISE_MIN_GAP_MS) */
+  lastSurpriseAt: number
   /** Pflanzenbuch variety just found (transient, for the UI pop) */
   lastVariety: string | null
   /** Short flash event id; empty = none */
@@ -611,6 +614,7 @@ export function createInitialState(now = Date.now()): GameState {
     bpDailyXpDay: '',
     prestigeSpikeFlags: 0,
     lastSurprise: null,
+    lastSurpriseAt: 0,
     lastVariety: null,
     flashEventId: '',
     flashEndsAt: 0,
@@ -693,6 +697,7 @@ export function createPostPrestigeState(prev: GameState, now = Date.now()): Game
     // Prestige spikes reset per run; flash / daily survive
     prestigeSpikeFlags: 0,
     lastSurprise: null,
+    lastSurpriseAt: 0,
     lastVariety: null,
     flashEventId: prev.flashEventId,
     flashEndsAt: prev.flashEndsAt,
@@ -2379,10 +2384,14 @@ export function buyGenerator(state: GameState, id: GeneratorId, mode: BuyMode | 
   // Surprises scale with the steady rate — never with the Frühlingsschub
   const rate = productionPerSecond(next, now) / turboMult(next, now)
   const surprise =
-    buyMode === 'manual' ? rollUpgradeSurprise(next.totalUpgrades, rate, next.ernteSeason) : null
+    // Drossel erst, wenn „Max“ frei ist — vorher gibt es keinen anderen Weg als Einzelkauf
+    buyMode === 'manual' && (!bulkUnlocks(state).max || now - state.lastSurpriseAt >= SURPRISE_MIN_GAP_MS)
+      ? rollUpgradeSurprise(next.totalUpgrades, rate, next.ernteSeason)
+      : null
   if (surprise) {
     next = {
       ...next,
+      lastSurpriseAt: now,
       ernte: next.ernte + surprise.amount,
       ernteSeason: next.ernteSeason + surprise.amount,
       ernteLifetime: next.ernteLifetime + surprise.amount,

@@ -17,6 +17,7 @@ import {
   generatorRate,
   milestoneMult,
   milestonesReached,
+  nextMilestone,
   seasonsMissing,
   shortUnlockGate,
   unlockHint,
@@ -900,12 +901,16 @@ export function GardenMap({
             const showSign = selectedHere || ready || def.id === nextWildId || (signsAll && unlocked)
             const stars = milestonesReached(level)
             const canBuy = unlocked && game.costOf(def.id) <= state.ernte
+            const isBestBuy = canBuy && level > 0 && bestBuy?.id === def.id && bestBuy.affordable
+            const nextStar = level > 0 ? nextMilestone(level) : null
+            const toStar = nextStar && nextStar.at - level <= 10 ? nextStar.at - level : 0
             const cls =
               'garden-plot' +
               (selectedHere ? ' selected' : '') +
               (!unlocked ? ' wild' : ready ? ' ready' : ' planted') +
               (producing ? ' producing' : '') +
               (canBuy ? ' can-buy' : '') +
+              (isBestBuy ? ' best-buy' : '') +
               (hl ? ' ftue-target' : '')
             return (
               <button
@@ -1001,6 +1006,16 @@ export function GardenMap({
                             <> · {formatRate(buildingRate)}</>
                           ) : null}
                           <TierBar level={level} />
+                          {toStar > 0 && nextStar ? (
+                            <span className="plot-to-star" aria-label={t.milestone.toStarAria(toStar, nextStar.at)}>
+                              <span
+                                className="plot-to-star-ring"
+                                style={{ ['--p' as string]: `${Math.round(((level - nextStar.from) / (nextStar.at - nextStar.from)) * 100)}%` }}
+                                aria-hidden="true"
+                              />
+                              {t.milestone.toStar(toStar)}
+                            </span>
+                          ) : null}
                         </>
                       )}
                     </span>

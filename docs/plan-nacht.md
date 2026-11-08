@@ -116,7 +116,7 @@ Tempo-Messung (9.1/9.2) kommt **vor** die Balance-Pakete 3 und 6, damit deren Wi
 - [x] B Spielstand-Schutz & Betrieb — B4 nur `storage.persist()` (+ Log); Sicherungs-Erinnerung für iOS-Browser verschoben (gehört zu Paket G „Rückkehr“). Fund: `helperCarryMs`/`ilseCarryMs` werden absichtlich nicht geladen (Sekunden Restzeit), im Test als Ausnahme geführt.
 - [x] C Erste Minuten & Freischaltungen — Tutorial-Schritt „Verein besuchen“ wird übersprungen, solange der Verein noch zu ist; Wetter wirkt weiter auf die Ernte, nur Pille und Wetter-Frage kommen später.
 - [x] D Tempo messen — Hänger Jahr 13/14 toleriert (aktiv 138 min, Rest Nacht); Ziel Sitzung-1-Dichte ≤ 90 s noch offen (Basis 2 min) → Pakete E/F.
-- [ ] E Kernschleife
+- [x] E Kernschleife — Krümel-Drossel 5 s erst ab „Max“ (15 s verschob das erste Saisonende: Regular 132 → 240 min; ab Max ist Sim identisch). „Gedrückt halten“ gab es schon. Kauf-Kombo (4.4) bewusst weggelassen: Playtest zeigt Einzeltipp-Grind, eine Kombo würde genau das belohnen.
 - [ ] F Probe-Winter
 - [ ] G Rückkehr
 - [ ] H Saison-Karten

@@ -33,6 +33,13 @@ export interface SurpriseJump {
 export const PRESTIGE_SPIKE_RATIOS = [0.72, 0.88, 0.97] as const
 
 export const UPGRADE_JACKPOT_CHANCE = 0.07
+/**
+ * Höchstens ein Überraschungs-Krümel pro 5 s Ausbauen. Playtest 2026-11-08:
+ * Einzeltippen im 150-ms-Takt brachte 412 Krümel in 64 min (jeder ~4. Kauf)
+ * und belohnte stumpfes Tippen statt „Max“. 5 s = so viel wie ein Max-Kauf
+ * im Simulator-Takt; 15 s verschob das erste Saisonende (Regular 132 → 240 min).
+ */
+export const SURPRISE_MIN_GAP_MS = 5_000
 export const UPGRADE_MILESTONE_EVERY = 5
 export const OFFLINE_JACKPOT_CHANCE = 0.15
 export const OFFLINE_JACKPOT_MIN_AWAY_MS = 30 * 60 * 1000

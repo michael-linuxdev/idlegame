@@ -1188,3 +1188,43 @@ html.pref-calm *::after {
   font-weight: 800;
   line-height: 1.4;
 }
+
+/* Omas Tipp (bester Kauf) leuchtet auf der Karte */
+.garden-plot.best-buy .plot-visual {
+  filter: drop-shadow(0 0 6px rgba(255, 214, 102, 0.95)) drop-shadow(0 0 2px rgba(255, 196, 61, 0.9));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.idle) .garden-plot.best-buy .plot-visual {
+    animation: gm-best-buy-glow 2.4s ease-in-out infinite;
+  }
+}
+
+@keyframes gm-best-buy-glow {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.88;
+  }
+}
+
+/* „noch N bis ★“ am Beetschild — Meilenstein-Ring */
+.plot-to-star {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: 0.3rem;
+  font-size: 0.72em;
+  font-weight: 700;
+  color: #8a5a10;
+  white-space: nowrap;
+}
+
+.plot-to-star-ring {
+  width: 0.85em;
+  height: 0.85em;
+  border-radius: 50%;
+  background: conic-gradient(#e0a526 var(--p, 0%), rgba(138, 90, 16, 0.2) 0);
+}
