@@ -108,6 +108,8 @@ export const expansionStrings = {
     },
   },
 
+  rotate: 'Bitte das Handy hochkant halten — Gartenerbe spielt im Hochformat.',
+
   prefs: {
     signs: 'Schilder immer zeigen',
     signsHint: 'Name und Stufe an jedem Bereich statt kleiner Plaketten',
