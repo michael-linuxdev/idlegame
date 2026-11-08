@@ -1,0 +1,114 @@
+/*
+ * UX pass (2026-11): shared building blocks that every window uses —
+ * the round × close button, task meters, layer tokens.
+ * Loaded last, so it may refine older rules.
+ */
+
+/* —— Round × close button (one look for every window) —— */
+.sheet-x {
+  appearance: none;
+  flex-shrink: 0;
+  display: inline-grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin: -0.35rem -0.35rem 0 0;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--oc-stroke-strong) 50%, transparent);
+  border-radius: 999px;
+  background: var(--oc-bg-raised);
+  color: var(--oc-ink-muted);
+  font-size: 1.35rem;
+  line-height: 1;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.sheet-x:hover {
+  color: var(--oc-ink);
+}
+
+.sheet-x:focus-visible {
+  outline: 2px solid var(--oc-focus);
+  outline-offset: 2px;
+}
+
+/* —— Task meter: open tasks show progress, not a dead button —— */
+.quest-meter {
+  --p: 0;
+  flex-shrink: 0;
+  display: inline-grid;
+  place-items: center;
+  width: 3.1rem;
+  height: 3.1rem;
+  border-radius: 50%;
+  background:
+    radial-gradient(closest-side, var(--oc-bg-raised) 76%, transparent 78%),
+    conic-gradient(var(--oc-ember, #5f9e45) calc(var(--p) * 1%), color-mix(in srgb, var(--oc-stroke) 70%, transparent) 0);
+  color: var(--oc-ink-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* —— Notizbuch-Tabs: label on one line, counter as a small badge —— */
+.notebook-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.1rem;
+  min-height: 2.9rem;
+  min-width: 0;
+}
+
+.notebook-tab-label {
+  font-size: 1.08rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.notebook-tab-count {
+  font-family: var(--oc-font-ui);
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1;
+  padding: 0.12rem 0.4rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, #dcc79e 45%, transparent);
+  font-variant-numeric: tabular-nums;
+}
+
+/* —— Notizbuch: next unread letter as a shortcut above the pages —— */
+.notebook-next {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  min-height: 2.75rem;
+  margin: 0 0 0.7rem;
+  padding: 0.5rem 0.8rem;
+  border: 1.5px solid #7d9f5a;
+  border-radius: 10px;
+  background: #eef7e6;
+  color: #2f4a22;
+  font-family: var(--oc-font-ui);
+  font-weight: 700;
+  font-size: 0.92rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.notebook-next span:nth-child(2) {
+  flex: 1;
+}
+
+.notebook-next-dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: #d0573a;
+  flex-shrink: 0;
+}

@@ -216,12 +216,11 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
 
   return (
     <div className="hud-pills-wrap">
-      <div className="hud-pills" role="list">
+      <ul className="hud-pills">
         {pills.map((p) => (
+          <li key={p.key} className="hud-pill-item">
           <button
-            key={p.key}
             type="button"
-            role="listitem"
             className={`hud-pill pill-${p.key}${p.claim ? ' claim' : ''}${open === p.key ? ' open' : ''}`}
             onClick={() => {
               if (p.onClick) {
@@ -237,8 +236,9 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
             <span className="hud-pill-icon">{p.icon}</span>
             {p.label ? <span className="hud-pill-label">{p.label}</span> : null}
           </button>
+          </li>
         ))}
-      </div>
+      </ul>
       {expanded?.detail ? (
         <div className="hud-pill-detail" role="status">
           <p>{expanded.detail.line}</p>

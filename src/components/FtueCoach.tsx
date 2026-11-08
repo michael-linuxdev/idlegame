@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   ftueBlocksInstall,
   ftueCopy,
@@ -38,6 +38,9 @@ export function FtueCoach({
   onCoachVisible,
 }: Props) {
   const [ftue, setFtue] = useState<FtueState>(() => loadFtue())
+  const coachRef = useRef<HTMLElement>(null)
+  /** px from the top when the coach must dodge its own target; null = bottom */
+  const [topPx, setTopPx] = useState<number | null>(null)
 
   useEffect(() => {
     saveFtue(ftue)
@@ -108,7 +111,35 @@ export function FtueCoach({
     onHighlightChange(null)
   }
 
+  // Never cover the thing the coach asks you to tap: if the highlighted
+  // target sits under the card, move the card up below the HUD.
+  const highlightKey = active ? (ftueCopy(ftue.beat)?.highlight ?? null) : null
+  useEffect(() => {
+    if (!highlightKey) return
+    const place = () => {
+      const target = document.querySelector('.ftue-target')
+      const coach = coachRef.current
+      if (!target || !coach) return setTopPx(null)
+      const tr = target.getBoundingClientRect()
+      const h = coach.getBoundingClientRect().height
+      const bottomTop = window.innerHeight - h - 64
+      if (tr.bottom < bottomTop - 8) return setTopPx(null)
+      const hud = document.querySelector('.hud')?.getBoundingClientRect().bottom ?? 0
+      const above = tr.top - h - 44 // room for the pointer arrow
+      setTopPx(Math.max(hud + 8, above))
+    }
+    const first = requestAnimationFrame(place)
+    const id = window.setInterval(place, 800)
+    window.addEventListener('resize', place)
+    return () => {
+      cancelAnimationFrame(first)
+      window.clearInterval(id)
+      window.removeEventListener('resize', place)
+    }
+  }, [highlightKey])
+
   if (!active) return null
+  const coachTop = highlightKey ? topPx : null
 
   const copy = ftueCopy(ftue.beat)
   if (!copy) return null
@@ -116,7 +147,13 @@ export function FtueCoach({
   const { step, total } = ftueStepIndex(ftue.beat)
 
   return (
-    <aside className="ftue-coach" role="dialog" aria-labelledby="ftue-title">
+    <aside
+      ref={coachRef}
+      className={`ftue-coach${coachTop != null ? ' at-top' : ''}`}
+      style={coachTop != null ? { top: `${Math.round(coachTop)}px` } : undefined}
+      role="dialog"
+      aria-labelledby="ftue-title"
+    >
       <div className="ftue-coach-inner">
         <div className="ftue-coach-text">
           <p className="ftue-eyebrow">{t.ftue.guide(step, total)}</p>

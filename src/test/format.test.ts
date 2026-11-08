@@ -5,9 +5,10 @@ describe('German number formatting', () => {
   it('uses a decimal comma and German long-scale suffixes', () => {
     expect(formatAsh(5)).toBe('5')
     expect(formatAsh(1.4)).toBe('1,4')
-    expect(formatAsh(1350)).toBe('1,35K')
-    expect(formatAsh(13_500)).toBe('13,5K')
-    expect(formatAsh(2_500_000)).toBe('2,50M')
+    expect(formatAsh(1350)).toBe('1.350')
+    expect(formatAsh(13_500)).toBe('13.500')
+    expect(formatAsh(152_400)).toBe('152 Tsd')
+    expect(formatAsh(2_500_000)).toBe('2,50 Mio')
     expect(formatAsh(55_100_000_000)).toBe('55,1 Mrd')
     expect(formatAsh(3e12)).toBe('3,00 Bio')
   })

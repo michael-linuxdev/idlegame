@@ -938,11 +938,10 @@
   gap: 0.15rem;
   min-width: 11rem;
   padding: 0.35rem;
-  background: color-mix(in srgb, var(--oc-bg-raised) 92%, transparent);
+  background: var(--oc-bg-raised);
   border: 1px solid var(--oc-stroke-strong);
   border-radius: 12px;
   box-shadow: 0 10px 24px rgba(30, 50, 30, 0.2);
-  backdrop-filter: blur(10px);
   animation: sheet-up 0.16s ease-out;
 }
 
@@ -952,9 +951,8 @@
   background: transparent;
   color: var(--oc-ink);
   font-family: var(--oc-font-display);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  font-size: 0.76rem;
+  letter-spacing: 0.01em;
+  font-size: 0.9rem;
   font-weight: 600;
   display: flex;
   flex-direction: row;
@@ -1972,13 +1970,52 @@ html.tab-hidden .app-shell *::after {
     background: color-mix(in srgb, var(--oc-bg-raised) 92%, transparent);
   }
 
-  .nav-menu {
-    background: color-mix(in srgb, var(--oc-bg-raised) 96%, transparent);
-  }
 
     .btn.pulse-ready,
   .upgrade-hud-buy.pulse-ready,
   .upgrade-afford-fill.ready {
     animation: none !important;
+  }
+}
+
+/* FTUE: the coach dodges its own target (moved above it) */
+.ftue-coach.at-top {
+  bottom: auto;
+  animation: none;
+}
+
+/* FTUE: a bouncing pointer on the plot the coach talks about */
+.garden-plot.ftue-target::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -1.9rem;
+  width: 1.6rem;
+  height: 1.6rem;
+  margin-left: -0.8rem;
+  border-radius: 50%;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 4v14M6 12l6 6 6-6' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+      center / 70% no-repeat,
+    var(--oc-ember-hot, #e07a2c);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+  animation: ftue-point 0.9s ease-in-out infinite;
+  z-index: 5;
+}
+
+@keyframes ftue-point {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .garden-plot.ftue-target::after {
+    animation: none;
   }
 }

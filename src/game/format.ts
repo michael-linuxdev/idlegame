@@ -1,6 +1,6 @@
 /**
  * Compact German number formatting for idle values.
- * Decimal comma; K / M for thousands / millions, then Mrd / Bio / Brd
+ * Decimal comma, thousands dot up to 99.999, then Tsd / Mio / Mrd / Bio / Brd
  * (German long scale — never the English „B“ for a Milliarde).
  */
 const UNITS = [
@@ -8,9 +8,15 @@ const UNITS = [
   { v: 1e15, s: ' Brd' },
   { v: 1e12, s: ' Bio' },
   { v: 1e9, s: ' Mrd' },
-  { v: 1e6, s: 'M' },
-  { v: 1e3, s: 'K' },
+  { v: 1e6, s: ' Mio' },
+  { v: 1e3, s: ' Tsd' },
 ]
+
+/** 15200 → „15.200“ */
+function grouped(n: number): string {
+  const sign = n < 0 ? '-' : ''
+  return sign + String(Math.floor(Math.abs(n))).replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+}
 
 /** Fixed decimals with a German decimal comma. */
 export function formatDecimal(n: number, digits: number): string {
@@ -27,6 +33,7 @@ export function formatAsh(n: number): string {
   if (abs < 1000) {
     return abs < 10 && n % 1 !== 0 ? de(n, 1) : Math.floor(n).toString()
   }
+  if (abs < 100_000) return grouped(n)
   for (const u of UNITS) {
     if (abs >= u.v) {
       const val = n / u.v
