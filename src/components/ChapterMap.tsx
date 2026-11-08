@@ -369,10 +369,10 @@ function ChapterSheet({
                   className="bulk-chip"
                   disabled={!affordable}
                   onClick={() => {
-                    if (game.buyChapterBulk(chapter, area, 10) > 0) playSfx('upgrade')
+                    if (game.buyChapterBulk(chapter, area, 5) > 0) playSfx('upgrade')
                   }}
                 >
-                  {t.bulk.ten}
+                  {t.bulk.five}
                 </button>
                 <button
                   type="button"

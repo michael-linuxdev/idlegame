@@ -43,6 +43,7 @@ export const expansionStrings = {
   bulk: {
     one: '×1',
     ten: '×10',
+    five: '×5',
     max: 'Max',
     groupAria: 'Kaufmenge',
     buyN: (action: string, n: number, cost: string) => `${action} ×${n} · ${cost}`,

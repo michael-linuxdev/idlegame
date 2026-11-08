@@ -1260,6 +1260,20 @@ export function toggleHelper(state: GameState): GameState {
   return { ...state, helperOn: !state.helperOn }
 }
 
+/**
+ * Mengenkauf unlocks over time (keeps the early game simple):
+ *  Max — after the 1st Saisonende, ×5 — from Gartenjahr 4,
+ *  „Alles ausbauen“ — from Gartenjahr 6. Tiefer Winter / Generation keep them.
+ */
+export function bulkUnlocks(state: GameState): { max: boolean; five: boolean; all: boolean } {
+  const meta = state.deepPrestiges > 0 || state.generation > 0
+  return {
+    max: meta || state.prestiges >= 1,
+    five: meta || state.prestiges >= 3,
+    all: meta || state.prestiges >= 5,
+  }
+}
+
 /** Affordable garden area with the best Δrate / cost. */
 export function bestGardenBuy(state: GameState): GeneratorId | null {
   const lvl = playerLevelOf(state)

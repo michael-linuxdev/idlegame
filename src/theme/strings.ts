@@ -949,6 +949,9 @@ export const strings = {
     truhe: 'In Omas Truhe warten Schätze. Tausch deine Erbstücke gegen Boni, die jeden Winter überdauern.',
     weekly: 'Neu: Omas Wochenplan. Tipp oben links auf deine Gartenstufe — dort stehen sieben Aufgaben für diese Woche.',
     deep: 'Alle Ecken sind offen. Wenn du magst, kann der Garten jetzt einen Tiefen Winter ruhen — für Sprösslinge, die für immer bleiben.',
+    bulkMax: 'Neu: „Max“. Damit baust du dieses Beet so oft aus, wie deine Ernte gerade reicht — ein Tipp statt vieler.',
+    bulk5: 'Neu: „×5“. Kauft genau fünf Stufen auf einmal — praktisch, um gezielt auf den nächsten Meilenstein zuzugehen.',
+    buyAll: 'Neu: „Alles ausbauen“. Verteilt deine ganze Ernte auf alle Beete — immer zuerst dort, wo sie am meisten Ernte pro Sekunde bringt. Pflege und Kapitel kauft es nicht.',
   },
 
   backup: {

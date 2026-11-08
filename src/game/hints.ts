@@ -6,10 +6,20 @@ import { useCallback, useState } from 'react'
 
 export const HINTS_STORAGE_KEY = 'gartenerbe-hints-v1'
 
-export type HintId = 'visitor' | 'order' | 'variety' | 'season' | 'truhe' | 'weekly' | 'deep'
+export type HintId =
+  | 'visitor'
+  | 'order'
+  | 'variety'
+  | 'season'
+  | 'truhe'
+  | 'weekly'
+  | 'deep'
+  | 'bulkMax'
+  | 'bulk5'
+  | 'buyAll'
 
 /** Priority order when several are pending. */
-export const HINT_ORDER: HintId[] = ['season', 'truhe', 'deep', 'visitor', 'order', 'variety', 'weekly']
+export const HINT_ORDER: HintId[] = ['season', 'truhe', 'deep', 'visitor', 'order', 'variety', 'weekly', 'bulkMax', 'bulk5', 'buyAll']
 
 function load(): HintId[] {
   try {
