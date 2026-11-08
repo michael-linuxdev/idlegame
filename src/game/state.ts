@@ -31,6 +31,11 @@ import {
   areaUnlocked,
   chapterBaseRate,
   chapterDef,
+  CHAPTER_CARE_MAX,
+  careCost,
+  careOf,
+  careThriftMult,
+  type CareKind,
   chaptersGardenMult,
   emptyChapters,
   totalChapterLevels,
@@ -872,7 +877,28 @@ function tickChapters(state: GameState, seconds: (rate: number) => number): Game
 export function chapterCostOf(state: GameState, id: ChapterId, areaId: string): number {
   const a = chapterDef(id).areas.find((x) => x.id === areaId)
   if (!a) return Infinity
-  return areaCost(a, state.chapters[id].owned[areaId] ?? 0, legacyCostMult(state.legacy))
+  const c = state.chapters[id]
+  return areaCost(a, c.owned[areaId] ?? 0, legacyCostMult(state.legacy) * careThriftMult(careOf(c, areaId).thrift))
+}
+
+/** Kapitel-Pflege: buy one rank of „Wachsen“ or „Sparen“ for an area. */
+export function buyChapterCare(state: GameState, id: ChapterId, areaId: string, kind: CareKind): GameState {
+  if (!chapterOpen(state, id)) return state
+  const c = state.chapters[id]
+  const a = chapterDef(id).areas.find((x) => x.id === areaId)
+  if (!a || (c.owned[areaId] ?? 0) < 1) return state
+  const ranks = careOf(c, areaId)
+  if (ranks[kind] >= CHAPTER_CARE_MAX) return state
+  const cost = careCost(a, kind, ranks[kind])
+  if (c.cur < cost) return state
+  return {
+    ...state,
+    chapters: {
+      ...state.chapters,
+      [id]: { ...c, cur: c.cur - cost, care: { ...c.care, [areaId]: { ...ranks, [kind]: ranks[kind] + 1 } } },
+    },
+    lastSeen: Date.now(),
+  }
 }
 
 export function buyChapterArea(

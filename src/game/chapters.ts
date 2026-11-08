@@ -191,6 +191,41 @@ export interface ChapterState {
   openedAt: number
   /** Omas letter for this chapter read */
   introSeen: boolean
+  /** Kapitel-Pflege per area (permanent, never resets) */
+  care: Record<string, CareRanks>
+}
+
+/* ——— Kapitel-Pflege: two permanent upgrades per area ——— */
+
+export type CareKind = 'grow' | 'thrift'
+export interface CareRanks {
+  grow: number
+  thrift: number
+}
+export const CHAPTER_CARE_MAX = 10
+
+/** „Wachsen“ — +6 % area output per rank. */
+export function careGrowMult(rank: number): number {
+  return 1 + 0.06 * Math.max(0, Math.min(CHAPTER_CARE_MAX, rank))
+}
+
+/** „Sparen“ — area levels 4 % cheaper per rank (multiplicative). */
+export function careThriftMult(rank: number): number {
+  return Math.pow(0.96, Math.max(0, Math.min(CHAPTER_CARE_MAX, rank)))
+}
+
+/** Cost of the next care rank in chapter currency. */
+export function careCost(a: AreaDef, kind: CareKind, rank: number): number {
+  return Math.floor(a.baseCost * 4 * Math.pow(1.75, Math.max(0, rank)) * (kind === 'thrift' ? 1.2 : 1))
+}
+
+export function careOf(c: ChapterState, areaId: string): CareRanks {
+  return c.care?.[areaId] ?? { grow: 0, thrift: 0 }
+}
+
+/** Area output including its Kapitel-Pflege. */
+export function areaRateWithCare(a: AreaDef, owned: number, c: ChapterState): number {
+  return areaRate(a, owned) * careGrowMult(careOf(c, a.id).grow)
 }
 
 export type ChaptersState = Record<ChapterId, ChapterState>
@@ -199,7 +234,7 @@ export function emptyChapter(def: ChapterDef): ChapterState {
   const owned: Record<string, number> = {}
   for (const a of def.areas) owned[a.id] = 0
   owned[def.areas[0]!.id] = 1
-  return { cur: 20, curLifetime: 0, owned, openedAt: 0, introSeen: false }
+  return { cur: 20, curLifetime: 0, owned, openedAt: 0, introSeen: false, care: {} }
 }
 
 export function emptyChapters(): ChaptersState {
@@ -234,7 +269,7 @@ export function chapterStage(def: ChapterDef, c: ChapterState): number {
 
 export function chapterBaseRate(def: ChapterDef, c: ChapterState): number {
   let sum = 0
-  for (const a of def.areas) sum += areaRate(a, c.owned[a.id] ?? 0)
+  for (const a of def.areas) sum += areaRateWithCare(a, c.owned[a.id] ?? 0, c)
   return sum
 }
 

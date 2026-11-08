@@ -125,6 +125,28 @@ export const expansionStrings = {
     aria: 'Grundstück wählen',
   },
 
+  chapterCare: {
+    title: 'Pflege',
+    names: {
+      obstwiese: ['Baumschnitt', 'Mulchen'],
+      weinberg: ['Rebschnitt', 'Laubarbeit'],
+      bauernhof: ['Füttern', 'Ausmisten'],
+      imkerei: ['Wabenpflege', 'Smoker'],
+      teich: ['Futter', 'Teich klären'],
+      kraeuter: ['Pflücken', 'Trocknen'],
+      botanik: ['Düngen', 'Gießplan'],
+      alm: ['Weidewechsel', 'Zaunbau'],
+      lavendel: ['Schnitt', 'Bewässerung'],
+      japangarten: ['Formschnitt', 'Harken'],
+      gartenschau: ['Werbung', 'Ehrenamt'],
+    } as Record<string, readonly [string, string]>,
+    growPer: '+6 % pro Rang',
+    thriftPer: '−4 % Kosten pro Rang',
+    growTotal: (pct: number) => `+${pct} % Ertrag`,
+    thriftTotal: (pct: number) => `−${pct} % Kosten`,
+    maxed: 'Voll',
+  },
+
   chapterUi: {
     chapter: (n: number) => `Kapitel ${n}`,
     toGarden: 'Zu Omas Garten',

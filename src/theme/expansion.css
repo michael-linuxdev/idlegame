@@ -1858,3 +1858,93 @@ html.tab-hidden .sky-event {
 .chapter-card .gc-portrait {
   background: radial-gradient(circle at 50% 70%, #cfe3a8, #93c167);
 }
+
+/* —— Kapitel 4–6: Tierleben & Handgrafik-Animationen —— */
+.ha-graze {
+  animation: sheep-bob 3.4s ease-in-out infinite;
+}
+
+.ha-swim {
+  animation: ha-swim 6s ease-in-out infinite alternate;
+}
+
+@keyframes ha-swim {
+  from { transform: translateX(-2px); }
+  to { transform: translateX(3px); }
+}
+
+.ha-fish {
+  animation: ha-swim 4s ease-in-out infinite alternate;
+}
+
+.ha-jump {
+  transform-box: fill-box;
+  animation: ha-jump 3.2s ease-in-out infinite;
+}
+
+@keyframes ha-jump {
+  0%, 70%, 100% { transform: translateY(0); opacity: 0; }
+  78% { opacity: 1; }
+  85% { transform: translateY(-8px) rotate(-20deg); opacity: 1; }
+  95% { transform: translateY(0); opacity: 0; }
+}
+
+.chicken.farm.c0 { left: 44%; top: 72%; }
+.chicken.farm.c1 { left: 52%; top: 76%; }
+.chicken.farm.c2 { left: 40%; top: 66%; }
+
+.farm-cat {
+  width: calc(var(--u) * 6);
+  top: 48%;
+  left: 8%;
+  animation: hedgehog-walk 30s linear infinite alternate;
+}
+
+.bee-trail.swarm {
+  animation-duration: 5s;
+}
+
+.duck-cross {
+  width: calc(var(--u) * 12);
+  top: 58%;
+  left: 22%;
+  animation: duck-cross 28s ease-in-out infinite alternate;
+}
+
+@keyframes duck-cross {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(var(--u) * 40)); }
+}
+
+.fish-jump {
+  width: calc(var(--u) * 4);
+  top: 60%;
+  left: 60%;
+  animation: ha-jump 5s ease-in-out infinite;
+}
+
+.dragonfly {
+  width: calc(var(--u) * 4);
+  top: 44%;
+  left: 30%;
+  animation: bee-trail 9s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ha-graze,
+  .ha-swim,
+  .ha-fish,
+  .ha-jump,
+  .farm-cat,
+  .duck-cross,
+  .fish-jump,
+  .dragonfly {
+    animation: none !important;
+  }
+}
+
+/* Kapitel 4–12: Motive füllen ihren Platz (Zeichnungen sitzen unten im viewBox) */
+.orchard-home:not(.chapter-obstwiese):not(.chapter-weinberg) .garden-plot .plot-visual svg {
+  transform: scale(1.35);
+  transform-origin: 50% 88%;
+}
