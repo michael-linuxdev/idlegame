@@ -57,15 +57,15 @@ export function FtueCoach({
   }, [ftue.beat, active, onHighlightChange])
 
   // Auto-advance when the player actually does the beat (less CTA clutter)
-  const pitLevel = game.state.owned.emberPit ?? 0
-  const coolingOpen = game.unlocked('ashForge')
+  const pitLevel = game.state.owned.gemuesebeet ?? 0
+  const coolingOpen = game.unlocked('kompost')
   useEffect(() => {
     if (!active) return
-    if (ftue.beat === 'upgradePit' && pitLevel > 1) {
-      setFtue((s) => advanceFtue(s, 'upgradePit'))
+    if (ftue.beat === 'tendBed' && pitLevel > 1) {
+      setFtue((s) => advanceFtue(s, 'tendBed'))
     }
-    if (ftue.beat === 'unlockForge' && coolingOpen) {
-      setFtue((s) => advanceFtue(s, 'unlockForge'))
+    if (ftue.beat === 'unlockCompost' && coolingOpen) {
+      setFtue((s) => advanceFtue(s, 'unlockCompost'))
     }
   }, [active, ftue.beat, pitLevel, coolingOpen])
 
@@ -74,8 +74,8 @@ export function FtueCoach({
       setFtue((s) => advanceFtue(s, 'welcome'))
       return
     }
-    if (ftue.beat === 'upgradePit') {
-      setFtue((s) => advanceFtue(s, 'upgradePit'))
+    if (ftue.beat === 'tendBed') {
+      setFtue((s) => advanceFtue(s, 'tendBed'))
       return
     }
     if (ftue.beat === 'claimOffline') {
@@ -83,8 +83,8 @@ export function FtueCoach({
       setFtue((s) => advanceFtue(s, 'claimOffline'))
       return
     }
-    if (ftue.beat === 'unlockForge') {
-      setFtue((s) => advanceFtue(s, 'unlockForge'))
+    if (ftue.beat === 'unlockCompost') {
+      setFtue((s) => advanceFtue(s, 'unlockCompost'))
       return
     }
     if (ftue.beat === 'visitClan') {

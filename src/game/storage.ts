@@ -13,12 +13,6 @@ import {
 } from './longLoop'
 import { createInitialState, STORAGE_KEY, type GameState } from './state'
 
-const LEGACY_KEYS = [
-  'orbital-claim-save-v2',
-  'ash-dominion-save-v2',
-  'ash-dominion-save-v1',
-] as const
-
 const COSMETIC_IDS = new Set(COSMETICS.map((c) => c.id))
 
 function isRecord(v: unknown): v is Record<string, unknown> {
@@ -50,14 +44,14 @@ function parseUpgrades(raw: unknown): EmberUpgrades {
 }
 
 function parseCosmetics(raw: unknown): CosmeticId[] {
-  if (!Array.isArray(raw)) return ['steelDeck']
+  if (!Array.isArray(raw)) return ['wiese']
   const out: CosmeticId[] = []
   for (const item of raw) {
     if (typeof item === 'string' && COSMETIC_IDS.has(item as CosmeticId)) {
       out.push(item as CosmeticId)
     }
   }
-  if (!out.includes('steelDeck')) out.unshift('steelDeck')
+  if (!out.includes('wiese')) out.unshift('wiese')
   return out
 }
 
@@ -96,7 +90,7 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
       : 20
 
   const ownedCosmetics = parseCosmetics(parsed.ownedCosmetics)
-  let equippedCosmetic: CosmeticId = 'steelDeck'
+  let equippedCosmetic: CosmeticId = 'wiese'
   if (
     typeof parsed.equippedCosmetic === 'string' &&
     COSMETIC_IDS.has(parsed.equippedCosmetic as CosmeticId) &&
@@ -142,7 +136,7 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
 
   const owned = parseOwned(parsed.owned)
   if (!isRecord(parsed.owned) || Object.keys(parsed.owned).length === 0) {
-    owned.emberPit = 1
+    owned.gemuesebeet = 1
   }
 
   const playerXp =
@@ -441,13 +435,7 @@ function parseQuests(
 
 export function loadState(): GameState {
   try {
-    let raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) {
-      for (const key of LEGACY_KEYS) {
-        raw = localStorage.getItem(key)
-        if (raw) break
-      }
-    }
+    const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return createInitialState()
     const parsed: unknown = JSON.parse(raw)
     if (!isRecord(parsed)) return createInitialState()
@@ -460,7 +448,6 @@ export function loadState(): GameState {
 export function saveState(state: GameState): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
-    for (const key of LEGACY_KEYS) localStorage.removeItem(key)
   } catch {
     // Quota / private mode — ignore for MVP
   }

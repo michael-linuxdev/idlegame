@@ -1,44 +1,27 @@
 /**
  * Module definitions — Bau-Map content depth (10 slots) + economy.md formulas for G1–G3.
- * Tone: Urban Vertical Farm / TurmFarm. Loop unchanged.
+ * Display names come from src/theme/strings.ts (DE).
  *
- * Stable IDs (map worker + content depth):
- *   emberPit, ashForge, cinderBarracks, cinderVault, ashWatch, dominionKeep,
- *   batteryBank, edgeCache, quantumCooler, packetScrubber
- *
- * Display names (DE via i18n) + silhouettes:
- *   Kraftwerk (power), Kühlanlage (cool), Rack-Bucht (rack),
- *   Uplink (uplink), Strahl-Relais (relay), Core-Switch (switch),
- *   Batteriebank (battery), Edge-Cache (cache), Quantenkühler (quantum),
- *   Paketfilter (scrub)
+ * Garden ladder (G1 → G10): Gemüsebeet, Kompost, Kräuterspirale, Beerenhecke,
+ * Obstwiese, Bienenstock, Hühnerstall, Gewächshaus, Hofladen, Orangerie.
  */
 
 import { t } from '../i18n'
+import { formatAsh } from './format'
 import { LEVEL_MODULE_GATES } from './progression'
 
 export type GeneratorId =
-  | 'emberPit'
-  | 'ashForge'
-  | 'cinderBarracks'
-  | 'cinderVault'
-  | 'ashWatch'
-  | 'dominionKeep'
-  | 'batteryBank'
-  | 'edgeCache'
-  | 'quantumCooler'
-  | 'packetScrubber'
+  | 'gemuesebeet'
+  | 'kompost'
+  | 'kraeuterspirale'
+  | 'beerenhecke'
+  | 'obstwiese'
+  | 'bienenstock'
+  | 'huehnerstall'
+  | 'gewaechshaus'
+  | 'hofladen'
+  | 'orangerie'
 
-export type SilhouetteKind =
-  | 'power'
-  | 'cool'
-  | 'rack'
-  | 'uplink'
-  | 'relay'
-  | 'switch'
-  | 'battery'
-  | 'cache'
-  | 'quantum'
-  | 'scrub'
 
 export type EconomyId =
   | 'G1'
@@ -64,9 +47,10 @@ export interface GeneratorDef {
   economyId: EconomyId
   name: string
   blurb: string
-  /** Fixed slot on the station map (percent of map box) */
+  /** Omas Notizbuch quote for this module */
+  note: string
+  /** Plot centre on the garden map (percent of map box) */
   slot: { left: string; top: string }
-  silhouette: SilhouetteKind
   /** Base Compute/sec at level 1 (`r0`) */
   baseRate: number
   /** Cost C0 for level 0 → 1 */
@@ -89,129 +73,129 @@ export interface GeneratorDef {
  */
 export const GENERATORS: GeneratorDef[] = [
   {
-    id: 'emberPit',
+    id: 'gemuesebeet',
     economyId: 'G1',
-    name: t.modules.emberPit.name,
-    blurb: t.modules.emberPit.blurb,
-    /* Slot lattice: ≥26% horiz / ≥16% vert between centers so plaques don’t collide on phone */
-    slot: { left: '50%', top: '86%' },
-    silhouette: 'power',
+    name: t.modules.gemuesebeet.name,
+    blurb: t.modules.gemuesebeet.blurb,
+    note: t.modules.gemuesebeet.note,
+    /* Plot lattice: zig-zag along the garden path, gate (bottom) → Laube (top). See theme/MapBackdrop. */
+    slot: { left: '34%', top: '84%' },
     baseRate: 1,
     baseCost: 20,
     costScale: 1.18,
   },
   {
-    id: 'ashForge',
+    id: 'kompost',
     economyId: 'G2',
-    name: t.modules.ashForge.name,
-    blurb: t.modules.ashForge.blurb,
-    slot: { left: '84%', top: '70%' },
-    silhouette: 'cool',
+    name: t.modules.kompost.name,
+    blurb: t.modules.kompost.blurb,
+    note: t.modules.kompost.note,
+    slot: { left: '74%', top: '80%' },
     baseRate: 4,
     baseCost: 150,
     costScale: 1.17,
-    unlock: { ashEarned: 600, requires: { id: 'emberPit', level: 10 } },
+    unlock: { ashEarned: 600, requires: { id: 'gemuesebeet', level: 10 } },
   },
   {
-    id: 'cinderBarracks',
+    id: 'kraeuterspirale',
     economyId: 'G3',
-    name: t.modules.cinderBarracks.name,
-    blurb: t.modules.cinderBarracks.blurb,
-    slot: { left: '50%', top: '54%' },
-    silhouette: 'rack',
+    name: t.modules.kraeuterspirale.name,
+    blurb: t.modules.kraeuterspirale.blurb,
+    note: t.modules.kraeuterspirale.note,
+    slot: { left: '20%', top: '71%' },
     baseRate: 25,
     baseCost: 1_800,
     costScale: 1.16,
-    unlock: { ashEarned: 50_000, requires: { id: 'ashForge', level: 10 } },
+    unlock: { ashEarned: 50_000, requires: { id: 'kompost', level: 10 } },
   },
   {
-    id: 'cinderVault',
+    id: 'beerenhecke',
     economyId: 'G4',
-    name: t.modules.cinderVault.name,
-    blurb: t.modules.cinderVault.blurb,
-    slot: { left: '14%', top: '70%' },
-    silhouette: 'uplink',
+    name: t.modules.beerenhecke.name,
+    blurb: t.modules.beerenhecke.blurb,
+    note: t.modules.beerenhecke.note,
+    slot: { left: '62%', top: '68%' },
     baseRate: 150,
     baseCost: 25_000,
     costScale: 1.15,
-    unlock: { ashEarned: 500_000, requires: { id: 'cinderBarracks', level: 10 } },
+    unlock: { ashEarned: 500_000, requires: { id: 'kraeuterspirale', level: 10 } },
   },
   {
-    id: 'ashWatch',
+    id: 'obstwiese',
     economyId: 'G5',
-    name: t.modules.ashWatch.name,
-    blurb: t.modules.ashWatch.blurb,
-    slot: { left: '16%', top: '42%' },
-    silhouette: 'relay',
+    name: t.modules.obstwiese.name,
+    blurb: t.modules.obstwiese.blurb,
+    note: t.modules.obstwiese.note,
+    slot: { left: '30%', top: '58%' },
     baseRate: 900,
     baseCost: 200_000,
     costScale: 1.14,
-    unlock: { ashEarned: 4_000_000, requires: { id: 'cinderVault', level: 10 } },
+    unlock: { ashEarned: 4_000_000, requires: { id: 'beerenhecke', level: 10 } },
   },
   {
-    id: 'dominionKeep',
+    id: 'bienenstock',
     economyId: 'G6',
-    name: t.modules.dominionKeep.name,
-    blurb: t.modules.dominionKeep.blurb,
-    slot: { left: '68%', top: '36%' },
-    silhouette: 'switch',
+    name: t.modules.bienenstock.name,
+    blurb: t.modules.bienenstock.blurb,
+    note: t.modules.bienenstock.note,
+    slot: { left: '76%', top: '55%' },
     baseRate: 5_000,
     baseCost: 1_500_000,
     costScale: 1.13,
-    unlock: { ashEarned: 25_000_000, requires: { id: 'ashWatch', level: 10 } },
+    unlock: { ashEarned: 25_000_000, requires: { id: 'obstwiese', level: 10 } },
   },
   {
-    id: 'batteryBank',
+    id: 'huehnerstall',
     economyId: 'G7',
-    name: t.modules.batteryBank.name,
-    blurb: t.modules.batteryBank.blurb,
-    slot: { left: '86%', top: '50%' },
-    silhouette: 'battery',
+    name: t.modules.huehnerstall.name,
+    blurb: t.modules.huehnerstall.blurb,
+    note: t.modules.huehnerstall.note,
+    slot: { left: '20%', top: '45%' },
     baseRate: 30_000,
     baseCost: 12_000_000,
     costScale: 1.12,
-    unlock: { ashEarned: 150_000_000, requires: { id: 'dominionKeep', level: 10 } },
+    unlock: { ashEarned: 150_000_000, requires: { id: 'bienenstock', level: 10 } },
   },
   {
-    id: 'edgeCache',
+    id: 'gewaechshaus',
     economyId: 'G8',
-    name: t.modules.edgeCache.name,
-    blurb: t.modules.edgeCache.blurb,
-    slot: { left: '38%', top: '20%' },
-    silhouette: 'cache',
+    name: t.modules.gewaechshaus.name,
+    blurb: t.modules.gewaechshaus.blurb,
+    note: t.modules.gewaechshaus.note,
+    slot: { left: '62%', top: '42%' },
     baseRate: 180_000,
     baseCost: 90_000_000,
     costScale: 1.115,
-    unlock: { ashEarned: 1_000_000_000, requires: { id: 'batteryBank', level: 10 } },
+    unlock: { ashEarned: 1_000_000_000, requires: { id: 'huehnerstall', level: 10 } },
   },
   {
-    id: 'quantumCooler',
+    id: 'hofladen',
     economyId: 'G9',
-    name: t.modules.quantumCooler.name,
-    blurb: t.modules.quantumCooler.blurb,
-    slot: { left: '12%', top: '22%' },
-    silhouette: 'quantum',
+    name: t.modules.hofladen.name,
+    blurb: t.modules.hofladen.blurb,
+    note: t.modules.hofladen.note,
+    slot: { left: '27%', top: '32%' },
     baseRate: 1_100_000,
     baseCost: 700_000_000,
     costScale: 1.11,
     unlock: {
       ashEarned: 8_000_000_000,
-      requires: { id: 'edgeCache', level: 10 },
+      requires: { id: 'gewaechshaus', level: 10 },
     },
   },
   {
-    id: 'packetScrubber',
+    id: 'orangerie',
     economyId: 'G10',
-    name: t.modules.packetScrubber.name,
-    blurb: t.modules.packetScrubber.blurb,
-    slot: { left: '84%', top: '18%' },
-    silhouette: 'scrub',
+    name: t.modules.orangerie.name,
+    blurb: t.modules.orangerie.blurb,
+    note: t.modules.orangerie.note,
+    slot: { left: '72%', top: '30%' },
     baseRate: 7_000_000,
     baseCost: 5_000_000_000,
     costScale: 1.105,
     unlock: {
       ashEarned: 50_000_000_000,
-      requires: { id: 'quantumCooler', level: 10 },
+      requires: { id: 'hofladen', level: 10 },
     },
   },
 ]
@@ -245,7 +229,7 @@ export function isGeneratorUnlocked(
   playerLevel = 1,
 ): boolean {
   if (!def.unlock) return true
-  if (firstBeacon && def.id === 'ashForge') return true
+  if (firstBeacon && def.id === 'kompost') return true
   const { ashEarned: needAsh, requires } = def.unlock
   if (needAsh != null && ashEarned >= needAsh) return true
   if (requires && (owned[requires.id] ?? 0) >= requires.level) return true
@@ -299,16 +283,7 @@ export function unlockHint(def: GeneratorDef): string {
 export function shortUnlockGate(def: GeneratorDef): string {
   if (!def.unlock) return t.hud.locked
   if (def.unlock.ashEarned != null) {
-    const n = def.unlock.ashEarned
-    const label =
-      n >= 1_000_000_000
-        ? `${n / 1_000_000_000}B`
-        : n >= 1_000_000
-          ? `${n / 1_000_000}M`
-          : n >= 1_000
-            ? `${Math.round(n / 1_000)}k`
-            : `${n}`
-    return t.hud.gateCompute(label)
+    return t.hud.gateCompute(formatAsh(def.unlock.ashEarned).replace(/,0+(?=\D|$)/, ''))
   }
   if (def.unlock.requires) {
     const prior = GENERATORS.find((g) => g.id === def.unlock!.requires!.id)

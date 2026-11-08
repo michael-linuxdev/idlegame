@@ -129,7 +129,7 @@ export interface GameState {
   obsidian: number
   /** Owned cosmetic ids (survives prestige) */
   ownedCosmetics: CosmeticId[]
-  /** Equipped station skin */
+  /** Equipped garden skin */
   equippedCosmetic: CosmeticId
   /** Hours of paid time-skip used on skipDayKey */
   skipHoursUsedToday: number
@@ -230,15 +230,15 @@ export interface GameState {
   eraUpgrades: EraUpgrades
 }
 
-export const STORAGE_KEY = 'orbit-rack-save-v2'
+export const STORAGE_KEY = 'gartenerbe-save-v1'
 
 export function emptyOwned(): Record<GeneratorId, number> {
   const owned = {} as Record<GeneratorId, number>
   for (const id of GENERATOR_IDS) {
     owned[id] = 0
   }
-  // G1 Power Plant starts online — producing immediately (economy Day-1)
-  owned.emberPit = 1
+  // G1 (first module) starts online — producing immediately (economy Day-1)
+  owned.gemuesebeet = 1
   return owned
 }
 
@@ -258,8 +258,8 @@ export function createInitialState(now = Date.now()): GameState {
     clanMult: 1,
     // Day-1 login gift: 20 Obsidian (economy.md §10)
     obsidian: 20,
-    ownedCosmetics: ['steelDeck'],
-    equippedCosmetic: 'steelDeck',
+    ownedCosmetics: ['wiese'],
+    equippedCosmetic: 'wiese',
     skipHoursUsedToday: 0,
     skipDayKey: dayKey(now),
     clanBoostExpiresAt: 0,
@@ -308,10 +308,10 @@ export function createPostPrestigeState(prev: GameState, now = Date.now()): Game
   const owned = emptyOwned()
   const startLevel = prestigeStartModuleLevel(prev.emberUpgrades)
   if (startLevel > 0) {
-    owned.emberPit = Math.max(owned.emberPit, startLevel)
+    owned.gemuesebeet = Math.max(owned.gemuesebeet, startLevel)
   }
-  const g1 = GENERATORS.find((g) => g.id === 'emberPit')
-  const g1Level = owned.emberPit
+  const g1 = GENERATORS.find((g) => g.id === 'gemuesebeet')
+  const g1Level = owned.gemuesebeet
   const g1Cost = g1
     ? generatorCost(g1, g1Level, foundryDiscountMult(prev.emberUpgrades))
     : 23

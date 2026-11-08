@@ -30,40 +30,18 @@ jobs:
       - name: Install
         run: npm ci
 
-      # TurmFarm stays at site root (idlegame.micana.de).
-      - name: Build TurmFarm
+      - name: Build Gartenerbe
         run: npm run build
 
-      - name: Park TurmFarm dist
-        run: mv dist dist-farm
-
-      # Tokenhalle via official arcade script so theme icons/manifest match local builds.
-      - name: Build Tokenhalle (arcade)
-        run: npm run build:arcade
-
-      - name: Compose Pages artifact
+      - name: Verify Pages artifact
         run: |
           set -euo pipefail
-          mkdir -p dist-farm/arcade
-          cp -a dist/. dist-farm/arcade/
-          # Root CNAME owns idlegame.micana.de; nested CNAME is ignored by Pages.
-          rm -f dist-farm/arcade/CNAME
-          echo 'idlegame.micana.de' > dist-farm/CNAME
-          rm -rf dist
-          mv dist-farm dist
-
-          test -f dist/CNAME
+          echo 'idlegame.micana.de' > dist/CNAME
           grep -q 'assets/' dist/index.html
-          grep -q 'assets/' dist/arcade/index.html
           ! grep -q '/src/main.tsx' dist/index.html
-          ! grep -q '/src/main.tsx' dist/arcade/index.html
-          grep -q 'TurmFarm' dist/index.html
-          grep -q 'Tokenhalle' dist/arcade/index.html
-          # Theme-aware PWA icons (#29)
-          test -f dist/icons/farm/pwa-192.png
-          test -f dist/arcade/icons/arcade/pwa-192.png
-          grep -q 'icons/farm/pwa-192' dist/manifest.webmanifest
-          grep -q 'icons/arcade/pwa-192' dist/arcade/manifest.webmanifest
+          grep -q 'Gartenerbe' dist/index.html
+          test -f dist/pwa-192.png
+          grep -q 'pwa-192' dist/manifest.webmanifest
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

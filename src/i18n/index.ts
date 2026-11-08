@@ -1,11 +1,7 @@
 /**
- * Locale entry — German is the only / default locale.
- * Copy comes from the active theme skin (TurmFarm default; Tokenhalle via VITE_THEME=arcade).
+ * Locale entry — German is the only locale. Copy lives in `src/theme/strings.ts`.
  */
-import { activeTheme } from '../themes'
+import { strings, type Strings } from '../theme'
 
-export type Strings = typeof activeTheme.strings
-export const t: Strings = activeTheme.strings
-
-/** @deprecated Prefer theme packs under src/themes/ — kept for type imports. */
-export { farmStrings as de } from '../themes/farm/strings'
+export type { Strings }
+export const t: Strings = strings

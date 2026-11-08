@@ -1,7 +1,7 @@
 /**
  * Economy knobs — core formulas (R(n), C(n), offline) unchanged.
- * Player-facing: soft Phyto (TurmFarm) / Tokens (Tokenhalle) + meta.
- * Internal save fields still map to Ash/Embers.
+ * Player-facing names come from src/theme/strings.ts.
+ * Internal save fields keep legacy names (ash / embers / obsidian).
  *
  * Balance pass IG-31 (overnight): prestige was ~5 min for engaged play vs
  * design 45–90 min. Raised P_min base + slowed generator ladder (see generators.ts).
@@ -117,7 +117,7 @@ export interface EmberUpgrades {
   canopyBoost: number
   /** Night soil — +30 min soft offline per rank (uptime mid-tier) */
   nightSoil: number
-  /** Sapling surge — start run with G1 (emberPit) at this level */
+  /** Sapling surge — start run with G1 (gemuesebeet) at this level */
   saplingSurge: number
   /** Green lattice — +1.5% global soft/sec per rank (late Münzen sink) */
   greenLattice: number
@@ -519,7 +519,7 @@ export function postPrestigeStartOwned(
 ): Partial<Record<GeneratorId, number>> {
   const owned: Partial<Record<GeneratorId, number>> = {}
   const startLevel = prestigeStartModuleLevel(upgrades)
-  if (startLevel > 0) owned.emberPit = startLevel
+  if (startLevel > 0) owned.gemuesebeet = startLevel
   return owned
 }
 

@@ -6,7 +6,7 @@ import {
   type GeneratorId,
 } from '../game/generators'
 import { efficiencyMult, type BranchKind } from '../game/branches'
-import { formatAsh, formatRate } from '../game/format'
+import { formatAsh, formatDecimal, formatRate } from '../game/format'
 import { playSfx } from '../game/sound'
 import { t } from '../i18n'
 import type { useGame } from '../game/useGame'
@@ -123,12 +123,11 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
       >
         <header className="upgrade-hud-header">
           <div className="upgrade-hud-heading">
+            <p className="upgrade-hud-eyebrow">{t.upgrade.moduleEyebrow}</p>
             <h2 id="upgrade-title">{def.name}</h2>
-            {unlocked ? (
-              <p className="upgrade-hud-blurb" title={def.blurb}>
-                {flavor}
-              </p>
-            ) : null}
+            <p className="upgrade-hud-blurb" title={def.blurb}>
+              {flavor}
+            </p>
           </div>
           <button
             type="button"
@@ -139,6 +138,11 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
             ×
           </button>
         </header>
+
+        <figure className="oma-note">
+          <figcaption className="oma-note-label">{t.upgrade.noteLabel}</figcaption>
+          <blockquote className="oma-note-text">{def.note}</blockquote>
+        </figure>
 
         {unlocked ? (
           <>
@@ -238,7 +242,7 @@ function BranchRow({
   const total =
     kind === 'efficiency'
       ? t.branches.efficiencyEffect(rank * 4)
-      : t.branches.capacityEffect(Math.pow(0.97, rank).toFixed(3))
+      : t.branches.capacityEffect(formatDecimal(Math.pow(0.97, rank), 3))
 
   return (
     <div className="upgrade-hud-row">

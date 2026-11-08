@@ -1,4 +1,4 @@
-import { formatAsh } from '../game/format'
+import { formatAsh, formatDecimal } from '../game/format'
 import { t } from '../i18n'
 import type { useGame } from '../game/useGame'
 
@@ -12,7 +12,7 @@ interface Props {
 export function ProgressSheet({ game, onClose }: Props) {
   const { playerLevel, levelMult, questRows, achievementRows, claimQuest } =
     game
-  const bonusPct = ((levelMult - 1) * 100).toFixed(1)
+  const bonusPct = formatDecimal((levelMult - 1) * 100, 1)
 
   return (
     <div className="sheet-backdrop" role="presentation" onClick={onClose}>

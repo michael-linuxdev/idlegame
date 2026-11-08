@@ -1,18 +1,19 @@
 {
-  "name": "turmfarm",
+  "name": "gartenerbe",
   "private": true,
   "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:arcade": "VITE_THEME=arcade vite",
     "build": "tsc -b && vite build",
-    "build:arcade": "VITE_THEME=arcade tsc -b && VITE_THEME=arcade vite build",
     "lint": "oxlint",
-    "preview": "vite preview",
-    "preview:arcade": "VITE_THEME=arcade vite preview"
+    "preview": "vite preview"
   },
   "dependencies": {
+    "@fontsource/caveat": "^5.3.0",
+    "@fontsource/dm-sans": "^5.3.0",
+    "@fontsource/fraunces": "^5.3.0",
+    "@fontsource/nunito-sans": "^5.3.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
   },

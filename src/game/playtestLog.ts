@@ -31,8 +31,8 @@ export interface PlaytestEvent {
   data?: PlaytestPayload
 }
 
-const OPT_IN_KEY = 'turmfarm-playtest-log-on'
-const EVENTS_KEY = 'turmfarm-playtest-log-v1'
+const OPT_IN_KEY = 'gartenerbe-playtest-log-on'
+const EVENTS_KEY = 'gartenerbe-playtest-log-v1'
 /** Soft cap: keep roughly last 1–2h of dense play (~1.5 MB / 2500 events). */
 const MAX_EVENTS = 2500
 const MAX_BYTES = 1_500_000
@@ -171,10 +171,7 @@ function startSession(): void {
   if (sessionActive) return
   sessionActive = true
   push('session_start', {
-    theme:
-      typeof document !== 'undefined'
-        ? document.documentElement.dataset.theme ?? 'farm'
-        : 'farm',
+    app: 'gartenerbe',
     path:
       typeof location !== 'undefined' ? location.pathname || '/' : '/',
   })

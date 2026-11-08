@@ -1,15 +1,15 @@
 /**
  * First-10-minutes guided beats (gdd-mvp.md §7 + economy Day-1 hooks).
- * Copy: TurmFarm Ops voice (DE via i18n). Dismissible, persisted — never blocks idle.
+ * Copy: DE via i18n (src/theme/strings.ts). Dismissible, persisted — never blocks idle.
  */
 
 import { t } from '../i18n'
 
 export type FtueBeatId =
   | 'welcome'
-  | 'upgradePit'
+  | 'tendBed'
   | 'claimOffline'
-  | 'unlockForge'
+  | 'unlockCompost'
   | 'visitClan'
   | 'prestigeTeaser'
   | 'done'
@@ -21,13 +21,13 @@ export interface FtueState {
   startedAt: number
 }
 
-export const FTUE_STORAGE_KEY = 'orbit-rack-ftue-v1'
+export const FTUE_STORAGE_KEY = 'gartenerbe-ftue-v1'
 
 const BEAT_ORDER: FtueBeatId[] = [
   'welcome',
-  'upgradePit',
+  'tendBed',
   'claimOffline',
-  'unlockForge',
+  'unlockCompost',
   'visitClan',
   'prestigeTeaser',
   'done',
@@ -35,8 +35,6 @@ const BEAT_ORDER: FtueBeatId[] = [
 
 /** Beats that count toward the step chip (excludes `done`) */
 export const FTUE_STEP_BEATS: FtueBeatId[] = BEAT_ORDER.filter((b) => b !== 'done')
-
-const LEGACY_FTUE_KEYS = ['orbital-claim-ftue-v1', 'ash-dominion-ftue-v1'] as const
 
 export function createInitialFtue(now = Date.now()): FtueState {
   return {
@@ -49,13 +47,7 @@ export function createInitialFtue(now = Date.now()): FtueState {
 
 export function loadFtue(): FtueState {
   try {
-    let raw = localStorage.getItem(FTUE_STORAGE_KEY)
-    if (!raw) {
-      for (const key of LEGACY_FTUE_KEYS) {
-        raw = localStorage.getItem(key)
-        if (raw) break
-      }
-    }
+    const raw = localStorage.getItem(FTUE_STORAGE_KEY)
     if (!raw) return createInitialFtue()
     const parsed: unknown = JSON.parse(raw)
     if (typeof parsed !== 'object' || parsed === null) return createInitialFtue()
@@ -80,7 +72,6 @@ export function loadFtue(): FtueState {
 export function saveFtue(state: FtueState): void {
   try {
     localStorage.setItem(FTUE_STORAGE_KEY, JSON.stringify(state))
-    for (const key of LEGACY_FTUE_KEYS) localStorage.removeItem(key)
   } catch {
     // ignore
   }
@@ -104,7 +95,7 @@ export interface FtueCopy {
   cta: string
   /** Secondary — advance without the primary action */
   skipLabel?: string
-  highlight?: 'emberPit' | 'ashForge' | 'clan' | 'prestige' | 'offline'
+  highlight?: 'gemuesebeet' | 'kompost' | 'clan' | 'prestige' | 'offline'
 }
 
 export function ftueCopy(beat: FtueBeatId): FtueCopy | null {
@@ -115,12 +106,12 @@ export function ftueCopy(beat: FtueBeatId): FtueCopy | null {
         body: t.ftue.welcome.body,
         cta: t.ftue.welcome.cta,
       }
-    case 'upgradePit':
+    case 'tendBed':
       return {
-        title: t.ftue.upgradePit.title,
-        body: t.ftue.upgradePit.body,
-        cta: t.ftue.upgradePit.cta,
-        highlight: 'emberPit',
+        title: t.ftue.tendBed.title,
+        body: t.ftue.tendBed.body,
+        cta: t.ftue.tendBed.cta,
+        highlight: 'gemuesebeet',
       }
     case 'claimOffline':
       return {
@@ -129,12 +120,12 @@ export function ftueCopy(beat: FtueBeatId): FtueCopy | null {
         cta: t.ftue.claimOffline.cta,
         highlight: 'offline',
       }
-    case 'unlockForge':
+    case 'unlockCompost':
       return {
-        title: t.ftue.unlockForge.title,
-        body: t.ftue.unlockForge.body,
-        cta: t.ftue.unlockForge.cta,
-        highlight: 'ashForge',
+        title: t.ftue.unlockCompost.title,
+        body: t.ftue.unlockCompost.body,
+        cta: t.ftue.unlockCompost.cta,
+        highlight: 'kompost',
       }
     case 'visitClan':
       return {
