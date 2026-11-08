@@ -59,7 +59,7 @@ export interface GeneratorDef {
   blurb: string
   /** Omas Notizbuch quote for this module */
   note: string
-  /** Fixed slot on the station map (percent of map box) */
+  /** Plot centre on the garden map (percent of map box) */
   slot: { left: string; top: string }
   silhouette: SilhouetteKind
   /** Base Compute/sec at level 1 (`r0`) */
@@ -89,8 +89,8 @@ export const GENERATORS: GeneratorDef[] = [
     name: t.modules.gemuesebeet.name,
     blurb: t.modules.gemuesebeet.blurb,
     note: t.modules.gemuesebeet.note,
-    /* Slot lattice: ≥26% horiz / ≥16% vert between centers so plaques don’t collide on phone */
-    slot: { left: '50%', top: '86%' },
+    /* Plot lattice: zig-zag along the garden path, gate (bottom) → Laube (top). See theme/MapBackdrop. */
+    slot: { left: '34%', top: '83%' },
     silhouette: 'power',
     baseRate: 1,
     baseCost: 20,
@@ -102,7 +102,7 @@ export const GENERATORS: GeneratorDef[] = [
     name: t.modules.kompost.name,
     blurb: t.modules.kompost.blurb,
     note: t.modules.kompost.note,
-    slot: { left: '84%', top: '70%' },
+    slot: { left: '74%', top: '79%' },
     silhouette: 'cool',
     baseRate: 4,
     baseCost: 150,
@@ -115,7 +115,7 @@ export const GENERATORS: GeneratorDef[] = [
     name: t.modules.kraeuterspirale.name,
     blurb: t.modules.kraeuterspirale.blurb,
     note: t.modules.kraeuterspirale.note,
-    slot: { left: '50%', top: '54%' },
+    slot: { left: '20%', top: '68%' },
     silhouette: 'rack',
     baseRate: 25,
     baseCost: 1_800,
@@ -128,7 +128,7 @@ export const GENERATORS: GeneratorDef[] = [
     name: t.modules.beerenhecke.name,
     blurb: t.modules.beerenhecke.blurb,
     note: t.modules.beerenhecke.note,
-    slot: { left: '14%', top: '70%' },
+    slot: { left: '62%', top: '65%' },
     silhouette: 'uplink',
     baseRate: 150,
     baseCost: 25_000,
@@ -141,7 +141,7 @@ export const GENERATORS: GeneratorDef[] = [
     name: t.modules.obstwiese.name,
     blurb: t.modules.obstwiese.blurb,
     note: t.modules.obstwiese.note,
-    slot: { left: '16%', top: '42%' },
+    slot: { left: '30%', top: '53%' },
     silhouette: 'relay',
     baseRate: 900,
     baseCost: 200_000,
@@ -154,7 +154,7 @@ export const GENERATORS: GeneratorDef[] = [
     name: t.modules.bienenstock.name,
     blurb: t.modules.bienenstock.blurb,
     note: t.modules.bienenstock.note,
-    slot: { left: '68%', top: '36%' },
+    slot: { left: '76%', top: '50%' },
     silhouette: 'switch',
     baseRate: 5_000,
     baseCost: 1_500_000,
@@ -167,7 +167,7 @@ export const GENERATORS: GeneratorDef[] = [
     name: t.modules.huehnerstall.name,
     blurb: t.modules.huehnerstall.blurb,
     note: t.modules.huehnerstall.note,
-    slot: { left: '86%', top: '50%' },
+    slot: { left: '20%', top: '39%' },
     silhouette: 'battery',
     baseRate: 30_000,
     baseCost: 12_000_000,
@@ -180,7 +180,7 @@ export const GENERATORS: GeneratorDef[] = [
     name: t.modules.gewaechshaus.name,
     blurb: t.modules.gewaechshaus.blurb,
     note: t.modules.gewaechshaus.note,
-    slot: { left: '38%', top: '20%' },
+    slot: { left: '62%', top: '36%' },
     silhouette: 'cache',
     baseRate: 180_000,
     baseCost: 90_000_000,
@@ -193,7 +193,7 @@ export const GENERATORS: GeneratorDef[] = [
     name: t.modules.hofladen.name,
     blurb: t.modules.hofladen.blurb,
     note: t.modules.hofladen.note,
-    slot: { left: '12%', top: '22%' },
+    slot: { left: '27%', top: '25%' },
     silhouette: 'quantum',
     baseRate: 1_100_000,
     baseCost: 700_000_000,
@@ -209,7 +209,7 @@ export const GENERATORS: GeneratorDef[] = [
     name: t.modules.orangerie.name,
     blurb: t.modules.orangerie.blurb,
     note: t.modules.orangerie.note,
-    slot: { left: '84%', top: '18%' },
+    slot: { left: '72%', top: '23%' },
     silhouette: 'scrub',
     baseRate: 7_000_000,
     baseCost: 5_000_000_000,

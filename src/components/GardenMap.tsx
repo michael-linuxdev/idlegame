@@ -25,10 +25,10 @@ import {
 } from '../game/surpriseJumps'
 import { t } from '../i18n'
 import type { useGame } from '../game/useGame'
-import { MAP_CLASS } from '../theme'
 import type { Tab } from './AppNav'
 import { BestBuyChip } from './BestBuyChip'
 import { ModuleArt } from '../theme/ModuleArt'
+import { ClearedPlot, WildPlot } from '../theme/PlotArt'
 import { DailyOpsBanner } from './DailyOpsBanner'
 import { EventBanner } from './EventBanner'
 import { FlashEventBanner } from './FlashEventBanner'
@@ -62,7 +62,7 @@ interface Props {
 
 let popSeq = 0
 
-export function FortressMap({ game, highlightId, onOpenTab }: Props) {
+export function GardenMap({ game, highlightId, onOpenTab }: Props) {
   const {
     state,
     rate,
@@ -89,6 +89,11 @@ export function FortressMap({ game, highlightId, onOpenTab }: Props) {
   const prevLevel = useRef(playerLevel.level)
   const totalMult = multiplier * levelMult * clanMult * eventMult
   const skinClass = equippedCosmetic?.accentClass ?? 'skin-wiese'
+  const gardenStage = GENERATORS.filter(
+    (g) => (state.owned[g.id] ?? 0) > 0 && game.unlocked(g.id),
+  ).length
+  /** Only the next wild corner shows its sign — keeps the map calm. */
+  const nextWildId = GENERATORS.find((g) => !game.unlocked(g.id))?.id ?? null
   const bonusPct = ((levelMult - 1) * 100).toFixed(1)
   const questReady = game.questRows.some((q: { ready: boolean }) => q.ready)
 
@@ -437,16 +442,16 @@ export function FortressMap({ game, highlightId, onOpenTab }: Props) {
       <EventBanner game={game} />
       <FlashEventBanner game={game} />
 
-      <div className={`fortress-stage ${skinClass} ${MAP_CLASS}`}>
+      <div className={`garden-stage ${skinClass}`}>
         <div
-          className="fortress-map slots-10"
+          className="garden-map"
           role="application"
           aria-label={t.hud.mapAria}
           onContextMenu={(e) => e.preventDefault()}
         >
-          <MapBackdrop />
+          <MapBackdrop stage={gardenStage} />
 
-          {GENERATORS.map((def) => {
+          {GENERATORS.map((def, index) => {
             const level = state.owned[def.id] ?? 0
             const unlocked = game.unlocked(def.id)
             const selectedHere = selected === def.id
@@ -455,12 +460,24 @@ export function FortressMap({ game, highlightId, onOpenTab }: Props) {
             const producing = buildingRate > 0
             const hint = !unlocked ? unlockHint(def) : ''
             const hl = highlightId === def.id
+            const ready = unlocked && level === 0
+            const showSign = unlocked || selectedHere || def.id === nextWildId
+            const cls =
+              'garden-plot' +
+              (selectedHere ? ' selected' : '') +
+              (!unlocked ? ' wild' : ready ? ' ready' : ' planted') +
+              (producing ? ' producing' : '') +
+              (hl ? ' ftue-target' : '')
             return (
               <button
                 key={def.id}
                 type="button"
-                className={`map-building${selectedHere ? ' selected' : ''}${level > 0 && unlocked ? ' raised' : ''}${!unlocked ? ' locked' : ''}${producing ? ' producing' : ''}${hl ? ' ftue-target' : ''}`}
-                style={{ left: def.slot.left, top: def.slot.top }}
+                className={cls}
+                style={{
+                  left: def.slot.left,
+                  top: def.slot.top,
+                  zIndex: 2 + Math.round(Number.parseFloat(def.slot.top)),
+                }}
                 aria-label={
                   unlocked
                     ? t.hud.buildingAriaUnlocked(
@@ -475,50 +492,45 @@ export function FortressMap({ game, highlightId, onOpenTab }: Props) {
                 onContextMenu={(e) => e.preventDefault()}
                 onDragStart={(e) => e.preventDefault()}
               >
-                <ModuleArt
-                  kind={def.silhouette}
-                  level={level}
-                  locked={!unlocked}
-                  producing={producing}
-                  selected={selectedHere}
-                />
-                {/* Locked: tiny chip until selected — kills GESPERRT plaque piles */}
-                {unlocked || selectedHere ? (
-                  <span className="map-building-label">
-                    <span className="map-building-name">{def.name}</span>
-                    <span className="map-building-meta">
-                      {unlocked ? (
+                <span className="plot-visual">
+                  {!unlocked ? (
+                    <WildPlot variant={index} />
+                  ) : ready ? (
+                    <ClearedPlot />
+                  ) : (
+                    <ModuleArt
+                      kind={def.silhouette}
+                      level={level}
+                      producing={producing}
+                      selected={selectedHere}
+                    />
+                  )}
+                </span>
+                {showSign ? (
+                  <span className="plot-sign">
+                    <span className="plot-name">{def.name}</span>
+                    <span className="plot-meta">
+                      {!unlocked ? (
                         <>
-                          <span className="map-building-lvl">
-                            {t.hud.levelShort(level)}
-                          </span>
-                          {producing || selectedHere ? (
-                            <span className="map-building-rate">
-                              {formatRate(buildingRate)}
-                            </span>
+                          {t.hud.locked} · {shortUnlockGate(def)}
+                        </>
+                      ) : ready ? (
+                        t.upgrade.online
+                      ) : (
+                        <>
+                          {t.hud.levelShort(level)}
+                          {producing && selectedHere ? (
+                            <> · {formatRate(buildingRate)}</>
                           ) : null}
                         </>
-                      ) : (
-                        <span className="map-building-lock-line">
-                          <span className="map-building-lock">{t.hud.locked}</span>
-                          <span className="map-building-gate" aria-hidden="true">
-                            ·
-                          </span>
-                          <span className="map-building-gate">
-                            {shortUnlockGate(def)}
-                          </span>
-                        </span>
                       )}
                     </span>
                   </span>
-                ) : (
-                  <span className="map-building-lock-chip" aria-hidden="true" />
-                )}
+                ) : null}
               </button>
             )
           })}
         </div>
-        <p className="map-hint">{t.hud.mapHint}</p>
       </div>
 
       {selected ? (

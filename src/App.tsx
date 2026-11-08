@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { AppNav, type Tab } from './components/AppNav'
 import { ClanPanel } from './components/ClanPanel'
-import { FortressMap } from './components/FortressMap'
+import { GardenMap } from './components/GardenMap'
 import { FtueCoach } from './components/FtueCoach'
 import { InstallPrompt } from './components/InstallPrompt'
 import { PrestigePanel } from './components/PrestigePanel'
@@ -9,6 +9,7 @@ import { ShopPanel } from './components/ShopPanel'
 import { bootPlaytestLog, logPlaytest } from './game/playtestLog'
 import { useGame } from './game/useGame'
 import './App.css'
+import './theme/garden.css'
 
 export default function App() {
   const game = useGame()
@@ -33,7 +34,7 @@ export default function App() {
     <div className="app-shell">
       <main className={`app-main${tab === 'fortress' ? ' map-mode' : ''}`}>
         {tab === 'fortress' ? (
-          <FortressMap
+          <GardenMap
             game={game}
             highlightId={ftueHighlight}
             onOpenTab={onTabChange}
