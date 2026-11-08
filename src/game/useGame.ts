@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { isIdle, onIdleChange, startIdleWatch } from './idle'
 import type { DecorId } from './decor'
 import type { ResidentId } from './residents'
+import type { ProjectId } from './projects'
 import {
   emberPayout,
   foundryDiscountMult,
@@ -140,6 +141,7 @@ import {
   placeDecor,
   spawnResident,
   startCrossing,
+  buildProjectStage,
   skipCrossing,
   harvestCrossing,
   residentGone,
@@ -438,6 +440,10 @@ export function useGame() {
       if (next !== s) logPlaytest('upgrade', { id: 'helper', level: next.helperLevel, kind: 'helper' })
       return next
     })
+  }, [])
+
+  const buildProject = useCallback((id: ProjectId) => {
+    setState((s) => buildProjectStage(s, id))
   }, [])
 
   const crossStart = useCallback((a: string, b: string) => {
@@ -897,6 +903,7 @@ export function useGame() {
     purchaseDecor,
     letResidentIn,
     crossStart,
+    buildProject,
     crossSkip,
     crossHarvest,
     residentLeft,

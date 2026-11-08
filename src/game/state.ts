@@ -45,6 +45,7 @@ import {
 } from './chapters'
 import { milestonesReached, nextMilestone } from './generators'
 import { decorDef, emptySlots, type DecorId } from './decor'
+import { PROJECT_STAGES, projectDef, projectsMult, stageCost, type ProjectId } from './projects'
 import { CROSS_MISS_SAMEN, CROSS_MS, CROSS_SKIP_SAMEN, hybridFor, hybridsMult, type Crossing, type HybridId } from './crossing'
 import { RESIDENT_FIRST_SAMEN, RESIDENT_GAP_MS, RESIDENT_REPEAT_SEC, RESIDENT_STAY_MS, residentsMult, type ResidentId, type ResidentVisit } from './residents'
 import {
@@ -322,6 +323,8 @@ export interface GameState {
   crossing: Crossing | null
   /** Kreuzungen found (forever) */
   hybrids: HybridId[]
+  /** Großprojekte: stages built per project */
+  projects: Partial<Record<ProjectId, number>>
   /** Helper time carry (ms) between buys */
   helperCarryMs: number
   /** Transient: buys the helper made while away (for the offline toast) */
@@ -405,6 +408,8 @@ export interface ExpansionSlice {
   crossing: Crossing | null
   /** Kreuzungen found (forever) */
   hybrids: HybridId[]
+  /** Großprojekte: stages built per project */
+  projects: Partial<Record<ProjectId, number>>
   helperCarryMs: number
   helperReport: number
   turboEndsAt: number
@@ -443,6 +448,7 @@ export function emptyExpansion(now = Date.now()): ExpansionSlice {
     residentNextAt: 0,
     crossing: null,
     hybrids: [],
+    projects: {},
     helperCarryMs: 0,
     helperReport: 0,
     turboEndsAt: 0,
@@ -483,6 +489,7 @@ export function pickExpansion(s: GameState): ExpansionSlice {
     residentNextAt: s.residentNextAt,
     crossing: s.crossing,
     hybrids: s.hybrids,
+    projects: s.projects,
     helperCarryMs: 0,
     helperReport: 0,
     turboEndsAt: s.turboEndsAt,
@@ -852,7 +859,7 @@ export function turboMult(state: GameState, now = Date.now()): number {
 
 /** Permanent multipliers from Kapitel 2 and Generationen (shown in HUD). */
 export function expansionGardenMult(state: GameState): number {
-  return chaptersGardenMult(state.chapters) * legacyGardenMult(state.legacy) * residentsMult(state.residentsSeen) * hybridsMult(state.hybrids)
+  return chaptersGardenMult(state.chapters) * legacyGardenMult(state.legacy) * residentsMult(state.residentsSeen) * hybridsMult(state.hybrids) * projectsMult(state.projects)
 }
 
 export function productionPerSecond(state: GameState, now = Date.now()): number {
@@ -1350,6 +1357,30 @@ export function buyHelper(state: GameState): GameState {
     helperOn: true,
     lastSeen: Date.now(),
   }
+}
+
+/* ——— Großprojekte ——— */
+
+export function projectOpen(state: GameState, id: ProjectId): boolean {
+  const def = projectDef(id)
+  return !!def && def.chapters.every((c) => state.chapters[c].openedAt > 0)
+}
+
+/** Build the next stage of a project, paying every chapter's currency. */
+export function buildProjectStage(state: GameState, id: ProjectId): GameState {
+  const def = projectDef(id)
+  const stage = state.projects[id] ?? 0
+  if (!def || stage >= PROJECT_STAGES || !projectOpen(state, id)) return state
+  const costs = stageCost(def, stage)
+  if (costs.some(({ chapter, cost }) => state.chapters[chapter].cur < cost)) return state
+  const chapters = { ...state.chapters }
+  for (const { chapter, cost } of costs) chapters[chapter] = { ...chapters[chapter], cur: chapters[chapter].cur - cost }
+  let next: GameState = { ...state, chapters, projects: { ...state.projects, [id]: stage + 1 } }
+  if (stage + 1 >= PROJECT_STAGES) {
+    if (def.reward.decor) next = grantDecor(next, def.reward.decor)
+    if (def.reward.samen) next = { ...next, samen: next.samen + def.reward.samen }
+  }
+  return next
 }
 
 /* ——— Saatgut kreuzen ——— */

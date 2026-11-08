@@ -18,6 +18,7 @@ interface Props {
   onOpenLegal?: () => void
   onOpenBackup?: () => void
   onOpenPhoto?: () => void
+  onOpenProjects?: () => void
   unreadLetters?: number
   reminders?: boolean
   onToggleReminders?: () => void
@@ -73,6 +74,7 @@ export function AppNav({
   onOpenLegal,
   onOpenBackup,
   onOpenPhoto,
+  onOpenProjects,
   unreadLetters = 0,
   reminders = false,
   onToggleReminders,
@@ -206,6 +208,25 @@ export function AppNav({
               </span>
               <span className="tab-label">{t.notebook.title}</span>
               {unreadLetters > 0 ? <span className="nav-new-dot" aria-label={t.notebook.newLetter} /> : null}
+            </button>
+          ) : null}
+          {onOpenProjects ? (
+            <button
+              type="button"
+              role="menuitem"
+              className="nav-menu-item"
+              onClick={() => {
+                setMenuOpen(false)
+                onOpenProjects()
+              }}
+            >
+              <span className="tab-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true" width="22" height="22">
+                  <path d="M3 21h18M5 21V10l7-6 7 6v11" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+                  <path d="M10 21v-6h4v6" fill="none" stroke="currentColor" strokeWidth="2" />
+                </svg>
+              </span>
+              <span className="tab-label">{t.projects.menu}</span>
             </button>
           ) : null}
           {onOpenBackup ? (
