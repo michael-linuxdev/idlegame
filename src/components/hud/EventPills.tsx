@@ -38,7 +38,7 @@ interface Pill {
 interface Props {
   game: GameApi
   /** Saisonende-Hinweis (not yet the main goal) */
-  season?: { label: string; onOpen: () => void } | null
+  season?: { label: string; short?: string; onOpen: () => void } | null
   /** Hofladen-Bestellung */
   order?: { label: string; detail: string; ratio: number; claim: boolean; onClaim: () => void } | null
   /** Open the Festladen */
@@ -64,7 +64,8 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
     pills.push({
       key: 'order',
       icon: <IconCrate />,
-      label: order.label,
+      label: order.claim ? t.event.claimGoal : `${Math.round(order.ratio * 100)} %`,
+      aria: order.label,
       claim: order.claim,
       onClick: order.claim ? order.onClaim : undefined,
       detail: { line: order.detail, ratio: order.ratio, aria: order.label },
@@ -75,7 +76,8 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
     pills.push({
       key: 'turbo',
       icon: <IconSprout />,
-      label: t.turbo.pill(formatClock(game.turboMsLeft)),
+      label: `×3 · ${formatClock(game.turboMsLeft)}`,
+      aria: t.turbo.pill(formatClock(game.turboMsLeft)),
       detail: { line: t.turbo.detail, ratio: 0, aria: t.turbo.detail },
     })
   }
@@ -84,7 +86,8 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
     pills.push({
       key: 'rainbow',
       icon: <IconSun />,
-      label: t.sky.rainbowActive(formatClock(game.rainbowMsLeft)),
+      label: `×5 · ${formatClock(game.rainbowMsLeft)}`,
+      aria: t.sky.rainbowActive(formatClock(game.rainbowMsLeft)),
     })
   }
 
@@ -93,7 +96,8 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
     pills.push({
       key: 'recipe',
       icon: <IconNotebook />,
-      label: game.recipeReady ? t.recipe.pillReady : t.recipe.pill(done),
+      label: game.recipeReady ? t.recipe.cook : `${done}/3`,
+      aria: game.recipeReady ? t.recipe.pillReady : t.recipe.pill(done),
       claim: game.recipeReady,
       onClick: onOpenRecipe,
     })
@@ -105,7 +109,7 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
     pills.push({
       key: 'fest',
       icon: <IconFestToken fest={fest.id} />,
-      label: t.fest.pill(t.fest.names[fest.id]!, n),
+      label: String(n),
       aria: t.fest.pillAria(t.fest.names[fest.id]!, n, t.fest.tokens[fest.id]!),
       color: fest.color,
       onClick: onOpenFest,
@@ -119,9 +123,10 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
     pills.push({
       key: 'weather',
       icon: WEATHER_ICON[today],
-      label: t.weather.pill(t.weather[today].name, t.weather[today].effect),
+      label: '',
+      aria: t.weather.pill(t.weather[today].name, t.weather[today].effect),
       detail: {
-        line: t.weather.tomorrow(t.weather[tomorrow].name, t.weather[tomorrow].effect),
+        line: `${t.weather.pill(t.weather[today].name, t.weather[today].effect)} · ${t.weather.tomorrow(t.weather[tomorrow].name, t.weather[tomorrow].effect)}`,
         ratio: 0,
         aria: t.weather[today].name,
       },
@@ -134,7 +139,9 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
       pills.push({
         key: 'wheel',
         icon: <IconWheel />,
-        label: t.wheel.activePill[buff.kind],
+        label: '',
+        aria: t.wheel.activePill[buff.kind],
+        detail: { line: t.wheel.activePill[buff.kind], ratio: 0, aria: t.wheel.activePill[buff.kind] },
       })
     }
   }
@@ -145,9 +152,8 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
     pills.push({
       key: 'surge',
       icon: <IconFestival />,
-      label: claim
-        ? `${surge.name} · ${t.event.claimGoal}`
-        : `${surge.name} ${formatMult(eventMult)}`,
+      label: claim ? t.event.claimGoal : formatMult(eventMult),
+      aria: `${surge.name} ${formatMult(eventMult)}`,
       claim,
       onClick: claim ? game.claimEventGoal : undefined,
       detail: surgeGoalClaimed
@@ -165,9 +171,8 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
     pills.push({
       key: 'flash',
       icon: <IconSun />,
-      label: flash.claimable
-        ? `${flash.name} · ${t.flash.claimGoal}`
-        : `${formatMult(flash.mult)} · ${formatClock(flash.msLeft)}`,
+      label: flash.claimable ? t.flash.claimGoal : `${formatMult(flash.mult)} · ${formatClock(flash.msLeft)}`,
+      aria: flash.name,
       claim: flash.claimable,
       onClick: flash.claimable ? game.claimFlashGoal : undefined,
       detail: {
@@ -197,7 +202,13 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
   }
 
   if (season) {
-    pills.push({ key: 'season', icon: <IconSnow />, label: season.label, onClick: season.onOpen })
+    pills.push({
+      key: 'season',
+      icon: <IconSnow />,
+      label: season.short ?? season.label,
+      aria: season.label,
+      onClick: season.onOpen,
+    })
   }
 
   if (pills.length === 0) return null
@@ -224,7 +235,7 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
             style={p.color ? { ['--pill-accent' as string]: p.color } : undefined}
           >
             <span className="hud-pill-icon">{p.icon}</span>
-            <span className="hud-pill-label">{p.label}</span>
+            {p.label ? <span className="hud-pill-label">{p.label}</span> : null}
           </button>
         ))}
       </div>

@@ -1231,3 +1231,43 @@ html.tab-hidden .sky-event {
     animation: none !important;
   }
 }
+
+/* —— Ruhiges Spielfeld: Plaketten statt Schilder, Pillen kompakt —— */
+.plot-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.1rem;
+  margin-top: calc(var(--u) * -2.2);
+  padding: 0 0.32rem;
+  min-width: 1.35rem;
+  height: 1.05rem;
+  justify-content: center;
+  border: 1.5px solid #8a6a40;
+  border-radius: 999px;
+  background: #fbf3e0;
+  box-shadow: 0 1px 0 #8a6a40;
+  font-family: var(--oc-font-metric);
+  font-weight: 700;
+  font-size: 0.58rem;
+  line-height: 1;
+  color: #3b2c18;
+  pointer-events: none;
+}
+
+.plot-badge-stars {
+  color: #e0a21a;
+  font-size: 0.5rem;
+  letter-spacing: -0.08em;
+}
+
+.fortress-home.photo-mode .plot-badge {
+  display: none;
+}
+
+.map-side {
+  gap: 0.45rem;
+}
+
+.hud-pill:not(:has(.hud-pill-label)) {
+  padding: 0 0.4rem;
+}

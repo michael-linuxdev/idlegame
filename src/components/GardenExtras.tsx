@@ -86,7 +86,6 @@ export function SkyEventButton({ game, onWish }: { game: GameApi; onWish: () => 
             <path key={c} d={`M${6 + i * 4} 50 A${44 - i * 4} ${44 - i * 4} 0 0 1 ${94 - i * 4} 50`} stroke={c} strokeWidth="4" fill="none" />
           ))}
         </svg>
-        <span>{t.sky.rainbow}</span>
       </button>
     )
   }
@@ -96,7 +95,6 @@ export function SkyEventButton({ game, onWish }: { game: GameApi; onWish: () => 
         <path d="M2 28 L44 8" stroke="#fff3b0" strokeWidth="2" strokeLinecap="round" opacity=".7" />
         <path d="M48 2l2.4 5.2 5.6.6-4.2 3.8 1.2 5.6L48 14.4 43 17.2l1.2-5.6L40 7.8l5.6-.6z" fill="#f5d76e" />
       </svg>
-      <span>{t.sky.star}</span>
     </button>
   )
 }
