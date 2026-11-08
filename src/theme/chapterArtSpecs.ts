@@ -16,7 +16,7 @@ export type Stones = { k: 'stones'; variant: 'zen' | 'rock' | 'edelweiss' | 'mos
 export type ArtSpec = Tree | Rows | Animals | House | Water | Flowers | Stones
 
 /** Chapters drawn with hand-made art (theme/HandArt.tsx). */
-export const HAND_ART_CHAPTERS: readonly ChapterId[] = ['bauernhof', 'imkerei', 'teich']
+export const HAND_ART_CHAPTERS: readonly ChapterId[] = ['bauernhof', 'imkerei', 'teich', 'kraeuter', 'botanik', 'alm']
 
 export interface BackdropSpec {
   /** Patchwork fields behind the plots */
@@ -25,6 +25,12 @@ export interface BackdropSpec {
   forest?: boolean
   /** Big lake in the middle of the map */
   bigLake?: boolean
+  /** Walled herb garden: box-hedge beds + brick wall along the top */
+  herbGarden?: boolean
+  /** Big Victorian palm house on the horizon + gravel rondel */
+  glasshouse?: boolean
+  /** High Alps: snowy peaks, chapel, alpine pasture slope */
+  alps?: boolean
   grass: [string, string, string]
   path: string
   hills: [string, string]
@@ -80,7 +86,7 @@ export const CHAPTER_ART: Partial<Record<ChapterId, { backdrop: BackdropSpec; ar
     },
   },
   kraeuter: {
-    backdrop: { grass: ['#b0cf86', '#9cc072', '#88ad60'], path: '#e2d4ae', hills: ['#7a9a58', '#6a8a48'], stripes: '#a9c47a' },
+    backdrop: { grass: ['#b0cf86', '#9cc072', '#88ad60'], path: '#e2d4ae', hills: ['#7a9a58', '#6a8a48'], herbGarden: true },
     areas: {
       kamille: { k: 'rows', color: '#8ab85a', flower: '#fbf6e8' },
       pfefferminze: { k: 'rows', color: '#4f9a5a' },
@@ -95,7 +101,7 @@ export const CHAPTER_ART: Partial<Record<ChapterId, { backdrop: BackdropSpec; ar
     },
   },
   botanik: {
-    backdrop: { grass: ['#9fd08a', '#8ac477', '#76b062'], path: '#eae2d0', hills: ['#5f9e45', '#4f8a3a'] },
+    backdrop: { grass: ['#9fd08a', '#8ac477', '#76b062'], path: '#eae2d0', hills: ['#5f9e45', '#4f8a3a'], glasshouse: true },
     areas: {
       palmenhaus: { k: 'house', roof: '#cfe8f4', wall: '#e8f4fa', prop: 'glass' },
       kakteenhaus: { k: 'house', roof: '#cfe8f4', wall: '#f4ecd8', prop: 'glass' },
@@ -110,7 +116,7 @@ export const CHAPTER_ART: Partial<Record<ChapterId, { backdrop: BackdropSpec; ar
     },
   },
   alm: {
-    backdrop: { grass: ['#a9cf7a', '#94bf66', '#7fab54'], path: '#d9c79a', hills: ['#8a9aa8', '#6f8090'], mountains: true },
+    backdrop: { grass: ['#a9cf7a', '#94bf66', '#7fab54'], path: '#d9c79a', hills: ['#7fab54', '#6f9a48'], alps: true },
     areas: {
       almwiese: { k: 'flowers', colors: ['#fbf6e8', '#f5c542', '#c77dd1', '#3d6fd1'] },
       kuhherde: { k: 'animals', animal: 'cow' },

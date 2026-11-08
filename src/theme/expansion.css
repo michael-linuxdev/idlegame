@@ -1943,6 +1943,102 @@ html.tab-hidden .sky-event {
   }
 }
 
+/* —— Kapitel 7–9: Tierleben —— */
+.butterfly-flit {
+  width: calc(var(--u) * 3);
+  top: 50%;
+  left: 20%;
+  animation: bee-trail 11s linear infinite;
+}
+
+.butterfly-flit.f1 { top: 64%; left: 64%; animation-delay: -4s; animation-duration: 13s; }
+.butterfly-flit.f2 { top: 38%; left: 52%; animation-delay: -8s; }
+
+.butterfly-flit .wing {
+  transform-origin: 6px 4px;
+  animation: wing-flap 0.35s ease-in-out infinite alternate;
+}
+
+@keyframes wing-flap {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0.35); }
+}
+
+.blackbird {
+  width: calc(var(--u) * 4);
+  top: 80%;
+  left: 40%;
+  animation: chicken-walk 12s steps(18) infinite alternate;
+}
+
+.peacock {
+  width: calc(var(--u) * 8);
+  top: 70%;
+  left: 36%;
+  animation: chicken-walk 26s ease-in-out infinite alternate;
+}
+
+.marmot {
+  width: calc(var(--u) * 3.6);
+  top: 52%;
+  left: 47%;
+  animation: marmot-peek 9s ease-in-out infinite;
+  transform-origin: 50% 100%;
+}
+
+@keyframes marmot-peek {
+  0%, 40%, 100% { transform: scaleY(0.25); opacity: 0.6; }
+  50%, 80% { transform: scaleY(1); opacity: 1; }
+}
+
+.eagle {
+  width: calc(var(--u) * 7);
+  top: 24%;
+  left: 40%;
+  animation: eagle-circle 22s linear infinite;
+}
+
+@keyframes eagle-circle {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(calc(var(--u) * 16), calc(var(--u) * 3)); }
+  50% { transform: translate(0, calc(var(--u) * 6)); }
+  75% { transform: translate(calc(var(--u) * -16), calc(var(--u) * 3)); }
+  100% { transform: translate(0, 0); }
+}
+
+.star-twinkle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #fffbe0;
+  box-shadow: 0 0 4px 1px rgba(255, 250, 200, 0.7);
+  animation: firefly 4s ease-in-out infinite;
+}
+
+.ha-wheel {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ha-spin 6s linear infinite;
+}
+
+@keyframes ha-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .butterfly-flit,
+  .butterfly-flit .wing,
+  .blackbird,
+  .peacock,
+  .marmot,
+  .eagle,
+  .star-twinkle,
+  .ha-wheel {
+    animation: none !important;
+  }
+}
+
 /* Kapitel 4–12: Motive füllen ihren Platz (Zeichnungen sitzen unten im viewBox) */
 .orchard-home:not(.chapter-obstwiese):not(.chapter-weinberg) .garden-plot .plot-visual svg {
   transform: scale(1.35);
