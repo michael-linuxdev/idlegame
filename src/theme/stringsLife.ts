@@ -1,0 +1,41 @@
+/** Copy for the „Mehr Leben“ features: Deko, Gartenbewohner, Kreuzungen, Projekte, Album, Wetter. */
+const SEEDS = 'Samen'
+
+export const lifeStrings = {
+  decor: {
+    title: 'Deko',
+    intro: 'Deko bleibt für immer. Kauf sie hier und stell sie auf einen der Dekoplätze im Garten — manche locken Gartenbewohner an.',
+    open: 'Deko',
+    openAria: 'Deko kaufen und platzieren',
+    buy: (n: number) => `${n} ${SEEDS}`,
+    owned: 'Gehört dir',
+    placed: 'Steht im Garten',
+    exclusive: 'Nur als Belohnung',
+    place: 'Im Garten platzieren',
+    done: 'Fertig',
+    editHint: 'Tippe einen Dekoplatz an.',
+    slotAria: (n: number) => `Dekoplatz ${n}`,
+    pickTitle: 'Was soll hier stehen?',
+    remove: 'Wegräumen',
+    nothingOwned: 'Noch keine Deko — kauf erst etwas im Deko-Fenster.',
+    attracts: (who: string) => `Lockt an: ${who}`,
+    names: {
+      zwerg: 'Gartenzwerg',
+      laubhaufen: 'Laubhaufen',
+      futterhaus: 'Vogelfutterhaus',
+      traenke: 'Vogeltränke',
+      insektenhotel: 'Insektenhotel',
+      windrad: 'Windrad',
+      bank: 'Gartenbank',
+      lampions: 'Lampionkette',
+      sonnenuhr: 'Sonnenuhr',
+      rosenbogen: 'Rosenbogen',
+      blumenkorb: 'Frühlingskorb',
+      strandkorb: 'Strandkorb',
+      kuerbislaterne: 'Kürbislaterne',
+      schneemann: 'Schneemann',
+      brunnen: 'Dorfbrunnen',
+      pavillon: 'Gartenpavillon',
+    } as Record<string, string>,
+  },
+}

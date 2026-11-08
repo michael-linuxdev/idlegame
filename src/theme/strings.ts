@@ -8,6 +8,7 @@
  * · Samen (premium stub). Prestige = Saisonende (Winterruhe → neues Gartenjahr).
  */
 import { expansionStrings } from './stringsExpansion'
+import { lifeStrings } from './stringsLife'
 
 const SOFT = 'Ernte'
 const SEEDS = 'Samen'
@@ -1074,6 +1075,7 @@ export const strings = {
   },
 
   ...expansionStrings,
+  ...lifeStrings,
 } as const
 
 export type Strings = typeof strings

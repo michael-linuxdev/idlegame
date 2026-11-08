@@ -2,6 +2,7 @@ import { gateSeasons, type DeepMetaId } from './longLoop'
 import type { WheelKind } from './gardenLife'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { isIdle, onIdleChange, startIdleWatch } from './idle'
+import type { DecorId } from './decor'
 import {
   emberPayout,
   foundryDiscountMult,
@@ -134,6 +135,8 @@ import {
   type Wish,
   toggleHelper,
   toggleHelperArea,
+  buyDecor,
+  placeDecor,
   turboMult,
   expansionGardenMult,
 } from './state'
@@ -428,6 +431,14 @@ export function useGame() {
       if (next !== s) logPlaytest('upgrade', { id: 'helper', level: next.helperLevel, kind: 'helper' })
       return next
     })
+  }, [])
+
+  const purchaseDecor = useCallback((id: DecorId) => {
+    setState((s) => buyDecor(s, id))
+  }, [])
+
+  const setDecor = useCallback((slot: number, id: DecorId | null) => {
+    setState((s) => placeDecor(s, slot, id))
   }, [])
 
   const switchHelperArea = useCallback((id: GeneratorId) => {
@@ -844,6 +855,8 @@ export function useGame() {
     hireHelper,
     switchHelper,
     switchHelperArea,
+    purchaseDecor,
+    setDecor,
     ackHelperReport,
     buyChapter,
     buyChapterBulk,
