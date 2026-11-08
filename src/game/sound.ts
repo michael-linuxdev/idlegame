@@ -37,6 +37,10 @@ export function setSfxMuted(muted: boolean): void {
   }
 }
 
+export function audioCtxForAmbience(): AudioContext | null {
+  return ctx()
+}
+
 function ctx(): AudioContext | null {
   if (typeof window === 'undefined') return null
   const AC =
@@ -47,7 +51,7 @@ function ctx(): AudioContext | null {
   return audioCtx
 }
 
-function noise(ac: AudioContext): AudioBuffer {
+export function noise(ac: AudioContext): AudioBuffer {
   if (noiseBuffer && noiseBuffer.sampleRate === ac.sampleRate) return noiseBuffer
   const len = Math.floor(ac.sampleRate * 0.6)
   const buf = ac.createBuffer(1, len, ac.sampleRate)

@@ -42,8 +42,8 @@ export interface UnlockGate {
    */
   seasons?: number
   /** Lifetime Compute earned this run (economy Ash) */
-  ashEarned?: number
-  /** Prior module at least this level (OR with ashEarned) */
+  ernteSeason?: number
+  /** Prior module at least this level (OR with ernteSeason) */
   requires?: { id: GeneratorId; level: number }
 }
 
@@ -74,7 +74,7 @@ export interface GeneratorDef {
  * first prestige ~45–75 min. Prior ladder snowballed prestige in ~5–10 min.
  *
  * Ladder vs pre-pass: G2+ rates ≈ ×0.5, C0 ≈ ×1.5–2.5, g +0.03,
- * unlock ash ≈ ×3–6 (G1 mild steepen only; Day-1 first upgrade still free).
+ * unlock ernte ≈ ×3–6 (G1 mild steepen only; Day-1 first upgrade still free).
  */
 export const GENERATORS: GeneratorDef[] = [
   {
@@ -99,7 +99,7 @@ export const GENERATORS: GeneratorDef[] = [
     baseRate: 4,
     baseCost: 150,
     costScale: 1.17,
-    unlock: { ashEarned: 600, requires: { id: 'gemuesebeet', level: 10 } },
+    unlock: { ernteSeason: 600, requires: { id: 'gemuesebeet', level: 10 } },
   },
   {
     id: 'kraeuterspirale',
@@ -111,7 +111,7 @@ export const GENERATORS: GeneratorDef[] = [
     baseRate: 25,
     baseCost: 1_800,
     costScale: 1.16,
-    unlock: { ashEarned: 50_000, requires: { id: 'kompost', level: 10 } },
+    unlock: { ernteSeason: 50_000, requires: { id: 'kompost', level: 10 } },
   },
   {
     id: 'beerenhecke',
@@ -123,7 +123,7 @@ export const GENERATORS: GeneratorDef[] = [
     baseRate: 150,
     baseCost: 25_000,
     costScale: 1.15,
-    unlock: { ashEarned: 500_000, requires: { id: 'kraeuterspirale', level: 10 } },
+    unlock: { ernteSeason: 500_000, requires: { id: 'kraeuterspirale', level: 10 } },
   },
   {
     id: 'obstwiese',
@@ -135,7 +135,7 @@ export const GENERATORS: GeneratorDef[] = [
     baseRate: 900,
     baseCost: 200_000,
     costScale: 1.14,
-    unlock: { seasons: 1, ashEarned: 4_000_000, requires: { id: 'beerenhecke', level: 10 } },
+    unlock: { seasons: 1, ernteSeason: 4_000_000, requires: { id: 'beerenhecke', level: 10 } },
   },
   {
     id: 'bienenstock',
@@ -147,7 +147,7 @@ export const GENERATORS: GeneratorDef[] = [
     baseRate: 5_000,
     baseCost: 1_500_000,
     costScale: 1.13,
-    unlock: { seasons: 2, ashEarned: 25_000_000, requires: { id: 'obstwiese', level: 10 } },
+    unlock: { seasons: 2, ernteSeason: 25_000_000, requires: { id: 'obstwiese', level: 10 } },
   },
   {
     id: 'huehnerstall',
@@ -159,7 +159,7 @@ export const GENERATORS: GeneratorDef[] = [
     baseRate: 30_000,
     baseCost: 12_000_000,
     costScale: 1.12,
-    unlock: { seasons: 4, ashEarned: 150_000_000, requires: { id: 'bienenstock', level: 10 } },
+    unlock: { seasons: 4, ernteSeason: 150_000_000, requires: { id: 'bienenstock', level: 10 } },
   },
   {
     id: 'gewaechshaus',
@@ -171,7 +171,7 @@ export const GENERATORS: GeneratorDef[] = [
     baseRate: 180_000,
     baseCost: 90_000_000,
     costScale: 1.115,
-    unlock: { seasons: 6, ashEarned: 1_000_000_000, requires: { id: 'huehnerstall', level: 10 } },
+    unlock: { seasons: 6, ernteSeason: 1_000_000_000, requires: { id: 'huehnerstall', level: 10 } },
   },
   {
     id: 'hofladen',
@@ -184,7 +184,7 @@ export const GENERATORS: GeneratorDef[] = [
     baseCost: 700_000_000,
     costScale: 1.11,
     unlock: { seasons: 9,
-      ashEarned: 8_000_000_000,
+      ernteSeason: 8_000_000_000,
       requires: { id: 'gewaechshaus', level: 10 },
     },
   },
@@ -199,7 +199,7 @@ export const GENERATORS: GeneratorDef[] = [
     baseCost: 5_000_000_000,
     costScale: 1.105,
     unlock: { seasons: 13,
-      ashEarned: 50_000_000_000,
+      ernteSeason: 50_000_000_000,
       requires: { id: 'hofladen', level: 10 },
     },
   },
@@ -228,7 +228,7 @@ export function generatorRate(def: GeneratorDef, owned: number): number {
 
 export function isGeneratorUnlocked(
   def: GeneratorDef,
-  ashEarned: number,
+  ernteSeason: number,
   owned: Record<GeneratorId, number>,
   firstBeacon = false,
   playerLevel = 1,
@@ -237,12 +237,12 @@ export function isGeneratorUnlocked(
   if (!def.unlock) return true
   if ((def.unlock.seasons ?? 0) > prestiges) return false
   if (firstBeacon && def.id === 'kompost') return true
-  const { ashEarned: needAsh, requires } = def.unlock
-  if (needAsh != null && ashEarned >= needAsh) return true
+  const { ernteSeason: needAsh, requires } = def.unlock
+  if (needAsh != null && ernteSeason >= needAsh) return true
   if (requires && (owned[requires.id] ?? 0) >= requires.level) return true
   const levelGate = LEVEL_MODULE_GATES[def.id]
   if (levelGate != null && playerLevel >= levelGate) {
-    // Spieler-Level may substitute for ash / prior-level gates mid-run, but
+    // Spieler-Level may substitute for ernte / prior-level gates mid-run, but
     // the prior module must already be online. Otherwise Soft-Prestige leaves
     // mid-ladder husks "unlocked" at six-figure costs while G1 is the only
     // real buy — classic "kann nicht ausbauen" with a disabled CTA.
@@ -254,13 +254,13 @@ export function isGeneratorUnlocked(
 /** Legacy helper */
 export function isUnlocked(
   def: GeneratorDef,
-  ashEarned: number,
+  ernteSeason: number,
   firstFlame: boolean,
   owned: Record<GeneratorId, number> = {} as Record<GeneratorId, number>,
   playerLevel = 1,
   prestiges = 0,
 ): boolean {
-  return isGeneratorUnlocked(def, ashEarned, owned, firstFlame, playerLevel, prestiges)
+  return isGeneratorUnlocked(def, ernteSeason, owned, firstFlame, playerLevel, prestiges)
 }
 
 /** Gartenjahr still missing for this corner (0 = no season gate left). */
@@ -274,9 +274,9 @@ export function unlockHint(def: GeneratorDef, prestiges = 0): string {
     return t.unlock.seasonGate(def.unlock.seasons! + 1)
   }
   const parts: string[] = []
-  if (def.unlock.ashEarned != null) {
+  if (def.unlock.ernteSeason != null) {
     parts.push(
-      t.unlock.computeEarned(def.unlock.ashEarned.toLocaleString('de-DE')),
+      t.unlock.computeEarned(def.unlock.ernteSeason.toLocaleString('de-DE')),
     )
   }
   if (def.unlock.requires) {
@@ -299,8 +299,8 @@ export function unlockHint(def: GeneratorDef, prestiges = 0): string {
 export function shortUnlockGate(def: GeneratorDef, prestiges = 0): string {
   if (!def.unlock) return t.hud.locked
   if (seasonsMissing(def, prestiges) > 0) return t.unlock.seasonShort(def.unlock.seasons! + 1)
-  if (def.unlock.ashEarned != null) {
-    return t.hud.gateCompute(formatAsh(def.unlock.ashEarned).replace(/,0+(?=\D|$)/, ''))
+  if (def.unlock.ernteSeason != null) {
+    return t.hud.gateCompute(formatAsh(def.unlock.ernteSeason).replace(/,0+(?=\D|$)/, ''))
   }
   if (def.unlock.requires) {
     const prior = GENERATORS.find((g) => g.id === def.unlock!.requires!.id)

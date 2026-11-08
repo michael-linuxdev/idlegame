@@ -126,17 +126,16 @@ import {
   sproutPayout,
   type DeepMetaId,
   type DeepMetaUpgrades,
-  type EraUpgrades,
 } from './longLoop'
 
 export interface GameState {
   /** Soft currency — Compute (economy.md Ash) */
-  ash: number
+  ernte: number
   /** Lifetime Compute earned this run (prestige base) */
-  ashEarned: number
+  ernteSeason: number
   owned: Record<GeneratorId, number>
   /** Soft meta — Credits (economy.md Embers; survives prestige) */
-  embers: number
+  erbstuecke: number
   emberUpgrades: EmberUpgrades
   /** Prestige runs completed (0-indexed for next gate) */
   prestiges: number
@@ -146,7 +145,7 @@ export interface GameState {
   /** Active clan boost multiplier while clanBoostExpiresAt > now (1.0–1.25) */
   clanMult: number
   /** Hard currency — Obsidian (survives prestige) */
-  obsidian: number
+  samen: number
   /** Owned cosmetic ids (survives prestige) */
   ownedCosmetics: CosmeticId[]
   /** Equipped garden skin */
@@ -176,7 +175,7 @@ export interface GameState {
   /** Lifetime upgrades bought (survives prestige) */
   totalUpgrades: number
   /** Lifetime soft earned across prestiges (survives) */
-  lifetimeAshEarned: number
+  ernteLifetime: number
   /** Achievement flags */
   claimedDailyOnce: boolean
   claimedOfflineOnce: boolean
@@ -230,26 +229,11 @@ export interface GameState {
   flashDismissed: boolean
   /** Last flash start time (cooldown) */
   lastFlashAt: number
-  /** L3 season index (0-based); survives soft prestige */
-  seasonIndex: number
-  /** Season wall-clock start; 0 = not opened yet */
-  seasonStartedAt: number
-  /** Season points toward deep payout (earn later) */
-  seasonPoints: number
   /** Deep meta currency (Sprossen / Saison-Jetons) */
-  deepEmbers: number
+  sproesslinge: number
   deepUpgrades: DeepMetaUpgrades
   /** Deep resets completed */
   deepPrestiges: number
-  /** Year track index (0 = Jahr 1) */
-  yearIndex: number
-  /** Seasons completed toward current year */
-  yearSeasonsDone: number
-  /** Claimed year milestone ids */
-  yearGoalsClaimed: string[]
-  /** Era currency (Wurzelsterne) */
-  eraPoints: number
-  eraUpgrades: EraUpgrades
   /** Pflanzenbuch — variety ids found (permanent across all resets) */
   collection: string[]
   /** Glücksrad buff for one Gartenjahr */
@@ -273,17 +257,17 @@ export function createInitialState(now = Date.now()): GameState {
   return {
     // Day-1: first greenhouse upgrade affordable immediately
     // IG-31: G1 C0=20 g=1.18 → Lv1→2 costs floor(20·1.18)=23; float 28
-    ash: 28,
-    ashEarned: 0,
+    ernte: 28,
+    ernteSeason: 0,
     owned: emptyOwned(),
-    embers: 0,
+    erbstuecke: 0,
     emberUpgrades: { ...EMPTY_EMBER_UPGRADES },
     prestiges: 0,
     lastSeen: now,
     lastTapAt: 0,
     clanMult: 1,
     // Day-1 login gift: 20 Obsidian (economy.md §10)
-    obsidian: 20,
+    samen: 20,
     ownedCosmetics: ['wiese'],
     equippedCosmetic: 'wiese',
     skipHoursUsedToday: 0,
@@ -298,7 +282,7 @@ export function createInitialState(now = Date.now()): GameState {
     playerXp: 0,
     claimedLevelRewards: [],
     totalUpgrades: 0,
-    lifetimeAshEarned: 0,
+    ernteLifetime: 0,
     claimedDailyOnce: false,
     claimedOfflineOnce: false,
     claimedAchievements: [],
@@ -348,16 +332,16 @@ export function createPostPrestigeState(prev: GameState, now = Date.now()): Game
     prestigeStartAshFloor(g1Cost),
   )
   return {
-    ash: startAsh,
-    ashEarned: 0,
+    ernte: startAsh,
+    ernteSeason: 0,
     owned,
-    embers: prev.embers,
+    erbstuecke: prev.erbstuecke,
     emberUpgrades: { ...prev.emberUpgrades },
     prestiges: prev.prestiges + 1,
     lastSeen: now,
     lastTapAt: 0,
     clanMult: prev.clanMult,
-    obsidian: prev.obsidian,
+    samen: prev.samen,
     ownedCosmetics: [...prev.ownedCosmetics],
     equippedCosmetic: prev.equippedCosmetic,
     skipHoursUsedToday: prev.skipHoursUsedToday,
@@ -372,7 +356,7 @@ export function createPostPrestigeState(prev: GameState, now = Date.now()): Game
     playerXp: prev.playerXp,
     claimedLevelRewards: [...prev.claimedLevelRewards],
     totalUpgrades: prev.totalUpgrades,
-    lifetimeAshEarned: prev.lifetimeAshEarned,
+    ernteLifetime: prev.ernteLifetime,
     claimedDailyOnce: prev.claimedDailyOnce,
     claimedOfflineOnce: prev.claimedOfflineOnce,
     claimedAchievements: [...prev.claimedAchievements],
@@ -403,17 +387,9 @@ export function createPostPrestigeState(prev: GameState, now = Date.now()): Game
     flashDismissed: prev.flashDismissed,
     lastFlashAt: prev.lastFlashAt,
     // L3–L5 survive soft prestige
-    seasonIndex: prev.seasonIndex,
-    seasonStartedAt: prev.seasonStartedAt,
-    seasonPoints: prev.seasonPoints,
-    deepEmbers: prev.deepEmbers,
+    sproesslinge: prev.sproesslinge,
     deepUpgrades: { ...prev.deepUpgrades },
     deepPrestiges: prev.deepPrestiges,
-    yearIndex: prev.yearIndex,
-    yearSeasonsDone: prev.yearSeasonsDone,
-    yearGoalsClaimed: [...prev.yearGoalsClaimed],
-    eraPoints: prev.eraPoints,
-    eraUpgrades: { ...prev.eraUpgrades },
     collection: [...prev.collection],
     wheelBuff: prev.wheelBuff,
   }
@@ -473,21 +449,21 @@ export function applyLevelRewards(state: GameState, now = Date.now()): GameState
     if (reward.level > level) continue
     if (next.claimedLevelRewards.includes(reward.level)) continue
     changed = true
-    let ash = next.ash
-    let embers = next.embers
-    let obsidian = next.obsidian
+    let ernte = next.ernte
+    let erbstuecke = next.erbstuecke
+    let samen = next.samen
     let ownedCosmetics = next.ownedCosmetics
-    if (reward.kind === 'ash') ash += reward.amount ?? 0
-    if (reward.kind === 'embers') embers += reward.amount ?? 0
-    if (reward.kind === 'obsidian') obsidian += reward.amount ?? 0
+    if (reward.kind === 'ernte') ernte += reward.amount ?? 0
+    if (reward.kind === 'erbstuecke') erbstuecke += reward.amount ?? 0
+    if (reward.kind === 'samen') samen += reward.amount ?? 0
     if (reward.kind === 'cosmetic' && reward.cosmeticId) {
       ownedCosmetics = grantCosmetic(ownedCosmetics, reward.cosmeticId)
     }
     next = {
       ...next,
-      ash,
-      embers,
-      obsidian,
+      ernte,
+      erbstuecke,
+      samen,
       ownedCosmetics,
       claimedLevelRewards: [...next.claimedLevelRewards, reward.level],
       lastSeen: now,
@@ -633,7 +609,7 @@ function withEventProgress(state: GameState, gained: number, now: number): GameS
 function maybePrestigeSpike(state: GameState, now: number): GameState {
   const rate = productionPerSecond(state, now)
   const spike = rollPrestigeSpike(
-    state.ashEarned,
+    state.ernteSeason,
     state.prestiges,
     state.prestigeSpikeFlags,
     rate,
@@ -641,9 +617,9 @@ function maybePrestigeSpike(state: GameState, now: number): GameState {
   if (!spike || spike.prestigeTier == null) return state
   return {
     ...state,
-    ash: state.ash + spike.amount,
-    ashEarned: state.ashEarned + spike.amount,
-    lifetimeAshEarned: state.lifetimeAshEarned + spike.amount,
+    ernte: state.ernte + spike.amount,
+    ernteSeason: state.ernteSeason + spike.amount,
+    ernteLifetime: state.ernteLifetime + spike.amount,
     prestigeSpikeFlags:
       state.prestigeSpikeFlags | prestigeSpikeBit(spike.prestigeTier),
     lastSurprise: spike,
@@ -707,22 +683,22 @@ export function claimFlashEventGoal(
   if (!inWindow) return state
   return {
     ...state,
-    obsidian: state.obsidian + FLASH_GOAL_REWARD_OBSIDIAN,
+    samen: state.samen + FLASH_GOAL_REWARD_OBSIDIAN,
     flashClaimed: true,
     flashDismissed: true,
     lastSeen: now,
   }
 }
 
-export function nextPrestigeEmbers(ashEarned: number, prestiges = 0): number {
-  return emberPayout(ashEarned, prestiges)
+export function nextPrestigeEmbers(ernteSeason: number, prestiges = 0): number {
+  return emberPayout(ernteSeason, prestiges)
 }
 
 export function canPrestigeNow(state: GameState): boolean {
   return (
     prestigeBlockReason({
       prestiges: state.prestiges,
-      ashEarned: state.ashEarned,
+      ernteSeason: state.ernteSeason,
       owned: state.owned,
     }) === null
   )
@@ -732,15 +708,15 @@ export function prestigeProgress(state: GameState): {
   min: number
   current: number
   ratio: number
-  embers: number
+  erbstuecke: number
 } {
   const min = prestigeMinAsh(state.prestiges)
-  const current = state.ashEarned
+  const current = state.ernteSeason
   return {
     min,
     current,
     ratio: min > 0 ? Math.min(1, current / min) : 1,
-    embers: emberPayout(current, state.prestiges),
+    erbstuecke: emberPayout(current, state.prestiges),
   }
 }
 
@@ -755,9 +731,9 @@ export function applyTick(state: GameState, dtSeconds: number): GameState {
   let withProg = withEventProgress(synced, gained, now)
   withProg = {
     ...withProg,
-    ash: withProg.ash + gained,
-    ashEarned: withProg.ashEarned + gained,
-    lifetimeAshEarned: withProg.lifetimeAshEarned + gained,
+    ernte: withProg.ernte + gained,
+    ernteSeason: withProg.ernteSeason + gained,
+    ernteLifetime: withProg.ernteLifetime + gained,
     lastSeen: now,
   }
   // Quest earnAsh tracks session production without spammy XP
@@ -784,15 +760,15 @@ export function buyTimeSkip(state: GameState, id: TimeSkipId, now = Date.now()):
   if (remaining <= 0) return state
   const hours = Math.min(def.hours, remaining)
   if (hours <= 0) return state
-  if (next.obsidian < def.cost) return state
+  if (next.samen < def.cost) return state
   const rate = productionPerSecond(next, now)
   const gained = rate * hours * 3600
   next = withEventProgress(next, gained, now)
   return {
     ...next,
-    obsidian: next.obsidian - def.cost,
-    ash: next.ash + gained,
-    ashEarned: next.ashEarned + gained,
+    samen: next.samen - def.cost,
+    ernte: next.ernte + gained,
+    ernteSeason: next.ernteSeason + gained,
     skipHoursUsedToday: next.skipHoursUsedToday + hours,
     lastSeen: now,
   }
@@ -812,11 +788,11 @@ export function claimDailyOps(state: GameState, now = Date.now()): GameState {
   next = withEventProgress(next, reward.compute, now)
   next = {
     ...next,
-    ash: next.ash + reward.compute,
-    ashEarned: next.ashEarned + reward.compute,
-    lifetimeAshEarned: next.lifetimeAshEarned + reward.compute,
-    embers: next.embers + reward.credits,
-    obsidian: next.obsidian + reward.obsidian,
+    ernte: next.ernte + reward.compute,
+    ernteSeason: next.ernteSeason + reward.compute,
+    ernteLifetime: next.ernteLifetime + reward.compute,
+    erbstuecke: next.erbstuecke + reward.credits,
+    samen: next.samen + reward.samen,
     dailyClaimDay: dayKey(now),
     dailyStreak: streak,
     claimedDailyOnce: true,
@@ -845,7 +821,7 @@ export function claimBandwidthSurgeGoal(state: GameState, now = Date.now()): Gam
   if (next.eventAshProgress < BANDWIDTH_SURGE_GOAL) return state
   return {
     ...next,
-    obsidian: next.obsidian + BANDWIDTH_SURGE_GOAL_REWARD,
+    samen: next.samen + BANDWIDTH_SURGE_GOAL_REWARD,
     eventGoalClaimedKey: key,
     lastSeen: now,
   }
@@ -862,10 +838,10 @@ export function buyCosmetic(state: GameState, id: CosmeticId, now = Date.now()):
       lastSeen: now,
     }
   }
-  if (state.obsidian < def.cost) return state
+  if (state.samen < def.cost) return state
   return {
     ...state,
-    obsidian: state.obsidian - def.cost,
+    samen: state.samen - def.cost,
     ownedCosmetics: [...state.ownedCosmetics, id],
     lastSeen: now,
   }
@@ -879,7 +855,7 @@ export function equipCosmetic(state: GameState, id: CosmeticId, now = Date.now()
 
 export function buyClanBoost(state: GameState, now = Date.now()): GameState {
   let next = syncMonetization(state, now)
-  if (next.obsidian < CLAN_BOOST.cost) return state
+  if (next.samen < CLAN_BOOST.cost) return state
   const active = next.clanBoostExpiresAt > now
   const baseExpiry = active ? next.clanBoostExpiresAt : now
   const nextMult = Math.min(
@@ -888,7 +864,7 @@ export function buyClanBoost(state: GameState, now = Date.now()): GameState {
   )
   return {
     ...next,
-    obsidian: next.obsidian - CLAN_BOOST.cost,
+    samen: next.samen - CLAN_BOOST.cost,
     clanMult: nextMult,
     clanBoostExpiresAt: baseExpiry + CLAN_BOOST.durationMs,
     lastSeen: now,
@@ -898,12 +874,12 @@ export function buyClanBoost(state: GameState, now = Date.now()): GameState {
 /** Personal Phyto-Schub — Samen sink, temporary mult. */
 export function buyYieldBoost(state: GameState, now = Date.now()): GameState {
   let next = syncMonetization(state, now)
-  if (next.obsidian < YIELD_BOOST_COST) return state
+  if (next.samen < YIELD_BOOST_COST) return state
   const active = next.yieldBoostExpiresAt > now
   const baseExpiry = active ? next.yieldBoostExpiresAt : now
   return {
     ...next,
-    obsidian: next.obsidian - YIELD_BOOST_COST,
+    samen: next.samen - YIELD_BOOST_COST,
     yieldBoostExpiresAt: baseExpiry + YIELD_BOOST_MS,
     lastSeen: now,
   }
@@ -925,7 +901,7 @@ export function mockBuyOffer(state: GameState, offer: ShopOfferDef, now = Date.n
 
   return {
     ...next,
-    obsidian: next.obsidian + (offer.obsidian ?? 0),
+    samen: next.samen + (offer.samen ?? 0),
     ownedCosmetics: Array.from(ownedCosmetics),
     ownedOfferIds,
     adsRemoved: offer.kind === 'removeAds' ? true : next.adsRemoved,
@@ -970,7 +946,7 @@ export function claimRewardedAd(state: GameState, now = Date.now()): RewardedAdR
     const minutes = reward.minutes ?? 1
     ashGained = rate * minutes * 60
   } else if (reward.kind === 'obsidianCrumb') {
-    obsidianGained = reward.obsidian ?? 0
+    obsidianGained = reward.samen ?? 0
   }
   next = withEventProgress(next, ashGained, now)
   const bpXp = Math.min(BATTLE_PASS_MAX_XP, next.bpXp + BATTLE_PASS_AD_XP)
@@ -981,10 +957,10 @@ export function claimRewardedAd(state: GameState, now = Date.now()): RewardedAdR
     obsidianGained,
     state: {
       ...next,
-      ash: next.ash + ashGained,
-      ashEarned: next.ashEarned + ashGained,
-      lifetimeAshEarned: next.lifetimeAshEarned + ashGained,
-      obsidian: next.obsidian + obsidianGained,
+      ernte: next.ernte + ashGained,
+      ernteSeason: next.ernteSeason + ashGained,
+      ernteLifetime: next.ernteLifetime + ashGained,
+      samen: next.samen + obsidianGained,
       lastRewardedAdAt: now,
       rewardedAdClaims: next.rewardedAdClaims + 1,
       bpXp,
@@ -1031,10 +1007,10 @@ export function claimBattlePassTier(
   const nextClaimed = [...claimed, tier]
   return {
     ...next,
-    ash: next.ash + ashGained,
-    ashEarned: next.ashEarned + ashGained,
-    lifetimeAshEarned: next.lifetimeAshEarned + ashGained,
-    obsidian: next.obsidian + obsidianGained,
+    ernte: next.ernte + ashGained,
+    ernteSeason: next.ernteSeason + ashGained,
+    ernteLifetime: next.ernteLifetime + ashGained,
+    samen: next.samen + obsidianGained,
     bpClaimedFree: track === 'free' ? nextClaimed : next.bpClaimedFree,
     bpClaimedPremium: track === 'premium' ? nextClaimed : next.bpClaimedPremium,
     lastSeen: now,
@@ -1067,9 +1043,9 @@ export function applyOfflineCatchup(
   let withProg = withEventProgress(base, total, now)
   withProg = {
     ...withProg,
-    ash: withProg.ash + total,
-    ashEarned: withProg.ashEarned + total,
-    lifetimeAshEarned: withProg.lifetimeAshEarned + total,
+    ernte: withProg.ernte + total,
+    ernteSeason: withProg.ernteSeason + total,
+    ernteLifetime: withProg.ernteLifetime + total,
     lastSeen: now,
     lastSurprise: jackpot ?? withProg.lastSurprise,
   }
@@ -1112,7 +1088,7 @@ export function buyGenerator(state: GameState, id: GeneratorId): GameState {
   if (
     !isGeneratorUnlocked(
       def,
-      state.ashEarned,
+      state.ernteSeason,
       state.owned,
       state.emberUpgrades.firstFlame > 0,
       level,
@@ -1123,10 +1099,10 @@ export function buyGenerator(state: GameState, id: GeneratorId): GameState {
   }
   const owned = state.owned[id] ?? 0
   const cost = generatorCost(def, owned, lineCostMult(state, id))
-  if (state.ash < cost) return state
+  if (state.ernte < cost) return state
   let next: GameState = {
     ...state,
-    ash: state.ash - cost,
+    ernte: state.ernte - cost,
     owned: { ...state.owned, [id]: owned + 1 },
     totalUpgrades: state.totalUpgrades + 1,
     lastSeen: now,
@@ -1135,14 +1111,14 @@ export function buyGenerator(state: GameState, id: GeneratorId): GameState {
   const surprise = rollUpgradeSurprise(
     next.totalUpgrades,
     rate,
-    next.ashEarned,
+    next.ernteSeason,
   )
   if (surprise) {
     next = {
       ...next,
-      ash: next.ash + surprise.amount,
-      ashEarned: next.ashEarned + surprise.amount,
-      lifetimeAshEarned: next.lifetimeAshEarned + surprise.amount,
+      ernte: next.ernte + surprise.amount,
+      ernteSeason: next.ernteSeason + surprise.amount,
+      ernteLifetime: next.ernteLifetime + surprise.amount,
       lastSurprise: surprise,
     }
   }
@@ -1169,7 +1145,7 @@ export function buyBranch(
   const rank = kind === 'efficiency' ? ranks.efficiency : ranks.capacity
   if (rank >= BRANCH_MAX_RANK) return state
   const cost = branchCost(def, kind, rank)
-  if (state.ash < cost) return state
+  if (state.ernte < cost) return state
   const now = Date.now()
   const nextRanks = {
     ...ranks,
@@ -1177,7 +1153,7 @@ export function buyBranch(
   }
   let next: GameState = {
     ...state,
-    ash: state.ash - cost,
+    ernte: state.ernte - cost,
     branches: { ...state.branches, [id]: nextRanks },
     lastSeen: now,
   }
@@ -1199,10 +1175,10 @@ export function claimQuestReward(
   )
   return {
     ...base,
-    ash: base.ash + quest.rewardAsh,
-    ashEarned: base.ashEarned + quest.rewardAsh,
-    lifetimeAshEarned: base.lifetimeAshEarned + quest.rewardAsh,
-    obsidian: base.obsidian + quest.rewardObsidian,
+    ernte: base.ernte + quest.rewardAsh,
+    ernteSeason: base.ernteSeason + quest.rewardAsh,
+    ernteLifetime: base.ernteLifetime + quest.rewardAsh,
+    samen: base.samen + quest.rewardObsidian,
     quests,
     lastSeen: now,
   }
@@ -1218,7 +1194,7 @@ export function claimAchievement(
   if (!def) return state
   const stats = {
     totalUpgrades: state.totalUpgrades,
-    lifetimeAshEarned: state.lifetimeAshEarned,
+    ernteLifetime: state.ernteLifetime,
     claimedDailyOnce: state.claimedDailyOnce,
     claimedOfflineOnce: state.claimedOfflineOnce,
     playerLevel: playerLevelOf(state),
@@ -1227,21 +1203,21 @@ export function claimAchievement(
   }
   if (!isAchievementComplete(id, stats)) return state
 
-  let ash = state.ash
-  let embers = state.embers
-  let obsidian = state.obsidian
+  let ernte = state.ernte
+  let erbstuecke = state.erbstuecke
+  let samen = state.samen
   let ownedCosmetics = state.ownedCosmetics
-  if (def.rewardKind === 'ash') ash += def.rewardAmount ?? 0
-  if (def.rewardKind === 'embers') embers += def.rewardAmount ?? 0
-  if (def.rewardKind === 'obsidian') obsidian += def.rewardAmount ?? 0
+  if (def.rewardKind === 'ernte') ernte += def.rewardAmount ?? 0
+  if (def.rewardKind === 'erbstuecke') erbstuecke += def.rewardAmount ?? 0
+  if (def.rewardKind === 'samen') samen += def.rewardAmount ?? 0
   if (def.rewardKind === 'cosmetic' && def.cosmeticId) {
     ownedCosmetics = grantCosmetic(ownedCosmetics, def.cosmeticId)
   }
   return {
     ...state,
-    ash,
-    embers,
-    obsidian,
+    ernte,
+    erbstuecke,
+    samen,
     ownedCosmetics,
     claimedAchievements: [...state.claimedAchievements, id],
     lastSeen: now,
@@ -1258,7 +1234,7 @@ export function collectReadyAchievements(
     if (next.claimedAchievements.includes(def.id)) continue
     const stats = {
       totalUpgrades: next.totalUpgrades,
-      lifetimeAshEarned: next.lifetimeAshEarned,
+      ernteLifetime: next.ernteLifetime,
       claimedDailyOnce: next.claimedDailyOnce,
       claimedOfflineOnce: next.claimedOfflineOnce,
       playerLevel: playerLevelOf(next),
@@ -1281,7 +1257,7 @@ export function buyEmberUpgrade(state: GameState, id: EmberUpgradeId): GameState
     !emberRankUnlocked(
       item,
       rank,
-      state.ashEarned,
+      state.ernteSeason,
       state.owned,
       state.prestiges,
     )
@@ -1289,10 +1265,10 @@ export function buyEmberUpgrade(state: GameState, id: EmberUpgradeId): GameState
     return state
   }
   const cost = item.cost(rank)
-  if (state.embers < cost) return state
+  if (state.erbstuecke < cost) return state
   return {
     ...state,
-    embers: state.embers - cost,
+    erbstuecke: state.erbstuecke - cost,
     emberUpgrades: {
       ...state.emberUpgrades,
       [id]: rank + 1,
@@ -1303,13 +1279,13 @@ export function buyEmberUpgrade(state: GameState, id: EmberUpgradeId): GameState
 
 export function doPrestige(state: GameState): GameState {
   if (!canPrestigeNow(state)) return state
-  const gain = emberPayout(state.ashEarned, state.prestiges)
+  const gain = emberPayout(state.ernteSeason, state.prestiges)
   const planted = GENERATORS.filter((g) => (state.owned[g.id] ?? 0) > 0).map((g) => g.id)
   const variety = varietyForSeasonEnd(planted, state.collection)
   const next = createPostPrestigeState(
     variety ? { ...state, collection: [...state.collection, variety] } : state,
   )
-  const withEmbers = { ...next, embers: state.embers + gain, lastVariety: variety }
+  const withEmbers = { ...next, erbstuecke: state.erbstuecke + gain, lastVariety: variety }
   return collectReadyAchievements(withEmbers)
 }
 
@@ -1320,10 +1296,10 @@ export function buyDeepUpgrade(state: GameState, id: DeepMetaId): GameState {
   const rank = state.deepUpgrades[id]
   if (rank >= item.maxRank) return state
   const cost = item.cost(rank)
-  if (state.deepEmbers < cost) return state
+  if (state.sproesslinge < cost) return state
   return {
     ...state,
-    deepEmbers: state.deepEmbers - cost,
+    sproesslinge: state.sproesslinge - cost,
     deepUpgrades: { ...state.deepUpgrades, [id]: rank + 1 },
     lastSeen: Date.now(),
   }
@@ -1338,15 +1314,15 @@ export function doDeepReset(state: GameState): GameState {
   const sprouts = sproutPayout(state.prestiges)
   const fresh = createPostPrestigeState({
     ...state,
-    embers: 0,
+    erbstuecke: 0,
     emberUpgrades: { ...EMPTY_EMBER_UPGRADES },
   })
   return collectReadyAchievements({
     ...fresh,
     prestiges: 0,
-    embers: deepStartEmbers(state.deepUpgrades),
+    erbstuecke: deepStartEmbers(state.deepUpgrades),
     emberUpgrades: { ...EMPTY_EMBER_UPGRADES },
-    deepEmbers: state.deepEmbers + sprouts,
+    sproesslinge: state.sproesslinge + sprouts,
     deepPrestiges: state.deepPrestiges + 1,
   })
 }
@@ -1359,8 +1335,8 @@ export function waterMult(state: GameState, now = Date.now()): number {
 export interface Reward {
   /** Seconds of current production */
   ernteSeconds?: number
-  obsidian?: number
-  embers?: number
+  samen?: number
+  erbstuecke?: number
   xp?: number
 }
 
@@ -1369,11 +1345,11 @@ export function grantReward(state: GameState, reward: Reward, now = Date.now()):
   const ernte = Math.max(0, (reward.ernteSeconds ?? 0) * productionPerSecond(state, now))
   let next: GameState = {
     ...withEventProgress(state, ernte, now),
-    ash: state.ash + ernte,
-    ashEarned: state.ashEarned + ernte,
-    lifetimeAshEarned: state.lifetimeAshEarned + ernte,
-    obsidian: state.obsidian + (reward.obsidian ?? 0),
-    embers: state.embers + (reward.embers ?? 0),
+    ernte: state.ernte + ernte,
+    ernteSeason: state.ernteSeason + ernte,
+    ernteLifetime: state.ernteLifetime + ernte,
+    samen: state.samen + (reward.samen ?? 0),
+    erbstuecke: state.erbstuecke + (reward.erbstuecke ?? 0),
     lastSeen: now,
   }
   if (ernte > 0) next = bumpQuest(next, 'earnAsh', ernte, now)
@@ -1384,7 +1360,7 @@ export function grantReward(state: GameState, reward: Reward, now = Date.now()):
 /** Glücksrad result for the Gartenjahr that just began. */
 export function applyWheel(state: GameState, kind: WheelKind): GameState {
   let next: GameState = { ...state, wheelBuff: { kind, prestige: state.prestiges } }
-  if (kind === 'seeds') next = { ...next, obsidian: next.obsidian + WHEEL_SEEDS }
+  if (kind === 'seeds') next = { ...next, samen: next.samen + WHEEL_SEEDS }
   if (kind === 'variety') {
     const planted = GENERATORS.map((g) => g.id)
     const v = varietyForSeasonEnd(planted, next.collection)
@@ -1410,9 +1386,9 @@ export function grantTapAsh(
   )
   next = {
     ...next,
-    ash: next.ash + gained,
-    ashEarned: next.ashEarned + gained,
-    lifetimeAshEarned: next.lifetimeAshEarned + gained,
+    ernte: next.ernte + gained,
+    ernteSeason: next.ernteSeason + gained,
+    ernteLifetime: next.ernteLifetime + gained,
     lastTapAt: now,
     lastSeen: now,
   }

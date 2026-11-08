@@ -647,3 +647,18 @@
     animation: none !important;
   }
 }
+
+.nav-menu-reminders {
+  width: 100%;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+}
+
+.nav-toggle-state {
+  font-family: var(--oc-font-metric);
+  font-weight: 700;
+  color: var(--oc-ember-dim);
+}

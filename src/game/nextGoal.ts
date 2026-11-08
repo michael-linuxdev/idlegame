@@ -64,12 +64,12 @@ function unlockProgress(
   let best = 0
   let detail = ''
 
-  if (def.unlock.ashEarned != null) {
-    const need = def.unlock.ashEarned
-    const r = Math.min(1, state.ashEarned / need)
+  if (def.unlock.ernteSeason != null) {
+    const need = def.unlock.ernteSeason
+    const r = Math.min(1, state.ernteSeason / need)
     if (r > best) {
       best = r
-      const left = Math.max(0, need - state.ashEarned)
+      const left = Math.max(0, need - state.ernteSeason)
       detail =
         r >= 1
           ? t.goal.ready
@@ -124,7 +124,7 @@ export function computeNextGoal(
   for (const def of GENERATORS) {
     const unlocked = isGeneratorUnlocked(
       def,
-      state.ashEarned,
+      state.ernteSeason,
       state.owned,
       state.emberUpgrades.firstFlame > 0,
       opts.playerLevel,
@@ -133,7 +133,7 @@ export function computeNextGoal(
     if (!unlocked) continue
     const cost = opts.costOf(def.id)
     if (!Number.isFinite(cost) || cost <= 0) continue
-    const ratio = Math.min(1, state.ash / cost)
+    const ratio = Math.min(1, state.ernte / cost)
     const owned = state.owned[def.id] ?? 0
     const action = owned === 0 ? t.upgrade.online : t.upgrade.upgrade
     const urgency =
@@ -158,7 +158,7 @@ export function computeNextGoal(
   for (const def of GENERATORS) {
     const unlocked = isGeneratorUnlocked(
       def,
-      state.ashEarned,
+      state.ernteSeason,
       state.owned,
       state.emberUpgrades.firstFlame > 0,
       opts.playerLevel,
@@ -197,7 +197,7 @@ export function computeNextGoal(
   // Prestige gate — strong Zeigarnik when “almost ready”
   const prestigeMin = prestigeMinAsh(state.prestiges)
   const prestigeRatio =
-    prestigeMin > 0 ? Math.min(1, state.ashEarned / prestigeMin) : 1
+    prestigeMin > 0 ? Math.min(1, state.ernteSeason / prestigeMin) : 1
   const prestigeUrgency =
     prestigeRatio >= 1
       ? 0.9
@@ -216,7 +216,7 @@ export function computeNextGoal(
         prestigeRatio >= 1
           ? t.goal.prestigeReadyDetail
           : t.goal.prestigeDetail(
-              formatAsh(Math.max(0, prestigeMin - state.ashEarned)),
+              formatAsh(Math.max(0, prestigeMin - state.ernteSeason)),
             ),
       ratio: prestigeRatio,
       urgency: prestigeUrgency,

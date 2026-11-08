@@ -20,6 +20,8 @@ interface Props {
   onTabChange: (tab: Tab) => void
   onHighlightChange: (id: string | null) => void
   onFtueActiveChange?: (active: boolean) => void
+  /** True while any FTUE beat is on screen */
+  onCoachVisible?: (visible: boolean) => void
 }
 
 function advanceFtue(s: FtueState, from: FtueBeatId): FtueState {
@@ -33,6 +35,7 @@ export function FtueCoach({
   onTabChange,
   onHighlightChange,
   onFtueActiveChange,
+  onCoachVisible,
 }: Props) {
   const [ftue, setFtue] = useState<FtueState>(() => loadFtue())
 
@@ -45,6 +48,10 @@ export function FtueCoach({
   useEffect(() => {
     onFtueActiveChange?.(active && ftueBlocksInstall(ftue.beat, ftue.dismissed))
   }, [active, ftue.beat, ftue.dismissed, onFtueActiveChange])
+
+  useEffect(() => {
+    onCoachVisible?.(active)
+  }, [active, onCoachVisible])
 
   // Sync map/tab highlight with current beat (advances only via CTAs / auto — never blocks idle)
   useEffect(() => {
@@ -59,15 +66,13 @@ export function FtueCoach({
   // Auto-advance when the player actually does the beat (less CTA clutter)
   const pitLevel = game.state.owned.gemuesebeet ?? 0
   const coolingOpen = game.unlocked('kompost')
-  useEffect(() => {
-    if (!active) return
-    if (ftue.beat === 'tendBed' && pitLevel > 1) {
-      setFtue((s) => advanceFtue(s, 'tendBed'))
-    }
-    if (ftue.beat === 'unlockCompost' && coolingOpen) {
-      setFtue((s) => advanceFtue(s, 'unlockCompost'))
-    }
-  }, [active, ftue.beat, pitLevel, coolingOpen])
+  // Adjusted during render (guarded): advancing changes `ftue.beat`, so this
+  // runs once per beat without an extra effect pass.
+  if (active && ftue.beat === 'tendBed' && pitLevel > 1) {
+    setFtue((s) => advanceFtue(s, 'tendBed'))
+  } else if (active && ftue.beat === 'unlockCompost' && coolingOpen) {
+    setFtue((s) => advanceFtue(s, 'unlockCompost'))
+  }
 
   function onPrimary() {
     if (ftue.beat === 'welcome') {

@@ -18,6 +18,7 @@ npm run dev            # Stimmung testen: ?ambient=night-winter
 npm run build
 npm run preview
 npm run lint
+npm run build && npm run e2e               # Playwright-Durchlauf (Start, Saisonende, Notizbuch, Spielstand)
 npm test                                   # Vitest (Format, Balance-Formeln, Gartenjahre, Notizbuch)
 SUMMARY=1 npm run balance -- regular 336   # Balance-Simulator (engaged | regular | casual, Stunden)
 python3 scripts/generate-pwa-icons.py   # App-Icons neu erzeugen (Pillow)

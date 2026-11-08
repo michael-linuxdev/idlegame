@@ -33,6 +33,9 @@ import { ClearedPlot, WildPlot } from '../theme/PlotArt'
 import { FloatPops, type FloatPopItem } from './FloatPops'
 import { BottomBar } from './hud/BottomBar'
 import { Visitors } from './Visitors'
+import { OmaHint } from './OmaHint'
+import { pickHint, useHints } from '../game/hints'
+import { canDeepReset } from '../game/longLoop'
 import {
   ORDER_PAUSE_MS,
   makeOrder,
@@ -84,9 +87,9 @@ interface Props {
   extras: ExtrasState
   updateExtras: (fn: (s: ExtrasState) => ExtrasState) => void
   track: (task: WeeklyTaskId, n?: number) => void
+  /** FTUE / ceremony / letter on screen — hold Omas hints */
+  hintsBlocked?: boolean
 }
-
-let popSeq = 0
 
 export function GardenMap({
   game,
@@ -97,6 +100,7 @@ export function GardenMap({
   extras,
   updateExtras,
   track,
+  hintsBlocked = false,
 }: Props) {
   const {
     state,
@@ -115,18 +119,28 @@ export function GardenMap({
     canPrestige,
     prestigeProgress,
   } = game
-  const [selected, setSelected] = useState<GeneratorId | null>(null)
+  const [selected, setSelected] = useState<GeneratorId | null>(() => {
+    if (!game.postPrestigeFocus) return null
+    const tip = computeBestBuy(game.state, {
+      playerLevel: game.playerLevel.level,
+      ratePerSec: game.rate,
+      costOf: game.costOf,
+    })
+    return tip?.affordable ? tip.id : 'gemuesebeet'
+  })
   const [progressOpen, setProgressOpen] = useState(false)
   const [tickFlash, setTickFlash] = useState(false)
   const [claimFlash, setClaimFlash] = useState<string | null>(null)
   const [pops, setPops] = useState<FloatPopItem[]>([])
   const [levelPulse, setLevelPulse] = useState(false)
-  const prevAsh = useRef(state.ash)
+  const prevAsh = useRef(state.ernte)
   const prevLevel = useRef(playerLevel.level)
   const totalMult = multiplier * levelMult * clanMult * eventMult
   const skinClass = equippedCosmetic?.accentClass ?? 'skin-wiese'
   const ambient = useAmbient()
   const harvest = useHarvestFlight()
+  const { seen: seenHints, markSeen } = useHints()
+  const [visitorPresent, setVisitorPresent] = useState(false)
   const gardenStage = GENERATORS.filter(
     (g) => (state.owned[g.id] ?? 0) > 0 && game.unlocked(g.id),
   ).length
@@ -135,8 +149,7 @@ export function GardenMap({
   const questReady = game.questRows.some((q: { ready: boolean }) => q.ready)
 
   const pushPop = useCallback((text: string, kind?: FloatPopItem['kind']) => {
-    const id = ++popSeq
-    setPops((list) => [...list.slice(-4), { id, text, kind }])
+    setPops((list) => [...list.slice(-4), { id: (list.at(-1)?.id ?? 0) + 1, text, kind }])
   }, [])
 
   const removePop = useCallback((id: number) => {
@@ -172,32 +185,26 @@ export function GardenMap({
     [state, playerLevel.level, rate, game.costOf],
   )
 
-  // After Soft-Prestige the map remounts when the player leaves the Münzen
-  // tab — open the affordable Ausbauen HUD immediately so the CTA is never
-  // "missing" behind tip-exhausted shop confusion.
+  // After Saisonende the map remounts — open Omas best tip right away (see
+  // the `selected` initializer) and clear the one-shot focus flag.
+  const { postPrestigeFocus, clearPostPrestigeFocus } = game
   useEffect(() => {
-    if (!game.postPrestigeFocus) return
-    const id =
-      bestBuy?.affordable && bestBuy.id
-        ? bestBuy.id
-        : ('gemuesebeet' satisfies GeneratorId)
-    setSelected(id)
-    game.clearPostPrestigeFocus()
-  }, [game.postPrestigeFocus, game.clearPostPrestigeFocus, bestBuy])
+    if (postPrestigeFocus) clearPostPrestigeFocus()
+  }, [postPrestigeFocus, clearPostPrestigeFocus])
 
   /** Map CTA: spend leftover Münzen, or honest prestige preview (never false „lohnt sich“). */
   const prestigeCta = useMemo(() => {
     const readyBuys = countAffordableEmberBuys(
       state.emberUpgrades,
-      state.embers,
-      state.ashEarned,
+      state.erbstuecke,
+      state.ernteSeason,
       state.owned,
       state.prestiges,
     )
-    if (readyBuys > 0 && state.embers > 0) {
+    if (readyBuys > 0 && state.erbstuecke > 0) {
       return {
         ready: true,
-        embers: state.embers,
+        erbstuecke: state.erbstuecke,
         label: t.prestige.spendCta(readyBuys),
         aria: t.prestige.spendAria,
         spend: true,
@@ -205,22 +212,22 @@ export function GardenMap({
     }
     const nearTier = PRESTIGE_SPIKE_RATIOS.findIndex((r) => prestigeProgress.ratio >= r)
     if (nearTier < 0 && !canPrestige) return null
-    const embers = Math.max(nextPrestige, emberPayout(state.ashEarned, state.prestiges))
-    if (embers <= 0) return null
+    const erbstuecke = Math.max(nextPrestige, emberPayout(state.ernteSeason, state.prestiges))
+    if (erbstuecke <= 0) return null
     const ready = canPrestige || prestigeProgress.ratio >= 1
     const postBuys = countAffordableEmberBuysAfterPrestige({
       upgrades: state.emberUpgrades,
-      embers: state.embers,
-      ashEarned: state.ashEarned,
+      erbstuecke: state.erbstuecke,
+      ernteSeason: state.ernteSeason,
       prestiges: state.prestiges,
     })
     if (postBuys > 0) {
       return {
         ready,
-        embers,
+        erbstuecke,
         label: ready
-          ? t.prestige.worthItCta(embers)
-          : t.prestige.worthItNear(embers),
+          ? t.prestige.worthItCta(erbstuecke)
+          : t.prestige.worthItNear(erbstuecke),
         aria: t.prestige.worthItAria,
         spend: false,
       }
@@ -234,10 +241,10 @@ export function GardenMap({
       ) ?? 0
     return {
       ready,
-      embers,
+      erbstuecke,
       label: ready
-        ? t.prestige.worthItRebuild(embers, mods)
-        : t.prestige.worthItNearRebuild(embers, mods),
+        ? t.prestige.worthItRebuild(erbstuecke, mods)
+        : t.prestige.worthItNearRebuild(erbstuecke, mods),
       aria: t.prestige.worthItRebuildAria,
       spend: false,
     }
@@ -245,8 +252,8 @@ export function GardenMap({
     canPrestige,
     nextPrestige,
     prestigeProgress.ratio,
-    state.ashEarned,
-    state.embers,
+    state.ernteSeason,
+    state.erbstuecke,
     state.emberUpgrades,
     state.owned,
     state.prestiges,
@@ -267,7 +274,7 @@ export function GardenMap({
         title: prestigeCta.spend ? t.prestige.shopTitle : t.goal.prestigeReady,
         detail: prestigeCta.spend
           ? prestigeCta.label.replace(`${t.prestige.shopTitle} · `, '')
-          : t.prestige.creditsAmount(prestigeCta.embers),
+          : t.prestige.creditsAmount(prestigeCta.erbstuecke),
         ratio: 1,
         tone: 'season',
         icon: prestigeCta.spend ? <IconChest /> : <IconSnow />,
@@ -283,7 +290,7 @@ export function GardenMap({
         key: `tip-${bestBuy.id}`,
         title: t.goal.upgradeTitle(action, bestBuy.name),
         detail: t.goal.upgradeDetail(formatAsh(cost)),
-        ratio: cost > 0 ? Math.min(1, state.ash / cost) : 1,
+        ratio: cost > 0 ? Math.min(1, state.ernte / cost) : 1,
         tone: bestBuy.affordable ? 'tip' : 'goal',
         icon: <IconSprout />,
         aria: `${t.bestBuy.aria}: ${bestBuy.name}`,
@@ -309,35 +316,48 @@ export function GardenMap({
   /** Saisonende in sight but not yet the main goal → small pill. */
   const seasonPill =
     prestigeCta && !prestigeCta.ready && !prestigeCta.spend
-      ? { label: t.prestige.pill(prestigeCta.embers), onOpen: openPrestigeCta }
+      ? { label: t.prestige.pill(prestigeCta.erbstuecke), onOpen: openPrestigeCta }
       : null
 
   useEffect(() => {
     // Ignore passive economy ticks — flashing every 250ms forces layout/paint on iPhone.
-    const jump = state.ash - prevAsh.current
+    const jump = state.ernte - prevAsh.current
     const meaningful = Math.max(rate * 1.25, 1)
     if (jump > meaningful) {
       setTickFlash(true)
       const timer = window.setTimeout(() => setTickFlash(false), 280)
-      prevAsh.current = state.ash
+      prevAsh.current = state.ernte
       return () => window.clearTimeout(timer)
     }
-    prevAsh.current = state.ash
-  }, [state.ash, rate])
+    prevAsh.current = state.ernte
+  }, [state.ernte, rate])
 
+  // Surprise pops: add the pop during render (guarded by identity) …
+  const [seenSurprise, setSeenSurprise] = useState(state.lastSurprise)
+  if (state.lastSurprise && state.lastSurprise !== seenSurprise) {
+    const surprise = state.lastSurprise
+    setSeenSurprise(surprise)
+    setPops((list) => [
+      ...list.slice(-4),
+      {
+        id: (list.at(-1)?.id ?? 0) + 1,
+        text: surpriseLabel(surprise.kind, formatAsh(surprise.amount)),
+        kind: 'claim',
+      },
+    ])
+  }
+  // … and keep the side effects (sound, log, ack) in an effect.
   useEffect(() => {
     const surprise = state.lastSurprise
     if (!surprise) return
-    const amount = formatAsh(surprise.amount)
     playSfx('claim')
-    pushPop(surpriseLabel(surprise.kind, amount), 'claim')
     logPlaytest('surprise', {
       kind: surprise.kind,
       amount: Math.round(surprise.amount * 100) / 100,
       tier: surprise.prestigeTier ?? null,
     })
     ackSurprise()
-  }, [state.lastSurprise, pushPop, ackSurprise])
+  }, [state.lastSurprise, ackSurprise])
 
   useEffect(() => {
     if (playerLevel.level > prevLevel.current) {
@@ -375,7 +395,7 @@ export function GardenMap({
     if (!tapReady) return
     harvest.launch(document.querySelector('.hud-water'))
     track('water')
-    const before = state.ash
+    const before = state.ernte
     playSfx('tap')
     logPlaytest('schub')
     rake()
@@ -391,7 +411,7 @@ export function GardenMap({
     const bits: string[] = []
     if (preview.compute > 0) bits.push(t.daily.rewardCompute(formatAsh(preview.compute)))
     if (preview.credits > 0) bits.push(t.daily.rewardCredits(preview.credits))
-    if (preview.obsidian > 0) bits.push(t.daily.rewardObsidian(preview.obsidian))
+    if (preview.samen > 0) bits.push(t.daily.rewardObsidian(preview.samen))
     game.claimDaily()
     track('daily')
     playSfx('streak')
@@ -425,32 +445,32 @@ export function GardenMap({
 
   // —— Hofladen-Bestellungen ——
   const order = extras.order
-  const orderHave = order ? orderProgress(order, state.lifetimeAshEarned) : 0
+  const orderHave = order ? orderProgress(order, state.ernteLifetime) : 0
   const orderDone = order ? orderHave >= order.need : false
   useEffect(() => {
     const id = window.setInterval(() => {
       const now = Date.now()
       if (!extras.order && now >= extras.nextOrderAt && rate > 0) {
         updateExtras((s) =>
-          s.order ? s : { ...s, order: makeOrder(now, rate, state.lifetimeAshEarned, now) },
+          s.order ? s : { ...s, order: makeOrder(now, rate, state.ernteLifetime, now) },
         )
       } else if (
         extras.order &&
         now > extras.order.expiresAt &&
-        orderProgress(extras.order, state.lifetimeAshEarned) < extras.order.need
+        orderProgress(extras.order, state.ernteLifetime) < extras.order.need
       ) {
         updateExtras((s) => ({ ...s, order: null, nextOrderAt: now + ORDER_PAUSE_MS }))
         showToast(t.orders.expired)
       }
     }, 2000)
     return () => window.clearInterval(id)
-  }, [extras.order, extras.nextOrderAt, rate, state.lifetimeAshEarned, updateExtras])
+  }, [extras.order, extras.nextOrderAt, rate, state.ernteLifetime, updateExtras])
 
   function claimOrder() {
     if (!order || !orderDone) return
     const name = t.orders.customers[order.customer % t.orders.customers.length]!
     harvest.launch(document.querySelector('.pill-order'))
-    game.grant({ obsidian: order.seeds, ernteSeconds: 300 })
+    game.grant({ samen: order.seeds, ernteSeconds: 300 })
     playSfx('claim')
     showToast(t.orders.done(name))
     const now = Date.now()
@@ -499,9 +519,24 @@ export function GardenMap({
     ackVariety()
   }, [state.lastVariety, ackVariety, track])
 
+  const hint = hintsBlocked
+    ? null
+    : pickHint(
+        {
+          visitor: visitorPresent,
+          order: Boolean(extras.order),
+          variety: state.collection.length > 0,
+          season: canPrestige && state.prestiges === 0,
+          truhe: Boolean(prestigeCta?.spend),
+          weekly: state.prestiges >= 1,
+          deep: canDeepReset(state.prestiges),
+        },
+        seenHints,
+      )
+
   return (
-    <section className="fortress-home" aria-labelledby="ash-heading">
-      <h1 id="ash-heading" className="sr-only">
+    <section className="fortress-home" aria-labelledby="ernte-heading">
+      <h1 id="ernte-heading" className="sr-only">
         {t.brand}
       </h1>
       {/* Clash HUD: floating chips only — no white card tiles */}
@@ -530,26 +565,26 @@ export function GardenMap({
           <div
             className="hud-card hud-wallet"
             role="status"
-            aria-label={t.hud.walletAria(formatAsh(state.ash), formatRate(rate))}
+            aria-label={t.hud.walletAria(formatAsh(state.ernte), formatRate(rate))}
           >
             <span className={`hud-amount${tickFlash ? ' tick' : ''}`}>
               <span className="hud-amount-icon">
                 <IconBasket />
               </span>
-              {formatAsh(state.ash)}
+              {formatAsh(state.ernte)}
             </span>
             <span className="hud-rate">
               {formatRate(rate)}
               {totalMult > 1 ? <span className="hud-mult"> {formatMult(totalMult)}</span> : null}
             </span>
             <span className="hud-sub">
-              {state.embers > 0 ? (
+              {state.erbstuecke > 0 ? (
                 <span className="hud-sub-item" title={t.resources.credits}>
-                  <IconChest /> {state.embers}
+                  <IconChest /> {state.erbstuecke}
                 </span>
               ) : null}
-              <span className="hud-sub-item" title={t.resources.obsidian}>
-                <IconSeeds /> {state.obsidian}
+              <span className="hud-sub-item" title={t.resources.samen}>
+                <IconSeeds /> {state.samen}
               </span>
             </span>
           </div>
@@ -567,6 +602,8 @@ export function GardenMap({
           {claimFlash}
         </div>
       ) : null}
+
+      {hint ? <OmaHint id={hint} onOk={() => markSeen(hint)} /> : null}
 
       <BottomBar
         game={game}
@@ -587,8 +624,14 @@ export function GardenMap({
           aria-label={t.hud.mapAria}
           onContextMenu={(e) => e.preventDefault()}
         >
-          <MapBackdrop stage={gardenStage} ambient={ambient} />
-          <Visitors game={game} extras={extras} update={updateExtras} onVisited={showToast} />
+          <MapBackdrop stage={gardenStage} ambient={ambient} skin={skinClass} />
+          <Visitors
+            game={game}
+            extras={extras}
+            update={updateExtras}
+            onVisited={showToast}
+            onPresence={setVisitorPresent}
+          />
 
           <button
             type="button"

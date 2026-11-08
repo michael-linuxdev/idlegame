@@ -31,8 +31,8 @@ describe('Saisonende gate + payout', () => {
 
   it('cannot end the season below the gate', () => {
     const owned = Object.fromEntries(GENERATORS.map((g) => [g.id, 5]))
-    expect(prestigeBlockReason({ prestiges: 2, ashEarned: prestigeMinAsh(2) - 1, owned })).toBe('ash')
-    expect(prestigeBlockReason({ prestiges: 2, ashEarned: prestigeMinAsh(2), owned })).toBeNull()
+    expect(prestigeBlockReason({ prestiges: 2, ernteSeason: prestigeMinAsh(2) - 1, owned })).toBe('ernte')
+    expect(prestigeBlockReason({ prestiges: 2, ernteSeason: prestigeMinAsh(2), owned })).toBeNull()
   })
 })
 

@@ -548,3 +548,91 @@
   border-color: #c9a24a !important;
   background: linear-gradient(180deg, #fff8e0, #fffcf4) !important;
 }
+
+/* Spielstand sichern */
+.save-sheet h3 {
+  margin: 0.8rem 0 0.3rem;
+  font-family: var(--oc-font-display);
+  font-size: 1.05rem;
+  color: #33261a;
+}
+
+.save-code {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.5rem 0.6rem;
+  border: 1.5px solid #dcc79e;
+  border-radius: 10px;
+  background: #fffcf4;
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 0.72rem;
+  color: #33261a;
+  resize: vertical;
+  word-break: break-all;
+}
+
+.save-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.save-actions .btn {
+  flex: 1;
+  min-width: 0;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  font-size: 0.92rem;
+}
+
+.save-error {
+  margin: 0.5rem 0 0;
+  font-weight: 700;
+  color: #a3483c;
+}
+
+.save-ok {
+  margin: 0.5rem 0 0;
+  font-weight: 700;
+  color: #3f7a30;
+}
+
+/* Omas Hinweis */
+.oma-hint {
+  position: absolute;
+  left: 0.6rem;
+  right: 0.6rem;
+  bottom: calc(var(--safe-bottom) + 6rem);
+  z-index: 9;
+  padding: 0.6rem 0.8rem 0.7rem 1.6rem;
+  border: 1.5px solid #c9b48a;
+  border-radius: 6px 14px 14px 6px;
+  background:
+    linear-gradient(90deg, transparent 1rem, rgba(217, 140, 122, 0.55) 1rem, rgba(217, 140, 122, 0.55) 1.08rem, transparent 1.08rem),
+    repeating-linear-gradient(180deg, transparent 0 1.45rem, rgba(155, 183, 212, 0.4) 1.45rem 1.5rem),
+    #fdf8ec;
+  box-shadow: 0 10px 24px rgba(40, 32, 12, 0.25);
+  animation: claim-pop 260ms ease-out;
+}
+
+.oma-hint-label {
+  margin: 0;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #6a5434;
+}
+
+.oma-hint-text {
+  margin: 0.1rem 0 0.4rem;
+  font-family: var(--oc-font-hand);
+  font-size: 1.22rem;
+  line-height: 1.45rem;
+  color: #2b3a55;
+}
+
+.oma-hint-ok {
+  min-height: 2.4rem;
+  padding: 0.3rem 1rem;
+}

@@ -95,6 +95,7 @@ interface Props {
   extras: ExtrasState
   update: (fn: (s: ExtrasState) => ExtrasState) => void
   onVisited: (line: string) => void
+  onPresence?: (present: boolean) => void
 }
 
 interface Active {
@@ -106,8 +107,12 @@ interface Active {
 const ORDER: VisitorId[] = ['igel', 'gerda', 'schmetterling', 'rotkehlchen', 'postbote', 'igel', 'gerda']
 
 /** Occasional garden visitors — tap them for a small gift. */
-export function Visitors({ game, extras, update, onVisited }: Props) {
+export function Visitors({ game, extras, update, onVisited, onPresence }: Props) {
   const [active, setActive] = useState<Active | null>(null)
+
+  useEffect(() => {
+    onPresence?.(active != null)
+  }, [active, onPresence])
 
   useEffect(() => {
     const id = window.setInterval(() => {
@@ -137,7 +142,7 @@ export function Visitors({ game, extras, update, onVisited }: Props) {
         game.grant({ ernteSeconds: 120 })
         break
       case 'gerda':
-        game.grant({ obsidian: 6 })
+        game.grant({ samen: 6 })
         break
       case 'schmetterling':
         game.grant({ ernteSeconds: 60, xp: 10 })
@@ -146,7 +151,7 @@ export function Visitors({ game, extras, update, onVisited }: Props) {
         game.refillWater()
         break
       case 'postbote':
-        game.grant(game.state.prestiges >= 1 ? { embers: 3 } : { obsidian: 4 })
+        game.grant(game.state.prestiges >= 1 ? { erbstuecke: 3 } : { samen: 4 })
         break
     }
     playSfx('level')

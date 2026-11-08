@@ -18,5 +18,9 @@ jobs:
       - run: npm run lint
       - run: npm test
       - run: npm run build
+      - name: Install Chromium for E2E
+        run: npx playwright install --with-deps chromium
+      - name: E2E smoke (fresh start, Saisonende, sheets)
+        run: npm run e2e
       - name: Balance smoke (engaged, 3 days)
         run: SUMMARY=1 npm run -s balance -- engaged 72

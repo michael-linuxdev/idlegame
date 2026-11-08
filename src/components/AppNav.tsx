@@ -2,6 +2,7 @@ import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
 import { logPlaytest } from '../game/playtestLog'
 import { t } from '../i18n'
 import { MuteToggle } from './MuteToggle'
+import { isAmbienceOn, setAmbienceOn } from '../game/ambience'
 import { PlaytestLogControls } from './PlaytestLogControls'
 import { IconBasket, IconFlag, IconNotebook, IconSnow, IconSprout } from '../theme/icons'
 
@@ -13,6 +14,7 @@ interface Props {
   onTabChange: (tab: Tab) => void
   onOpenNotebook?: () => void
   onOpenLegal?: () => void
+  onOpenBackup?: () => void
   unreadLetters?: number
   reminders?: boolean
   onToggleReminders?: () => void
@@ -66,11 +68,13 @@ export function AppNav({
   onTabChange,
   onOpenNotebook,
   onOpenLegal,
+  onOpenBackup,
   unreadLetters = 0,
   reminders = false,
   onToggleReminders,
 }: Props) {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [ambience, setAmbience] = useState(() => isAmbienceOn())
   const menuId = useId()
   const menuRef = useRef<HTMLDivElement>(null)
   const homeActive = tab === 'fortress'
@@ -178,6 +182,20 @@ export function AppNav({
               {unreadLetters > 0 ? <span className="nav-new-dot" aria-label={t.notebook.newLetter} /> : null}
             </button>
           ) : null}
+          <button
+            type="button"
+            role="menuitemcheckbox"
+            aria-checked={ambience}
+            className="nav-menu-sound nav-menu-reminders"
+            onClick={() => {
+              const next = !ambience
+              setAmbienceOn(next)
+              setAmbience(next)
+            }}
+          >
+            <span className="tab-label">{t.sound.ambience}</span>
+            <span className="nav-toggle-state">{ambience ? t.sound.on : t.sound.off}</span>
+          </button>
           <div className="nav-menu-sound">
             <span className="tab-label">{t.sound.label}</span>
             <MuteToggle />
@@ -196,6 +214,19 @@ export function AppNav({
             </button>
           ) : null}
           <PlaytestLogControls />
+          {onOpenBackup ? (
+            <button
+              type="button"
+              role="menuitem"
+              className="nav-menu-item nav-menu-legal"
+              onClick={() => {
+                setMenuOpen(false)
+                onOpenBackup()
+              }}
+            >
+              <span className="tab-label">{t.backup.menu}</span>
+            </button>
+          ) : null}
           {onOpenLegal ? (
             <button
               type="button"

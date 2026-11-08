@@ -83,7 +83,7 @@ const fmtN = (n: number) =>
 
 function unlocked(s: GameState, id: GeneratorId): boolean {
   const def = GENERATORS.find((g) => g.id === id)!
-  return isGeneratorUnlocked(def, s.ashEarned, s.owned, s.emberUpgrades.firstFlame > 0, playerLevelOf(s), gatePrestiges(s))
+  return isGeneratorUnlocked(def, s.ernteSeason, s.owned, s.emberUpgrades.firstFlame > 0, playerLevelOf(s), gatePrestiges(s))
 }
 
 function water(s: GameState): GameState {
@@ -91,7 +91,7 @@ function water(s: GameState): GameState {
   const rate = productionPerSecond(s, now)
   const g1 = GENERATORS[0]
   const cost = generatorCostFor(g1, s.owned.gemuesebeet ?? 0, lineCostMult(s, 'gemuesebeet'))
-  const gained = Math.max(rate * tapBonusSeconds(s.emberUpgrades), Math.max(0, cost - s.ash), 1)
+  const gained = Math.max(rate * tapBonusSeconds(s.emberUpgrades), Math.max(0, cost - s.ernte), 1)
   return grantTapAsh(s, gained, now)
 }
 
@@ -110,7 +110,7 @@ function buyBest(s: GameState, maxBuys = 40): GameState {
     for (const g of GENERATORS) {
       if ((s.owned[g.id] ?? 0) === 0 && unlocked(s, g.id)) {
         const c = generatorCostFor(g, 0, lineCostMult(s, g.id))
-        if (c <= s.ash) target = g.id
+        if (c <= s.ernte) target = g.id
         break
       }
     }
@@ -129,7 +129,7 @@ function spendSprouts(s: GameState): GameState {
       const rank = s.deepUpgrades[item.id]
       if (rank >= item.maxRank) continue
       const cost = item.cost(rank)
-      if (cost <= s.deepEmbers && (!best || cost < best.cost)) best = { id: item.id, cost }
+      if (cost <= s.sproesslinge && (!best || cost < best.cost)) best = { id: item.id, cost }
     }
     if (!best) break
     s = buyDeepUpgrade(s, best.id)
@@ -143,9 +143,9 @@ function spendEmbers(s: GameState): GameState {
     for (const item of EMBER_SHOP) {
       const rank = s.emberUpgrades[item.id]
       if (rank >= item.maxRank) continue
-      if (!emberRankUnlocked(item, rank, s.ashEarned, s.owned, s.prestiges)) continue
+      if (!emberRankUnlocked(item, rank, s.ernteSeason, s.owned, s.prestiges)) continue
       const cost = item.cost(rank)
-      if (cost <= s.embers && (!best || cost < best.cost)) best = { id: item.id, cost }
+      if (cost <= s.erbstuecke && (!best || cost < best.cost)) best = { id: item.id, cost }
     }
     if (!best) break
     const next = buyEmberUpgrade(s, best.id)
@@ -230,14 +230,14 @@ export function run(profile: Profile, hours: number) {
     }
 
     if (process.env.TRACE && s.prestiges === 0 && Math.round((clock - start) / 1000) % 900 === 0)
-      note(`trace ash ${fmtN(s.ashEarned)} rate ${fmtN(productionPerSecond(s, clock))}/s`)
+      note(`trace ernte ${fmtN(s.ernteSeason)} rate ${fmtN(productionPerSecond(s, clock))}/s`)
     if (canPrestigeNow(s) && gateAt < 0) {
       gateAt = clock
       note(`gate reached (season ${s.prestiges + 1})`)
     }
     if (canPrestigeNow(s)) {
       const runMin = (clock - runStart) / 60_000
-      const payout = emberPayout(s.ashEarned, s.prestiges)
+      const payout = emberPayout(s.ernteSeason, s.prestiges)
       const rate = payout / Math.max(1, runMin)
       bestPayoutRate = Math.max(bestPayoutRate, rate)
       const ready = profile === 'engaged' ? rate < bestPayoutRate * 0.92 : payout >= 1.6 * payoutAtGate(s.prestiges) || runMin > 60 * 30
@@ -256,7 +256,7 @@ export function run(profile: Profile, hours: number) {
           const sp = sproutPayout(s.prestiges)
           s = doDeepReset(s)
           s = spendSprouts(s)
-          deeps.push({ day: Math.floor((clock - start) / 86400000) + 1, sprouts: sp, total: s.deepEmbers })
+          deeps.push({ day: Math.floor((clock - start) / 86400000) + 1, sprouts: sp, total: s.sproesslinge })
           note(`TIEFER WINTER #${s.deepPrestiges} +${sp} sprouts`)
         }
         s = spendEmbers(s)
@@ -295,7 +295,7 @@ function report(profile: Profile, hours: number) {
   for (const [i, r] of runs.entries())
     console.log(`  #${i + 1} ${fmtT(r.dur).padStart(6)} payout ${String(r.payout).padStart(5)} levels ${r.levels.join(',')} | ${r.meta}`)
   console.log(
-    `end: prestiges ${s.prestiges}, embers ${s.embers}, lvl ${playerLevelOf(s)}, ash ${fmtN(s.ash)}, owned ${GENERATORS.map((g) => s.owned[g.id]).join(',')}`,
+    `end: prestiges ${s.prestiges}, erbstuecke ${s.erbstuecke}, lvl ${playerLevelOf(s)}, ernte ${fmtN(s.ernte)}, owned ${GENERATORS.map((g) => s.owned[g.id]).join(',')}`,
   )
 }
 

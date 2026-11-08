@@ -15,6 +15,7 @@ import {
   type ShopOfferDef,
 } from '../game/monetization'
 import { t } from '../i18n'
+import { STORE_ENABLED } from '../game/monetization'
 import type { useGame } from '../game/useGame'
 
 type GameApi = ReturnType<typeof useGame>
@@ -44,8 +45,8 @@ function OfferButton({
       <div className="ember-shop-info">
         <div className="ember-shop-name">{offer.name}</div>
         <p className="ember-shop-blurb">{offer.blurb}</p>
-        {offer.obsidian != null && offer.obsidian > 0 ? (
-          <p className="ember-shop-effect">{t.shop.packEffect(offer.obsidian)}</p>
+        {offer.samen != null && offer.samen > 0 ? (
+          <p className="ember-shop-effect">{t.shop.packEffect(offer.samen)}</p>
         ) : null}
       </div>
       <button
@@ -107,7 +108,7 @@ export function ShopPanel({ game }: Props) {
           t.shop.adsRewardSkip(rewardPreview.minutes ?? 0, amount),
         )
       } else if (rewardPreview.kind === 'obsidianCrumb') {
-        setLastAdNote(t.shop.adsRewardObsidian(rewardPreview.obsidian ?? 0))
+        setLastAdNote(t.shop.adsRewardObsidian(rewardPreview.samen ?? 0))
       } else {
         setLastAdNote(
           t.shop.adsRewardYield(rewardPreview.minutes ?? 0, amount),
@@ -131,8 +132,8 @@ export function ShopPanel({ game }: Props) {
   const cosmeticPacks = SHOP_OFFERS.filter((o) => o.section === 'cosmetics')
   const bpPremiumOffer = SHOP_OFFERS.find((o) => o.kind === 'battlePassPremium')
 
-  const rewardLabel = (kind: 'obsidian' | 'computeSec', amount: number) =>
-    kind === 'obsidian'
+  const rewardLabel = (kind: 'samen' | 'computeSec', amount: number) =>
+    kind === 'samen'
       ? t.shop.rewardObsidian(amount)
       : t.shop.rewardComputeSec(amount)
 
@@ -145,8 +146,8 @@ export function ShopPanel({ game }: Props) {
 
       <div className="shop-wallet" aria-live="polite">
         <div className="shop-wallet-chip">
-          <span className="shop-wallet-label">{t.resources.obsidian}</span>
-          <span className="shop-wallet-value">{state.obsidian}</span>
+          <span className="shop-wallet-label">{t.resources.samen}</span>
+          <span className="shop-wallet-value">{state.samen}</span>
         </div>
         <div className="shop-wallet-chip secondary">
           <span className="shop-wallet-label">{t.shop.skipLeftToday}</span>
@@ -162,6 +163,8 @@ export function ShopPanel({ game }: Props) {
         ) : null}
       </div>
 
+      {STORE_ENABLED ? (
+        <>
       {!state.adsRemoved ? (
         <>
           <h3 className="subhead">{t.shop.adsTitle}</h3>
@@ -235,6 +238,9 @@ export function ShopPanel({ game }: Props) {
         ))}
       </ul>
 
+        </>
+      ) : null}
+
       <h3 className="subhead">{t.shop.yieldBoostTitle}</h3>
       <p className="muted">{t.shop.yieldBoostIntro}</p>
       <div className="clan-boost-row">
@@ -255,7 +261,7 @@ export function ShopPanel({ game }: Props) {
         <button
           type="button"
           className="btn buy"
-          disabled={state.obsidian < YIELD_BOOST_COST}
+          disabled={state.samen < YIELD_BOOST_COST}
           onClick={purchaseYieldBoost}
         >
           {t.shop.yieldBoostBuy(YIELD_BOOST_COST)}
@@ -267,7 +273,7 @@ export function ShopPanel({ game }: Props) {
       <ul className="ember-shop shop-list">
         {TIME_SKIPS.map((skip) => {
           const capped = skipHoursRemaining <= 0
-          const afford = state.obsidian >= skip.cost
+          const afford = state.samen >= skip.cost
           const hours = Math.min(skip.hours, skipHoursRemaining, 4)
           const disabled = capped || !afford || hours <= 0
           return (
@@ -294,6 +300,8 @@ export function ShopPanel({ game }: Props) {
         })}
       </ul>
 
+      {STORE_ENABLED ? (
+        <>
       <h3 className="subhead">{t.shop.cosmeticPacksTitle}</h3>
       <p className="muted">{t.shop.cosmeticPacksIntro}</p>
       <ul className="ember-shop shop-list">
@@ -307,13 +315,16 @@ export function ShopPanel({ game }: Props) {
         ))}
       </ul>
 
+        </>
+      ) : null}
+
       <h3 className="subhead">{t.shop.skinsTitle}</h3>
       <p className="muted">{t.shop.skinsIntro}</p>
       <ul className="cosmetic-grid">
         {COSMETICS.map((skin) => {
           const owned = state.ownedCosmetics.includes(skin.id)
           const equipped = state.equippedCosmetic === skin.id
-          const afford = state.obsidian >= skin.cost
+          const afford = state.samen >= skin.cost
           return (
             <li key={skin.id} className={`cosmetic-card${equipped ? ' equipped' : ''}`}>
               <div className={`cosmetic-swatch ${skin.accentClass}`} aria-hidden="true" />
@@ -350,6 +361,8 @@ export function ShopPanel({ game }: Props) {
         })}
       </ul>
 
+      {STORE_ENABLED ? (
+        <>
       <h3 className="subhead">{t.shop.battlePassTitle}</h3>
       <p className="muted">{t.shop.battlePassIntro}</p>
       <div className="shop-bp-header">
@@ -432,6 +445,9 @@ export function ShopPanel({ game }: Props) {
         })}
       </ul>
 
+        </>
+      ) : null}
+
       <h3 className="subhead">{t.shop.clanBoostTitle}</h3>
       <p className="muted">{t.shop.clanBoostIntro}</p>
       <div className="clan-boost-row">
@@ -450,7 +466,7 @@ export function ShopPanel({ game }: Props) {
         <button
           type="button"
           className="btn buy"
-          disabled={state.obsidian < CLAN_BOOST.cost}
+          disabled={state.samen < CLAN_BOOST.cost}
           onClick={purchaseClanBoost}
         >
           {t.shop.costObsidian(CLAN_BOOST.cost)}

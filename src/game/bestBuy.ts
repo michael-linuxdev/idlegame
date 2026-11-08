@@ -43,7 +43,7 @@ export function computeBestBuy(
   for (const def of GENERATORS) {
     const unlocked = isGeneratorUnlocked(
       def,
-      state.ashEarned,
+      state.ernteSeason,
       state.owned,
       state.emberUpgrades.firstFlame > 0,
       opts.playerLevel,
@@ -62,8 +62,8 @@ export function computeBestBuy(
     if (deltaRate <= 0) continue
 
     const score = deltaRate / cost
-    const affordable = state.ash >= cost
-    const need = Math.max(0, cost - state.ash)
+    const affordable = state.ernte >= cost
+    const need = Math.max(0, cost - state.ernte)
     const etaSec =
       affordable || opts.ratePerSec <= 0
         ? 0

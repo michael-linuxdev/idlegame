@@ -21,7 +21,7 @@ export const WEEKLY_TASKS: { id: WeeklyTaskId; target: number; seeds: number }[]
   { id: 'seasons', target: 1, seeds: 12 },
   { id: 'varieties', target: 1, seeds: 12 },
 ]
-export const WEEKLY_BONUS = { seeds: 60, embers: 25 }
+export const WEEKLY_BONUS = { seeds: 60, erbstuecke: 25 }
 
 export interface Order {
   id: number

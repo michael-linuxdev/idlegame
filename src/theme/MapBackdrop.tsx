@@ -19,6 +19,115 @@ interface Props {
   stage: number
   /** Local time of day + season (cosmetic) */
   ambient: Ambient
+  /** Gartenstil accent class (skin-wiese, skin-bauerngarten, …) */
+  skin?: string
+}
+
+function Sonnenblume() {
+  return (
+    <svg viewBox="0 0 20 44" focusable="false">
+      <path d="M10 44 V14" stroke="#4f7a2e" strokeWidth="2.2" />
+      <ellipse cx="6" cy="28" rx="4.5" ry="2" fill="#5f9e45" transform="rotate(-30 6 28)" />
+      <ellipse cx="14" cy="34" rx="4.5" ry="2" fill="#5f9e45" transform="rotate(30 14 34)" />
+      {Array.from({ length: 12 }, (_, i) => (
+        <ellipse key={i} cx="10" cy="5" rx="2" ry="4.4" fill="#f5c542" transform={`rotate(${i * 30} 10 10)`} />
+      ))}
+      <circle cx="10" cy="10" r="4" fill="#6b4423" />
+    </svg>
+  )
+}
+
+function Kirschbaum() {
+  return (
+    <svg viewBox="0 0 100 100" focusable="false">
+      <ellipse cx="50" cy="90" rx="30" ry="7" fill="var(--g-shadow)" />
+      <path d="M48 90 V58 M48 66 L36 54 M50 62 L62 50" stroke="#6b4423" strokeWidth="6" strokeLinecap="round" />
+      <circle cx="50" cy="40" r="26" fill="#f2a7c3" />
+      <circle cx="32" cy="48" r="16" fill="#f7c4d8" />
+      <circle cx="68" cy="46" r="17" fill="#eb93b5" />
+      <circle cx="44" cy="30" r="14" fill="#fbd9e6" />
+      {[[40, 40], [58, 34], [30, 52], [66, 52], [50, 56]].map(([x, y], i) => (
+        <circle key={i} cx={x} cy={y} r="2" fill="#fff" />
+      ))}
+    </svg>
+  )
+}
+
+function Lavendel() {
+  return (
+    <svg viewBox="0 0 60 24" focusable="false">
+      <ellipse cx="30" cy="20" rx="28" ry="4" fill="var(--g-shadow)" />
+      {Array.from({ length: 9 }, (_, i) => (
+        <g key={i}>
+          <path d={`M${6 + i * 6} 20 V${8 + (i % 3) * 2}`} stroke="#6f8f5a" strokeWidth="1.4" />
+          <ellipse cx={6 + i * 6} cy={7 + (i % 3) * 2} rx="2" ry="5" fill="#9a6bc9" />
+        </g>
+      ))}
+    </svg>
+  )
+}
+
+function Kuerbisse() {
+  return (
+    <svg viewBox="0 0 40 24" focusable="false">
+      <ellipse cx="20" cy="21" rx="18" ry="3" fill="var(--g-shadow)" />
+      <ellipse cx="12" cy="15" rx="9" ry="7" fill="#f08a2c" stroke="#a8541a" strokeWidth="1.2" />
+      <path d="M12 8 V5" stroke="#4f7a2e" strokeWidth="2" />
+      <ellipse cx="28" cy="17" rx="7" ry="5.5" fill="#f5a623" stroke="#a8541a" strokeWidth="1.2" />
+      <path d="M28 11.5 V9" stroke="#4f7a2e" strokeWidth="2" />
+    </svg>
+  )
+}
+
+/** Extra decor per Gartenstil — purely cosmetic. */
+function SkinDecor({ skin }: { skin?: string }) {
+  if (skin === 'skin-bauerngarten') {
+    return (
+      <>
+        {[4, 9, 14, 86, 91, 96].map((x, i) => (
+          <Decor key={x} className="decor-skin" left={`${x}%`} top={`${92 - (i % 2) * 1.5}%`} w={5}>
+            <Sonnenblume />
+          </Decor>
+        ))}
+      </>
+    )
+  }
+  if (skin === 'skin-bluetenmeer') {
+    return (
+      <>
+        <Decor className="decor-skin" left="94%" top="40%" w={20}>
+          <Kirschbaum />
+        </Decor>
+        <Decor className="decor-skin" left="6%" top="62%" w={18}>
+          <Kirschbaum />
+        </Decor>
+        <Decor className="decor-skin" left="72%" top="92%" w={16}>
+          <Lavendel />
+        </Decor>
+        <div className="ambient-particles p-petal skin-petals">
+          {Array.from({ length: 6 }, (_, i) => (
+            <span key={i} style={{ left: `${(i * 17 + 9) % 100}%`, animationDelay: `${-i * 3}s` }} />
+          ))}
+        </div>
+      </>
+    )
+  }
+  if (skin === 'skin-goldherbst') {
+    return (
+      <>
+        <Decor className="decor-skin" left="72%" top="92%" w={11}>
+          <Kuerbisse />
+        </Decor>
+        <Decor className="decor-skin" left="9%" top="62%" w={11}>
+          <Kuerbisse />
+        </Decor>
+        <Decor className="decor-skin" left="92%" top="46%" w={10}>
+          <Kuerbisse />
+        </Decor>
+      </>
+    )
+  }
+  return null
 }
 
 const pct = (v: string) => Number.parseFloat(v)
@@ -306,7 +415,7 @@ function Particles({ ambient }: { ambient: Ambient }) {
 }
 
 /** Memoized: re-renders only when the stage or ambient mood changes. */
-export const MapBackdrop = memo(function MapBackdrop({ stage, ambient }: Props) {
+export const MapBackdrop = memo(function MapBackdrop({ stage, ambient, skin }: Props) {
   return (
     <div className="garden-ground" aria-hidden="true" data-stage={stage}>
       <svg
@@ -438,6 +547,8 @@ export const MapBackdrop = memo(function MapBackdrop({ stage, ambient }: Props) 
           <Schmetterling hue="#f28ab2" />
         </Decor>
       ) : null}
+
+      <SkinDecor skin={skin} />
 
       <div className="garden-fence">
         <Zaun />

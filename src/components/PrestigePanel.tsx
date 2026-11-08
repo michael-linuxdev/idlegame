@@ -43,31 +43,31 @@ export function PrestigePanel({ game, highlight }: Props) {
   const { state, nextPrestige, canPrestige, prestige, multiplier, prestigeMin, prestigeProgress } =
     game
   const teaser = prestigeProgress.ratio >= 0.5 && !canPrestige
-  const payout = emberPayout(state.ashEarned, state.prestiges)
+  const payout = emberPayout(state.ernteSeason, state.prestiges)
   const online = modulesOnlineCount(state.owned)
   const block = prestigeBlockReason({
     prestiges: state.prestiges,
-    ashEarned: state.ashEarned,
+    ernteSeason: state.ernteSeason,
     owned: state.owned,
   })
-  const unlockProgress = emberUnlockProgress(state.ashEarned, state.owned)
+  const unlockProgress = emberUnlockProgress(state.ernteSeason, state.owned)
   const readyBuys = countAffordableEmberBuys(
     state.emberUpgrades,
-    state.embers,
-    state.ashEarned,
+    state.erbstuecke,
+    state.ernteSeason,
     state.owned,
     state.prestiges,
   )
   const nextUnlock = nextLockedEmberUnlock(
     state.emberUpgrades,
-    state.ashEarned,
+    state.ernteSeason,
     state.owned,
     state.prestiges,
   )
   const postBuys = countAffordableEmberBuysAfterPrestige({
     upgrades: state.emberUpgrades,
-    embers: state.embers,
-    ashEarned: state.ashEarned,
+    erbstuecke: state.erbstuecke,
+    ernteSeason: state.ernteSeason,
     prestiges: state.prestiges,
   })
 
@@ -93,7 +93,7 @@ export function PrestigePanel({ game, highlight }: Props) {
     claimLabel = t.prestige.needModules(online, PRESTIGE_MIN_MODULES_ONLINE)
   } else {
     claimLabel = t.prestige.needMore(
-      formatAsh(Math.max(0, prestigeMin - state.ashEarned)),
+      formatAsh(Math.max(0, prestigeMin - state.ernteSeason)),
     )
   }
 
@@ -119,7 +119,7 @@ export function PrestigePanel({ game, highlight }: Props) {
         <dl className="season-stats">
           <div>
             <dt>{t.prestige.credits.replace(':', '')}</dt>
-            <dd>{state.embers}</dd>
+            <dd>{state.erbstuecke}</dd>
           </div>
           <div>
             <dt>{t.prestige.multiplier.replace(':', '')}</dt>
@@ -131,7 +131,7 @@ export function PrestigePanel({ game, highlight }: Props) {
           </div>
         </dl>
         <p className="prestige-stats">
-          {t.prestige.thisRun} <strong>{formatAsh(state.ashEarned)}</strong> /{' '}
+          {t.prestige.thisRun} <strong>{formatAsh(state.ernteSeason)}</strong> /{' '}
           {formatAsh(prestigeMin)} {t.resources.compute}
         </p>
         <div className="prestige-bar" aria-hidden="true">
@@ -166,7 +166,7 @@ export function PrestigePanel({ game, highlight }: Props) {
           </div>
         </div>
 
-        {!canPrestige && prestigeProgress.ratio < 0.05 && block === 'ash' ? (
+        {!canPrestige && prestigeProgress.ratio < 0.05 && block === 'ernte' ? (
           <p className="panel-empty">{t.prestige.emptyGate}</p>
         ) : null}
         <button
@@ -181,7 +181,7 @@ export function PrestigePanel({ game, highlight }: Props) {
 
       <h3 className="subhead">{t.prestige.shopTitle}</h3>
       <p className="muted">{t.prestige.shopIntro}</p>
-      {state.embers <= 0 ? (
+      {state.erbstuecke <= 0 ? (
         <p className="panel-empty">{t.prestige.emptyShop}</p>
       ) : readyBuys > 0 ? (
         <p className="prestige-shop-ready">{t.prestige.shopReady(readyBuys)}</p>
@@ -220,11 +220,11 @@ export function PrestigePanel({ game, highlight }: Props) {
               const unlocked = emberRankUnlocked(
                 item,
                 rank,
-                state.ashEarned,
+                state.ernteSeason,
                 state.owned,
                 state.prestiges,
               )
-              const affordable = state.embers >= cost && !maxed && unlocked
+              const affordable = state.erbstuecke >= cost && !maxed && unlocked
               const isNext =
                 !!nextUnlock &&
                 nextUnlock.item.id === item.id &&
@@ -339,7 +339,7 @@ export function PrestigePanel({ game, highlight }: Props) {
         <dl className="season-stats">
           <div>
             <dt>{t.longLoop.sprouts}</dt>
-            <dd>{state.deepEmbers}</dd>
+            <dd>{state.sproesslinge}</dd>
           </div>
           <div>
             <dt>{t.longLoop.winters}</dt>
@@ -396,7 +396,7 @@ export function PrestigePanel({ game, highlight }: Props) {
             const copy = t.longLoop.items[item.id]
             const maxed = rank >= item.maxRank
             const cost = item.cost(rank)
-            const affordable = !maxed && state.deepEmbers >= cost
+            const affordable = !maxed && state.sproesslinge >= cost
             return (
               <li
                 key={item.id}

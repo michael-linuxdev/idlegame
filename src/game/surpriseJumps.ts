@@ -5,7 +5,7 @@
  * Documented rates (expected value ~ modest; never wipes progress):
  * - Milestone every 5th upgrade: 100% → floor(rate × 45s) soft crumb
  * - Upgrade jackpot: 7% per upgrade → floor(rate × U[90..210]s), capped at
- *   12% of (ashEarned + rate×60) so early/late stay fair
+ *   12% of (ernteSeason + rate×60) so early/late stay fair
  * - Prestige near-miss spikes (once each per run): cross 72% / 88% / 97% of
  *   prestige gate → floor(rate × 25s) crumb + “almost ready” juice
  * - Offline jackpot: 15% when away ≥ 30 min → +35% of claimed offline amount
@@ -38,12 +38,12 @@ export const OFFLINE_JACKPOT_CHANCE = 0.15
 export const OFFLINE_JACKPOT_MIN_AWAY_MS = 30 * 60 * 1000
 export const OFFLINE_JACKPOT_BONUS = 0.35
 
-function clampCrumb(amount: number, ratePerSec: number, ashEarned: number): number {
+function clampCrumb(amount: number, ratePerSec: number, ernteSeason: number): number {
   if (amount <= 0) return 0
   const floor = Math.max(8, Math.floor(ratePerSec * 8))
   const cap = Math.max(
     floor,
-    Math.floor((ashEarned + ratePerSec * 60) * 0.12),
+    Math.floor((ernteSeason + ratePerSec * 60) * 0.12),
   )
   return Math.min(cap, Math.max(floor, Math.floor(amount)))
 }
@@ -56,16 +56,16 @@ export function rollChance(p: number, rng = Math.random): boolean {
 export function rollUpgradeSurprise(
   totalUpgradesAfter: number,
   ratePerSec: number,
-  ashEarned: number,
+  ernteSeason: number,
   rng = Math.random,
 ): SurpriseJump | null {
   if (totalUpgradesAfter > 0 && totalUpgradesAfter % UPGRADE_MILESTONE_EVERY === 0) {
-    const amount = clampCrumb(ratePerSec * 45, ratePerSec, ashEarned)
+    const amount = clampCrumb(ratePerSec * 45, ratePerSec, ernteSeason)
     return { kind: 'milestone', amount }
   }
   if (rollChance(UPGRADE_JACKPOT_CHANCE, rng)) {
     const sec = 90 + rng() * 120
-    const amount = clampCrumb(ratePerSec * sec, ratePerSec, ashEarned)
+    const amount = clampCrumb(ratePerSec * sec, ratePerSec, ernteSeason)
     return { kind: 'jackpot', amount }
   }
   return null
@@ -76,19 +76,19 @@ export function rollUpgradeSurprise(
  * `flags` is a bitmask: bit i set ⇒ PRESTIGE_SPIKE_RATIOS[i] already fired.
  */
 export function rollPrestigeSpike(
-  ashEarned: number,
+  ernteSeason: number,
   prestiges: number,
   flags: number,
   ratePerSec: number,
 ): SurpriseJump | null {
   const min = prestigeMinAsh(prestiges)
   if (min <= 0) return null
-  const ratio = ashEarned / min
+  const ratio = ernteSeason / min
   for (let i = 0; i < PRESTIGE_SPIKE_RATIOS.length; i++) {
     const bit = 1 << i
     if (flags & bit) continue
     if (ratio >= PRESTIGE_SPIKE_RATIOS[i]!) {
-      const amount = clampCrumb(ratePerSec * 25, ratePerSec, ashEarned)
+      const amount = clampCrumb(ratePerSec * 25, ratePerSec, ernteSeason)
       return { kind: 'prestigeNear', amount, prestigeTier: i }
     }
   }
