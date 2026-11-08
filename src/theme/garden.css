@@ -324,3 +324,70 @@
     animation: none !important;
   }
 }
+
+/* —— Module art life —— */
+
+.module-art .ma-bee {
+  animation: bee-buzz 2.4s ease-in-out infinite alternate;
+}
+
+.module-art .ma-bee:nth-of-type(2n) {
+  animation-duration: 3.1s;
+  animation-delay: -1.2s;
+}
+
+.module-art .ma-steam {
+  animation: steam-rise 3.4s ease-in-out infinite;
+}
+
+.module-art.tier-up {
+  animation: tier-pop 0.9s cubic-bezier(0.2, 1.4, 0.4, 1);
+}
+
+@keyframes bee-buzz {
+  0% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(4px, -3px);
+  }
+  100% {
+    transform: translate(-3px, 2px);
+  }
+}
+
+@keyframes steam-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  40% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes tier-pop {
+  0% {
+    transform: scale(0.82);
+    filter: brightness(1.4);
+  }
+  60% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+    filter: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .module-art .ma-bee,
+  .module-art .ma-steam,
+  .module-art.tier-up {
+    animation: none !important;
+  }
+}

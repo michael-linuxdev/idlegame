@@ -21,17 +21,6 @@ export type GeneratorId =
   | 'hofladen'
   | 'orangerie'
 
-export type SilhouetteKind =
-  | 'power'
-  | 'cool'
-  | 'rack'
-  | 'uplink'
-  | 'relay'
-  | 'switch'
-  | 'battery'
-  | 'cache'
-  | 'quantum'
-  | 'scrub'
 
 export type EconomyId =
   | 'G1'
@@ -61,7 +50,6 @@ export interface GeneratorDef {
   note: string
   /** Plot centre on the garden map (percent of map box) */
   slot: { left: string; top: string }
-  silhouette: SilhouetteKind
   /** Base Compute/sec at level 1 (`r0`) */
   baseRate: number
   /** Cost C0 for level 0 → 1 */
@@ -91,7 +79,6 @@ export const GENERATORS: GeneratorDef[] = [
     note: t.modules.gemuesebeet.note,
     /* Plot lattice: zig-zag along the garden path, gate (bottom) → Laube (top). See theme/MapBackdrop. */
     slot: { left: '34%', top: '83%' },
-    silhouette: 'power',
     baseRate: 1,
     baseCost: 20,
     costScale: 1.18,
@@ -103,7 +90,6 @@ export const GENERATORS: GeneratorDef[] = [
     blurb: t.modules.kompost.blurb,
     note: t.modules.kompost.note,
     slot: { left: '74%', top: '79%' },
-    silhouette: 'cool',
     baseRate: 4,
     baseCost: 150,
     costScale: 1.17,
@@ -116,7 +102,6 @@ export const GENERATORS: GeneratorDef[] = [
     blurb: t.modules.kraeuterspirale.blurb,
     note: t.modules.kraeuterspirale.note,
     slot: { left: '20%', top: '68%' },
-    silhouette: 'rack',
     baseRate: 25,
     baseCost: 1_800,
     costScale: 1.16,
@@ -129,7 +114,6 @@ export const GENERATORS: GeneratorDef[] = [
     blurb: t.modules.beerenhecke.blurb,
     note: t.modules.beerenhecke.note,
     slot: { left: '62%', top: '65%' },
-    silhouette: 'uplink',
     baseRate: 150,
     baseCost: 25_000,
     costScale: 1.15,
@@ -142,7 +126,6 @@ export const GENERATORS: GeneratorDef[] = [
     blurb: t.modules.obstwiese.blurb,
     note: t.modules.obstwiese.note,
     slot: { left: '30%', top: '53%' },
-    silhouette: 'relay',
     baseRate: 900,
     baseCost: 200_000,
     costScale: 1.14,
@@ -155,7 +138,6 @@ export const GENERATORS: GeneratorDef[] = [
     blurb: t.modules.bienenstock.blurb,
     note: t.modules.bienenstock.note,
     slot: { left: '76%', top: '50%' },
-    silhouette: 'switch',
     baseRate: 5_000,
     baseCost: 1_500_000,
     costScale: 1.13,
@@ -168,7 +150,6 @@ export const GENERATORS: GeneratorDef[] = [
     blurb: t.modules.huehnerstall.blurb,
     note: t.modules.huehnerstall.note,
     slot: { left: '20%', top: '39%' },
-    silhouette: 'battery',
     baseRate: 30_000,
     baseCost: 12_000_000,
     costScale: 1.12,
@@ -181,7 +162,6 @@ export const GENERATORS: GeneratorDef[] = [
     blurb: t.modules.gewaechshaus.blurb,
     note: t.modules.gewaechshaus.note,
     slot: { left: '62%', top: '36%' },
-    silhouette: 'cache',
     baseRate: 180_000,
     baseCost: 90_000_000,
     costScale: 1.115,
@@ -194,7 +174,6 @@ export const GENERATORS: GeneratorDef[] = [
     blurb: t.modules.hofladen.blurb,
     note: t.modules.hofladen.note,
     slot: { left: '27%', top: '25%' },
-    silhouette: 'quantum',
     baseRate: 1_100_000,
     baseCost: 700_000_000,
     costScale: 1.11,
@@ -210,7 +189,6 @@ export const GENERATORS: GeneratorDef[] = [
     blurb: t.modules.orangerie.blurb,
     note: t.modules.orangerie.note,
     slot: { left: '72%', top: '23%' },
-    silhouette: 'scrub',
     baseRate: 7_000_000,
     baseCost: 5_000_000_000,
     costScale: 1.105,

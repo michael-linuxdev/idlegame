@@ -499,7 +499,7 @@ export function GardenMap({ game, highlightId, onOpenTab }: Props) {
                     <ClearedPlot />
                   ) : (
                     <ModuleArt
-                      kind={def.silhouette}
+                      id={def.id}
                       level={level}
                       producing={producing}
                       selected={selectedHere}
