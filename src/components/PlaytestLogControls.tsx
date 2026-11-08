@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import {
   clearPlaytestLog,
+  copyPlaytestLog,
   exportPlaytestLog,
   getPlaytestEventCount,
   isPlaytestLogEnabled,
@@ -20,9 +21,24 @@ export function PlaytestLogControls() {
     setCount(getPlaytestEventCount())
   }
 
-  function onExport() {
-    exportPlaytestLog()
+  // Kurze Rückmeldung nach Export/Kopieren
+  const [note, setNote] = useState<string | null>(null)
+  useEffect(() => {
+    if (!note) return
+    const id = window.setTimeout(() => setNote(null), 3000)
+    return () => window.clearTimeout(id)
+  }, [note])
+
+  async function onExport() {
+    const r = await exportPlaytestLog()
     setCount(getPlaytestEventCount())
+    if (r === 'failed') setNote(t.playtest.failed)
+    else if (r !== 'cancelled') setNote(t.playtest.saved)
+  }
+
+  async function onCopy() {
+    const ok = await copyPlaytestLog()
+    setNote(ok ? t.playtest.copied : t.playtest.failed)
   }
 
   // Two taps: first asks, second (within 4 s) really clears the log
@@ -74,6 +90,14 @@ export function PlaytestLogControls() {
               ) : null}
             </span>
           </button>
+          <button type="button" role="menuitem" className="nav-menu-item playtest-action" onClick={onCopy}>
+            <span className="tab-label">{t.playtest.copy}</span>
+          </button>
+          {note ? (
+            <p className="playtest-note" role="status" aria-live="polite">
+              {note}
+            </p>
+          ) : null}
           <button
             type="button"
             role="menuitem"

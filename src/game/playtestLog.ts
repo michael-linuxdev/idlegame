@@ -1,58 +1,49 @@
 /**
- * Opt-in playtest session logger — local only.
- * Default OFF. No remote analytics / network send.
- * Events live in memory + periodic flush to localStorage (capped).
+ * Opt-in Playtest-Log — nur lokal, standardmäßig aus, kein Versand.
+ *
+ * Läuft über Monate (siehe playtestCore.ts): Tages-Zusammenfassungen bleiben,
+ * Roh-Ereignisse nur 48 h, häufige Ereignisse nur gezählt.
+ * Speicher: localStorage in zwei Schlüsseln (abgeschlossene Tage selten,
+ * laufender Tag + Roh-Rest alle 12 s), Budget ~1,5 MB + ~0,5 MB. Wird der
+ * Platz für den Spielstand knapp, gibt `freePlaytestSpace` zuerst den
+ * Roh-Rest frei (Spielstand geht immer vor).
  */
+import { APP_VERSION } from './appUpdate'
+import {
+  addPlayTime,
+  emptyLog,
+  eventCount,
+  exportLines,
+  importLegacyEvents,
+  parseDay,
+  parseEvent,
+  recordEvent,
+  sessionShow,
+  setSnapshot,
+  type DaySummary,
+  type LogState,
+  type PlaytestEventType,
+  type PlaytestPayload,
+} from './playtestCore'
+import { copyText, fileStamp, saveFile, type SaveResult } from './saveFile'
 
-export type PlaytestEventType =
-  | 'session_start'
-  | 'session_end'
-  | 'upgrade'
-  | 'offline_claim'
-  | 'prestige'
-  | 'deep_reset'
-  | 'schub'
-  | 'level_up'
-  | 'shop_tap'
-  | 'tab_open'
-  | 'menu_open'
-  | 'surprise'
-  | 'flash_event'
-  | 'daily_claim'
-  | 'best_buy_tap'
-  | 'generation'
-  | 'buy_all'
-  | 'fest_buy'
-  | 'plot_switch'
-  | 'app_update'
-  | 'weinlese'
-  | 'recipe'
-  | 'photo'
-
-export type PlaytestPayload = Record<
-  string,
-  string | number | boolean | null | undefined
->
-
-export interface PlaytestEvent {
-  t: number
-  type: PlaytestEventType
-  data?: PlaytestPayload
-}
+export type { PlaytestEvent, PlaytestEventType, PlaytestPayload } from './playtestCore'
 
 const OPT_IN_KEY = 'gartenerbe-playtest-log-on'
-const EVENTS_KEY = 'gartenerbe-playtest-log-v1'
-/** Soft cap: keep roughly last 1–2h of dense play (~1.5 MB / 2500 events). */
-const MAX_EVENTS = 2500
-const MAX_BYTES = 1_500_000
+const LEGACY_KEY = 'gartenerbe-playtest-log-v1'
+const DAYS_KEY = 'gartenerbe-playtest-days-v2'
+const LIVE_KEY = 'gartenerbe-playtest-live-v2'
 const FLUSH_MS = 12_000
 
 let enabledCache: boolean | null = null
-let events: PlaytestEvent[] = []
+let log: LogState = emptyLog()
+let loaded = false
+let daysWritten = -1
 let dirty = false
 let flushTimer: number | null = null
 let booted = false
-let sessionActive = false
+let visibleSince = 0
+let snapshotFn: (() => Record<string, number | string>) | null = null
 
 function readOptIn(): boolean {
   if (enabledCache != null) return enabledCache
@@ -73,58 +64,61 @@ function writeOptIn(on: boolean): void {
   }
 }
 
-function trimToCap(list: PlaytestEvent[]): PlaytestEvent[] {
-  let next = list
-  if (next.length > MAX_EVENTS) next = next.slice(-MAX_EVENTS)
-  let encoded = JSON.stringify(next)
-  while (encoded.length > MAX_BYTES && next.length > 50) {
-    const drop = Math.max(25, Math.floor(next.length * 0.1))
-    next = next.slice(drop)
-    encoded = JSON.stringify(next)
+function loadLog(): LogState {
+  let next = emptyLog()
+  try {
+    const daysRaw = localStorage.getItem(DAYS_KEY)
+    if (daysRaw) {
+      const parsed: unknown = JSON.parse(daysRaw)
+      if (Array.isArray(parsed)) next.days = parsed.map(parseDay).filter((d): d is DaySummary => d !== null)
+    }
+    const liveRaw = localStorage.getItem(LIVE_KEY)
+    if (liveRaw) {
+      const live: unknown = JSON.parse(liveRaw)
+      if (live && typeof live === 'object') {
+        const l = live as Record<string, unknown>
+        next.today = parseDay(l.today)
+        next.raw = Array.isArray(l.raw) ? l.raw.map(parseEvent).filter((e) => e !== null) : []
+        next.lastActive = typeof l.lastActive === 'number' ? l.lastActive : 0
+      }
+    }
+    daysWritten = next.days.length
+    // Altes Log (v1) einmalig übernehmen
+    const legacy = localStorage.getItem(LEGACY_KEY)
+    if (legacy) {
+      next = importLegacyEvents(next, JSON.parse(legacy))
+      dirty = true
+      persistNow(next)
+      localStorage.removeItem(LEGACY_KEY)
+    }
+  } catch {
+    /* kaputter Log-Speicher: neu anfangen, Spielstand ist davon unberührt */
   }
   return next
 }
 
-function loadEvents(): PlaytestEvent[] {
-  try {
-    const raw = localStorage.getItem(EVENTS_KEY)
-    if (!raw) return []
-    const parsed: unknown = JSON.parse(raw)
-    if (!Array.isArray(parsed)) return []
-    const out: PlaytestEvent[] = []
-    for (const item of parsed) {
-      if (!item || typeof item !== 'object') continue
-      const row = item as Record<string, unknown>
-      if (typeof row.t !== 'number' || typeof row.type !== 'string') continue
-      out.push({
-        t: row.t,
-        type: row.type as PlaytestEventType,
-        data:
-          row.data && typeof row.data === 'object'
-            ? (row.data as PlaytestPayload)
-            : undefined,
-      })
-    }
-    return trimToCap(out)
-  } catch {
-    return []
-  }
+function ensureLoaded(): void {
+  if (loaded) return
+  loaded = true
+  log = loadLog()
 }
 
-function persistNow(): void {
+function persistNow(state: LogState = log): void {
   if (!dirty) return
   dirty = false
   try {
-    const trimmed = trimToCap(events)
-    events = trimmed
-    localStorage.setItem(EVENTS_KEY, JSON.stringify(trimmed))
+    if (state.days.length !== daysWritten) {
+      localStorage.setItem(DAYS_KEY, JSON.stringify(state.days))
+      daysWritten = state.days.length
+    }
+    localStorage.setItem(LIVE_KEY, JSON.stringify({ today: state.today, raw: state.raw, lastActive: state.lastActive }))
   } catch {
-    // Quota — drop oldest half and retry once
+    // Platz knapp: Roh-Rest halbieren, Tage bleiben
     try {
-      events = events.slice(Math.floor(events.length / 2))
-      localStorage.setItem(EVENTS_KEY, JSON.stringify(events))
+      log = { ...state, raw: state.raw.slice(Math.floor(state.raw.length / 2)) }
+      localStorage.setItem(LIVE_KEY, JSON.stringify({ today: log.today, raw: log.raw, lastActive: log.lastActive }))
     } catch {
-      /* give up */
+      /* aufgeben */
     }
   }
 }
@@ -133,57 +127,68 @@ function scheduleFlush(): void {
   if (flushTimer != null) return
   flushTimer = window.setTimeout(() => {
     flushTimer = null
+    tickPlayTime()
     persistNow()
   }, FLUSH_MS)
 }
 
-function push(type: PlaytestEventType, data?: PlaytestPayload): void {
-  if (!readOptIn()) return
-  const entry: PlaytestEvent = { t: Date.now(), type }
-  if (data) {
-    const clean: PlaytestPayload = {}
-    for (const [k, v] of Object.entries(data)) {
-      if (v !== undefined) clean[k] = v
+/** Credit visible time so far (also a heartbeat for the session border). */
+function tickPlayTime(now = Date.now()): void {
+  if (!readOptIn() || visibleSince <= 0) return
+  log = addPlayTime(log, visibleSince, now, APP_VERSION)
+  visibleSince = now
+  if (snapshotFn) {
+    try {
+      log = setSnapshot(log, snapshotFn(), now)
+    } catch {
+      /* Schnappschuss ist optional */
     }
-    if (Object.keys(clean).length > 0) entry.data = clean
   }
-  events.push(entry)
-  if (events.length > MAX_EVENTS + 50) events = trimToCap(events)
   dirty = true
-  scheduleFlush()
 }
 
 export function isPlaytestLogEnabled(): boolean {
   return readOptIn()
 }
 
+/** Einträge im Roh-Rest + Anzahl der Tage (für die Anzeige im Menü). */
 export function getPlaytestEventCount(): number {
-  return events.length
+  ensureLoaded()
+  return eventCount(log) + log.days.length + (log.today ? 1 : 0)
 }
 
-export function logPlaytest(
-  type: PlaytestEventType,
-  data?: PlaytestPayload,
-): void {
-  push(type, data)
+export function logPlaytest(type: PlaytestEventType, data?: PlaytestPayload): void {
+  if (!readOptIn()) return
+  ensureLoaded()
+  log = recordEvent(log, type, data, Date.now(), APP_VERSION)
+  dirty = true
+  scheduleFlush()
 }
 
-function endSessionIfActive(): void {
-  if (!sessionActive) return
-  sessionActive = false
-  push('session_end')
+/** Called by the game: what to store as the day's progress snapshot. */
+export function registerPlaytestSnapshot(fn: (() => Record<string, number | string>) | null): void {
+  snapshotFn = fn
+}
+
+function onShow(now = Date.now()): void {
+  if (!readOptIn()) return
+  ensureLoaded()
+  if (visibleSince > 0) return
+  const r = sessionShow(log, now, APP_VERSION, {
+    path: typeof location !== 'undefined' ? location.pathname || '/' : '/',
+    standalone: typeof matchMedia !== 'undefined' && matchMedia('(display-mode: standalone)').matches,
+  })
+  log = r.log
+  visibleSince = now
+  dirty = true
   persistNow()
 }
 
-function startSession(): void {
+function onHide(now = Date.now()): void {
   if (!readOptIn()) return
-  if (sessionActive) return
-  sessionActive = true
-  push('session_start', {
-    app: 'gartenerbe',
-    path:
-      typeof location !== 'undefined' ? location.pathname || '/' : '/',
-  })
+  tickPlayTime(now)
+  visibleSince = 0
+  dirty = true
   persistNow()
 }
 
@@ -192,79 +197,87 @@ export function setPlaytestLogEnabled(on: boolean): void {
   if (on === was) return
   if (on) {
     writeOptIn(true)
-    if (events.length === 0) events = loadEvents()
-    startSession()
+    onShow()
   } else {
-    // Emit session_end while still opted in, then flip the flag off.
-    endSessionIfActive()
+    onHide()
     writeOptIn(false)
   }
 }
 
 export function clearPlaytestLog(): void {
-  events = []
+  log = emptyLog()
+  daysWritten = 0
   dirty = false
   try {
-    localStorage.removeItem(EVENTS_KEY)
+    localStorage.removeItem(DAYS_KEY)
+    localStorage.removeItem(LIVE_KEY)
+    localStorage.removeItem(LEGACY_KEY)
   } catch {
     /* ignore */
   }
-  if (readOptIn() && sessionActive) {
-    push('session_start', { cleared: true })
-    persistNow()
+  if (readOptIn() && visibleSince > 0) {
+    visibleSince = 0
+    onShow()
   }
 }
 
-/** JSONL download — one event per line. */
-export function exportPlaytestLog(): void {
-  persistNow()
-  const lines = events.map((e) => JSON.stringify(e)).join('\n')
-  const blob = new Blob([lines.length ? `${lines}\n` : ''], {
-    type: 'application/x-ndjson',
-  })
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  const stamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19)
-  a.href = url
-  a.download = `playtest-log-${stamp}.jsonl`
-  a.rel = 'noopener'
-  document.body.appendChild(a)
-  a.click()
-  a.remove()
-  window.setTimeout(() => URL.revokeObjectURL(url), 2_000)
+/** Spielstand geht vor: Roh-Rest des Logs freigeben, wenn der Platz fehlt. */
+export function freePlaytestSpace(): void {
+  try {
+    localStorage.removeItem(LEGACY_KEY)
+    localStorage.removeItem(LIVE_KEY)
+  } catch {
+    /* ignore */
+  }
+  log = { ...log, raw: [] }
 }
 
-/** Call once from App mount — restores buffer, starts session if opted in. */
+export function playtestLogText(now = Date.now()): string {
+  ensureLoaded()
+  tickPlayTime(now)
+  persistNow()
+  return exportLines(log, now, APP_VERSION)
+}
+
+/** JSONL speichern — auf dem iPhone über das Teilen-Menü. */
+export function exportPlaytestLog(): Promise<SaveResult> {
+  return saveFile(`playtest-log-${fileStamp()}.jsonl`, playtestLogText(), 'application/x-ndjson')
+}
+
+export function copyPlaytestLog(): Promise<boolean> {
+  return copyText(playtestLogText())
+}
+
+/** Call once from App mount — restores the log, tracks visibility. */
 export function bootPlaytestLog(): () => void {
   if (booted) return () => undefined
   booted = true
-  events = loadEvents()
-  if (readOptIn()) startSession()
+  if (document.visibilityState !== 'hidden') onShow()
 
-  const onHide = () => {
-    if (!readOptIn()) return
-    endSessionIfActive()
-  }
-  const onShow = () => {
-    if (!readOptIn()) return
-    startSession()
-  }
-  const onVis = () => {
+  const hide = () => onHide()
+  const vis = () => {
     if (document.visibilityState === 'hidden') onHide()
     else onShow()
   }
+  const onError = (e: ErrorEvent) => logPlaytest('error', { where: 'window', msg: String(e.message).slice(0, 160) })
+  const onRejection = (e: PromiseRejectionEvent) =>
+    logPlaytest('error', { where: 'promise', msg: String(e.reason).slice(0, 160) })
 
-  window.addEventListener('pagehide', onHide)
-  document.addEventListener('visibilitychange', onVis)
+  window.addEventListener('pagehide', hide)
+  document.addEventListener('visibilitychange', vis)
+  window.addEventListener('error', onError)
+  window.addEventListener('unhandledrejection', onRejection)
 
   return () => {
-    window.removeEventListener('pagehide', onHide)
-    document.removeEventListener('visibilitychange', onVis)
+    window.removeEventListener('pagehide', hide)
+    document.removeEventListener('visibilitychange', vis)
+    window.removeEventListener('error', onError)
+    window.removeEventListener('unhandledrejection', onRejection)
     if (flushTimer != null) {
       window.clearTimeout(flushTimer)
       flushTimer = null
     }
-    endSessionIfActive()
+    onHide()
     booted = false
   }
 }

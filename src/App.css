@@ -1015,6 +1015,12 @@
   color: var(--oc-ember);
 }
 
+.playtest-note {
+  margin: 0.2rem 0.6rem;
+  font-size: 0.8rem;
+  color: var(--oc-ink-muted);
+}
+
 @keyframes fade-in {
   from {
     opacity: 0;

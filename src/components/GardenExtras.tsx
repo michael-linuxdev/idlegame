@@ -4,6 +4,7 @@ import { toPng } from 'html-to-image'
 import { GENERATORS } from '../game/generators'
 import { RECIPE_NEED } from '../game/extrasCore'
 import { logPlaytest } from '../game/playtestLog'
+import { saveFile } from '../game/saveFile'
 import { playSfx } from '../game/sound'
 import type { Wish } from '../game/state'
 import type { useGame } from '../game/useGame'
@@ -141,10 +142,7 @@ export function PhotoOverlay({ caption, onClose }: { caption: string; onClose: (
       if (nav.share && nav.canShare?.({ files: [file] })) {
         await nav.share({ files: [file], text: caption })
       } else {
-        const a = document.createElement('a')
-        a.href = url
-        a.download = file.name
-        a.click()
+        await saveFile(file.name, blob, 'image/png')
       }
       logPlaytest('photo', { action: 'save' })
       setNote(t.photo.saved)

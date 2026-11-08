@@ -112,7 +112,7 @@ Tempo-Messung (9.1/9.2) kommt **vor** die Balance-Pakete 3 und 6, damit deren Wi
 - Bericht: gebaut / weggelassen (mit Grund), Sim-Zahlen erstes Saisonende und Ereignisdichte, Risiken für bestehende Spielstände.
 
 ## Fortschritt
-- [ ] A Export + Langzeit-Log
+- [x] A Export + Langzeit-Log — Abweichung: localStorage (zwei Schlüssel, Budget) statt IndexedDB; Spielstand hat Vorrang (`freePlaytestSpace` bei Platzmangel). Begründung: synchron, testbar, 180-Tage-Test < 2 KB/Tag.
 - [ ] B Spielstand-Schutz & Betrieb
 - [ ] C Erste Minuten & Freischaltungen
 - [ ] D Tempo messen
