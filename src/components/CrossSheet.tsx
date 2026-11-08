@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useDismiss } from '../game/overlays'
 import { CROSS_MS, CROSS_SKIP_SAMEN, HYBRIDS, hybridsMult } from '../game/crossing'
 import { formatDecimal } from '../game/format'
 import { VARIETIES } from '../game/gardenLife'
@@ -16,6 +17,7 @@ function clock(ms: number): string {
 
 /** Saatgut kreuzen: pick two sorts, wait, harvest; list of Kreuzungen. */
 export function CrossSheet({ game, onClose, onToast }: { game: GameApi; onClose: () => void; onToast: (text: string) => void }) {
+  useDismiss(onClose)
   const { state, nowTick } = game
   const found = VARIETIES.filter((v) => state.collection.includes(v.id))
   const [a, setA] = useState('')

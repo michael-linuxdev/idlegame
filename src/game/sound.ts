@@ -9,6 +9,7 @@
  *  - letter: paper rustle + soft bell (Brief von Oma)
  * Mute persists in localStorage. Every call is cheap and fire-and-forget.
  */
+import { buzz } from './prefs'
 
 const MUTE_KEY = 'gartenerbe-sfx-muted'
 
@@ -115,7 +116,11 @@ function chirp(ac: AudioContext, out: AudioNode, at: number, from: number, to: n
   tone(ac, out, at, from, 0.09, vol, 'sine', to)
 }
 
+const BUZZ: Partial<Record<SfxKind, number>> = { tap: 6, upgrade: 8, claim: 14, level: 20, season: 30, streak: 14 }
+
 export function playSfx(kind: SfxKind): void {
+  const ms = BUZZ[kind]
+  if (ms) buzz(ms)
   if (isSfxMuted()) return
   const ac = ctx()
   if (!ac) return

@@ -23,7 +23,7 @@ import {
   postPrestigeStartOwned,
   prestigeBlockReason,
 } from '../game/economy'
-import { formatAsh, formatDecimal, formatMult } from '../game/format'
+import { formatEta, formatAsh, formatDecimal, formatMult } from '../game/format'
 import { t } from '../i18n'
 import { WinterScene } from '../theme/WinterScene'
 import type { useGame } from '../game/useGame'
@@ -151,6 +151,14 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
             style={{ width: `${Math.min(100, prestigeProgress.ratio * 100)}%` }}
           />
         </div>
+        {prestigeProgress.ratio < 1 ? (
+          <p className="prestige-eta">
+            {(() => {
+              const eta = formatEta(prestigeMin - state.ernteSeason, game.rate)
+              return eta ? t.ux.season.eta(eta) : t.ux.season.etaLong
+            })()}
+          </p>
+        ) : null}
 
         <p className="prestige-stats">
           {t.prestige.nextPayout} <strong>{t.prestige.creditsAmount(payout)}</strong>

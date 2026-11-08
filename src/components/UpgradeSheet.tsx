@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
+import { useDismiss } from '../game/overlays'
 import { careNamesFor } from '../theme/careNames'
 import { ModuleArt } from '../theme/ModuleArt'
 import { useHints, type HintId } from '../game/hints'
@@ -15,7 +16,7 @@ import {
 import { efficiencyMult, type BranchKind } from '../game/branches'
 import { formatAsh, formatDecimal, formatRate } from '../game/format'
 import { playSfx } from '../game/sound'
-import { gatePrestiges } from '../game/state'
+import { gatePrestiges, totalGardenMult } from '../game/state'
 import { t } from '../i18n'
 import type { useGame } from '../game/useGame'
 
@@ -52,12 +53,14 @@ function saveBulk(mode: BulkMode) {
 }
 
 export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
+  useDismiss(onClose)
   const def = GENERATORS.find((g) => g.id === selectedId)
   const [flash, setFlash] = useState(false)
   const holdTimer = useRef<number | null>(null)
   const holdRepeat = useRef<number | null>(null)
   const holding = useRef(false)
   const [bulkPref, setBulk] = useState<BulkMode>(loadBulk)
+  const [careOpen, setCareOpen] = useState<boolean>(loadCareOpen)
   const unlocks = game.bulkUnlocks
   const modes: BulkMode[] = [1, ...(unlocks.five ? [5 as const] : []), ...(unlocks.max ? ['max' as const] : [])]
   const bulk: BulkMode = modes.includes(bulkPref) ? bulkPref : 1
@@ -113,16 +116,17 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
   const milestone = nextMilestone(owned)
   const stars = milestonesReached(owned)
   const branch = game.state.branches[def.id] ?? { efficiency: 0, capacity: 0 }
-  const lineMult =
-    game.multiplier *
-    game.levelMult *
-    game.clanMult *
-    game.eventMult *
-    game.expansionMult *
-    game.turboMult
+  const lineMult = totalGardenMult(game.state, game.nowTick)
   const eff = efficiencyMult(branch.efficiency)
   const lineRate = generatorRate(def, owned) * lineMult * eff
   const nextRate = generatorRate(def, owned + bulkCount) * lineMult * eff
+  const maxGain =
+    maxInfo.count > 1 ? generatorRate(def, owned + maxInfo.count) * lineMult * eff - lineRate : 0
+  const careBuyable = owned < 1 ? 0 :
+    (['efficiency', 'capacity'] as const).filter((k) => {
+      const rank = k === 'efficiency' ? branch.efficiency : branch.capacity
+      return rank < game.branchMaxRank && game.state.ernte >= game.branchCostOf(def.id, k)
+    }).length
   const safeCost = Number.isFinite(cost) && cost > 0 ? cost : 0
   const safeAsh = Number.isFinite(game.state.ernte) ? Math.max(0, game.state.ernte) : 0
   const affordRatio =
@@ -268,6 +272,9 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
               </div>
             </div>
             ) : null}
+            {unlocks.max && maxGain > 0 ? (
+              <p className="gc-max-preview">{t.ux.upgrade.maxPreview(maxInfo.count, formatAsh(maxGain))}</p>
+            ) : null}
             {newHint && owned >= 1 ? (
               <aside className="gc-tip" role="status">
                 <p>
@@ -308,6 +315,23 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
             </p>
 
             {owned >= 1 ? (
+              <button
+                type="button"
+                className={`gc-care-toggle${careOpen ? ' open' : ''}`}
+                aria-expanded={careOpen}
+                onClick={() => {
+                  setCareOpen(!careOpen)
+                  saveCareOpen(!careOpen)
+                }}
+              >
+                <span>{t.ux.upgrade.more}</span>
+                {!careOpen && careBuyable > 0 ? <span className="gc-care-count">{careBuyable}</span> : null}
+                <span className="gc-care-chev" aria-hidden="true">
+                  {careOpen ? '▾' : '▸'}
+                </span>
+              </button>
+            ) : null}
+            {owned >= 1 && careOpen ? (
               <div className="gc-care" aria-label={t.branches.title}>
                 <CareTile
                   area={def.id}
@@ -379,7 +403,9 @@ function CareTile({
           <span key={i} className={i < rank ? 'on' : undefined} />
         ))}
       </div>
-      <p className="gc-care-effect">{perRank}</p>
+      <p className="gc-care-effect">
+        {perRank} · {t.ux.upgrade.careStep(rank, max)}
+      </p>
       {maxed ? (
         <span className="gc-care-max">{t.branches.maxed}</span>
       ) : (
@@ -395,4 +421,22 @@ function CareTile({
       )}
     </div>
   )
+}
+
+const CARE_OPEN_KEY = 'gartenerbe-care-open'
+
+function loadCareOpen(): boolean {
+  try {
+    return localStorage.getItem(CARE_OPEN_KEY) === '1'
+  } catch {
+    return false
+  }
+}
+
+function saveCareOpen(open: boolean) {
+  try {
+    localStorage.setItem(CARE_OPEN_KEY, open ? '1' : '0')
+  } catch {
+    /* ignore */
+  }
 }

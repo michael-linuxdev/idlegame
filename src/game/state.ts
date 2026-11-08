@@ -2659,3 +2659,50 @@ export {
   capacityCostMult,
 }
 export type { BranchKind, AchievementId, QuestProgress }
+
+/* ———————————— Aufschlüsselung der Ernte-Multiplikatoren (HUD) ———————————— */
+
+export type MultKey =
+  | 'erbe'
+  | 'level'
+  | 'verein'
+  | 'erntefest'
+  | 'sonnenfenster'
+  | 'duenger'
+  | 'winter'
+  | 'pflanzenbuch'
+  | 'wetter'
+  | 'gluecksrad'
+  | 'kapitel'
+  | 'nachbarn'
+  | 'regenbogen'
+  | 'fruehling'
+
+/**
+ * Every factor of productionPerSecond except the per-area ones, in the order
+ * a player thinks about them. Factors of exactly 1 are left out.
+ * The product equals the HUD multiplier.
+ */
+export function multBreakdown(state: GameState, now = Date.now()): { key: MultKey; mult: number }[] {
+  const all: [MultKey, number][] = [
+    ['erbe', prestigeMultiplier(state.emberUpgrades)],
+    ['level', levelProductionMult(playerLevelOf(state))],
+    ['pflanzenbuch', collectionMult(state.collection)],
+    ['kapitel', expansionGardenMult(state)],
+    ['winter', deepYieldMult(state.deepUpgrades)],
+    ['nachbarn', neighbourMult(state)],
+    ['erntefest', eventProductionMult(now)],
+    ['sonnenfenster', flashProductionMult(state, now)],
+    ['wetter', weatherYieldMult(now) * weatherBuffMult(state.weatherBuff, now)],
+    ['gluecksrad', wheelYieldMult(state.wheelBuff, state.prestiges)],
+    ['verein', effectiveClanMult(state, now)],
+    ['duenger', effectiveYieldBoostMult(state, now)],
+    ['regenbogen', rainbowMult(state, now)],
+    ['fruehling', turboMult(state, now)],
+  ]
+  return all.filter(([, m]) => Math.abs(m - 1) > 1e-6).map(([key, mult]) => ({ key, mult }))
+}
+
+export function totalGardenMult(state: GameState, now = Date.now()): number {
+  return multBreakdown(state, now).reduce((p, x) => p * x.mult, 1)
+}

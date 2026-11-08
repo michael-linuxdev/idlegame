@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useDismiss } from '../../game/overlays'
 import { playSfx } from '../../game/sound'
 import {
   NOTEBOOK_ENTRIES,
@@ -50,15 +51,8 @@ export function NotebookSheet({ notebook, initialEntry, onRead, onClose, collect
     playSfx('letter')
   }, [open, onRead])
 
-  useEffect(() => {
-    function onKey(e: KeyboardEvent) {
-      if (e.key !== 'Escape') return
-      if (open) setOpen(null)
-      else onClose()
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [open, onClose])
+  // Escape: back from a letter to the list, then close
+  useDismiss(() => (open ? setOpen(null) : onClose()))
 
   const entry = open ? t.notebook.entries[open] : null
 

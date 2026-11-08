@@ -4,6 +4,23 @@
  */
 
 :root {
+  /* —— Layers (z-index): one ladder for the whole app ——
+     map < hud < hint < chrome (nav) < coach < sheet < modal < overlay < alert < lock */
+  --z-map: 0;
+  --z-hud: 6;
+  --z-toast: 7;
+  --z-hint: 9;
+  --z-pops: 12;
+  --z-chrome: 30;
+  --z-coach: 35;
+  --z-sheet: 40;
+  --z-modal: 50;
+  --z-overlay: 60;
+  --z-alert: 110;
+  --z-editbar: 120;
+  --z-picker: 130;
+  --z-lock: 9999;
+
   /* Surfaces — airy greenhouse / rooftop light */
   --oc-bg-deep: #dce8d6;
   --oc-bg-field: #e8f0e4;

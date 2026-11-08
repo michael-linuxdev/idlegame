@@ -54,9 +54,35 @@ const WEATHER_ICON = {
   mild: <IconCloud />,
 } as const
 
+const MAX_VISIBLE = 3
+/** What stays visible when the bar is crowded (claimable pills always lead). */
+const PRIORITY = ['season', 'order', 'fest', 'turbo', 'rainbow', 'surge', 'flash', 'recipe', 'boost', 'clan', 'wheel', 'weather']
+const PILLS_SEEN_KEY = 'gartenerbe-pills-seen-v1'
+
+function loadSeen(): string[] {
+  try {
+    const raw = JSON.parse(localStorage.getItem(PILLS_SEEN_KEY) ?? '[]') as unknown
+    return Array.isArray(raw) ? raw.filter((x): x is string => typeof x === 'string') : []
+  } catch {
+    return []
+  }
+}
+
 /** Compact event bar — every timed bonus is one small pill, never a card. */
 export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Props) {
   const [open, setOpen] = useState<string | null>(null)
+  const [showAll, setShowAll] = useState(false)
+  const [seen, setSeen] = useState<string[]>(loadSeen)
+  const markSeen = (key: string) => {
+    if (seen.includes(key)) return
+    const next = [...seen, key]
+    setSeen(next)
+    try {
+      localStorage.setItem(PILLS_SEEN_KEY, JSON.stringify(next))
+    } catch {
+      /* ignore */
+    }
+  }
   const { surge, surgeVisible, surgeGoalDone, surgeGoalClaimed, state, eventMult, flash } = game
   const pills: Pill[] = []
 
@@ -213,16 +239,26 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
 
   if (pills.length === 0) return null
   const expanded = pills.find((p) => p.key === open && p.detail)
+  // Claimable first; at most MAX_VISIBLE, the rest behind „+N“
+  const rank = (p: Pill) => (p.claim ? -1 : PRIORITY.indexOf(p.key))
+  const ordered = [...pills].sort((a, b) => rank(a) - rank(b))
+  const hidden = showAll ? 0 : Math.max(0, ordered.length - MAX_VISIBLE)
+  const visible = hidden > 0 ? ordered.slice(0, MAX_VISIBLE - 1) : ordered
+  const hiddenCount = ordered.length - visible.length
 
   return (
     <div className="hud-pills-wrap">
       <ul className="hud-pills">
-        {pills.map((p) => (
+        {visible.map((p) => {
+          const name = t.ux.pills.names[p.key]
+          const showName = Boolean(name) && !seen.includes(p.key)
+          return (
           <li key={p.key} className="hud-pill-item">
           <button
             type="button"
             className={`hud-pill pill-${p.key}${p.claim ? ' claim' : ''}${open === p.key ? ' open' : ''}`}
             onClick={() => {
+              markSeen(p.key)
               if (p.onClick) {
                 p.onClick()
                 return
@@ -234,10 +270,25 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
             style={p.color ? { ['--pill-accent' as string]: p.color } : undefined}
           >
             <span className="hud-pill-icon">{p.icon}</span>
+            {showName ? <span className="hud-pill-name">{name}</span> : null}
             {p.label ? <span className="hud-pill-label">{p.label}</span> : null}
           </button>
           </li>
-        ))}
+          )
+        })}
+        {hiddenCount > 0 || showAll ? (
+          <li className="hud-pill-item">
+            <button
+              type="button"
+              className="hud-pill pill-more"
+              aria-expanded={showAll}
+              aria-label={showAll ? t.ux.pills.less : t.ux.pills.moreAria(hiddenCount)}
+              onClick={() => setShowAll((v) => !v)}
+            >
+              <span className="hud-pill-label">{showAll ? '−' : t.ux.pills.more(hiddenCount)}</span>
+            </button>
+          </li>
+        ) : null}
       </ul>
       {expanded?.detail ? (
         <div className="hud-pill-detail" role="status">

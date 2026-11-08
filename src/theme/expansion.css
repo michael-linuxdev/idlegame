@@ -860,7 +860,7 @@ html.tab-hidden .fest-snow {
 /* Himmelsereignisse */
 .sky-event {
   position: absolute;
-  z-index: 50;
+  z-index: var(--z-modal);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1043,7 +1043,7 @@ html.tab-hidden .fest-snow {
   left: 0.6rem;
   right: 0.6rem;
   bottom: calc(var(--safe-bottom) + 0.8rem);
-  z-index: 60;
+  z-index: var(--z-overlay);
   padding: 0.6rem 0.75rem;
   border: 1.5px solid #c9b48a;
   border-radius: 14px;
@@ -1833,7 +1833,7 @@ html.tab-hidden .sky-event {
   .rotate-lock {
     position: fixed;
     inset: 0;
-    z-index: 9999;
+    z-index: var(--z-lock);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -2381,7 +2381,7 @@ html.tab-hidden .sky-event {
   position: absolute;
   left: 50%;
   top: 80.5%;
-  z-index: 120;
+  z-index: var(--z-editbar);
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -2397,7 +2397,7 @@ html.tab-hidden .sky-event {
 }
 
 .decor-picker-layer {
-  z-index: 1000;
+  z-index: var(--z-picker);
 }
 
 .decor-edit-bar .btn {
@@ -2706,7 +2706,7 @@ html.idle .resident-hover {
 
 /* —— Großprojekte —— */
 .project-layer {
-  z-index: 60;
+  z-index: var(--z-overlay);
 }
 
 .project-total {
@@ -2930,7 +2930,7 @@ html.idle .resident-hover {
   position: absolute;
   left: 50%;
   top: 24.5%;
-  z-index: 110;
+  z-index: var(--z-alert);
   display: grid;
   gap: 0.4rem;
   width: min(92%, 22rem);

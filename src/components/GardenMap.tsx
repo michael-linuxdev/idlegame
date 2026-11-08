@@ -22,7 +22,7 @@ import {
   unlockHint,
   type GeneratorId,
 } from '../game/generators'
-import { formatAsh, formatMult, formatRate } from '../game/format'
+import { formatAsh, formatEta, formatMult, formatRate } from '../game/format'
 import { computeNextGoal } from '../game/nextGoal'
 import { xpFromOfflineClaim } from '../game/progression'
 import { logPlaytest } from '../game/playtestLog'
@@ -31,7 +31,7 @@ import {
   PRESTIGE_SPIKE_RATIOS,
   type SurpriseKind,
 } from '../game/surpriseJumps'
-import { gatePrestiges } from '../game/state'
+import { gatePrestiges, multBreakdown } from '../game/state'
 import { t } from '../i18n'
 import type { useGame } from '../game/useGame'
 import type { Tab } from './AppNav'
@@ -42,6 +42,8 @@ import { BottomBar } from './hud/BottomBar'
 import { Visitors } from './Visitors'
 import { OmaHint } from './OmaHint'
 import { useOverlayOpen } from '../game/overlays'
+import { MultSheet } from './hud/MultSheet'
+import { WelcomeBack } from './hud/WelcomeBack'
 import { pickHint, useHints } from '../game/hints'
 import { canDeepReset } from '../game/longLoop'
 import {
@@ -143,10 +145,6 @@ export function GardenMap({
   const {
     state,
     rate,
-    multiplier,
-    levelMult,
-    clanMult,
-    eventMult,
     rake,
     tapReady,
     equippedCosmetic,
@@ -174,8 +172,26 @@ export function GardenMap({
   const [levelPulse, setLevelPulse] = useState(false)
   const prevAsh = useRef(state.ernte)
   const prevLevel = useRef(playerLevel.level)
-  const totalMult =
-    multiplier * levelMult * clanMult * eventMult * game.expansionMult * game.turboMult
+  const multRows = multBreakdown(state, game.nowTick)
+  const totalMult = multRows.reduce((p, r) => p * r.mult, 1)
+  const [multOpen, setMultOpen] = useState(false)
+  // Expose the HUD's height as --hud-bottom so notes can sit right under it
+  const hudRef = useRef<HTMLElement>(null)
+  useEffect(() => {
+    const el = hudRef.current
+    if (!el || typeof ResizeObserver === 'undefined') return
+    const ro = new ResizeObserver(() => {
+      const r = el.getBoundingClientRect()
+      el.parentElement?.style.setProperty('--hud-bottom', `${Math.round(r.bottom + 10)}px`)
+    })
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
+  // Welcome-back card: once per app start, only after a real break
+  const [welcomeDone, setWelcomeDone] = useState(false)
+  /** First minutes: only Ernte, goal, Gießen and the menu — events come once Kompost grows */
+  const earlyGame =
+    state.prestiges === 0 && state.deepPrestiges === 0 && state.generation === 0 && (state.owned.kompost ?? 0) === 0
   const previewDef = previewSkin ? COSMETICS.find((c) => c.id === previewSkin) ?? null : null
   const skinClass = previewDef?.accentClass ?? equippedCosmetic?.accentClass ?? 'skin-wiese'
   const [recipeOpen, setRecipeOpen] = useState(false)
@@ -368,7 +384,14 @@ export function GardenMap({
   /** Saisonende in sight but not yet the main goal → small pill. */
   const seasonPill =
     prestigeCta && !prestigeCta.ready && !prestigeCta.spend
-      ? { label: t.prestige.pill(prestigeCta.erbstuecke), short: `+${prestigeCta.erbstuecke}`, onOpen: openPrestigeCta }
+      ? (() => {
+          const eta = formatEta(prestigeProgress.min - state.ernteSeason, rate)
+          return {
+            label: eta ? `${t.prestige.pill(prestigeCta.erbstuecke)} · ${t.ux.season.eta(eta)}` : t.prestige.pill(prestigeCta.erbstuecke),
+            short: eta ? `+${prestigeCta.erbstuecke} · ${eta}` : `+${prestigeCta.erbstuecke}`,
+            onOpen: openPrestigeCta,
+          }
+        })()
       : null
 
   useEffect(() => {
@@ -605,7 +628,10 @@ export function GardenMap({
   }, [state.lastChest, ackChest])
 
   const overlayOpen = useOverlayOpen()
-  const hint = hintsBlocked || overlayOpen
+  // One message at a time: a new note waits until toasts and pops are gone,
+  // but a note already on screen stays while the player reads it.
+  const quiet = claimFlash == null && pops.length === 0
+  const candidate = hintsBlocked || overlayOpen
     ? null
     : pickHint(
         {
@@ -620,6 +646,9 @@ export function GardenMap({
         },
         seenHints,
       )
+  const [shownHint, setShownHint] = useState<typeof candidate>(null)
+  if (candidate !== shownHint && (candidate === null || quiet)) setShownHint(candidate)
+  const hint = candidate !== null && candidate === shownHint ? candidate : null
 
   return (
     <section className={`fortress-home${photoMode ? ' photo-mode' : ''}`} aria-labelledby="ernte-heading">
@@ -627,7 +656,7 @@ export function GardenMap({
         {t.brand}
       </h1>
       {/* Clash HUD: floating chips only — no white card tiles */}
-      <header className="hud">
+      <header className="hud" ref={hudRef}>
         <div className="hud-row">
           <button
             type="button"
@@ -649,10 +678,11 @@ export function GardenMap({
             ) : null}
           </button>
 
-          <div
+          <button
+            type="button"
             className="hud-card hud-wallet"
-            role="status"
-            aria-label={t.hud.walletAria(formatAsh(state.ernte), formatRate(rate))}
+            onClick={() => setMultOpen(true)}
+            aria-label={`${t.hud.walletAria(formatAsh(state.ernte), formatRate(rate))} — ${t.ux.mults.walletHint}`}
           >
             <span className={`hud-amount${tickFlash ? ' tick' : ''}`}>
               <span className="hud-amount-icon">
@@ -670,14 +700,17 @@ export function GardenMap({
                   <IconChest /> {state.erbstuecke}
                 </span>
               ) : null}
-              <span className="hud-sub-item" title={t.resources.samen}>
-                <IconSeeds /> {state.samen}
-              </span>
+              {!earlyGame ? (
+                <span className="hud-sub-item hud-reveal" title={t.resources.samen}>
+                  <IconSeeds /> {state.samen}
+                </span>
+              ) : null}
             </span>
-          </div>
+          </button>
         </div>
 
         <GoalStrip goal={hudGoal} />
+        {earlyGame ? null : (
         <EventPills
           game={game}
           season={seasonPill}
@@ -685,6 +718,7 @@ export function GardenMap({
           onOpenFest={() => setFestOpen(true)}
           onOpenRecipe={() => setRecipeOpen(true)}
         />
+        )}
       </header>
 
       <FloatPops items={pops} onDone={removePop} />
@@ -697,6 +731,19 @@ export function GardenMap({
       ) : null}
 
       {hint ? <OmaHint id={hint} onOk={() => markSeen(hint)} /> : null}
+      {multOpen ? <MultSheet rows={multRows} onClose={() => setMultOpen(false)} /> : null}
+      {!welcomeDone && !hintsBlocked && !photoMode && game.offlineGained != null && game.offlineAwayMs >= 5 * 60_000 ? (
+        <WelcomeBack
+          amount={game.offlineGained}
+          awayMs={game.offlineAwayMs}
+          helped={state.helperReport > 0}
+          onClaim={() => {
+            setWelcomeDone(true)
+            claimOffline()
+          }}
+          onLater={() => setWelcomeDone(true)}
+        />
+      ) : null}
 
       {previewDef ? (
         <div className="preview-banner" role="status">
@@ -738,6 +785,7 @@ export function GardenMap({
               aria-label={t.helper.toggleAria(state.helperOn)}
             >
               <IconHelper />
+              <span className="map-side-label">{state.helperOn ? t.ux.map.helperOn : t.ux.map.helperOff}</span>
             </button>
           ) : null}
         </div>
@@ -822,11 +870,13 @@ export function GardenMap({
             // Calm map: full signs only for the selected, new or next corner
             const showSign = selectedHere || ready || def.id === nextWildId || (signsAll && unlocked)
             const stars = milestonesReached(level)
+            const canBuy = unlocked && game.costOf(def.id) <= state.ernte
             const cls =
               'garden-plot' +
               (selectedHere ? ' selected' : '') +
               (!unlocked ? ' wild' : ready ? ' ready' : ' planted') +
               (producing ? ' producing' : '') +
+              (canBuy ? ' can-buy' : '') +
               (hl ? ' ftue-target' : '')
             return (
               <button
@@ -878,10 +928,15 @@ export function GardenMap({
                 />
                 {!showSign && unlocked && level > 0 ? (
                   <span className="plot-badge" aria-hidden="true">
-                    {level}
-                    {stars > 0 ? <span className="plot-badge-stars">{'★'.repeat(Math.min(3, stars))}</span> : null}
+                    {canBuy ? <span className="plot-canbuy in-badge" title={t.ux.signs.canBuy} /> : null}
+                    <span className="plot-badge-name">{def.name}</span>
+                    <span className="plot-badge-level">
+                      {level}
+                      {stars > 0 ? <span className="plot-badge-stars">{'★'.repeat(Math.min(3, stars))}</span> : null}
+                    </span>
                   </span>
                 ) : null}
+                {canBuy && showSign ? <span className="plot-canbuy" title={t.ux.signs.canBuy} aria-hidden="true" /> : null}
                 {showSign ? (
                   <span className="plot-sign">
                     <span className="plot-name">{def.name}</span>
@@ -892,6 +947,14 @@ export function GardenMap({
                         ) : (
                           <>
                             {t.hud.locked} · {shortUnlockGate(def, gatePrestiges(state))}
+                            {(() => {
+                              const r = unlockRatio(def, state)
+                              return r != null && r > 0 ? (
+                                <span className="plot-wild-progress" aria-label={t.ux.signs.wildIn(Math.floor(r * 100))}>
+                                  <span style={{ width: `${Math.floor(r * 100)}%` }} />
+                                </span>
+                              ) : null
+                            })()}
                           </>
                         )
                       ) : ready ? (
@@ -968,4 +1031,13 @@ function TierBar({ level }: { level: number }) {
       <span style={{ width: `${pct}%` }} />
     </span>
   )
+}
+
+/** How close a wild corner is to being cleared (0…1), or null for season gates. */
+function unlockRatio(def: (typeof GENERATORS)[number], state: GameApi['state']): number | null {
+  const u = def.unlock
+  if (!u) return null
+  if (u.ernteSeason != null) return Math.min(1, state.ernteSeason / u.ernteSeason)
+  if (u.requires) return Math.min(1, (state.owned[u.requires.id] ?? 0) / u.requires.level)
+  return null
 }

@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useDismiss } from '../game/overlays'
 import { festAt, festEndsAt, festShop, nextFest, type FestShopItem } from '../game/fests'
 import { RARITY_BONUS, VARIETIES } from '../game/gardenLife'
 import { formatDecimal } from '../game/format'
@@ -27,13 +28,7 @@ export function FestSheet({ game, onClose }: Props) {
   const upcoming = nextFest(nowTick)
   const [note, setNote] = useState<string | null>(null)
 
-  useEffect(() => {
-    function onKey(e: KeyboardEvent) {
-      if (e.key === 'Escape') onClose()
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [onClose])
+  useDismiss(onClose)
 
   function label(item: FestShopItem): { title: string; blurb: string } {
     switch (item.kind) {
