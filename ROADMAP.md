@@ -40,6 +40,7 @@ Werkzeug: `npm run balance -- <engaged|regular|casual> <stunden>` — spielt die
 - Ergebnis vorher (Sim, 30 Tage): Dauerspieler erstes Saisonende ~50 min, keine Saison < 20 min; Regular (15 min alle 2 h) 5/4/2 Saisons an Tag 1–3, Gartenpark (alle 10 Bereiche) an Tag 5; Casual Tag 8; danach ≈ 1 Saisonende pro Tag.
 - **Generationen-Hürde steigt:** 3 + N Tiefe Winter für Generation N+1 (`generationGate`). Sim 365 Tage (`GEN=1`, Jonas wird gekauft): Generation 10 (Kapitel 12) Regular ~Tag 320, Casual ~Tag 270, Dauerspieler ~Tag 93 (vorher Regular ~Tag 105). Die Kapitel-Bedingung „8. Bereich des vorigen Kapitels“ ist nicht simuliert und bremst zusätzlich.
 - **Jonas teurer und anfangs langsam:** 50 / 300 / 1 200 / 4 000 / 12 000 Erbstücke, 1 Ausbau alle 30 / 12 / 5 / 2 / 0,8 s (vorher 40–2 000, 2,5–0,25 s).
+- **Jonas-Analyse (Sim, 14 Tage, Saisonenden):** Der Standard-Sim-Spieler kauft einzeln im 5-s-Takt und farmt dabei jeden 5. Kauf einen Überraschungs-Krümel → aktive Spieler ~1,7× überschätzt (Regular 109 statt 63 Saisons mit `REALISTIC=1`). Hands-off-Spieler nur mit Jonas (`LAZY=1 HELPER_FREE=1`): Stufe 1/2/3/4/5 → 37/41/46/49/53 Saisons (Regular), 19/21/23/23/25 (Casual). Mit heutigen Preisen kommt ein Hands-off-Spieler in 14 Tagen nicht über Stufe 2, ein realistisch aktiver bis Stufe 3 (Tag 4).
 - Tiefer Winter ab Gartenjahr 15: Sprösslinge = 2 · (Jahr − 13)^1,3; Sim-Policy: Tiefer Winter, sobald eine Saison > 18 h dauert.
 
 ## Prinzipien
