@@ -1,6 +1,7 @@
 import { EMPTY_EMBER_UPGRADES, type EmberUpgrades } from './economy'
 import { GENERATOR_IDS, type GeneratorId } from './generators'
 import { parseDecorOwned, parseDecorSlots } from './decor'
+import { parseResidentVisit, parseResidentsSeen } from './residents'
 import { COSMETICS, dayKey, weekKey, type CosmeticId } from './monetization'
 import { ACHIEVEMENT_IDS, type AchievementId } from './achievements'
 import { emptyBranches } from './branches'
@@ -465,6 +466,9 @@ function parseExpansion(parsed: Record<string, unknown>): ExpansionSlice {
     helperLevel: Math.min(HELPER_RANKS.length, parseNonNegInt(parsed.helperLevel)),
     helperOn: parsed.helperOn !== false,
     decorOwned: parseDecorOwned(parsed.decorOwned),
+    residentsSeen: parseResidentsSeen(parsed.residentsSeen),
+    residentNow: parseResidentVisit(parsed.residentNow),
+    residentNextAt: parseNum(parsed.residentNextAt),
     decorSlots: parseDecorSlots(parsed.decorSlots, parseDecorOwned(parsed.decorOwned)),
     helperBlocked: Array.isArray(parsed.helperBlocked)
       ? GENERATOR_IDS.filter((id) => (parsed.helperBlocked as unknown[]).includes(id))

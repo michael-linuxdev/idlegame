@@ -3,6 +3,7 @@ import type { WheelKind } from './gardenLife'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { isIdle, onIdleChange, startIdleWatch } from './idle'
 import type { DecorId } from './decor'
+import type { ResidentId } from './residents'
 import {
   emberPayout,
   foundryDiscountMult,
@@ -137,6 +138,9 @@ import {
   toggleHelperArea,
   buyDecor,
   placeDecor,
+  spawnResident,
+  residentGone,
+  greetResident,
   turboMult,
   expansionGardenMult,
 } from './state'
@@ -431,6 +435,22 @@ export function useGame() {
       if (next !== s) logPlaytest('upgrade', { id: 'helper', level: next.helperLevel, kind: 'helper' })
       return next
     })
+  }, [])
+
+  const letResidentIn = useCallback((id: ResidentId) => {
+    setState((s) => spawnResident(s, id))
+  }, [])
+
+  const residentLeft = useCallback(() => {
+    setState((s) => residentGone(s))
+  }, [])
+
+  /** Tap a Gartenbewohner; returns what happened for the toast. */
+  const greetVisitorAnimal = useCallback((): { first: boolean; ernte: number } | null => {
+    const r = greetResident(stateRef.current)
+    if (r.state === stateRef.current) return null
+    setState((s) => greetResident(s).state)
+    return { first: r.first, ernte: r.ernte }
   }, [])
 
   const purchaseDecor = useCallback((id: DecorId) => {
@@ -856,6 +876,9 @@ export function useGame() {
     switchHelper,
     switchHelperArea,
     purchaseDecor,
+    letResidentIn,
+    residentLeft,
+    greetVisitorAnimal,
     setDecor,
     ackHelperReport,
     buyChapter,

@@ -45,6 +45,7 @@ import {
 } from './chapters'
 import { milestonesReached, nextMilestone } from './generators'
 import { decorDef, emptySlots, type DecorId } from './decor'
+import { RESIDENT_FIRST_SAMEN, RESIDENT_GAP_MS, RESIDENT_REPEAT_SEC, RESIDENT_STAY_MS, residentsMult, type ResidentId, type ResidentVisit } from './residents'
 import {
   CONTEST_REWARDS,
   CONTEST_KG,
@@ -310,6 +311,12 @@ export interface GameState {
   decorOwned: DecorId[]
   /** Deko standing on each Dekoplatz (null = empty) */
   decorSlots: (DecorId | null)[]
+  /** Gartenbewohner: species → visits noted */
+  residentsSeen: Partial<Record<ResidentId, number>>
+  /** Visitor currently in the garden */
+  residentNow: ResidentVisit | null
+  /** No new visitor before this time */
+  residentNextAt: number
   /** Helper time carry (ms) between buys */
   helperCarryMs: number
   /** Transient: buys the helper made while away (for the offline toast) */
@@ -383,6 +390,12 @@ export interface ExpansionSlice {
   decorOwned: DecorId[]
   /** Deko standing on each Dekoplatz (null = empty) */
   decorSlots: (DecorId | null)[]
+  /** Gartenbewohner: species → visits noted */
+  residentsSeen: Partial<Record<ResidentId, number>>
+  /** Visitor currently in the garden */
+  residentNow: ResidentVisit | null
+  /** No new visitor before this time */
+  residentNextAt: number
   helperCarryMs: number
   helperReport: number
   turboEndsAt: number
@@ -416,6 +429,9 @@ export function emptyExpansion(now = Date.now()): ExpansionSlice {
     helperBlocked: [],
     decorOwned: [],
     decorSlots: emptySlots(),
+    residentsSeen: {},
+    residentNow: null,
+    residentNextAt: 0,
     helperCarryMs: 0,
     helperReport: 0,
     turboEndsAt: 0,
@@ -451,6 +467,9 @@ export function pickExpansion(s: GameState): ExpansionSlice {
     helperBlocked: s.helperBlocked,
     decorOwned: s.decorOwned,
     decorSlots: s.decorSlots,
+    residentsSeen: s.residentsSeen,
+    residentNow: s.residentNow,
+    residentNextAt: s.residentNextAt,
     helperCarryMs: 0,
     helperReport: 0,
     turboEndsAt: s.turboEndsAt,
@@ -820,7 +839,7 @@ export function turboMult(state: GameState, now = Date.now()): number {
 
 /** Permanent multipliers from Kapitel 2 and Generationen (shown in HUD). */
 export function expansionGardenMult(state: GameState): number {
-  return chaptersGardenMult(state.chapters) * legacyGardenMult(state.legacy)
+  return chaptersGardenMult(state.chapters) * legacyGardenMult(state.legacy) * residentsMult(state.residentsSeen)
 }
 
 export function productionPerSecond(state: GameState, now = Date.now()): number {
@@ -1317,6 +1336,41 @@ export function buyHelper(state: GameState): GameState {
     helperLevel: state.helperLevel + 1,
     helperOn: true,
     lastSeen: Date.now(),
+  }
+}
+
+/* ——— Gartenbewohner ——— */
+
+/** Let a visitor in (UI calls this when it is time and one fits). */
+export function spawnResident(state: GameState, id: ResidentId, now = Date.now()): GameState {
+  if (state.residentNow && state.residentNow.until > now) return state
+  return { ...state, residentNow: { id, until: now + RESIDENT_STAY_MS } }
+}
+
+/** Visitor left unnoticed (or nobody fits): plan the next try. */
+export function residentGone(state: GameState, now = Date.now(), rng = Math.random): GameState {
+  const [a, b] = RESIDENT_GAP_MS
+  return { ...state, residentNow: null, residentNextAt: now + a + rng() * (b - a) }
+}
+
+/** Player tapped the visitor: note it; first find pays Samen, later visits a bit of Ernte. */
+export function greetResident(state: GameState, now = Date.now()): { state: GameState; first: boolean; ernte: number } {
+  const v = state.residentNow
+  if (!v || v.until <= now) return { state, first: false, ernte: 0 }
+  const first = (state.residentsSeen[v.id] ?? 0) === 0
+  const seen = { ...state.residentsSeen, [v.id]: (state.residentsSeen[v.id] ?? 0) + 1 }
+  const ernte = first ? 0 : productionPerSecond(state, now) * RESIDENT_REPEAT_SEC
+  const next = residentGone({ ...state, residentsSeen: seen }, now)
+  return {
+    first,
+    ernte,
+    state: {
+      ...next,
+      samen: next.samen + (first ? RESIDENT_FIRST_SAMEN : 0),
+      ernte: next.ernte + ernte,
+      ernteSeason: next.ernteSeason + ernte,
+      ernteLifetime: next.ernteLifetime + ernte,
+    },
   }
 }
 

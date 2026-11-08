@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Residents } from './Residents'
 import { DecorLayer } from './DecorLayer'
 import { DecorSheet } from './DecorSheet'
 import { decorUnlocked } from '../game/decor'
@@ -776,6 +777,7 @@ export function GardenMap({
             daypart={ambient.daypart}
           />
           {!photoMode ? <SkyEventButton game={game} onWish={() => setWishOpen(true)} /> : null}
+          {!photoMode ? <Residents game={game} ambient={ambient} onToast={showToast} /> : null}
           <Visitors
             game={game}
             extras={extras}
