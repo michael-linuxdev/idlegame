@@ -3,7 +3,13 @@ import { FLASH_GOAL_REWARD_OBSIDIAN } from '../../game/flashEvent'
 import { formatAsh, formatClock, formatMult } from '../../game/format'
 import type { useGame } from '../../game/useGame'
 import { t } from '../../i18n'
+import { weatherAt, weatherTomorrow } from '../../game/gardenLife'
 import {
+  IconCloud,
+  IconCrate,
+  IconRain,
+  IconWheel,
+  IconWind,
   IconFertilizer,
   IconFestival,
   IconFlag,
@@ -26,13 +32,60 @@ interface Props {
   game: GameApi
   /** Saisonende-Hinweis (not yet the main goal) */
   season?: { label: string; onOpen: () => void } | null
+  /** Hofladen-Bestellung */
+  order?: { label: string; detail: string; ratio: number; claim: boolean; onClaim: () => void } | null
 }
 
+const WEATHER_ICON = {
+  sonne: <IconSun />,
+  regen: <IconRain />,
+  wind: <IconWind />,
+  mild: <IconCloud />,
+} as const
+
 /** Compact event bar — every timed bonus is one small pill, never a card. */
-export function EventPills({ game, season }: Props) {
+export function EventPills({ game, season, order }: Props) {
   const [open, setOpen] = useState<string | null>(null)
   const { surge, surgeVisible, surgeGoalDone, surgeGoalClaimed, state, eventMult, flash } = game
   const pills: Pill[] = []
+
+  if (order) {
+    pills.push({
+      key: 'order',
+      icon: <IconCrate />,
+      label: order.label,
+      claim: order.claim,
+      onClick: order.claim ? order.onClaim : undefined,
+      detail: { line: order.detail, ratio: order.ratio, aria: order.label },
+    })
+  }
+
+  {
+    const now = game.nowTick
+    const today = weatherAt(now)
+    const tomorrow = weatherTomorrow(now)
+    pills.push({
+      key: 'weather',
+      icon: WEATHER_ICON[today],
+      label: t.weather.pill(t.weather[today].name, t.weather[today].effect),
+      detail: {
+        line: t.weather.tomorrow(t.weather[tomorrow].name, t.weather[tomorrow].effect),
+        ratio: 0,
+        aria: t.weather[today].name,
+      },
+    })
+  }
+
+  {
+    const buff = state.wheelBuff
+    if (buff && buff.prestige === state.prestiges && (buff.kind === 'yield' || buff.kind === 'water')) {
+      pills.push({
+        key: 'wheel',
+        icon: <IconWheel />,
+        label: t.wheel.activePill[buff.kind],
+      })
+    }
+  }
 
   if (surgeVisible) {
     const claim = surgeGoalDone && !surgeGoalClaimed

@@ -153,3 +153,62 @@ export function IconSprout() {
     </Svg>
   )
 }
+
+export function IconRain() {
+  return (
+    <Svg>
+      <path d="M7 14a4 4 0 0 1 .5-8 5 5 0 0 1 9.6 1.4A3.3 3.3 0 0 1 17 14z" fill="#e6eef6" stroke="#6f86ad" strokeWidth="1.2" />
+      <path d="M8 17l-1 3M12 17l-1 3M16 17l-1 3" stroke="#3d8db8" strokeWidth="1.8" strokeLinecap="round" />
+    </Svg>
+  )
+}
+
+export function IconWind() {
+  return (
+    <Svg>
+      <path d="M3 9h11a3 3 0 1 0-3-3M3 14h15a3 3 0 1 1-3 3M3 19h7" fill="none" stroke="#6f86ad" strokeWidth="1.8" strokeLinecap="round" />
+    </Svg>
+  )
+}
+
+export function IconCloud() {
+  return (
+    <Svg>
+      <circle cx="17" cy="7" r="3.4" fill="#f5c542" />
+      <path d="M6 18a4 4 0 0 1 .5-8 5 5 0 0 1 9.6 1.4A3.3 3.3 0 0 1 16 18z" fill="#f4f6f9" stroke="#8a9bb8" strokeWidth="1.2" />
+    </Svg>
+  )
+}
+
+export function IconCrate() {
+  return (
+    <Svg>
+      <circle cx="8" cy="8" r="2.6" fill="#e0485e" />
+      <circle cx="12.5" cy="7" r="2.6" fill="#f08a2c" />
+      <circle cx="16.5" cy="8.4" r="2.4" fill="#7fbf5a" />
+      <rect x="3" y="10" width="18" height="10" rx="1.4" fill="#c4823f" stroke="#5e3b25" strokeWidth="1.2" />
+      <path d="M3 15h18M8 10v10M16 10v10" stroke="#8a5a32" strokeWidth="1" />
+    </Svg>
+  )
+}
+
+export function IconWheel() {
+  const cols = ['#e0485e', '#f5c542', '#7fbf5a', '#6aa6c9', '#f08a2c', '#c76bd9']
+  return (
+    <Svg>
+      {cols.map((c, i) => {
+        const a0 = (i / 6) * Math.PI * 2
+        const a1 = ((i + 1) / 6) * Math.PI * 2
+        return (
+          <path
+            key={i}
+            d={`M12 12 L${12 + 9 * Math.cos(a0)} ${12 + 9 * Math.sin(a0)} A9 9 0 0 1 ${12 + 9 * Math.cos(a1)} ${12 + 9 * Math.sin(a1)} Z`}
+            fill={c}
+          />
+        )
+      })}
+      <circle cx="12" cy="12" r="9" fill="none" stroke="#5e3b25" strokeWidth="1.2" />
+      <circle cx="12" cy="12" r="2" fill="#fdf8ec" stroke="#5e3b25" strokeWidth="1" />
+    </Svg>
+  )
+}

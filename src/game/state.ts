@@ -99,6 +99,18 @@ import {
   xpFromOfflineClaim,
 } from './progression'
 import {
+  WHEEL_SEEDS,
+  collectionMult,
+  rollVarietyOnUpgrade,
+  varietyForSeasonEnd,
+  weatherWaterMult,
+  weatherYieldMult,
+  wheelWaterMult,
+  wheelYieldMult,
+  type WheelBuff,
+  type WheelKind,
+} from './gardenLife'
+import {
   emptyQuestProgress,
   syncQuestDay,
   type QuestProgress,
@@ -202,6 +214,8 @@ export interface GameState {
   prestigeSpikeFlags: number
   /** Last surprise juice for HUD (cleared by UI) */
   lastSurprise: SurpriseJump | null
+  /** Pflanzenbuch variety just found (transient, for the UI pop) */
+  lastVariety: string | null
   /** Short flash event id; empty = none */
   flashEventId: string
   /** Flash event end timestamp */
@@ -236,6 +250,10 @@ export interface GameState {
   /** Era currency (Wurzelsterne) */
   eraPoints: number
   eraUpgrades: EraUpgrades
+  /** Pflanzenbuch — variety ids found (permanent across all resets) */
+  collection: string[]
+  /** Glücksrad buff for one Gartenjahr */
+  wheelBuff: WheelBuff | null
 }
 
 export const STORAGE_KEY = 'gartenerbe-save-v1'
@@ -300,6 +318,7 @@ export function createInitialState(now = Date.now()): GameState {
     bpDailyXpDay: '',
     prestigeSpikeFlags: 0,
     lastSurprise: null,
+    lastVariety: null,
     flashEventId: '',
     flashEndsAt: 0,
     flashProgress: 0,
@@ -375,6 +394,7 @@ export function createPostPrestigeState(prev: GameState, now = Date.now()): Game
     // Prestige spikes reset per run; flash / daily survive
     prestigeSpikeFlags: 0,
     lastSurprise: null,
+    lastVariety: null,
     flashEventId: prev.flashEventId,
     flashEndsAt: prev.flashEndsAt,
     flashProgress: prev.flashProgress,
@@ -394,6 +414,8 @@ export function createPostPrestigeState(prev: GameState, now = Date.now()): Game
     yearGoalsClaimed: [...prev.yearGoalsClaimed],
     eraPoints: prev.eraPoints,
     eraUpgrades: { ...prev.eraUpgrades },
+    collection: [...prev.collection],
+    wheelBuff: prev.wheelBuff,
   }
 }
 
@@ -569,7 +591,19 @@ export function productionPerSecond(state: GameState, now = Date.now()): number 
     const mEff = efficiencyMult(branch?.efficiency ?? 0)
     sum += generatorRate(def, owned) * mEff
   }
-  return sum * mPrestige * mClan * mEvent * mFlash * mLevel * mYield * deepYieldMult(state.deepUpgrades)
+  return (
+    sum *
+    mPrestige *
+    mClan *
+    mEvent *
+    mFlash *
+    mLevel *
+    mYield *
+    deepYieldMult(state.deepUpgrades) *
+    collectionMult(state.collection) *
+    weatherYieldMult(now) *
+    wheelYieldMult(state.wheelBuff, state.prestiges)
+  )
 }
 
 /** Season count used for Gartenjahr gates (includes Gartenwissen). */
@@ -1112,6 +1146,10 @@ export function buyGenerator(state: GameState, id: GeneratorId): GameState {
       lastSurprise: surprise,
     }
   }
+  const variety = rollVarietyOnUpgrade(id, next.collection)
+  if (variety) {
+    next = { ...next, collection: [...next.collection, variety], lastVariety: variety }
+  }
   next = bumpQuest(next, 'upgrades', 1, now)
   if (surprise) next = bumpQuest(next, 'earnAsh', surprise.amount, now)
   next = withXp(next, XP_PER_UPGRADE, now)
@@ -1266,8 +1304,12 @@ export function buyEmberUpgrade(state: GameState, id: EmberUpgradeId): GameState
 export function doPrestige(state: GameState): GameState {
   if (!canPrestigeNow(state)) return state
   const gain = emberPayout(state.ashEarned, state.prestiges)
-  const next = createPostPrestigeState(state)
-  const withEmbers = { ...next, embers: state.embers + gain }
+  const planted = GENERATORS.filter((g) => (state.owned[g.id] ?? 0) > 0).map((g) => g.id)
+  const variety = varietyForSeasonEnd(planted, state.collection)
+  const next = createPostPrestigeState(
+    variety ? { ...state, collection: [...state.collection, variety] } : state,
+  )
+  const withEmbers = { ...next, embers: state.embers + gain, lastVariety: variety }
   return collectReadyAchievements(withEmbers)
 }
 
@@ -1307,6 +1349,52 @@ export function doDeepReset(state: GameState): GameState {
     deepEmbers: state.deepEmbers + sprouts,
     deepPrestiges: state.deepPrestiges + 1,
   })
+}
+
+/** Gießen multiplier from weather (Regen) and the Glücksrad. */
+export function waterMult(state: GameState, now = Date.now()): number {
+  return weatherWaterMult(now) * wheelWaterMult(state.wheelBuff, state.prestiges)
+}
+
+export interface Reward {
+  /** Seconds of current production */
+  ernteSeconds?: number
+  obsidian?: number
+  embers?: number
+  xp?: number
+}
+
+/** Generic reward for visitors, orders, weekly plan, comeback gifts. */
+export function grantReward(state: GameState, reward: Reward, now = Date.now()): GameState {
+  const ernte = Math.max(0, (reward.ernteSeconds ?? 0) * productionPerSecond(state, now))
+  let next: GameState = {
+    ...withEventProgress(state, ernte, now),
+    ash: state.ash + ernte,
+    ashEarned: state.ashEarned + ernte,
+    lifetimeAshEarned: state.lifetimeAshEarned + ernte,
+    obsidian: state.obsidian + (reward.obsidian ?? 0),
+    embers: state.embers + (reward.embers ?? 0),
+    lastSeen: now,
+  }
+  if (ernte > 0) next = bumpQuest(next, 'earnAsh', ernte, now)
+  if (reward.xp) next = withXp(next, reward.xp, now)
+  return next
+}
+
+/** Glücksrad result for the Gartenjahr that just began. */
+export function applyWheel(state: GameState, kind: WheelKind): GameState {
+  let next: GameState = { ...state, wheelBuff: { kind, prestige: state.prestiges } }
+  if (kind === 'seeds') next = { ...next, obsidian: next.obsidian + WHEEL_SEEDS }
+  if (kind === 'variety') {
+    const planted = GENERATORS.map((g) => g.id)
+    const v = varietyForSeasonEnd(planted, next.collection)
+    if (v) next = { ...next, collection: [...next.collection, v], lastVariety: v }
+  }
+  return next
+}
+
+export function clearLastVariety(state: GameState): GameState {
+  return state.lastVariety ? { ...state, lastVariety: null } : state
 }
 
 export function grantTapAsh(

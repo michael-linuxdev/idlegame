@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { GENERATORS } from '../../game/generators'
 import { yearLetterFor } from '../../game/notebook'
+import { WHEEL_SEGMENTS, type WheelKind } from '../../game/gardenLife'
 import { playSfx } from '../../game/sound'
 import { t } from '../../i18n'
 import { IconChest, IconSnow, IconSprout } from '../../theme/icons'
@@ -16,6 +17,8 @@ export interface SeasonEnd {
 interface Props {
   event: SeasonEnd
   onDone: () => void
+  /** Glücksrad result for the new Gartenjahr */
+  onSpin?: (kind: WheelKind) => void
 }
 
 type Phase = 'winter' | 'letter' | 'spring'
@@ -24,7 +27,7 @@ type Phase = 'winter' | 'letter' | 'spring'
  * Saisonende as a little ritual: snow over the sleeping garden → Omas
  * letter for the new year (if any) → spring with what was kept.
  */
-export function SeasonCeremony({ event, onDone }: Props) {
+export function SeasonCeremony({ event, onDone, onSpin }: Props) {
   const letterId = event.deep ? 'deep1' : yearLetterFor(event.year)
   const [phase, setPhase] = useState<Phase>('winter')
   const corner = event.deep
@@ -90,11 +93,90 @@ export function SeasonCeremony({ event, onDone }: Props) {
             {t.season.gained(event.deep ? t.season.sprouts(event.gained) : t.prestige.creditsAmount(event.gained))}
           </p>
           {corner ? <p className="season-corner">{t.season.newCorner(corner.name)}</p> : null}
-          <button type="button" className="btn buy" onClick={onDone}>
-            {t.season.cta}
-          </button>
+          {onSpin && !event.deep ? <LuckyWheel onSpin={onSpin} onDone={onDone} /> : (
+            <button type="button" className="btn buy" onClick={onDone}>
+              {t.season.cta}
+            </button>
+          )}
         </div>
       ) : null}
+    </div>
+  )
+}
+
+const SEG_COLORS = ['#e0485e', '#f5c542', '#7fbf5a', '#6aa6c9', '#f08a2c', '#c76bd9']
+const SEG_GLYPH: Record<WheelKind, string> = { yield: '+25 %', water: '×2', seeds: '+30', variety: 'Sorte' }
+
+/** Glücksrad — one spin per Saisonende, buff for the coming Gartenjahr. */
+function LuckyWheel({ onSpin, onDone }: { onSpin: (k: WheelKind) => void; onDone: () => void }) {
+  const [angle, setAngle] = useState(0)
+  const [result, setResult] = useState<WheelKind | null>(null)
+  const [spinning, setSpinning] = useState(false)
+
+  function spin() {
+    if (spinning || result) return
+    const idx = Math.floor(Math.random() * WHEEL_SEGMENTS.length)
+    setSpinning(true)
+    setAngle(360 * 5 + (360 - (idx * 60 + 30)))
+    playSfx('tick')
+    window.setTimeout(() => {
+      const kind = WHEEL_SEGMENTS[idx]!
+      setResult(kind)
+      setSpinning(false)
+      onSpin(kind)
+      playSfx('streak')
+    }, 2300)
+  }
+
+  return (
+    <div className="lucky-wheel">
+      <p className="lucky-title">{t.wheel.title}</p>
+      <div className="lucky-dial">
+        <span className="lucky-pointer" aria-hidden="true" />
+        <svg viewBox="-50 -50 100 100" style={{ transform: `rotate(${angle}deg)` }} aria-hidden="true">
+          {WHEEL_SEGMENTS.map((kind, i) => {
+            const a0 = ((i * 60 - 90) * Math.PI) / 180
+            const a1 = (((i + 1) * 60 - 90) * Math.PI) / 180
+            const mid = ((i * 60 + 30 - 90) * Math.PI) / 180
+            return (
+              <g key={i}>
+                <path
+                  d={`M0 0 L${46 * Math.cos(a0)} ${46 * Math.sin(a0)} A46 46 0 0 1 ${46 * Math.cos(a1)} ${46 * Math.sin(a1)} Z`}
+                  fill={SEG_COLORS[i]}
+                  stroke="#fdf8ec"
+                  strokeWidth="1.5"
+                />
+                <text
+                  x={29 * Math.cos(mid)}
+                  y={29 * Math.sin(mid) + 3}
+                  textAnchor="middle"
+                  fontSize="8.5"
+                  fontWeight="700"
+                  fill="#fff"
+                  stroke="rgba(0,0,0,0.35)"
+                  strokeWidth="0.6"
+                  paintOrder="stroke"
+                  transform={`rotate(${i * 60 + 30} ${29 * Math.cos(mid)} ${29 * Math.sin(mid)})`}
+                >
+                  {SEG_GLYPH[kind]}
+                </text>
+              </g>
+            )
+          })}
+          <circle r="46" fill="none" stroke="#5e3b25" strokeWidth="2" />
+          <circle r="6" fill="#fdf8ec" stroke="#5e3b25" strokeWidth="1.5" />
+        </svg>
+      </div>
+      {result ? <p className="lucky-result">{t.wheel.results[result]}</p> : null}
+      {result ? (
+        <button type="button" className="btn buy" onClick={onDone}>
+          {t.season.cta}
+        </button>
+      ) : (
+        <button type="button" className="btn buy" onClick={spin} disabled={spinning}>
+          {spinning ? t.wheel.spinning : t.wheel.spin}
+        </button>
+      )}
     </div>
   )
 }
