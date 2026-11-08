@@ -26,6 +26,9 @@ import { useExtras, waterReminderDelay } from './game/extras'
 import { armAmbienceOnFirstGesture } from './game/ambience'
 import { t } from './i18n'
 import { applyPrefClasses } from './game/prefs'
+import { useDismiss } from './game/overlays'
+import { countAffordableEmberBuys } from './game/economy'
+import { chapterCopy } from './components/chapterCopy'
 import './App.css'
 import './theme/garden.css'
 import './theme/hud.css'
@@ -157,8 +160,57 @@ export default function App() {
     })
   }, [])
 
+  // Panels (Saison, Markt, Verein): Escape / Zurück returns to the garden
+  useDismiss(() => onTabChange('fortress'), tab !== 'fortress')
+
+  // ≥ 900 px: map on the left, the open panel as a column on the right
+  const wide = useWide()
+
+  // Tapping „Garten“ again opens the Grundstücke picker (when there is more than one)
+  const openPlots = useCallback(() => {
+    window.dispatchEvent(new Event('gartenerbe-open-plots'))
+  }, [])
+
+  const seasonReady =
+    game.canPrestige ||
+    (game.state.erbstuecke > 0 &&
+      countAffordableEmberBuys(
+        game.state.emberUpgrades,
+        game.state.erbstuecke,
+        game.state.ernteSeason,
+        game.state.owned,
+        game.state.prestiges,
+      ) > 0)
+  const plotLabel = chapterShown ? chapterCopy(chapterShown).chip : undefined
+
+  const panelView = (
+    <>
+        {tab === 'prestige' ? (
+          <PrestigePanel
+            game={game}
+            highlight={ftueHighlight === 'prestige'}
+            onOpenChapter={(id) => {
+              goPlot(id)
+              onTabChange('fortress')
+            }}
+          />
+        ) : null}
+        {tab === 'clan' ? <ClanPanel game={game} onOpenShop={() => onTabChange('shop')} /> : null}
+        {tab === 'shop' ? (
+          <ShopPanel
+            game={game}
+            onPreview={(id) => {
+              setPreviewSkin(id)
+              setPlot('garden')
+              onTabChange('fortress')
+            }}
+          />
+        ) : null}
+    </>
+  )
+
   return (
-    <div className="app-shell">
+    <div className={`app-shell${wide ? ' wide' : ''}${wide && tab !== 'fortress' ? ' with-side' : ''}`}>
       <div className="rotate-lock" role="alert">
         <svg viewBox="0 0 64 64" width="64" height="64" aria-hidden="true">
           <rect x="20" y="8" width="24" height="44" rx="5" fill="#fbf6e8" stroke="#6e4a2b" strokeWidth="3" />
@@ -169,11 +221,11 @@ export default function App() {
         <p>{t.rotate}</p>
       </div>
       <main
-        className={`app-main${tab === 'fortress' ? ' map-mode' : ''}`}
-        tabIndex={tab === 'fortress' ? undefined : 0}
+        className={`app-main${tab === 'fortress' || wide ? ' map-mode' : ''}`}
+        tabIndex={tab === 'fortress' || wide ? undefined : 0}
       >
-        {tab === 'fortress' && chapterShown ? <ChapterMap key={chapterShown} game={game} chapter={chapterShown} onGo={goPlot} /> : null}
-        {tab === 'fortress' && !chapterShown ? (
+        {(tab === 'fortress' || wide) && chapterShown ? <ChapterMap key={chapterShown} game={game} chapter={chapterShown} onGo={goPlot} /> : null}
+        {(tab === 'fortress' || wide) && !chapterShown ? (
           <GardenMap
             game={game}
             highlightId={ftueHighlight}
@@ -196,28 +248,13 @@ export default function App() {
             onExitPhoto={() => setPhotoMode(false)}
           />
         ) : null}
-        {tab === 'prestige' ? (
-          <PrestigePanel
-            game={game}
-            highlight={ftueHighlight === 'prestige'}
-            onOpenChapter={(id) => {
-              goPlot(id)
-              onTabChange('fortress')
-            }}
-          />
-        ) : null}
-        {tab === 'clan' ? <ClanPanel game={game} /> : null}
-        {tab === 'shop' ? (
-          <ShopPanel
-            game={game}
-            onPreview={(id) => {
-              setPreviewSkin(id)
-              setPlot('garden')
-              onTabChange('fortress')
-            }}
-          />
-        ) : null}
+        {!wide ? panelView : null}
       </main>
+      {wide && tab !== 'fortress' ? (
+        <aside className="app-side" aria-label={t.nav.ariaLabel} tabIndex={0}>
+          {panelView}
+        </aside>
+      ) : null}
 
       <FtueCoach
         game={game}
@@ -239,6 +276,10 @@ export default function App() {
         tab={tab}
         ftueHighlight={ftueHighlight}
         onTabChange={onTabChange}
+        onGardenAgain={openPlots}
+        plotLabel={plotLabel}
+        seasonReady={seasonReady}
+        shopReady={game.giftReady}
         onOpenNotebook={() => openNotebook(null)}
         onOpenLegal={() => setLegalOpen(true)}
         onOpenBackup={() => setBackupOpen(true)}
@@ -298,4 +339,17 @@ export default function App() {
       ) : null}
     </div>
   )
+}
+
+function useWide(): boolean {
+  const query = '(min-width: 900px)'
+  const [wide, setWide] = useState(() => typeof matchMedia === 'function' && matchMedia(query).matches)
+  useEffect(() => {
+    if (typeof matchMedia !== 'function') return
+    const mq = matchMedia(query)
+    const on = () => setWide(mq.matches)
+    mq.addEventListener('change', on)
+    return () => mq.removeEventListener('change', on)
+  }, [])
+  return wide
 }

@@ -53,8 +53,20 @@ export function useOverlayOpen(): boolean {
   )
 }
 
-/** Open windows, oldest first — Escape / Zurück only closes the top one. */
-const dismissStack: { current: () => void }[] = []
+/**
+ * Open windows, oldest first — Escape and the phone's Zurück button only
+ * close the top one. While any window is open we keep one „guard“ entry in
+ * the browser history, so Zurück closes the window instead of leaving the
+ * app. We never call history.back() ourselves (it races with new windows
+ * and can leave the page); a guard left over after a button-close is
+ * harmless and reused by the next window.
+ */
+interface DismissEntry {
+  current: () => void
+}
+const dismissStack: DismissEntry[] = []
+let guard = false
+let listening = false
 
 function onGlobalKey(e: KeyboardEvent) {
   if (e.key !== 'Escape' || e.defaultPrevented) return
@@ -64,7 +76,33 @@ function onGlobalKey(e: KeyboardEvent) {
   top.current()
 }
 
-/** Escape closes the topmost window. Every sheet calls this with its onClose. */
+function pushGuard() {
+  if (guard) return
+  try {
+    history.pushState({ gartenerbeWindow: true }, '')
+    guard = true
+  } catch {
+    /* sandboxed */
+  }
+}
+
+function onPop() {
+  guard = false
+  const top = dismissStack.at(-1)
+  if (!top) return
+  // More windows stay open underneath → keep Zurück trapped for them
+  if (dismissStack.length > 1) pushGuard()
+  top.current()
+}
+
+function listen() {
+  if (listening) return
+  listening = true
+  window.addEventListener('keydown', onGlobalKey)
+  window.addEventListener('popstate', onPop)
+}
+
+/** Escape / Zurück closes the topmost window. Every window calls this with its onClose. */
 export function useDismiss(onClose: (() => void) | undefined, active = true): void {
   const ref = useRef(onClose)
   useEffect(() => {
@@ -72,13 +110,13 @@ export function useDismiss(onClose: (() => void) | undefined, active = true): vo
   })
   useEffect(() => {
     if (!active) return
-    const entry = { current: () => ref.current?.() }
+    const entry: DismissEntry = { current: () => ref.current?.() }
     dismissStack.push(entry)
-    if (dismissStack.length === 1) window.addEventListener('keydown', onGlobalKey)
+    listen()
+    pushGuard()
     return () => {
       const i = dismissStack.indexOf(entry)
       if (i >= 0) dismissStack.splice(i, 1)
-      if (dismissStack.length === 0) window.removeEventListener('keydown', onGlobalKey)
     }
   }, [active])
 }

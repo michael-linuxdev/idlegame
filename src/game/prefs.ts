@@ -82,6 +82,9 @@ export function applyPrefClasses(): void {
 /** A tiny buzz on touch devices (Android; iOS ignores it). */
 export function buzz(ms = 10): void {
   if (!getPref('haptics')) return
+  // Browsers block vibration before the first tap — skip instead of logging errors
+  const ua = (navigator as Navigator & { userActivation?: { hasBeenActive: boolean } }).userActivation
+  if (ua && !ua.hasBeenActive) return
   try {
     navigator.vibrate?.(ms)
   } catch {

@@ -6,9 +6,12 @@
  *  3. Notebook + Spielstand-sichern sheets open
  *  5. Alle Kapitel (?kapitel=all), Grundstücke-Auswahl, Gartenschau-Karte
  *  4. Festladen, Kapitel 2/3 via ?kapitel2=1&kapitel3=1, Weinlese, Gartenhelfer, Update-Check
+ *  6. UX-Layout: Tutorial verdeckt sein Ziel nicht, Omas Notiz nie über Fenstern,
+ *     Escape/Zurück schließen Fenster, Breitbild mit Seitenpanel; Screenshots in e2e-screens/
  * Fails on any uncaught page error. Run: npm run build && npm run e2e
  */
 import { spawn } from 'node:child_process'
+import { mkdir } from 'node:fs/promises'
 import { chromium, devices } from 'playwright'
 
 const PORT = 4321
@@ -78,8 +81,7 @@ try {
     const p = await ctx.newPage()
     p.on('pageerror', (e) => errors.push(e.message))
     await p.goto(URL)
-    await p.locator('.menu-fab').click()
-    await p.getByRole('menuitem', { name: 'Saison' }).click()
+    await p.locator('.tabbar .tab-prestige').click()
     const winter = p.locator('.btn.prestige').first()
     assert(await winter.isEnabled(), 'Winterruhe enabled at the gate')
     await winter.click()
@@ -135,8 +137,7 @@ try {
     await p.waitForTimeout(19_500)
     await p.getByRole('button', { name: 'Fertig' }).click()
     await p.locator('.plot-switch.back').click()
-    await p.locator('.menu-fab').click()
-    await p.getByRole('menuitem', { name: 'Saison' }).click()
+    await p.locator('.tabbar .tab-prestige').click()
     await p.getByRole('button', { name: /Einstellen/ }).click()
     await p.getByText(/Stufe 1\/5/).waitFor()
     await p.locator('.menu-fab').click()
@@ -174,6 +175,98 @@ try {
     await p.locator('.garden-plot').first().click()
     await p.locator('.upgrade-hud-buy').waitFor()
     await ctx.close()
+  }
+
+  // 6 — UX layout checks (+ screenshots in e2e-screens/ for a human look)
+  {
+    const SHOTS = 'e2e-screens'
+    await mkdir(SHOTS, { recursive: true })
+    const overlap = (a, b) =>
+      a && b && a.x < b.x + b.width && b.x < a.x + a.width && a.y < b.y + b.height && b.y < a.y + a.height
+
+    // 6a — the tutorial never covers the plot it talks about
+    {
+      const ctx = await browser.newContext({ ...devices['iPhone 13'], reducedMotion: 'reduce' })
+      const p = await ctx.newPage()
+      p.on('pageerror', (e) => errors.push(e.message))
+      await p.goto(URL)
+      await p.getByRole('button', { name: 'Zum Garten' }).click()
+      await p.locator('.ftue-target').first().waitFor()
+      await p.waitForTimeout(1200)
+      const coach = await p.locator('.ftue-coach').boundingBox()
+      const target = await p.locator('.ftue-target').first().boundingBox()
+      assert(!overlap(coach, target), 'FTUE coach covers its own target')
+      await p.screenshot({ path: `${SHOTS}/ftue.png` })
+      await ctx.close()
+    }
+
+    const seeded = async (opts) => {
+      const ctx = await browser.newContext({ reducedMotion: 'reduce', ...opts })
+      await ctx.addInitScript(() => {
+        if (sessionStorage.getItem('seed')) return
+        const owned = { gemuesebeet: 60, kompost: 40, kraeuterspirale: 30, beerenhecke: 20, obstwiese: 10, bienenstock: 5 }
+        localStorage.setItem('gartenerbe-save-v1', JSON.stringify({ owned, ernte: 3e6, ernteSeason: 4e6, prestiges: 4, erbstuecke: 900, lastSeen: Date.now(), saveVersion: 2 }))
+        localStorage.setItem('gartenerbe-ftue-v1', JSON.stringify({ beat: 'done', dismissed: true, completed: [], startedAt: 1 }))
+        localStorage.setItem('gartenerbe-install-v1', JSON.stringify({ dismissed: true, installed: false, shown: true }))
+        sessionStorage.setItem('seed', '1')
+      })
+      const p = await ctx.newPage()
+      p.on('pageerror', (e) => errors.push(e.message))
+      return { ctx, p }
+    }
+
+    // 6b — Omas note never sits on an open window; Zurück closes windows, not the app
+    {
+      const { ctx, p } = await seeded(devices['iPhone 13'])
+      await p.goto(URL + '?kapitel=all')
+      await p.locator('.garden-map').waitFor()
+      await p.screenshot({ path: `${SHOTS}/map.png` })
+      await p.locator('.tabbar .tab-fortress').click() // Garten again → Grundstücke
+      await p.locator('.plot-sheet').waitFor()
+      await p.waitForTimeout(400)
+      assert((await p.locator('.oma-hint').count()) === 0, 'Omas note shows over the Grundstücke window')
+      await p.getByRole('button', { name: /Kapitel 12/ }).scrollIntoViewIfNeeded()
+      await p.screenshot({ path: `${SHOTS}/plots.png` })
+      await p.keyboard.press('Escape')
+      assert((await p.locator('.plot-sheet').count()) === 0, 'Escape closes the Grundstücke window')
+      await p.locator('.garden-plot.planted').first().dispatchEvent('click')
+      await p.locator('.upgrade-hud').waitFor()
+      await p.screenshot({ path: `${SHOTS}/upgrade.png` })
+      await p.goBack()
+      await p.waitForTimeout(300)
+      assert((await p.locator('.upgrade-hud').count()) === 0, 'Zurück closes the Ausbau window')
+      assert(p.url().startsWith(URL), 'Zurück stays in the app')
+      await p.locator('.hud-wallet').click()
+      await p.locator('.mult-sheet').waitFor()
+      await p.screenshot({ path: `${SHOTS}/boni.png` })
+      await p.keyboard.press('Escape')
+      await p.locator('.menu-fab').click()
+      await p.locator('.nav-sheet').waitFor()
+      await p.screenshot({ path: `${SHOTS}/menu.png` })
+      await p.keyboard.press('Escape')
+      assert((await p.locator('.nav-sheet').count()) === 0, 'Escape closes the menu')
+      for (const tab of ['prestige', 'shop']) {
+        await p.locator(`.tabbar .tab-${tab}`).click()
+        await p.waitForTimeout(300)
+        await p.screenshot({ path: `${SHOTS}/${tab}.png` })
+      }
+      await p.goBack()
+      await p.locator('.garden-map').waitFor()
+      assert(p.url().startsWith(URL), 'Zurück from a panel stays in the app')
+      await ctx.close()
+    }
+
+    // 6c — wide screens: map and panel side by side
+    {
+      const { ctx, p } = await seeded({ viewport: { width: 1280, height: 800 } })
+      await p.goto(URL)
+      await p.locator('.garden-map').waitFor()
+      await p.locator('.tabbar .tab-shop').click()
+      await p.locator('.app-side').waitFor()
+      assert((await p.locator('.garden-map').count()) === 1, 'map stays visible next to the Markt on wide screens')
+      await p.screenshot({ path: `${SHOTS}/desktop.png` })
+      await ctx.close()
+    }
   }
 
   assert(errors.length === 0, 'page errors: ' + errors.join(' | '))

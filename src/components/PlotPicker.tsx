@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { useDismiss } from '../game/overlays'
 import { CHAPTERS, type ChapterId } from '../game/chapters'
 import { formatAsh } from '../game/format'
@@ -20,10 +21,31 @@ export function PlotButtons({ game, current, onGo }: { game: GameApi; current: P
     ...(current === 'garden' ? [] : (['garden'] as Plot[])),
     ...game.openChapters.filter((id) => id !== current),
   ]
+  // The Garten tab, tapped again, asks for the picker
+  useEffect(() => {
+    if (others.length === 0) return
+    const onAsk = () => setOpen(true)
+    window.addEventListener('gartenerbe-open-plots', onAsk)
+    return () => window.removeEventListener('gartenerbe-open-plots', onAsk)
+  }, [others.length])
+  // Portal: the side buttons live in a low stacking context — the sheet must not
+  const sheet = open ? createPortal(
+    <PlotSheet
+      game={game}
+      current={current}
+      onGo={(p) => {
+        setOpen(false)
+        onGo(p)
+      }}
+      onClose={() => setOpen(false)}
+    />,
+    document.body,
+  ) : null
   if (others.length === 0) return null
   if (others.length <= 2) {
     return (
       <>
+        {sheet}
         {others.map((p) => {
           if (p === 'garden') {
             return (
@@ -50,17 +72,7 @@ export function PlotButtons({ game, current, onGo }: { game: GameApi; current: P
         <IconMap />
         <span className="map-side-label">{t.plots.button}</span>
       </button>
-      {open ? (
-        <PlotSheet
-          game={game}
-          current={current}
-          onGo={(p) => {
-            setOpen(false)
-            onGo(p)
-          }}
-          onClose={() => setOpen(false)}
-        />
-      ) : null}
+      {sheet}
     </>
   )
 }
