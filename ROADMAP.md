@@ -1,13 +1,15 @@
 # Idle-Kern — Roadmap & Produktvermerke
 
-Stand: 2026-11-07.
+Stand: 2026-11-08.
 
 ## Architektur
 
 - **Ein Spielkern**, mehrere **eigene Apps** (gleiche Engine/Loop).
 - **App 1 — TurmFarm** (live): Urban Vertical Farm. Offizieller Produktname. Default theme (`src/themes/farm`).
 - **App 2 — Tokenhalle**: Retro-Arcade-Kette auf demselben Kern. Theme-Skin unter `src/themes/arcade`; aktivieren mit `VITE_THEME=arcade` / `npm run build:arcade`. Eigener Store-Eintrag später — Bundle-Flag reicht für jetzt.
+- **App 3 — Hafen / Umschlag** (geplant, nach TurmFarm + Tokenhalle): Bau-Map mit Kais, Kränen, Lager. Clan später = **Reederei**. Noch kein Theme-Skin im Kern. Pitch: Store-Doc `hafen-theme.md`.
 - **Raus:** Orbit Rack / Space-Datacenter; Brauerei-Theme.
+- **Nicht gewählt (Produkt 3):** Freizeitpark, Bergwerk, Aquarium — zugunsten Hafen/Umschlag verworfen.
 
 ## Prinzipien
 
@@ -28,7 +30,8 @@ Stand: 2026-11-07.
 5. **Multiplayer-Architektur** → echtes Clan-Multiplayer  
 6. **Tokenhalle** Store-Bundle / eigener Eintrag (Skin liegt bereits im Kern)  
 7. Store-IAP verdrahten  
-8. Soft-Launch (Analytics-Tool dann wählen)
+8. Soft-Launch (Analytics-Tool dann wählen)  
+9. **Hafen / Umschlag** Theme-Skin + eigener Store-Eintrag (nach TurmFarm + Tokenhalle)
 
 ## Fertig-Produkt?
 
