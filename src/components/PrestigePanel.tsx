@@ -51,7 +51,7 @@ export function PrestigePanel({ game, highlight }: Props) {
   const { state, nextPrestige, canPrestige, prestige, multiplier, prestigeMin, prestigeProgress } =
     game
   const teaser = prestigeProgress.ratio >= 0.5 && !canPrestige
-  const payout = emberPayout(state.ashEarned)
+  const payout = emberPayout(state.ashEarned, state.prestiges)
   const online = modulesOnlineCount(state.owned)
   const minEmbers = prestigeMinEmbersForRun(state.prestiges)
   const block = prestigeBlockReason({

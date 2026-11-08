@@ -174,7 +174,7 @@ export function GardenMap({ game, highlightId, onOpenTab }: Props) {
     }
     const nearTier = PRESTIGE_SPIKE_RATIOS.findIndex((r) => prestigeProgress.ratio >= r)
     if (nearTier < 0 && !canPrestige) return null
-    const embers = Math.max(nextPrestige, emberPayout(state.ashEarned))
+    const embers = Math.max(nextPrestige, emberPayout(state.ashEarned, state.prestiges))
     if (embers <= 0) return null
     const ready = canPrestige || prestigeProgress.ratio >= 1
     const postBuys = countAffordableEmberBuysAfterPrestige({
@@ -482,7 +482,7 @@ export function GardenMap({ game, highlightId, onOpenTab }: Props) {
             const buildingRate =
               unlocked && level > 0 ? generatorRate(def, level) * totalMult : 0
             const producing = buildingRate > 0
-            const hint = !unlocked ? unlockHint(def) : ''
+            const hint = !unlocked ? unlockHint(def, state.prestiges) : ''
             const hl = highlightId === def.id
             const ready = unlocked && level === 0
             const showSign = unlocked || selectedHere || def.id === nextWildId
@@ -536,7 +536,7 @@ export function GardenMap({ game, highlightId, onOpenTab }: Props) {
                     <span className="plot-meta">
                       {!unlocked ? (
                         <>
-                          {t.hud.locked} · {shortUnlockGate(def)}
+                          {t.hud.locked} · {shortUnlockGate(def, state.prestiges)}
                         </>
                       ) : ready ? (
                         t.upgrade.online

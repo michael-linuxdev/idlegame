@@ -667,8 +667,8 @@ export function claimFlashEventGoal(
   }
 }
 
-export function nextPrestigeEmbers(ashEarned: number): number {
-  return emberPayout(ashEarned)
+export function nextPrestigeEmbers(ashEarned: number, prestiges = 0): number {
+  return emberPayout(ashEarned, prestiges)
 }
 
 export function canPrestigeNow(state: GameState): boolean {
@@ -693,7 +693,7 @@ export function prestigeProgress(state: GameState): {
     min,
     current,
     ratio: min > 0 ? Math.min(1, current / min) : 1,
-    embers: emberPayout(current),
+    embers: emberPayout(current, state.prestiges),
   }
 }
 
@@ -1063,6 +1063,7 @@ export function buyGenerator(state: GameState, id: GeneratorId): GameState {
       state.owned,
       state.emberUpgrades.firstFlame > 0,
       level,
+      state.prestiges,
     )
   ) {
     return state
@@ -1245,7 +1246,7 @@ export function buyEmberUpgrade(state: GameState, id: EmberUpgradeId): GameState
 
 export function doPrestige(state: GameState): GameState {
   if (!canPrestigeNow(state)) return state
-  const gain = emberPayout(state.ashEarned)
+  const gain = emberPayout(state.ashEarned, state.prestiges)
   const next = createPostPrestigeState(state)
   const withEmbers = { ...next, embers: state.embers + gain }
   return collectReadyAchievements(withEmbers)

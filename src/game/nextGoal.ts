@@ -58,6 +58,7 @@ function unlockProgress(
 ): { ratio: number; detail: string } | null {
   const def = GENERATORS.find((g) => g.id === id)
   if (!def?.unlock) return null
+  if ((def.unlock.seasons ?? 0) > state.prestiges) return null
 
   let best = 0
   let detail = ''
@@ -126,6 +127,7 @@ export function computeNextGoal(
       state.owned,
       state.emberUpgrades.firstFlame > 0,
       opts.playerLevel,
+      state.prestiges,
     )
     if (!unlocked) continue
     const cost = opts.costOf(def.id)
@@ -159,6 +161,7 @@ export function computeNextGoal(
       state.owned,
       state.emberUpgrades.firstFlame > 0,
       opts.playerLevel,
+      state.prestiges,
     )
     if (unlocked) continue
     const prog = unlockProgress(state, def.id, opts.playerLevel)

@@ -205,7 +205,7 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
           </>
         ) : (
           <div className="upgrade-hud-locked">
-            <p className="upgrade-hud-stats sheet-locked-hint">{unlockHint(def)}</p>
+            <p className="upgrade-hud-stats sheet-locked-hint">{unlockHint(def, game.state.prestiges)}</p>
             <div className="upgrade-hud-cta">
               <button type="button" className="btn buy upgrade-hud-buy" disabled>
                 {t.upgrade.locked}

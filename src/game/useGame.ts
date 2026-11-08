@@ -253,7 +253,7 @@ export function useGame() {
 
   const prestige = useCallback(() => {
     setState((s) => {
-      const gain = emberPayout(s.ashEarned)
+      const gain = emberPayout(s.ashEarned, s.prestiges)
       const next = doPrestige(s)
       if (next !== s) {
         logPlaytest('prestige', {
@@ -525,6 +525,7 @@ export function useGame() {
         state.owned,
         state.emberUpgrades.firstFlame > 0,
         playerLevel.level,
+        state.prestiges,
       )
     },
     [
@@ -532,6 +533,7 @@ export function useGame() {
       state.owned,
       state.emberUpgrades.firstFlame,
       playerLevel.level,
+      state.prestiges,
     ],
   )
 
@@ -552,7 +554,7 @@ export function useGame() {
     bpDailyXpReady,
     skipHoursRemaining: skipLeft,
     equippedCosmetic: equipped,
-    nextPrestige: nextPrestigeEmbers(state.ashEarned),
+    nextPrestige: nextPrestigeEmbers(state.ashEarned, state.prestiges),
     prestigeMin: prestigeMinAsh(state.prestiges),
     prestigeProgress: progress,
     canPrestige: canPrestigeNow(state),

@@ -193,6 +193,9 @@ export const strings = {
     computeEarned: (n: string) => `${n} ${SOFT} geerntet`,
     levelOf: (name: string, level: number) => `${name} Stufe ${level}`,
     playerLevel: (level: number) => `Gärtnerstufe ${level}`,
+    seasonGate: (year: number) =>
+      `Diese Ecke roden wir erst im ${year}. Gartenjahr.`,
+    seasonShort: (year: number) => `ab Gartenjahr ${year}`,
   },
 
   hud: {
