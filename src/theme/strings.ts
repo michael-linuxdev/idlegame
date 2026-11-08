@@ -768,6 +768,12 @@ export const strings = {
     },
   },
 
+  legal: {
+    title: 'Rechtliches',
+    impressum: 'Impressum',
+    close: 'Schließen',
+  },
+
   season: {
     winterTitle: 'Winterruhe',
     winterLine: 'Der Garten schläft. Was gewachsen ist, bleibt in deinen Händen.',

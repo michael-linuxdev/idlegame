@@ -12,6 +12,7 @@ interface Props {
   ftueHighlight?: string | null
   onTabChange: (tab: Tab) => void
   onOpenNotebook?: () => void
+  onOpenLegal?: () => void
   unreadLetters?: number
 }
 
@@ -62,6 +63,7 @@ export function AppNav({
   ftueHighlight,
   onTabChange,
   onOpenNotebook,
+  onOpenLegal,
   unreadLetters = 0,
 }: Props) {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -177,6 +179,19 @@ export function AppNav({
             <MuteToggle />
           </div>
           <PlaytestLogControls />
+          {onOpenLegal ? (
+            <button
+              type="button"
+              role="menuitem"
+              className="nav-menu-item nav-menu-legal"
+              onClick={() => {
+                setMenuOpen(false)
+                onOpenLegal()
+              }}
+            >
+              <span className="tab-label">{t.legal.title}</span>
+            </button>
+          ) : null}
         </div>
       ) : null}
 

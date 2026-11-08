@@ -18,6 +18,8 @@ npm run dev            # Stimmung testen: ?ambient=night-winter
 npm run build
 npm run preview
 npm run lint
+npm test                                   # Vitest (Format, Balance-Formeln, Gartenjahre, Notizbuch)
+SUMMARY=1 npm run balance -- regular 336   # Balance-Simulator (engaged | regular | casual, Stunden)
 python3 scripts/generate-pwa-icons.py   # App-Icons neu erzeugen (Pillow)
 ```
 
@@ -29,6 +31,10 @@ python3 scripts/generate-pwa-icons.py   # App-Icons neu erzeugen (Pillow)
 | `src/theme/` | Gartenerbe-Präsentation: Texte (`strings.ts`), Farben (`tokens.css`), Karte (`MapBackdrop`, `PlotArt`), Modulgrafik mit 5 Ausbaustufen (`ModuleArt`), Icons, Schriften, Stimmung (`ambient.ts`), Styles (`garden.css`, `hud.css`, `polish.css`) |
 | `src/components/` | UI: `GardenMap` + `hud/` (Ziel, Event-Leiste, Gießen/Ernten), Sheets, Panels |
 | `src/i18n/` | Zugriff auf die deutschen Texte (`t`) |
+
+## Rechtliches
+
+Datenschutztext und Impressum stehen in `src/theme/legal.ts`. Das Impressum wird erst angezeigt, wenn alle Felder ausgefüllt sind — vor dem Store-Launch eintragen.
 
 ## Hosting
 

@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "balance": "bash scripts/balance/run.sh"
+    "balance": "bash scripts/balance/run.sh",
+    "test": "vitest run"
   },
   "dependencies": {
     "@fontsource/caveat": "^5.3.0",
@@ -26,6 +27,7 @@
     "oxlint": "^1.90.0",
     "typescript": "~7.0.2",
     "vite": "^8.3.6",
-    "vite-plugin-pwa": "^2.0.0"
+    "vite-plugin-pwa": "^2.0.0",
+    "vitest": "^5.1.0"
   }
 }

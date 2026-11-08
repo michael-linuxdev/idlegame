@@ -12,6 +12,7 @@ import { GENERATORS } from './game/generators'
 import { useNotebook, yearLetterFor, type NotebookEntryId } from './game/notebook'
 import { NotebookSheet } from './components/story/NotebookSheet'
 import { SeasonCeremony } from './components/story/SeasonCeremony'
+import { LegalSheet } from './components/LegalSheet'
 import './App.css'
 import './theme/garden.css'
 import './theme/hud.css'
@@ -24,6 +25,7 @@ export default function App() {
   const [tab, setTab] = useState<Tab>('fortress')
   const [ftueHighlight, setFtueHighlight] = useState<string | null>(null)
   const [holdInstall, setHoldInstall] = useState(false)
+  const [legalOpen, setLegalOpen] = useState(false)
   const [notebookOpen, setNotebookOpen] = useState<{ entry: NotebookEntryId | null } | null>(null)
   const gardenStage = GENERATORS.filter(
     (g) => (game.state.owned[g.id] ?? 0) > 0 && game.unlocked(g.id),
@@ -81,6 +83,7 @@ export default function App() {
         ftueHighlight={ftueHighlight}
         onTabChange={onTabChange}
         onOpenNotebook={() => openNotebook(null)}
+        onOpenLegal={() => setLegalOpen(true)}
         unreadLetters={unread.length}
       />
 
@@ -92,6 +95,8 @@ export default function App() {
           onClose={() => setNotebookOpen(null)}
         />
       ) : null}
+
+      {legalOpen ? <LegalSheet onClose={() => setLegalOpen(false)} /> : null}
 
       {game.seasonEnd ? (
         <SeasonCeremony

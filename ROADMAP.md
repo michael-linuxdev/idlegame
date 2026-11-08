@@ -54,7 +54,11 @@ Werkzeug: `npm run balance -- <engaged|regular|casual> <stunden>` — spielt die
 4. ✅ **Modulgrafik:** 4–5 sichtbare Ausbaustufen pro Modul.
 5. ✅ **HUD:** drei Zonen, Event-Leiste, keine Überlappungen (verwaistes ×, abgeschnittene Texte, widersprüchliche Ziele).
 6. ✅ **Politur:** Schriften lokal (offline), Garten-Icon, Tages- und Jahreszeiten-Stimmung.
-7. Balance-Pass, Multiplayer-Architektur (Clan → Kleingartenverein), Store-IAP, Soft-Launch.
+7. ✅ **Balance-Pass** mit Simulator (siehe oben).
+8. ✅ **Story & Look:** Omas Briefe (13 Seiten), Saisonende-Zeremonie, Papier-Panels, Garten-Sounds, Datenschutz.
+9. Langzeit-Loop (Tiefer Winter / Gartengeschichte) für Woche 4+.
+10. Multiplayer-Architektur (Kleingartenverein mit echtem Backend).
+11. Store-IAP, Impressum-Daten, Namensprüfung „Gartenerbe“, Store-Assets, Soft-Launch.
 
 ## Fertig-Produkt?
 
