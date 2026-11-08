@@ -1,5 +1,6 @@
 /** Data: art spec per chapter area + backdrop (drawn by ChapterArt.tsx). */
 import type { ChapterId } from '../game/chapters'
+import type { PathStyle } from './ChapterPaths'
 
 export type Tree = { k: 'tree'; crown: string; fruit?: string; shape?: 'round' | 'cone' | 'palm' | 'blossom' | 'olive' | 'bamboo' | 'linden' }
 export type Rows = { k: 'rows'; color: string; flower?: string; tall?: boolean }
@@ -33,6 +34,8 @@ export interface BackdropSpec {
   alps?: boolean
   grass: [string, string, string]
   path: string
+  /** Own path shape per chapter (default: shared S-curve) */
+  way?: PathStyle
   hills: [string, string]
   water?: 'river' | 'lake' | 'none'
   mountains?: boolean
@@ -41,7 +44,7 @@ export interface BackdropSpec {
 
 export const CHAPTER_ART: Partial<Record<ChapterId, { backdrop: BackdropSpec; areas: Record<string, ArtSpec> }>> = {
   bauernhof: {
-    backdrop: { grass: ['#a8cf74', '#95c162', '#80ad52'], path: '#d9c79a', hills: ['#7fae58', '#6a9a48'], fields: true },
+    backdrop: { grass: ['#a8cf74', '#95c162', '#80ad52'], path: '#d9c79a', hills: ['#7fae58', '#6a9a48'], fields: true, way: 'track' },
     areas: {
       kuhweide: { k: 'animals', animal: 'cow' },
       ziegenstall: { k: 'animals', animal: 'goat' },
@@ -56,7 +59,7 @@ export const CHAPTER_ART: Partial<Record<ChapterId, { backdrop: BackdropSpec; ar
     },
   },
   imkerei: {
-    backdrop: { grass: ['#a6c97a', '#90b866', '#7ba555'], path: '#d9c79a', hills: ['#4f7a3a', '#3f6a2e'], forest: true },
+    backdrop: { grass: ['#a6c97a', '#90b866', '#7ba555'], path: '#d9c79a', hills: ['#4f7a3a', '#3f6a2e'], forest: true, way: 'loop' },
     areas: {
       bienenhaus: { k: 'house', roof: '#6e4a2b', wall: '#d9b78a', prop: 'hives' },
       lindenallee: { k: 'tree', crown: '#7fae58', fruit: '#f5e08a', shape: 'linden' },
@@ -71,7 +74,7 @@ export const CHAPTER_ART: Partial<Record<ChapterId, { backdrop: BackdropSpec; ar
     },
   },
   teich: {
-    backdrop: { grass: ['#9fcf86', '#88bd70', '#72a85c'], path: '#d9c79a', hills: ['#5f8a4a', '#4f7a3a'], bigLake: true },
+    backdrop: { grass: ['#9fcf86', '#88bd70', '#72a85c'], path: '#d9c79a', hills: ['#5f8a4a', '#4f7a3a'], bigLake: true, way: 'shore' },
     areas: {
       seerosen: { k: 'water', variant: 'lilies' },
       schilf: { k: 'water', variant: 'reeds' },
@@ -86,7 +89,7 @@ export const CHAPTER_ART: Partial<Record<ChapterId, { backdrop: BackdropSpec; ar
     },
   },
   kraeuter: {
-    backdrop: { grass: ['#b0cf86', '#9cc072', '#88ad60'], path: '#e2d4ae', hills: ['#7a9a58', '#6a8a48'], herbGarden: true },
+    backdrop: { grass: ['#b0cf86', '#9cc072', '#88ad60'], path: '#e2d4ae', hills: ['#7a9a58', '#6a8a48'], herbGarden: true, way: 'cross' },
     areas: {
       kamille: { k: 'rows', color: '#8ab85a', flower: '#fbf6e8' },
       pfefferminze: { k: 'rows', color: '#4f9a5a' },
@@ -101,7 +104,7 @@ export const CHAPTER_ART: Partial<Record<ChapterId, { backdrop: BackdropSpec; ar
     },
   },
   botanik: {
-    backdrop: { grass: ['#9fd08a', '#8ac477', '#76b062'], path: '#eae2d0', hills: ['#5f9e45', '#4f8a3a'], glasshouse: true },
+    backdrop: { grass: ['#9fd08a', '#8ac477', '#76b062'], path: '#eae2d0', hills: ['#5f9e45', '#4f8a3a'], glasshouse: true, way: 'rondel' },
     areas: {
       palmenhaus: { k: 'house', roof: '#cfe8f4', wall: '#e8f4fa', prop: 'glass' },
       kakteenhaus: { k: 'house', roof: '#cfe8f4', wall: '#f4ecd8', prop: 'glass' },
@@ -116,7 +119,7 @@ export const CHAPTER_ART: Partial<Record<ChapterId, { backdrop: BackdropSpec; ar
     },
   },
   alm: {
-    backdrop: { grass: ['#a9cf7a', '#94bf66', '#7fab54'], path: '#d9c79a', hills: ['#7fab54', '#6f9a48'], alps: true },
+    backdrop: { grass: ['#a9cf7a', '#94bf66', '#7fab54'], path: '#d9c79a', hills: ['#7fab54', '#6f9a48'], alps: true, way: 'switchback' },
     areas: {
       almwiese: { k: 'flowers', colors: ['#fbf6e8', '#f5c542', '#c77dd1', '#3d6fd1'] },
       kuhherde: { k: 'animals', animal: 'cow' },
@@ -131,7 +134,7 @@ export const CHAPTER_ART: Partial<Record<ChapterId, { backdrop: BackdropSpec; ar
     },
   },
   lavendel: {
-    backdrop: { grass: ['#d4cf8a', '#c4be76', '#b0aa62'], path: '#eadcb8', hills: ['#a9a86a', '#8f8e58'], stripes: '#9a7ac4' },
+    backdrop: { grass: ['#d4cf8a', '#c4be76', '#b0aa62'], path: '#eadcb8', hills: ['#a9a86a', '#8f8e58'], stripes: '#9a7ac4', way: 'lane' },
     areas: {
       lavendelreihen: { k: 'rows', color: '#7a5ab8', flower: '#9a7ac4' },
       sonnenblumen: { k: 'rows', color: '#5f9e45', flower: '#f5c542', tall: true },
@@ -146,7 +149,7 @@ export const CHAPTER_ART: Partial<Record<ChapterId, { backdrop: BackdropSpec; ar
     },
   },
   japangarten: {
-    backdrop: { grass: ['#a3c98a', '#8fb877', '#7aa463'], path: '#e2dccb', hills: ['#5f7a4a', '#4f6a3a'], water: 'lake' },
+    backdrop: { grass: ['#a3c98a', '#8fb877', '#7aa463'], path: '#e2dccb', hills: ['#5f7a4a', '#4f6a3a'], water: 'lake', way: 'stones' },
     areas: {
       teestrauch: { k: 'rows', color: '#3f7a30' },
       moosgarten: { k: 'stones', variant: 'moss' },
@@ -161,7 +164,7 @@ export const CHAPTER_ART: Partial<Record<ChapterId, { backdrop: BackdropSpec; ar
     },
   },
   gartenschau: {
-    backdrop: { grass: ['#a6d48c', '#90c877', '#7ab462'], path: '#efe6d0', hills: ['#6fae52', '#5f9a48'], water: 'lake' },
+    backdrop: { grass: ['#a6d48c', '#90c877', '#7ab462'], path: '#efe6d0', hills: ['#6fae52', '#5f9a48'], water: 'lake', way: 'promenade' },
     areas: {
       eingangstor: { k: 'house', roof: '#3f7a30', wall: '#fbf3e0', prop: 'gate' },
       blumenkorso: { k: 'flowers', colors: ['#e0485e', '#f08a2c', '#f5c542', '#c77dd1'] },
