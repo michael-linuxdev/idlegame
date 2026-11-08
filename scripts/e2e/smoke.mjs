@@ -140,6 +140,7 @@ try {
     await p.getByRole('button', { name: /Einstellen/ }).click()
     await p.getByText(/Stufe 1\/5/).waitFor()
     await p.locator('.menu-fab').click()
+    await p.getByRole('button', { name: 'Einstellungen' }).click()
     const signsToggle = p.getByRole('menuitemcheckbox', { name: /Schilder immer zeigen/ })
     await signsToggle.click()
     assert((await signsToggle.getAttribute('aria-checked')) === 'true', 'Schilder immer zeigen toggles on')

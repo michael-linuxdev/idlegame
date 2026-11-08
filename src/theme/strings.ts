@@ -48,6 +48,7 @@ export const strings = {
   },
 
   nav: {
+    settings: 'Einstellungen',
     ariaLabel: 'Hauptnavigation',
     station: 'Garten',
     prestige: 'Saison',
