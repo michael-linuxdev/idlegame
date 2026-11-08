@@ -198,7 +198,7 @@ export const GENERATORS: GeneratorDef[] = [
     baseRate: 7_000_000,
     baseCost: 5_000_000_000,
     costScale: 1.105,
-    unlock: { seasons: 13,
+    unlock: { seasons: 12,
       ernteSeason: 50_000_000_000,
       requires: { id: 'hofladen', level: 10 },
     },

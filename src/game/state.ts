@@ -670,6 +670,22 @@ export function flashProductionMult(state: GameState, now = Date.now()): number 
   return FLASH_MULT
 }
 
+/**
+ * Nachbarschaftshilfe — first pass only (no Tiefer Winter / Generation yet):
+ * Gartenjahre 11–14 get a production tailwind so the steep gate before the
+ * first Tiefer Winter never turns into a 16–24 h season. Later passes are
+ * paced by the Sprösslings-Laden instead (a flatter gate there would turn
+ * Tiefer Winter into a farm loop).
+ */
+export const NEIGHBOUR_FROM = 10
+export const NEIGHBOUR_STEP = 1.6
+
+export function neighbourMult(state: GameState): number {
+  if (state.deepPrestiges > 0 || state.generation > 0) return 1
+  const steps = Math.min(state.prestiges, 13) - NEIGHBOUR_FROM
+  return steps > 0 ? Math.pow(NEIGHBOUR_STEP, steps) : 1
+}
+
 export function turboMult(state: GameState, now = Date.now()): number {
   return state.turboEndsAt > now ? TURBO_MULT : 1
 }
@@ -706,6 +722,7 @@ export function productionPerSecond(state: GameState, now = Date.now()): number 
     weatherYieldMult(now) *
     wheelYieldMult(state.wheelBuff, state.prestiges) *
     expansionGardenMult(state) *
+    neighbourMult(state) *
     turboMult(state, now)
   )
 }

@@ -38,7 +38,9 @@ export const DEEP_GATE_YEAR = 15
 export function sproutPayout(prestiges: number): number {
   const over = prestiges + 1 - (DEEP_GATE_YEAR - 2)
   if (over < 2) return 0
-  return Math.floor(2 * Math.pow(over, 1.3))
+  // √-like tail: pushing far past Gartenjahr 21 still pays, but linearly
+  if (over <= 8) return Math.floor(2 * Math.pow(over, 1.3))
+  return Math.floor(2 * Math.pow(8, 1.3) + 3 * (over - 8))
 }
 
 export function canDeepReset(prestiges: number): boolean {

@@ -252,7 +252,7 @@ export function run(profile: Profile, hours: number) {
         note(`PRESTIGE #${s.prestiges + 1} payout ${payout} (run ${fmtT((clock - runStart) / 1000)})`)
         const lastDur = (clock - runStart) / 1000
         s = doPrestige(s)
-        if (canDeepReset(s.prestiges) && lastDur > 18 * 3600) {
+        if (canDeepReset(s.prestiges) && (lastDur > Number(process.env.DEEP_AFTER_H ?? 12) * 3600 || s.prestiges >= Number(process.env.DEEP_AT_YEAR ?? 99) - 1)) {
           const sp = sproutPayout(s.prestiges)
           s = doDeepReset(s)
           s = spendSprouts(s)
