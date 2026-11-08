@@ -15,7 +15,16 @@ export type Flowers = { k: 'flowers'; colors: string[]; arch?: boolean }
 export type Stones = { k: 'stones'; variant: 'zen' | 'rock' | 'edelweiss' | 'moss' | 'maze' | 'lanterns' }
 export type ArtSpec = Tree | Rows | Animals | House | Water | Flowers | Stones
 
+/** Chapters drawn with hand-made art (theme/HandArt.tsx). */
+export const HAND_ART_CHAPTERS: readonly ChapterId[] = ['bauernhof', 'imkerei', 'teich']
+
 export interface BackdropSpec {
+  /** Patchwork fields behind the plots */
+  fields?: boolean
+  /** Conifer forest edge along the top */
+  forest?: boolean
+  /** Big lake in the middle of the map */
+  bigLake?: boolean
   grass: [string, string, string]
   path: string
   hills: [string, string]
@@ -26,7 +35,7 @@ export interface BackdropSpec {
 
 export const CHAPTER_ART: Partial<Record<ChapterId, { backdrop: BackdropSpec; areas: Record<string, ArtSpec> }>> = {
   bauernhof: {
-    backdrop: { grass: ['#a8cf74', '#95c162', '#80ad52'], path: '#d9c79a', hills: ['#7fae58', '#6a9a48'], stripes: '#c9b070' },
+    backdrop: { grass: ['#a8cf74', '#95c162', '#80ad52'], path: '#d9c79a', hills: ['#7fae58', '#6a9a48'], fields: true },
     areas: {
       kuhweide: { k: 'animals', animal: 'cow' },
       ziegenstall: { k: 'animals', animal: 'goat' },
@@ -41,7 +50,7 @@ export const CHAPTER_ART: Partial<Record<ChapterId, { backdrop: BackdropSpec; ar
     },
   },
   imkerei: {
-    backdrop: { grass: ['#a6c97a', '#90b866', '#7ba555'], path: '#d9c79a', hills: ['#4f7a3a', '#3f6a2e'] },
+    backdrop: { grass: ['#a6c97a', '#90b866', '#7ba555'], path: '#d9c79a', hills: ['#4f7a3a', '#3f6a2e'], forest: true },
     areas: {
       bienenhaus: { k: 'house', roof: '#6e4a2b', wall: '#d9b78a', prop: 'hives' },
       lindenallee: { k: 'tree', crown: '#7fae58', fruit: '#f5e08a', shape: 'linden' },
@@ -56,7 +65,7 @@ export const CHAPTER_ART: Partial<Record<ChapterId, { backdrop: BackdropSpec; ar
     },
   },
   teich: {
-    backdrop: { grass: ['#9fcf86', '#88bd70', '#72a85c'], path: '#d9c79a', hills: ['#5f8a4a', '#4f7a3a'], water: 'lake' },
+    backdrop: { grass: ['#9fcf86', '#88bd70', '#72a85c'], path: '#d9c79a', hills: ['#5f8a4a', '#4f7a3a'], bigLake: true },
     areas: {
       seerosen: { k: 'water', variant: 'lilies' },
       schilf: { k: 'water', variant: 'reeds' },

@@ -1,5 +1,12 @@
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
-import { areaCost, areaRate, areaUnlocked, chapterDef, chapterLevels, chapterStage, type ChapterId } from '../game/chapters'
+import {
+  CHAPTER_CARE_MAX,
+  areaRateWithCare,
+  careCost,
+  careOf,
+  type CareKind,
+  areaCost,
+  areaUnlocked, chapterDef, chapterLevels, chapterStage, type ChapterId } from '../game/chapters'
 import { milestonesReached, nextMilestone } from '../game/generators'
 import { formatAsh, formatClock, formatDecimal } from '../game/format'
 import { playSfx } from '../game/sound'
@@ -11,7 +18,9 @@ import { OrchardArt, OrchardSapling, OrchardWild } from '../theme/OrchardArt'
 import { OrchardBackdrop } from '../theme/OrchardBackdrop'
 import { VineyardArt, VineyardBackdrop, VineyardStakes, VineyardWild } from '../theme/VineyardArt'
 import { ChapterAreaArt, ChapterBackdrop, ChapterReady, ChapterWild } from '../theme/ChapterArt'
-import { CHAPTER_ART } from '../theme/chapterArtSpecs'
+import { CHAPTER_ART, HAND_ART_CHAPTERS } from '../theme/chapterArtSpecs'
+import { HandArt, HandWild } from '../theme/HandArt'
+import { ChapterCritters } from './ChapterCritters'
 import { PlotButtons } from './PlotPicker'
 import { useSignsAlways } from '../game/prefs'
 import { IconGrapes, IconIlse, IconSprout } from '../theme/icons'
@@ -26,6 +35,7 @@ type GameApi = ReturnType<typeof useGame>
 function AreaArt({ chapter, id, level, season }: { chapter: ChapterId; id: string; level: number; season: Season }) {
   if (chapter === 'weinberg') return <VineyardArt id={id} level={level} season={season} />
   if (chapter === 'obstwiese') return <OrchardArt id={id} level={level} season={season} />
+  if (HAND_ART_CHAPTERS.includes(chapter)) return <HandArt chapter={chapter} id={id} level={level} season={season} />
   const spec = CHAPTER_ART[chapter]?.areas[id]
   return spec ? <ChapterAreaArt spec={spec} level={level} season={season} /> : <ChapterReady />
 }
@@ -40,6 +50,7 @@ function Backdrop({ chapter, stage }: { chapter: ChapterId; stage: number }) {
 function WildSpot({ chapter, seed }: { chapter: ChapterId; seed: number }) {
   if (chapter === 'weinberg') return <VineyardWild seed={seed} />
   if (chapter === 'obstwiese') return <OrchardWild seed={seed} />
+  if (HAND_ART_CHAPTERS.includes(chapter)) return <HandWild chapter={chapter} seed={seed} />
   return <ChapterWild seed={seed} />
 }
 
@@ -182,6 +193,7 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
       <div className={`garden-stage orchard-stage stage-${chapter}`} data-daypart={ambient.daypart} data-season={ambient.season}>
         <div className="garden-map" role="application" aria-label={copy.title}>
           <Backdrop chapter={chapter} stage={stage} />
+          <ChapterCritters chapter={chapter} daypart={ambient.daypart} />
           {state.ilseLevel > 0 && state.ilseOn ? (
             <>
               <HelperWalker variant="ilse" />
@@ -312,8 +324,10 @@ function ChapterSheet({
   }
   const affordable = unlocked && c.cur >= cost
   const affordRatio = cost > 0 ? Math.min(1, c.cur / cost) : 1
-  const rate = areaRate(a, level) * mult
-  const gain = (areaRate(a, level + count) - areaRate(a, level)) * mult
+  const rate = areaRateWithCare(a, level, c) * mult
+  const gain = (areaRateWithCare(a, level + count, c) - areaRateWithCare(a, level, c)) * mult
+  const care = careOf(c, area)
+  const careNames = t.chapterCare.names[chapter] ?? ['Pflege', 'Sparen']
   const action = level === 0 ? t.chapterUi.plant : t.chapterUi.upgrade
 
   useEffect(
@@ -464,6 +478,52 @@ function ChapterSheet({
                   : ''
                 : t.chapterUi.needMore(formatAsh(Math.max(0, cost - c.cur)), copy.currency)}
             </p>
+            {level >= 1 ? (
+              <div className="gc-care" aria-label={t.chapterCare.title}>
+                {(['grow', 'thrift'] as CareKind[]).map((kind, i) => {
+                  const rank = care[kind]
+                  const maxed = rank >= CHAPTER_CARE_MAX
+                  const price = careCost(a, kind, rank)
+                  const name = careNames[i]!
+                  return (
+                    <div
+                      key={kind}
+                      className={`gc-care-tile ${kind === 'grow' ? 'efficiency' : 'capacity'}`}
+                      title={kind === 'grow' ? t.chapterCare.growTotal(rank * 6) : t.chapterCare.thriftTotal(Math.round((1 - Math.pow(0.96, rank)) * 100))}
+                    >
+                      <div className="gc-care-head">
+                        <span className="gc-care-icon" aria-hidden="true">
+                          {kind === 'grow' ? <IconSprout /> : copy.icon}
+                        </span>
+                        <span className="gc-care-name">{name}</span>
+                      </div>
+                      <div className="gc-pips" aria-label={`${rank}/${CHAPTER_CARE_MAX}`}>
+                        {Array.from({ length: CHAPTER_CARE_MAX }, (_, k) => (
+                          <span key={k} className={k < rank ? 'on' : undefined} />
+                        ))}
+                      </div>
+                      <p className="gc-care-effect">{kind === 'grow' ? t.chapterCare.growPer : t.chapterCare.thriftPer}</p>
+                      {maxed ? (
+                        <span className="gc-care-max">{t.chapterCare.maxed}</span>
+                      ) : (
+                        <button
+                          type="button"
+                          className="gc-care-buy"
+                          disabled={c.cur < price}
+                          onClick={() => {
+                            game.buyChapterCareRank(chapter, area, kind)
+                            pop()
+                          }}
+                          aria-label={t.chapterUi.cost(name, formatAsh(price), copy.currency)}
+                        >
+                          {copy.icon} {formatAsh(price)}
+                        </button>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            ) : null}
           </>
         ) : (
           <button type="button" className="btn buy upgrade-hud-buy gc-buy" disabled>

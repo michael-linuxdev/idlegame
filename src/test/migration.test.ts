@@ -35,6 +35,8 @@ describe('Spielstand-Migration', () => {
     expect(s.equippedCosmetic).toBe('festAdvent')
     expect(s.chapters.obstwiese.owned.birne).toBe(11)
     expect(s.playerXp).toBe(4321)
+    // Kapitel-Pflege did not exist in v2 saves → starts at 0
+    expect(s.chapters.obstwiese.care).toEqual({})
   })
 
   it('round-trips: parse → save → parse is stable', () => {

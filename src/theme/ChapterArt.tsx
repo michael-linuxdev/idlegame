@@ -536,6 +536,29 @@ export const ChapterBackdrop = memo(function ChapterBackdrop({ spec, stage }: { 
               <path key={i} d={`M0 ${28 + i * 7.4} Q50 ${25 + i * 7.4} 100 ${28 + i * 7.4}`} stroke={spec.stripes} strokeWidth="3" fill="none" vectorEffect="non-scaling-stroke" opacity="0.35" />
             ))
           : null}
+        {spec.fields
+          ? [
+              [4, 30, 30, 14, '#b8c46a'],
+              [62, 28, 34, 12, '#c9b070'],
+              [6, 74, 26, 12, '#a3b85a'],
+              [68, 76, 28, 14, '#d4c27a'],
+              [30, 92, 40, 8, '#b0c060'],
+            ].map(([x, y, w, h, c], i) => (
+              <g key={i}>
+                <rect x={x as number} y={y as number} width={w as number} height={h as number} fill={c as string} opacity="0.55" />
+                {Array.from({ length: 4 }, (_, k) => (
+                  <path key={k} d={`M${x} ${(y as number) + 2 + k * ((h as number) / 4)}h${w}`} stroke="#8a6a40" strokeWidth="1" vectorEffect="non-scaling-stroke" opacity=".25" />
+                ))}
+              </g>
+            ))
+          : null}
+        {spec.bigLake ? (
+          <g>
+            <ellipse cx="50" cy="60" rx="34" ry="16" fill="#7a8a4c" opacity=".45" />
+            <ellipse cx="50" cy="60" rx="32" ry="14.5" fill="#5f9ec4" />
+            <ellipse cx="42" cy="55" rx="12" ry="3" fill="#fff" opacity=".18" />
+          </g>
+        ) : null}
         {spec.water === 'lake' ? <ellipse cx="50" cy="62" rx="16" ry="7" fill="#6aa6c9" opacity="0.9" /> : null}
         {spec.water === 'river' ? (
           <path d="M100 58 C90 64 96 72 86 78 C78 84 84 92 76 100" stroke="#6aa6c9" strokeWidth="14" fill="none" vectorEffect="non-scaling-stroke" />
@@ -561,6 +584,21 @@ export const ChapterBackdrop = memo(function ChapterBackdrop({ spec, stage }: { 
             </g>
           ) : null}
           <path d="M0 60 V30 Q60 8 140 26 T280 18 T400 24 V60z" fill={spec.hills[0]} />
+          {spec.forest
+            ? Array.from({ length: 26 }, (_, i) => {
+                const x = i * 16 - 4
+                const h = 26 + ((i * 7) % 12)
+                return <path key={i} d={`M${x} 60 L${x + 8} ${60 - h} L${x + 16} 60z`} fill={i % 2 ? '#2f5a2e' : '#3a6a34'} />
+              })
+            : null}
+          {spec.fields ? (
+            <g>
+              <rect x="300" y="22" width="26" height="16" fill="#efe1c2" />
+              <path d="M296 22 L313 10 L330 22z" fill="#b8403a" />
+              <rect x="334" y="16" width="8" height="22" fill="#c9d0d8" />
+              <path d="M334 16 a4 3 0 0 1 8 0" fill="#9aa8b6" />
+            </g>
+          ) : null}
           <path d="M0 60 V42 Q90 26 180 40 T400 34 V60z" fill={spec.hills[1]} />
         </svg>
       </div>

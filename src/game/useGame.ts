@@ -97,6 +97,7 @@ import {
   buyLegacy,
   buyChapterArea,
   buyChapterMany,
+  buyChapterCare,
   canHandDownNow,
   costForLevels,
   deepSproutPayout,
@@ -128,7 +129,7 @@ import {
   turboMult,
   expansionGardenMult,
 } from './state'
-import type { ChapterId } from './chapters'
+import type { CareKind, ChapterId } from './chapters'
 import { CONTEST_KG } from './extrasCore'
 import type { LegacyId } from './generations'
 import { FEST_EARN } from './fests'
@@ -434,6 +435,14 @@ export function useGame() {
       logPlaytest('upgrade', { id: area, level: result.state.chapters[id].owned[area] ?? 0, kind: id, n: result.bought })
     }
     return result.bought
+  }, [])
+
+  const buyChapterCareRank = useCallback((id: ChapterId, area: string, kind: CareKind) => {
+    setState((s) => {
+      const next = buyChapterCare(s, id, area, kind)
+      if (next !== s) logPlaytest('upgrade', { id: area, kind: `${id}-care-${kind}` })
+      return next
+    })
   }, [])
 
   const seeChapterIntro = useCallback((id: ChapterId) => {
@@ -791,6 +800,7 @@ export function useGame() {
     buyChapter,
     buyChapterBulk,
     seeChapterIntro,
+    buyChapterCareRank,
     forceChapter,
     hireIlse,
     switchIlse,

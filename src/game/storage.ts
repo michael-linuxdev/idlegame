@@ -17,7 +17,7 @@ import {
   type ExpansionSlice,
   type GameState,
 } from './state'
-import { CHAPTERS, emptyChapter, type ChaptersState, type ChapterState, type ChapterDef } from './chapters'
+import { CHAPTERS, CHAPTER_CARE_MAX, emptyChapter, type ChaptersState, type ChapterState, type ChapterDef } from './chapters'
 import { emptyRecipe, ILSE_RANKS, type ContestResult, type Recipe, type SkyEvent } from './extrasCore'
 import { GENERATOR_IDS as GEN_IDS } from './generators'
 import { EMPTY_LEGACY, type LegacyUpgrades } from './generations'
@@ -392,7 +392,22 @@ function parseChapter(def: ChapterDef, raw: unknown): ChapterState {
     owned,
     openedAt: parseNum(raw.openedAt),
     introSeen: raw.introSeen === true,
+    care: parseCare(def, raw.care),
   }
+}
+
+/** Kapitel-Pflege ranks (added 2026-11-08; older saves → all 0). */
+function parseCare(def: ChapterDef, raw: unknown): ChapterState['care'] {
+  const out: ChapterState['care'] = {}
+  if (!isRecord(raw)) return out
+  for (const a of def.areas) {
+    const r = raw[a.id]
+    if (!isRecord(r)) continue
+    const grow = Math.min(CHAPTER_CARE_MAX, parseNonNegInt(r.grow))
+    const thrift = Math.min(CHAPTER_CARE_MAX, parseNonNegInt(r.thrift))
+    if (grow > 0 || thrift > 0) out[a.id] = { grow, thrift }
+  }
+  return out
 }
 
 function parseChapters(raw: unknown): ChaptersState {

@@ -49,3 +49,24 @@ describe('Kapitel 2–12', () => {
     for (const c of CHAPTERS) expect(all[c.id].openedAt).toBe(0)
   })
 })
+
+describe('Kapitel-Pflege', () => {
+  it('Wachsen erhöht den Ertrag, Sparen senkt die Kosten — dauerhaft, max. 10 Ränge', async () => {
+    const { buyChapterCare, chapterCostOf, chapterPerSecond } = await import('../game/state')
+    const base = createInitialState(0)
+    let s: GameState = {
+      ...base,
+      chapters: { ...base.chapters, bauernhof: { ...base.chapters.bauernhof, openedAt: 1, cur: 1e9 } },
+    }
+    const rate0 = chapterPerSecond(s, 'bauernhof')
+    const cost0 = chapterCostOf(s, 'bauernhof', 'kuhweide')
+    s = buyChapterCare(s, 'bauernhof', 'kuhweide', 'grow')
+    s = buyChapterCare(s, 'bauernhof', 'kuhweide', 'thrift')
+    expect(chapterPerSecond(s, 'bauernhof')).toBeCloseTo(rate0 * 1.06)
+    expect(chapterCostOf(s, 'bauernhof', 'kuhweide')).toBeLessThan(cost0)
+    for (let i = 0; i < 20; i++) s = buyChapterCare(s, 'bauernhof', 'kuhweide', 'grow')
+    expect(s.chapters.bauernhof.care.kuhweide!.grow).toBe(10)
+    // unplanted area cannot be cared for
+    expect(buyChapterCare(s, 'bauernhof', 'ziegenstall', 'grow')).toBe(s)
+  })
+})
