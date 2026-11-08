@@ -42,12 +42,24 @@ export interface ExtrasState {
   nextVisitorAt: number
   lastVisit: number
   notify: boolean
+  /** Last Gießkanne reminder (ms) — at most one every WATER_NOTIFY_GAP_MS */
+  lastWaterNotify: number
 }
 
 export const ORDER_DURATION_MS = 30 * 60_000
 export const ORDER_PAUSE_MS = 3 * 60_000
 /** Order size in seconds of current production (needs boosts/upgrades to beat). */
 export const ORDER_NEED_SECONDS = [600, 900, 1200]
+
+/** Gießkanne reminder: at most one every 4 h … */
+export const WATER_NOTIFY_GAP_MS = 4 * 3600_000
+/** … and only after the app sat in the background for 30 min (no ping on quick app switches). */
+export const WATER_NOTIFY_AWAY_MS = 30 * 60_000
+
+/** Delay (ms from leaving the app) until the Gießkanne reminder may fire. */
+export function waterReminderDelay(now: number, lastNotify: number, waterLeftMs: number): number {
+  return Math.max(waterLeftMs, WATER_NOTIFY_AWAY_MS, lastNotify + WATER_NOTIFY_GAP_MS - now)
+}
 
 function emptyWeek(): Record<WeeklyTaskId, number> {
   return { water: 0, upgrades: 0, orders: 0, visitors: 0, seasons: 0, daily: 0, varieties: 0 }
@@ -64,6 +76,7 @@ function fresh(now: number): ExtrasState {
     nextVisitorAt: now + 90_000,
     lastVisit: now,
     notify: false,
+    lastWaterNotify: 0,
   }
 }
 
