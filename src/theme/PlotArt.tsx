@@ -1,3 +1,4 @@
+import { memo } from 'react'
 /**
  * Plot states before a module exists:
  *  - WildPlot: overgrown corner (brambles / nettles / junk) — locked.
@@ -110,7 +111,7 @@ function OvergrownHeap() {
   )
 }
 
-export function WildPlot({ variant }: { variant: number }) {
+export const WildPlot = memo(function WildPlot({ variant }: { variant: number }) {
   const v = ((variant % 3) + 3) % 3
   return (
     <svg className="plot-art plot-wild" viewBox={VIEWBOX} focusable="false" aria-hidden="true">
@@ -118,10 +119,10 @@ export function WildPlot({ variant }: { variant: number }) {
       {v === 0 ? <Brambles /> : v === 1 ? <NettlesAndJunk /> : <OvergrownHeap />}
     </svg>
   )
-}
+})
 
 /** Cleared & raked — the spot waits for its first planting. */
-export function ClearedPlot() {
+export const ClearedPlot = memo(function ClearedPlot() {
   return (
     <svg className="plot-art plot-cleared" viewBox={VIEWBOX} focusable="false" aria-hidden="true">
       <Shadow />
@@ -155,4 +156,4 @@ export function ClearedPlot() {
       <path d="M38 30 L50 38" stroke="#6b6f73" strokeWidth="2.6" strokeLinecap="round" />
     </svg>
   )
-}
+})

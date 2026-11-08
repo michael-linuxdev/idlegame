@@ -10,7 +10,7 @@
  *  3. Stage-driven life: wild clumps vanish and flowers, butterflies and
  *     lanterns appear as more plots are angelegt (stage 0–10).
  */
-import type { CSSProperties, ReactNode } from 'react'
+import { memo, type CSSProperties, type ReactNode } from 'react'
 import { GENERATORS } from '../game/generators'
 import type { Ambient } from './ambient'
 
@@ -305,7 +305,8 @@ function Particles({ ambient }: { ambient: Ambient }) {
   )
 }
 
-export function MapBackdrop({ stage, ambient }: Props) {
+/** Memoized: re-renders only when the stage or ambient mood changes. */
+export const MapBackdrop = memo(function MapBackdrop({ stage, ambient }: Props) {
   return (
     <div className="garden-ground" aria-hidden="true" data-stage={stage}>
       <svg
@@ -446,4 +447,4 @@ export function MapBackdrop({ stage, ambient }: Props) {
       <Particles ambient={ambient} />
     </div>
   )
-}
+})
