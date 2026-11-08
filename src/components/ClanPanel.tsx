@@ -1,6 +1,9 @@
 import { formatClock, formatDecimal } from '../game/format'
 import { t } from '../i18n'
 import type { useGame } from '../game/useGame'
+import { CONTEST_REWARDS, NEIGHBOURS, neighbourNow } from '../game/extrasCore'
+import { weekKey } from '../game/monetization'
+import { playSfx } from '../game/sound'
 
 type GameApi = ReturnType<typeof useGame>
 
@@ -44,6 +47,10 @@ export function ClanPanel({ game }: Props) {
         </div>
       </div>
 
+      <PumpkinContest game={game} />
+
+      <p className="shield-note">{game.shieldReady ? t.shield.ready : t.shield.used}</p>
+
       <h3 className="subhead">{t.clan.leaderboard}</h3>
       <ol className="leaderboard">
         {FAKE_LEADERBOARD.map((row) => (
@@ -59,6 +66,61 @@ export function ClanPanel({ game }: Props) {
             <span className="lb-score">
               {row.score.toLocaleString('de-DE')} {t.clan.pts}
             </span>
+          </li>
+        ))}
+      </ol>
+    </section>
+  )
+}
+
+/** Größter Kürbis — weekly offline Vereinsrunde against the neighbours. */
+function PumpkinContest({ game }: { game: GameApi }) {
+  const { state, nowTick } = game
+  const week = weekKey(nowTick)
+  const kg = state.contestWeek === week ? state.contestKg : 0
+  const rows = [
+    ...NEIGHBOURS.map((name, i) => ({ name, kg: neighbourNow(week, nowTick)[i]!, you: false })),
+    { name: t.contest.you, kg, you: true },
+  ].sort((a, b) => b.kg - a.kg)
+  const [y, m, d] = [Number(week.slice(0, 4)), Number(week.slice(6, 8)), Number(week.slice(8, 10))]
+  const end = new Date(y, m - 1, d + 7).getTime()
+  const days = Math.max(1, Math.ceil((end - nowTick) / 86_400_000))
+  const r = state.contestResult
+  return (
+    <section className="contest-block" aria-labelledby="contest-heading">
+      <h3 id="contest-heading" className="subhead">
+        {t.contest.title}
+      </h3>
+      <p className="muted">{t.contest.intro}</p>
+      <p className="contest-honest">{t.contest.honest}</p>
+      {r ? (
+        <div className="contest-result">
+          <span>{t.contest.result(r.rank, t.contest.kg(r.kg))}</span>
+          <button
+            type="button"
+            className="btn buy"
+            disabled={r.claimed}
+            onClick={() => {
+              game.claimPumpkin()
+              playSfx('claim')
+            }}
+          >
+            {r.claimed ? t.contest.claimed : t.contest.claim(CONTEST_REWARDS[Math.min(r.rank, 10) - 1] ?? 5)}
+          </button>
+        </div>
+      ) : null}
+      <p className="contest-meta">
+        {t.contest.endsIn(days)} · {t.contest.rewards}
+      </p>
+      <ol className="leaderboard contest-board">
+        {rows.map((row, i) => (
+          <li key={row.name} className={row.you ? 'leaderboard-row you' : 'leaderboard-row'}>
+            <span className="lb-rank">#{i + 1}</span>
+            <span className="lb-name">
+              <span className="pumpkin-dot" style={{ transform: `scale(${0.6 + Math.min(1, row.kg / 90) * 0.8})` }} aria-hidden="true" />
+              {row.name}
+            </span>
+            <span className="lb-score">{t.contest.kg(row.kg)}</span>
           </li>
         ))}
       </ol>

@@ -25,6 +25,9 @@ export type PlaytestEventType =
   | 'fest_buy'
   | 'plot_switch'
   | 'app_update'
+  | 'weinlese'
+  | 'recipe'
+  | 'photo'
 
 export type PlaytestPayload = Record<
   string,

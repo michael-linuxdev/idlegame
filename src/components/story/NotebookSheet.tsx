@@ -7,7 +7,7 @@ import {
 } from '../../game/notebook'
 import { t } from '../../i18n'
 import { GENERATORS } from '../../game/generators'
-import { RARITY_BONUS, VARIETIES, collectionMult } from '../../game/gardenLife'
+import { RARITY_BONUS, SET_BONUS, VARIETIES, collectionMult, completedSets } from '../../game/gardenLife'
 import { formatDecimal } from '../../game/format'
 
 interface Props {
@@ -131,6 +131,7 @@ export function NotebookSheet({ notebook, initialEntry, onRead, onClose, collect
 
 function PlantBook({ collection }: { collection: readonly string[] }) {
   const total = (collectionMult(collection) - 1) * 100
+  const sets = completedSets(collection)
   return (
     <div className="plantbook">
       <p className="notebook-intro">{t.plantbook.intro}</p>
@@ -142,7 +143,16 @@ function PlantBook({ collection }: { collection: readonly string[] }) {
         if (list.length === 0) return null
         return (
           <section key={g.key} className={`plantbook-group${g.key === 'fest' ? ' fest' : ''}`}>
-            <h4>{g.name}</h4>
+            <h4>
+              {g.name}
+              {g.key !== 'fest' ? (
+                <span className={`plantbook-set${sets.includes(g.key as never) ? ' done' : ''}`}>
+                  {sets.includes(g.key as never)
+                    ? t.sets.complete(formatDecimal(SET_BONUS * 100, 0))
+                    : t.sets.progress(list.filter((v) => collection.includes(v.id)).length, list.length)}
+                </span>
+              ) : null}
+            </h4>
             <ul>
               {list.map((v) => {
                 const have = collection.includes(v.id)

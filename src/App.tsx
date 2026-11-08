@@ -2,7 +2,9 @@ import { useCallback, useEffect, useState } from 'react'
 import { AppNav, type Tab } from './components/AppNav'
 import { ClanPanel } from './components/ClanPanel'
 import { GardenMap } from './components/GardenMap'
-import { OrchardMap } from './components/OrchardMap'
+import { ChapterMap } from './components/ChapterMap'
+import type { ChapterId } from './game/chapters'
+import type { CosmeticId } from './game/monetization'
 import { FtueCoach } from './components/FtueCoach'
 import { InstallPrompt } from './components/InstallPrompt'
 import { PrestigePanel } from './components/PrestigePanel'
@@ -30,25 +32,26 @@ import './theme/expansion.css'
 export default function App() {
   const game = useGame()
   const [tab, setTab] = useState<Tab>('fortress')
-  const [plot, setPlot] = useState<'garden' | 'orchard'>('garden')
-  const orchardOpen = game.orchardOpen
+  const [plot, setPlot] = useState<'garden' | ChapterId>('garden')
+  const [previewSkin, setPreviewSkin] = useState<CosmeticId | null>(null)
+  const [photoMode, setPhotoMode] = useState(false)
+  const chapterShown = plot !== 'garden' && game.openChapters.includes(plot) ? plot : null
 
-  // Test hook: ?kapitel2=1 opens the Streuobstwiese without a Tiefer Winter
-  const { forceOrchard } = game
+  // Test hooks: ?kapitel2=1 / ?kapitel3=1 open a chapter right away
+  const { forceChapter } = game
   useEffect(() => {
     try {
-      if (new URLSearchParams(location.search).get('kapitel2') === '1') forceOrchard()
+      const q = new URLSearchParams(location.search)
+      if (q.get('kapitel2') === '1') forceChapter('obstwiese')
+      if (q.get('kapitel3') === '1') forceChapter('weinberg')
     } catch {
       /* ignore */
     }
-  }, [forceOrchard])
+  }, [forceChapter])
 
-  const switchPlot = useCallback(() => {
-    setPlot((p) => {
-      const next = p === 'garden' ? 'orchard' : 'garden'
-      logPlaytest('plot_switch', { to: next })
-      return next
-    })
+  const goPlot = useCallback((next: 'garden' | ChapterId) => {
+    logPlaytest('plot_switch', { to: next })
+    setPlot(next)
   }, [])
   const [ftueHighlight, setFtueHighlight] = useState<string | null>(null)
   const [holdInstall, setHoldInstall] = useState(false)
@@ -135,10 +138,8 @@ export default function App() {
         className={`app-main${tab === 'fortress' ? ' map-mode' : ''}`}
         tabIndex={tab === 'fortress' ? undefined : 0}
       >
-        {tab === 'fortress' && plot === 'orchard' && orchardOpen ? (
-          <OrchardMap game={game} onSwitchPlot={switchPlot} />
-        ) : null}
-        {tab === 'fortress' && (plot === 'garden' || !orchardOpen) ? (
+        {tab === 'fortress' && chapterShown ? <ChapterMap key={chapterShown} game={game} chapter={chapterShown} onGo={goPlot} /> : null}
+        {tab === 'fortress' && !chapterShown ? (
           <GardenMap
             game={game}
             highlightId={ftueHighlight}
@@ -149,25 +150,37 @@ export default function App() {
             updateExtras={updateExtras}
             track={track}
             hintsBlocked={coachVisible || Boolean(game.seasonEnd) || comebackOpen}
-            onSwitchPlot={orchardOpen ? switchPlot : undefined}
+            onGoPlot={goPlot}
+            previewSkin={previewSkin}
+            onEndPreview={() => {
+              setPreviewSkin(null)
+              onTabChange('shop')
+            }}
+            photoMode={photoMode}
+            onExitPhoto={() => setPhotoMode(false)}
           />
         ) : null}
         {tab === 'prestige' ? (
           <PrestigePanel
             game={game}
             highlight={ftueHighlight === 'prestige'}
-            onOpenOrchard={
-              orchardOpen
-                ? () => {
-                    setPlot('orchard')
-                    onTabChange('fortress')
-                  }
-                : undefined
-            }
+            onOpenChapter={(id) => {
+              goPlot(id)
+              onTabChange('fortress')
+            }}
           />
         ) : null}
         {tab === 'clan' ? <ClanPanel game={game} /> : null}
-        {tab === 'shop' ? <ShopPanel game={game} /> : null}
+        {tab === 'shop' ? (
+          <ShopPanel
+            game={game}
+            onPreview={(id) => {
+              setPreviewSkin(id)
+              setPlot('garden')
+              onTabChange('fortress')
+            }}
+          />
+        ) : null}
       </main>
 
       <FtueCoach
@@ -187,6 +200,11 @@ export default function App() {
         onOpenNotebook={() => openNotebook(null)}
         onOpenLegal={() => setLegalOpen(true)}
         onOpenBackup={() => setBackupOpen(true)}
+        onOpenPhoto={() => {
+          setPlot('garden')
+          onTabChange('fortress')
+          setPhotoMode(true)
+        }}
         reminders={extras.notify}
         onToggleReminders={toggleReminders}
         unreadLetters={unread.length}

@@ -78,10 +78,23 @@ export const VARIETIES: VarietyDef[] = [
 /** Varieties that can be found by gardening (no Festsorten). */
 export const GARDEN_VARIETIES: VarietyDef[] = VARIETIES.filter((v) => !v.fest)
 
+/** Pflanzenbuch-Set: every garden variety of one area → extra bonus. */
+export const SET_BONUS = 0.02
+
+/** Areas whose garden varieties are all found. */
+export function completedSets(collection: readonly string[]): GeneratorId[] {
+  const byModule = new Map<GeneratorId, boolean>()
+  for (const v of GARDEN_VARIETIES) {
+    const have = collection.includes(v.id)
+    byModule.set(v.module, (byModule.get(v.module) ?? true) && have)
+  }
+  return [...byModule.entries()].filter(([, done]) => done).map(([m]) => m)
+}
+
 export function collectionMult(collection: readonly string[]): number {
   let bonus = 0
   for (const v of VARIETIES) if (collection.includes(v.id)) bonus += RARITY_BONUS[v.rarity]
-  return 1 + bonus
+  return 1 + bonus + SET_BONUS * completedSets(collection).length
 }
 
 /** Roll for a new variety when `module` is ausgebaut. */

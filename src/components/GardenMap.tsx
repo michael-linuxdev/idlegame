@@ -67,7 +67,13 @@ import { UpgradeSheet } from './UpgradeSheet'
 import { FestSheet } from './FestSheet'
 import { HelperWalker } from './HelperWalker'
 import { festAt } from '../game/fests'
-import { IconApple, IconHelper } from '../theme/icons'
+import { IconHelper } from '../theme/icons'
+import { chapterCopy } from './chapterCopy'
+import type { ChapterId } from '../game/chapters'
+import { COSMETICS, type CosmeticId } from '../game/monetization'
+import { SpeechBubble } from './SpeechBubble'
+import { GardenCritters } from './GardenCritters'
+import { PhotoOverlay, RecipeSheet, SkyEventButton, WishSheet } from './GardenExtras'
 
 function surpriseLabel(kind: SurpriseKind, amount: string): string {
   switch (kind) {
@@ -95,8 +101,14 @@ interface Props {
   track: (task: WeeklyTaskId, n?: number) => void
   /** FTUE / ceremony / letter on screen — hold Omas hints */
   hintsBlocked?: boolean
-  /** Kapitel 2 open → switch to the Streuobstwiese */
-  onSwitchPlot?: () => void
+  /** Switch to a chapter plot */
+  onGoPlot?: (plot: 'garden' | ChapterId) => void
+  /** Gartenstil-Vorschau (shop) */
+  previewSkin?: CosmeticId | null
+  onEndPreview?: () => void
+  /** Foto-Modus: HUD hidden, postcard export */
+  photoMode?: boolean
+  onExitPhoto?: () => void
 }
 
 export function GardenMap({
@@ -109,7 +121,11 @@ export function GardenMap({
   updateExtras,
   track,
   hintsBlocked = false,
-  onSwitchPlot,
+  onGoPlot,
+  previewSkin = null,
+  onEndPreview,
+  photoMode = false,
+  onExitPhoto,
 }: Props) {
   const {
     state,
@@ -147,7 +163,11 @@ export function GardenMap({
   const prevLevel = useRef(playerLevel.level)
   const totalMult =
     multiplier * levelMult * clanMult * eventMult * game.expansionMult * game.turboMult
-  const skinClass = equippedCosmetic?.accentClass ?? 'skin-wiese'
+  const previewDef = previewSkin ? COSMETICS.find((c) => c.id === previewSkin) ?? null : null
+  const skinClass = previewDef?.accentClass ?? equippedCosmetic?.accentClass ?? 'skin-wiese'
+  const [recipeOpen, setRecipeOpen] = useState(false)
+  const [wishOpen, setWishOpen] = useState(false)
+  const [growing, setGrowing] = useState<string | null>(null)
   const ambient = useAmbient()
   const harvest = useHarvestFlight()
   const { seen: seenHints, markSeen } = useHints()
@@ -483,7 +503,7 @@ export function GardenMap({
     if (!order || !orderDone) return
     const name = t.orders.customers[order.customer % t.orders.customers.length]!
     harvest.launch(document.querySelector('.pill-order'))
-    game.grant({ samen: order.seeds, ernteSeconds: 300, fest: 8 })
+    game.grant({ samen: order.seeds, ernteSeconds: 300, fest: 8, kg: 2 })
     playSfx('claim')
     showToast(t.orders.done(name))
     const now = Date.now()
@@ -549,6 +569,20 @@ export function GardenMap({
     }
   }, [state.owned, game.postPrestigeFocus])
 
+  // —— Meilenstein-Truhe toast ——
+  const { ackChest } = game
+  useEffect(() => {
+    const chest = state.lastChest
+    if (!chest) return
+    playSfx('claim')
+    showToast(
+      chest.kind === 'variety'
+        ? t.chest.variety(t.plantbook.names[chest.variety ?? ''] ?? '')
+        : t.chest[chest.kind](chest.amount),
+    )
+    ackChest()
+  }, [state.lastChest, ackChest])
+
   const hint = hintsBlocked
     ? null
     : pickHint(
@@ -565,7 +599,7 @@ export function GardenMap({
       )
 
   return (
-    <section className="fortress-home" aria-labelledby="ernte-heading">
+    <section className={`fortress-home${photoMode ? ' photo-mode' : ''}`} aria-labelledby="ernte-heading">
       <h1 id="ernte-heading" className="sr-only">
         {t.brand}
       </h1>
@@ -626,6 +660,7 @@ export function GardenMap({
           season={seasonPill}
           order={orderPill}
           onOpenFest={() => setFestOpen(true)}
+          onOpenRecipe={() => setRecipeOpen(true)}
         />
       </header>
 
@@ -640,19 +675,51 @@ export function GardenMap({
 
       {hint ? <OmaHint id={hint} onOk={() => markSeen(hint)} /> : null}
 
-      {state.helperLevel > 0 || onSwitchPlot ? (
+      {previewDef ? (
+        <div className="preview-banner" role="status">
+          <span>{t.preview.banner(previewDef.name)}</span>
+          <button
+            type="button"
+            className="btn buy"
+            disabled={game.state.samen < previewDef.cost || game.state.ownedCosmetics.includes(previewDef.id)}
+            onClick={() => {
+              game.purchaseCosmetic(previewDef.id)
+              game.setEquippedCosmetic(previewDef.id)
+              onEndPreview?.()
+            }}
+          >
+            {t.preview.buy(previewDef.cost)}
+          </button>
+          <button type="button" className="btn ghost" onClick={onEndPreview}>
+            {t.preview.back}
+          </button>
+        </div>
+      ) : null}
+
+      {photoMode ? (
+        <PhotoOverlay
+          caption={t.photo.caption(stageName, state.prestiges + 1)}
+          onClose={() => onExitPhoto?.()}
+        />
+      ) : null}
+
+      {state.helperLevel > 0 || game.openChapters.length > 0 ? (
         <div className="map-side">
-          {onSwitchPlot ? (
-            <button
-              type="button"
-              className="map-side-btn plot-switch"
-              onClick={onSwitchPlot}
-              aria-label={t.orchard.toOrchard}
-            >
-              <IconApple />
-              <span>{t.orchard.chipOrchard}</span>
-            </button>
-          ) : null}
+          {game.openChapters.map((id) => {
+            const copy = chapterCopy(id)
+            return (
+              <button
+                key={id}
+                type="button"
+                className="map-side-btn plot-switch"
+                onClick={() => onGoPlot?.(id)}
+                aria-label={copy.to}
+              >
+                {copy.icon}
+                <span>{copy.chip}</span>
+              </button>
+            )
+          })}
           {state.helperLevel > 0 ? (
             <button
               type="button"
@@ -693,7 +760,18 @@ export function GardenMap({
             skin={skinClass}
             fest={festAt(game.nowTick).id}
           />
-          {state.helperLevel > 0 && state.helperOn ? <HelperWalker /> : null}
+          {state.helperLevel > 0 && state.helperOn ? (
+            <>
+              <HelperWalker />
+              {!photoMode ? <SpeechBubble lines={t.jonas.sayings} who="jonas" /> : null}
+            </>
+          ) : null}
+          <GardenCritters
+            chickens={(state.owned.huehnerstall ?? 0) > 0}
+            bees={(state.owned.bienenstock ?? 0) > 0}
+            daypart={ambient.daypart}
+          />
+          {!photoMode ? <SkyEventButton game={game} onWish={() => setWishOpen(true)} /> : null}
           <Visitors
             game={game}
             extras={extras}
@@ -760,7 +838,7 @@ export function GardenMap({
                 onContextMenu={(e) => e.preventDefault()}
                 onDragStart={(e) => e.preventDefault()}
               >
-                <span className="plot-visual">
+                <span className={`plot-visual${growing === def.id ? ' tier-grow' : ''}`}>
                   {!unlocked ? (
                     <WildPlot variant={index} />
                   ) : ready ? (
@@ -780,6 +858,8 @@ export function GardenMap({
                   tier={moduleTier(level)}
                   onTier={(tier) => {
                     if (tier >= 2) showToast(t.milestone.tier(def.name, tier))
+                    setGrowing(def.id)
+                    window.setTimeout(() => setGrowing((g) => (g === def.id ? null : g)), 1300)
                   }}
                 />
                 {showSign ? (
@@ -830,6 +910,8 @@ export function GardenMap({
       ) : null}
 
       {festOpen ? <FestSheet game={game} onClose={() => setFestOpen(false)} /> : null}
+      {recipeOpen ? <RecipeSheet game={game} onClose={() => setRecipeOpen(false)} onCooked={showToast} /> : null}
+      {wishOpen ? <WishSheet game={game} onClose={() => setWishOpen(false)} /> : null}
 
       {progressOpen ? (
         <ProgressSheet

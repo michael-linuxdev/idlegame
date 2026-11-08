@@ -17,7 +17,9 @@ import {
   type ExpansionSlice,
   type GameState,
 } from './state'
-import { emptyOrchard, ORCHARD_IDS, type OrchardState } from './orchard'
+import { CHAPTERS, emptyChapter, type ChaptersState, type ChapterState, type ChapterDef } from './chapters'
+import { emptyRecipe, ILSE_RANKS, type ContestResult, type Recipe, type SkyEvent } from './extrasCore'
+import { GENERATOR_IDS as GEN_IDS } from './generators'
 import { EMPTY_LEGACY, type LegacyUpgrades } from './generations'
 import { VARIETIES, type WheelBuff } from './gardenLife'
 
@@ -330,23 +332,55 @@ function parseNum(raw: unknown, fallback = 0): number {
   return typeof raw === 'number' && Number.isFinite(raw) ? Math.max(0, raw) : fallback
 }
 
-function parseOrchard(raw: unknown): OrchardState {
-  const base = emptyOrchard()
+function parseChapter(def: ChapterDef, raw: unknown): ChapterState {
+  const base = emptyChapter(def)
   if (!isRecord(raw)) return base
   const owned = { ...base.owned }
   if (isRecord(raw.owned)) {
-    for (const id of ORCHARD_IDS) {
-      const n = raw.owned[id]
-      if (typeof n === 'number' && Number.isFinite(n) && n >= 0) owned[id] = Math.floor(n)
+    for (const a of def.areas) {
+      const n = raw.owned[a.id]
+      if (typeof n === 'number' && Number.isFinite(n) && n >= 0) owned[a.id] = Math.floor(n)
     }
   }
   return {
-    obst: parseNum(raw.obst, base.obst),
-    obstLifetime: parseNum(raw.obstLifetime),
+    cur: parseNum(raw.cur, base.cur),
+    curLifetime: parseNum(raw.curLifetime),
     owned,
     openedAt: parseNum(raw.openedAt),
     introSeen: raw.introSeen === true,
   }
+}
+
+function parseChapters(raw: unknown): ChaptersState {
+  const out = {} as ChaptersState
+  for (const def of CHAPTERS) out[def.id] = parseChapter(def, isRecord(raw) ? raw[def.id] : undefined)
+  return out
+}
+
+function parseNumRecord(raw: unknown): Record<string, number> {
+  const out: Record<string, number> = {}
+  if (!isRecord(raw)) return out
+  for (const [k, v] of Object.entries(raw)) {
+    if (typeof v === 'number' && Number.isFinite(v) && v >= 0) out[k] = Math.floor(v)
+  }
+  return out
+}
+
+function parseRecipe(raw: unknown): Recipe {
+  if (!isRecord(raw) || typeof raw.day !== 'string' || !Array.isArray(raw.areas)) return emptyRecipe()
+  const areas = raw.areas.filter((a): a is (typeof GEN_IDS)[number] => GEN_IDS.includes(a as (typeof GEN_IDS)[number]))
+  const have = Array.isArray(raw.have) ? raw.have.map((n) => parseNonNegInt(n)) : areas.map(() => 0)
+  return { day: raw.day, areas, have, claimed: raw.claimed === true, dish: parseNonNegInt(raw.dish) }
+}
+
+function parseSky(raw: unknown): SkyEvent | null {
+  if (!isRecord(raw) || (raw.kind !== 'rainbow' && raw.kind !== 'star')) return null
+  return { kind: raw.kind, until: parseNum(raw.until) }
+}
+
+function parseContestResult(raw: unknown): ContestResult | null {
+  if (!isRecord(raw) || typeof raw.week !== 'string') return null
+  return { week: raw.week, rank: Math.max(1, parseNonNegInt(raw.rank, 10)), kg: parseNum(raw.kg), claimed: raw.claimed === true }
 }
 
 function parseExpansion(parsed: Record<string, unknown>): ExpansionSlice {
@@ -369,7 +403,21 @@ function parseExpansion(parsed: Record<string, unknown>): ExpansionSlice {
     helperCarryMs: 0,
     helperReport: 0,
     turboEndsAt: parseNum(parsed.turboEndsAt),
-    orchard: parseOrchard(parsed.orchard),
+    chapters: parseChapters(parsed.chapters),
+    ilseLevel: Math.min(ILSE_RANKS.length, parseNonNegInt(parsed.ilseLevel)),
+    ilseOn: parsed.ilseOn !== false,
+    ilseCarryMs: 0,
+    weinleseAt: parseNum(parsed.weinleseAt),
+    milestoneRecord: parseNumRecord(parsed.milestoneRecord),
+    lastChest: null,
+    recipe: parseRecipe(parsed.recipe),
+    skyEvent: parseSky(parsed.skyEvent),
+    skyNextAt: parseNum(parsed.skyNextAt, base.skyNextAt),
+    rainbowEndsAt: parseNum(parsed.rainbowEndsAt),
+    shieldWeek: typeof parsed.shieldWeek === 'string' ? parsed.shieldWeek : '',
+    contestWeek: typeof parsed.contestWeek === 'string' ? parsed.contestWeek : base.contestWeek,
+    contestKg: parseNum(parsed.contestKg),
+    contestResult: parseContestResult(parsed.contestResult),
     generation: parseNonNegInt(parsed.generation),
     vermaechtnis: parseNonNegInt(parsed.vermaechtnis),
     legacy,

@@ -16,6 +16,7 @@ interface Props {
   onOpenNotebook?: () => void
   onOpenLegal?: () => void
   onOpenBackup?: () => void
+  onOpenPhoto?: () => void
   unreadLetters?: number
   reminders?: boolean
   onToggleReminders?: () => void
@@ -70,6 +71,7 @@ export function AppNav({
   onOpenNotebook,
   onOpenLegal,
   onOpenBackup,
+  onOpenPhoto,
   unreadLetters = 0,
   reminders = false,
   onToggleReminders,
@@ -246,6 +248,19 @@ export function AppNav({
               }}
             >
               <span className="tab-label">{t.backup.menu}</span>
+            </button>
+          ) : null}
+          {onOpenPhoto ? (
+            <button
+              type="button"
+              role="menuitem"
+              className="nav-menu-item nav-menu-legal"
+              onClick={() => {
+                setMenuOpen(false)
+                onOpenPhoto()
+              }}
+            >
+              <span className="tab-label">{t.photo.menu}</span>
             </button>
           ) : null}
           <div className="nav-menu-update">
