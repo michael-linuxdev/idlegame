@@ -41,10 +41,12 @@ import { FloatPops, type FloatPopItem } from './FloatPops'
 import { BottomBar } from './hud/BottomBar'
 import { Visitors } from './Visitors'
 import { OmaHint } from './OmaHint'
+import { useOverlayOpen } from '../game/overlays'
 import { pickHint, useHints } from '../game/hints'
 import { canDeepReset } from '../game/longLoop'
 import {
   ORDER_PAUSE_MS,
+  WEEKLY_TASKS,
   makeOrder,
   orderProgress,
   type ExtrasState,
@@ -194,7 +196,9 @@ export function GardenMap({
   ).length
   /** Only the next wild corner shows its sign — keeps the map calm. */
   const nextWildId = GENERATORS.find((g) => !game.unlocked(g.id))?.id ?? null
-  const questReady = game.questRows.some((q: { ready: boolean }) => q.ready)
+  const questReady =
+    game.questRows.some((q: { ready: boolean }) => q.ready) ||
+    WEEKLY_TASKS.some((x) => !extras.weekClaimed.includes(x.id) && extras.week[x.id] >= x.target)
 
   const pushPop = useCallback((text: string, kind?: FloatPopItem['kind']) => {
     setPops((list) => [...list.slice(-4), { id: (list.at(-1)?.id ?? 0) + 1, text, kind }])
@@ -600,7 +604,8 @@ export function GardenMap({
     ackChest()
   }, [state.lastChest, ackChest])
 
-  const hint = hintsBlocked
+  const overlayOpen = useOverlayOpen()
+  const hint = hintsBlocked || overlayOpen
     ? null
     : pickHint(
         {

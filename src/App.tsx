@@ -32,6 +32,7 @@ import './theme/polish.css'
 import './theme/panels.css'
 import './theme/story.css'
 import './theme/expansion.css'
+import './theme/ux.css'
 
 export default function App() {
   const game = useGame()
@@ -224,7 +225,13 @@ export default function App() {
         onCoachVisible={setCoachVisible}
       />
 
-      <InstallPrompt holdForFtue={holdInstall} />
+      {/* Install cue waits for the first Saisonende — never in the first session */}
+      <InstallPrompt
+        holdForFtue={
+          holdInstall ||
+          (game.state.prestiges < 1 && game.state.deepPrestiges === 0 && game.state.generation === 0)
+        }
+      />
 
       <AppNav
         tab={tab}

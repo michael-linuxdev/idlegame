@@ -89,13 +89,15 @@ export function NotebookSheet({ notebook, initialEntry, onRead, onClose, collect
         {!entry ? (
           <div className="notebook-tabs" role="tablist">
             <button type="button" role="tab" aria-selected={tab === 'letters'} className={`notebook-tab${tab === 'letters' ? ' active' : ''}`} onClick={() => setTab('letters')}>
-              {t.plantbook.lettersTab}
+              <span className="notebook-tab-label">{t.plantbook.lettersTab}</span>
             </button>
             <button type="button" role="tab" aria-selected={tab === 'plants'} className={`notebook-tab${tab === 'plants' ? ' active' : ''}`} onClick={() => setTab('plants')}>
-              {t.plantbook.tab} · {collection.length}/{VARIETIES.length}
+              <span className="notebook-tab-label">{t.plantbook.tab}</span>
+              <span className="notebook-tab-count">{collection.length}/{VARIETIES.length}</span>
             </button>
             <button type="button" role="tab" aria-selected={tab === 'residents'} className={`notebook-tab${tab === 'residents' ? ' active' : ''}`} onClick={() => setTab('residents')}>
-              {t.residents.tab} · {RESIDENTS.filter((r) => (residentsSeen[r.id] ?? 0) > 0).length}/{RESIDENTS.length}
+              <span className="notebook-tab-label">{t.residents.tab}</span>
+              <span className="notebook-tab-count">{RESIDENTS.filter((r) => (residentsSeen[r.id] ?? 0) > 0).length}/{RESIDENTS.length}</span>
             </button>
           </div>
         ) : null}
@@ -113,6 +115,19 @@ export function NotebookSheet({ notebook, initialEntry, onRead, onClose, collect
         ) : (
           <>
             <p className="notebook-intro">{t.notebook.intro}</p>
+            {(() => {
+              // Story stays in order — but the next unread letter is one tap away
+              const next = NOTEBOOK_ENTRIES.find(
+                (d) => d.id !== 'welcome' && notebook.unlocked.includes(d.id) && !notebook.read.includes(d.id),
+              )
+              return next ? (
+                <button type="button" className="notebook-next" onClick={() => setOpen(next.id)}>
+                  <span className="notebook-next-dot" aria-hidden="true" />
+                  <span>{t.notebook.readNext(t.notebook.entries[next.id].title)}</span>
+                  <span aria-hidden="true">→</span>
+                </button>
+              ) : null
+            })()}
             <ol className="notebook-pages">
               {NOTEBOOK_ENTRIES.map((def) => {
                 const unlocked = notebook.unlocked.includes(def.id)

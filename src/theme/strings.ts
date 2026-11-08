@@ -127,7 +127,7 @@ export const strings = {
     goalAria: 'Sonnenfenster-Ziel',
     goalLine: (progress: string, reward: number) =>
       `${progress} → ${reward} ${SEEDS}`,
-    claimGoal: 'Belohnen',
+    claimGoal: 'Abholen',
     claimed: 'Abgeholt',
     dismiss: 'Schließen',
   },
@@ -242,8 +242,8 @@ export const strings = {
 
   level: {
     label: 'Gärtnerstufe',
-    short: 'Stufe',
-    xp: 'EP',
+    short: 'Gärtnerstufe',
+    xp: 'Erfahrung',
     bonus: (pct: string) => `+${pct} % ${SOFT}/s`,
     rewards: {
       ernte: (n: number) => `+${n} ${SOFT}`,
@@ -358,7 +358,7 @@ export const strings = {
       'für das nächste Gartenjahr. Beete und Ernte dieser Saison ruhen bis zum Frühling.',
     credits: 'Erbstücke:',
     multiplier: 'Erbe-Bonus:',
-    runs: 'Gartenjahre:',
+    runs: 'Jahre geschafft:',
     thisRun: 'Diese Saison:',
     gate: 'Ab:',
     creditsPreview: (n: number) => `Vorschau +${erb(n)}`,
@@ -711,7 +711,7 @@ export const strings = {
 
   ftue: {
     guide: (step: number, total: number) => `Omas Notizbuch · ${step}/${total}`,
-    skip: 'Später lesen',
+    skip: 'Tipps überspringen',
     welcome: {
       title: 'Mein liebes Enkelkind,',
       body: 'der Garten gehört jetzt dir. Er ist ziemlich verwildert — aber unter den Brombeeren steckt gute Erde. Fang beim Gemüsebeet an. Deine Oma',
@@ -748,6 +748,7 @@ export const strings = {
 
   /** Omas Notizbuch — letters unlocked by garden stages and Gartenjahre. */
   notebook: {
+    readNext: (title: string) => `Neu: ${title.replace(/,$/, '')}`,
     title: 'Omas Notizbuch',
     intro: 'Briefe und Notizen, die Oma dir hinterlassen hat. Neue Seiten finden sich, wenn der Garten wächst.',
     open: 'Notizbuch öffnen',
@@ -1082,7 +1083,7 @@ export const strings = {
     goalAria: 'Erntefest-Ziel',
     goalLine: (progress: string, reward: number) =>
       `${progress} → ${reward} ${SEEDS}`,
-    claimGoal: 'Belohnen',
+    claimGoal: 'Abholen',
     claimed: 'Abgeholt',
     dismiss: 'Schließen',
   },

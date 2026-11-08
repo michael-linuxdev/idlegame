@@ -308,7 +308,13 @@
   gap: 0.3rem 0.35rem;
   max-width: 100%;
   pointer-events: auto;
-  padding-bottom: 2px;
+  padding: 0 0 2px;
+  margin: 0;
+  list-style: none;
+}
+
+.hud-pill-item {
+  display: contents;
 }
 
 .hud-pills::-webkit-scrollbar {
