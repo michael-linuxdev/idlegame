@@ -5,6 +5,7 @@ import { MuteToggle } from './MuteToggle'
 import { isAmbienceOn, setAmbienceOn } from '../game/ambience'
 import { PlaytestLogControls } from './PlaytestLogControls'
 import { APP_VERSION, checkForUpdate, reloadNow } from '../game/appUpdate'
+import { setSignsAlways, useSignsAlways } from '../game/prefs'
 import { IconBasket, IconFlag, IconNotebook, IconSnow, IconSprout } from '../theme/icons'
 
 export type Tab = 'fortress' | 'prestige' | 'clan' | 'shop'
@@ -79,6 +80,7 @@ export function AppNav({
   const [menuOpen, setMenuOpen] = useState(false)
   const [ambience, setAmbience] = useState(() => isAmbienceOn())
   const [updateNote, setUpdateNote] = useState<string | null>(null)
+  const signs = useSignsAlways()
   const [checking, setChecking] = useState(false)
 
   async function onCheckUpdate() {
@@ -218,6 +220,17 @@ export function AppNav({
           >
             <span className="tab-label">{t.sound.ambience}</span>
             <span className="nav-toggle-state">{ambience ? t.sound.on : t.sound.off}</span>
+          </button>
+          <button
+            type="button"
+            role="menuitemcheckbox"
+            aria-checked={signs}
+            className="nav-menu-sound nav-menu-reminders"
+            title={t.prefs.signsHint}
+            onClick={() => setSignsAlways(!signs)}
+          >
+            <span className="tab-label">{t.prefs.signs}</span>
+            <span className="nav-toggle-state">{signs ? t.sound.on : t.sound.off}</span>
           </button>
           <div className="nav-menu-sound">
             <span className="tab-label">{t.sound.label}</span>

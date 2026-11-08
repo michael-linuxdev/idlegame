@@ -13,6 +13,7 @@ import { VineyardArt, VineyardBackdrop, VineyardStakes, VineyardWild } from '../
 import { ChapterAreaArt, ChapterBackdrop, ChapterReady, ChapterWild } from '../theme/ChapterArt'
 import { CHAPTER_ART } from '../theme/chapterArtSpecs'
 import { PlotButtons } from './PlotPicker'
+import { useSignsAlways } from '../game/prefs'
 import { IconGrapes, IconIlse, IconSprout } from '../theme/icons'
 import { chapterCopy } from './chapterCopy'
 import { useAmbient, type Season } from '../theme/ambient'
@@ -65,6 +66,7 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
   const [selected, setSelected] = useState<string | null>(null)
   const [toast, setToast] = useState<string | null>(null)
   const [weinleseOpen, setWeinleseOpen] = useState(false)
+  const signsAll = useSignsAlways()
   const stage = chapterStage(def, c)
   const bonusPct = formatDecimal(def.gardenBonusPerLevel * chapterLevels(c) * 100, 1)
   const nextId = def.areas.find((a) => !areaUnlocked(a, c.owned))?.id ?? null
@@ -192,7 +194,7 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
             const ac = copy.areas[a.id]!
             const ready = unlocked && level === 0
             const isSel = selected === a.id
-            const showSign = isSel || ready || a.id === nextId
+            const showSign = isSel || ready || a.id === nextId || (signsAll && unlocked)
             const stars = milestonesReached(level)
             return (
               <button

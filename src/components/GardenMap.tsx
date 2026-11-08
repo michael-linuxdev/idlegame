@@ -69,6 +69,7 @@ import { HelperWalker } from './HelperWalker'
 import { festAt } from '../game/fests'
 import { IconHelper } from '../theme/icons'
 import { PlotButtons } from './PlotPicker'
+import { useSignsAlways } from '../game/prefs'
 import type { ChapterId } from '../game/chapters'
 import { COSMETICS, type CosmeticId } from '../game/monetization'
 import { SpeechBubble } from './SpeechBubble'
@@ -168,6 +169,7 @@ export function GardenMap({
   const [recipeOpen, setRecipeOpen] = useState(false)
   const [wishOpen, setWishOpen] = useState(false)
   const [growing, setGrowing] = useState<string | null>(null)
+  const signsAll = useSignsAlways()
   const ambient = useAmbient()
   const harvest = useHarvestFlight()
   const { seen: seenHints, markSeen } = useHints()
@@ -793,7 +795,7 @@ export function GardenMap({
             const hl = highlightId === def.id
             const ready = unlocked && level === 0
             // Calm map: full signs only for the selected, new or next corner
-            const showSign = selectedHere || ready || def.id === nextWildId
+            const showSign = selectedHere || ready || def.id === nextWildId || (signsAll && unlocked)
             const stars = milestonesReached(level)
             const cls =
               'garden-plot' +

@@ -107,6 +107,11 @@ export const expansionStrings = {
     },
   },
 
+  prefs: {
+    signs: 'Schilder immer zeigen',
+    signsHint: 'Name und Stufe an jedem Bereich statt kleiner Plaketten',
+  },
+
   plots: {
     button: 'Grundstücke',
     title: 'Deine Grundstücke',
