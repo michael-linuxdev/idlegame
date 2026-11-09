@@ -44,3 +44,20 @@ describe('Grafik: dekorative SVGs sind für Screenreader unsichtbar', () => {
     }
   })
 })
+
+describe('CSS: @keyframes-Namen sind eindeutig', () => {
+  it('kein Name wird in zwei Stylesheets oder doppelt definiert', () => {
+    const files = Object.entries(import.meta.glob('../**/*.css', { query: '?raw', import: 'default', eager: true }) as Record<string, string>)
+    const seen = new Map<string, string>()
+    const dupes: string[] = []
+    for (const [file, css] of files) {
+      for (const m of css.matchAll(/@keyframes\s+([\w-]+)/g)) {
+        const prev = seen.get(m[1]!)
+        if (prev) dupes.push(`${m[1]} (${prev}, ${file})`)
+        seen.set(m[1]!, file)
+      }
+    }
+    expect(files.length).toBeGreaterThan(5)
+    expect(dupes).toEqual([])
+  })
+})

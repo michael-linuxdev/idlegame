@@ -75,7 +75,7 @@
   align-items: flex-end;
   justify-content: center;
   background: rgba(30, 24, 10, 0.42);
-  animation: fade-in 180ms ease-out;
+  animation: story-fade-in 180ms ease-out;
 }
 
 .notebook {
@@ -250,7 +250,7 @@
   overflow: hidden;
   background: linear-gradient(180deg, #33456b 0%, #6f86ad 55%, #dfe8ef 100%);
   transition: background 1.2s ease;
-  animation: fade-in 400ms ease-out;
+  animation: story-fade-in 400ms ease-out;
   cursor: pointer;
 }
 
@@ -350,15 +350,6 @@
   background:
     repeating-linear-gradient(180deg, transparent 0 1.6rem, rgba(155, 183, 212, 0.4) 1.6rem 1.66rem),
     #fdf8ec;
-}
-
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -746,4 +737,13 @@
 
 .season-card-skip {
   width: 100%;
+}
+
+@keyframes story-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

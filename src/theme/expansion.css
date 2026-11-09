@@ -1153,10 +1153,10 @@ html.tab-hidden .fest-snow {
   border-radius: 50%;
   background: #fff6a0;
   box-shadow: 0 0 6px 2px rgba(255, 240, 120, 0.8);
-  animation: firefly 5s ease-in-out infinite;
+  animation: critter-firefly 5s ease-in-out infinite;
 }
 
-@keyframes firefly {
+@keyframes critter-firefly {
   0%, 100% { transform: translate(0, 0); opacity: 0.1; }
   30% { opacity: 1; }
   50% { transform: translate(10px, -14px); opacity: 0.4; }
@@ -2068,7 +2068,7 @@ html.tab-hidden .sky-event {
   border-radius: 50%;
   background: #fffbe0;
   box-shadow: 0 0 4px 1px rgba(255, 250, 200, 0.7);
-  animation: firefly 4s ease-in-out infinite;
+  animation: critter-firefly 4s ease-in-out infinite;
 }
 
 .ha-wheel {
