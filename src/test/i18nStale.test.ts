@@ -50,8 +50,6 @@ describe('live language switch', () => {
     const stale: string[] = []
     for (const [path, mod] of Object.entries(modules)) {
       if (path.includes('/i18n/')) continue
-      // TODO(en, Paket 6): Datenschutz zieht in die Sprachdateien um
-      if (path.endsWith('/theme/legal.ts')) continue
       for (const [name, val] of Object.entries(mod as object)) {
         const found = new Set<string>()
         collectStrings(val, found)

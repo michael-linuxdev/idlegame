@@ -9,6 +9,7 @@
  */
 import { zahl } from './count'
 import { careNames } from './careNames'
+import { privacyStrings } from './legal'
 import { manifestStrings } from './manifest'
 import { expansionStrings } from './stringsExpansion'
 import { lifeStrings } from './stringsLife'
@@ -1224,6 +1225,7 @@ export const strings = {
     title: 'Rechtliches',
     impressum: 'Impressum',
     close: 'Schließen',
+    privacy: privacyStrings,
   },
 
   season: {

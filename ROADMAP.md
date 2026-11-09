@@ -48,7 +48,7 @@ Werkzeug: `npm run balance -- <engaged|regular|casual> <stunden>` — spielt die
 
 ## Prinzipien
 
-- DE-UI; Bau-Karte; echtes Idle; keine Energy-Walls; helle, lesbare UI.
+- DE-UI (Ausgangssprache), EN gleichwertig; Bau-Karte; echtes Idle; keine Energy-Walls; helle, lesbare UI.
 - Sichtbares Wachstum: jedes Modul hat mehrere Ausbaustufen in der Grafik.
 - Werbung nur rewarded/optional; Werbefrei-Kauf. IAP nur über Stores. Analytics später.
 - Opt-in **Playtest-Log** lokal (Menü → Export JSONL); Standard aus; kein Remote-Tracking.
@@ -108,8 +108,13 @@ Werkzeug: `npm run balance -- <engaged|regular|casual> <stunden>` — spielt die
     - **Namen:** keine Bezeichner aus TurmFarm / Orbit Rack / Ash Dominion mehr (Prüftest `legacyNames.test.ts`); CSS-Variablen `--ge-*`.
     - **Aufteilung:** `state.ts` → `src/game/state/*`, `useGame` → `src/game/hooks/*`, Truhe und Feld-Parser eigene Module; keine Datei in `src/game/` über ~550 Zeilen, keine Zirkel-Importe. `GardenMap`/`PrestigePanel` in Teilkomponenten, große Stylesheets nach Bereichen (gebautes CSS byte-gleich), toter CSS-Code entfernt.
     - **Laden:** selten genutzte Fenster als eigene Bündel (Start 777 → 685 kB), nur woff2, Offline-E2E. Balance unverändert (Sim-Vergleich).
+15g. ✅ **Englische Fassung „Heirloom Garden“ (2026-11-09, Prompt `docs/prompts/englisch.md`, PRs #112–#117):**
+    - **Live-Sprachwechsel** ohne Neuladen (`t` als Proxy, `useLocale()`); Sprache aus Browser (`de*` = Deutsch, sonst Englisch), Umschalter „Sprache / Language“ (Einstellungen → Anzeige), Wahl auf dem Gerät, nicht im Spielstand; `?lang=en|de`. Englisch lädt nur bei Bedarf (32 kB gzip), Start-Chunk +1,9 kB gzip.
+    - **Alles übersetzt:** Oberfläche, Systeme, alle Briefe (Oma, Jonas, Ilse, Kapitel 2–12), 120 Bereiche, Sorten, Bewohner, Feste mit Erklärung, Datenschutz; Begriffe und Titel im Glossar `docs/i18n/glossar.md`. Zahlen `K/M/B/T` vs. `Tsd/Mio/Mrd`, Mehrzahl über `Intl.PluralRules`.
+    - **Prüfungen:** gleicher Typ `Strings` für beide Sprachen, gleiche Schlüsselbäume, keine Texte im Code, keine eingefrorenen Texte beim Import (statisch + Pseudo-Sprache), E2E komplett auch auf Englisch, axe 0 Verstöße (WCAG 2.0/2.1 A/AA, beide Sprachen), Fenster-Durchsicht ohne abgeschnittene Texte (`npm run screens -- en`).
+    - **Store:** `docs/store/listing.en.md`, englische Screenshots und Feature-Grafik. Offen: Markenrecherche „Heirloom Garden“.
 16. Multiplayer-Architektur (Kleingartenverein mit echtem Backend; Kürbis-Runde umstellen).
-17. Store-IAP, Impressum-Daten, Namensprüfung „Gartenerbe“, Store-Assets, Soft-Launch. Vor Launch: `STORE_ENABLED` prüfen (Platzhalter) **und `DISTRIBUTION = 'store'`** in `src/game/distribution.ts` (schaltet den Installations-Hinweis der Web-Fassung ab; ein Test erzwingt das, sobald eine Store-Hülle im Repo liegt).
+17. Store-IAP, Impressum-Daten, Namensprüfung „Gartenerbe“ und „Heirloom Garden“, Store-Assets, Soft-Launch. Vor Launch: `STORE_ENABLED` prüfen (Platzhalter) **und `DISTRIBUTION = 'store'`** in `src/game/distribution.ts` (schaltet den Installations-Hinweis der Web-Fassung ab; ein Test erzwingt das, sobald eine Store-Hülle im Repo liegt).
 
 ## 5-Jahres-Plan (Inhalt)
 

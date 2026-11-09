@@ -20,6 +20,21 @@
 import { spawn } from 'node:child_process'
 import { mkdir } from 'node:fs/promises'
 import { chromium, devices } from 'playwright'
+import { rolldown } from 'rolldown'
+
+/** Sprache des Durchlaufs: E2E_LANG=en spielt alles auf Englisch (Abschnitt 11 prüft beide). */
+const LANG = process.env.E2E_LANG === 'en' ? 'en' : 'de'
+
+/** Texte der gewählten Sprache direkt aus src/i18n (gebündelt, keine Kopie). */
+async function loadStrings(lang) {
+  const bundle = await rolldown({ input: `src/i18n/${lang}/strings.ts`, logLevel: 'silent' })
+  const { output } = await bundle.generate({ format: 'esm' })
+  await bundle.close()
+  const mod = await import('data:text/javascript;base64,' + Buffer.from(output[0].code).toString('base64'))
+  return mod.strings
+}
+const T = await loadStrings(LANG)
+const esc = (x) => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
 const PORT = 4321
 const URL = `http://localhost:${PORT}/`
@@ -47,9 +62,9 @@ let browser
 try {
   await waitForServer()
   browser = await chromium.launch({ executablePath: process.env.PW_EXECUTABLE || undefined })
-  // Deutsch als Browser-Sprache, außer ein Abschnitt verlangt etwas anderes
+  // Browser-Sprache des Durchlaufs, außer ein Abschnitt verlangt etwas anderes
   const plainContext = browser.newContext.bind(browser)
-  browser.newContext = (opts = {}) => plainContext({ locale: 'de-DE', ...opts })
+  browser.newContext = (opts = {}) => plainContext({ locale: LANG === 'en' ? 'en-US' : 'de-DE', ...opts })
 
   // 1 — fresh start
   {
@@ -57,9 +72,9 @@ try {
     const p = await ctx.newPage()
     p.on('pageerror', (e) => errors.push(e.message))
     await p.goto(URL)
-    await p.getByText('Mein liebes Enkelkind,').waitFor({ timeout: 10_000 })
-    await p.getByRole('button', { name: 'Zum Garten' }).click()
-    const skip = p.getByText('Ohne Installation weiterspielen')
+    await p.getByText(T.ftue.welcome.title).waitFor({ timeout: 10_000 })
+    await p.getByRole('button', { name: T.ftue.welcome.cta }).click()
+    const skip = p.getByText(T.install.skipBrowser)
     if (await skip.isVisible().catch(() => false)) await skip.click()
     const before = await p.locator('.hud-amount').innerText()
     await p.locator('.garden-plot').first().dispatchEvent('click')
@@ -67,7 +82,7 @@ try {
     await buy.waitFor()
     await buy.dispatchEvent('pointerdown')
     await buy.dispatchEvent('pointerup')
-    assert((await p.locator('#upgrade-title').innerText()) === 'Gemüsebeet', 'upgrade sheet shows Gemüsebeet')
+    assert((await p.locator('#upgrade-title').innerText()) === T.modules.gemuesebeet.name, 'upgrade sheet shows Gemüsebeet')
     await p.locator('.upgrade-hud-close').click()
     await p.locator('.hud-water').dispatchEvent('click')
     await p.waitForTimeout(600)
@@ -100,19 +115,19 @@ try {
     const letterBtn = p.locator('.season-letter .btn')
     if (await letterBtn.isVisible().catch(() => false)) await letterBtn.click()
     await p.locator('.lucky-wheel .btn').click()
-    await p.getByRole('button', { name: 'Ins neue Gartenjahr' }).waitFor({ timeout: 5000 })
-    await p.getByRole('button', { name: 'Ins neue Gartenjahr' }).click()
+    await p.getByRole('button', { name: T.season.cta }).waitFor({ timeout: 5000 })
+    await p.getByRole('button', { name: T.season.cta }).click()
     await p.locator('.garden-map').waitFor()
     // After Saisonende the map opens Omas best tip — close it
     const close = p.locator('.upgrade-hud-close')
     if (await close.isVisible().catch(() => false)) await close.click()
     // 3 — sheets
     await p.locator('.menu-fab').click()
-    await p.getByRole('menuitem', { name: 'Omas Notizbuch' }).click()
-    await p.getByText('Omas Notizbuch').first().waitFor()
+    await p.getByRole('menuitem', { name: T.notebook.title }).click()
+    await p.getByText(T.notebook.title).first().waitFor()
     await p.locator('.notebook-close').click()
     await p.locator('.menu-fab').click()
-    await p.getByRole('menuitem', { name: 'Spielstand sichern' }).click()
+    await p.getByRole('menuitem', { name: T.backup.menu }).click()
     const code = await p.locator('.save-code').first().inputValue()
     assert(code.startsWith('GARTENERBE1:'), 'export code present')
     await ctx.close()
@@ -134,28 +149,28 @@ try {
     p.on('pageerror', (e) => errors.push(e.message))
     await p.goto(URL + '?fest=advent&kapitel2=1&kapitel3=1')
     await p.locator('.pill-fest').click()
-    await p.getByText('Advent im Garten').first().waitFor()
+    await p.getByText(T.fest.names.advent).first().waitFor()
     await p.locator('.fest-sheet .upgrade-hud-close').click()
-    await p.getByRole('button', { name: 'Zur Streuobstwiese' }).click()
+    await p.getByRole('button', { name: T.orchard.toOrchard }).click()
     await p.locator('.orchard-intro .btn').click()
     await p.locator('.orchard-home').waitFor()
-    await p.getByRole('button', { name: 'Zum Weinberg' }).click()
+    await p.getByRole('button', { name: T.chapters.weinberg.to }).click()
     await p.locator('.orchard-intro .btn').click()
     await p.locator('.chapter-weinberg').waitFor()
     await p.locator('.pill-weinlese').click()
-    await p.getByRole('button', { name: 'Los geht’s' }).click()
+    await p.getByRole('button', { name: T.weinlese.start }).click()
     await p.waitForTimeout(19_500)
-    await p.getByRole('button', { name: 'Fertig' }).click()
+    await p.getByRole('button', { name: T.weinlese.done, exact: true }).click()
     await p.locator('.plot-switch.back').click()
     await p.locator('.tabbar .tab-prestige').click()
-    await p.getByRole('button', { name: /Einstellen/ }).click()
-    await p.getByText(/Stufe 1\/5/).waitFor()
+    await p.getByRole('button', { name: new RegExp(esc(T.helper.hire('').replace(/ ·.*$/, ''))) }).click()
+    await p.getByText(T.helper.rank(1, 5)).waitFor()
     await p.locator('.menu-fab').click()
-    await p.getByRole('menuitem', { name: 'Einstellungen' }).click()
-    const signsToggle = p.getByRole('switch', { name: /Schilder immer zeigen/ })
+    await p.getByRole('menuitem', { name: T.nav.settings }).click()
+    const signsToggle = p.getByRole('switch', { name: T.prefs.signs })
     await signsToggle.click()
     assert((await signsToggle.getAttribute('aria-checked')) === 'true', 'Schilder immer zeigen toggles on')
-    await p.getByRole('button', { name: 'Nach Updates suchen' }).click()
+    await p.getByRole('button', { name: T.appUpdate.menu }).click()
     await p.locator('.nav-update-note').waitFor()
     await ctx.close()
   }
@@ -178,8 +193,8 @@ try {
     await p.evaluate(() => localStorage.setItem('gartenerbe-pref-signs', '1'))
     await p.reload()
     assert((await p.locator('.garden-plot .plot-sign').count()) >= badges, 'signs pref survives reload')
-    await p.getByRole('button', { name: 'Grundstück wählen' }).click()
-    await p.getByRole('button', { name: /Kapitel 12/ }).click()
+    await p.getByRole('button', { name: T.plots.aria }).click()
+    await p.getByRole('button', { name: T.chapterUi.chapter(12) }).click()
     await p.locator('.orchard-intro .btn').click()
     await p.locator('.chapter-gartenschau').waitFor()
     // Kapitel-Grafik kommt als eigenes Bündel nach: Kulisse und Bereichsgrafik müssen erscheinen
@@ -203,7 +218,7 @@ try {
       const p = await ctx.newPage()
       p.on('pageerror', (e) => errors.push(e.message))
       await p.goto(URL)
-      await p.getByRole('button', { name: 'Zum Garten' }).click()
+      await p.getByRole('button', { name: T.ftue.welcome.cta }).click()
       await p.locator('.ftue-target').first().waitFor()
       await p.waitForTimeout(1200)
       const coach = await p.locator('.ftue-coach').boundingBox()
@@ -238,7 +253,7 @@ try {
       await p.locator('.plot-sheet').waitFor()
       await p.waitForTimeout(400)
       assert((await p.locator('.oma-hint').count()) === 0, 'Omas note shows over the Grundstücke window')
-      await p.getByRole('button', { name: /Kapitel 12/ }).scrollIntoViewIfNeeded()
+      await p.getByRole('button', { name: T.chapterUi.chapter(12) }).scrollIntoViewIfNeeded()
       await p.screenshot({ path: `${SHOTS}/plots.png` })
       await p.keyboard.press('Escape')
       assert((await p.locator('.plot-sheet').count()) === 0, 'Escape closes the Grundstücke window')
@@ -344,9 +359,9 @@ try {
     p.on('pageerror', (e) => errors.push(e.message))
     await p.goto(URL + '?installGate=1')
     await p.locator('.web-install').waitFor()
-    assert(await p.getByText('Zum Home-Bildschirm').first().isVisible(), 'iPhone steps shown')
+    assert(await p.getByText(T.install.iosAdd).first().isVisible(), 'iPhone steps shown')
     assert((await p.locator('.web-install-warn').count()) === 1, 'iOS warning shown')
-    await p.getByRole('button', { name: 'Ohne Installation im Browser weiter' }).click()
+    await p.getByRole('button', { name: T.installGate.skip }).click()
     assert((await p.locator('.web-install').count()) === 0, 'skip closes the gate')
     const skip = await p.evaluate(() => localStorage.getItem('gartenerbe-install-gate-skip'))
     assert(Number(skip) > 0, 'skip time stored')
@@ -369,10 +384,10 @@ try {
       p.on('pageerror', (e) => errors.push(e.message))
       await p.goto(URL + '?testPhase=1')
       await p.locator('.test-phase').waitFor()
-      const box = p.getByRole('checkbox', { name: 'Aufzeichnung erlauben' })
+      const box = p.getByRole('checkbox', { name: T.testPhase.checkbox })
       assert(await box.isChecked(), 'recording is preselected')
       if (!keep) await box.uncheck()
-      await p.getByRole('button', { name: 'Verstanden' }).click()
+      await p.getByRole('button', { name: T.testPhase.confirm }).click()
       assert((await p.locator('.test-phase').count()) === 0, 'notice closes after confirm')
       const st = await p.evaluate(() => [localStorage.getItem('gartenerbe-playtest-log-on'), localStorage.getItem('gartenerbe-testphase-v1')])
       assert(st[0] === (keep ? '1' : '0') || (!keep && st[0] === null), `log ${keep ? 'on' : 'off'} after confirm`)
@@ -418,8 +433,8 @@ try {
     }
     await p.locator('.tabbar .tab-garten').click()
     await p.locator('.menu-fab').click()
-    await p.getByRole('menuitem', { name: 'Omas Notizbuch' }).click()
-    await p.getByText('Omas Notizbuch').first().waitFor({ timeout: 10_000 })
+    await p.getByRole('menuitem', { name: T.notebook.title }).click()
+    await p.getByText(T.notebook.title).first().waitFor({ timeout: 10_000 })
     await ctx.close()
   }
 
@@ -453,7 +468,7 @@ try {
     await enCtx.close()
 
     // Deutscher Browser → Deutsch; Umschalter wechselt live und bleibt gespeichert
-    const ctx = await browser.newContext({ ...devices['iPhone 13'], reducedMotion: 'reduce' })
+    const ctx = await browser.newContext({ ...devices['iPhone 13'], reducedMotion: 'reduce', locale: 'de-DE' })
     await ctx.addInitScript(seed)
     const p = await ctx.newPage()
     p.on('pageerror', (err) => errors.push(err.message))
@@ -482,7 +497,7 @@ try {
   }
 
   assert(errors.length === 0, 'page errors: ' + errors.join(' | '))
-  console.log('E2E smoke passed ✔')
+  console.log(`E2E smoke passed ✔ (${LANG})`)
 } catch (e) {
   console.error(e)
   process.exitCode = 1
