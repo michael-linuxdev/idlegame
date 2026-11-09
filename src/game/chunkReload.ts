@@ -5,7 +5,8 @@
  * lädt die App dann einmal neu und holt die neue Version. Der Spielstand wird
  * beim Neuladen gesichert (pagehide in useGameLoop).
  *
- * Schutz gegen Endlosschleifen: höchstens einmal je 60 s.
+ * Schutz gegen Endlosschleifen: höchstens einmal je 60 s (gleicher Schlüssel
+ * wie das Sicherheitsnetz in index.html, falls schon das Start-Bündel fehlt).
  */
 import { logPlaytest } from './playtestLog'
 

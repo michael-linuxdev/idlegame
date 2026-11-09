@@ -41,7 +41,9 @@ const esc = (x) => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
 const PORT = 4321
 const URL = `http://localhost:${PORT}/`
-const server = spawn('npx', ['vite', 'preview', '--port', String(PORT), '--strictPort'], { stdio: 'ignore' })
+const server = spawn(process.execPath, ['node_modules/vite/bin/vite.js', 'preview', '--port', String(PORT), '--strictPort'], { stdio: 'ignore' })
+// Direkt statt über npx: kill() beendet so wirklich den Server (npx ließ ihn als Waise weiterlaufen)
+server.on('exit', (code) => code && console.log(`Hinweis: Port ${PORT} ist belegt — der Test nutzt den laufenden Vorschau-Server`))
 
 async function waitForServer() {
   for (let i = 0; i < 60; i++) {
