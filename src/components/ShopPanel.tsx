@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react'
-import { formatErnte, formatDecimal, formatMult } from '../game/format'
+import { formatErnte, formatDecimal, formatMult, formatPrice } from '../game/format'
 import {
   AD_ERNTE_MINUTES,
   AD_SAMEN,
@@ -19,6 +19,8 @@ import {
 } from '../game/monetization'
 import { t } from '../i18n'
 import { STORE_ENABLED } from '../game/monetization'
+import { TEST_BUDGET_CENTS, TEST_WALLET_ENABLED, offerPriceCents, readWallet, walletLeftCents } from '../game/testWallet'
+import { TestPurchaseDialog } from './TestPurchaseDialog'
 import type { useGame } from '../game/useGame'
 import { waterRefillsLeft } from '../game/state'
 import { IconCheck } from '../theme/icons'
@@ -27,7 +29,9 @@ type GameApi = ReturnType<typeof useGame>
 type Tab = 'free' | 'boosts' | 'styles' | 'seeds'
 
 const TAB_KEY = 'gartenerbe-market-tab'
-const TABS: Tab[] = STORE_ENABLED ? ['free', 'boosts', 'styles', 'seeds'] : ['free', 'boosts', 'styles']
+/** Echtgeld-Angebote zeigen: echte Käufe, oder in der Testphase mit Testgeld (game/testWallet.ts) */
+const OFFERS_VISIBLE = STORE_ENABLED || TEST_WALLET_ENABLED
+const TABS: Tab[] = OFFERS_VISIBLE ? ['free', 'boosts', 'styles', 'seeds'] : ['free', 'boosts', 'styles']
 
 interface Props {
   game: GameApi
@@ -66,10 +70,11 @@ function Row({ name, blurb, effect, children }: { name: string; blurb?: string; 
 }
 
 function OfferButton({ offer, owned, onBuy }: { offer: ShopOfferDef; owned: boolean; onBuy: () => void }) {
+  const cents = TEST_WALLET_ENABLED ? offerPriceCents(offer.id) : null
   return (
     <Row name={offer.name} blurb={offer.blurb} effect={offer.samen != null && offer.samen > 0 ? t.shop.packEffect(offer.samen) : undefined}>
       <button type="button" className="btn buy" disabled={owned} onClick={onBuy}>
-        {owned ? t.shop.owned : offer.label}
+        {owned ? t.shop.owned : cents != null ? formatPrice(cents) : offer.label}
       </button>
     </Row>
   )
@@ -107,6 +112,10 @@ export function ShopPanel({ game, onPreview }: Props) {
   } = game
 
   const [tab, setTab] = useState<Tab>(loadTab)
+  // Testphase: Rückfrage mit echtem Preis vor jedem Echtgeld-Angebot
+  const [pending, setPending] = useState<ShopOfferDef | null>(null)
+  const [walletLeft, setWalletLeft] = useState(() => walletLeftCents(readWallet()))
+  const buyOffer = (offer: ShopOfferDef) => (TEST_WALLET_ENABLED ? setPending(offer) : purchaseOffer(offer))
   const pick = (next: Tab) => {
     setTab(next)
     try {
@@ -212,7 +221,7 @@ export function ShopPanel({ game, onPreview }: Props) {
             </>
           ) : null}
 
-          {STORE_ENABLED ? (
+          {OFFERS_VISIBLE ? (
             <>
               <h3 className="subhead">{t.shop.gartenwocheTitle}</h3>
               <p className="muted">{t.shop.gartenwocheIntro}</p>
@@ -371,13 +380,13 @@ export function ShopPanel({ game, onPreview }: Props) {
               )
             })}
           </ul>
-          {STORE_ENABLED ? (
+          {OFFERS_VISIBLE ? (
             <>
               <h3 className="subhead">{t.shop.cosmeticPacksTitle}</h3>
               <p className="muted">{t.shop.cosmeticPacksIntro}</p>
               <ul className="laden shop-list">
                 {cosmeticPacks.map((offer) => (
-                  <OfferButton key={offer.id} offer={offer} owned={offerOwned(offer)} onBuy={() => purchaseOffer(offer)} />
+                  <OfferButton key={offer.id} offer={offer} owned={offerOwned(offer)} onBuy={() => buyOffer(offer)} />
                 ))}
               </ul>
             </>
@@ -385,34 +394,58 @@ export function ShopPanel({ game, onPreview }: Props) {
         </div>
       ) : null}
 
-      {tab === 'seeds' && STORE_ENABLED ? (
+      {tab === 'seeds' && OFFERS_VISIBLE ? (
         <div role="tabpanel">
           <p className="shop-placeholder-note" role="note">
-            {t.shopNote.placeholder}
+            {TEST_WALLET_ENABLED ? t.testMoney.note : t.shopNote.placeholder}
           </p>
+          {TEST_WALLET_ENABLED ? (
+            <div className="shop-wallet-chip test-wallet-chip">
+              <span className="shop-wallet-label">{t.testMoney.chip}</span>
+              <span className="shop-wallet-value">{t.testMoney.left(formatPrice(walletLeft))}</span>
+              <span className="shop-wallet-label">{t.testMoney.monthly(formatPrice(TEST_BUDGET_CENTS))}</span>
+            </div>
+          ) : null}
           <h3 className="subhead">{t.shop.packsTitle}</h3>
           <p className="muted">{t.shop.packsIntro}</p>
           <ul className="laden shop-list">
             {bundles.map((offer) => (
-              <OfferButton key={offer.id} offer={offer} owned={offerOwned(offer)} onBuy={() => purchaseOffer(offer)} />
+              <OfferButton key={offer.id} offer={offer} owned={offerOwned(offer)} onBuy={() => buyOffer(offer)} />
             ))}
           </ul>
           <h3 className="subhead">{t.shop.currencyPacksTitle}</h3>
           <p className="muted">{t.shop.currencyPacksIntro}</p>
           <ul className="laden shop-list">
             {currency.map((offer) => (
-              <OfferButton key={offer.id} offer={offer} owned={false} onBuy={() => purchaseOffer(offer)} />
+              <OfferButton key={offer.id} offer={offer} owned={false} onBuy={() => buyOffer(offer)} />
             ))}
           </ul>
           <h3 className="subhead">{t.shop.removeAdsTitle}</h3>
           <p className="muted">{t.shop.removeAdsIntro}</p>
           <ul className="laden shop-list">
             {removeAds.map((offer) => (
-              <OfferButton key={offer.id} offer={offer} owned={offerOwned(offer)} onBuy={() => purchaseOffer(offer)} />
+              <OfferButton key={offer.id} offer={offer} owned={offerOwned(offer)} onBuy={() => buyOffer(offer)} />
             ))}
-            {gartenwochePlusOffer ? <OfferButton offer={gartenwochePlusOffer} owned={state.gartenwochePremium} onBuy={() => purchaseOffer(gartenwochePlusOffer)} /> : null}
+            {gartenwochePlusOffer ? <OfferButton offer={gartenwochePlusOffer} owned={state.gartenwochePremium} onBuy={() => buyOffer(gartenwochePlusOffer)} /> : null}
           </ul>
         </div>
+      ) : null}
+      {pending ? (
+        <TestPurchaseDialog
+          offer={pending}
+          context={{
+            samen: state.samen,
+            generation: state.generation,
+            tiefeWinter: state.tiefeWinter,
+            saisonenden: state.saisonenden,
+            kapitel: Object.values(state.chapters).filter((c) => c.openedAt > 0).length,
+          }}
+          onBuy={() => purchaseOffer(pending)}
+          onClose={() => {
+            setPending(null)
+            setWalletLeft(walletLeftCents(readWallet()))
+          }}
+        />
       ) : null}
     </section>
   )

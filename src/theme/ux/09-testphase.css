@@ -61,3 +61,82 @@
 .test-phase-ok {
   width: 100%;
 }
+
+/* ——— Testphase: Testkauf-Rückfrage und sperrende Werbung (game/testWallet.ts) ——— */
+.test-purchase-question {
+  font-size: 1.08rem;
+  font-weight: 700;
+}
+
+.test-purchase-balance {
+  margin: 0.4rem 0 0.8rem;
+  font-weight: 700;
+}
+
+.test-purchase-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.test-purchase-actions .btn {
+  flex: 1 1 8rem;
+  min-height: 2.75rem;
+}
+
+.test-wallet-chip {
+  flex-wrap: wrap;
+  margin-bottom: 0.6rem;
+}
+
+.ad-layer {
+  z-index: 120;
+  background: rgba(10, 16, 10, 0.88);
+}
+
+.ad-box {
+  text-align: center;
+}
+
+.ad-badge {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  background: #f5c542;
+  color: #2a2208;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.ad-progress {
+  height: 0.6rem;
+  margin: 0.8rem 0 0.3rem;
+  border-radius: 999px;
+  background: rgba(22, 36, 20, 0.15);
+  overflow: hidden;
+}
+
+.ad-progress span {
+  display: block;
+  height: 100%;
+  background: #3f9a3a;
+  transition: width 0.25s linear;
+}
+
+.ad-left {
+  font-size: 1.4rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.ad-box .btn {
+  min-height: 2.75rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ad-progress span {
+    transition: none;
+  }
+}

@@ -17,6 +17,32 @@ export const expansionStrings = {
       'Platzhalter: Echtgeld-Angebote, Werbung und Premium sind Testkäufe — es wird nichts abgebucht.',
   },
 
+  /** Testphase: Testgeld + echte Werbelänge (game/testWallet.ts) */
+  testMoney: {
+    note: 'Testphase: Die Preise sind echt, bezahlt wird mit Testgeld. Es wird kein echtes Geld abgebucht.',
+    chip: 'Testgeld',
+    left: (amount: string) => `${amount} übrig`,
+    monthly: (amount: string) => `${amount} pro Monat`,
+    title: 'Testkauf',
+    question: (name: string, price: string) => `Würdest du für „${name}“ wirklich ${price} zahlen?`,
+    honest: 'Bitte ehrlich antworten — genau das wollen wir wissen.',
+    balance: (left: string) => `Testgeld diesen Monat: noch ${left}.`,
+    yes: 'Ja, kaufen',
+    no: 'Eher nicht',
+    short: 'Dein Testgeld reicht diesen Monat nicht mehr.',
+    wouldBuy: 'Hätte ich gekauft',
+    close: 'Schließen',
+    bought: (name: string) => `Gekauft: ${name}`,
+  },
+  testAd: {
+    badge: 'Werbung',
+    title: 'Hier läuft gerade Werbung',
+    body: 'In der fertigen App siehst du hier eine echte Werbung. So lange ist das Spiel gesperrt.',
+    left: (s: number) => `noch ${s} s`,
+    cancel: 'Abbrechen (ohne Belohnung)',
+    paused: 'Pausiert, solange die App im Hintergrund ist.',
+  },
+
   helper: {
     title: 'Gartenhelfer',
     name: 'Nachbarsjunge Jonas',

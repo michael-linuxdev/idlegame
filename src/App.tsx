@@ -21,6 +21,7 @@ import { FtueCoach } from './components/FtueCoach'
 import { InstallPrompt } from './components/InstallPrompt'
 import { InstallGate } from './components/InstallGate'
 import { TestPhaseNotice } from './components/TestPhaseNotice'
+import { AdOverlay } from './components/AdOverlay'
 import { bootPlaytestLog, logPlaytest } from './game/playtestLog'
 import { SaveGuardBanner } from './components/SaveGuardBanner'
 import { useGame } from './game/useGame'
@@ -305,6 +306,8 @@ export default function App() {
 
       {/* Testphase: Hinweis zur Aufzeichnung beim ersten Start der installierten App (game/distribution.ts) */}
       <TestPhaseNotice />
+      {/* Testphase: Bonus-Werbung sperrt das Spiel 30 oder 60 s (game/testWallet.ts) */}
+      <AdOverlay ad={game.adPlaying?.blocking ? game.adPlaying : null} onCancel={game.cancelAd} />
       {/* Web-Fassung: Vollbild-Hinweis „Zuerst installieren“ (Store-Fassung: aus, siehe game/distribution.ts) */}
       <InstallGate hasProgress={game.state.totalUpgrades > 1 || game.state.saisonenden > 0 || game.state.tiefeWinter > 0} />
 

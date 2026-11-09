@@ -38,3 +38,22 @@ Zeit sparen oder schmücken, nie nötig sein.
 Grenzen, die das Spiel fair halten (schon im Code): Zeitsprünge max. 6 h am
 Tag, Dünger und Vereinsfahne laufen ab, keine Erbstücke/Sprösslinge/Vermächtnis
 zu kaufen. Vor dem Start mit den Store-Preisstufen je Land abgleichen.
+
+## Testphase: Testgeld und echte Werbelänge (seit 2026-11-09)
+
+Solange `TEST_PHASE` gilt und es noch keine echten Käufe gibt
+(`src/game/testWallet.ts`):
+
+- Die Echtgeld-Angebote stehen mit den Preisen oben im Markt. Bezahlt wird
+  mit **20 € Testgeld pro Kalendermonat**; es wird nichts abgebucht, das
+  Guthaben liegt nicht im Spielstand.
+- Vor jedem Kauf fragt das Spiel: „Würdest du dafür wirklich … zahlen?“
+  (Ja / Eher nicht). Reicht das Testgeld nicht mehr: „Hätte ich gekauft“.
+- Die **Bonus-Werbung** dauert 30 oder 60 Sekunden (zufällig) und **sperrt
+  das Spiel**. Abbrechen geht, dann ohne Belohnung. Im Hintergrund pausiert sie.
+- Playtest-Log: `test_purchase` (Angebot, Preis, Antwort, Rest-Guthaben,
+  Samen, Saisons, Tiefe Winter, Generation, Kapitel) und `test_ad`
+  (start / done / abort mit gesehenen Sekunden).
+
+Gekaufte Sachen kommen im Spiel an. Für die Balance-Auswertung lassen sie sich
+über `test_purchase` herausrechnen.

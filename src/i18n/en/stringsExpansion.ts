@@ -17,6 +17,32 @@ export const expansionStrings = {
       'Placeholder: real-money offers, ads and premium are test purchases — nothing is charged.',
   },
 
+  /** Test phase: test money + real ad length (game/testWallet.ts) */
+  testMoney: {
+    note: 'Test phase: the prices are real, you pay with test money. No real money is charged.',
+    chip: 'Test money',
+    left: (amount: string) => `${amount} left`,
+    monthly: (amount: string) => `${amount} a month`,
+    title: 'Test purchase',
+    question: (name: string, price: string) => `Would you really pay ${price} for “${name}”?`,
+    honest: 'Please answer honestly — that’s exactly what we want to find out.',
+    balance: (left: string) => `Test money this month: ${left} left.`,
+    yes: 'Yes, buy it',
+    no: 'Probably not',
+    short: 'Your test money has run out for this month.',
+    wouldBuy: 'I would have bought it',
+    close: 'Close',
+    bought: (name: string) => `Bought: ${name}`,
+  },
+  testAd: {
+    badge: 'Ad',
+    title: 'An ad is playing',
+    body: 'In the finished app you would see a real ad here. The game is locked until it ends.',
+    left: (s: number) => `${s} s left`,
+    cancel: 'Cancel (no reward)',
+    paused: 'Paused while the app is in the background.',
+  },
+
   helper: {
     title: 'Garden Helper',
     name: 'Jonas, the boy next door',
