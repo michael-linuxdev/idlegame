@@ -206,6 +206,8 @@ export const strings = {
     chapterFirst: 'frei nach dem 1. Tiefen Winter',
     chapterSecond: 'frei ab der 1. Generation',
     chapterLater: (gen: number, prev: number) => `frei ab Generation ${gen}, wenn in Kapitel ${prev} der 8. Bereich steht`,
+    chapterLater13: (gen: number, half: boolean, prev: number) =>
+      `frei ab Generation ${gen}${half ? ' und der Hälfte der Tiefen Winter bis zur nächsten' : ''}, wenn Kapitel ${prev} vollständig angelegt ist`,
     goalTitle: (area: string) => `Pflanzenbuch: Set ${area}`,
     goalDetail: (n: number) => `noch ${n} ${n === 1 ? 'Sorte' : 'Sorten'}`,
   },

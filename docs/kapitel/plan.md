@@ -241,7 +241,33 @@ Ziele (vom Nutzer bestätigt, Simulator legt die Regel fest — Paket 1):
 Keine reine Wartezeit ohne Handlung. Bausteine: Fortschritt im vorigen Kapitel,
 flachere Generationen-Abstände, Kapitel-Währung.
 
-*(Messwerte nach Paket 1 hier eintragen.)*
+### Regel (Paket 1, `src/game/chapters.ts`)
+
+- **Ruhezeit:** nach jedem Tiefen Winter 3 Tage (`DEEP_REST_MS`). Gibt einen
+  verlässlichen Takt, egal wie stark der Garten ist.
+- **Kapitel-Boni** auf die Garten-Ernte werden **addiert** (vorher multipliziert → ×10¹²).
+- **Kapitel 13+:** Generations-Fortschritt ≥ 11 + ½ · (N − 13), wobei
+  Fortschritt = Generation + Anteil der Tiefen Winter bis zur nächsten;
+  dazu das vorige Kapitel vollständig angelegt. Garten-Bonus ab 13: 0,15 %
+  je Stufe (flach). Kosten/Erträge ×1,5 je Kapitel.
+
+### Messung (Simulator, 5 Jahre, `GEN=1 SIM_ALL_CHAPTERS=1`, nur Ilse baut Kapitel)
+
+| Profil | K12 | K13 | K20 | K30 | K40 | K50 | Abstand ab 13 | Garten-Bonus (5 J.) |
+|---|---|---|---|---|---|---|---|---|
+| Regular | Tag 268 | Tag 313 (Monat 10) | Tag 501 | Tag 841 | Tag 1270 | **Tag 1784** (4,9 J.) | 24–56 Tage | ×300 |
+| Casual | Tag 320 | Tag 372 | **Tag 588** | Tag 976 | Tag 1468 | (K46 nach 5 J.) | 28–60 Tage | ×282 |
+| Dauerspieler | — | — | — | — | — | — | **≥ 21 Tage** (rechnerisch) | — |
+
+Dauerspieler: Ab Kapitel 13 braucht jedes Kapitel mindestens ½ · (3 + 11) = 7
+Tiefe Winter à 3 Tage Ruhezeit → nie schneller als ~3 Wochen je Kapitel (Ziel:
+höchstens 1 in 2 Wochen ✓). Der Lauf über 5 Jahre (>1 h Rechenzeit) war dafür
+nicht nötig.
+
+**Spielstand-Größe:** 50 voll ausgebaute Kapitel (alle Bereiche, volle Pflege) ≈ 37 KB gesamt (Ziel < 100 KB, `src/test/saveSize.test.ts`) — kein kompaktes Speichern nötig.
+
+Alle Ziele erfüllt: Regular K13 im Monat 9–12 ✓, alle 4–6 Wochen ✓, K50 nach
+~4–5 Jahren ✓; Casual ≥ K20 in 2 Jahren ✓.
 
 ## Wellen
 
@@ -272,7 +298,7 @@ Jede Welle ist für sich spielbar: Hinter dem letzten gebauten Kapitel zeigen
 ## Fortschritt
 
 - [x] **Paket 0** — Plan & Geschichte (dieses Dokument)
-- [ ] **Paket 1** — Taktung & Technik (Freischaltregel, Simulator mit Kapiteln, Daten-/Text-/Grafik-Struktur, UI für 50 Kapitel, Spielstand-Größe)
+- [x] **Paket 1** — Taktung & Technik (Ruhezeit, Kapitel-Boni addiert, Freischaltregel 13+, Simulator mit Kapiteln, Kapitel-Daten in `chapterPlan.ts`, Spielstand-Größe, „Weitere Gärten folgen“)
 - [ ] **Welle 1** — Kapitel 13–17
 - [ ] Welle 2 — Kapitel 18–23
 - [ ] Welle 3 — Kapitel 24–29

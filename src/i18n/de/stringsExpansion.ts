@@ -181,6 +181,7 @@ export const expansionStrings = {
     goal: (name: string) => `Pflegen: ${name}`,
     goalPlant: (name: string) => `Pflanzen: ${name}`,
     unlockedToast: (n: number, name: string) => `Kapitel ${n} freigeschaltet: ${name}!`,
+    moreSoon: 'Weitere Gärten folgen.',
   },
 
   chapters: {

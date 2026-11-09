@@ -117,7 +117,11 @@ function PlotSheet({ game, current, onGo, onClose }: { game: GameApi; current: P
               <span className="plot-row-icon">{chapterCopy(nextLocked.id).icon}</span>
               <span className="plot-row-name">{chapterCopy(nextLocked.id).teaser}</span>
             </li>
-          ) : null}
+          ) : (
+            <li className="plot-row locked">
+              <span className="plot-row-name">{t.chapterUi.moreSoon}</span>
+            </li>
+          )}
         </ul>
       </div>
     </div>

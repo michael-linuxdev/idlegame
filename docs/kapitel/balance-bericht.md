@@ -126,3 +126,13 @@ D. **Freischaltung ab Kapitel 13 entkoppeln** von Generationen: allein über
 Empfehlung: **A + C** für die bestehende Kurve (sanft, bestehende Spielstände
 verlieren nichts) und **D** für Kapitel 13+, dann alles mit dem Simulator über
 5 Jahre auf die Ziele einstellen.
+
+## Entscheidung (umgesetzt in Paket 1)
+
+- **Ruhezeit 3 Tage nach jedem Tiefen Winter** — bremst den Kreislauf an
+  Punkt 2, ohne normale Spieler (alle 3–7 Tage) zu treffen. Neues Feld
+  `tieferWinterAt`, Startwert 0 (keine Migration).
+- **Kapitel-Boni addiert** (`CHAPTER_BONUS.mode = 'sum'`).
+- **Kapitel 13+** über Generations-Fortschritt (½ Generation je Kapitel) und
+  das vollständig angelegte vorige Kapitel.
+- Messwerte über 5 Jahre: `docs/kapitel/plan.md` „Taktung“.

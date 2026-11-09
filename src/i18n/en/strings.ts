@@ -210,6 +210,8 @@ export const strings: Strings = {
     chapterFirst: 'unlocks after the 1st Deep Winter',
     chapterSecond: 'unlocks with the 1st generation',
     chapterLater: (gen: number, prev: number) => `unlocks with generation ${gen}, once chapter ${prev} has its 8th area`,
+    chapterLater13: (gen: number, half: boolean, prev: number) =>
+      `unlocks with generation ${gen}${half ? ' plus half the Deep Winters to the next' : ''}, once chapter ${prev} is fully planted`,
     goalTitle: (area: string) => `Plant Book: ${area} set`,
     goalDetail: (n: number) => `${varieties(n)} to go`,
   },
