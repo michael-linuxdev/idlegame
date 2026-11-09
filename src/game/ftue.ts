@@ -1,6 +1,6 @@
 /**
  * First-10-minutes guided beats (gdd-mvp.md §7 + economy Day-1 hooks).
- * Copy: DE via i18n (src/theme/strings.ts). Dismissible, persisted — never blocks idle.
+ * Copy: DE via i18n (src/i18n/de/strings.ts). Dismissible, persisted — never blocks idle.
  */
 
 import { t } from '../i18n'

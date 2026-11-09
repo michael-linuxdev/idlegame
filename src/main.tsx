@@ -5,6 +5,7 @@ import App from './App'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { logPlaytest } from './game/playtestLog'
 import { startSaveLock } from './game/saveGuard'
+import { initLocale } from './i18n'
 import './theme/fonts'
 import './index.css'
 
@@ -36,6 +37,11 @@ function startGame() {
     /* not supported */
   }
 
+  // Sprache vor dem ersten Bild festlegen (Englisch wird nur bei Bedarf geladen)
+  void initLocale().then(() => render())
+}
+
+function render() {
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <ErrorBoundary>

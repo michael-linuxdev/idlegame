@@ -20,9 +20,6 @@ export const ERNTEFEST_GOAL = 25_000
 /** Samen crumb when goal is claimed */
 export const ERNTEFEST_GOAL_REWARD = 15
 
-export const ERNTEFEST_NAME = t.event.name
-export const ERNTEFEST_BLURB = t.event.blurb
-
 /**
  * Weekend window in local time: Sat 00:00 → Sun 23:59:59.
  * Also active Friday after 18:00 local (early open).
@@ -81,7 +78,7 @@ export function erntefestStatus(now = Date.now()): ErntefestStatus {
     goal: ERNTEFEST_GOAL,
     goalReward: ERNTEFEST_GOAL_REWARD,
     endsLabel: erntefestEndsLabel(now),
-    name: ERNTEFEST_NAME,
-    blurb: ERNTEFEST_BLURB,
+    name: t.event.name,
+    blurb: t.event.blurb,
   }
 }

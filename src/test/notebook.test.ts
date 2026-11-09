@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { NOTEBOOK_ENTRIES, unlockFor, yearLetterFor, type NotebookState } from '../game/notebook'
-import { strings } from '../theme/strings'
+import { strings } from '../i18n/de/strings'
 
 const fresh: NotebookState = { unlocked: ['welcome'], read: [], maxStage: 0 }
 

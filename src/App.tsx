@@ -32,7 +32,7 @@ import { ComebackLetter, COMEBACK_SEEDS } from './components/story/ComebackLette
 import { useExtras } from './game/extras'
 import { deliver, planReminder, pruneSent, type ReminderCandidate } from './game/notify'
 import { armAmbienceOnFirstGesture } from './game/ambience'
-import { t } from './i18n'
+import { t, useLocale } from './i18n'
 import { formatClock } from './game/format'
 import { applyPrefClasses } from './game/prefs'
 import { useDismiss } from './game/overlays'
@@ -49,6 +49,8 @@ import './theme/ux.css'
 import { prefetchChapterArt } from './theme/art/chapterArt'
 
 export default function App() {
+  // Sprachwechsel live: die ganze Oberfläche zeichnet sich neu
+  useLocale()
   const game = useGame()
   const featuresSeen = useSyncExternalStore(subscribeFeaturesSeen, getFeaturesSeen)
   const newMenuKeys = new Set<string>(MENU_FEATURES.filter((id) => game.features.has(id) && !featuresSeen.includes(id)))

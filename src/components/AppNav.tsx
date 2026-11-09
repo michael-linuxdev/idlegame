@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { logPlaytest } from '../game/playtestLog'
-import { t } from '../i18n'
+import { LOCALES, setLocale, t, useLocale } from '../i18n'
 import { MuteToggle } from './MuteToggle'
 import { isAmbienceOn, setAmbienceOn } from '../game/ambience'
 import { PlaytestLogControls } from './PlaytestLogControls'
@@ -401,6 +401,38 @@ function Toggle({ label, on, onClick, hint }: { label: string; on: boolean; onCl
   )
 }
 
+/** „Sprache / Language“ — live switch, stored on this device (not in the save). */
+function LanguagePicker() {
+  const locale = useLocale()
+  return (
+    <div className="nav-toggle nav-lang">
+      <span className="tab-label" id="nav-lang-label">
+        {t.ux.nav.settings.language}
+      </span>
+      <div className="gc-segment" role="radiogroup" aria-labelledby="nav-lang-label">
+        {LOCALES.map((l) => (
+          <button
+            key={l}
+            type="button"
+            role="radio"
+            lang={l}
+            aria-checked={locale === l}
+            className={locale === l ? 'on' : undefined}
+            data-lang={l}
+            onClick={() => {
+              if (l === locale) return
+              logPlaytest('language', { from: locale, to: l })
+              void setLocale(l, { persist: true })
+            }}
+          >
+            {t.languageNames[l]}
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 function SettingsPage({ reminders, onToggleReminders }: { reminders: boolean; onToggleReminders?: () => void }) {
   const [ambience, setAmbience] = useState(() => isAmbienceOn())
   const signs = useSignsAlways()
@@ -431,6 +463,7 @@ function SettingsPage({ reminders, onToggleReminders }: { reminders: boolean; on
   return (
     <div className="nav-settings" role="group" aria-label={t.nav.settings}>
       <h3 className="nav-group-title">{t.ux.nav.settings.display}</h3>
+      <LanguagePicker />
       <Toggle label={t.ux.nav.settings.bigText} on={bigText} onClick={() => setPref('bigText', !bigText)} />
       <Toggle label={t.ux.nav.settings.calm} on={calm} onClick={() => setPref('calmMotion', !calm)} />
       <Toggle label={t.prefs.signs} on={signs} hint={t.prefs.signsHint} onClick={() => setSignsAlways(!signs)} />

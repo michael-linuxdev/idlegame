@@ -5,6 +5,7 @@
 
 import { t } from '../i18n'
 import { dayKey } from './monetization'
+import { formatInt } from './format'
 
 export type QuestKind = 'upgrades' | 'earnErnte' | 'claimDaily'
 
@@ -50,21 +51,21 @@ const QUEST_POOL: Omit<QuestDef, 'id'>[] = [
     target: 500,
     rewardErnte: 50,
     rewardSamen: 0,
-    label: (n) => t.quests.earnErnte(n.toLocaleString('de-DE')),
+    label: (n) => t.quests.earnErnte(formatInt(n)),
   },
   {
     kind: 'earnErnte',
     target: 5_000,
     rewardErnte: 200,
     rewardSamen: 5,
-    label: (n) => t.quests.earnErnte(n.toLocaleString('de-DE')),
+    label: (n) => t.quests.earnErnte(formatInt(n)),
   },
   {
     kind: 'earnErnte',
     target: 25_000,
     rewardErnte: 500,
     rewardSamen: 8,
-    label: (n) => t.quests.earnErnte(n.toLocaleString('de-DE')),
+    label: (n) => t.quests.earnErnte(formatInt(n)),
   },
   {
     kind: 'claimDaily',
@@ -167,7 +168,7 @@ export function questLabel(q: QuestProgress): string {
   if (def) return def.label(q.target)
   if (q.kind === 'upgrades') return t.quests.upgradeTimes(q.target)
   if (q.kind === 'earnErnte') {
-    return t.quests.earnErnte(q.target.toLocaleString('de-DE'))
+    return t.quests.earnErnte(formatInt(q.target))
   }
   return t.quests.claimDaily
 }

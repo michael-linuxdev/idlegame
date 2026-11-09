@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { CHAPTERS } from '../game/chapters'
 import { GENERATORS } from '../game/generators'
-import { CARE_NAMES } from '../theme/careNames'
+import { strings } from '../i18n/de/strings'
+
+const CARE_NAMES = strings.careNames
 
 describe('Pflege-Namen je Bereich', () => {
   it('every garden and chapter area has its own pair', () => {

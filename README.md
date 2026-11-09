@@ -42,13 +42,13 @@ npx vite preview --port 4175 & node scripts/store/screenshots.cjs docs/store/scr
 | `src/game/storage.ts`, `saveFields.ts`, `backup.ts`, `saveGuard.ts` | Spielstand: Format/Version und Migration, Feld-Parser, Sicherungscode, Schutz vor Überschreiben |
 | `src/game/economy.ts`, `truhe.ts`, `generators.ts`, `longLoop.ts`, `generations.ts` | Formeln: Saisonende-Auszahlung und Offline, Omas Truhe, Bereiche, Tiefer Winter, Generationen |
 | `src/game/` (übrige) | Tagesziele, Gartenrunde, Ereignisse, Feste, Kapitel, Playtest-Log, Hinweise, Einstellungen, Benachrichtigungen |
-| `src/theme/` | Präsentation: Texte (`strings*.ts`), Farben (`tokens.css`), Schriften (`fonts.css`), Karte (`MapBackdrop`, `PlotArt`), Modulgrafik (`ModuleArt`), Icons, Stimmung (`ambient.ts`) |
+| `src/theme/` | Präsentation: Farben (`tokens.css`), Schriften (`fonts.css`), Karte (`MapBackdrop`, `PlotArt`), Modulgrafik (`ModuleArt`), Icons, Stimmung (`ambient.ts`) |
 | `src/theme/app/`, `expansion/`, `ux/` | Styles nach Bereichen; `App.css`, `expansion.css`, `ux.css` importieren die Teile in fester Reihenfolge (Kaskade) |
 | `src/theme/art/` | Spielgrafik-Fundament: Farbpalette (`palette.ts`), Bausteine mit Stilregel und Maßtabelle (`parts/`), Bereiche je Datei (`garden/`, `chapters/`), Kapitel-Grafikliste (`registry.tsx`). Übersicht aller Grafiken: `index.html?artsheet` |
 | `src/components/` | UI: `GardenMap` + `map/` (Beet, Kopfzeile, Ziel-Zeile) + `hud/` (Ziel, Event-Leiste, Gießen/Ernten, Boni, Willkommen), `AppNav` (untere Leiste + Menü), Sheets, Panels (`prestige/`: Tiefer Winter, Generationen) |
 | `src/components/lazy.tsx` | Selten genutzte Fenster/Panels als eigene Bündel (im Leerlauf vorgeladen, offline im Precache) |
 | `src/game/overlays.ts` | Fenster-Regeln: offenes Fenster erkennen, Escape/Zurück schließt das oberste |
-| `src/i18n/` | Zugriff auf die deutschen Texte (`t`) |
+| `src/i18n/` | Texte je Sprache: `de/` (Ausgangssprache), `en/` (nur bei Bedarf geladen); `t`, Spracherkennung und Live-Umschalter (`docs/i18n/technik.md`) |
 | `docs/cleanup/namen.md` | Namens-Wörterbuch (alte Prototyp-Namen → Spielbegriffe); `src/test/legacyNames.test.ts` verhindert ihre Rückkehr |
 
 ## Rechtliches

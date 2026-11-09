@@ -91,3 +91,24 @@ export function buzz(ms = 10): void {
     /* unsupported */
   }
 }
+
+/* —— Sprache / Language (device pref, never in the save) —— */
+
+const LANG_KEY = 'gartenerbe-pref-lang'
+
+/** Stored language choice, or null when the player never picked one. */
+export function getLangPref(): string | null {
+  try {
+    return localStorage.getItem(LANG_KEY)
+  } catch {
+    return null
+  }
+}
+
+export function setLangPref(lang: string): void {
+  try {
+    localStorage.setItem(LANG_KEY, lang)
+  } catch {
+    /* private mode */
+  }
+}

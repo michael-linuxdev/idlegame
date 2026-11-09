@@ -1,7 +1,7 @@
 # Prompt: Englische Fassung „Gartenerbe in English“
 
 > Diesen Text als Auftrag an eine Claude-Code-Sitzung im Repo `idlegame` geben.
-> **Voraussetzung:** Die Aufräum-Runde (`docs/prompts/aufraeumen.md`) ist gemergt, also `SAVE_VERSION` 3 und keine Altnamen mehr. Sonst zuerst diese abschließen.
+> **Voraussetzung:** Die Aufräum-Runde (`docs/prompts/aufraeumen.md`) ist gemergt, also neuer Speicherschlüssel mit `SAVE_VERSION` 1 und keine Altnamen mehr. Sonst zuerst diese abschließen.
 > Danach folgt `docs/prompts/kapitel-13-50.md`. Neue Kapitel entstehen dann gleich zweisprachig.
 
 ---

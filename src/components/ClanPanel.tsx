@@ -1,4 +1,4 @@
-import { formatClock, formatDecimal } from '../game/format'
+import { formatClock, formatDecimal, formatInt } from '../game/format'
 import { t } from '../i18n'
 import type { useGame } from '../game/useGame'
 import { CONTEST_REWARDS, NEIGHBOURS, neighbourNow } from '../game/extrasCore'
@@ -7,16 +7,19 @@ import { playSfx } from '../game/sound'
 
 type GameApi = ReturnType<typeof useGame>
 
-const [r1, r2, r4, r5, r6, r7] = t.clan.rivals
-const FAKE_LEADERBOARD = [
-  { rank: 1, clan: r1, score: 18420 },
-  { rank: 2, clan: r2, score: 15110 },
-  { rank: 3, clan: t.clan.yourName, score: 9780, you: true },
-  { rank: 4, clan: r4, score: 8120 },
-  { rank: 5, clan: r5, score: 6405 },
-  { rank: 6, clan: r6, score: 4210 },
-  { rank: 7, clan: r7, score: 2890 },
-]
+/** Platzhalter-Rangliste; Namen live aus `t` (Sprachwechsel). */
+function fakeLeaderboard() {
+  const [r1, r2, r4, r5, r6, r7] = t.clan.rivals
+  return [
+    { rank: 1, clan: r1, score: 18420 },
+    { rank: 2, clan: r2, score: 15110 },
+    { rank: 3, clan: t.clan.yourName, score: 9780, you: true },
+    { rank: 4, clan: r4, score: 8120 },
+    { rank: 5, clan: r5, score: 6405 },
+    { rank: 6, clan: r6, score: 4210 },
+    { rank: 7, clan: r7, score: 2890 },
+  ]
+}
 
 interface Props {
   game: GameApi
@@ -59,7 +62,7 @@ export function ClanPanel({ game, onOpenShop }: Props) {
 
       <h3 className="subhead">{t.clan.leaderboard}</h3>
       <ol className="leaderboard">
-        {FAKE_LEADERBOARD.map((row) => (
+        {fakeLeaderboard().map((row) => (
           <li
             key={row.clan}
             className={row.you ? 'leaderboard-row you' : 'leaderboard-row'}
@@ -70,7 +73,7 @@ export function ClanPanel({ game, onOpenShop }: Props) {
               {row.you ? ` ${t.clan.you}` : ''}
             </span>
             <span className="lb-score">
-              {row.score.toLocaleString('de-DE')} {t.clan.pts}
+              {formatInt(row.score)} {t.clan.pts}
             </span>
           </li>
         ))}

@@ -28,6 +28,7 @@ export type PlaytestEventType =
   | 'fest_buy'
   | 'plot_switch'
   | 'app_update'
+  | 'language'
   | 'weinlese'
   | 'recipe'
   | 'photo'

@@ -1,44 +1,54 @@
 /**
- * Compact German number formatting for idle values.
- * Decimal comma, thousands dot up to 99.999, then Tsd / Mio / Mrd / Bio / Brd
- * (German long scale — never the English „B“ for a Milliarde).
+ * Compact number formatting for idle values, in the active language.
+ *  - Deutsch: Dezimalkomma, Tausenderpunkt bis 99.999, dann Tsd / Mio / Mrd /
+ *    Bio / Brd / Trd (lange Skala — nie das englische „B“ für eine Milliarde).
+ *  - English: decimal point, comma grouping up to 99,999, then K / M / B / T /
+ *    Qa / Qi (short scale: German „Mrd“ = 10⁹ = English „B“).
+ * Separators and suffixes live in the language files (`t.num`).
  */
-const UNITS = [
-  { v: 1e18, s: ' Trd' },
-  { v: 1e15, s: ' Brd' },
-  { v: 1e12, s: ' Bio' },
-  { v: 1e9, s: ' Mrd' },
-  { v: 1e6, s: ' Mio' },
-  { v: 1e3, s: ' Tsd' },
-]
+import { localeTag, t } from '../i18n'
 
-/** 15200 → „15.200“ */
+const STEPS = [1e18, 1e15, 1e12, 1e9, 1e6, 1e3] as const
+
+/** 15200 → „15.200“ / “15,200” */
 function grouped(n: number): string {
   const sign = n < 0 ? '-' : ''
-  return sign + String(Math.floor(Math.abs(n))).replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+  return sign + String(Math.floor(Math.abs(n))).replace(/\B(?=(\d{3})+(?!\d))/g, t.num.group)
 }
 
-/** Fixed decimals with a German decimal comma. */
+/** Whole number with the language's thousands separator (replaces toLocaleString). */
+export function formatInt(n: number): string {
+  return Number.isFinite(n) ? grouped(n) : '0'
+}
+
+/** Date + time in the active language (backup timestamps …). */
+export function formatDateTime(ms: number): string {
+  return new Date(ms).toLocaleString(localeTag())
+}
+
+/** Fixed decimals with the language's decimal mark. */
 export function formatDecimal(n: number, digits: number): string {
-  return de(n, digits)
+  return fixed(n, digits)
 }
 
-function de(n: number, digits: number): string {
-  return n.toFixed(digits).replace('.', ',')
+function fixed(n: number, digits: number): string {
+  return n.toFixed(digits).replace('.', t.num.decimal)
 }
 
 export function formatErnte(n: number): string {
   if (!Number.isFinite(n)) return '0'
   const abs = Math.abs(n)
   if (abs < 1000) {
-    return abs < 10 && n % 1 !== 0 ? de(n, 1) : Math.floor(n).toString()
+    return abs < 10 && n % 1 !== 0 ? fixed(n, 1) : Math.floor(n).toString()
   }
   if (abs < 100_000) return grouped(n)
-  for (const u of UNITS) {
-    if (abs >= u.v) {
-      const val = n / u.v
+  // t.num.units: suffix for 1e3, 1e6, 1e9, 1e12, 1e15, 1e18
+  for (let i = 0; i < STEPS.length; i++) {
+    const v = STEPS[i]!
+    if (abs >= v) {
+      const val = n / v
       const a = Math.abs(val)
-      return `${de(val, a >= 100 ? 0 : a >= 10 ? 1 : 2)}${u.s}`
+      return `${fixed(val, a >= 100 ? 0 : a >= 10 ? 1 : 2)}${t.num.units[STEPS.length - 1 - i]}`
     }
   }
   return Math.floor(n).toString()
@@ -64,17 +74,16 @@ export function formatClock(ms: number): string {
 
 /** „×1,25“ */
 export function formatMult(m: number): string {
-  return `×${de(m, 2)}`
+  return `×${fixed(m, 2)}`
 }
 
-/** „12 Minuten“, „3 Stunden“, „2 Tage“ — how long the player was away. */
+/** „12 Minuten“ / “12 minutes” — how long the player was away. */
 export function formatAway(ms: number): string {
   const min = Math.max(1, Math.round(ms / 60_000))
-  if (min < 60) return min === 1 ? '1 Minute' : `${min} Minuten`
+  if (min < 60) return t.num.minutes(min)
   const h = Math.round(min / 60)
-  if (h < 24) return h === 1 ? '1 Stunde' : `${h} Stunden`
-  const d = Math.round(h / 24)
-  return d === 1 ? '1 Tag' : `${d} Tage`
+  if (h < 24) return t.num.hours(h)
+  return t.num.days(Math.round(h / 24))
 }
 
 /** Time until a goal at the current rate: „38 min“, „5 h 10 min“; null if far / unknown. */

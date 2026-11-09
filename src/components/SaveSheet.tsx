@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from 'react'
 import { useDismiss } from '../game/overlays'
 import { applyBundle, downloadBackup, exportCode, readCode } from '../game/backup'
+import { formatDateTime } from '../game/format'
 import { t } from '../i18n'
 
 interface Props {
@@ -104,7 +105,7 @@ export function SaveSheet({ onClose }: Props) {
         </div>
         {error || (parsed && !parsed.ok) ? <p className="save-error" role="alert">{parsed && !parsed.ok && parsed.newer ? t.backup.newer : parsed && !parsed.ok && parsed.old ? t.backup.old : t.backup.invalid}</p> : null}
         {parsed && parsed.ok ? (
-          <p className="save-ok">{t.backup.found(new Date(parsed.bundle.at).toLocaleString('de-DE'))}</p>
+          <p className="save-ok">{t.backup.found(formatDateTime(parsed.bundle.at))}</p>
         ) : null}
       </div>
     </div>

@@ -7,6 +7,8 @@ export const navUxStrings = {
   settings: {
     back: 'Zurück zum Menü',
     display: 'Anzeige',
+    /** Bewusst zweisprachig: so findet jeder den Umschalter. */
+    language: 'Sprache / Language',
     sound: 'Ton & Hinweise',
     system: 'System',
     bigText: 'Große Schrift',
