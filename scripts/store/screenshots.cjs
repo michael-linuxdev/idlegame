@@ -17,7 +17,7 @@ async function scene(b, name, { owned, extra = {}, ftue = false, ambient = 'day-
   const p = await ctx.newPage();
   await p.goto('http://localhost:4175/?ambient=' + ambient); await p.waitForTimeout(1600);
   // hide transient banners/events for clean shots
-  await p.addStyleTag({ content: '.hud-pills-wrap,.float-pops,.hud-toast{display:none!important}' });
+  await p.addStyleTag({ content: '.hud-pills-wrap,.float-pops,.hud-toast,.weather-card,.oma-hint,.oma-note,.welcome-back{display:none!important}' });
   if (after) await after(p);
   await p.waitForTimeout(500);
   await p.screenshot({ path: `${OUT}/${name}.png` });
@@ -31,6 +31,6 @@ async function scene(b, name, { owned, extra = {}, ftue = false, ambient = 'day-
   await scene(b, '03-gartenpark-abend', { owned: lv([130, 120, 108, 96, 84, 72, 60, 50, 40, 30]), extra: { prestiges: 14, ash: 5e11 }, ambient: 'evening-summer' });
   await scene(b, '04-ausbauen', { owned: lv([60, 52, 40, 28, 12, 1]), extra: { prestiges: 3, ash: 9e7 }, after: async (p) => { await p.locator('.garden-plot').nth(1).click({ force: true }) } });
   await scene(b, '05-notizbuch', { owned: lv([40, 30, 20, 10, 5]), extra: { prestiges: 2 }, after: async (p) => { await p.locator('.laube-hotspot').click({ force: true }); await p.waitForTimeout(300); const back = p.locator('.notebook-back'); if (await back.isVisible()) await back.click() } });
-  await scene(b, '06-winterruhe', { owned: lv([60, 50, 40, 30, 20, 10]), extra: { prestiges: 2, ash: 9e8, ashEarned: 9e8 }, after: async (p) => { await p.locator('.menu-fab').click(); await p.getByRole('menuitem', { name: 'Saison' }).click(); await p.waitForTimeout(300); await p.locator('.btn.prestige').first().click({ force: true }); await p.waitForTimeout(3200) } });
+  await scene(b, '06-winterruhe', { owned: lv([60, 50, 40, 30, 20, 10]), extra: { prestiges: 2, ash: 9e8, ashEarned: 9e8 }, after: async (p) => { await p.locator('.tabbar-btn', { hasText: 'Saison' }).first().click(); await p.waitForTimeout(300); await p.locator('.btn.prestige').first().click({ force: true }); await p.waitForTimeout(3200) } });
   await b.close();
 })();

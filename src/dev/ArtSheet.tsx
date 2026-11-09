@@ -20,6 +20,7 @@ import { ResidentArt } from '../theme/ResidentArt'
 import { TIER_LEVELS } from '../theme/tiers'
 import '../theme/tokens.css'
 import '../theme/polish.css'
+import { IconScene } from './IconScene'
 import './artsheet.css'
 
 const SEASONS: Season[] = ['spring', 'summer', 'autumn', 'winter']
@@ -92,6 +93,14 @@ export default function ArtSheet() {
   const part = new URLSearchParams(location.search).get('artsheet') || 'all'
   const garden = part === 'all' || part === 'garden'
   const chapters = part === 'all' || part === 'kapitel'
+  if (part === 'icon') {
+    return (
+      <main className="artsheet artsheet-icon">
+        <ArtDefs />
+        <IconScene maskable={new URLSearchParams(location.search).get('mask') === '1'} />
+      </main>
+    )
+  }
   return (
     <main className="artsheet">
       <ArtDefs />

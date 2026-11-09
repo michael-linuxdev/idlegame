@@ -1,110 +1,36 @@
 #!/usr/bin/env python3
-"""Generate Gartenerbe PWA icons (192/512/180/maskable) + favicon.svg into public/.
+"""Generate Gartenerbe PWA icons (192/512/180/maskable) + store icon + favicon.svg.
 
-Motif: a young sprout rising from a soil mound in front of Omas red-roofed
-Laube, under a warm sun — readable down to 32px.
+Seit der Grafik-Überarbeitung entsteht das Icon aus den echten Bausteinen
+des Spiels: Gemüsebeet Stufe 5 vor Omas Laube mit Blumen, gerendert per
+Playwright aus ?artsheet=icon (src/dev/IconScene.tsx, scripts/art/
+render-icon.mjs). Dieses Skript rechnet daraus alle Größen (Lanczos).
+favicon.svg bleibt eine vereinfachte Zeichnung — bei 16–32 px wäre das
+Beet nur noch ein Fleck.
+
+Usage: npm run build && python3 scripts/generate-pwa-icons.py
 """
 
 from __future__ import annotations
 
-import math
+import subprocess
+import tempfile
 from pathlib import Path
 
-from PIL import Image, ImageDraw
+from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "public"
-
-SKY_TOP = (222, 240, 214)
-SKY_BOTTOM = (196, 228, 178)
-GRASS = (124, 186, 92)
-GRASS_D = (95, 158, 69)
-SOIL = (122, 77, 48)
-SOIL_D = (91, 55, 33)
-LEAF = (95, 158, 69)
-LEAF_L = (143, 207, 95)
-STEM = (63, 122, 48)
-ROOF = (196, 85, 63)
-ROOF_D = (110, 47, 34)
-WALL = (217, 165, 108)
-SUN = (245, 197, 66)
-OUTLINE = (61, 47, 31)
+STORE = ROOT / "docs" / "store"
 
 
-def vgradient(size: int, top: tuple, bottom: tuple) -> Image.Image:
-    img = Image.new("RGBA", (size, size))
-    d = ImageDraw.Draw(img)
-    for y in range(size):
-        t = y / max(1, size - 1)
-        c = tuple(int(top[i] + (bottom[i] - top[i]) * t) for i in range(3)) + (255,)
-        d.line([(0, y), (size, y)], fill=c)
-    return img
+def render_masters(tmp: Path) -> tuple[Image.Image, Image.Image]:
+    """Render the 1024 px masters (normal + maskable) from the real art."""
+    subprocess.run(["node", str(ROOT / "scripts" / "art" / "render-icon.mjs"), str(tmp)], check=True, cwd=ROOT)
+    return Image.open(tmp / "icon-master.png").convert("RGBA"), Image.open(tmp / "icon-maskable-master.png").convert("RGBA")
 
 
-def leaf(d, P, base, tip, bulge, fill, edge, w):
-    """Pointed leaf between base and tip (design-space coords)."""
-    (bx, by), (tx, ty) = base, tip
-    dx, dy = tx - bx, ty - by
-    ln = math.hypot(dx, dy) or 1
-    nx, ny = -dy / ln, dx / ln
-    side_a, side_b = [], []
-    for i in range(21):
-        t = i / 20
-        off = math.sin(math.pi * t) * bulge
-        x, y = bx + dx * t, by + dy * t
-        side_a.append(P(x + nx * off, y + ny * off))
-        side_b.append(P(x - nx * off, y - ny * off))
-    pts = side_a + side_b[::-1]
-    d.polygon(pts, fill=fill)
-    d.line(pts + [pts[0]], fill=edge, width=w, joint="curve")
-    d.line([P(bx, by), P(bx + dx * 0.8, by + dy * 0.8)], fill=edge, width=max(2, w // 2))
-
-
-def draw_icon(size: int, *, maskable: bool) -> Image.Image:
-    s = size / 512
-    img = vgradient(size, SKY_TOP, SKY_BOTTOM)
-    d = ImageDraw.Draw(img)
-    # maskable icons keep the motif inside the 80% safe zone
-    k = 0.8 if maskable else 1.0
-    cx = size / 2
-
-    def P(x: float, y: float) -> tuple[float, float]:
-        return (cx + (x - 256) * s * k, size / 2 + (y - 256) * s * k)
-
-    def box(x0, y0, x1, y1):
-        a, b = P(x0, y0), P(x1, y1)
-        return [a[0], a[1], b[0], b[1]]
-
-    w = max(2, int(10 * s * k))
-    # sun
-    d.ellipse(box(330, 60, 440, 170), fill=SUN)
-    # grass hill
-    d.ellipse([-size * 0.3, P(0, 330)[1], size * 1.3, size * 1.6], fill=GRASS)
-    d.ellipse([-size * 0.2, P(0, 384)[1], size * 1.2, size * 1.7], fill=GRASS_D)
-    # Omas Laube (behind, left)
-    d.rectangle(box(62, 232, 192, 334), fill=WALL, outline=OUTLINE, width=w)
-    d.polygon([P(44, 238), P(127, 170), P(210, 238)], fill=ROOF)
-    d.line([P(44, 238), P(127, 170), P(210, 238), P(44, 238)], fill=ROOF_D, width=w, joint="curve")
-    d.rectangle(box(110, 270, 144, 334), fill=(125, 159, 90), outline=OUTLINE, width=max(1, w // 2))
-    d.rectangle(box(76, 254, 100, 278), fill=(207, 233, 242), outline=(255, 255, 255), width=max(1, w // 2))
-    # stem first, the mound covers its base
-    d.line([P(308, 400), P(302, 300), P(312, 216)], fill=STEM, width=int(22 * s * k), joint="curve")
-    # leaves
-    leaf(d, P, (302, 270), (176, 198), 36, LEAF, STEM, w)
-    leaf(d, P, (312, 226), (456, 136), 42, LEAF_L, STEM, w)
-    # soil mound
-    d.ellipse(box(190, 362, 430, 458), fill=SOIL, outline=SOIL_D, width=w)
-    d.ellipse(box(236, 378, 300, 398), fill=(150, 100, 66))
-    return img
-
-
-def render(size: int, *, maskable: bool, scale: int = 4) -> Image.Image:
-    """Draw large, then Lanczos-downsample for crisp anti-aliased edges."""
-    big = draw_icon(size * scale, maskable=maskable).convert("RGBA")
-    return big.resize((size, size), Image.Resampling.LANCZOS)
-
-
-def save_set(out_dir: Path) -> None:
+def save_set(out_dir: Path, icon: Image.Image, maskable: Image.Image) -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
     specs = [
         ("pwa-192.png", 192, False),
@@ -112,10 +38,14 @@ def save_set(out_dir: Path) -> None:
         ("apple-touch-icon.png", 180, False),
         ("pwa-maskable-512.png", 512, True),
     ]
-    for name, size, maskable in specs:
+    for name, size, mask in specs:
         path = out_dir / name
-        render(size, maskable=maskable).save(path, "PNG", optimize=True)
+        (maskable if mask else icon).resize((size, size), Image.Resampling.LANCZOS).save(path, "PNG", optimize=True)
         print(f"wrote {path} ({path.stat().st_size} bytes)")
+    STORE.mkdir(parents=True, exist_ok=True)
+    store = STORE / "app-icon-1024.png"
+    icon.resize((1024, 1024), Image.Resampling.LANCZOS).convert("RGB").save(store, "PNG", optimize=True)
+    print(f"wrote {store}")
 
 
 FAVICON = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
@@ -139,7 +69,9 @@ FAVICON = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
 
 
 def main() -> None:
-    save_set(OUT)
+    with tempfile.TemporaryDirectory() as tmp:
+        icon, maskable = render_masters(Path(tmp))
+        save_set(OUT, icon, maskable)
     (OUT / "favicon.svg").write_text(FAVICON)
     print("wrote favicon.svg")
 
