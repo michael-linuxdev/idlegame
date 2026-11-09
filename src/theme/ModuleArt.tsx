@@ -5,7 +5,7 @@
  * what came before and adds to it, so the garden visibly fills up.
  * All art shares the 100×86 plot viewBox with PlotArt (shadow at y≈76).
  */
-import { memo, useEffect, useRef, useState, type ReactNode } from 'react'
+import { memo, type ReactNode } from 'react'
 import type { GeneratorId } from '../game/generators'
 import { moduleTier } from './tiers'
 
@@ -1019,24 +1019,11 @@ function renderModule(id: GeneratorId, tier: number, producing: boolean): ReactN
 
 function ModuleArtImpl({ id, level, producing = false, selected = false }: Props) {
   const tier = Math.max(1, moduleTier(level))
-  const prevTier = useRef(tier)
-  const [tierUp, setTierUp] = useState(false)
-
-  useEffect(() => {
-    if (tier > prevTier.current) {
-      prevTier.current = tier
-      setTierUp(true)
-      const timer = window.setTimeout(() => setTierUp(false), 900)
-      return () => window.clearTimeout(timer)
-    }
-    prevTier.current = tier
-  }, [tier])
-
+  // Stufenwechsel animiert GardenMap über PlotFx onTier + .tier-grow
   const cls =
     `module-art module-${id}` +
     (producing ? ' producing' : '') +
-    (selected ? ' selected' : '') +
-    (tierUp ? ' tier-up' : '')
+    (selected ? ' selected' : '')
 
   return (
     <svg className={cls} viewBox="0 0 100 86" focusable="false" aria-hidden="true" data-tier={tier}>

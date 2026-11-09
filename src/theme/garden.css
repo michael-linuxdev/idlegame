@@ -322,30 +322,6 @@
 /* Bees and compost steam stay static: animating SVG children runs on the
    main thread every frame (measured ~9 % of a throttled CPU). */
 
-.module-art.tier-up {
-  animation: tier-pop 0.9s cubic-bezier(0.2, 1.4, 0.4, 1);
-}
-
-@keyframes tier-pop {
-  0% {
-    transform: scale(0.82);
-    filter: brightness(1.4);
-  }
-  60% {
-    transform: scale(1.08);
-  }
-  100% {
-    transform: scale(1);
-    filter: none;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .module-art.tier-up {
-    animation: none !important;
-  }
-}
-
 /* —— Plot bursts —— */
 .plot-fx {
   position: absolute;
