@@ -5,7 +5,7 @@ import { FEST_EARN } from '../fests'
 import { varietyForSeasonEnd } from '../gardenLife'
 import { legacySproutMult } from '../generations'
 import { GENERATORS } from '../generators'
-import { DEEP_SHOP, type DeepMetaId, canDeepReset, deepStartErbstuecke, sproutPayout } from '../longLoop'
+import { DEEP_SHOP, type DeepMetaId, canDeepNow, deepStartErbstuecke, sproutPayout } from '../longLoop'
 import { collectReadyAchievements } from './buy'
 import { syncChaptersOpen } from './chapters'
 import { createPostPrestigeState } from './create'
@@ -80,8 +80,8 @@ export function buyDeepUpgrade(state: GameState, id: DeepMetaId): GameState {
  * Tiefer Winter: Gartenjahre, Erbstücke and Omas Truhe reset; Sprösslinge,
  * their boosts, Samen, Gartenstile, Gärtnerstufe and streaks stay.
  */
-export function doDeepReset(state: GameState): GameState {
-  if (!canDeepReset(state.saisonenden)) return state
+export function doDeepReset(state: GameState, now = Date.now()): GameState {
+  if (!canDeepNow(state.saisonenden, state.tieferWinterAt, now)) return state
   const sprouts = deepSproutPayout(state)
   const fresh = createPostPrestigeState({
     ...state,
@@ -96,6 +96,7 @@ export function doDeepReset(state: GameState): GameState {
       truhe: { ...EMPTY_TRUHE },
       sproesslinge: state.sproesslinge + sprouts,
       tiefeWinter: state.tiefeWinter + 1,
+      tieferWinterAt: now,
     }),
   )
 }

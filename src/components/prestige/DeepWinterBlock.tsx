@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { DEEP_GATE_YEAR, DEEP_SHOP, canDeepReset } from '../../game/longLoop'
 import { CHAPTERS, type ChapterId } from '../../game/chapters'
 import { ILSE_RANKS } from '../../game/extrasCore'
-import { formatDecimal, formatErnte } from '../../game/format'
+import { formatClock, formatDecimal, formatErnte } from '../../game/format'
 import { IconIlse } from '../../theme/icons'
 import { chapterCopy } from '../chapterCopy'
 import type { useGame } from '../../game/useGame'
@@ -13,7 +13,9 @@ type GameApi = ReturnType<typeof useGame>
 
 export function DeepWinterBlock({ game, onOpenChapter }: { game: GameApi; onOpenChapter?: (id: ChapterId) => void }) {
   const { state } = game
-  const deepOpen = canDeepReset(state.saisonenden)
+  const yearOk = canDeepReset(state.saisonenden)
+  const restLeft = game.deepRestMs
+  const deepOpen = yearOk && restLeft <= 0
   const [deepArmed, setDeepArmed] = useState(false)
   const deepPayout = game.deepSprouts
   return (
@@ -22,6 +24,7 @@ export function DeepWinterBlock({ game, onOpenChapter }: { game: GameApi; onOpen
         {t.longLoop.title}
       </h3>
       <p className="muted">{t.longLoop.intro}</p>
+      {yearOk && restLeft > 0 ? <p className="muted">{t.longLoop.restHint}</p> : null}
       <dl className="season-stats">
         <div>
           <dt>{t.longLoop.sprouts}</dt>
@@ -50,6 +53,7 @@ export function DeepWinterBlock({ game, onOpenChapter }: { game: GameApi; onOpen
           </p>
         )
       })}
+      {CHAPTERS.every((c) => game.openChapters.includes(c.id)) ? <p className="orchard-teaser">{t.chapterUi.moreSoon}</p> : null}
       <IlseBlock game={game} />
       <div className="prestige-preview">
         <div className="prestige-preview-card keep">
@@ -83,11 +87,13 @@ export function DeepWinterBlock({ game, onOpenChapter }: { game: GameApi; onOpen
           }
         }}
       >
-        {!deepOpen
+        {!yearOk
           ? t.longLoop.gateClosed(DEEP_GATE_YEAR)
-          : deepArmed
-            ? t.longLoop.confirmCta
-            : t.longLoop.cta(deepPayout)}
+          : !deepOpen
+            ? t.longLoop.resting(formatClock(restLeft))
+            : deepArmed
+              ? t.longLoop.confirmCta
+              : t.longLoop.cta(deepPayout)}
       </button>
 
       <h4 className="prestige-branch-title">{t.longLoop.shopTitle}</h4>

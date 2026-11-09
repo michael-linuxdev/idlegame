@@ -204,6 +204,8 @@ export interface GameState {
   ilseCarryMs: number
   /** Last Weinlese minigame */
   weinleseAt: number
+  /** Letzter Tiefer Winter (Ruhezeit, longLoop.DEEP_REST_MS); 0 = noch keiner seit dem Update */
+  tieferWinterAt: number
   /** Best Meilenstein count per area (lifetime) — new record opens a Truhe */
   milestoneRecord: Record<string, number>
   /** Transient: Meilenstein-Truhe just opened (UI pop) */
@@ -289,6 +291,7 @@ export interface ExpansionSlice {
   ilseOn: boolean
   ilseCarryMs: number
   weinleseAt: number
+  tieferWinterAt: number
   milestoneRecord: Record<string, number>
   lastChest: ChestReward | null
   recipe: Recipe
@@ -331,6 +334,7 @@ export function emptyExpansion(now = Date.now()): ExpansionSlice {
     ilseOn: true,
     ilseCarryMs: 0,
     weinleseAt: 0,
+    tieferWinterAt: 0,
     milestoneRecord: {},
     lastChest: null,
     recipe: emptyRecipe(),
@@ -375,6 +379,7 @@ export function pickExpansion(s: GameState): ExpansionSlice {
     ilseOn: s.ilseOn,
     ilseCarryMs: 0,
     weinleseAt: s.weinleseAt,
+    tieferWinterAt: s.tieferWinterAt,
     milestoneRecord: { ...s.milestoneRecord },
     lastChest: null,
     recipe: s.recipe,

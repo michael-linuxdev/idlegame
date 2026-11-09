@@ -210,6 +210,8 @@ export const strings: Strings = {
     chapterFirst: 'unlocks after the 1st Deep Winter',
     chapterSecond: 'unlocks with the 1st generation',
     chapterLater: (gen: number, prev: number) => `unlocks with generation ${gen}, once chapter ${prev} has its 8th area`,
+    chapterLater13: (gen: number, half: boolean, prev: number) =>
+      `unlocks with generation ${gen}${half ? ' plus half the Deep Winters to the next' : ''}, once chapter ${prev} is fully planted`,
     goalTitle: (area: string) => `Plant Book: ${area} set`,
     goalDetail: (n: number) => `${varieties(n)} to go`,
   },
@@ -626,6 +628,8 @@ export const strings: Strings = {
     cta: (n: number) => `Deep Winter · +${nSeedlings(n)}`,
     gateClosed: (year: number) => `Possible from garden year ${year}`,
     confirmCta: 'Really? Tap again — the garden will rest',
+    resting: (clock: string) => `The garden is still resting · ${clock}`,
+    restHint: 'After a Deep Winter the soil needs three days of rest before the next one can come.',
     shopTitle: 'Seedling Shop',
     rank: (rank: number, max: number) => `Rank ${rank}/${max}`,
     cost: (n: number) => `${nSeedlings(n)}`,

@@ -1,4 +1,4 @@
-import { CHAPTERS } from '../game/chapters'
+import { CHAPTERS, laterProgressNeeded } from '../game/chapters'
 import { collectionPercent, collectionRows, nearSets } from '../game/collections'
 import { GENERATORS } from '../game/generators'
 import { useDismiss } from '../game/overlays'
@@ -12,7 +12,9 @@ type GameApi = ReturnType<typeof useGame>
 function chapterCondition(number: number): string {
   if (number === 2) return t.collections.chapterFirst
   if (number === 3) return t.collections.chapterSecond
-  return t.collections.chapterLater(number - 2, number - 1)
+  if (number <= 12) return t.collections.chapterLater(number - 2, number - 1)
+  const need = laterProgressNeeded(number)
+  return t.collections.chapterLater13(Math.floor(need), need % 1 !== 0, number - 1)
 }
 
 /** Sammlung & Ziele: alles Gesammelte und alle Kapitel auf einer Seite. */
@@ -72,6 +74,11 @@ export function CollectionSheet({ game, onClose }: { game: GameApi; onClose: () 
               </li>
             )
           })}
+          <li className="locked">
+            <span className="collection-chapter-text">
+              <small>{t.chapterUi.moreSoon}</small>
+            </span>
+          </li>
         </ul>
       </div>
     </div>

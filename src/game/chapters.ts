@@ -11,9 +11,13 @@
  *  Kapitel 3 · Weinberg       — after the first Generation
  *  Kapitel 4–12               — Generation N and the previous chapter's
  *                               8th area planted (staggered over months)
+ *  Kapitel 13–50              — data in chapterPlan.ts, rule `laterUnlock`
+ *                               (docs/kapitel/plan.md „Taktung“)
  *
  * IDs are part of the save format — never rename (see CLAUDE.md).
  */
+import { PLANNED_CHAPTERS, RELEASED_UP_TO, type SlotLayout } from './chapterPlan'
+import { generationGate } from './generations'
 import { milestoneMult } from './generators'
 
 export type ChapterId =
@@ -131,6 +135,34 @@ const TERRACES: [string, string][] = [
   ['70%', '30%'],
 ]
 
+const ROWS: [string, string][] = [
+  ['24%', '86%'],
+  ['50%', '86%'],
+  ['76%', '86%'],
+  ['30%', '71%'],
+  ['70%', '71%'],
+  ['24%', '56%'],
+  ['50%', '56%'],
+  ['76%', '56%'],
+  ['34%', '39%'],
+  ['66%', '39%'],
+]
+
+const SPIRAL: [string, string][] = [
+  ['50%', '88%'],
+  ['78%', '80%'],
+  ['82%', '62%'],
+  ['70%', '45%'],
+  ['46%', '38%'],
+  ['22%', '46%'],
+  ['18%', '64%'],
+  ['34%', '76%'],
+  ['56%', '66%'],
+  ['50%', '52%'],
+]
+
+const LAYOUTS: Record<SlotLayout, [string, string][]> = { ZIGZAG, RING, TERRACES, ROWS, SPIRAL }
+
 const later: [ChapterId, number, [string, string][], number][] = [
   ['bauernhof', 4, ZIGZAG, 2],
   ['imkerei', 5, RING, 3],
@@ -144,6 +176,56 @@ const later: [ChapterId, number, [string, string][], number][] = [
 ]
 
 const ORDER: ChapterId[] = ['weinberg', 'bauernhof', 'imkerei', 'teich', 'kraeuter', 'botanik', 'alm', 'lavendel', 'japangarten', 'gartenschau']
+
+/**
+ * Kapitel 13+: Freischaltung (über den Balance-Simulator eingestellt, Werte
+ * in docs/kapitel/plan.md „Taktung“).
+ *  - Fortschritt = Generation + Anteil der Tiefen Winter bis zur nächsten
+ *    (Tiefe Winter haben 3 Tage Ruhezeit, das gibt einen verlässlichen Takt)
+ *  - Kapitel 13 ab Fortschritt 11, danach je Kapitel +½
+ *  - und das vorige Kapitel ist **vollständig angelegt** (alle 10 Bereiche)
+ * Alles Handlung, keine reine Wartezeit.
+ */
+export const LATER_RULE = { gen13: 11, perChapter: 0.5 }
+
+export function laterProgressNeeded(number: number): number {
+  return LATER_RULE.gen13 + (number - 13) * LATER_RULE.perChapter
+}
+
+/** Generation + Anteil der Tiefen Winter bis zur nächsten (0 … ∞). */
+export function generationProgress(s: { generation: number; tiefeWinter: number }): number {
+  return s.generation + Math.min(1, s.tiefeWinter / generationGate(s.generation))
+}
+
+function laterUnlock(number: number, prev: ChapterId, prevAreas: readonly string[]) {
+  const last = prevAreas[prevAreas.length - 1]!
+  return (s: UnlockCtx) =>
+    generationProgress(s) >= laterProgressNeeded(number) &&
+    (s.chapters[prev]?.openedAt ?? 0) > 0 &&
+    (s.chapters[prev]?.owned[last] ?? 0) >= 1
+}
+
+/** Garten-Bonus je Kapitel-Stufe ab Kapitel 13 (flach, damit 38 Kapitel die Garten-Kurve nicht sprengen). */
+export const LATER_GARDEN_BONUS = 0.0015
+
+/** Skalierung der Kosten/Erträge: Kapitel 12 = 50, danach ×1,5 je Kapitel. */
+export function laterScale(number: number): number {
+  return 50 * Math.pow(1.5, number - 12)
+}
+
+// Balance-Simulator: SIM_ALL_CHAPTERS schaltet auch noch nicht gebaute Kapitel ein
+const releasedUpTo = (globalThis as { __GE_SIM_ALL_CHAPTERS?: boolean }).__GE_SIM_ALL_CHAPTERS ? 50 : RELEASED_UP_TO
+
+const LATER_DEFS: ChapterDef[] = PLANNED_CHAPTERS.filter((p) => p.number <= releasedUpTo).map((p, i, list) => {
+  const prev = i === 0 ? { id: 'gartenschau' as ChapterId, areas: AREAS.gartenschau as readonly string[] } : { id: list[i - 1]!.id as ChapterId, areas: list[i - 1]!.areas }
+  return {
+    id: p.id as ChapterId,
+    number: p.number,
+    areas: ladder([...p.areas], LAYOUTS[p.layout], laterScale(p.number)),
+    gardenBonusPerLevel: LATER_GARDEN_BONUS,
+    unlock: laterUnlock(p.number, prev.id, prev.areas),
+  }
+})
 
 export const CHAPTERS: ChapterDef[] = [
   {
@@ -174,6 +256,7 @@ export const CHAPTERS: ChapterDef[] = [
       unlock: after(prev, [...AREAS[prev as keyof typeof AREAS]], number - 2),
     }
   }),
+  ...LATER_DEFS,
 ]
 
 export function chapterDef(id: ChapterId): ChapterDef {
@@ -275,10 +358,33 @@ export function chapterGardenBonus(def: ChapterDef, c: ChapterState): number {
   return c.openedAt > 0 ? def.gardenBonusPerLevel * chapterLevels(c) : 0
 }
 
-/** Product of all chapter bonuses for the garden's Ernte. */
+/**
+ * Wie die Kapitel-Boni zusammenwirken. Im Spiel: `sum` — die Boni aller
+ * Kapitel werden **addiert** (bis 2026-11: multipliziert, was mit vielen
+ * Kapitel-Stufen zu ×10¹² führte; docs/kapitel/balance-bericht.md).
+ * Der Balance-Simulator kann Alternativen vergleichen (CHAPTER_BONUS_MODE).
+ */
+export const CHAPTER_BONUS: { mode: 'product' | 'sum' | 'soft' | 'log'; cap: number; l0: number } = { mode: 'sum', cap: 1, l0: 100 }
+
+function shapedBonus(def: ChapterDef, c: ChapterState): number {
+  const raw = chapterGardenBonus(def, c)
+  if (CHAPTER_BONUS.mode === 'soft') return CHAPTER_BONUS.cap * (1 - Math.exp(-raw / CHAPTER_BONUS.cap))
+  if (CHAPTER_BONUS.mode === 'log') {
+    const l = chapterLevels(c)
+    return c.openedAt > 0 ? def.gardenBonusPerLevel * CHAPTER_BONUS.l0 * Math.log1p(l / CHAPTER_BONUS.l0) : 0
+  }
+  return raw
+}
+
+/** Garden Ernte factor from all chapters (sum of their bonuses, see CHAPTER_BONUS). */
 export function chaptersGardenMult(chapters: ChaptersState): number {
+  if (CHAPTER_BONUS.mode === 'sum') {
+    let sum = 0
+    for (const def of CHAPTERS) sum += chapterGardenBonus(def, chapters[def.id])
+    return 1 + sum
+  }
   let m = 1
-  for (const def of CHAPTERS) m *= 1 + chapterGardenBonus(def, chapters[def.id])
+  for (const def of CHAPTERS) m *= 1 + shapedBonus(def, chapters[def.id])
   return m
 }
 
