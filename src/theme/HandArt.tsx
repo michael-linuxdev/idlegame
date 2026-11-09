@@ -7,8 +7,8 @@ import { memo, type ReactNode } from 'react'
 import type { ChapterId } from '../game/chapters'
 import type { Season } from './ambient'
 import { moduleTier, sameTierProps } from './tiers'
-import { Alm, Botanik, Kraeuter, WildA } from './HandArtA'
-import { Gartenschau, Japan, Lavendel, WildB } from './HandArtB'
+import { Alm, Botanik, Kraeuter } from './HandArtA'
+import { Gartenschau, Japan, Lavendel } from './HandArtB'
 
 import { Svg, Meadow, Fence, Cow, Goat, Pig, Roof, Window, Smoke, Pond, Lily, Reed, Fish, Boat, Hive, Bees, House } from './HandParts'
 import { Bird, BlossomTree, Crate, Shadow } from './art/parts'
@@ -571,33 +571,35 @@ export const HandArt = memo(function HandArt({
   return <>{draw({ id, tier: Math.max(1, moduleTier(level)), season })}</>
 }, sameTierProps)
 
-/** Locked corner, per chapter: brambles + rubble (Hof), dead wood (Imkerei), mud + reeds (Teich). */
-export function HandWild({ chapter, seed = 0 }: { chapter: ChapterId; seed?: number }) {
-  if (chapter === 'kraeuter' || chapter === 'botanik' || chapter === 'alm') return <WildA chapter={chapter} seed={seed} />
-  if (chapter === 'lavendel' || chapter === 'japangarten' || chapter === 'gartenschau') return <WildB chapter={chapter} seed={seed} />
-  if (chapter === 'teich') {
-    return (
-      <Svg>
-        <ellipse cx="40" cy="58" rx="28" ry="8" fill="#6e5a3a" opacity=".6" />
-        {Array.from({ length: 7 }, (_, i) => (
-          <path key={i} d={`M${16 + i * 8} 62q${i % 2 ? 2 : -2} -${12 + ((i + seed) % 3) * 4} ${i % 2 ? 4 : -2} -${18 + ((i + seed) % 4) * 3}`} stroke="#8a8a5a" strokeWidth="1.4" fill="none" />
-        ))}
-        <ellipse cx="54" cy="58" rx="6" ry="2" fill="#5f7a8a" opacity=".6" />
-      </Svg>
-    )
-  }
-  if (chapter === 'imkerei') {
-    return (
-      <Svg>
-        <ellipse cx="40" cy="60" rx="28" ry="7" fill={P.leaf} opacity=".5" />
-        <path d="M20 60 L60 54" stroke={P.outlineWood} strokeWidth="4" strokeLinecap="round" />
-        <path d="M44 56 l6 -10 M30 58 l-4 -8" stroke={P.outlineWood} strokeWidth="2" strokeLinecap="round" />
-        {Array.from({ length: 5 }, (_, i) => (
-          <ellipse key={i} cx={14 + i * 12} cy={62 - (i % 2) * 3} rx="6" ry="4" fill={i % 2 ? '#5f7a3a' : P.leaf} />
-        ))}
-      </Svg>
-    )
-  }
+/** Gesperrte Ecke am Teich: Schlamm und Schilf. */
+export function TeichWild({ seed = 0 }: { seed?: number }) {
+  return (
+    <Svg>
+      <ellipse cx="40" cy="58" rx="28" ry="8" fill="#6e5a3a" opacity=".6" />
+      {Array.from({ length: 7 }, (_, i) => (
+        <path key={i} d={`M${16 + i * 8} 62q${i % 2 ? 2 : -2} -${12 + ((i + seed) % 3) * 4} ${i % 2 ? 4 : -2} -${18 + ((i + seed) % 4) * 3}`} stroke="#8a8a5a" strokeWidth="1.4" fill="none" />
+      ))}
+      <ellipse cx="54" cy="58" rx="6" ry="2" fill="#5f7a8a" opacity=".6" />
+    </Svg>
+  )
+}
+
+/** Gesperrte Ecke der Imkerei: Totholz und Gestrüpp. */
+export function ImkereiWild() {
+  return (
+    <Svg>
+      <ellipse cx="40" cy="60" rx="28" ry="7" fill={P.leaf} opacity=".5" />
+      <path d="M20 60 L60 54" stroke={P.outlineWood} strokeWidth="4" strokeLinecap="round" />
+      <path d="M44 56 l6 -10 M30 58 l-4 -8" stroke={P.outlineWood} strokeWidth="2" strokeLinecap="round" />
+      {Array.from({ length: 5 }, (_, i) => (
+        <ellipse key={i} cx={14 + i * 12} cy={62 - (i % 2) * 3} rx="6" ry="4" fill={i % 2 ? '#5f7a3a' : P.leaf} />
+      ))}
+    </Svg>
+  )
+}
+
+/** Gesperrte Ecke am Hof: Brombeeren und Schutt. */
+export function HofWild() {
   return (
     <Svg>
       <ellipse cx="40" cy="60" rx="28" ry="7" fill={P.leaf} opacity=".5" />
