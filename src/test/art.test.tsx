@@ -1,4 +1,6 @@
+/// <reference types="node" />
 import { describe, expect, it } from 'vitest'
+import { readFileSync, readdirSync } from 'node:fs'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { GENERATORS } from '../game/generators'
 import { ChapterReady, ChapterWild } from '../theme/ChapterArt'
@@ -47,7 +49,9 @@ describe('Grafik: dekorative SVGs sind für Screenreader unsichtbar', () => {
 
 describe('CSS: @keyframes-Namen sind eindeutig', () => {
   it('kein Name wird in zwei Stylesheets oder doppelt definiert', () => {
-    const files = Object.entries(import.meta.glob('../**/*.css', { query: '?raw', import: 'default', eager: true }) as Record<string, string>)
+    const files = (readdirSync('src', { recursive: true }) as string[])
+      .filter((f) => f.endsWith('.css'))
+      .map((f) => [f, readFileSync(`src/${f}`, 'utf8')] as const)
     const seen = new Map<string, string>()
     const dupes: string[] = []
     for (const [file, css] of files) {
