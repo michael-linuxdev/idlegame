@@ -1,0 +1,58 @@
+/* Kapitel-Meisterschaft (src/game/mastery.ts): Sterne in Sammlung und Kapitel-Karte. */
+.mastery-stars {
+  display: inline-flex;
+  flex: none;
+  gap: 0.05rem;
+  line-height: 1;
+  color: #cbbd9c;
+}
+
+.mastery-stars svg {
+  width: 0.8em;
+  height: 0.8em;
+}
+
+.mastery-stars .on {
+  color: #e0a21a;
+}
+
+.orchard-bonus-row {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.orchard-bonus-row .orchard-bonus {
+  min-width: 0;
+}
+
+.orchard-bonus-row .mastery-stars {
+  font-size: 0.8rem;
+}
+
+.mastery-summary {
+  margin: 0 0 0.6rem;
+  font-size: 0.9rem;
+}
+
+.mastery-summary p {
+  margin: 0 0 0.25rem;
+}
+
+.mastery-explain {
+  font-size: 0.82rem;
+  color: #5c4a2e;
+}
+
+.mastery-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.mastery-line .mastery-stars {
+  font-size: 1rem;
+}

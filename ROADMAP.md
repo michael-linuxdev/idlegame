@@ -133,6 +133,18 @@ Werkzeug: `npm run balance -- <engaged|regular|casual> <stunden>` — spielt die
 5. **Leistung:** 50 Kapitel-Bündel werden nachgeladen; Ladezeit auf älteren Handys messen (Kapitel-Grafik, Tierleben-CSS), Leistungsgrenze Hauptgarten (1500 SVG-Elemente) gilt auch als Richtwert für Kapitel-Karten.
 6. **Store-Vorbereitung:** Texte in `docs/store/texte.md` (de + en) mit `listing.md`/`listing.en.md` abgleichen, Screenshots mit späten Kapiteln ergänzen, Markenrecherche, `DISTRIBUTION = 'store'` und `TEST_PHASE = false`, echte Käufe (`STORE_ENABLED`) erst mit Store-Anbindung.
 
+## Nach Kapitel 50 (Stand 2026-11-09)
+
+Konzept und Ideen-Bewertung: `docs/nach-kapitel-50.md`.
+
+- ✅ **Kapitel-Meisterschaft** (Schritt 1): drei Sterne je Kapitel, es zählt der schwächste Bereich — ★ alle zehn Bereiche Stufe 100, ★★ beide Pflege-Arten mindestens Rang 5, ★★★ voll gepflegt (Rang 10). Je Stern +5 % Ertrag in der Währung dieses Kapitels, gedeckelt bei +15 %; 49 Kapitel × 3 = 147 Sterne. Stufen-Schwellen allein (erste Fassung 25/50/100) verworfen: im Simulator erreichen alle Kapitel dasselbe Stufen-Niveau (≈ 180 nach 5 Jahren), ab Kapitel 13 kamen alle Sterne in 1–5 Tagen. Anzeige in der Kapitel-Kopfleiste (sobald vollständig angelegt, mit kurzem Hinweis beim neuen Stern) und in „Sammlung & Ziele“ (Summe, Regel, je Kapitel der Weg zum nächsten Stern). Kein neues Spielstand-Feld — die Sterne folgen aus Kapitel-Stufen und -Pflege, alte Stände bekommen sie sofort. Balance: Regular K50 Tag 1785 statt 1778 (Rauschen), Garten-Bonus +0,5 %. Code `src/game/mastery.ts`, Tests `mastery.test.ts`, E2E Abschnitt 5c, Simulator `MASTERY=1` / `MASTERY_PER_STAR`.
+- **Nächste Schritte:**
+  1. *Omas Dose füllen:* der dritte Meister-Stern schickt ein eigenes Tütchen an den Briefpartner des Kapitels zurück, kurze Antwortkarte im Notizbuch (de + en, Leitlinie „nichts, was Gegenlesen braucht“), neues Feld mit Startwert `[]`.
+  2. Meister-Sterne auch an den Grundstücks-Knöpfen und im Tiefen Winter zeigen.
+  3. Familien-Chronik nur für neue Ereignisse (Kapitel offen, Stern, Generation).
+  4. Pflege mehrfach kaufen, falls das Tippen für ★★★ stört.
+  5. Playtest-Log: Ereignis „Meister-Stern“; Bonus je Stern mit echten Ständen nachprüfen.
+
 ## Ideen-Backlog (nächste Updates)
 
 - Echter Online-Wettbewerb für den Kürbis (mit Multiplayer-Backend).

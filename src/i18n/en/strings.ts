@@ -218,6 +218,18 @@ export const strings: Strings = {
     goalDetail: (n: number) => `${varieties(n)} to go`,
   },
 
+  mastery: {
+    title: 'Chapter Mastery',
+    summary: (have: number, total: number) => `${have} of ${total} mastery stars`,
+    explain: (level: number, care: number, careMax: number, pct: number) =>
+      `First star when every area of a chapter is at level ${level}. Second star when every area has at least rank ${care} in both kinds of care, third at rank ${careMax}. Each star: +${pct} % yield in that chapter.`,
+    starsAria: (n: number, max: number) => `Chapter Mastery: ${n} of ${max} stars`,
+    nextLevel: (have: number, total: number, level: number) => `${have} of ${total} areas at level ${level}`,
+    nextCare: (have: number, total: number, rank: number) => `${have} of ${total} areas cared for up to rank ${rank}`,
+    done: 'Mastery complete',
+    toast: (n: number, pct: number) => `Chapter Mastery: star ${n}! Now +${pct} % yield in this chapter`,
+  },
+
   seasonCards: {
     title: 'A theme for this garden year',
     intro: 'Grandma did something different every year. Pick a theme — it lasts until the next Season’s End.',

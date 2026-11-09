@@ -6,6 +6,7 @@
  *  3. Notebook + Spielstand-sichern sheets open
  *  5. Alle Kapitel (?kapitel=all), Grundstücke-Auswahl, Gartenschau-Karte;
  *     5b Abschluss-Szene von Kapitel 50 (einmalig, gespeichert, Fokus, Escape)
+ *     5c Kapitel-Meisterschaft: Stern beim Ausbau, Hinweis, Kopfleiste, Sammlung
  *  4. Festladen, Kapitel 2/3 via ?kapitel2=1&kapitel3=1, Weinlese, Gartenhelfer, Update-Check
  *  6. UX-Layout: Tutorial verdeckt sein Ziel nicht, Omas Notiz nie über Fenstern,
  *     Escape/Zurück schließen Fenster, Breitbild mit Seitenpanel; Screenshots in e2e-screens/
@@ -266,6 +267,49 @@ try {
     await p.waitForTimeout(800)
     assert((await p.locator('.abschluss-scene').count()) === 0, 'finale: shown only once')
     assert(await p.evaluate(() => JSON.parse(localStorage.getItem('gartenerbe-spielstand-v1')).abschlussSeen === true), 'finale: seen is saved')
+    await ctx.close()
+  }
+
+  // 5c — Kapitel-Meisterschaft: letzter Bereich auf Stufe 100 → Stern, Hinweis, Kopfleiste und Sammlung zeigen ihn
+  {
+    const ctx = await browser.newContext({ ...devices['iPhone 13'], reducedMotion: 'reduce' })
+    await ctx.addInitScript(() => {
+      if (sessionStorage.getItem('seed')) return
+      const areas = ['apfel', 'birne', 'kirsche', 'zwetschge', 'schafe', 'wildbienen', 'walnuss', 'mosterei', 'doerrhaus', 'obstmarkt']
+      const owned = Object.fromEntries(areas.map((a) => [a, a === 'obstmarkt' ? 99 : 120]))
+      const obstwiese = { cur: 1e18, curLifetime: 1e18, owned, openedAt: 1, introSeen: true }
+      localStorage.setItem('gartenerbe-spielstand-v1', JSON.stringify({ owned: { gemuesebeet: 20 }, ernte: 1e4, tiefeWinter: 1, lastSeen: Date.now(), saveVersion: 1, chapters: { obstwiese } }))
+      localStorage.setItem('gartenerbe-ftue-v1', JSON.stringify({ beat: 'done', dismissed: true, completed: [], startedAt: 1 }))
+      localStorage.setItem('gartenerbe-install-v1', JSON.stringify({ dismissed: true, installed: false, shown: true }))
+      localStorage.setItem('gartenerbe-hints-v1', JSON.stringify(['season', 'truhe', 'deep', 'visitor', 'order', 'variety', 'weekly']))
+      sessionStorage.setItem('seed', '1')
+    })
+    const p = await ctx.newPage()
+    p.on('pageerror', (e) => errors.push(e.message))
+    await p.goto(URL)
+    await p.getByRole('button', { name: T.chapters.obstwiese.to }).click()
+    await p.locator('.chapter-obstwiese .garden-ground').waitFor()
+    const hudStars = (n) => p.locator('.orchard-bonus-row').getByRole('img', { name: T.mastery.starsAria(n, 3) })
+    await hudStars(0).waitFor()
+    await p.locator('.garden-plot').filter({ hasText: T.orchard.areas.obstmarkt.name }).first().click()
+    const buy = p.locator('.upgrade-hud-buy')
+    await buy.waitFor()
+    await buy.dispatchEvent('pointerdown')
+    await buy.dispatchEvent('pointerup')
+    await p.locator('.hud-toast').filter({ hasText: T.mastery.toast(1, 5) }).waitFor({ timeout: 5000 })
+    await p.locator('.upgrade-hud-close').click()
+    await hudStars(1).waitFor()
+    await p.screenshot({ path: `e2e-screens/kapitel/meisterschaft-karte-${LANG}.png` })
+    // Sammlung & Ziele: Summe und Zeile von Kapitel 2
+    await p.locator('.menu-fab').click()
+    await p.locator('.nav-menu-item').filter({ hasText: T.collections.menu }).first().click()
+    const sheet = p.locator('.collection-sheet')
+    await sheet.waitFor()
+    const summary = await sheet.locator('[data-testid="mastery-summary"]').innerText()
+    assert(summary.includes(T.mastery.summary(1, 49 * 3)), `mastery: summary shows 1 star (${summary})`)
+    assert(await sheet.getByRole('img', { name: T.mastery.starsAria(1, 3) }).first().isVisible(), 'mastery: chapter 2 row shows its star')
+    assert((await sheet.locator('.collection-chapters').innerText()).includes(T.mastery.nextCare(0, 10, 5)), 'mastery: next star needs care rank 5')
+    await p.screenshot({ path: `e2e-screens/kapitel/meisterschaft-sammlung-${LANG}.png` })
     await ctx.close()
   }
 

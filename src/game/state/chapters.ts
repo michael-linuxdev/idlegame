@@ -16,6 +16,7 @@ import {
 import { ILSE_RANKS, WEINLESE, rollChest } from '../extrasCore'
 import { FEST_EARN } from '../fests'
 import { legacyCostMult, legacyOrchardMult } from '../generations'
+import { masteryMult, masteryStars } from '../mastery'
 import { milestonesReached } from '../generators'
 import { XP_PER_UPGRADE, levelProductionMult } from '../progression'
 import type { BuyMode } from './buy'
@@ -69,7 +70,9 @@ export function chapterRateMult(state: GameState): number {
 
 export function chapterPerSecond(state: GameState, id: ChapterId): number {
   if (!chapterOpen(state, id)) return 0
-  return chapterBaseRate(chapterDef(id), state.chapters[id]) * chapterRateMult(state)
+  const def = chapterDef(id)
+  const c = state.chapters[id]
+  return chapterBaseRate(def, c) * chapterRateMult(state) * masteryMult(masteryStars(def, c))
 }
 
 function withChapterCur(state: GameState, id: ChapterId, gained: number): GameState {

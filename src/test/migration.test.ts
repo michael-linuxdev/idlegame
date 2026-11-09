@@ -26,6 +26,7 @@ const ADDED_AFTER_V1: Record<string, unknown> = {
   tieferWinterAt: 0,
   // Abschluss-Szene Kapitel 50 (Welle 8): alte Stände haben sie noch nicht gesehen
   abschlussSeen: false,
+  // Kapitel-Meisterschaft (docs/nach-kapitel-50.md) braucht kein Feld: die Sterne folgen aus chapters[id].owned
 }
 
 /** Nur die Kapitel, die im alten Stand schon gespeichert waren (neue füllt parseChapters auf). */

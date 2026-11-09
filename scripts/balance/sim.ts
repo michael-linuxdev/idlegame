@@ -77,12 +77,17 @@ import { LEGACY_SHOP } from '../../src/game/generations'
 import { CHAPTER_BONUS, CHAPTERS, chaptersGardenMult, totalChapterLevels } from '../../src/game/chapters'
 import { bestChapterBuy, buyChapterArea, buyIlse, openChapters, buildProjectStage, claimRewardedAd } from '../../src/game/state'
 import { PROJECTS } from '../../src/game/projects'
+import { MASTERY_BONUS, masteryStars, totalMasteryStars } from '../../src/game/mastery'
 
 const PLAY_CHAPTERS = !!(process.env.CHAPTERS || process.env.SIM_ALL_CHAPTERS)
 // Formel-Vergleich für den Kapitel-Bonus (nur Simulator): product | sum | soft | log
 if (process.env.CHAPTER_BONUS_MODE) CHAPTER_BONUS.mode = process.env.CHAPTER_BONUS_MODE as typeof CHAPTER_BONUS.mode
 if (process.env.CHAPTER_BONUS_CAP) CHAPTER_BONUS.cap = Number(process.env.CHAPTER_BONUS_CAP)
 if (process.env.CHAPTER_BONUS_L0) CHAPTER_BONUS.l0 = Number(process.env.CHAPTER_BONUS_L0)
+// Kapitel-Meisterschaft: Bonus je Stern (0 = aus, zum Vergleich)
+if (process.env.MASTERY_PER_STAR) MASTERY_BONUS.perStar = Number(process.env.MASTERY_PER_STAR)
+/** Erster Tag mit 1/2/3 Meister-Sternen je Kapitel (MASTERY=1 druckt sie). */
+const masteryDays: Record<string, number[]> = {}
 
 /** Kapitel: Ilse anstellen/verbessern, dann je offenem Kapitel die besten Käufe. */
 function playChapters(s: GameState, maxPerChapter = 6): GameState {
@@ -325,6 +330,9 @@ export function run(profile: Profile, hours: number) {
       s = playChapters(s)
       for (const def of CHAPTERS) {
         if (chapterDays[def.id] == null && s.chapters[def.id].openedAt > 0) chapterDays[def.id] = Math.floor((clock - start) / 86400000) + 1
+        const stars = masteryStars(def, s.chapters[def.id])
+        const days = (masteryDays[def.id] ??= [])
+        while (days.length < stars) days.push(Math.floor((clock - start) / 86400000) + 1)
       }
     }
 
@@ -494,6 +502,15 @@ function report(profile: Profile, hours: number) {
       console.log(
         `  chapters: ${chapters.map((c) => `K${c.number}@d${c.day}`).join(' ')} | chapter levels ${totalChapterLevels(s.chapters)} | garden ×${chaptersGardenMult(s.chapters).toFixed(2)} | ilse ${s.ilseLevel} | projects ${JSON.stringify(s.projects)} | ads ${adClaims} | gen ${s.generation} deep ${s.tiefeWinter}`,
       )
+    if (PLAY_CHAPTERS && process.env.MASTERY) {
+      const rows = CHAPTERS.filter((d) => s.chapters[d.id].openedAt > 0).map((d) => {
+        const min = Math.min(...d.areas.map((a) => s.chapters[d.id].owned[a.id] ?? 0))
+        const days = masteryDays[d.id] ?? []
+        return `K${d.number}:min${min}${days.length ? `★${days.map((x) => `d${x}`).join('/')}` : ''}`
+      })
+      const tot = totalMasteryStars(s.chapters)
+      console.log(`  mastery (×${MASTERY_BONUS.perStar}/star): ${tot.have}/${tot.total} stars | ${rows.join(' ')}`)
+    }
     if (deeps.length || process.env.DEEP)
       console.log(
         `  deep winters: ${deeps.map((d) => `d${d.day}(+${d.sprouts})`).join(' ')} | end deep ${JSON.stringify(s.sproesslingLaden)} year ${s.saisonenden + 1}`,
