@@ -10,7 +10,8 @@ import { moduleTier, sameTierProps } from './tiers'
 import { Alm, Botanik, Kraeuter, WildA } from './HandArtA'
 import { Gartenschau, Japan, Lavendel, WildB } from './HandArtB'
 
-import { Svg, Shadow, Meadow, Fence, Cow, Goat, Pig, Bird, Roof, Window, Smoke, Crate, Pond, Lily, Reed, Fish, Boat, Hive, Bees, BlossomTree, House } from './HandParts'
+import { Svg, Meadow, Fence, Cow, Goat, Pig, Roof, Window, Smoke, Pond, Lily, Reed, Fish, Boat, Hive, Bees, House } from './HandParts'
+import { Bird, BlossomTree, Crate, Shadow } from './art/parts'
 import { P } from './art/palette'
 
 /* ————————————— Bauernhof ————————————— */
@@ -39,7 +40,7 @@ function Bauernhof({ id, tier, season }: { id: string; tier: number; season?: Se
     case 'ziegenstall':
       return (
         <Svg>
-          <Shadow />
+          <Shadow grid="chapter" rx={30} />
           <House x={46} w={22} h={14} wall={P.woodLight} roof={P.outlineWood} steep={9} />
           <path d="M10 64 Q20 34 34 40 Q42 50 40 64z" fill={P.stone} stroke={P.outlineStone} strokeWidth=".8" />
           <path d="M18 50l6-4M26 56l6-3" stroke={P.outlineStone} strokeWidth=".6" />
@@ -93,7 +94,7 @@ function Bauernhof({ id, tier, season }: { id: string; tier: number; season?: Se
               ))}
             </g>
           ))}
-          {tier >= 4 ? <Crate x={64} y={40} fruit={P.woodLight} /> : null}
+          {tier >= 4 ? <Crate s={0.5} x={68.5} y={46} fruit={P.woodLight} /> : null}
           {tier >= 5 ? (
             <g>
               <path d="M12 46V28M6 34h12" stroke={P.outlineSoft} strokeWidth="1.6" />
@@ -108,7 +109,7 @@ function Bauernhof({ id, tier, season }: { id: string; tier: number; season?: Se
     case 'heuscheune':
       return (
         <Svg>
-          <Shadow rx={34} />
+          <Shadow grid="chapter" rx={34} />
           <rect x="14" y="34" width="40" height="30" fill="#b8403a" stroke="#6e2a22" strokeWidth=".8" />
           <path d="M10 34 L34 16 L58 34z" fill="#6e2a22" />
           <rect x="26" y="44" width="16" height="20" fill={P.cream} />
@@ -127,7 +128,7 @@ function Bauernhof({ id, tier, season }: { id: string; tier: number; season?: Se
     case 'melkhaus':
       return (
         <Svg>
-          <Shadow />
+          <Shadow grid="chapter" rx={30} />
           <House x={18} w={30} h={20} wall={P.cream} roof={P.outlineWood} />
           <rect x="29" y="52" width="8" height="12" fill={P.bark} />
           <Window x={21} y={50} lit={tier >= 3} />
@@ -143,7 +144,7 @@ function Bauernhof({ id, tier, season }: { id: string; tier: number; season?: Se
     case 'kaeserei':
       return (
         <Svg>
-          <Shadow />
+          <Shadow grid="chapter" rx={30} />
           <House x={12} w={34} h={22} wall="#f3e6c8" roof="#a5531a" timber />
           <Window x={38} y={48} lit={tier >= 3} />
           <rect x="50" y="48" width="22" height="2" fill={P.outlineSoft} />
@@ -157,7 +158,7 @@ function Bauernhof({ id, tier, season }: { id: string; tier: number; season?: Se
     case 'hofbaeckerei':
       return (
         <Svg>
-          <Shadow />
+          <Shadow grid="chapter" rx={30} />
           <House x={10} w={30} h={20} wall={P.paper} roof="#b8403a" />
           <Window x={16} y={50} lit />
           <path d="M44 64 A12 12 0 0 1 68 64z" fill="#c9bfa8" stroke="#8a7a6a" strokeWidth=".8" />
@@ -172,7 +173,7 @@ function Bauernhof({ id, tier, season }: { id: string; tier: number; season?: Se
     case 'bauernmarkt':
       return (
         <Svg>
-          <Shadow rx={34} />
+          <Shadow grid="chapter" rx={34} />
           {Array.from({ length: Math.min(3, 1 + Math.floor(tier / 2)) }, (_, i) => {
             const x = 8 + i * 23
             const colors = [P.tomato, P.waterDeep, P.leaf]
@@ -182,8 +183,8 @@ function Bauernhof({ id, tier, season }: { id: string; tier: number; season?: Se
                 <path d={`M${x + 4} 44l-1 5M${x + 10} 44v5M${x + 16} 44l1 5`} stroke={P.white} strokeWidth="2" opacity=".8" />
                 <path d={`M${x + 2} 49v15M${x + 18} 49v15`} stroke={P.outlineSoft} strokeWidth="1.2" />
                 <rect x={x + 1} y="56" width="18" height="3" fill={P.woodMid} />
-                <Crate x={x + 2} y={52} fruit={[P.red, P.orange, P.leafLight][i]!} />
-                <Crate x={x + 11} y={52} fruit={[P.yellow, P.woodLight, '#6b3a78'][i]!} />
+                <Crate s={0.5} x={x + 2 + 4.5} y={58} fruit={[P.red, P.orange, P.leafLight][i]!} />
+                <Crate s={0.5} x={x + 11 + 4.5} y={58} fruit={[P.yellow, P.woodLight, '#6b3a78'][i]!} />
               </g>
             )
           })}
@@ -202,7 +203,7 @@ function Imkerei({ id, tier, season }: { id: string; tier: number; season?: Seas
     case 'bienenhaus':
       return (
         <Svg>
-          <Shadow />
+          <Shadow grid="chapter" rx={30} />
           <rect x="10" y="36" width="60" height="28" fill={P.woodMid} stroke={P.outlineWood} strokeWidth=".8" />
           <path d="M6 36 L40 22 L74 36z" fill={P.outlineWood} />
           {Array.from({ length: Math.min(6, 2 + tier) }, (_, i) => (
@@ -217,7 +218,7 @@ function Imkerei({ id, tier, season }: { id: string; tier: number; season?: Seas
     case 'lindenallee':
       return (
         <Svg>
-          <Shadow rx={34} />
+          <Shadow grid="chapter" rx={34} />
           {Array.from({ length: Math.min(3, 1 + Math.floor(tier / 2)) }, (_, i) => (
             <g key={i} transform={`translate(${18 + i * 22} 64)`}>
               <path d="M-1.6 0L-1 -18Q0 -22 1 -18L1.6 0z" fill={P.bark} />
@@ -255,7 +256,7 @@ function Imkerei({ id, tier, season }: { id: string; tier: number; season?: Seas
     case 'kirschhain':
       return (
         <Svg>
-          <Shadow rx={34} />
+          <Shadow grid="chapter" rx={34} />
           <BlossomTree x={40} y={64} s={0.9 + tier * 0.04} winter={winter} color={season === 'spring' ? '#f7c6d9' : season === 'summer' ? '#6ca848' : '#d2752c'} />
           {tier >= 3 ? <BlossomTree x={18} y={64} s={0.7} winter={winter} color={season === 'spring' ? '#fbe0ea' : '#6ca848'} /> : null}
           {tier >= 4 ? <BlossomTree x={62} y={64} s={0.7} winter={winter} color={season === 'spring' ? '#fbe0ea' : '#6ca848'} /> : null}
@@ -292,7 +293,7 @@ function Imkerei({ id, tier, season }: { id: string; tier: number; season?: Seas
     case 'schleuder':
       return (
         <Svg>
-          <Shadow />
+          <Shadow grid="chapter" rx={30} />
           <House x={14} w={40} h={22} wall={P.paper} roof="#a5531a" />
           <rect x="26" y="46" width="16" height="18" fill="#3a2a1a" />
           <ellipse cx="34" cy="56" rx="6" ry="7" fill="#c9d0d8" stroke="#6a7a8a" strokeWidth=".8" />
@@ -306,7 +307,7 @@ function Imkerei({ id, tier, season }: { id: string; tier: number; season?: Seas
     case 'wachszieherei':
       return (
         <Svg>
-          <Shadow />
+          <Shadow grid="chapter" rx={30} />
           <House x={10} w={30} h={20} wall="#f5e6b8" roof="#c49a3a" />
           <Window x={16} y={50} lit={tier >= 2} />
           <path d="M46 40h28" stroke={P.outlineWood} strokeWidth="1.6" />
@@ -338,7 +339,7 @@ function Imkerei({ id, tier, season }: { id: string; tier: number; season?: Seas
     case 'honigladen':
       return (
         <Svg>
-          <Shadow />
+          <Shadow grid="chapter" rx={30} />
           <House x={14} w={44} h={22} wall="#fbf3e0" roof="#e0a21a" />
           <rect x="20" y="48" width="18" height="10" fill={P.waterLight} stroke={P.outlineWood} strokeWidth=".7" />
           {Array.from({ length: Math.min(6, tier + 1) }, (_, i) => (
@@ -467,7 +468,7 @@ function Teich({ id, tier, season }: { id: string; tier: number; season?: Season
     case 'raeucherei':
       return (
         <Svg>
-          <Shadow />
+          <Shadow grid="chapter" rx={30} />
           <House x={20} w={26} h={22} wall={P.outlineSoft} roof="#4a3a2a" steep={11} />
           <rect x="38" y="30" width="5" height="12" fill={P.outlineWood} />
           <Smoke x={40} y={28} />

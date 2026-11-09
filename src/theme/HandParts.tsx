@@ -13,7 +13,6 @@ export function Svg({ children }: { children: ReactNode }) {
   )
 }
 
-export const Shadow = ({ rx = 30 }: { rx?: number }) => <ellipse cx="40" cy="66" rx={rx} ry="4.5" fill="rgba(40,60,20,0.22)" />
 
 export function Meadow({ winter }: { winter?: boolean }) {
   return <ellipse cx="40" cy="56" rx="36" ry="14" fill={winter ? '#e8eef0' : P.leafLight} opacity="0.75" />
@@ -77,20 +76,6 @@ export function Pig({ x, y, s = 1, flip = false }: { x: number; y: number; s?: n
   )
 }
 
-export function Bird({ x, y, color = P.cream, neck = P.cream, flip = false, swim = false }: { x: number; y: number; color?: string; neck?: string; flip?: boolean; swim?: boolean }) {
-  return (
-    <g transform={`translate(${x} ${y}) scale(${flip ? -1 : 1} 1)`}>
-      <g className={swim ? 'ha-swim' : 'ha-graze'}>
-      {!swim ? <path d="M-1 3v3M2 3v3" stroke={P.orange} strokeWidth="1" /> : null}
-      <ellipse cx="0" cy="0" rx="5.4" ry="3.4" fill={color} stroke="#8a7a6a" strokeWidth=".5" />
-      <path d="M3.6 -1q2-5 .8-7.6" stroke={neck} strokeWidth="2.2" fill="none" strokeLinecap="round" />
-      <path d="M4.2 -8.6l3 .9-3 .9z" fill={P.orange} />
-      <path d="M-5 -0.4l-2.4-1.6 1 2.4z" fill={color} />
-      </g>
-    </g>
-  )
-}
-
 export function Roof({ x, w, y, color, steep = 14 }: { x: number; w: number; y: number; color: string; steep?: number }) {
   return <path d={`M${x - 3} ${y}L${x + w / 2} ${y - steep}L${x + w + 3} ${y}z`} fill={color} stroke="rgba(0,0,0,.2)" strokeWidth=".6" />
 }
@@ -106,17 +91,6 @@ export function Window({ x, y, lit }: { x: number; y: number; lit?: boolean }) {
 
 export function Smoke({ x, y }: { x: number; y: number }) {
   return <path className="smoke" d={`M${x} ${y}c-2-3 2-5 0-8c-2-3 2-4 0-7`} stroke="#d8d8d8" strokeWidth="1.8" fill="none" strokeLinecap="round" />
-}
-
-export function Crate({ x, y, fruit }: { x: number; y: number; fruit: string }) {
-  return (
-    <g>
-      <rect x={x} y={y} width="9" height="6" fill={P.woodLight} stroke={P.outlineWood} strokeWidth=".6" />
-      {[1.8, 4.5, 7.2].map((dx) => (
-        <circle key={dx} cx={x + dx} cy={y} r="1.6" fill={fruit} />
-      ))}
-    </g>
-  )
 }
 
 export function Pond({ cx = 40, cy = 52, rx = 32, ry = 14, frozen }: { cx?: number; cy?: number; rx?: number; ry?: number; frozen?: boolean }) {
@@ -196,24 +170,6 @@ export function Bees({ n, cx = 40, cy = 26 }: { n: number; cx?: number; cy?: num
           <ellipse cx={cx - 14 + ((i * 11) % 28)} cy={cy + ((i * 7) % 10) - 4} rx="1.6" ry="1.1" fill={P.yellow} stroke="#4a3208" strokeWidth=".4" />
         </g>
       ))}
-    </g>
-  )
-}
-
-export function BlossomTree({ x, y, s = 1, color = '#f7c6d9', winter }: { x: number; y: number; s?: number; color?: string; winter?: boolean }) {
-  return (
-    <g transform={`translate(${x} ${y}) scale(${s})`}>
-      <path d="M-1.4 0L-1 -14Q0 -18 1 -14L1.4 0z" fill={P.bark} />
-      <circle cx="0" cy="-22" r="10" fill={winter ? '#c9d0c4' : color} />
-      <circle cx="-7" cy="-17" r="6.4" fill={winter ? '#c9d0c4' : color} />
-      <circle cx="7" cy="-17" r="6.4" fill={winter ? '#c9d0c4' : color} />
-      {winter ? <ellipse cx="0" cy="-30" rx="7" ry="2" fill={P.white} /> : (
-        <g fill={P.white} opacity=".7">
-          <circle cx="-3" cy="-24" r="1.2" />
-          <circle cx="4" cy="-20" r="1.2" />
-          <circle cx="-6" cy="-16" r="1" />
-        </g>
-      )}
     </g>
   )
 }

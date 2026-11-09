@@ -8,6 +8,7 @@ import { moduleTier, sameTierProps } from './tiers'
 import type { Season } from './ambient'
 import { ArtSvg } from './ArtSvg'
 import { P } from './art/palette'
+import { Shadow } from './art/parts'
 
 const GRAPE: Record<string, string> = {
   riesling: '#c9d36a',
@@ -23,7 +24,7 @@ function Vines({ id, tier, season }: { id: string; tier: number; season?: Season
   const bunches = season === 'winter' || season === 'spring' ? 0 : Math.min(4, tier)
   return (
     <ArtSvg viewBox="0 0 80 72">
-      <ellipse cx="40" cy="64" rx="30" ry="5" fill="rgba(40,60,20,0.22)" />
+      <Shadow grid="chapter" rx={30} />
       {Array.from({ length: rows }, (_, r) => {
         const y = 58 - r * 10
         const x0 = 10 + r * 3
@@ -56,7 +57,7 @@ function Trockenmauer({ tier }: { tier: number }) {
   const layers = Math.min(4, 1 + Math.floor(tier / 1.3))
   return (
     <ArtSvg viewBox="0 0 80 72">
-      <ellipse cx="40" cy="64" rx="32" ry="4" fill="rgba(40,60,20,0.22)" />
+      <Shadow grid="chapter" rx={32} />
       {Array.from({ length: layers }, (_, r) =>
         Array.from({ length: 7 }, (_, i) => (
           <rect
@@ -96,7 +97,7 @@ function House({ tier, kind }: { tier: number; kind: 'wingerthaus' | 'kelter' | 
   const x = 40 - w / 2
   return (
     <ArtSvg viewBox="0 0 80 72">
-      <ellipse cx="40" cy="64" rx={w / 2 + 12} ry="4" fill="rgba(40,60,20,0.22)" />
+      <Shadow grid="chapter" rx={w / 2 + 12} />
       {kind === 'weinkeller' ? (
         <g>
           <path d="M6 64Q40 10 74 64z" fill={P.leafLight} />
@@ -143,7 +144,7 @@ function Weinfest({ tier }: { tier: number }) {
   const colors = [P.tomato, P.yellow, P.waterDeep, P.leafLight]
   return (
     <ArtSvg viewBox="0 0 80 72">
-      <ellipse cx="40" cy="64" rx="34" ry="5" fill="rgba(40,60,20,0.22)" />
+      <Shadow grid="chapter" rx={34} />
       <path d="M8 30h64v6H8z" fill={P.outlineSoft} />
       <path d="M10 36v28M70 36v28" stroke={P.outlineWood} strokeWidth="2" />
       {Array.from({ length: 8 }, (_, i) => (

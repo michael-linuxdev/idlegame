@@ -5,8 +5,9 @@
  */
 import type { ReactNode } from 'react'
 import type { Season } from './ambient'
-import { Bees, BlossomTree, House, Pond, Roof, Shadow, Smoke, Svg, Window } from './HandParts'
-import { Bunting, Butterfly, Flower, Jar, Rock, Snowcap } from './HandArtA'
+import { Bees, House, Pond, Roof, Smoke, Svg, Window } from './HandParts'
+import { Bunting, Butterfly, Rock, Snowcap } from './HandArtA'
+import { BlossomTree, Flower, Jar, Shadow } from './art/parts'
 import { P } from './art/palette'
 
 type P = { id: string; tier: number; season?: Season }
@@ -188,7 +189,7 @@ export function Lavendel({ id, tier, season }: P): ReactNode {
       const n = Math.min(7, 2 + tier)
       return (
         <Svg>
-          <Shadow rx={32} />
+          <Shadow grid="chapter" rx={32} />
           <path d="M6 64 Q40 56 74 64 V66 H6z" fill="#c9b48a" />
           <path d="M6 58 H74 V64 H6z" fill="#d9c49a" stroke="#a69a7a" strokeWidth=".6" />
           {Array.from({ length: 8 }, (_, i) => (
@@ -215,7 +216,7 @@ export function Lavendel({ id, tier, season }: P): ReactNode {
       const r = 12 + tier * 1.6
       return (
         <Svg>
-          <Shadow rx={30} />
+          <Shadow grid="chapter" rx={30} />
           <Ground color={dry} winter={winter} />
           <path d="M38 64 Q36 52 40 44 M40 50 Q46 44 52 40 M39 52 Q32 46 26 42" stroke="#8a7a6a" strokeWidth="3" fill="none" strokeLinecap="round" />
           {bare ? null : (
@@ -239,7 +240,7 @@ export function Lavendel({ id, tier, season }: P): ReactNode {
       const bottles = Math.min(6, tier + 1)
       return (
         <Svg>
-          <Shadow rx={34} />
+          <Shadow grid="chapter" rx={34} />
           <House x={8} w={42} h={22} wall={P.paper} roof={P.roof} steep={10} />
           <rect x="40" y="26" width="6" height="12" fill="#bdb3a0" />
           {tier >= 2 ? <Smoke x={43} y={24} /> : null}
@@ -261,7 +262,7 @@ export function Lavendel({ id, tier, season }: P): ReactNode {
       const bars = Math.min(8, 2 + tier)
       return (
         <Svg>
-          <Shadow rx={34} />
+          <Shadow grid="chapter" rx={34} />
           <House x={30} w={42} h={22} wall="#f5ecd8" roof={P.roof} steep={10} />
           <rect x="34" y="47" width="10" height="9" fill="#8a9ac0" stroke={P.outlineWood} strokeWidth=".6" />
           <path d="M34 51.5h10M39 47v9" stroke={P.outlineWood} strokeWidth=".4" />
@@ -288,7 +289,7 @@ export function Lavendel({ id, tier, season }: P): ReactNode {
       const stalls = Math.min(3, 1 + Math.floor(tier / 2))
       return (
         <Svg>
-          <Shadow rx={34} />
+          <Shadow grid="chapter" rx={34} />
           {Array.from({ length: stalls }, (_, i) => {
             const x = 6 + i * 24
             const c = ['#7a5ab8', P.yellow, P.roof][i]!
@@ -300,7 +301,7 @@ export function Lavendel({ id, tier, season }: P): ReactNode {
                 <rect x={x + 1} y="56" width="20" height="3" fill={P.woodMid} />
                 {i === 0 ? [3, 7, 11, 15].map((dx) => <path key={dx} d={`M${x + dx} 56v-4`} stroke="#8a5ac8" strokeWidth="1.6" strokeLinecap="round" />) : null}
                 {i === 1 ? [3, 8, 13].map((dx) => <circle key={dx} cx={x + dx + 2} cy={54} r="1.8" fill={P.yellow} stroke={P.outlineWood} strokeWidth=".3" />) : null}
-                {i === 2 ? [3, 8, 13].map((dx) => <Jar key={dx} x={x + dx} y={51} c={P.paper} lid={P.roof} />) : null}
+                {i === 2 ? [3, 8, 13].map((dx) => <Jar key={dx} x={x + dx + 2.1} y={56} s={0.7} c={P.paper} lid={P.roof} />) : null}
               </g>
             )
           })}
@@ -312,7 +313,7 @@ export function Lavendel({ id, tier, season }: P): ReactNode {
     case 'mas':
       return (
         <Svg>
-          <Shadow rx={34} />
+          <Shadow grid="chapter" rx={34} />
           {tier >= 3 ? <Cypress x={8} y={64} s={1 + tier * 0.06} /> : null}
           {tier >= 5 ? <Cypress x={72} y={64} s={1.1} /> : null}
           <rect x="14" y="40" width="48" height="24" fill="#e8d4a8" stroke="#a5893a" strokeWidth=".7" />
@@ -426,7 +427,7 @@ export function Japan({ id, tier, season }: P): ReactNode {
       const n = Math.min(10, 3 + tier * 2)
       return (
         <Svg>
-          <Shadow rx={32} />
+          <Shadow grid="chapter" rx={32} />
           {Array.from({ length: n }, (_, i) => {
             const x = 8 + ((i * 13) % 64)
             const h = 30 + ((i * 7) % 12) + tier * 2
@@ -449,7 +450,7 @@ export function Japan({ id, tier, season }: P): ReactNode {
       const color = spring ? '#f7c6d9' : season === 'summer' ? '#6ca848' : '#d2752c'
       return (
         <Svg>
-          <Shadow rx={34} />
+          <Shadow grid="chapter" rx={34} />
           <path d="M30 67 L37 58 H43 L50 67z" fill={gravel} opacity=".75" />
           <BlossomTree x={18} y={64} s={0.8 + tier * 0.05} winter={winter} color={color} />
           {tier >= 2 ? <BlossomTree x={62} y={64} s={0.8 + tier * 0.04} winter={winter} color={color} /> : null}
@@ -516,7 +517,7 @@ export function Japan({ id, tier, season }: P): ReactNode {
     case 'teehaus':
       return (
         <Svg>
-          <Shadow rx={34} />
+          <Shadow grid="chapter" rx={34} />
           <rect x="14" y="56" width="50" height="4" fill={P.woodDark} />
           <path d="M18 60v4M60 60v4" stroke={P.outlineWood} strokeWidth="1.4" />
           <rect x="20" y="40" width="38" height="16" fill="#f5ecd8" stroke={P.outlineWood} strokeWidth=".7" />
@@ -546,7 +547,7 @@ export function Japan({ id, tier, season }: P): ReactNode {
       const n = Math.min(4, 1 + Math.floor(tier / 2))
       return (
         <Svg>
-          <Shadow rx={32} />
+          <Shadow grid="chapter" rx={32} />
           <rect x="6" y="56" width="68" height="3" fill={P.woodDark} />
           <path d="M10 59v7M70 59v7" stroke={P.outlineWood} strokeWidth="1.4" />
           {Array.from({ length: n }, (_, i) => {
@@ -620,7 +621,7 @@ export function Gartenschau({ id, tier, season }: P): ReactNode {
     case 'eingangstor':
       return (
         <Svg>
-          <Shadow rx={34} />
+          <Shadow grid="chapter" rx={34} />
           <path d="M14 64V34M66 64V34" stroke={P.leafDark} strokeWidth="5" />
           <path d="M14 34 Q40 16 66 34" stroke={P.leafDark} strokeWidth="5" fill="none" />
           {bloom ? Array.from({ length: 9 }, (_, i) => {
@@ -646,7 +647,7 @@ export function Gartenschau({ id, tier, season }: P): ReactNode {
       const rows = Math.min(5, 1 + tier)
       return (
         <Svg>
-          <Shadow rx={32} />
+          <Shadow grid="chapter" rx={32} />
           <path d="M10 56h52l6 -10h-6l-4 4h-44z" fill={P.outlineSoft} />
           <path d="M12 56 Q20 30 40 34 Q58 30 62 56z" fill={winter ? '#c9d0c4' : P.leaf} />
           {bloom
@@ -734,7 +735,7 @@ export function Gartenschau({ id, tier, season }: P): ReactNode {
       const h = 22 + tier * 6
       return (
         <Svg>
-          <Shadow rx={24} />
+          <Shadow grid="chapter" rx={24} />
           <path d={`M30 64 L36 ${64 - h} H44 L50 64`} stroke={P.woodDark} strokeWidth="2" fill="none" />
           {Array.from({ length: Math.floor(h / 8) }, (_, i) => {
             const y = 64 - (i + 1) * 8
@@ -754,7 +755,7 @@ export function Gartenschau({ id, tier, season }: P): ReactNode {
       const w = 40 + tier * 4
       return (
         <Svg>
-          <Shadow rx={34} />
+          <Shadow grid="chapter" rx={34} />
           <rect x={40 - w / 2} y="44" width={w} height="20" fill={P.cream} stroke="#bdb3a0" strokeWidth=".6" />
           {Array.from({ length: Math.floor(w / 6) }, (_, i) => (
             <path key={i} d={`M${40 - w / 2 + 3 + i * 6} 44v20`} stroke="#e8e0cc" strokeWidth="1.6" />
@@ -792,7 +793,7 @@ export function Gartenschau({ id, tier, season }: P): ReactNode {
     case 'ehrenpavillon':
       return (
         <Svg>
-          <Shadow rx={30} />
+          <Shadow grid="chapter" rx={30} />
           <ellipse cx="40" cy="62" rx="22" ry="4" fill="#efe6d0" stroke="#bdb3a0" strokeWidth=".6" />
           {[24, 34, 46, 56].map((x) => (
             <rect key={x} x={x - 1.4} y="40" width="2.8" height="22" fill={P.cream} stroke="#bdb3a0" strokeWidth=".4" />
@@ -816,7 +817,7 @@ export function Gartenschau({ id, tier, season }: P): ReactNode {
         <Svg>
           <Ground color={P.leafLight} winter={winter} />
           {bloom
-            ? Array.from({ length: 6 + tier * 4 }, (_, i) => <Flower key={i} x={8 + ((i * 17) % 64)} y={54 + ((i * 11) % 11)} c={spring || summer ? '#6a9ae0' : '#9ab0d0'} r={1.1} center="#f5e08a" />)
+            ? Array.from({ length: 6 + tier * 4 }, (_, i) => <Flower s={0.7} key={i} x={8 + ((i * 17) % 64)} y={54 + ((i * 11) % 11) + 3.53} c={spring || summer ? '#6a9ae0' : '#9ab0d0'} r={1.03} center="#f5e08a" />)
             : null}
           <path d="M36 58 a4 4 0 0 1 4 -4 a4 4 0 0 1 4 4 l-4 5z" fill="#bdb3a0" stroke="#8a7e6e" strokeWidth=".6" transform="translate(0 -2)" />
           {tier >= 2 ? (

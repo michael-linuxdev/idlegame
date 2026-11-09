@@ -5,7 +5,8 @@
  */
 import type { ReactNode } from 'react'
 import type { Season } from './ambient'
-import { Bees, Cow, House, Roof, Shadow, Smoke, Svg, Window } from './HandParts'
+import { Bees, Cow, House, Roof, Smoke, Svg, Window } from './HandParts'
+import { Bed, Flower, Jar, Pot, Shadow } from './art/parts'
 import { P } from './art/palette'
 
 type P = { id: string; tier: number; season?: Season }
@@ -17,45 +18,6 @@ export function Soil({ cx = 40, cy = 58, rx = 32, ry = 10, winter }: { cx?: numb
     <g>
       <ellipse cx={cx} cy={cy + 1.4} rx={rx + 1.5} ry={ry + 1.5} fill="#7a5a34" opacity=".55" />
       <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill={winter ? '#eef2f2' : P.outlineSoft} />
-    </g>
-  )
-}
-
-/** Raised wooden bed */
-export function Bed({ x, y, w, h = 8, winter }: { x: number; y: number; w: number; h?: number; winter?: boolean }) {
-  return (
-    <g>
-      <rect x={x} y={y} width={w} height={h} fill={P.woodMid} stroke={P.outlineWood} strokeWidth=".7" />
-      <rect x={x + 1.2} y={y - 0.6} width={w - 2.4} height="2.4" fill={winter ? '#eef2f2' : P.outlineWood} />
-      <path d={`M${x} ${y + h / 2}h${w}`} stroke={P.outlineWood} strokeWidth=".5" opacity=".6" />
-    </g>
-  )
-}
-
-export function Flower({ x, y, c, r = 1.7, center = P.yellow }: { x: number; y: number; c: string; r?: number; center?: string }) {
-  return (
-    <g>
-      <path d={`M${x} ${y + 4.5}v-4.5`} stroke={P.leafMoss} strokeWidth=".6" />
-      <circle cx={x} cy={y} r={r} fill={c} />
-      <circle cx={x} cy={y} r={r * 0.42} fill={center} />
-    </g>
-  )
-}
-
-export function Pot({ x, y, s = 1 }: { x: number; y: number; s?: number }) {
-  return (
-    <g transform={`translate(${x} ${y}) scale(${s})`}>
-      <path d="M-4 0h8l-1.2 6h-5.6z" fill="#c4683a" stroke="#8a4220" strokeWidth=".5" />
-      <rect x="-4.6" y="-1" width="9.2" height="1.8" rx=".5" fill="#d47a48" stroke="#8a4220" strokeWidth=".4" />
-    </g>
-  )
-}
-
-export function Jar({ x, y, c = P.paper, lid = P.outlineSoft }: { x: number; y: number; c?: string; lid?: string }) {
-  return (
-    <g>
-      <rect x={x} y={y} width="4.2" height="5" rx="1" fill={c} stroke={P.outlineWood} strokeWidth=".45" />
-      <rect x={x - 0.3} y={y - 1.2} width="4.8" height="1.5" rx=".4" fill={lid} />
     </g>
   )
 }
@@ -202,7 +164,7 @@ export function Kraeuter({ id, tier, season }: P): ReactNode {
                 return (
                   <g key={i}>
                     <ellipse cx={x} cy={y + 1} rx="3" ry="1.6" fill="#8ab85a" />
-                    {!spring ? <Flower x={x} y={y - 2} c={autumn ? '#e8e0c8' : P.cream} r={1.4} /> : null}
+                    {!spring ? <Flower s={0.7} x={x} y={y - 2 + 3.72} c={autumn ? '#e8e0c8' : P.cream} r={1.32} /> : null}
                   </g>
                 )
               })}
@@ -225,8 +187,8 @@ export function Kraeuter({ id, tier, season }: P): ReactNode {
       const clumps = Math.min(6, 1 + tier)
       return (
         <Svg>
-          <Shadow rx={32} />
-          <Bed x={8} y={52} w={64} h={10} winter={winter} />
+          <Shadow grid="chapter" rx={32} />
+          <Bed x={40} y={62} w={107} h={5} front={12} s={0.6} winter={winter} />
           {Array.from({ length: clumps }, (_, i) => {
             const x = 14 + i * 10.4
             return winter ? (
@@ -267,7 +229,7 @@ export function Kraeuter({ id, tier, season }: P): ReactNode {
                 return (
                   <g key={i}>
                     <ellipse cx={x} cy={y + 2.4} rx="2.6" ry="1.4" fill="#6f9a48" />
-                    {!spring || i % 3 === 0 ? <Flower x={x} y={y} c={autumn && i % 2 ? '#d9731a' : P.orange} r={1.9} center="#c4551a" /> : null}
+                    {!spring || i % 3 === 0 ? <Flower s={0.7} x={x} y={y + 4.05} c={autumn && i % 2 ? '#d9731a' : P.orange} r={1.79} center="#c4551a" /> : null}
                   </g>
                 )
               })
@@ -322,7 +284,7 @@ export function Kraeuter({ id, tier, season }: P): ReactNode {
       const pots = Math.min(6, tier + 1)
       return (
         <Svg>
-          <Shadow rx={32} />
+          <Shadow grid="chapter" rx={32} />
           <rect x="6" y="60" width="68" height="3" rx="1" fill={P.stone} />
           {Array.from({ length: pots }, (_, i) => {
             const x = 12 + i * 11.2
@@ -333,7 +295,7 @@ export function Kraeuter({ id, tier, season }: P): ReactNode {
                 <ellipse cx={x - 1.6} cy={51} rx="2" ry="1.2" fill="#c4d4c0" />
                 {season === 'summer' && big ? <path d={`M${x} 48v-5`} stroke="#8a6ac4" strokeWidth="1.6" strokeLinecap="round" /> : null}
                 {winter ? <path d={`M${x - 4} 50q4-3.6 8 0`} stroke={P.white} strokeWidth="1.8" fill="none" /> : null}
-                <Pot x={x} y={55} s={big ? 1 : 0.85} />
+                <Pot x={x} y={big ? 61 : 60.1} s={big ? 0.67 : 0.57} />
               </g>
             )
           })}
@@ -346,7 +308,7 @@ export function Kraeuter({ id, tier, season }: P): ReactNode {
       const bundles = Math.min(8, 2 + tier)
       return (
         <Svg>
-          <Shadow rx={32} />
+          <Shadow grid="chapter" rx={32} />
           <House x={10} w={52} h={26} wall="#e8d4ac" roof={P.outlineWood} timber steep={14} />
           <rect x="20" y="40" width="32" height="10" fill="#3a2a1a" />
           <path d="M20 41h32" stroke={P.outlineWood} strokeWidth="1" />
@@ -369,7 +331,7 @@ export function Kraeuter({ id, tier, season }: P): ReactNode {
       const bottles = Math.min(5, tier)
       return (
         <Svg>
-          <Shadow rx={32} />
+          <Shadow grid="chapter" rx={32} />
           <path d="M6 34h40l-4 -8h-32z" fill="#a5531a" stroke="#6e2a12" strokeWidth=".6" />
           <path d="M10 34v30M42 34v30" stroke={P.outlineWood} strokeWidth="1.6" />
           <rect x="14" y="56" width="18" height="8" fill="#8a7a6a" stroke="#5a4a3a" strokeWidth=".6" />
@@ -395,7 +357,7 @@ export function Kraeuter({ id, tier, season }: P): ReactNode {
       const jars = Math.min(6, tier + 1)
       return (
         <Svg>
-          <Shadow rx={32} />
+          <Shadow grid="chapter" rx={32} />
           <House x={8} w={34} h={22} wall={P.cream} roof="#7a5ab8" steep={13} />
           <rect x="32" y="26" width="5" height="10" fill="#8a7a6a" />
           <Smoke x={34.5} y={24} />
@@ -404,7 +366,7 @@ export function Kraeuter({ id, tier, season }: P): ReactNode {
           <rect x="46" y="52" width="28" height="3" fill={P.woodMid} />
           <path d="M48 55v9M72 55v9" stroke={P.outlineWood} strokeWidth="1.2" />
           {Array.from({ length: jars }, (_, i) => (
-            <Jar key={i} x={47.6 + i * 4.4} y={47} c={i % 2 ? P.cream : '#e8d4f0'} lid={i % 2 ? '#7a5ab8' : '#c4683a'} />
+            <Jar key={i} x={49.7 + i * 4.4} y={52} s={0.7} c={i % 2 ? P.cream : '#e8d4f0'} lid={i % 2 ? '#7a5ab8' : '#c4683a'} />
           ))}
           {tier >= 2 ? (
             <g>
@@ -412,8 +374,8 @@ export function Kraeuter({ id, tier, season }: P): ReactNode {
               <path d="M70 44l3 -5" stroke="#6a5e4e" strokeWidth="1.2" />
             </g>
           ) : null}
-          {tier >= 4 ? <Flower x={14} y={60} c={P.orange} /> : null}
-          {tier >= 4 ? <Flower x={18} y={61} c={P.lilac} /> : null}
+          {tier >= 4 ? <Flower s={0.7} r={1.6} x={14} y={63.92} c={P.orange} /> : null}
+          {tier >= 4 ? <Flower s={0.7} r={1.6} x={18} y={64.92} c={P.lilac} /> : null}
           {winter ? <path d="M5 42 L25 29 L45 42" stroke={P.white} strokeWidth="2.2" fill="none" /> : null}
         </Svg>
       )
@@ -422,7 +384,7 @@ export function Kraeuter({ id, tier, season }: P): ReactNode {
       const tables = Math.min(3, 1 + Math.floor(tier / 2))
       return (
         <Svg>
-          <Shadow rx={34} />
+          <Shadow grid="chapter" rx={34} />
           <House x={32} w={40} h={22} wall="#fbf3e0" roof={P.leafDark} steep={12} />
           <Window x={36} y={48} lit={tier >= 2} />
           <Window x={60} y={48} lit={tier >= 2} />
@@ -443,7 +405,7 @@ export function Kraeuter({ id, tier, season }: P): ReactNode {
             )
           })}
           {tier >= 5 ? <Bunting y={30} n={8} x0={4} x1={34} /> : null}
-          {tier >= 3 ? <Pot x={30} y={58} /> : null}
+          {tier >= 3 ? <Pot x={30} y={64} s={0.67} /> : null}
           {tier >= 3 && !winter ? <ellipse cx="30" cy="55" rx="3.4" ry="3" fill="#5fae62" /> : null}
           {winter ? <path d="M29 34 L52 22 L75 34" stroke={P.white} strokeWidth="2.2" fill="none" /> : null}
         </Svg>
@@ -502,7 +464,7 @@ export function Botanik({ id, tier, season }: P): ReactNode {
       const palms = Math.min(5, 1 + tier)
       return (
         <Svg>
-          <Shadow rx={34} />
+          <Shadow grid="chapter" rx={34} />
           {Array.from({ length: palms }, (_, i) => {
             const x = [40, 30, 50, 16, 64][i]!
             const wing = i >= 3
@@ -522,7 +484,7 @@ export function Botanik({ id, tier, season }: P): ReactNode {
       const bloom = season === 'summer' || spring
       return (
         <Svg>
-          <Shadow rx={34} />
+          <Shadow grid="chapter" rx={34} />
           <Glasshouse x={8} w={42} h={18} roofH={10} tint="#f0e4c8" />
           <rect x="26" y="52" width="6" height="12" fill="#e8f4fa" stroke="#9ab0bc" strokeWidth=".5" />
           <ellipse cx="62" cy="62" rx="14" ry="4" fill="#e8d4a0" />
@@ -546,7 +508,7 @@ export function Botanik({ id, tier, season }: P): ReactNode {
       const n = Math.min(8, 2 + tier)
       return (
         <Svg>
-          <Shadow rx={34} />
+          <Shadow grid="chapter" rx={34} />
           <Glasshouse x={8} w={64} h={22} roofH={11} tint="#e8dcf4" />
           <path d="M10 44h60" stroke={P.outlineSoft} strokeWidth=".8" />
           {Array.from({ length: n }, (_, i) => {
@@ -660,7 +622,7 @@ export function Botanik({ id, tier, season }: P): ReactNode {
       const crown = winter ? '#c9d0c4' : autumn ? '#d9a33a' : P.leaf
       return (
         <Svg>
-          <Shadow rx={34} />
+          <Shadow grid="chapter" rx={34} />
           <ellipse cx="40" cy="62" rx="34" ry="6" fill={winter ? '#eef2f2' : P.leafLight} />
           <Conifer x={18} y={64} s={0.8 + tier * 0.06} snow={winter} />
           {tier >= 2 ? (
@@ -719,7 +681,7 @@ export function Botanik({ id, tier, season }: P): ReactNode {
       const frames = Math.min(4, tier)
       return (
         <Svg>
-          <Shadow rx={34} />
+          <Shadow grid="chapter" rx={34} />
           <rect x="10" y="40" width="50" height="24" fill={P.paper} stroke="#8a7a6a" strokeWidth=".7" />
           <path d="M6 40 L35 28 L64 40z" fill={P.outlineWood} />
           <path d="M14 36h42" stroke="#bdb3a0" strokeWidth="1" />
@@ -744,7 +706,7 @@ export function Botanik({ id, tier, season }: P): ReactNode {
       const r = 18 + tier * 2
       return (
         <Svg>
-          <Shadow rx={34} />
+          <Shadow grid="chapter" rx={34} />
           <Palm x={40} y={64} s={(r - 5) / 31} />
           {tier >= 3 ? <Palm x={28} y={64} s={0.7} c="#5fae4a" /> : null}
           {tier >= 3 ? <Palm x={52} y={64} s={0.6} c="#5fae4a" /> : null}
@@ -810,7 +772,7 @@ export function Alm({ id, tier, season }: P): ReactNode {
                 const x = 8 + ((i * 17) % 66)
                 const y = 50 + ((i * 11) % 14)
                 const c = [P.cream, P.yellow, P.lilac, P.blue, P.red][i % 5]
-                return spring || season === 'summer' || i % 3 === 0 ? <Flower key={i} x={x} y={y} c={c!} r={1.3} /> : null
+                return spring || season === 'summer' || i % 3 === 0 ? <Flower s={0.7} key={i} x={x} y={y + 3.66} c={c!} r={1.22} /> : null
               })
             : null}
           {tier >= 3 ? (
@@ -863,7 +825,7 @@ export function Alm({ id, tier, season }: P): ReactNode {
     case 'sennhuette':
       return (
         <Svg>
-          <Shadow rx={34} />
+          <Shadow grid="chapter" rx={34} />
           <rect x="14" y="56" width="44" height="8" fill={P.stone} stroke="#7a6e5e" strokeWidth=".6" />
           <rect x="16" y="40" width="40" height="16" fill={P.woodDark} stroke="#5a3a1a" strokeWidth=".7" />
           {[44, 48, 52].map((y) => (

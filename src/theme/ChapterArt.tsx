@@ -12,13 +12,9 @@ import type { Season } from './ambient'
 import { moduleTier, sameTierProps } from './tiers'
 import { ArtSvg } from './ArtSvg'
 import { P } from './art/palette'
+import { Shadow, seeded } from './art/parts'
 
-const shadow = (rx: number) => <ellipse cx="40" cy="65" rx={rx} ry="4.5" fill="rgba(40,60,20,0.22)" />
 
-function seeded(i: number): number {
-  const x = Math.sin(i * 12.9898) * 43758.5453
-  return x - Math.floor(x)
-}
 
 function TreeArt({ s, tier, season }: { s: Tree; tier: number; season?: Season }) {
   const scale = 0.78 + tier * 0.055
@@ -89,7 +85,7 @@ function TreeArt({ s, tier, season }: { s: Tree; tier: number; season?: Season }
   }
   return (
     <ArtSvg viewBox="0 0 80 72">
-      {shadow(18 + tier * 2)}
+      <Shadow grid="chapter" rx={18 + tier * 2} />
       <g transform={`translate(40 66) scale(${scale}) translate(-40 -66)`}>{body}</g>
     </ArtSvg>
   )
@@ -229,7 +225,7 @@ function HouseArt({ s, tier }: { s: House; tier: number }) {
   }
   return (
     <ArtSvg viewBox="0 0 80 72">
-      {shadow(w / 2 + 10)}
+      <Shadow grid="chapter" rx={w / 2 + 10} />
       {s.prop === 'tower' ? (
         <g>
           <rect x="34" y="12" width="12" height="52" fill={s.wall} stroke={P.outlineSoft} strokeWidth="1" />
@@ -425,7 +421,7 @@ function StonesArt({ s, tier }: { s: Stones; tier: number }) {
     const k = Math.min(4, tier)
     return (
       <ArtSvg viewBox="0 0 80 72">
-        {shadow(30)}
+        <Shadow grid="chapter" rx={30} />
         {Array.from({ length: k }, (_, i) => (
           <rect key={i} x={10 + i * 6} y={34 + i * 4} width={60 - i * 12} height={30 - i * 8} rx="3" fill="none" stroke={P.leafDark} strokeWidth="4" strokeDasharray={`${30 - i * 4} 6`} />
         ))}
@@ -450,7 +446,7 @@ function StonesArt({ s, tier }: { s: Stones; tier: number }) {
   const flower = s.variant === 'edelweiss' ? P.cream : s.variant === 'moss' ? P.leaf : P.lilac
   return (
     <ArtSvg viewBox="0 0 80 72">
-      {shadow(30)}
+      <Shadow grid="chapter" rx={30} />
       {Array.from({ length: 3 + Math.min(4, tier) }, (_, i) => (
         <ellipse key={i} cx={14 + i * 9} cy={56 - (i % 2) * 6} rx="7" ry="5" fill={s.variant === 'moss' ? P.leaf : P.stone} stroke={P.outlineStone} strokeWidth=".6" />
       ))}

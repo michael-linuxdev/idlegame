@@ -8,6 +8,7 @@ import { moduleTier, sameTierProps } from './tiers'
 import type { Season } from './ambient'
 import { ArtSvg } from './ArtSvg'
 import { P } from './art/palette'
+import { Shadow, seeded } from './art/parts'
 
 const FRUIT: Partial<Record<string, { fruit: string; crown: string; crownD: string; r: number }>> = {
   apfel: { fruit: '#d9483b', crown: '#6ca848', crownD: '#4f8a34', r: 1.9 },
@@ -17,10 +18,6 @@ const FRUIT: Partial<Record<string, { fruit: string; crown: string; crownD: stri
   walnuss: { fruit: P.outlineSoft, crown: '#4f8f3c', crownD: '#386e2a', r: 1.7 },
 }
 
-function seeded(i: number): number {
-  const x = Math.sin(i * 12.9898) * 43758.5453
-  return x - Math.floor(x)
-}
 
 function FruitTree({ id, tier, season = 'summer' }: { id: OrchardId; tier: number; season?: Season }) {
   const base = FRUIT[id]!
@@ -36,7 +33,7 @@ function FruitTree({ id, tier, season = 'summer' }: { id: OrchardId; tier: numbe
   const pear = id === 'birne'
   return (
     <ArtSvg viewBox="0 0 80 72">
-      <ellipse cx="40" cy="66" rx={18 + tier * 3} ry="4.5" fill="rgba(40,60,20,0.22)" />
+      <Shadow grid="chapter" rx={18 + tier * 3} />
       {tier >= 3 ? (
         <g>
           {[18, 26, 54, 62].map((x, i) => (
@@ -125,7 +122,7 @@ function Wildbienen({ tier }: { tier: number }) {
   const rows = Math.min(4, 1 + Math.floor(tier / 1.4))
   return (
     <ArtSvg viewBox="0 0 80 72">
-      <ellipse cx="40" cy="66" rx="20" ry="4" fill="rgba(40,60,20,0.22)" />
+      <Shadow grid="chapter" rx={20} />
       <path d="M38 66V40M42 66V40" stroke={P.bark} strokeWidth="2" />
       <path d="M22 26 L40 12 L58 26 Z" fill="#a5531a" stroke="#6e341a" strokeWidth="1" />
       <rect x="25" y="26" width="30" height={8 * rows} fill="#d9b78a" stroke={P.outlineSoft} strokeWidth="1" />
@@ -149,7 +146,7 @@ function Wildbienen({ tier }: { tier: number }) {
 function Mosterei({ tier }: { tier: number }) {
   return (
     <ArtSvg viewBox="0 0 80 72">
-      <ellipse cx="40" cy="66" rx="30" ry="4" fill="rgba(40,60,20,0.22)" />
+      <Shadow grid="chapter" rx={30} />
       <path d="M14 34 L40 18 L66 34 Z" fill="#b8403a" stroke="#7a2e22" strokeWidth="1" />
       <rect x="18" y="34" width="44" height="30" fill="#d9b78a" stroke={P.outlineSoft} strokeWidth="1" />
       <rect x="34" y="46" width="12" height="18" fill={P.bark} />
@@ -173,7 +170,7 @@ function Mosterei({ tier }: { tier: number }) {
 function Doerrhaus({ tier }: { tier: number }) {
   return (
     <ArtSvg viewBox="0 0 80 72">
-      <ellipse cx="40" cy="66" rx="22" ry="4" fill="rgba(40,60,20,0.22)" />
+      <Shadow grid="chapter" rx={22} />
       <path d="M22 32 L40 20 L58 32 Z" fill={P.outlineWood} />
       <rect x="25" y="32" width="30" height="32" fill={P.woodLight} stroke={P.outlineWood} strokeWidth="1" />
       <rect x="35" y="48" width="10" height="16" fill={P.bark} />
@@ -195,7 +192,7 @@ function Obstmarkt({ tier }: { tier: number }) {
   const crates = Math.min(5, tier + 1)
   return (
     <ArtSvg viewBox="0 0 80 72">
-      <ellipse cx="40" cy="66" rx="30" ry="4" fill="rgba(40,60,20,0.22)" />
+      <Shadow grid="chapter" rx={30} />
       <path d="M12 24h56l-4 8H16z" fill={P.tomato} />
       <path d="M12 24h8l-1 8h-3zM28 24h8l-1 8h-6zM44 24h8l-1 8h-6zM60 24h8l-4 8h-3z" fill={P.white} opacity=".85" />
       <path d="M16 32v32M64 32v32" stroke={P.outlineSoft} strokeWidth="2" />

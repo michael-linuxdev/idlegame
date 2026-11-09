@@ -72,6 +72,15 @@ export const P = {
   // Blau
   blue: '#3d6fd1',
   denim: '#5a8fc2',
+  // Ton, Federn, Frost
+  terracotta: '#c8693e',
+  terracottaLight: '#d97f50',
+  seed: '#7a4a1a',
+  blossom: '#f7c6d9',
+  frost: '#c9d0c4',
+  feather: '#f7f1e6',
+  label: '#fff6dc',
+  outlineFur: '#8a7a6a',
   // Metall, Dunkel
   metal: '#6b6f73',
   charcoal: '#3a3a3a',

@@ -4,8 +4,8 @@ import type { DecorId } from '../game/decor'
 import type { Season } from './ambient'
 import { ArtSvg } from './ArtSvg'
 import { P } from './art/palette'
+import { Shadow } from './art/parts'
 
-const Shadow = ({ rx = 12 }: { rx?: number }) => <ellipse cx="20" cy="37.5" rx={rx} ry="2.2" fill="rgba(40,50,20,.25)" />
 
 export const DecorArt = memo(function DecorArt({ id, season }: { id: DecorId; season?: Season }) {
   const winter = season === 'winter'
@@ -21,7 +21,7 @@ function draw(id: DecorId, winter: boolean) {
     case 'zwerg':
       return (
         <g>
-          <Shadow rx={7} />
+          <Shadow grid="decor" rx={7} />
           <path d="M14 37l1.4-12h9.2l1.4 12z" fill={P.blue} />
           <rect x="15" y="33" width="10" height="4" rx="1" fill={P.outlineWood} />
           <circle cx="20" cy="21" r="4.4" fill={P.skin} />
@@ -34,7 +34,7 @@ function draw(id: DecorId, winter: boolean) {
     case 'laubhaufen':
       return (
         <g>
-          <Shadow rx={14} />
+          <Shadow grid="decor" rx={14} />
           <path d="M6 37q4-12 14-12t14 12z" fill={winter ? '#c9c0b0' : '#b8652a'} />
           {[[11, 33, '#d9a33a'], [19, 29, '#c4402a'], [27, 33, P.gold], [16, 35, '#a5531a'], [24, 30, '#d2752c']].map(([x, y, c], i) => (
             <ellipse key={i} cx={x as number} cy={y as number} rx="3" ry="1.6" fill={winter ? '#e8e4dc' : (c as string)} transform={`rotate(${i * 30} ${x} ${y})`} />
@@ -45,7 +45,7 @@ function draw(id: DecorId, winter: boolean) {
     case 'futterhaus':
       return (
         <g>
-          <Shadow rx={6} />
+          <Shadow grid="decor" rx={6} />
           <path d="M19 37V20h2v17" fill={P.woodDark} />
           <rect x="11" y="16" width="18" height="4" fill={P.woodMid} stroke={P.outlineWood} strokeWidth=".6" />
           <path d="M9 14L20 6l11 8z" fill={P.roof} stroke="#7a2e22" strokeWidth=".6" />
@@ -58,7 +58,7 @@ function draw(id: DecorId, winter: boolean) {
     case 'traenke':
       return (
         <g>
-          <Shadow rx={9} />
+          <Shadow grid="decor" rx={9} />
           <path d="M17 37l1-14h4l1 14z" fill="#bdb3a0" stroke="#8a7e6e" strokeWidth=".6" />
           <ellipse cx="20" cy="22" rx="10" ry="3" fill="#bdb3a0" stroke="#8a7e6e" strokeWidth=".6" />
           <ellipse cx="20" cy="21.6" rx="8" ry="2" fill={winter ? '#e8f4fa' : P.water} />
@@ -74,7 +74,7 @@ function draw(id: DecorId, winter: boolean) {
     case 'insektenhotel':
       return (
         <g>
-          <Shadow rx={8} />
+          <Shadow grid="decor" rx={8} />
           <path d="M14 37V34M26 37V34" stroke={P.outlineWood} strokeWidth="1.4" />
           <rect x="11" y="14" width="18" height="20" fill={P.woodMid} stroke={P.outlineWood} strokeWidth=".7" />
           <path d="M9 14L20 6l11 8z" fill={P.outlineWood} />
@@ -88,7 +88,7 @@ function draw(id: DecorId, winter: boolean) {
     case 'windrad':
       return (
         <g className="decor-spin-host">
-          <Shadow rx={5} />
+          <Shadow grid="decor" rx={5} />
           <path d="M19.4 37V16h1.2v21" fill="#8a7e6e" />
           <g className="decor-spin">
             {[0, 90, 180, 270].map((a, i) => (
@@ -101,7 +101,7 @@ function draw(id: DecorId, winter: boolean) {
     case 'bank':
       return (
         <g>
-          <Shadow rx={15} />
+          <Shadow grid="decor" rx={15} />
           <rect x="6" y="24" width="28" height="3" rx="1" fill={P.woodDark} />
           <rect x="6" y="17" width="28" height="2.4" rx="1" fill={P.woodMid} />
           <rect x="6" y="20.6" width="28" height="2.4" rx="1" fill={P.woodMid} />
@@ -123,7 +123,7 @@ function draw(id: DecorId, winter: boolean) {
     case 'sonnenuhr':
       return (
         <g>
-          <Shadow rx={9} />
+          <Shadow grid="decor" rx={9} />
           <path d="M16 37l1-12h6l1 12z" fill="#bdb3a0" stroke="#8a7e6e" strokeWidth=".6" />
           <ellipse cx="20" cy="24" rx="9" ry="3" fill="#d9cfb8" stroke="#8a7e6e" strokeWidth=".6" />
           <path d="M20 24l4-6v6z" fill={P.outlineSoft} />
@@ -148,7 +148,7 @@ function draw(id: DecorId, winter: boolean) {
     case 'blumenkorb':
       return (
         <g>
-          <Shadow rx={10} />
+          <Shadow grid="decor" rx={10} />
           <path d="M10 26h20l-3 11H13z" fill={P.woodLight} stroke={P.outlineSoft} strokeWidth=".7" />
           <path d="M10 26q10-20 20 0" stroke={P.outlineSoft} strokeWidth="1.4" fill="none" />
           {[[13, 24, '#f7c6d9'], [17, 22, P.yellow], [21, 23, P.cream], [25, 22, P.lilac], [28, 25, P.red], [19, 25, P.leaf]].map(([x, y, c], i) => (
@@ -159,7 +159,7 @@ function draw(id: DecorId, winter: boolean) {
     case 'strandkorb':
       return (
         <g>
-          <Shadow rx={11} />
+          <Shadow grid="decor" rx={11} />
           <path d="M9 37V16q11-10 22 0v21z" fill={P.paper} stroke="#a5893a" strokeWidth=".8" />
           {[12, 16, 20, 24, 28].map((x) => (
             <path key={x} d={`M${x} 13v24`} stroke={P.waterDeep} strokeWidth="1.6" opacity=".7" />
@@ -171,7 +171,7 @@ function draw(id: DecorId, winter: boolean) {
     case 'kuerbislaterne':
       return (
         <g>
-          <Shadow rx={10} />
+          <Shadow grid="decor" rx={10} />
           <ellipse cx="20" cy="29" rx="10" ry="8" fill="#e8731a" stroke="#a5531a" strokeWidth=".8" />
           <path d="M14 22q-2 7 0 14M26 22q2 7 0 14M20 21v16" stroke="#c4551a" strokeWidth=".7" fill="none" />
           <path d="M19 21q0-4 3-5" stroke="#5f7a2e" strokeWidth="1.6" fill="none" />
@@ -182,7 +182,7 @@ function draw(id: DecorId, winter: boolean) {
     case 'schneemann':
       return (
         <g>
-          <Shadow rx={9} />
+          <Shadow grid="decor" rx={9} />
           <circle cx="20" cy="30" r="7.4" fill="#fbfdff" stroke="#c9d4dc" strokeWidth=".7" />
           <circle cx="20" cy="18" r="5.4" fill="#fbfdff" stroke="#c9d4dc" strokeWidth=".7" />
           <rect x="15.4" y="9" width="9.2" height="2" fill={P.charcoal} />
@@ -197,7 +197,7 @@ function draw(id: DecorId, winter: boolean) {
     case 'brunnen':
       return (
         <g>
-          <Shadow rx={15} />
+          <Shadow grid="decor" rx={15} />
           <ellipse cx="20" cy="33" rx="15" ry="4.4" fill="#bdb3a0" stroke="#8a7e6e" strokeWidth=".7" />
           <ellipse cx="20" cy="32.4" rx="12.4" ry="3" fill={winter ? '#e8f4fa' : P.water} />
           <rect x="18" y="20" width="4" height="12" fill="#bdb3a0" />
@@ -208,7 +208,7 @@ function draw(id: DecorId, winter: boolean) {
     case 'pavillon':
       return (
         <g>
-          <Shadow rx={15} />
+          <Shadow grid="decor" rx={15} />
           <ellipse cx="20" cy="36" rx="14" ry="2.4" fill="#efe6d0" stroke="#bdb3a0" strokeWidth=".6" />
           {[9, 16, 24, 31].map((x) => (
             <rect key={x} x={x - 0.9} y="18" width="1.8" height="18" fill={P.cream} stroke="#bdb3a0" strokeWidth=".4" />

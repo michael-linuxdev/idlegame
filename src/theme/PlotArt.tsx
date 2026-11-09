@@ -2,6 +2,7 @@ import { memo, type ReactNode } from 'react'
 import type { GeneratorId } from '../game/generators'
 import { ArtSvg } from './ArtSvg'
 import { P } from './art/palette'
+import { Shadow } from './art/parts'
 /**
  * Plot states before a module exists:
  *  - WildPlot: overgrown corner (brambles / nettles / junk) — locked.
@@ -12,9 +13,6 @@ import { P } from './art/palette'
 
 const VIEWBOX = '0 0 100 86'
 
-function Shadow() {
-  return <ellipse cx="50" cy="76" rx="40" ry="7" fill="var(--g-shadow)" />
-}
 
 /*
  * Wildnis bleibt flach und gedeckt: niedrige Silhouette (Oberkante ≈ y 50),
@@ -239,7 +237,7 @@ export const WildPlot = memo(function WildPlot({ id }: { id: GeneratorId }) {
   const t = spec.flip ? `translate(${100 + dx} 0) scale(-1 1)` : dx ? `translate(${dx} 0)` : undefined
   return (
     <ArtSvg className="plot-art plot-wild" viewBox={VIEWBOX} data-wild={spec.kind}>
-      <Shadow />
+      <Shadow rx={40} />
       <g transform={t}>
         <Art />
       </g>
@@ -252,7 +250,7 @@ export const WildPlot = memo(function WildPlot({ id }: { id: GeneratorId }) {
 export const ClearedPlot = memo(function ClearedPlot() {
   return (
     <ArtSvg className="plot-art plot-cleared" viewBox={VIEWBOX}>
-      <Shadow />
+      <Shadow rx={40} />
       <path
         d="M10 70 L22 40 L78 40 L90 70 Z"
         fill="#8a5a3b"

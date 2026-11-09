@@ -112,6 +112,8 @@
 
 /* —— Spielgrafik-Palette (Quelle: src/theme/art/palette.ts, Test hält beides gleich) —— */
 :root {
+  /* Bodenschatten aller Grafik (Bausteine: art/parts Shadow) */
+  --g-shadow: rgba(38, 58, 22, 0.22);
   --art-outline: #3d2f1f;
   --art-outline-wood: #6e4a2b;
   --art-outline-soft: #8a6a40;
@@ -162,6 +164,14 @@
   --art-plum: #6a3d8f;
   --art-blue: #3d6fd1;
   --art-denim: #5a8fc2;
+  --art-terracotta: #c8693e;
+  --art-terracotta-light: #d97f50;
+  --art-seed: #7a4a1a;
+  --art-blossom: #f7c6d9;
+  --art-frost: #c9d0c4;
+  --art-feather: #f7f1e6;
+  --art-label: #fff6dc;
+  --art-outline-fur: #8a7a6a;
   --art-metal: #6b6f73;
   --art-charcoal: #3a3a3a;
   --art-ink: #1a1a1a;
