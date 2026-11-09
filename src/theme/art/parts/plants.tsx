@@ -59,7 +59,11 @@ export function Bush({ x, y, r = 9, berry: ripe }: { x: number; y: number; r?: n
             [-0.1, -0.45],
             [-0.55, -0.15],
           ].map(([dx, dy], i) => (
-            <circle key={i} cx={dx! * r} cy={-r + dy! * r} r={Math.max(1.3, r * 0.14)} fill={berry} stroke="rgba(0,0,0,0.25)" strokeWidth={STROKE.hair} />
+            season === 'spring' ? (
+              <circle key={i} cx={dx! * r} cy={-r + dy! * r} r={Math.max(1.3, r * 0.14)} fill={berry} stroke="rgba(0,0,0,0.25)" strokeWidth={STROKE.hair} />
+            ) : (
+              <Fruit key={i} cx={dx! * r} cy={-r + dy! * r} r={Math.max(1.5, r * 0.15)} c={berry} />
+            )
           ))
         : null}
     </Place>
@@ -91,7 +95,11 @@ export function Tree({ x, y, r = 14, fruit, trunk = 12, ...colors }: { x: number
             [0.05, 0.3],
             [-0.7, -0.6],
           ].map(([dx, dy], i) => (
-            <circle key={i} cx={dx! * r} cy={top - r * 0.4 + dy! * r} r={Math.max(1.8, r * 0.13)} fill={dots} stroke={season === 'spring' ? P.pink : 'rgba(0,0,0,0.3)'} strokeWidth={STROKE.hair} />
+            season === 'spring' ? (
+              <circle key={i} cx={dx! * r} cy={top - r * 0.4 + dy! * r} r={Math.max(1.8, r * 0.13)} fill={dots} stroke={P.pink} strokeWidth={STROKE.hair} />
+            ) : (
+              <Fruit key={i} cx={dx! * r} cy={top - r * 0.4 + dy! * r} r={Math.max(1.8, r * 0.13)} c={dots} />
+            )
           ))
         : null}
       {season === 'winter' ? <path d={`M${-r * 0.8} ${top - r * 0.95} Q0 ${top - r * 1.75} ${r * 0.8} ${top - r * 0.95}`} fill="none" stroke={P.white} strokeWidth={r * 0.22} strokeLinecap="round" className="art-snow" /> : null}
@@ -147,5 +155,19 @@ export function CitrusPot({ x, y, s = 1, fruit = P.yellow }: { x: number; y: num
       ))}
       <Pot x={0} y={0} />
     </Place>
+  )
+}
+
+/**
+ * Frucht/Beere mit dunklem Rand und Glanzpunkt: reif ist so auch bei
+ * Rot-Grün-Schwäche über Helligkeit und Form vom Laub zu unterscheiden
+ * (Deuteranopie-Prüfung in scripts/e2e/art.mjs). Unreif: ohne Glanz, matt.
+ */
+export function Fruit({ cx, cy, r, c, ripe = true }: { cx: number; cy: number; r: number; c: string; ripe?: boolean }) {
+  return (
+    <g className={ripe ? 'art-fruit' : 'art-fruit-unripe'}>
+      <circle cx={cx} cy={cy} r={r} fill={c} stroke={P.outline} strokeOpacity={ripe ? 0.75 : 0.35} strokeWidth={Math.max(0.5, r * 0.28)} />
+      {ripe ? <circle cx={cx - r * 0.35} cy={cy - r * 0.38} r={r * 0.34} fill={P.white} fillOpacity="0.9" /> : null}
+    </g>
   )
 }

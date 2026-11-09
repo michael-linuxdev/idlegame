@@ -1,5 +1,5 @@
 /** Hauptgarten-Bereich: gewaechshaus. */
-import { CitrusPot, Flower, Lettuce, Pinwheel, Shadow, SnowCap, Sprout, useSeason } from '../parts'
+import { CitrusPot, Flower, Fruit, Lettuce, Pinwheel, Shadow, SnowCap, Sprout, useSeason } from '../parts'
 import { P } from '../palette'
 import { Glass, LEAF, LEAF_D, LEAF_L, OUT, WOOD } from './shared'
 
@@ -13,8 +13,8 @@ export function Gewaechshaus({ t }: { t: number }) {
           <path d={`M${x} ${y} V${y - 18}`} stroke={LEAF_D} strokeWidth="1.4" />
           <ellipse cx={x - 2} cy={y - 12} rx="3" ry="2" fill={LEAF} />
           <ellipse cx={x + 2} cy={y - 6} rx="3" ry="2" fill={LEAF_L} />
-          <circle cx={x + 1.6} cy={y - 14} r="2" fill={P.red} />
-          <circle cx={x - 1.6} cy={y - 4} r="1.8" fill={i % 2 ? P.amber : P.red} />
+          <Fruit cx={x + 1.6} cy={y - 14} r={2} c={P.red} />
+          <Fruit cx={x - 1.6} cy={y - 4} r={1.8} c={i % 2 ? P.amber : P.red} ripe={i % 2 === 0} />
         </g>
       )
     })
@@ -41,7 +41,7 @@ export function Gewaechshaus({ t }: { t: number }) {
       {/* base */}
       <rect x={x} y="66" width={w} height="6" fill={P.stoneLight} stroke={OUT} strokeWidth="1.2" />
       {/* plants inside */}
-      {t >= 3 ? tomatoes(x + 6, x + w - 6, 66) : (
+      {t >= 3 ? <g className="art-under-glass">{tomatoes(x + 6, x + w - 6, 66)}</g> : (
         <g>
           <Lettuce x={42} y={64} />
           <Lettuce x={56} y={64} />

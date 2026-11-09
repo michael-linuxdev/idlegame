@@ -117,6 +117,87 @@ try {
     console.error(`Vergleichsbilder ohne Block: ${[...known].join(', ')} (npm run art:update)`)
   }
 
+  // Farbenblindheit: reife Früchte bleiben unter Deuteranopie-Simulation
+  // (Machado 2009, Stärke 1) über Helligkeit vom Laub unterscheidbar
+  // (Früchte hinter Glas ausgenommen: das Glas hellt sie für alle auf).
+  {
+    const dctx = await browser.newContext({ viewport: { width: 900, height: 1400 }, deviceScaleFactor: 3, reducedMotion: 'reduce' })
+    const dpage = await dctx.newPage()
+    dpage.on('pageerror', (e) => errors.push(e.message))
+    await dpage.goto(URL + '?artsheet=garden')
+    await dpage.locator('[data-art-block="garden-summer-day"]').waitFor()
+    await dpage.evaluate(() => {
+      const ns = 'http://www.w3.org/2000/svg'
+      const svg = document.createElementNS(ns, 'svg')
+      svg.setAttribute('width', '0')
+      svg.setAttribute('height', '0')
+      svg.innerHTML = '<filter id="deut"><feColorMatrix type="matrix" values="0.367 0.861 -0.228 0 0  0.280 0.673 0.047 0 0  -0.012 0.043 0.969 0 0  0 0 0 1 0"/></filter>'
+      document.body.appendChild(svg)
+      document.querySelector('[data-art-block="garden-summer-day"]').style.filter = 'url(#deut)'
+    })
+    const block = dpage.locator('[data-art-block="garden-summer-day"]')
+    const shot = await block.screenshot()
+    await mkdir('e2e-screens', { recursive: true })
+    await writeFile('e2e-screens/deuteranopie.png', shot)
+    // Positionen relativ zum Block (der Screenshot scrollt die Seite)
+    const rects = await block.evaluate((el) => {
+      const o = el.getBoundingClientRect()
+      return [...el.querySelectorAll('.art-fruit:not(.art-under-glass .art-fruit) > circle:first-child')].map((c) => {
+        const r = c.getBoundingClientRect()
+        return { x: r.x - o.x, y: r.y - o.y, w: r.width, h: r.height }
+      })
+    })
+    const res = await dpage.evaluate(
+      async ([png, rects, k]) => {
+        const img = await new Promise((r) => {
+          const i = new Image()
+          i.onload = () => r(i)
+          i.src = 'data:image/png;base64,' + png
+        })
+        const c = document.createElement('canvas')
+        c.width = img.width
+        c.height = img.height
+        const g = c.getContext('2d')
+        g.drawImage(img, 0, 0)
+        const L = (x, y) => {
+          const d = g.getImageData(Math.round(x), Math.round(y), 1, 1).data
+          return (0.2126 * d[0] + 0.7152 * d[1] + 0.0722 * d[2]) / 255
+        }
+        let ok = 0
+        const bad = []
+        for (const r of rects) {
+          const cx = (r.x + r.w / 2) * k
+          const cy = (r.y + r.h / 2) * k
+          const rad = (r.w / 2) * k
+          // Laub direkt neben der Frucht (Ring) gegen hellsten/dunkelsten Punkt in der Frucht
+          const ring = [0, 1, 2, 3, 4, 5, 6, 7].map((k) => L(cx + Math.cos(k * 0.785) * rad * 1.9, cy + Math.sin(k * 0.785) * rad * 1.9))
+          ring.sort((a, b) => a - b)
+          const leaf = ring[4]
+          let hi = 0
+          let lo = 1
+          for (let dx = -rad; dx <= rad; dx += 0.5)
+            for (let dy = -rad; dy <= rad; dy += 0.5) {
+              if (dx * dx + dy * dy > rad * rad) continue
+              const v = L(cx + dx, cy + dy)
+              hi = Math.max(hi, v)
+              lo = Math.min(lo, v)
+            }
+          if (hi - leaf >= 0.25 || leaf - lo >= 0.25) ok++
+          else bad.push([Math.round(cx / k), Math.round(cy / k), leaf.toFixed(2), hi.toFixed(2), lo.toFixed(2)].join(' '))
+        }
+        return { ok, n: rects.length, bad }
+      },
+      [shot.toString('base64'), rects, 3],
+    )
+    await dctx.close()
+    console.log(`Deuteranopie: ${res.ok}/${res.n} reife Früchte unterscheidbar`)
+    if (process.env.ART_DEBUG) console.log(res.bad.join('\n'))
+    if (res.n < 20 || res.ok / res.n < 0.95) {
+      failed = true
+      console.error('reife Früchte unter Deuteranopie nicht unterscheidbar (e2e-screens/deuteranopie.png)')
+    }
+  }
+
   // Leistungsgrenze: Hauptgarten, alle Bereiche Stufe 5
   {
     const g = await browser.newContext({ viewport: { width: 430, height: 932 }, isMobile: true, hasTouch: true, reducedMotion: 'reduce' })

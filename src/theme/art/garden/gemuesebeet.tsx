@@ -1,6 +1,6 @@
 /** Hauptgarten-Bereich: gemuesebeet. */
-import { Bed, Flower, Lettuce, Shadow, Sprout, useSeason } from '../parts'
-import { P, tone } from '../palette'
+import { Bed, Flower, Fruit, Lettuce, Shadow, Sprout, useSeason } from '../parts'
+import { P } from '../palette'
 import { LEAF, LEAF_D, LEAF_L, OUT, WOOD_D } from './shared'
 
 function Carrot({ x, y }: { x: number; y: number }) {
@@ -16,7 +16,7 @@ function Radish({ x, y }: { x: number; y: number }) {
   return (
     <g>
       <path d={`M${x} ${y - 2} l-2.5 -5 M${x} ${y - 2} l2.5 -5`} stroke={LEAF} strokeWidth="1.6" strokeLinecap="round" />
-      <circle cx={x} cy={y} r="2.6" fill={P.red} stroke={tone('#9c2a3c')} strokeWidth="0.8" />
+      <Fruit cx={x} cy={y} r={2.6} c={P.red} />
     </g>
   )
 }
