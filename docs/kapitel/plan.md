@@ -273,6 +273,22 @@ nicht nötig.
 Alle Ziele erfüllt: Regular K13 im Monat 9–12 ✓, alle 4–6 Wochen ✓, K50 nach
 ~4–5 Jahren ✓; Casual ≥ K20 in 2 Jahren ✓.
 
+### Messung mit den echten Kapiteln 13–50 (Runde 3, ohne `SIM_ALL_CHAPTERS`)
+
+Echte Bereichsdaten, 4 neue Großprojekte gebaut (`PROJECTS`), Werbefrei als
+`ADS=all`. Details: `docs/kapitel/balance-bericht.md` „Runde 3“.
+
+| Profil | K13 | K20 | K30 | K40 | K50 | Abstand ab 13 | Tag 730 |
+|---|---|---|---|---|---|---|---|
+| Regular | Tag 308 (Monat 10) | Tag 498 | Tag 837 | Tag 1266 | **Tag 1778** (4,9 J.) | 24–56 Tage, Ø 40 | K27 |
+| Casual | Tag 369 | **Tag 585** | Tag 973 | Tag 1465 | (K46 nach 5 J.) | 28–60 Tage | **K24** |
+| Dauerspieler (1 J.) | Tag 292 | — | — | — | — | **21–24 Tage** | — |
+| mit Werbefrei | 3–8 Tage früher, Abstände gleich | | | | | | |
+
+Alle Ziele weiter erfüllt, **keine Werte geändert**. Werbefrei beschleunigt
+den Hauptgarten (Dauerspieler ×3–4 Ernte), aber nicht die Kapitel ab 13: die
+3 Tage Ruhezeit nach jedem Tiefen Winter takten den Generations-Fortschritt.
+
 ## Wellen
 
 | Welle | Kapitel | Inhalt |
