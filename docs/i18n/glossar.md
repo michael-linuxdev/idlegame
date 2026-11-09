@@ -123,6 +123,11 @@ Vornamen bleiben deutsch (Flair). Verwandtschaft wird übersetzt.
 | Almaz Tesfaye (Kaffeebäuerin in Kaffa) | **Almaz Tesfaye** | Kapitel 32; „Selam!“ (Amharisch, lateinisch umschrieben) bleibt + Erklärung; *jebena*, *baraka*, *kocho*, *korarima*, *tukul* klein; Ensete bleibt |
 | Made Wirawan (Wasserverteiler des Subak in Jatiluwih) | **Made Wirawan** | Kapitel 33; „Om Swastiastu!“ und „Om Shanti Shanti Shanti Om“ (Balinesisch) bleiben + Erklärung; *subak*, *sawah*, *lumbung*, *canang*, *gamelan* klein; Laufenten → *runner ducks* |
 | Anjali Menon (Gewürzbäuerin in Kerala) | **Anjali Menon** | Kapitel 34; „Namaskaram!“ (Malayalam) bleibt + Erklärung; *pookalam* klein, Onam, Westghats → *Western Ghats*, Backwaters bleibt |
+| Youssef Amrani (Dattelbauer im Tafilalet) | **Youssef Amrani** | Kapitel 35; „Salam!“ (Arabisch) und „Azul“ (Tamazight) bleiben + Erklärung; *khettara*, *ksar* klein; Medjool groß; Stockwerkgarten → *layered garden* |
+| Ama Owusu (Kakaobäuerin, Kassenwartin der Genossenschaft, Ashanti-Region) | **Ama Owusu** | Kapitel 36; „Akwaaba!“ (Twi) bleibt + Erklärung; *kente*, *kelewele*, *fufu* klein; Genossenschaft → *cooperative*; Kochbananen → *plantains*; Fernando Póo mit Akzent |
+| Kirra Walker (Bushfood-Gärtnerin, First Nations, Norden von New South Wales) | **Kirra Walker** | Kapitel 37; kein Gruß in einer Sprache der First Nations (bewusst); Akaziensamen → *wattleseed*, Silberakazie → *silver wattle*, Salzbusch → *saltbush*, Eukalyptushain → *Gum Trees* |
+| Aroha Ngata (Māori, Rangerin in Northland) | **Aroha Ngata** | Kapitel 38; „Kia ora!“ und „Mā te wā“ (Te Reo Māori) bleiben + Erklärung; *kaitiaki*, *kuia*, *waka*, *rua*, *ponga*, *harakeke*, *kūmara* klein, Matariki und Aotearoa groß; Hängebrücke → *swing bridge* |
+| Kim Soo-ah (Gemüsebäuerin in Jeolla) | **Kim Soo-ah** | Kapitel 39; „Annyeonghaseyo!“ (Koreanisch, umschrieben) bleibt + Erklärung; Familienname zuerst; *kimjang*, *onggi*, *ondol*, *hanok*, *kkakdugi*, *gochugaru*, *songpyeon*, *kkachi-bap* klein, Chuseok groß; Chinakohl → *napa cabbage* |
 | Enkelkind (Anrede) | **my dear grandchild** | „Mein liebes Enkelkind,“ → *My dear grandchild,* |
 
 ## Kapitel und Währungen
@@ -163,6 +168,11 @@ Vornamen bleiben deutsch (Flair). Verwandtschaft wird übersetzt.
 | 32 | Kaffeewald in Äthiopien | **The Ethiopian Coffee Forest** | Kaffee → **Coffee** | Ethiopia |
 | 33 | Reisterrassen auf Bali | **The Balinese Rice Terraces** | Reis → **Rice** | Bali |
 | 34 | Gewürzgarten in Kerala | **The Kerala Spice Garden** | Pfeffer → **Pepper** | Kerala |
+| 35 | Dattel-Oase in Marokko | **The Date Palm Oasis** | Datteln → **Dates** | Morocco |
+| 36 | Kakaogarten in Ghana | **The Ghana Cocoa Farm** | Kakao → **Cocoa** | Ghana |
+| 37 | Buschgarten in Australien | **The Australian Bush Garden** | Akaziensamen → **Wattleseed** | Australia |
+| 38 | Farnwald in Neuseeland | **The New Zealand Fern Forest** | Farnwedel → **Fern Fronds** | New Zealand |
+| 39 | Kimchi-Garten in Korea | **The Korean Kimchi Garden** | Chinakohl → **Napa Cabbage** | Korea |
 
 Ab Kapitel 13 (Bogen I „Nach der Schau“ → *After the Show*): Omas Saatgutdose
 → **Grandma’s seed tin**, Samentütchen → **seed packet**. Großprojekt Bogen I:
@@ -176,7 +186,12 @@ deshalb *Channel-side Garden*).
 Ab Kapitel 30 (Bogen III „Wo die Samen herkommen“ → *Where the Seeds Come From*):
 Jedes Kapitel erzählt, woher eine Pflanze aus Omas Garten stammt. Wissen
 indigener Gemeinschaften wird als ihr Wissen benannt (*our grandparents*,
-*Quechua communities*), nie als Folklore.
+*Quechua communities*), nie als Folklore. Großprojekt Bogen III: Omas
+Herkunftsbeet → **Grandma’s Origins Bed**. Māori-Wörter mit Makron
+(*kūmara*, *Māori*, *tūī*, *Mā te wā*) – Makrons sind im Englischen erlaubt;
+*te reo Māori* klein, im Deutschen „Te Reo Māori“. Australien: *First Nations*,
+*bush food*, *wattle*/*wattleseed*, *gum trees* (dt. Eukalyptus); kein
+erfundener Gruß in einer Sprache der First Nations.
 
 „Streuobstwiese“ beim ersten Auftreten kurz erklären: *a meadow orchard — old,
 tall fruit trees scattered over grassland*.

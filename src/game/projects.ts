@@ -6,7 +6,7 @@
 import { chapterDef, type ChapterId } from './chapters'
 import type { DecorId } from './decor'
 
-export type ProjectId = 'pavillon' | 'brunnen' | 'dorffest' | 'rosengarten' | 'gartenroute' | 'tauschpost'
+export type ProjectId = 'pavillon' | 'brunnen' | 'dorffest' | 'rosengarten' | 'gartenroute' | 'tauschpost' | 'herkunftsbeet'
 
 export interface ProjectDef {
   id: ProjectId
@@ -30,6 +30,12 @@ export const PROJECTS: ProjectDef[] = [
     id: 'tauschpost',
     chapters: ['cottagegarten', 'tulpenfelder', 'artischocken', 'beerenwald', 'patio', 'korkeichen', 'paprikafelder', 'aranfelder', 'rosental', 'pistazien'],
     reward: { samen: 400 },
+  },
+  // Bogen III „Wo die Samen herkommen“ (Kapitel 30–39)
+  {
+    id: 'herkunftsbeet',
+    chapters: ['andenkartoffeln', 'milpa', 'kaffeewald', 'reisterrassen', 'gewuerzgarten', 'oase', 'kakaogarten', 'buschgarten', 'farngarten', 'kimchigarten'],
+    reward: { samen: 450 },
   },
 ]
 

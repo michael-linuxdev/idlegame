@@ -23,7 +23,7 @@ export interface PlannedChapter {
 }
 
 /** Bis zu diesem Kapitel ist alles gebaut (Texte, Grafik) und im Spiel. */
-export const RELEASED_UP_TO = 34
+export const RELEASED_UP_TO = 39
 
 const placeholder = (id: string) => Array.from({ length: 10 }, (_, i) => `${id}_${i + 1}`)
 
@@ -53,11 +53,11 @@ export const PLANNED_CHAPTERS: readonly PlannedChapter[] = [
   { id: 'kaffeewald', number: 32, layout: 'ZIGZAG', areas: ['waldkaffee', 'pflueckplatz', 'trockenbetten', 'ensetegarten', 'honigbaeume', 'waschplatz', 'tukul', 'roestpfanne', 'kaffeezeremonie', 'kaffeemarkt'] },
   { id: 'reisterrassen', number: 33, layout: 'TERRACES', areas: ['sawah', 'wasserteiler', 'wassertempel', 'kokospalmen', 'entenweide', 'lumbung', 'hanggarten', 'bambusbruecke', 'flechtwerkstatt', 'tempelfest'] },
   { id: 'gewuerzgarten', number: 34, layout: 'ZIGZAG', areas: ['pfefferranken', 'kardamom', 'zimtbaeume', 'ingwerbeet', 'kurkuma', 'muskatbaum', 'trockenmatten', 'bootssteg', 'gewuerzlager', 'pookalam'] },
-  { id: 'oase', number: 35, layout: 'RING', areas: placeholder('oase') },
-  { id: 'kakaogarten', number: 36, layout: 'ZIGZAG', areas: placeholder('kakaogarten') },
-  { id: 'buschgarten', number: 37, layout: 'SPIRAL', areas: placeholder('buschgarten') },
-  { id: 'farngarten', number: 38, layout: 'SPIRAL', areas: placeholder('farngarten') },
-  { id: 'kimchigarten', number: 39, layout: 'ROWS', areas: placeholder('kimchigarten') },
+  { id: 'oase', number: 35, layout: 'RING', areas: ['dattelpalmen', 'stockwerkgarten', 'khettara', 'ksar', 'granataepfel', 'minzbeet', 'brunnenhof', 'teppichstube', 'dattelernte', 'sternenabend'] },
+  { id: 'kakaogarten', number: 36, layout: 'ZIGZAG', areas: ['kakaobaeume', 'bananenschatten', 'fermentation', 'trockengestelle', 'kochbananen', 'yamsfeld', 'dorfplatz', 'genossenschaft', 'schokowerkstatt', 'kakaofest'] },
+  { id: 'buschgarten', number: 37, layout: 'SPIRAL', areas: ['wattlehain', 'fingerlimetten', 'zitronenmyrte', 'saltbush', 'wasserloch', 'eukalyptus', 'mahlstein', 'saatguthuette', 'regentank', 'feuerabend'] },
+  { id: 'farngarten', number: 38, layout: 'SPIRAL', areas: ['baumfarne', 'kauripfad', 'harakeke', 'haengebruecke', 'gluehwurmgrotte', 'kumaragarten', 'wasserfall', 'pflanzschule', 'hanghuette', 'matariki'] },
+  { id: 'kimchigarten', number: 39, layout: 'ROWS', areas: ['kohlreihen', 'rettichbeet', 'chilimatten', 'onggi', 'sesamfeld', 'perillabeet', 'hanokhof', 'kimjang', 'kakibaum', 'chuseok'] },
   // Bogen IV — Saatgut für morgen
   { id: 'dachgarten', number: 40, layout: 'RING', areas: placeholder('dachgarten') },
   { id: 'schulgarten', number: 41, layout: 'ZIGZAG', areas: placeholder('schulgarten') },

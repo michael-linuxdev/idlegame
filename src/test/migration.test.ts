@@ -76,6 +76,18 @@ describe('Spielstand v1 (neues Format ab 2026-11-09)', () => {
     }
   })
 
+  it('Großprojekt Herkunftsbeet (Welle 5) startet bei 0, alte Bauabschnitte und Kapitel bleiben', () => {
+    const raw = { ...(v1 as unknown as Record<string, unknown>), projects: { rosengarten: 3, gartenroute: 2, tauschpost: 1 } }
+    const s = parseSave(raw)!
+    expect(s.projects).toEqual({ rosengarten: 3, gartenroute: 2, tauschpost: 1 })
+    expect(s.projects.herkunftsbeet ?? 0).toBe(0)
+    const before = parseSave(v1)!
+    for (const id of ['oase', 'kakaogarten', 'buschgarten', 'farngarten', 'kimchigarten'] as const) {
+      expect(before.chapters[id], id).toEqual(emptyChapter(CHAPTERS.find((c) => c.id === id)!))
+    }
+    for (const id of Object.keys(v1.chapters)) expect(before.chapters[id as keyof typeof before.chapters], id).toBeDefined()
+  })
+
   it('gibt später hinzugekommenen Feldern ihren Startwert', () => {
     const s = parseSave(v1)! as unknown as Record<string, unknown>
     for (const [k, v] of Object.entries(ADDED_AFTER_V1)) expect(s[k]).toEqual(v)

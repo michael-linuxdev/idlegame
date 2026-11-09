@@ -335,6 +335,20 @@ Großprojekt Bogen II: `tauschpost` („Omas Tauschpost“, Kapitel 20–29, Bel
 
 Abweichungen vom Plan: Kapitel 30 heißt im Spiel kurz „Kartoffeln der Anden“ (Kopfleiste); „Saatgut-Park“ → *Kartoffelpark* (nach dem Parque de la Papa bei Pisac, ohne Zahlen); Kapitel 31 „Drei-Schwestern-Feld“ → *Milpa-Feld* (der Begriff „Drei Schwestern“ stammt aus Nordamerika), Lage Michoacán (Balsas-Tal = Ursprung des Mais, Monarchfalter überwintern dort); Kapitel 33 „Werkstatt“ → *Flechtwerkstatt* (Canang aus Palmblatt), „Erntedank im Tempel“ hat die ID `tempelfest` (`erntedank` ist schon ein Fest); Kapitel 32: Der Rauch der Röstpfanne steigt in der Bereichsgrafik auf, nicht im Tierleben. Jahreszeiten der tropischen Kapitel: siehe Kopfkommentar der Grafik-Dateien (Regen-/Trockenzeit, Reis-Zyklus, Monsun).
 
+## Welle 5 — Bereichs-IDs
+
+| Kapitel | IDs (Reihenfolge = Leiter) |
+|---|---|
+| 35 oase | dattelpalmen, stockwerkgarten, khettara, ksar, granataepfel, minzbeet, brunnenhof, teppichstube, dattelernte, sternenabend |
+| 36 kakaogarten | kakaobaeume, bananenschatten, fermentation, trockengestelle, kochbananen, yamsfeld, dorfplatz, genossenschaft, schokowerkstatt, kakaofest |
+| 37 buschgarten | wattlehain, fingerlimetten, zitronenmyrte, saltbush, wasserloch, eukalyptus, mahlstein, saatguthuette, regentank, feuerabend |
+| 38 farngarten | baumfarne, kauripfad, harakeke, haengebruecke, gluehwurmgrotte, kumaragarten, wasserfall, pflanzschule, hanghuette, matariki |
+| 39 kimchigarten | kohlreihen, rettichbeet, chilimatten, onggi, sesamfeld, perillabeet, hanokhof, kimjang, kakibaum, chuseok |
+
+Abweichungen vom Plan: Kapitel 35 „Lehmspeicher (Ksar)“ → *Ksar*, „Teppichwebstube“ → *Teppichstube*, Lage Tafilalet (Herkunft der Medjool, Khettaras); Kapitel 36 „Fermentationskisten“ → *Fermentation* (in Ghana gärt man meist im Haufen unter Bananenblättern; Kisten erst ab Stufe 4), „Bananen-Schattenreihe“ → *Bananenschatten*, „Schokoladenwerkstatt“ → *Schokowerkstatt*, „Erntefest“ hat die ID `kakaofest`; Kapitel 37 „Akazienhain“ hat die ID `wattlehain` (`akazienhain` gibt es in Kapitel 26), „Saltbush“ heißt im Spiel *Salzbusch* (ID `saltbush`), Kirra schreibt bewusst ohne Gruß in einer Sprache der First Nations; Kapitel 38: Omas Tütchen ist Neuseeländer Spinat (seit Cook in europäischen Gärten), Kūmara als zweite Herkunftsgeschichte; Kapitel 39 „Hanok-Hof“ mit Ondol, Rauch im Tierleben (Winter). Jahreszeiten: Australien und Neuseeland nach der Südhalbkugel (Frühling = September), Oase und Ghana nach dem Erntejahr (siehe Kopf der Grafik-Dateien).
+
+Großprojekt Bogen III: `herkunftsbeet` („Omas Herkunftsbeet“, Kapitel 30–39, Belohnung 450 Samen).
+
 ## Fortschritt
 
 - [x] **Paket 0** — Plan & Geschichte (dieses Dokument)
@@ -344,7 +358,7 @@ Abweichungen vom Plan: Kapitel 30 heißt im Spiel kurz „Kartoffeln der Anden�
 - [x] **Welle 2** — Kapitel 18–23 (Texte de + en, Bogen II in `stringsChaptersArc2.ts`; Grafik je Bereich in 5 Stufen + Jahreszeiten, gesperrte Ecken `wildD`, Kulissen `dike`/`spreewald`/`cotswolds`/`bulbFields`/`lagoon`/`swedishWoods` in `backdropArc1/2.tsx`, Wege `dikeTrack`/`fliess`/`flagstones`/`bulbLanes`/`canals`/`forestTrail`, Tierleben in `12-kapitel-tierleben-2.css`, Währungs-Symbole; Großprojekt `gartenroute` für Bogen I; `RELEASED_UP_TO = 23`)
 - [x] **Welle 3** — Kapitel 24–29 (Texte de + en in `stringsChaptersArc2.ts`: Inés Morales, João Ferreira, Erzsébet Kovács, Siobhán Ní Fhlatharta, Petar Ivanov, Eleni Papadaki; Grafik je Bereich in 5 Stufen + Jahreszeiten, Teile `partsE`, gesperrte Ecken `wildE`, Kulissen `andalusia`/`montado`/`kalocsa`/`aran`/`roseValley`/`aegina` in `backdropArc2.tsx`, Wege `patioTiles`/`montadoTrack`/`pepperLanes`/`limestone`/`roseLanes`/`terraceSteps`, Tierleben `k3-*`, Währungs-Symbole; Großprojekt `tauschpost` für Bogen II; `RELEASED_UP_TO = 29`)
 - [x] **Welle 4** — Kapitel 30–34, Beginn Bogen III (Texte de + en in `stringsChaptersArc3.ts`: Rosa Quispe, Teodoro Hernández, Almaz Tesfaye, Made Wirawan, Anjali Menon; Grafik je Bereich in 5 Stufen + Jahreszeiten als Regen-/Trockenzeit bzw. Reis-Zyklus, Teile `partsF`, gesperrte Ecken `wildF`, Kulissen `andes`/`milpaHills`/`coffeeForest`/`bali`/`kerala` in `backdropArc3.tsx`, Wege `andenSteps`/`milpaRing`/`forestZigzag`/`subakSteps`/`spiceTrail`, Tierleben `k4-*`, Währungs-Symbole; kein Großprojekt; `RELEASED_UP_TO = 34`)
-- [ ] Welle 5 — Kapitel 35–39
+- [x] **Welle 5** — Kapitel 35–39, Abschluss Bogen III (Texte de + en in `stringsChaptersArc3.ts`: Youssef Amrani, Ama Owusu, Kirra Walker, Aroha Ngata, Kim Soo-ah; Grafik je Bereich in 5 Stufen + Jahreszeiten (Südhalbkugel bzw. Erntejahr), Teile `partsG`, gesperrte Ecken `wildG`, Kulissen `oasis`/`cocoaFarm`/`bush`/`fernForest`/`korea` in `backdropArc3.tsx`, Wege `oasisRing`/`cocoaTrail`/`bushSpiral`/`fernBoardwalk`/`kimchiRows`, Tierleben `k5-*`, Währungs-Symbole; Großprojekt `herkunftsbeet` für Bogen III; `RELEASED_UP_TO = 39`)
 - [ ] Welle 6 — Kapitel 40–44
 - [ ] Welle 7 — Kapitel 45–49
 - [ ] Welle 8 — Kapitel 50, Finale & Abschluss

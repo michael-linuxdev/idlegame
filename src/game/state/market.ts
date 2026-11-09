@@ -236,7 +236,7 @@ export function mockBuyOfferById(state: GameState, id: string, now = Date.now())
 }
 
 export type RewardedAdResult =
-  | { ok: false; reason: 'adsRemoved' | 'cooldown' }
+  | { ok: false; reason: 'cooldown' }
   | {
       ok: true
       state: GameState
@@ -248,7 +248,7 @@ export type RewardedAdResult =
 /** Grant the optional rewarded ad the player picked (Ernte or Samen). Never blocks play. */
 export function claimRewardedAd(state: GameState, choice: AdChoice = 'ernte', now = Date.now()): RewardedAdResult {
   let next = syncMonetization(state, now)
-  if (next.adsRemoved) return { ok: false, reason: 'adsRemoved' }
+  // Werbefrei: Belohnung bleibt, nur die Werbung entfällt (Abklingzeit gilt weiter)
   if (!rewardedAdReady(next.lastRewardedAdAt, now)) {
     return { ok: false, reason: 'cooldown' }
   }

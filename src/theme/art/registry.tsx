@@ -39,6 +39,11 @@ import milpa from './kapitel/milpa'
 import kaffeewald from './kapitel/kaffeewald'
 import reisterrassen from './kapitel/reisterrassen'
 import gewuerzgarten from './kapitel/gewuerzgarten'
+import oase from './kapitel/oase'
+import kakaogarten from './kapitel/kakaogarten'
+import buschgarten from './kapitel/buschgarten'
+import farngarten from './kapitel/farngarten'
+import kimchigarten from './kapitel/kimchigarten'
 import type { ChapterArtEntry } from './kapitel/types'
 
 export type { AreaArtProps, ChapterArtEntry } from './kapitel/types'
@@ -77,4 +82,9 @@ export const ART_REGISTRY: Record<ChapterId, ChapterArtEntry> = {
   kaffeewald,
   reisterrassen,
   gewuerzgarten,
+  oase,
+  kakaogarten,
+  buschgarten,
+  farngarten,
+  kimchigarten,
 }

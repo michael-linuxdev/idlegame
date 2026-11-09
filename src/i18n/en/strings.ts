@@ -782,6 +782,8 @@ export const strings: Strings = {
     adsWatching: 'Playing…',
     adsCooldown: (left: string) => `Again in ${left}`,
     adsRemovedBadge: 'Ad-free',
+    adFreeTitle: 'Bonus (ad-free)',
+    adFreeIntro: 'You have Ad-free: you get the reward without an ad.',
     adsRewardSkip: (mins: number, amount: string) =>
       `+${mins} min time skip (${amount})`,
     adsRewardSamen: (n: number) => `+${nSeeds(n)}`,

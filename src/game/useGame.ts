@@ -201,10 +201,8 @@ export function useGame() {
   const yieldBoostMsLeft = yieldBoostActive
     ? Math.max(0, state.yieldBoostExpiresAt - nowTick)
     : 0
-  const adReady = !state.adsRemoved && rewardedAdReady(state.lastRewardedAdAt, nowTick)
-  const adCooldownMs = state.adsRemoved
-    ? 0
-    : rewardedAdCooldownMsLeft(state.lastRewardedAdAt, nowTick)
+  const adReady = rewardedAdReady(state.lastRewardedAdAt, nowTick)
+  const adCooldownMs = rewardedAdCooldownMsLeft(state.lastRewardedAdAt, nowTick)
   const gartenwocheXpReady = state.gartenwocheXpDay !== dayKey(nowTick)
 
   const dailyReady = canClaimDaily(state.dailyClaimDay, nowTick)
