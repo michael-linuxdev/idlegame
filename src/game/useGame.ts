@@ -1,4 +1,4 @@
-import { gateSeasons } from './longLoop'
+import { gateSeasons, deepRestLeft } from './longLoop'
 import { useCallback } from 'react'
 import { ALBUM_GOALS, albumProgress } from './album'
 import { erbstueckePayout, TAP_COOLDOWN_MS, isProbeYear } from './economy'
@@ -188,6 +188,8 @@ export function useGame() {
   const skipLeft = skipHoursRemaining(state, nowTick)
   const clanBoostActive =
     state.vereinBoostExpiresAt > nowTick && vereinMult > 1
+  // Ruhezeit nach dem Tiefen Winter (Prestige-Panel)
+  const deepRestMs = deepRestLeft(state.tieferWinterAt, nowTick)
   const clanBoostMsLeft = clanBoostActive
     ? Math.max(0, state.vereinBoostExpiresAt - nowTick)
     : 0
@@ -330,6 +332,7 @@ export function useGame() {
     canHandDown: canHandDownNow(state),
     generationPayout: generationPayout(state),
     deepSprouts: deepSproutPayout(state),
+    deepRestMs,
     costForLevels: (id: GeneratorId, n: number) => costForLevels(state, id, n),
     affordableLevels: (id: GeneratorId) => affordableLevels(state, id),
     handDown,

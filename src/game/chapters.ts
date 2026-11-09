@@ -351,11 +351,12 @@ export function chapterGardenBonus(def: ChapterDef, c: ChapterState): number {
 }
 
 /**
- * Wie die Kapitel-Boni zusammenwirken. Im Spiel: `product` (heute, ungedeckelt).
- * Der Balance-Simulator vergleicht Alternativen (CHAPTER_BONUS_MODE), siehe
- * docs/kapitel/balance-bericht.md — geändert wird erst nach Entscheidung.
+ * Wie die Kapitel-Boni zusammenwirken. Im Spiel: `sum` — die Boni aller
+ * Kapitel werden **addiert** (bis 2026-11: multipliziert, was mit vielen
+ * Kapitel-Stufen zu ×10¹² führte; docs/kapitel/balance-bericht.md).
+ * Der Balance-Simulator kann Alternativen vergleichen (CHAPTER_BONUS_MODE).
  */
-export const CHAPTER_BONUS: { mode: 'product' | 'sum' | 'soft' | 'log'; cap: number; l0: number } = { mode: 'product', cap: 1, l0: 100 }
+export const CHAPTER_BONUS: { mode: 'product' | 'sum' | 'soft' | 'log'; cap: number; l0: number } = { mode: 'sum', cap: 1, l0: 100 }
 
 function shapedBonus(def: ChapterDef, c: ChapterState): number {
   const raw = chapterGardenBonus(def, c)
@@ -367,7 +368,7 @@ function shapedBonus(def: ChapterDef, c: ChapterState): number {
   return raw
 }
 
-/** Product of all chapter bonuses for the garden's Ernte. */
+/** Garden Ernte factor from all chapters (sum of their bonuses, see CHAPTER_BONUS). */
 export function chaptersGardenMult(chapters: ChaptersState): number {
   if (CHAPTER_BONUS.mode === 'sum') {
     let sum = 0

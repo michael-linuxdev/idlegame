@@ -47,6 +47,25 @@ export function canDeepReset(saisonenden: number): boolean {
   return saisonenden + 1 >= DEEP_GATE_YEAR
 }
 
+/**
+ * Ruhezeit nach einem Tiefen Winter: drei Tage. Normale Spieler machen ohnehin
+ * nur alle 3–7 Tage einen; die Ruhezeit bremst nur den Kreislauf aus starken
+ * Kapiteln → Gartenjahr 15 in Stunden → Generationen im Tagestakt
+ * (docs/kapitel/balance-bericht.md).
+ */
+export const DEEP_REST_MS = 3 * 86_400_000
+
+/** Restliche Ruhezeit in ms (0 = Tiefer Winter möglich, sobald das Gartenjahr reicht). */
+export function deepRestLeft(tieferWinterAt: number, now: number): number {
+  if (!(tieferWinterAt > 0)) return 0
+  return Math.max(0, tieferWinterAt + DEEP_REST_MS - now)
+}
+
+/** Gartenjahr reicht und die Ruhezeit ist vorbei. */
+export function canDeepNow(saisonenden: number, tieferWinterAt: number, now: number): boolean {
+  return canDeepReset(saisonenden) && deepRestLeft(tieferWinterAt, now) <= 0
+}
+
 export function deepYieldMult(d: DeepMetaUpgrades): number {
   return 1 + 0.1 * d.tiefeWurzeln
 }

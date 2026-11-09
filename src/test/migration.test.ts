@@ -17,9 +17,18 @@ import { CHAPTERS } from '../game/chapters'
 /** Felder, die absichtlich nicht gespeichert werden (siehe saveCoverage.test.ts). */
 const TRANSIENT = new Set(['lastSurprise', 'lastVariety', 'helperReport', 'lastChest', 'helperCarryMs', 'ilseCarryMs'])
 
+/**
+ * Felder, die nach v1 dazugekommen sind (kompatibel, ohne neue SAVE_VERSION):
+ * fehlen im echten v1-Stand und bekommen beim Laden ihren Startwert.
+ */
+const ADDED_AFTER_V1: Record<string, unknown> = {
+  // Ruhezeit nach dem Tiefen Winter (2026-11, docs/kapitel/balance-bericht.md)
+  tieferWinterAt: 0,
+}
+
 describe('Spielstand v1 (neues Format ab 2026-11-09)', () => {
   it('enthält jedes Feld des GameState', () => {
-    const missing = Object.keys(createInitialState(0)).filter((k) => !(k in v1))
+    const missing = Object.keys(createInitialState(0)).filter((k) => !(k in v1) && !(k in ADDED_AFTER_V1))
     expect(missing).toEqual([])
     expect(v1.saveVersion).toBe(1)
   })
@@ -28,9 +37,14 @@ describe('Spielstand v1 (neues Format ab 2026-11-09)', () => {
     const s = parseSave(v1)! as unknown as Record<string, unknown>
     const raw = v1 as unknown as Record<string, unknown>
     const changed = Object.keys(createInitialState(0))
-      .filter((k) => !TRANSIENT.has(k))
+      .filter((k) => !TRANSIENT.has(k) && !(k in ADDED_AFTER_V1))
       .filter((k) => !isDeepStrictEqual(s[k], raw[k]))
     expect(changed).toEqual([])
+  })
+
+  it('gibt später hinzugekommenen Feldern ihren Startwert', () => {
+    const s = parseSave(v1)! as unknown as Record<string, unknown>
+    for (const [k, v] of Object.entries(ADDED_AFTER_V1)) expect(s[k]).toEqual(v)
   })
 
   it('kennt die umbenannten Felder (Wörterbuch docs/cleanup/namen.md)', () => {

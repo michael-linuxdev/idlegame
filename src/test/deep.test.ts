@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { DEEP_GATE_YEAR, canDeepReset, gateSeasons, sproutPayout } from '../game/longLoop'
+import { DEEP_GATE_YEAR, DEEP_REST_MS, canDeepReset, deepRestLeft, gateSeasons, sproutPayout } from '../game/longLoop'
 import { createInitialState, doDeepReset, productionPerSecond } from '../game/state'
 import { unlockFor } from '../game/notebook'
 
@@ -43,5 +43,22 @@ describe('Tiefer Winter', () => {
   it('unlocks the deep letter after the first Tiefer Winter', () => {
     const nb = unlockFor({ unlocked: ['welcome'], read: [], maxStage: 0 }, 0, 1, 1)
     expect(nb.unlocked).toContain('deep1')
+  })
+})
+
+describe('Ruhezeit nach dem Tiefen Winter', () => {
+  it('erlaubt den nächsten Tiefen Winter erst nach drei Tagen', () => {
+    const t0 = Date.UTC(2026, 10, 9, 12)
+    const ready = { ...createInitialState(t0), saisonenden: DEEP_GATE_YEAR + 2 }
+    const first = doDeepReset(ready, t0)
+    expect(first.tiefeWinter).toBe(1)
+    expect(first.tieferWinterAt).toBe(t0)
+    const again = { ...first, saisonenden: DEEP_GATE_YEAR + 2 }
+    expect(doDeepReset(again, t0 + DEEP_REST_MS - 60_000)).toBe(again)
+    expect(deepRestLeft(first.tieferWinterAt, t0 + DEEP_REST_MS - 60_000)).toBe(60_000)
+    expect(doDeepReset(again, t0 + DEEP_REST_MS).tiefeWinter).toBe(2)
+  })
+  it('alte Spielstände ohne Zeitstempel ruhen nicht', () => {
+    expect(deepRestLeft(0, Date.now())).toBe(0)
   })
 })

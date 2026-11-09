@@ -622,6 +622,8 @@ export const strings = {
     cta: (n: number) => `Tiefer Winter · +${zahl(n)} Sprösslinge`,
     gateClosed: (year: number) => `Möglich ab Gartenjahr ${year}`,
     confirmCta: 'Wirklich? Nochmal tippen — der Garten ruht',
+    resting: (clock: string) => `Der Garten ruht noch · ${clock}`,
+    restHint: 'Nach einem Tiefen Winter braucht der Boden drei Tage Ruhe, bevor der nächste kommen kann.',
     shopTitle: 'Sprösslings-Laden',
     rank: (rank: number, max: number) => `Rang ${rank}/${max}`,
     cost: (n: number) => `${zahl(n)} Sprösslinge`,

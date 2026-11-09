@@ -626,6 +626,8 @@ export const strings: Strings = {
     cta: (n: number) => `Deep Winter · +${nSeedlings(n)}`,
     gateClosed: (year: number) => `Possible from garden year ${year}`,
     confirmCta: 'Really? Tap again — the garden will rest',
+    resting: (clock: string) => `The garden is still resting · ${clock}`,
+    restHint: 'After a Deep Winter the soil needs three days of rest before the next one can come.',
     shopTitle: 'Seedling Shop',
     rank: (rank: number, max: number) => `Rank ${rank}/${max}`,
     cost: (n: number) => `${nSeedlings(n)}`,
