@@ -30,3 +30,4 @@ export { Flower, Fruit, Sprout, Lettuce, Bush, Tree, BlossomTree, Pot, CitrusPot
 export { Barrel, Crate, GardenLamp, Jar, Lantern, OmaSign, Pennant, Pinwheel } from './buildings'
 export { Hen, Bird, Bee, HEN_SCALE, BEE_SCALE } from './animals'
 export { SeasonContext, foliage, useSeason } from './season'
+export { ArtDefs } from './ArtDefs'

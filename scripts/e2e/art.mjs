@@ -142,7 +142,7 @@ try {
     // Positionen relativ zum Block (der Screenshot scrollt die Seite)
     const rects = await block.evaluate((el) => {
       const o = el.getBoundingClientRect()
-      return [...el.querySelectorAll('.art-fruit:not(.art-under-glass .art-fruit) > circle:first-child')].map((c) => {
+      return [...el.querySelectorAll('circle.art-fruit:not(.art-under-glass .art-fruit)')].map((c) => {
         const r = c.getBoundingClientRect()
         return { x: r.x - o.x, y: r.y - o.y, w: r.width, h: r.height }
       })

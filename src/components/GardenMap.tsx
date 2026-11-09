@@ -59,6 +59,7 @@ import { RARITY_BONUS, VARIETIES } from '../game/gardenLife'
 import { TIER_LEVELS, moduleTier } from '../theme/tiers'
 import { formatClock, formatDecimal } from '../game/format'
 import { ArtSvg } from '../theme/ArtSvg'
+import { ArtDefs } from '../theme/art/parts'
 import { PlotFx } from './PlotFx'
 import { useHarvestFlight } from './HarvestFlight'
 import { EventPills } from './hud/EventPills'
@@ -885,6 +886,7 @@ export function GardenMap({
         data-daypart={ambient.daypart}
         data-season={ambient.season}
       >
+        <ArtDefs />
         <div
           className="garden-map"
           role="application"

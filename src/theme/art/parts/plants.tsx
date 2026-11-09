@@ -162,12 +162,15 @@ export function CitrusPot({ x, y, s = 1, fruit = P.yellow }: { x: number; y: num
  * Frucht/Beere mit dunklem Rand und Glanzpunkt: reif ist so auch bei
  * Rot-Grün-Schwäche über Helligkeit und Form vom Laub zu unterscheiden
  * (Deuteranopie-Prüfung in scripts/e2e/art.mjs). Unreif: ohne Glanz, matt.
+ * Rand und Glanz kommen als <use> aus ArtDefs (zwei Elemente je Frucht).
  */
 export function Fruit({ cx, cy, r, c, ripe = true }: { cx: number; cy: number; r: number; c: string; ripe?: boolean }) {
+  if (!ripe) return <circle cx={cx} cy={cy} r={r} fill={c} stroke={P.outline} strokeOpacity="0.35" strokeWidth={Math.max(0.5, r * 0.28)} className="art-fruit-unripe" />
+  const size = r * 2.4
   return (
-    <g className={ripe ? 'art-fruit' : 'art-fruit-unripe'}>
-      <circle cx={cx} cy={cy} r={r} fill={c} stroke={P.outline} strokeOpacity={ripe ? 0.75 : 0.35} strokeWidth={Math.max(0.5, r * 0.28)} />
-      {ripe ? <circle cx={cx - r * 0.35} cy={cy - r * 0.38} r={r * 0.34} fill={P.white} fillOpacity="0.9" /> : null}
-    </g>
+    <>
+      <circle cx={cx} cy={cy} r={r} fill={c} className="art-fruit" />
+      <use href="#art-fruit-gloss" x={cx - size / 2} y={cy - size / 2} width={size} height={size} />
+    </>
   )
 }

@@ -11,6 +11,7 @@ import { GENERATORS } from '../game/generators'
 import { RESIDENTS } from '../game/residents'
 import type { Daypart, Season } from '../theme/ambient'
 import { ART_REGISTRY } from '../theme/art/registry'
+import { ArtDefs } from '../theme/art/parts'
 import { DecorArt } from '../theme/DecorArt'
 import { ModuleArt } from '../theme/ModuleArt'
 import { ClearedPlot, WildPlot } from '../theme/PlotArt'
@@ -92,6 +93,7 @@ export default function ArtSheet() {
   const chapters = part === 'all' || part === 'kapitel'
   return (
     <main className="artsheet">
+      <ArtDefs />
       <h1>Grafik-Übersicht</h1>
       {garden
         ? SEASONS.flatMap((season) => DAYPARTS.map((d) => <GardenBlock key={`${season}-${d}`} season={season} daypart={d} />))
