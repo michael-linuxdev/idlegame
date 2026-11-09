@@ -10,43 +10,44 @@ import { memo } from 'react'
 const VIEWBOX = '0 0 100 86'
 
 function Shadow() {
-  return <ellipse cx="50" cy="76" rx="44" ry="9" fill="var(--g-shadow)" />
+  return <ellipse cx="50" cy="76" rx="40" ry="7" fill="var(--g-shadow)" />
 }
+
+/*
+ * Wildnis bleibt flach und gedeckt: niedrige Silhouette (Oberkante ≈ y 50),
+ * dünne Umrisse (1–1,2) und entsättigte Farben — gebaute Bereiche sollen
+ * daneben immer kräftiger wirken.
+ */
+const W_OUT = '#5a6b48'
+const W_LEAF = '#7f9466'
+const W_LEAF_L = '#93a679'
+const W_STEM = '#8e7a60'
+const W_BERRY = '#6e5872'
 
 function Brambles() {
   return (
     <g>
       <path
-        d="M8 74 C2 54 16 38 30 44 C32 26 54 22 60 36 C72 26 92 36 88 54 C98 60 94 76 84 76 Z"
-        fill="#4d6b33"
-        stroke="#2f4420"
-        strokeWidth="2"
+        d="M18 75 C14 67 22 60 32 63 C36 55 50 54 55 60 C64 54 78 58 78 65 C85 67 85 74 80 75 Z"
+        fill={W_LEAF}
+        stroke={W_OUT}
+        strokeWidth="1.2"
       />
       <path
-        d="M16 64 C22 50 30 48 36 56 C42 40 52 40 56 52 C62 44 74 46 78 60"
+        d="M24 70 C29 64 34 63 38 67 C43 60 50 60 54 65 C60 61 68 62 72 68"
         fill="none"
-        stroke="#7a5a3a"
-        strokeWidth="2.4"
+        stroke={W_STEM}
+        strokeWidth="1.2"
         strokeLinecap="round"
       />
-      <path
-        d="M24 52 l-3 -4 M44 44 l1 -5 M66 48 l3 -4 M80 58 l4 -2 M34 60 l-4 -1"
-        stroke="#7a5a3a"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-      />
-      <path d="M40 50 C46 44 52 46 54 52" fill="none" stroke="#3a5527" strokeWidth="5" strokeLinecap="round" />
+      <path d="M30 65 l-2 -3 M46 60 l1 -3 M64 62 l2 -3 M74 67 l3 -1" stroke={W_STEM} strokeWidth="1" strokeLinecap="round" />
       {[
-        [30, 56],
-        [48, 50],
-        [62, 58],
-        [72, 52],
-        [40, 64],
+        [34, 68],
+        [48, 64],
+        [60, 68],
+        [70, 66],
       ].map(([x, y], i) => (
-        <g key={i}>
-          <circle cx={x} cy={y} r="2.6" fill="#3d1d45" />
-          <circle cx={x + 2.4} cy={y + 1.4} r="2.2" fill="#5b2a5e" />
-        </g>
+        <circle key={i} cx={x} cy={y} r="1.8" fill={W_BERRY} />
       ))}
     </g>
   )
@@ -56,36 +57,26 @@ function NettlesAndJunk() {
   return (
     <g>
       {/* old tyre */}
-      <ellipse cx="66" cy="66" rx="16" ry="8" fill="#2f2f2f" stroke="#1a1a1a" strokeWidth="1.6" />
-      <ellipse cx="66" cy="64" rx="8" ry="3.4" fill="#5c7a3a" />
+      <ellipse cx="66" cy="70" rx="13" ry="5.4" fill="#5a5a55" stroke="#3f3f3b" strokeWidth="1.1" />
+      <ellipse cx="66" cy="69" rx="6.4" ry="2.2" fill={W_LEAF} />
       {/* nettles */}
-      {[14, 24, 34, 44].map((x, i) => (
+      {[16, 25, 34, 43].map((x, i) => (
         <g key={x}>
-          <path d={`M${x} 74 L${x + 1} ${40 + (i % 2) * 8}`} stroke="#4f6b2c" strokeWidth="2.2" />
-          {[0, 1, 2].map((k) => (
+          <path d={`M${x} 75 L${x + 1} ${56 + (i % 2) * 5}`} stroke={W_OUT} strokeWidth="1.1" />
+          {[0, 1].map((k) => (
             <g key={k}>
-              <path
-                d={`M${x + 1} ${48 + k * 8 + (i % 2) * 4} l-9 -4 l4 6 Z`}
-                fill="#6f8f3a"
-                stroke="#3f5622"
-                strokeWidth="1"
-              />
-              <path
-                d={`M${x + 1} ${46 + k * 8 + (i % 2) * 4} l9 -4 l-4 6 Z`}
-                fill="#7d9c44"
-                stroke="#3f5622"
-                strokeWidth="1"
-              />
+              <path d={`M${x + 1} ${61 + k * 6 + (i % 2) * 3} l-6 -3 l3 4 Z`} fill={W_LEAF} stroke={W_OUT} strokeWidth="0.8" />
+              <path d={`M${x + 1} ${59 + k * 6 + (i % 2) * 3} l6 -3 l-3 4 Z`} fill={W_LEAF_L} stroke={W_OUT} strokeWidth="0.8" />
             </g>
           ))}
         </g>
       ))}
       {/* broken crate */}
-      <g transform="rotate(-12 74 46)">
-        <rect x="62" y="34" width="24" height="18" fill="#a77d4c" stroke="#5e4123" strokeWidth="1.6" />
-        <path d="M62 40 H86 M62 46 H80" stroke="#5e4123" strokeWidth="1.2" />
+      <g transform="rotate(-10 76 58)">
+        <rect x="68" y="52" width="18" height="11" fill="#a89276" stroke="#6e5c45" strokeWidth="1.1" />
+        <path d="M68 56 H86 M68 60 H82" stroke="#6e5c45" strokeWidth="0.9" />
       </g>
-      <path d="M8 74 Q30 66 50 72 T92 72" stroke="#5c7a3a" strokeWidth="5" fill="none" strokeLinecap="round" />
+      <path d="M10 75 Q30 70 50 74 T90 74" stroke={W_LEAF} strokeWidth="3" fill="none" strokeLinecap="round" />
     </g>
   )
 }
@@ -94,19 +85,17 @@ function OvergrownHeap() {
   return (
     <g>
       {/* rubble + leaves heap */}
-      <path d="M10 74 C14 54 30 44 50 46 C70 44 88 56 90 74 Z" fill="#8c7a5c" stroke="#5b4c36" strokeWidth="2" />
-      <circle cx="30" cy="62" r="6" fill="#a99c86" stroke="#6f6553" strokeWidth="1.2" />
-      <circle cx="62" cy="58" r="7" fill="#b3a68f" stroke="#6f6553" strokeWidth="1.2" />
-      <rect x="40" y="60" width="16" height="6" rx="1" fill="#b55a3c" stroke="#6e2f22" strokeWidth="1" transform="rotate(14 48 63)" />
+      <path d="M22 75 C26 66 36 62 50 63 C64 62 75 67 78 75 Z" fill="#a39678" stroke="#76694f" strokeWidth="1.2" />
+      <circle cx="36" cy="70" r="3.8" fill="#bdb39f" stroke="#857b66" strokeWidth="0.9" />
+      <circle cx="61" cy="68" r="4.2" fill="#c4bba8" stroke="#857b66" strokeWidth="0.9" />
+      <rect x="43" y="68" width="11" height="4" rx="1" fill="#b07a62" stroke="#7e5646" strokeWidth="0.8" transform="rotate(14 48 68)" />
       {/* weeds sprouting */}
-      <path d="M20 56 C18 40 26 34 30 30 M74 54 C76 40 70 34 66 28 M50 48 C48 36 54 30 58 26" stroke="#4f7a2e" strokeWidth="3" fill="none" strokeLinecap="round" />
-      <ellipse cx="30" cy="30" rx="6" ry="3.4" fill="#6f9a3a" transform="rotate(-30 30 30)" />
-      <ellipse cx="66" cy="28" rx="6" ry="3.4" fill="#6f9a3a" transform="rotate(30 66 28)" />
-      <ellipse cx="58" cy="26" rx="5" ry="3" fill="#86b04a" transform="rotate(20 58 26)" />
-      <circle cx="22" cy="44" r="3" fill="#f2f0e0" />
-      <circle cx="22" cy="44" r="1.2" fill="#f5c542" />
-      <circle cx="78" cy="46" r="3" fill="#f2f0e0" />
-      <circle cx="78" cy="46" r="1.2" fill="#f5c542" />
+      <path d="M24 64 C23 56 27 52 30 50 M74 63 C75 56 72 52 69 49 M50 58 C49 52 52 49 55 47" stroke={W_OUT} strokeWidth="1.4" fill="none" strokeLinecap="round" />
+      <ellipse cx="30" cy="50" rx="4" ry="2.2" fill={W_LEAF_L} transform="rotate(-30 30 50)" />
+      <ellipse cx="69" cy="49" rx="4" ry="2.2" fill={W_LEAF_L} transform="rotate(30 69 49)" />
+      <ellipse cx="55" cy="47" rx="3.4" ry="2" fill={W_LEAF} transform="rotate(20 55 47)" />
+      <circle cx="22" cy="60" r="2" fill="#ece9da" />
+      <circle cx="80" cy="62" r="2" fill="#ece9da" />
     </g>
   )
 }
