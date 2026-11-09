@@ -924,7 +924,7 @@ export function GardenMap({
             ) : null}
           </button>
 
-          {GENERATORS.map((def, index) => {
+          {GENERATORS.map((def) => {
             const level = state.owned[def.id] ?? 0
             const unlocked = game.unlocked(def.id)
             const selectedHere = selected === def.id
@@ -975,7 +975,7 @@ export function GardenMap({
               >
                 <span className={`plot-visual${growing === def.id ? ' tier-grow' : ''}`}>
                   {!unlocked ? (
-                    <WildPlot variant={index} />
+                    <WildPlot id={def.id} />
                   ) : ready ? (
                     <ClearedPlot />
                   ) : (

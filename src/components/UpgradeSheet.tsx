@@ -202,7 +202,7 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
         <div className="gc-top">
           <div className={`gc-portrait${!unlocked ? ' locked' : ''}`} aria-hidden="true">
             <span className="gc-portrait-art">
-              {!unlocked ? <WildPlot variant={0} /> : owned === 0 ? <ClearedPlot /> : <ModuleArt id={def.id} level={owned} producing selected={false} />}
+              {!unlocked ? <WildPlot id={def.id} /> : owned === 0 ? <ClearedPlot /> : <ModuleArt id={def.id} level={owned} producing selected={false} />}
             </span>
             {unlocked && owned > 0 ? <span className="gc-level">{owned}</span> : null}
           </div>
