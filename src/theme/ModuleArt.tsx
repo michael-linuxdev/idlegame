@@ -20,6 +20,21 @@ import { Kompost } from './art/garden/kompost'
 import { Kraeuterspirale } from './art/garden/kraeuterspirale'
 import { Obstwiese } from './art/garden/obstwiese'
 import { Orangerie } from './art/garden/orangerie'
+import { GardenLamp } from './art/parts'
+
+/** Gartenlaterne hinter dem Bereich (ab Stufe 3), leuchtet abends und nachts. */
+const LAMP: Record<GeneratorId, { x: number; y: number }> = {
+  gemuesebeet: { x: 92, y: 46 },
+  kompost: { x: 10, y: 50 },
+  kraeuterspirale: { x: 88, y: 52 },
+  beerenhecke: { x: 8, y: 46 },
+  obstwiese: { x: 92, y: 50 },
+  bienenstock: { x: 92, y: 50 },
+  huehnerstall: { x: 90, y: 46 },
+  gewaechshaus: { x: 10, y: 48 },
+  hofladen: { x: 92, y: 44 },
+  orangerie: { x: 8, y: 50 },
+}
 
 interface Props {
   id: GeneratorId
@@ -63,6 +78,7 @@ function ModuleArtImpl({ id, level, producing = false, selected = false }: Props
 
   return (
     <ArtSvg className={cls} viewBox="0 0 100 86" data-tier={tier}>
+      {tier >= 3 ? <GardenLamp x={LAMP[id].x} y={LAMP[id].y} s={0.9} /> : null}
       {renderModule(id, tier, producing)}
     </ArtSvg>
   )

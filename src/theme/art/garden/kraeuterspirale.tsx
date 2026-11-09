@@ -1,6 +1,6 @@
 /** Hauptgarten-Bereich: kraeuterspirale. */
 import { Flower, Shadow } from '../parts'
-import { P } from '../palette'
+import { P, tone } from '../palette'
 import { LEAF, LEAF_D, OUT, SOIL } from './shared'
 
 export function Kraeuterspirale({ t }: { t: number }) {
@@ -10,7 +10,7 @@ export function Kraeuterspirale({ t }: { t: number }) {
       const r = r0 + i * grow
       return { x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r * 0.55 }
     })
-  const herbColors = [LEAF, '#8fbf5a', '#6d9b56', '#a3c47a']
+  const herbColors = [LEAF, tone('#8fbf5a'), tone('#6d9b56'), tone('#a3c47a')]
   const ring = t <= 1 ? stones(12, 50, 60, 24, 0, 12) : stones(t >= 3 ? 24 : 17, 50, 60, 4, t >= 3 ? 1.35 : 1.6)
   return (
     <g>
@@ -23,8 +23,8 @@ export function Kraeuterspirale({ t }: { t: number }) {
       ) : null}
       {/* soil mound */}
       <ellipse cx="50" cy={t <= 1 ? 60 : 62} rx={t <= 1 ? 25 : 30} ry={t <= 1 ? 13 : 14} fill={SOIL} />
-      {t >= 3 ? <ellipse cx="50" cy="54" rx="16" ry="8" fill="#8a5a3b" /> : null}
-      {t >= 3 ? <ellipse cx="50" cy="47" rx="8" ry="4" fill="#966646" /> : null}
+      {t >= 3 ? <ellipse cx="50" cy="54" rx="16" ry="8" fill={tone('#8a5a3b')} /> : null}
+      {t >= 3 ? <ellipse cx="50" cy="47" rx="8" ry="4" fill={tone('#966646')} /> : null}
       {ring.map((p, i) => (
         <ellipse key={i} cx={p.x} cy={p.y - (t >= 3 ? (24 - i) * 0.55 : 0)} rx="3.6" ry="2.6" fill={P.stoneLight} stroke={P.stoneDark} strokeWidth="0.9" />
       ))}

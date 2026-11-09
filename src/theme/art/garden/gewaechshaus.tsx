@@ -54,11 +54,11 @@ export function Gewaechshaus({ t }: { t: number }) {
       ))}
       <path d={`M${x - 3} ${wallTop + 1} L50 ${wallTop - 22} L${x + w + 3} ${wallTop + 1}`} fill="none" stroke={t >= 5 ? P.cream : P.glassEdge} strokeWidth="2.2" strokeLinejoin="round" />
       {/* door */}
-      <rect x="45" y={wallTop + 6} width="10" height={60 - wallTop} fill="rgba(255,255,255,0.35)" stroke={P.white} strokeWidth="1.2" />
+      <rect x="45" y={wallTop + 6} width="10" height={60 - wallTop} fill={P.white} fillOpacity="0.35" stroke={P.white} strokeWidth="1.2" />
       {t >= 4 ? (
         <g>
           {/* open roof vent */}
-          <path d={`M54 ${wallTop - 16} L66 ${wallTop - 12} L66 ${wallTop - 6} L54 ${wallTop - 10} Z`} fill="rgba(214,240,246,0.7)" stroke={P.white} strokeWidth="1" />
+          <path d={`M54 ${wallTop - 16} L66 ${wallTop - 12} L66 ${wallTop - 6} L54 ${wallTop - 10} Z`} fill={P.glass} fillOpacity="0.7" stroke={P.white} strokeWidth="1" />
           <CitrusPot x={8} y={74.4} s={0.6} fruit={P.red} />
           <CitrusPot x={92} y={74.4} s={0.6} fruit={P.amber} />
         </g>

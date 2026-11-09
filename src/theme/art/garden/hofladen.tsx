@@ -1,6 +1,6 @@
 /** Hauptgarten-Bereich: hofladen. */
 import { Crate, Flower, Shadow } from '../parts'
-import { P } from '../palette'
+import { P, tone } from '../palette'
 import { OUT, WOOD, WOOD_D } from './shared'
 
 export function Hofladen({ t }: { t: number }) {
@@ -31,10 +31,13 @@ export function Hofladen({ t }: { t: number }) {
           {/* shop hut behind the stall */}
           <rect x={x + 6} y="22" width={stallW - 12} height="34" fill={t >= 5 ? P.paper : WOOD} stroke={OUT} strokeWidth="1.4" />
           <path d={`M${x} 24 L50 6 L${x + stallW} 24 Z`} fill={P.roof} stroke={OUT} strokeWidth="1.4" strokeLinejoin="round" />
-          <rect x="44" y="34" width="12" height="22" fill="#7d9f5a" stroke={OUT} strokeWidth="1.2" />
+          <rect x="44" y="34" width="12" height="22" fill={tone('#7d9f5a')} stroke={OUT} strokeWidth="1.2" />
+          {/* Fenster im Laden (leuchten abends) */}
+          <rect x="29" y="24.6" width="9" height="5" fill={P.window} stroke={OUT} strokeWidth="1" className="art-window" />
+          <rect x="62" y="24.6" width="9" height="5" fill={P.window} stroke={OUT} strokeWidth="1" className="art-window" />
           {t >= 5 ? (
             <g>
-              <rect x="34" y="12" width="32" height="9" rx="1.5" fill="#3d5a2e" stroke={OUT} strokeWidth="1" />
+              <rect x="34" y="12" width="32" height="9" rx="1.5" fill={tone('#3d5a2e')} stroke={OUT} strokeWidth="1" />
               <path d="M38 16.5 H62" stroke={P.canvas} strokeWidth="1.8" strokeDasharray="4 1.5" />
               {/* lanterns */}
               <circle cx={x + 10} cy="30" r="2.4" fill={P.lamp} stroke={OUT} strokeWidth="0.8" className="garden-bulb" />
@@ -67,7 +70,7 @@ export function Hofladen({ t }: { t: number }) {
         <g>
           {/* chalkboard */}
           <path d="M86 74 L90 52 L98 52 L102 74" fill="none" stroke={WOOD_D} strokeWidth="1.6" />
-          <rect x="88" y="52" width="12" height="14" fill="#2f3b2f" stroke={WOOD_D} strokeWidth="1.2" />
+          <rect x="88" y="52" width="12" height="14" fill={tone('#2f3b2f')} stroke={WOOD_D} strokeWidth="1.2" />
           <path d="M90 56 H98 M90 60 H96" stroke={P.cream} strokeWidth="1" />
         </g>
       ) : null}

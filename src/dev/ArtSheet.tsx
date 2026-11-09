@@ -16,6 +16,8 @@ import { ModuleArt } from '../theme/ModuleArt'
 import { ClearedPlot, WildPlot } from '../theme/PlotArt'
 import { ResidentArt } from '../theme/ResidentArt'
 import { TIER_LEVELS } from '../theme/tiers'
+import '../theme/tokens.css'
+import '../theme/polish.css'
 import './artsheet.css'
 
 const SEASONS: Season[] = ['spring', 'summer', 'autumn', 'winter']

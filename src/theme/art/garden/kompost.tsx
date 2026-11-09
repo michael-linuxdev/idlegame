@@ -1,6 +1,6 @@
 /** Hauptgarten-Bereich: kompost. */
 import { Shadow } from '../parts'
-import { P } from '../palette'
+import { P, tone } from '../palette'
 import { OUT, WOOD, WOOD_D } from './shared'
 
 function Steam({ x, y }: { x: number; y: number }) {
@@ -17,9 +17,9 @@ function KompostHeap({ x, w, base = 64, tall = 0.7 }: { x: number; w: number; ba
   return (
     <g>
       <path d={`M${x} ${base} Q${x + w / 2} ${peak - w * 0.25} ${x + w} ${base} Z`} fill={P.compost} stroke={OUT} strokeWidth="1.2" />
-      <ellipse cx={x + w * 0.35} cy={peak + w * 0.2} rx="3" ry="1.6" fill="#8fbf5a" transform={`rotate(-20 ${x + w * 0.35} ${peak + w * 0.2})`} />
-      <ellipse cx={x + w * 0.66} cy={peak + w * 0.26} rx="2.4" ry="1.4" fill="#d58a3a" />
-      <circle cx={x + w * 0.5} cy={peak + w * 0.08} r="1.6" fill="#c9433a" />
+      <ellipse cx={x + w * 0.35} cy={peak + w * 0.2} rx="3" ry="1.6" fill={tone('#8fbf5a')} transform={`rotate(-20 ${x + w * 0.35} ${peak + w * 0.2})`} />
+      <ellipse cx={x + w * 0.66} cy={peak + w * 0.26} rx="2.4" ry="1.4" fill={tone('#d58a3a')} />
+      <circle cx={x + w * 0.5} cy={peak + w * 0.08} r="1.6" fill={tone('#c9433a')} />
     </g>
   )
 }
@@ -59,7 +59,7 @@ export function Kompost({ t, producing }: { t: number; producing: boolean }) {
             <g>
               <rect x="14" y="30" width="3" height="40" fill={WOOD_D} />
               <rect x="83" y="30" width="3" height="40" fill={WOOD_D} />
-              <path d="M8 34 L50 22 L92 34 L92 38 L8 38 Z" fill="#7d9f5a" stroke={OUT} strokeWidth="1.3" strokeLinejoin="round" />
+              <path d="M8 34 L50 22 L92 34 L92 38 L8 38 Z" fill={tone('#7d9f5a')} stroke={OUT} strokeWidth="1.3" strokeLinejoin="round" />
             </g>
           ) : null}
           <KompostBin x={t >= 4 ? 18 : 26} w={22} />
@@ -75,7 +75,7 @@ export function Kompost({ t, producing }: { t: number; producing: boolean }) {
           {/* wheelbarrow */}
           <path d="M4 66 L20 66 L24 58 L2 58 Z" fill={P.roof} stroke={OUT} strokeWidth="1.1" />
           <ellipse cx="13" cy="57" rx="10" ry="2.4" fill={P.compost} />
-          <circle cx="8" cy="70" r="3.4" fill="#3d3d3d" stroke={OUT} strokeWidth="1" />
+          <circle cx="8" cy="70" r="3.4" fill={tone('#3d3d3d')} stroke={OUT} strokeWidth="1" />
           <path d="M20 64 L28 72" stroke={WOOD_D} strokeWidth="1.6" />
         </g>
       ) : null}

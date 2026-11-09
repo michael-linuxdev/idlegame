@@ -1,12 +1,12 @@
 /** Hauptgarten-Bereich: bienenstock. */
 import { Bee, Jar, Shadow } from '../parts'
-import { P } from '../palette'
+import { P, tone } from '../palette'
 import { LEAF_D, OUT, WOOD_D } from './shared'
 
 function Hive({
   x,
   y,
-  c = '#f2d27a',
+  c = tone('#f2d27a'),
   stories = 1,
 }: {
   x: number
@@ -58,14 +58,14 @@ export function Bienenstock({ t, producing }: { t: number; producing: boolean })
         <g>
           <g transform="translate(50 66) scale(1.25) translate(-50 -66)">
             <Hive x={28} y={64} stories={2} />
-            <Hive x={53} y={66} stories={2} c="#9ec9e2" />
+            <Hive x={53} y={66} stories={2} c={tone('#9ec9e2')} />
           </g>
         </g>
       ) : null}
       {t >= 4 ? (
         <g>
           <Hive x={24} y={62} stories={2} />
-          <Hive x={46} y={60} stories={3} c="#9ec9e2" />
+          <Hive x={46} y={60} stories={3} c={tone('#9ec9e2')} />
           <Hive x={68} y={64} stories={2} c={P.cream} />
         </g>
       ) : null}

@@ -70,3 +70,18 @@ export function OmaSign({ x, y, s = 1 }: { x: number; y: number; s?: number }) {
     </Place>
   )
 }
+
+/**
+ * Gartenlaterne auf einem Pfahl; der Lichtschein ist tagsüber unsichtbar und
+ * leuchtet abends/nachts (--art-glow aus tokens.css). Fußpunkt = Pfahlfuß.
+ */
+export function GardenLamp({ x, y, s = 1 }: { x: number; y: number; s?: number }) {
+  return (
+    <Place x={x} y={y} s={s} className="art-lamp">
+      <circle cx="0" cy="-15" r="7" fill={P.lamp} className="art-glow" />
+      <path d="M0 0 V-13" stroke={P.outlineWood} strokeWidth="1.3" />
+      <path d="M-2.4 -12 H2.4 L1.8 -17.5 H-1.8 Z" fill={P.lamp} stroke={P.outline} strokeWidth={STROKE.detail} />
+      <path d="M-2.6 -17.5 H2.6 L0 -20 Z" fill={P.outline} />
+    </Place>
+  )
+}

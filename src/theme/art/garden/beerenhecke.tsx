@@ -1,10 +1,10 @@
 /** Hauptgarten-Bereich: beerenhecke. */
 import { Bush, Jar, Shadow } from '../parts'
-import { P } from '../palette'
+import { P, tone } from '../palette'
 import { LEAF, LEAF_L, OUT, WOOD, WOOD_D } from './shared'
 
 export function Beerenhecke({ t }: { t: number }) {
-  const berries = [P.berry, '#3b1d4a', '#f0e6c8']
+  const berries = [P.berry, tone('#3b1d4a'), tone('#f0e6c8')]
   return (
     <g>
       <Shadow rx={42} />
@@ -13,7 +13,7 @@ export function Beerenhecke({ t }: { t: number }) {
           {/* raspberry canes */}
           {[22, 34, 46, 58, 70, 82].map((x, i) => (
             <g key={x}>
-              <path d={`M${x} 56 Q${x + 2} 30 ${x - 2} 16`} stroke="#7a5a3a" strokeWidth="1.6" fill="none" />
+              <path d={`M${x} 56 Q${x + 2} 30 ${x - 2} 16`} stroke={tone('#7a5a3a')} strokeWidth="1.6" fill="none" />
               <ellipse cx={x - 3} cy={26 + (i % 2) * 6} rx="3.6" ry="2" fill={LEAF} />
               <ellipse cx={x + 2} cy={36 - (i % 2) * 4} rx="3.6" ry="2" fill={LEAF_L} />
               <circle cx={x + 1} cy={30} r="1.8" fill={P.red} />

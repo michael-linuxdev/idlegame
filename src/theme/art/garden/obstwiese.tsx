@@ -1,6 +1,6 @@
 /** Hauptgarten-Bereich: obstwiese. */
 import { Crate, Shadow, Tree } from '../parts'
-import { P } from '../palette'
+import { P, tone } from '../palette'
 import { LEAF, LEAF_D, LEAF_L, OUT, SOIL, WOOD } from './shared'
 
 export function Obstwiese({ t }: { t: number }) {
@@ -23,14 +23,14 @@ export function Obstwiese({ t }: { t: number }) {
       {t === 3 ? (
         <g>
           <Tree x={36} y={72} r={17} trunk={18} fruit={P.red} />
-          <Tree x={70} y={72} r={12} trunk={12} fruit="#d6c23a" />
+          <Tree x={70} y={72} r={12} trunk={12} fruit={tone('#d6c23a')} />
         </g>
       ) : null}
       {t >= 4 ? (
         <g>
           <Tree x={28} y={72} r={17} trunk={20} fruit={P.red} />
           {t >= 5 ? <Tree x={50} y={66} r={15} trunk={22} fruit={P.plum} /> : null}
-          <Tree x={74} y={72} r={16} trunk={18} fruit="#d6c23a" />
+          <Tree x={74} y={72} r={16} trunk={18} fruit={tone('#d6c23a')} />
           {/* ladder */}
           <path d="M60 74 L66 40 M66 74 L72 40" stroke={WOOD} strokeWidth="1.8" />
           {[46, 54, 62, 70].map((y) => (
@@ -39,7 +39,7 @@ export function Obstwiese({ t }: { t: number }) {
           <Crate x={17} y={77} fruit={P.red} />
           {t >= 5 ? (
             <g>
-              <Crate x={87} y={79} fruit="#d6c23a" />
+              <Crate x={87} y={79} fruit={tone('#d6c23a')} />
               <Crate x={18} y={68} fruit={P.plum} />
             </g>
           ) : null}
