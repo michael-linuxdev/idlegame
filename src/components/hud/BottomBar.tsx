@@ -32,14 +32,16 @@ export function BottomBar({ game, highlightOffline, onClaimOffline, onClaimDaily
             type="button"
             className={`hud-claim offline${highlightOffline ? ' ftue-target' : ''}`}
             onClick={onClaimOffline}
-            aria-label={t.hud.claimAria(`${formatErnte(offlineGained)} ${t.resources.ernte}`)}
           >
             <span className="hud-claim-icon">
               <IconBasket />
             </span>
             <span className="hud-claim-text">
               <span className="hud-claim-title">{t.hud.claim}</span>
-              <span className="hud-claim-sub">+{formatErnte(offlineGained)}</span>
+              <span className="hud-claim-sub">
+                +{formatErnte(offlineGained)}
+                <span className="sr-only"> {t.resources.ernte}</span>
+              </span>
             </span>
           </button>
         ) : dailyReady ? (
@@ -47,8 +49,11 @@ export function BottomBar({ game, highlightOffline, onClaimOffline, onClaimDaily
             type="button"
             className={`hud-claim daily${dailyPreview.comeback ? ' comeback' : ''}`}
             onClick={onClaimDaily}
-            aria-label={`${t.daily.kicker}: ${dailyPreview.label}`}
+            aria-describedby="hud-daily-desc"
           >
+            <span className="sr-only" id="hud-daily-desc">
+              {`${t.daily.kicker}: ${dailyPreview.label}`}
+            </span>
             <span className="hud-claim-icon">
               <IconNotebook />
             </span>
@@ -69,13 +74,13 @@ export function BottomBar({ game, highlightOffline, onClaimOffline, onClaimDaily
         disabled={!tapReady}
         style={{ ['--p' as string]: ratio.toFixed(3) }}
         title={tapReady ? t.hud.burstReadyTitle : t.hud.burstCoolingTitle}
-        aria-label={tapReady ? t.hud.burstReadyTitle : t.hud.waterCooling(formatClock(cooldownLeft))}
       >
         <span className="hud-water-ring" aria-hidden="true" />
         <span className="hud-water-icon" aria-hidden="true">
           <IconWateringCan />
         </span>
         <span className="hud-water-label">
+          {tapReady ? null : <span className="sr-only">{t.hud.burstCooling} </span>}
           {tapReady ? t.hud.burstReady : formatClock(cooldownLeft)}
         </span>
       </button>

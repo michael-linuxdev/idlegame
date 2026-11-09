@@ -1,13 +1,12 @@
+import { nSeeds } from './count'
 /** Copy for the “more life” features: decor, garden wildlife, crossings, projects, album, weather. */
-const SEEDS = 'seeds'
-
 export const lifeStrings = {
   decor: {
     title: 'Decor',
     intro: 'Decor stays forever. Buy it here and put it on one of the decor spots in your garden — some of it attracts garden wildlife.',
     open: 'Decor',
     openAria: 'Buy and place decor',
-    buy: (n: number) => `${n} ${SEEDS}`,
+    buy: (n: number) => `${nSeeds(n)}`,
     owned: 'Yours',
     placed: 'In the garden',
     exclusive: 'Reward only',
@@ -45,7 +44,7 @@ export const lifeStrings = {
     visits: (n: number) => (n === 1 ? '1 visit' : `${n} visits`),
     unknown: '???',
     aria: (name: string) => `Tap ${name}`,
-    firstToast: (name: string, seeds: number) => `New in the album: ${name}! +${seeds} seeds · +1 % harvest forever`,
+    firstToast: (name: string, seeds: number) => `New in the album: ${name}! +${nSeeds(seeds)} · +1 % harvest forever`,
     repeatToast: (name: string, amount: string) => `${name} stops by again · +${amount} harvest`,
     needDecor: (d: string) => `needs: ${d}`,
     needArea: (a: string, lvl: number) => `${a} from level ${lvl}`,
@@ -75,11 +74,11 @@ export const lifeStrings = {
     choose: 'Choose a variety …',
     start: (h: number) => `Cross · ${h} h`,
     running: (left: string) => `Ripening … ${left} left`,
-    skip: (n: number) => `Finish now · ${n} seeds`,
+    skip: (n: number) => `Finish now · ${nSeeds(n)}`,
     harvest: 'Harvest the seed',
     ready: 'The seed is ripe!',
     newHybrid: (name: string) => `New crossing: ${name}! +2 % harvest forever`,
-    miss: (n: number) => `No new crossing — but ${n} seeds`,
+    miss: (n: number) => `No new crossing — but ${nSeeds(n)}`,
     known: 'Crossings',
     total: (pct: string, n: number, all: number) => `+${pct} % harvest · ${n}/${all} bred`,
     hintPair: (a: string, b: string) => (a === b ? `two ${a} varieties` : `${a} × ${b}`),
@@ -108,7 +107,7 @@ export const lifeStrings = {
     done: 'Finished',
     locked: (names: string) => `Needs the plots: ${names}`,
     rewardDecor: (name: string) => `At the end: ${name} for your garden`,
-    rewardSamen: (n: number) => `At the end: ${n} seeds`,
+    rewardSamen: (n: number) => `At the end: ${nSeeds(n)}`,
     rewardBonus: (pct: number) => `At the end: +${pct} % extra harvest`,
     built: (name: string) => `${name}: building stage done! +2 % harvest`,
     names: {

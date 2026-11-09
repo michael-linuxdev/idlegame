@@ -25,7 +25,7 @@ export function DeepWinterBlock({ game, onOpenChapter }: { game: GameApi; onOpen
       <dl className="season-stats">
         <div>
           <dt>{t.longLoop.sprouts}</dt>
-          <dd>{state.sproesslinge}</dd>
+          <dd>{formatErnte(state.sproesslinge)}</dd>
         </div>
         <div>
           <dt>{t.longLoop.winters}</dt>

@@ -48,6 +48,24 @@ Gewählt vom Nutzer. Ein Sprachwechsel lädt die Seite **nicht** neu.
 
 Deutsch „Mrd“ = 10⁹ = Englisch „B“. Ganze Zahlen mit Tausendertrennung:
 `formatInt()`; Datum/Uhrzeit: `formatDateTime()` — nie `toLocaleString('de-DE')`.
+Ressourcen-Stände in der Oberfläche (Samen, Erbstücke, Sprösslinge, Vermächtnis)
+laufen über `formatErnte()`.
+
+## Zahlen und Mehrzahl in Texten
+
+- Englisch: `src/i18n/en/count.ts` — `count(n, one, other)` mit
+  `Intl.PluralRules('en-US')` und Komma-Gruppierung, dazu `nSeeds`,
+  `nHeirlooms`, `nSeedlings`, `nFestTokens` („1 seed“, „1,500 seeds“).
+- Deutsch: `src/i18n/de/count.ts` — `zahl(n)` mit Tausenderpunkt („1.500 Samen“).
+- Die Sprachdateien importieren nichts aus `src/game` (keine Kreisbezüge).
+
+## Barrierefreiheit
+
+`scripts/e2e/axe.mjs` (Teil von `npm run e2e`): axe-core mit WCAG 2.0/2.1 A/AA
+auf Karte, Ausbau, Menü, Einstellungen, Saison, Markt und Notizbuch — in
+Deutsch und Englisch, muss 0 Verstöße melden; prüft auch `<html lang>`.
+Regel „Name enthält den sichtbaren Text“: Knöpfe bekommen ihren Namen aus dem
+sichtbaren Text; Langfassungen stehen in `aria-describedby` (unsichtbarer Span).
 
 ## Web-Manifest
 

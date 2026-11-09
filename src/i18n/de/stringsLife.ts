@@ -1,3 +1,5 @@
+import { zahl } from './count'
+
 /** Copy for the „Mehr Leben“ features: Deko, Gartenbewohner, Kreuzungen, Projekte, Album, Wetter. */
 const SEEDS = 'Samen'
 
@@ -7,7 +9,7 @@ export const lifeStrings = {
     intro: 'Deko bleibt für immer. Kauf sie hier und stell sie auf einen der Dekoplätze im Garten — manche locken Gartenbewohner an.',
     open: 'Deko',
     openAria: 'Deko kaufen und platzieren',
-    buy: (n: number) => `${n} ${SEEDS}`,
+    buy: (n: number) => `${zahl(n)} ${SEEDS}`,
     owned: 'Gehört dir',
     placed: 'Steht im Garten',
     exclusive: 'Nur als Belohnung',
@@ -45,7 +47,7 @@ export const lifeStrings = {
     visits: (n: number) => (n === 1 ? '1 Besuch' : `${n} Besuche`),
     unknown: '???',
     aria: (name: string) => `${name} antippen`,
-    firstToast: (name: string, seeds: number) => `Neu im Album: ${name}! +${seeds} Samen · +1 % Ernte für immer`,
+    firstToast: (name: string, seeds: number) => `Neu im Album: ${name}! +${zahl(seeds)} Samen · +1 % Ernte für immer`,
     repeatToast: (name: string, amount: string) => `${name} schaut wieder vorbei · +${amount} Ernte`,
     needDecor: (d: string) => `braucht: ${d}`,
     needArea: (a: string, lvl: number) => `${a} ab Stufe ${lvl}`,
@@ -75,11 +77,11 @@ export const lifeStrings = {
     choose: 'Sorte wählen …',
     start: (h: number) => `Kreuzen · ${h} h`,
     running: (left: string) => `Reift … noch ${left}`,
-    skip: (n: number) => `Sofort fertig · ${n} Samen`,
+    skip: (n: number) => `Sofort fertig · ${zahl(n)} Samen`,
     harvest: 'Saat ernten',
     ready: 'Die Saat ist reif!',
     newHybrid: (name: string) => `Neue Kreuzung: ${name}! +2 % Ernte für immer`,
-    miss: (n: number) => `Keine neue Kreuzung — aber ${n} Samen`,
+    miss: (n: number) => `Keine neue Kreuzung — aber ${zahl(n)} Samen`,
     known: 'Kreuzungen',
     total: (pct: string, n: number, all: number) => `+${pct} % Ernte · ${n}/${all} gezüchtet`,
     hintPair: (a: string, b: string) => (a === b ? `zwei ${a}-Sorten` : `${a} × ${b}`),
@@ -108,7 +110,7 @@ export const lifeStrings = {
     done: 'Fertig gebaut',
     locked: (names: string) => `Braucht die Grundstücke: ${names}`,
     rewardDecor: (name: string) => `Am Ende: ${name} für deinen Garten`,
-    rewardSamen: (n: number) => `Am Ende: ${n} Samen`,
+    rewardSamen: (n: number) => `Am Ende: ${zahl(n)} Samen`,
     rewardBonus: (pct: number) => `Am Ende: +${pct} % Ernte extra`,
     built: (name: string) => `${name}: Bauabschnitt fertig! +2 % Ernte`,
     names: {

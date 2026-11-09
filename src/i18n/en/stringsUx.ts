@@ -67,7 +67,6 @@ export const uxStrings = {
   },
   signs: {
     canBuy: 'Upgrade possible',
-    wildIn: (pct: number) => `${100 - pct} % to go`,
   },
   upcoming: {
     title: 'Ready soon',

@@ -63,7 +63,7 @@ export function PlaytestLogControls() {
     <div className="nav-menu-playtest" role="group" aria-label={t.playtest.title}>
       <button
         type="button"
-        role="menuitemcheckbox"
+        role="switch"
         className={`nav-menu-item playtest-toggle${on ? ' active' : ''}`}
         aria-checked={on}
         onClick={toggle}

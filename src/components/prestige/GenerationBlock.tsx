@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { LEGACY_SHOP, generationGate } from '../../game/generations'
 import { IconFamily } from '../../theme/icons'
 import type { useGame } from '../../game/useGame'
+import { formatErnte } from '../../game/format'
 import { t } from '../../i18n'
 
 type GameApi = ReturnType<typeof useGame>
@@ -20,7 +21,7 @@ export function GenerationBlock({ game }: { game: GameApi }) {
       <dl className="season-stats">
         <div>
           <dt>{t.generation.vermaechtnis}</dt>
-          <dd>{state.vermaechtnis}</dd>
+          <dd>{formatErnte(state.vermaechtnis)}</dd>
         </div>
         <div>
           <dt>{t.generation.generations}</dt>
