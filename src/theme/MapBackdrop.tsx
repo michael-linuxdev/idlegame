@@ -15,6 +15,8 @@ import { GENERATORS } from '../game/generators'
 import type { Ambient } from './ambient'
 import type { FestId } from '../game/fests'
 import { FestDecor, FestSkinDecor } from './FestDecor'
+import { useSvgId } from './svgId'
+import { ArtSvg } from './ArtSvg'
 
 interface Props {
   /** Number of garden areas angelegt (0–10) */
@@ -29,7 +31,7 @@ interface Props {
 
 function Sonnenblume() {
   return (
-    <svg viewBox="0 0 20 44" focusable="false">
+    <ArtSvg viewBox="0 0 20 44">
       <path d="M10 44 V14" stroke="#4f7a2e" strokeWidth="2.2" />
       <ellipse cx="6" cy="28" rx="4.5" ry="2" fill="#5f9e45" transform="rotate(-30 6 28)" />
       <ellipse cx="14" cy="34" rx="4.5" ry="2" fill="#5f9e45" transform="rotate(30 14 34)" />
@@ -37,13 +39,13 @@ function Sonnenblume() {
         <ellipse key={i} cx="10" cy="5" rx="2" ry="4.4" fill="#f5c542" transform={`rotate(${i * 30} 10 10)`} />
       ))}
       <circle cx="10" cy="10" r="4" fill="#6b4423" />
-    </svg>
+    </ArtSvg>
   )
 }
 
 function Kirschbaum() {
   return (
-    <svg viewBox="0 0 100 100" focusable="false">
+    <ArtSvg viewBox="0 0 100 100">
       <ellipse cx="50" cy="90" rx="30" ry="7" fill="var(--g-shadow)" />
       <path d="M48 90 V58 M48 66 L36 54 M50 62 L62 50" stroke="#6b4423" strokeWidth="6" strokeLinecap="round" />
       <circle cx="50" cy="40" r="26" fill="#f2a7c3" />
@@ -53,13 +55,13 @@ function Kirschbaum() {
       {[[40, 40], [58, 34], [30, 52], [66, 52], [50, 56]].map(([x, y], i) => (
         <circle key={i} cx={x} cy={y} r="2" fill="#fff" />
       ))}
-    </svg>
+    </ArtSvg>
   )
 }
 
 function Lavendel() {
   return (
-    <svg viewBox="0 0 60 24" focusable="false">
+    <ArtSvg viewBox="0 0 60 24">
       <ellipse cx="30" cy="20" rx="28" ry="4" fill="var(--g-shadow)" />
       {Array.from({ length: 9 }, (_, i) => (
         <g key={i}>
@@ -67,19 +69,19 @@ function Lavendel() {
           <ellipse cx={6 + i * 6} cy={7 + (i % 3) * 2} rx="2" ry="5" fill="#9a6bc9" />
         </g>
       ))}
-    </svg>
+    </ArtSvg>
   )
 }
 
 function Kuerbisse() {
   return (
-    <svg viewBox="0 0 40 24" focusable="false">
+    <ArtSvg viewBox="0 0 40 24">
       <ellipse cx="20" cy="21" rx="18" ry="3" fill="var(--g-shadow)" />
       <ellipse cx="12" cy="15" rx="9" ry="7" fill="#f08a2c" stroke="#a8541a" strokeWidth="1.2" />
       <path d="M12 8 V5" stroke="#4f7a2e" strokeWidth="2" />
       <ellipse cx="28" cy="17" rx="7" ry="5.5" fill="#f5a623" stroke="#a8541a" strokeWidth="1.2" />
       <path d="M28 11.5 V9" stroke="#4f7a2e" strokeWidth="2" />
-    </svg>
+    </ArtSvg>
   )
 }
 
@@ -176,7 +178,7 @@ function Decor({
 /** Omas Laube — wooden garden house with red roof, the story anchor. */
 function Laube() {
   return (
-    <svg viewBox="0 0 120 100" focusable="false">
+    <ArtSvg viewBox="0 0 120 100">
       <ellipse cx="60" cy="92" rx="54" ry="7" fill="var(--g-shadow)" />
       {/* walls */}
       <rect x="18" y="42" width="84" height="48" rx="2" fill="#d9a56c" stroke="#6e4a2b" strokeWidth="2" />
@@ -202,25 +204,25 @@ function Laube() {
       <line x1="86.5" y1="54" x2="86.5" y2="69" stroke="#fff" strokeWidth="1.6" />
       {/* doorstep */}
       <rect x="44" y="89" width="30" height="4" rx="1.5" fill="#c9c1b0" stroke="#8f8676" strokeWidth="1" />
-    </svg>
+    </ArtSvg>
   )
 }
 
 function Regentonne() {
   return (
-    <svg viewBox="0 0 40 50" focusable="false">
+    <ArtSvg viewBox="0 0 40 50">
       <ellipse cx="20" cy="46" rx="16" ry="3.5" fill="var(--g-shadow)" />
       <path d="M6 10 Q4 28 7 44 L33 44 Q36 28 34 10 Z" fill="#9a6b43" stroke="#5a3a22" strokeWidth="1.8" />
       <path d="M5.5 18 L34.5 18 M5 34 L35 34" stroke="#6b6f73" strokeWidth="2.4" />
       <ellipse cx="20" cy="10" rx="14" ry="4.5" fill="#6fb4d0" stroke="#5a3a22" strokeWidth="1.8" />
       <ellipse cx="16" cy="9" rx="5" ry="1.4" fill="#bfe6f2" opacity="0.8" />
-    </svg>
+    </ArtSvg>
   )
 }
 
 function Teich() {
   return (
-    <svg viewBox="0 0 120 80" focusable="false">
+    <ArtSvg viewBox="0 0 120 80">
       <path
         d="M14 40 C10 22 34 10 58 12 C86 10 112 20 108 42 C106 62 80 72 56 70 C30 70 16 58 14 40 Z"
         fill="#bdb6a6"
@@ -239,7 +241,7 @@ function Teich() {
       {/* reeds */}
       <path d="M98 30 Q100 14 96 6 M103 32 Q106 18 104 10 M93 32 Q94 20 90 14" stroke="#5f7f36" strokeWidth="2" fill="none" />
       <rect x="95" y="6" width="3" height="8" rx="1.5" fill="#7a4e2d" transform="rotate(-8 96 10)" />
-    </svg>
+    </ArtSvg>
   )
 }
 
@@ -247,7 +249,7 @@ function Baum({ tone = 0, season }: { tone?: number; season?: Ambient['season'] 
   const a = ['#6fae52', '#5f9a48', '#7dba5c'][tone % 3]
   const b = ['#4f8a3a', '#447a34', '#5c9945'][tone % 3]
   return (
-    <svg viewBox="0 0 100 100" focusable="false">
+    <ArtSvg viewBox="0 0 100 100">
       <ellipse cx="50" cy="90" rx="34" ry="8" fill="var(--g-shadow)" />
       <rect x="44" y="60" width="12" height="30" rx="4" fill="#7a5232" />
       <circle cx="50" cy="42" r="32" fill={b} />
@@ -273,50 +275,51 @@ function Baum({ tone = 0, season }: { tone?: number; season?: Ambient['season'] 
           <ellipse cx="72" cy="36" rx="10" ry="3.4" />
         </g>
       ) : null}
-    </svg>
+    </ArtSvg>
   )
 }
 
 function Hecke() {
   return (
-    <svg viewBox="0 0 200 30" preserveAspectRatio="none" focusable="false">
+    <ArtSvg viewBox="0 0 200 30" preserveAspectRatio="none">
       <rect x="0" y="10" width="200" height="20" fill="#3f7a34" />
       {Array.from({ length: 14 }, (_, i) => (
         <circle key={i} cx={i * 15 + 6} cy={12 + (i % 2) * 2} r="10" fill={i % 2 ? '#4f8a3a' : '#5a9a44'} />
       ))}
-    </svg>
+    </ArtSvg>
   )
 }
 
 /** Jägerzaun with a garden gate in the middle. */
 function Zaun() {
+  const pickets = useSvgId('gz-pickets')
   return (
-    <svg viewBox="0 0 400 40" preserveAspectRatio="none" focusable="false">
+    <ArtSvg viewBox="0 0 400 40" preserveAspectRatio="none">
       <defs>
-        <pattern id="gz-pickets" width="14" height="40" patternUnits="userSpaceOnUse">
+        <pattern id={pickets} width="14" height="40" patternUnits="userSpaceOnUse">
           <path d="M2 40 L2 12 L5 7 L8 12 L8 40 Z" fill="#e9dcc2" stroke="#8a7350" strokeWidth="1" />
         </pattern>
       </defs>
       <rect x="0" y="16" width="400" height="4" fill="#cdb98f" />
       <rect x="0" y="28" width="400" height="4" fill="#cdb98f" />
-      <rect x="0" y="0" width="168" height="40" fill="url(#gz-pickets)" />
-      <rect x="232" y="0" width="168" height="40" fill="url(#gz-pickets)" />
+      <rect x="0" y="0" width="168" height="40" fill={`url(#${pickets})`} />
+      <rect x="232" y="0" width="168" height="40" fill={`url(#${pickets})`} />
       {/* open gate */}
       <rect x="166" y="6" width="6" height="34" rx="1.5" fill="#a77d4c" />
       <rect x="228" y="6" width="6" height="34" rx="1.5" fill="#a77d4c" />
-    </svg>
+    </ArtSvg>
   )
 }
 
 function Bank() {
   return (
-    <svg viewBox="0 0 60 36" focusable="false">
+    <ArtSvg viewBox="0 0 60 36">
       <ellipse cx="30" cy="32" rx="26" ry="4" fill="var(--g-shadow)" />
       <rect x="6" y="6" width="48" height="6" rx="2" fill="#b07a4a" stroke="#6e4a2b" strokeWidth="1.4" />
       <rect x="4" y="16" width="52" height="7" rx="2" fill="#c48a55" stroke="#6e4a2b" strokeWidth="1.4" />
       <rect x="9" y="22" width="4" height="9" fill="#6e4a2b" />
       <rect x="47" y="22" width="4" height="9" fill="#6e4a2b" />
-    </svg>
+    </ArtSvg>
   )
 }
 
@@ -329,20 +332,20 @@ function Blumen({ seed }: { seed: number }) {
     return { x: 20 + Math.cos(a) * r, y: 14 + Math.sin(a) * r * 0.6, c: FLOWER_COLORS[(i + seed) % 6] }
   })
   return (
-    <svg viewBox="0 0 40 28" focusable="false">
+    <ArtSvg viewBox="0 0 40 28">
       <ellipse cx="20" cy="15" rx="17" ry="10" fill="#5f9a48" />
       <ellipse cx="17" cy="12" rx="10" ry="6" fill="#74b257" />
       {dots.map((d, i) => (
         <circle key={i} cx={d.x} cy={d.y} r="2.6" fill={d.c} stroke="rgba(0,0,0,0.15)" strokeWidth="0.6" />
       ))}
-    </svg>
+    </ArtSvg>
   )
 }
 
 /** Brambles / nettles left over from the overgrown years. */
 function WildBusch({ seed }: { seed: number }) {
   return (
-    <svg viewBox="0 0 50 34" focusable="false">
+    <ArtSvg viewBox="0 0 50 34">
       <ellipse cx="25" cy="30" rx="22" ry="4" fill="var(--g-shadow)" />
       <path
         d="M4 28 C2 16 12 8 20 12 C24 2 38 4 40 14 C48 14 50 26 44 30 Z"
@@ -360,30 +363,30 @@ function WildBusch({ seed }: { seed: number }) {
       <circle cx={18 + (seed % 4)} cy="18" r="1.8" fill="#4a2350" />
       <circle cx="31" cy="20" r="1.8" fill="#4a2350" />
       <circle cx="36" cy="24" r="1.6" fill="#7a2f3a" />
-    </svg>
+    </ArtSvg>
   )
 }
 
 function Lichterkette() {
   return (
-    <svg viewBox="0 0 100 20" preserveAspectRatio="none" focusable="false">
+    <ArtSvg viewBox="0 0 100 20" preserveAspectRatio="none">
       <path d="M0 4 Q25 16 50 6 Q75 -2 100 8" stroke="#5a4a3a" strokeWidth="0.8" fill="none" vectorEffect="non-scaling-stroke" />
       {[8, 20, 32, 44, 56, 68, 80, 92].map((x, i) => (
         <circle key={x} className="garden-bulb" cx={x} cy={i % 2 ? 9 : 11} r="1.6" fill="#ffd36b" />
       ))}
-    </svg>
+    </ArtSvg>
   )
 }
 
 function Schmetterling({ hue }: { hue: string }) {
   return (
-    <svg viewBox="0 0 20 16" focusable="false">
+    <ArtSvg viewBox="0 0 20 16">
       <ellipse cx="6" cy="6" rx="5" ry="4.5" fill={hue} />
       <ellipse cx="14" cy="6" rx="5" ry="4.5" fill={hue} />
       <ellipse cx="7" cy="12" rx="3.4" ry="3" fill={hue} opacity="0.85" />
       <ellipse cx="13" cy="12" rx="3.4" ry="3" fill={hue} opacity="0.85" />
       <rect x="9.3" y="3" width="1.4" height="11" rx="0.7" fill="#3a2a1a" />
-    </svg>
+    </ArtSvg>
   )
 }
 
@@ -437,26 +440,27 @@ function Particles({ ambient }: { ambient: Ambient }) {
 
 /** Memoized: re-renders only when the stage or ambient mood changes. */
 export const MapBackdrop = memo(function MapBackdrop({ stage, ambient, skin, fest }: Props) {
+  const grass = useSvgId('gg-grass')
+  const light = useSvgId('gg-light')
   return (
     <div className="garden-ground" aria-hidden="true" data-stage={stage}>
-      <svg
+      <ArtSvg
         className="garden-ground-svg"
         viewBox="0 0 100 100"
         preserveAspectRatio="none"
-        focusable="false"
       >
         <defs>
-          <linearGradient id="gg-grass" x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id={grass} x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" style={{ stopColor: 'var(--g-grass-far)' }} />
             <stop offset="55%" style={{ stopColor: 'var(--g-grass)' }} />
             <stop offset="100%" style={{ stopColor: 'var(--g-grass-near)' }} />
           </linearGradient>
-          <radialGradient id="gg-light" cx="62%" cy="38%" r="70%">
+          <radialGradient id={light} cx="62%" cy="38%" r="70%">
             <stop offset="0%" stopColor="#fffbe0" stopOpacity="0.32" />
             <stop offset="100%" stopColor="#fffbe0" stopOpacity="0" />
           </radialGradient>
         </defs>
-        <rect width="100" height="100" fill="url(#gg-grass)" />
+        <rect width="100" height="100" fill={`url(#${grass})`} />
         {/* mowing stripes */}
         {Array.from({ length: 9 }, (_, i) => (
           <rect
@@ -469,7 +473,7 @@ export const MapBackdrop = memo(function MapBackdrop({ stage, ambient, skin, fes
             opacity="0.045"
           />
         ))}
-        <rect width="100" height="100" fill="url(#gg-light)" />
+        <rect width="100" height="100" fill={`url(#${light})`} />
 
         {/* path edge, then gravel */}
         <g fill="none" strokeLinecap="round" strokeLinejoin="round">
@@ -502,7 +506,7 @@ export const MapBackdrop = memo(function MapBackdrop({ stage, ambient, skin, fes
             opacity="0.7"
           />
         </g>
-      </svg>
+      </ArtSvg>
 
       {/* far edge: hedge behind the HUD, Laube at the end of the path */}
       <div className="garden-hedge">

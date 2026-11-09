@@ -8,6 +8,7 @@ import { APP_VERSION, checkForUpdate, reloadNow } from '../game/appUpdate'
 import { setPref, setSignsAlways, usePref, useSignsAlways } from '../game/prefs'
 import { useDismiss } from '../game/overlays'
 import { IconBasket, IconFlag, IconNotebook, IconSnow, IconSprout } from '../theme/icons'
+import { ArtSvg } from '../theme/ArtSvg'
 
 export type Tab = 'fortress' | 'prestige' | 'clan' | 'shop'
 
@@ -49,45 +50,45 @@ interface Props {
 /* —— small inline glyphs for the menu tiles —— */
 const Glyph = {
   decor: (
-    <svg viewBox="0 0 24 24" aria-hidden="true" width="20" height="20">
+    <ArtSvg viewBox="0 0 24 24" width="20" height="20">
       <path d="M7 21l1-8h8l1 8z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
       <path d="M8.6 9L12 2l3.4 7z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
-    </svg>
+    </ArtSvg>
   ),
   cross: (
-    <svg viewBox="0 0 24 24" aria-hidden="true" width="20" height="20">
+    <ArtSvg viewBox="0 0 24 24" width="20" height="20">
       <path d="M12 22V11" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
       <path d="M12 13Q5 12 5 5q7 0 7 8zM12 11q7-1 7-8-7 0-7 8z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
-    </svg>
+    </ArtSvg>
   ),
   album: (
-    <svg viewBox="0 0 24 24" aria-hidden="true" width="20" height="20">
+    <ArtSvg viewBox="0 0 24 24" width="20" height="20">
       <rect x="4" y="3" width="16" height="18" rx="2" fill="none" stroke="currentColor" strokeWidth="2" />
       <circle cx="12" cy="11" r="3.4" fill="none" stroke="currentColor" strokeWidth="2" />
       <path d="M8 17h8" stroke="currentColor" strokeWidth="2" />
-    </svg>
+    </ArtSvg>
   ),
   projects: (
-    <svg viewBox="0 0 24 24" aria-hidden="true" width="20" height="20">
+    <ArtSvg viewBox="0 0 24 24" width="20" height="20">
       <path d="M3 21h18M5 21V10l7-6 7 6v11" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
       <path d="M10 21v-6h4v6" fill="none" stroke="currentColor" strokeWidth="2" />
-    </svg>
+    </ArtSvg>
   ),
   photo: (
-    <svg viewBox="0 0 24 24" aria-hidden="true" width="20" height="20">
+    <ArtSvg viewBox="0 0 24 24" width="20" height="20">
       <rect x="3" y="6" width="18" height="14" rx="2.5" fill="none" stroke="currentColor" strokeWidth="2" />
       <circle cx="12" cy="13" r="3.6" fill="none" stroke="currentColor" strokeWidth="2" />
       <path d="M8.5 6l1.5-2.5h4L15.5 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
-    </svg>
+    </ArtSvg>
   ),
   save: (
-    <svg viewBox="0 0 24 24" aria-hidden="true" width="20" height="20">
+    <ArtSvg viewBox="0 0 24 24" width="20" height="20">
       <path d="M5 3h11l3 3v15H5z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
       <path d="M8 3v6h8V3M8 21v-7h8v7" fill="none" stroke="currentColor" strokeWidth="2" />
-    </svg>
+    </ArtSvg>
   ),
   settings: (
-    <svg viewBox="0 0 24 24" aria-hidden="true" width="20" height="20">
+    <ArtSvg viewBox="0 0 24 24" width="20" height="20">
       <circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" strokeWidth="2" />
       <path
         d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"
@@ -95,18 +96,18 @@ const Glyph = {
         strokeWidth="2"
         strokeLinecap="round"
       />
-    </svg>
+    </ArtSvg>
   ),
   legal: (
-    <svg viewBox="0 0 24 24" aria-hidden="true" width="20" height="20">
+    <ArtSvg viewBox="0 0 24 24" width="20" height="20">
       <path d="M6 3h9l4 4v14H6z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
       <path d="M9 11h7M9 15h7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-    </svg>
+    </ArtSvg>
   ),
   menu: (
-    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+    <ArtSvg viewBox="0 0 24 24" width="22" height="22">
       <path d="M5 7h14M5 12h14M5 17h14" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
-    </svg>
+    </ArtSvg>
   ),
 }
 

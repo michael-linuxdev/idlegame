@@ -1,18 +1,22 @@
+import { useSvgId } from './svgId'
+import { ArtSvg } from './ArtSvg'
 /** Saison panel hero — Omas Laube asleep under snow, windows lit. */
 export function WinterScene() {
+  const sky = useSvgId('ws-sky')
+  const glow = useSvgId('ws-glow')
   return (
-    <svg viewBox="0 0 320 120" preserveAspectRatio="xMidYMid slice" focusable="false">
+    <ArtSvg viewBox="0 0 320 120" preserveAspectRatio="xMidYMid slice">
       <defs>
-        <linearGradient id="ws-sky" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={sky} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#3f5683" />
           <stop offset="100%" stopColor="#9fb4d0" />
         </linearGradient>
-        <radialGradient id="ws-glow" cx="50%" cy="50%" r="50%">
+        <radialGradient id={glow} cx="50%" cy="50%" r="50%">
           <stop offset="0%" stopColor="#ffd36b" stopOpacity="0.9" />
           <stop offset="100%" stopColor="#ffd36b" stopOpacity="0" />
         </radialGradient>
       </defs>
-      <rect width="320" height="120" fill="url(#ws-sky)" />
+      <rect width="320" height="120" fill={`url(#${sky})`} />
       <circle cx="262" cy="26" r="11" fill="#fdf6dc" />
       <circle cx="267" cy="22" r="10" fill="#4a6190" />
       {[
@@ -42,7 +46,7 @@ export function WinterScene() {
         </g>
       ))}
       {/* Laube */}
-      <ellipse cx="160" cy="98" rx="70" ry="22" fill="url(#ws-glow)" opacity="0.5" />
+      <ellipse cx="160" cy="98" rx="70" ry="22" fill={`url(#${glow})`} opacity="0.5" />
       <rect x="128" y="62" width="64" height="32" fill="#c99566" stroke="#5e3b25" strokeWidth="1.6" />
       <path d="M118 64 L160 38 L202 64 Z" fill="#a8432f" stroke="#5e2a20" strokeWidth="1.6" strokeLinejoin="round" />
       <path d="M118 64 L160 38 L202 64 L196 66 Q160 46 124 66 Z" fill="#ffffff" />
@@ -59,6 +63,6 @@ export function WinterScene() {
         </g>
       ))}
       <rect x="4" y="97" width="128" height="2" fill="#cdb98f" />
-    </svg>
+    </ArtSvg>
   )
 }

@@ -5,9 +5,10 @@
  * what came before and adds to it, so the garden visibly fills up.
  * All art shares the 100×86 plot viewBox with PlotArt (shadow at y≈76).
  */
-import { memo, useEffect, useRef, useState, type ReactNode } from 'react'
+import { memo, type ReactNode } from 'react'
 import type { GeneratorId } from '../game/generators'
 import { moduleTier } from './tiers'
+import { ArtSvg } from './ArtSvg'
 
 interface Props {
   id: GeneratorId
@@ -132,17 +133,6 @@ function Flower({ x, y, c = '#f5c542', r = 2.4 }: { x: number; y: number; c?: st
         />
       ))}
       <circle cx={x} cy={y} r={r * 0.45} fill="#7a4a1a" />
-    </g>
-  )
-}
-
-function FlowerRow({ x, y, n, gap = 7 }: { x: number; y: number; n: number; gap?: number }) {
-  const cs = ['#f5a623', '#e5484d', '#f5c542', '#ffffff', '#f28ab2']
-  return (
-    <g>
-      {Array.from({ length: n }, (_, i) => (
-        <Flower key={i} x={x + i * gap} y={y + (i % 2) * 1.5} c={cs[i % cs.length]} r={2.2} />
-      ))}
     </g>
   )
 }
@@ -349,26 +339,32 @@ function Gemuesebeet({ t }: { t: number }) {
           <circle cx="78" cy="22" r="0.9" fill={OUT} />
           <circle cx="82" cy="22" r="0.9" fill={OUT} />
           {/* pumpkins */}
-          <ellipse cx="14" cy="70" rx="7" ry="5.4" fill="#f08a2c" stroke={OUT} strokeWidth="1.2" />
-          <path d="M14 65 V62" stroke={LEAF_D} strokeWidth="1.6" />
-          <ellipse cx="88" cy="74" rx="5.4" ry="4.2" fill="#f5a623" stroke={OUT} strokeWidth="1.1" />
+          <ellipse cx="9" cy="64" rx="7" ry="5.4" fill="#f08a2c" stroke={OUT} strokeWidth="1.2" />
+          <path d="M9 59 V56" stroke={LEAF_D} strokeWidth="1.6" />
+          <ellipse cx="91" cy="70" rx="5.4" ry="4.2" fill="#f5a623" stroke={OUT} strokeWidth="1.1" />
         </g>
       ) : null}
       {t <= 1 ? (
         <g>
-          <Bed x={22} y={50} w={56} h={18} wood={false} front={0} />
-          <Sprout x={34} y={60} />
-          <Sprout x={50} y={58} />
-          <Sprout x={66} y={61} />
+          <Bed x={18} y={48} w={64} h={22} wood={false} front={0} />
+          {[24, 40, 56, 72].map((x, i) => (
+            <Sprout key={x} x={x + (i % 2) * 2} y={56} />
+          ))}
+          {[30, 46, 62, 78].map((x) => (
+            <Sprout key={x} x={x} y={66} />
+          ))}
+          {/* seed stake */}
+          <rect x="80" y="38" width="2" height="14" fill={WOOD_D} />
+          <rect x="76" y="36" width="10" height="7" rx="1" fill="#f4ead2" stroke={OUT} strokeWidth="0.9" />
         </g>
       ) : t === 2 ? (
         <g>
-          <Bed x={18} y={48} w={64} h={18} front={4} />
-          {[28, 42, 56, 70].map((x) => (
+          <Bed x={12} y={46} w={76} h={20} front={5} />
+          {[24, 38, 52, 66, 80].map((x) => (
             <Lettuce key={x} x={x} y={57} s={0.85} />
           ))}
-          {[26, 36, 46, 56, 66, 76].map((x) => (
-            <Carrot key={x} x={x} y={65} />
+          {[20, 30, 40, 50, 60, 70, 80].map((x) => (
+            <Carrot key={x} x={x} y={64} />
           ))}
         </g>
       ) : (
@@ -390,7 +386,13 @@ function Gemuesebeet({ t }: { t: number }) {
           <path d="M87 62 q4 -5 8 0" fill="none" stroke={OUT} strokeWidth="1" />
         </g>
       ) : null}
-      {t >= 5 ? <FlowerRow x={20} y={78} n={9} gap={7.4} /> : null}
+      {t >= 5 ? (
+        <g>
+          <Flower x={6} y={44} c="#f28ab2" />
+          <Flower x={12} y={50} c="#f5c542" />
+          <Flower x={5} y={52} c="#e5484d" />
+        </g>
+      ) : null}
     </g>
   )
 }
@@ -424,8 +426,18 @@ function Kompost({ t, producing }: { t: number; producing: boolean }) {
   return (
     <g>
       <Shadow />
-      {t === 1 ? <KompostHeap x={30} w={40} /> : null}
-      {t === 2 ? <KompostBin x={36} w={28} /> : null}
+      {t === 1 ? (
+        <g>
+          <KompostHeap x={20} w={58} base={70} tall={0.6} />
+          <path d="M78 72 L84 44 M81 44 L87 45 M82 41 L86 42" stroke="#6b6f73" strokeWidth="1.8" strokeLinecap="round" />
+        </g>
+      ) : null}
+      {t === 2 ? (
+        <g>
+          <KompostBin x={26} w={34} />
+          <KompostHeap x={60} w={26} base={72} tall={0.6} />
+        </g>
+      ) : null}
       {t >= 3 ? (
         <g>
           {t >= 5 ? (
@@ -464,14 +476,14 @@ function Kompost({ t, producing }: { t: number; producing: boolean }) {
 }
 
 function Kraeuterspirale({ t }: { t: number }) {
-  const stones = (n: number, cx: number, cy: number, r0: number, grow: number) =>
+  const stones = (n: number, cx: number, cy: number, r0: number, grow: number, per = 9) =>
     Array.from({ length: n }, (_, i) => {
-      const a = (i / 9) * Math.PI * 2
+      const a = (i / per) * Math.PI * 2
       const r = r0 + i * grow
       return { x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r * 0.55 }
     })
   const herbColors = [LEAF, '#8fbf5a', '#6d9b56', '#a3c47a']
-  const ring = t <= 1 ? stones(9, 50, 62, 14, 0) : stones(t >= 3 ? 24 : 17, 50, 60, 4, t >= 3 ? 1.35 : 1.6)
+  const ring = t <= 1 ? stones(12, 50, 60, 24, 0, 12) : stones(t >= 3 ? 24 : 17, 50, 60, 4, t >= 3 ? 1.35 : 1.6)
   return (
     <g>
       <Shadow />
@@ -482,16 +494,16 @@ function Kraeuterspirale({ t }: { t: number }) {
         </g>
       ) : null}
       {/* soil mound */}
-      <ellipse cx="50" cy="62" rx={t <= 1 ? 16 : 30} ry={t <= 1 ? 8 : 14} fill={SOIL} />
+      <ellipse cx="50" cy={t <= 1 ? 60 : 62} rx={t <= 1 ? 25 : 30} ry={t <= 1 ? 13 : 14} fill={SOIL} />
       {t >= 3 ? <ellipse cx="50" cy="54" rx="16" ry="8" fill="#8a5a3b" /> : null}
       {t >= 3 ? <ellipse cx="50" cy="47" rx="8" ry="4" fill="#966646" /> : null}
       {ring.map((p, i) => (
         <ellipse key={i} cx={p.x} cy={p.y - (t >= 3 ? (24 - i) * 0.55 : 0)} rx="3.6" ry="2.6" fill="#c9c3b6" stroke="#8f8676" strokeWidth="0.9" />
       ))}
       {/* herbs */}
-      {Array.from({ length: t <= 1 ? 3 : t === 2 ? 6 : 10 }, (_, i) => {
-        const a = (i / 10) * Math.PI * 2 + 0.4
-        const r = t <= 1 ? 6 : 6 + (i % 4) * 4
+      {Array.from({ length: t <= 1 ? 5 : t === 2 ? 7 : 10 }, (_, i) => {
+        const a = (i / (t <= 1 ? 5 : 10)) * Math.PI * 2 + 0.4
+        const r = t <= 1 ? 11 : 6 + (i % 4) * 4
         const x = 50 + Math.cos(a) * r
         const y = (t >= 3 ? 52 : 60) + Math.sin(a) * r * 0.5
         return (
@@ -544,18 +556,23 @@ function Beerenhecke({ t }: { t: number }) {
           <path d="M15 46 H86 M15 56 H86" stroke="#8f8676" strokeWidth="0.9" />
         </g>
       ) : null}
-      {t === 1 ? <Bush x={50} y={60} r={13} berry={berries[0]} /> : null}
+      {t === 1 ? (
+        <g>
+          <Bush x={44} y={58} r={17} berry={berries[0]} />
+          <Bush x={68} y={64} r={10} />
+        </g>
+      ) : null}
       {t === 2 ? (
         <g>
-          <Bush x={36} y={60} r={12} berry={berries[0]} />
-          <Bush x={64} y={60} r={12} berry={berries[1]} />
+          <Bush x={33} y={59} r={15} berry={berries[0]} />
+          <Bush x={67} y={59} r={15} berry={berries[1]} />
         </g>
       ) : null}
       {t >= 3 ? (
         <g>
-          <Bush x={26} y={62} r={11} berry={berries[0]} />
-          <Bush x={50} y={60} r={12} berry={berries[1]} />
-          <Bush x={74} y={62} r={11} berry={berries[2]} />
+          <Bush x={26} y={60} r={13} berry={berries[0]} />
+          <Bush x={50} y={57} r={14} berry={berries[1]} />
+          <Bush x={74} y={60} r={13} berry={berries[2]} />
         </g>
       ) : null}
       {t >= 4 ? (
@@ -587,14 +604,17 @@ function Obstwiese({ t }: { t: number }) {
       <Shadow rx={44} />
       {t === 1 ? (
         <g>
-          <rect x="56" y="30" width="2" height="42" fill={WOOD} />
-          <path d="M50 72 V48" stroke="#7a5232" strokeWidth="2.6" />
-          <path d="M50 56 L57 50" stroke="#8f8676" strokeWidth="1" />
-          <circle cx="50" cy="42" r="9" fill={LEAF} stroke={OUT} strokeWidth="1.1" />
-          <circle cx="47" cy="40" r="5" fill={LEAF_L} />
+          <rect x="58" y="22" width="2.4" height="50" fill={WOOD} />
+          <path d="M50 72 V40" stroke="#7a5232" strokeWidth="3.2" />
+          <path d="M50 52 L59 46" stroke="#8f8676" strokeWidth="1" />
+          <circle cx="50" cy="34" r="14" fill={LEAF} stroke={OUT} strokeWidth="1.2" />
+          <circle cx="45" cy="31" r="7.4" fill={LEAF_L} />
+          <circle cx="56" cy="38" r="5" fill={LEAF_D} opacity="0.5" />
+          {/* mulch ring */}
+          <ellipse cx="50" cy="72" rx="16" ry="4" fill={SOIL} />
         </g>
       ) : null}
-      {t === 2 ? <Tree x={50} y={56} r={16} trunk={16} fruit="#e0485e" /> : null}
+      {t === 2 ? <Tree x={50} y={52} r={19} trunk={20} fruit="#e0485e" /> : null}
       {t === 3 ? (
         <g>
           <Tree x={36} y={54} r={17} trunk={18} fruit="#e0485e" />
@@ -615,7 +635,7 @@ function Obstwiese({ t }: { t: number }) {
           {t >= 5 ? (
             <g>
               <Crate x={78} y={70} fruit="#d6c23a" />
-              <Crate x={36} y={72} fruit="#6a3d8f" />
+              <Crate x={9} y={59} fruit="#6a3d8f" />
             </g>
           ) : null}
         </g>
@@ -645,14 +665,16 @@ function Bienenstock({ t, producing }: { t: number; producing: boolean }) {
         </g>
       ) : null}
       {t <= 2 ? (
-        <g transform="translate(50 66) scale(1.4) translate(-50 -66)">
+        <g transform={`translate(50 66) scale(${t <= 1 ? 1.8 : 1.6}) translate(-50 -66)`}>
           <Hive x={40} y={66} stories={t} />
         </g>
       ) : null}
       {t === 3 ? (
         <g>
-          <Hive x={30} y={64} stories={2} />
-          <Hive x={56} y={66} stories={2} c="#9ec9e2" />
+          <g transform="translate(50 66) scale(1.25) translate(-50 -66)">
+            <Hive x={28} y={64} stories={2} />
+            <Hive x={53} y={66} stories={2} c="#9ec9e2" />
+          </g>
         </g>
       ) : null}
       {t >= 4 ? (
@@ -722,13 +744,13 @@ function Huehnerstall({ t }: { t: number }) {
           ) : null}
         </g>
       )}
-      {t >= 2 ? <Hen x={18} y={68} /> : null}
-      {t >= 3 ? <Hen x={80} y={70} flip c="#c9763a" /> : null}
+      {t >= 2 ? <Hen x={16} y={64} /> : null}
+      {t >= 3 ? <Hen x={82} y={66} flip c="#c9763a" /> : null}
       {t >= 4 ? (
         <g>
           {/* rooster */}
-          <Hen x={62} y={74} c="#8a4a2a" />
-          <path d="M55 72 q-6 -6 -4 -12 q2 6 6 6" fill="#2f5e3a" />
+          <Hen x={64} y={64} c="#8a4a2a" />
+          <path d="M57 62 q-6 -6 -4 -12 q2 6 6 6" fill="#2f5e3a" />
         </g>
       ) : null}
       {t >= 5 ? (
@@ -778,7 +800,7 @@ function Gewaechshaus({ t }: { t: number }) {
       </g>
     )
   }
-  const w = t === 2 ? 40 : t === 3 ? 56 : 70
+  const w = t === 2 ? 48 : t === 3 ? 58 : 70
   const x = 50 - w / 2
   const wallTop = t >= 4 ? 40 : 44
   return (
@@ -831,8 +853,9 @@ function Hofladen({ t }: { t: number }) {
     return (
       <g>
         <Shadow />
-        <Crate x={26} y={60} fruit={produce[0]} />
-        <Crate x={46} y={62} fruit={produce[1]} />
+        <Crate x={18} y={58} fruit={produce[0]} />
+        <Crate x={38} y={60} fruit={produce[1]} />
+        <Crate x={28} y={48} fruit={produce[2]} />
         <rect x="68" y="40" width="2.4" height="32" fill={WOOD_D} />
         <rect x="62" y="40" width="22" height="12" rx="1.5" fill="#f4ead2" stroke={OUT} strokeWidth="1.2" />
         <path d="M65 46 H81" stroke="#7a4d30" strokeWidth="1.6" strokeDasharray="3 2" />
@@ -908,8 +931,9 @@ function Orangerie({ t }: { t: number }) {
   if (t === 1) {
     return (
       <g>
-        <Shadow rx={20} />
-        <Pot x={50} y={70} s={1.5} />
+        <Shadow rx={30} />
+        <Pot x={46} y={70} s={2.1} />
+        <Pot x={74} y={72} s={1.1} fruit="#f5a623" />
       </g>
     )
   }
@@ -918,14 +942,14 @@ function Orangerie({ t }: { t: number }) {
       <g>
         <Shadow />
         {/* iron frame */}
-        <path d="M28 72 V44 Q50 22 72 44 V72" fill="rgba(214,240,246,0.35)" stroke="#4a5a52" strokeWidth="1.6" />
-        <path d="M39 72 V36 M50 72 V30 M61 72 V36" stroke="#4a5a52" strokeWidth="1" />
-        <Pot x={38} y={72} s={1.05} />
-        <Pot x={62} y={72} s={1.05} fruit="#f5a623" />
+        <path d="M22 72 V42 Q50 16 78 42 V72" fill="rgba(214,240,246,0.35)" stroke="#4a5a52" strokeWidth="1.6" />
+        <path d="M36 72 V31 M50 72 V25 M64 72 V31" stroke="#4a5a52" strokeWidth="1" />
+        <Pot x={36} y={72} s={1.2} />
+        <Pot x={64} y={72} s={1.2} fruit="#f5a623" />
       </g>
     )
   }
-  const w = t === 3 ? 46 : t === 4 ? 62 : 78
+  const w = t === 3 ? 56 : t === 4 ? 66 : 80
   const x = 50 - w / 2
   const dome = t >= 4
   const trees = t === 3 ? 2 : t === 4 ? 3 : 4
@@ -935,8 +959,8 @@ function Orangerie({ t }: { t: number }) {
       {t >= 5 ? (
         <g>
           {/* fountain */}
-          <ellipse cx="50" cy="78" rx="12" ry="3.4" fill="#5aa9c6" stroke="#857d6c" strokeWidth="1.4" />
-          <path d="M50 78 V72 M46 74 q4 -6 8 0" stroke="#bfe6f2" strokeWidth="1.4" fill="none" />
+          <ellipse cx="12" cy="66" rx="9" ry="2.8" fill="#5aa9c6" stroke="#857d6c" strokeWidth="1.2" />
+          <path d="M12 66 V60 M9 62 q3 -5 6 0" stroke="#bfe6f2" strokeWidth="1.2" fill="none" />
         </g>
       ) : null}
       {/* plinth */}
@@ -962,8 +986,7 @@ function Orangerie({ t }: { t: number }) {
       )}
       {t >= 5 ? (
         <g>
-          <Pot x={6} y={74} s={0.75} />
-          <Pot x={94} y={74} s={0.75} fruit="#f5a623" />
+          <Pot x={92} y={72} s={0.75} fruit="#f5a623" />
         </g>
       ) : null}
     </g>
@@ -997,29 +1020,16 @@ function renderModule(id: GeneratorId, tier: number, producing: boolean): ReactN
 
 function ModuleArtImpl({ id, level, producing = false, selected = false }: Props) {
   const tier = Math.max(1, moduleTier(level))
-  const prevTier = useRef(tier)
-  const [tierUp, setTierUp] = useState(false)
-
-  useEffect(() => {
-    if (tier > prevTier.current) {
-      prevTier.current = tier
-      setTierUp(true)
-      const timer = window.setTimeout(() => setTierUp(false), 900)
-      return () => window.clearTimeout(timer)
-    }
-    prevTier.current = tier
-  }, [tier])
-
+  // Stufenwechsel animiert GardenMap über PlotFx onTier + .tier-grow
   const cls =
     `module-art module-${id}` +
     (producing ? ' producing' : '') +
-    (selected ? ' selected' : '') +
-    (tierUp ? ' tier-up' : '')
+    (selected ? ' selected' : '')
 
   return (
-    <svg className={cls} viewBox="0 0 100 86" focusable="false" aria-hidden="true" data-tier={tier}>
+    <ArtSvg className={cls} viewBox="0 0 100 86" data-tier={tier}>
       {renderModule(id, tier, producing)}
-    </svg>
+    </ArtSvg>
   )
 }
 

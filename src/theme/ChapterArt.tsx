@@ -6,9 +6,11 @@
  */
 import { ChapterPath } from './ChapterPaths'
 import { memo, type ReactNode } from 'react'
+import { useSvgId } from './svgId'
 import type { Animals, ArtSpec, BackdropSpec, Flowers, House, Rows, Stones, Tree, Water } from './chapterArtSpecs'
 import type { Season } from './ambient'
-import { moduleTier } from './tiers'
+import { moduleTier, sameTierProps } from './tiers'
+import { ArtSvg } from './ArtSvg'
 
 const shadow = (rx: number) => <ellipse cx="40" cy="65" rx={rx} ry="4.5" fill="rgba(40,60,20,0.22)" />
 
@@ -85,10 +87,10 @@ function TreeArt({ s, tier, season }: { s: Tree; tier: number; season?: Season }
     )
   }
   return (
-    <svg viewBox="0 0 80 72" focusable="false">
+    <ArtSvg viewBox="0 0 80 72">
       {shadow(18 + tier * 2)}
       <g transform={`translate(40 66) scale(${scale}) translate(-40 -66)`}>{body}</g>
-    </svg>
+    </ArtSvg>
   )
 }
 
@@ -96,7 +98,7 @@ function RowsArt({ s, tier, season }: { s: Rows; tier: number; season?: Season }
   const rows = Math.min(5, 1 + tier)
   const winter = season === 'winter'
   return (
-    <svg viewBox="0 0 80 72" focusable="false">
+    <ArtSvg viewBox="0 0 80 72">
       <ellipse cx="40" cy="58" rx="34" ry="12" fill="#8a6a40" opacity="0.45" />
       {Array.from({ length: rows }, (_, r) => {
         const y = 64 - r * 6
@@ -118,7 +120,7 @@ function RowsArt({ s, tier, season }: { s: Rows; tier: number; season?: Season }
         )
       })}
       {winter ? <ellipse cx="40" cy="56" rx="30" ry="6" fill="#fff" opacity=".55" /> : null}
-    </svg>
+    </ArtSvg>
   )
 }
 
@@ -184,7 +186,7 @@ function AnimalsArt({ s, tier }: { s: Animals; tier: number }) {
     [22, 44],
   ]
   return (
-    <svg viewBox="0 0 80 72" focusable="false">
+    <ArtSvg viewBox="0 0 80 72">
       {s.water ? (
         <ellipse cx="40" cy="52" rx="34" ry="15" fill="#6aa6c9" stroke="#4f86a6" strokeWidth="1" />
       ) : (
@@ -197,7 +199,7 @@ function AnimalsArt({ s, tier }: { s: Animals; tier: number }) {
         <Animal key={i} kind={s.animal} x={x!} y={y!} i={i} />
       ))}
       {tier >= 4 && !s.water ? <path d="M58 30h14v8H58z" fill="#a5531a" stroke="#6e341a" strokeWidth=".8" /> : null}
-    </svg>
+    </ArtSvg>
   )
 }
 
@@ -225,7 +227,7 @@ function HouseArt({ s, tier }: { s: House; tier: number }) {
     roof = <path d={`M${x - 3} 40 L40 ${glass ? 26 : 20} L${x + w + 3} 40z`} fill={s.roof} />
   }
   return (
-    <svg viewBox="0 0 80 72" focusable="false">
+    <ArtSvg viewBox="0 0 80 72">
       {shadow(w / 2 + 10)}
       {s.prop === 'tower' ? (
         <g>
@@ -301,7 +303,7 @@ function HouseArt({ s, tier }: { s: House; tier: number }) {
       ) : null}
       {s.prop === 'cable' ? <path d="M0 18 L80 6" stroke="#4a3a2a" strokeWidth=".8" /> : null}
       {s.prop === 'cable' && tier >= 2 ? <rect x="52" y="9" width="8" height="5" fill="#b8403a" /> : null}
-    </svg>
+    </ArtSvg>
   )
 }
 
@@ -310,7 +312,7 @@ function WaterArt({ s, tier }: { s: Water; tier: number }) {
   switch (s.variant) {
     case 'lilies':
       return (
-        <svg viewBox="0 0 80 72" focusable="false">
+        <ArtSvg viewBox="0 0 80 72">
           {pond}
           {Array.from({ length: Math.min(6, tier + 1) }, (_, i) => (
             <g key={i}>
@@ -318,11 +320,11 @@ function WaterArt({ s, tier }: { s: Water; tier: number }) {
               <circle cx={20 + i * 8} cy={47 + (i % 2) * 7} r="1.6" fill={i % 2 ? '#fbf6e8' : '#f28ab2'} />
             </g>
           ))}
-        </svg>
+        </ArtSvg>
       )
     case 'reeds':
       return (
-        <svg viewBox="0 0 80 72" focusable="false">
+        <ArtSvg viewBox="0 0 80 72">
           {pond}
           {Array.from({ length: 4 + tier * 2 }, (_, i) => (
             <g key={i}>
@@ -330,32 +332,32 @@ function WaterArt({ s, tier }: { s: Water; tier: number }) {
               <ellipse cx={10 + i * 5} cy={31 + (i % 3) * 5} rx="1.2" ry="3" fill="#6e4a2b" />
             </g>
           ))}
-        </svg>
+        </ArtSvg>
       )
     case 'stream':
       return (
-        <svg viewBox="0 0 80 72" focusable="false">
+        <ArtSvg viewBox="0 0 80 72">
           <path d="M10 30 C30 40 20 50 40 56 S70 60 74 66" stroke="#6aa6c9" strokeWidth={8 + tier} fill="none" strokeLinecap="round" />
           <path d="M10 30 C30 40 20 50 40 56 S70 60 74 66" stroke="#a9d6ee" strokeWidth="2" fill="none" strokeDasharray="4 6" className="orchard-stream" />
           {Array.from({ length: tier }, (_, i) => (
             <ellipse key={i} cx={18 + i * 12} cy={48 + (i % 2) * 8} rx="4" ry="2.6" fill="#a69a84" />
           ))}
-        </svg>
+        </ArtSvg>
       )
     case 'jetty':
       return (
-        <svg viewBox="0 0 80 72" focusable="false">
+        <ArtSvg viewBox="0 0 80 72">
           {pond}
           <rect x="18" y="44" width={20 + tier * 6} height="6" fill="#a5733f" stroke="#6e4a2b" strokeWidth=".7" />
           {Array.from({ length: 2 + tier }, (_, i) => (
             <path key={i} d={`M${20 + i * 6} 50 v8`} stroke="#6e4a2b" strokeWidth="1.4" />
           ))}
           {tier >= 3 ? <path d="M54 54 q8 6 16 0z" fill="#e2453c" /> : null}
-        </svg>
+        </ArtSvg>
       )
     case 'bridge':
       return (
-        <svg viewBox="0 0 80 72" focusable="false">
+        <ArtSvg viewBox="0 0 80 72">
           {pond}
           <path d="M10 50 Q40 22 70 50" stroke="#c4553f" strokeWidth="5" fill="none" />
           <path d="M14 46 Q40 18 66 46" stroke="#c4553f" strokeWidth="1.6" fill="none" />
@@ -363,17 +365,17 @@ function WaterArt({ s, tier }: { s: Water; tier: number }) {
             <path key={i} d={`M${16 + i * (48 / (2 + tier))} ${44 - Math.sin(((i + 0.5) / (3 + tier)) * Math.PI) * 18} v6`} stroke="#c4553f" strokeWidth="1.2" />
           ))}
           {tier >= 3 ? <path d="M28 60 q6 4 12 0z" fill="#3d8db8" /> : null}
-        </svg>
+        </ArtSvg>
       )
     default:
       return (
-        <svg viewBox="0 0 80 72" focusable="false">
+        <ArtSvg viewBox="0 0 80 72">
           {pond}
           <ellipse cx="40" cy="50" rx="10" ry="4" fill="#a69a84" />
           {Array.from({ length: Math.min(5, tier + 1) }, (_, i) => (
             <path key={i} className="fountain-jet" d={`M${32 + i * 4} 48 q${(i - 2) * 2} -${14 + tier * 3} ${(i - 2) * 4} -2`} stroke="#a9d6ee" strokeWidth="1.6" fill="none" style={{ animationDelay: `${i * 0.2}s` }} />
           ))}
-        </svg>
+        </ArtSvg>
       )
   }
 }
@@ -381,7 +383,7 @@ function WaterArt({ s, tier }: { s: Water; tier: number }) {
 function FlowersArt({ s, tier }: { s: Flowers; tier: number }) {
   const n = 6 + tier * 4
   return (
-    <svg viewBox="0 0 80 72" focusable="false">
+    <ArtSvg viewBox="0 0 80 72">
       <ellipse cx="40" cy="58" rx="32" ry="10" fill="#6f9a48" />
       {Array.from({ length: n }, (_, i) => (
         <circle
@@ -402,36 +404,36 @@ function FlowersArt({ s, tier }: { s: Flowers; tier: number }) {
           })}
         </g>
       ) : null}
-    </svg>
+    </ArtSvg>
   )
 }
 
 function StonesArt({ s, tier }: { s: Stones; tier: number }) {
   if (s.variant === 'zen') {
     return (
-      <svg viewBox="0 0 80 72" focusable="false">
+      <ArtSvg viewBox="0 0 80 72">
         <rect x="8" y="42" width="64" height="24" rx="3" fill="#efe6d0" stroke="#c9b48a" strokeWidth="1" />
         {[46, 51, 56, 61].map((y) => <path key={y} d={`M10 ${y} H70`} stroke="#d9c79a" strokeWidth=".8" />)}
         {Array.from({ length: Math.min(3, tier) }, (_, i) => (
           <ellipse key={i} cx={22 + i * 18} cy={52 + (i % 2) * 4} rx={5 - i} ry={3.4 - i * 0.6} fill="#8a8a7a" />
         ))}
-      </svg>
+      </ArtSvg>
     )
   }
   if (s.variant === 'maze') {
     const k = Math.min(4, tier)
     return (
-      <svg viewBox="0 0 80 72" focusable="false">
+      <ArtSvg viewBox="0 0 80 72">
         {shadow(30)}
         {Array.from({ length: k }, (_, i) => (
           <rect key={i} x={10 + i * 6} y={34 + i * 4} width={60 - i * 12} height={30 - i * 8} rx="3" fill="none" stroke="#3f7a30" strokeWidth="4" strokeDasharray={`${30 - i * 4} 6`} />
         ))}
-      </svg>
+      </ArtSvg>
     )
   }
   if (s.variant === 'lanterns') {
     return (
-      <svg viewBox="0 0 80 72" focusable="false">
+      <ArtSvg viewBox="0 0 80 72">
         <path d="M6 62 Q40 50 74 62" stroke="#d9c79a" strokeWidth="6" fill="none" />
         {Array.from({ length: Math.min(4, tier + 1) }, (_, i) => (
           <g key={i} transform={`translate(${12 + i * 18} ${40 - (i % 2) * 4})`}>
@@ -441,12 +443,12 @@ function StonesArt({ s, tier }: { s: Stones; tier: number }) {
             <path d="M-7 4 L0 -2 L7 4z" fill="#8a8a7a" />
           </g>
         ))}
-      </svg>
+      </ArtSvg>
     )
   }
   const flower = s.variant === 'edelweiss' ? '#fbf6e8' : s.variant === 'moss' ? '#5f9e45' : '#c77dd1'
   return (
-    <svg viewBox="0 0 80 72" focusable="false">
+    <ArtSvg viewBox="0 0 80 72">
       {shadow(30)}
       {Array.from({ length: 3 + Math.min(4, tier) }, (_, i) => (
         <ellipse key={i} cx={14 + i * 9} cy={56 - (i % 2) * 6} rx="7" ry="5" fill={s.variant === 'moss' ? '#6d8a4a' : '#a69a84'} stroke="#7a6e5a" strokeWidth=".6" />
@@ -460,7 +462,7 @@ function StonesArt({ s, tier }: { s: Stones; tier: number }) {
           )}
         </g>
       ))}
-    </svg>
+    </ArtSvg>
   )
 }
 
@@ -490,40 +492,40 @@ export const ChapterAreaArt = memo(function ChapterAreaArt({
     case 'stones':
       return <StonesArt s={spec} tier={tier} />
   }
-})
+}, sameTierProps)
 
 /** Unplanted spot: tilled earth with a little sign. */
 export function ChapterReady() {
   return (
-    <svg viewBox="0 0 80 72" focusable="false">
+    <ArtSvg viewBox="0 0 80 72">
       <ellipse cx="40" cy="60" rx="26" ry="7" fill="#8a6a40" opacity="0.55" />
       <path d="M22 58h36M26 62h28" stroke="#6e4a2b" strokeWidth=".8" opacity=".6" />
       <path d="M40 60V44" stroke="#8a6a40" strokeWidth="1.6" />
       <rect x="33" y="38" width="14" height="8" rx="1.4" fill="#efe1c2" stroke="#8a6a40" strokeWidth=".8" />
-    </svg>
+    </ArtSvg>
   )
 }
 
 /** Overgrown spot (locked). */
 export function ChapterWild({ seed = 0 }: { seed?: number }) {
   return (
-    <svg viewBox="0 0 80 72" focusable="false">
+    <ArtSvg viewBox="0 0 80 72">
       <ellipse cx="40" cy="60" rx="28" ry="8" fill="#5f8a3a" opacity="0.5" />
       <ellipse cx="26" cy="52" rx="12" ry="9" fill="#6d9a3f" />
       <ellipse cx="54" cy="54" rx="13" ry="8" fill="#5f8a3a" />
       {Array.from({ length: 6 }, (_, i) => (
         <path key={i} d={`M${18 + i * 8} 62q${i % 2 ? 2 : -2} -${10 + ((i + seed) % 3) * 4} ${i % 2 ? 4 : -2} -${14 + ((i + seed) % 4) * 3}`} stroke="#a3b85a" strokeWidth="1.4" fill="none" />
       ))}
-    </svg>
+    </ArtSvg>
   )
 }
 
 export const ChapterBackdrop = memo(function ChapterBackdrop({ spec, stage }: { spec: BackdropSpec; stage: number }) {
   const [far, mid, near] = spec.grass
-  const id = `cb-${far.slice(1)}`
+  const id = useSvgId('cb-grass')
   return (
     <div className="garden-ground chapter-ground" aria-hidden="true" data-stage={stage}>
-      <svg className="garden-ground-svg" viewBox="0 0 100 100" preserveAspectRatio="none" focusable="false">
+      <ArtSvg className="garden-ground-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
         <defs>
           <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor={far} />
@@ -658,9 +660,9 @@ export const ChapterBackdrop = memo(function ChapterBackdrop({ spec, stage }: { 
         {Array.from({ length: 30 }, (_, i) => (
           <circle key={i} cx={(i * 37) % 100} cy={26 + ((i * 53) % 72)} r="0.4" fill={['#fff', '#f5c542', '#c77dd1'][i % 3]} opacity={stage >= i % 10 ? 0.8 : 0.2} />
         ))}
-      </svg>
+      </ArtSvg>
       <div className="garden-hedge orchard-hills">
-        <svg viewBox="0 0 400 60" preserveAspectRatio="none" focusable="false">
+        <ArtSvg viewBox="0 0 400 60" preserveAspectRatio="none">
           {spec.mountains ? (
             <g>
               <path d="M0 60 L60 6 L110 40 L170 0 L240 44 L300 10 L360 38 L400 20 V60z" fill="#9aa8b6" />
@@ -789,7 +791,7 @@ export const ChapterBackdrop = memo(function ChapterBackdrop({ spec, stage }: { 
             </g>
           ) : null}
           <path d="M0 60 V42 Q90 26 180 40 T400 34 V60z" fill={spec.hills[1]} />
-        </svg>
+        </ArtSvg>
       </div>
       <div className="ambient-tint" />
     </div>

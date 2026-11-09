@@ -1,13 +1,14 @@
 /** Shared drawing parts for the hand-made chapter art (HandArt*.tsx). */
 import type { ReactNode } from 'react'
+import { ArtSvg } from './ArtSvg'
 
 const V = '0 0 80 72'
 
 export function Svg({ children }: { children: ReactNode }) {
   return (
-    <svg viewBox={V} focusable="false">
+    <ArtSvg viewBox={V}>
       {children}
-    </svg>
+    </ArtSvg>
   )
 }
 

@@ -3,19 +3,18 @@
  * 24×24 viewBox, sized via CSS (1em by default).
  */
 import type { ReactNode } from 'react'
+import { ArtSvg } from './ArtSvg'
 
 function Svg({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <svg
+    <ArtSvg
       className={`g-icon${className ? ` ${className}` : ''}`}
       viewBox="0 0 24 24"
       width="1em"
       height="1em"
-      aria-hidden="true"
-      focusable="false"
     >
       {children}
-    </svg>
+    </ArtSvg>
   )
 }
 

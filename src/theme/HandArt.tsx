@@ -6,7 +6,7 @@
 import { memo, type ReactNode } from 'react'
 import type { ChapterId } from '../game/chapters'
 import type { Season } from './ambient'
-import { moduleTier } from './tiers'
+import { moduleTier, sameTierProps } from './tiers'
 import { Alm, Botanik, Kraeuter, WildA } from './HandArtA'
 import { Gartenschau, Japan, Lavendel, WildB } from './HandArtB'
 
@@ -567,7 +567,7 @@ export const HandArt = memo(function HandArt({
   const draw = HAND[chapter]
   if (!draw) return null
   return <>{draw({ id, tier: Math.max(1, moduleTier(level)), season })}</>
-})
+}, sameTierProps)
 
 /** Locked corner, per chapter: brambles + rubble (Hof), dead wood (Imkerei), mud + reeds (Teich). */
 export function HandWild({ chapter, seed = 0 }: { chapter: ChapterId; seed?: number }) {
