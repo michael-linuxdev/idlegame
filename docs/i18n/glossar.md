@@ -112,6 +112,12 @@ Vornamen bleiben deutsch (Flair). Verwandtschaft wird übersetzt.
 | Joost de Vries | **Joost de Vries** | Kapitel 21; „Beste familie“ (Niederländisch) bleibt + Erklärung |
 | Giulia Zanon | **Giulia Zanon** | Kapitel 22; „Bondì!“ (Venezianisch) bleibt + Erklärung; *nonna*, *castraura*, *sagra*, *vaporetto*, *sandolo*, *barene* klein und ohne Anführungszeichen |
 | Ingrid Lund (Försterin in Dalarna) | **Ingrid Lund** | Kapitel 23; „Hej!“ + Erklärung; Jedermannsrecht → *right to roam* („Allemansrätten“ nur im Deutschen, wegen ä) |
+| Inés Morales (Gärtnerin der Stadt Córdoba) | **Inés Morales** | Kapitel 24; „Querida familia“ und „Un abrazo“ (Spanisch) bleiben + Erklärung; *azahar*, *acequia*, *Cruces de Mayo* ohne Anführungszeichen; Bitterorangen → *Seville oranges* / *bitter oranges* |
+| João Ferreira (Korkschäler im Alentejo) | **João Ferreira** | Kapitel 25; „Olá, família!“ und „Até breve“ (Portugiesisch) bleiben + Erklärung; Montado → *montado*, Korkschäler → *cork harvester*, schälen → *strip*, *cante alentejano* klein |
+| Erzsébet Kovács (Pflanzenzüchterin in Kalocsa) | **Erzsébet Kovács** | Kapitel 26; „Kedves Család!“ und „Szeretettel“ (Ungarisch) bleiben + Erklärung; *gémeskút*, *lecsó*, *halászlé* mit Akzenten (erlaubt); „Füzér“ nur im Deutschen (ü) |
+| Siobhán Ní Fhlatharta (Schafhalterin und Strickerin auf Inis Mór) | **Siobhán Ní Fhlatharta** | Kapitel 27; „Dia daoibh!“ und „Slán go fóill“ (Irisch) bleiben + Erklärung; Lazy Beds → *lazy beds*, *céilí*, *currach*; Pullover → *jumper* |
+| Petar Ivanov (Rosenbauer bei Kazanlak) | **Petar Ivanov** | Kapitel 28; „Zdraveyte!“ und „Pozdravi“ (Bulgarisch, lateinisch umschrieben) bleiben + Erklärung; Tscheschma → *cheshma*, Horo → *horo* |
+| Eleni Papadaki (Pistazienbäuerin auf Ägina) | **Eleni Papadaki** | Kapitel 29; „Yia sas!“ und „Me agapi“ (Griechisch, lateinisch umschrieben) bleiben + Erklärung; Ägina → *Aegina* |
 | Enkelkind (Anrede) | **my dear grandchild** | „Mein liebes Enkelkind,“ → *My dear grandchild,* |
 
 ## Kapitel und Währungen
@@ -141,13 +147,19 @@ Vornamen bleiben deutsch (Flair). Verwandtschaft wird übersetzt.
 | 21 | Tulpenfelder | **The Dutch Bulb Fields** | Blumenzwiebeln → **Bulbs** | Holland |
 | 22 | Artischockeninsel | **Sant’Erasmo Artichokes** | Artischocken → **Artichokes** | Venice |
 | 23 | Beerenwald | **The Swedish Berry Woods** | Blaubeeren → **Blueberries** | Sweden |
+| 24 | Andalusischer Patio | **The Andalusian Patio** | Orangen → **Seville Oranges** | Spain |
+| 25 | Korkeichenhain | **The Cork Oak Montado** | Kork → **Cork** | Portugal |
+| 26 | Paprikafelder | **The Kalocsa Paprika Fields** | Paprika → **Paprika** | Hungary |
+| 27 | Steinfelder von Aran | **The Aran Island Fields** | Wolle → **Wool** | Ireland |
+| 28 | Rosental | **The Bulgarian Rose Valley** | Rosenöl → **Rose Oil** | Bulgaria |
+| 29 | Pistazienhain auf Ägina | **The Pistachio Groves of Aegina** | Pistazien → **Pistachios** | Aegina |
 
 Ab Kapitel 13 (Bogen I „Nach der Schau“ → *After the Show*): Omas Saatgutdose
 → **Grandma’s seed tin**, Samentütchen → **seed packet**. Großprojekt Bogen I:
 Omas Gartenroute → **Grandma’s Garden Route**.
 
 Ab Kapitel 20 (Bogen II „Omas Saatgutbriefe“ → *Grandma’s Seed Letters*):
-Briefpartner → **pen friend**. Cottage-Garten bleibt *cottage garden* (nicht mit
+Briefpartner → **pen friend**. Großprojekt Bogen II: Omas Tauschpost → **Grandma’s Seed Post**. Cottage-Garten bleibt *cottage garden* (nicht mit
 dem Gartenstil *Cottage Garden* = Bauerngarten verwechseln; Bereich am Fließ heißt
 deshalb *Channel-side Garden*).
 

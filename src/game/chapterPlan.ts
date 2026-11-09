@@ -23,7 +23,7 @@ export interface PlannedChapter {
 }
 
 /** Bis zu diesem Kapitel ist alles gebaut (Texte, Grafik) und im Spiel. */
-export const RELEASED_UP_TO = 23
+export const RELEASED_UP_TO = 29
 
 const placeholder = (id: string) => Array.from({ length: 10 }, (_, i) => `${id}_${i + 1}`)
 
@@ -41,12 +41,12 @@ export const PLANNED_CHAPTERS: readonly PlannedChapter[] = [
   { id: 'tulpenfelder', number: 21, layout: 'ROWS', areas: ['tulpenreihen', 'hyazinthen', 'narzissen', 'zwiebelscheune', 'windmuehle', 'gracht', 'fahrradstall', 'versteigerung', 'hausboot', 'tulpenmarkt'] },
   { id: 'artischocken', number: 22, layout: 'ZIGZAG', areas: ['artischockenfeld', 'lagunenwiese', 'bootsanleger', 'kanalgarten', 'granatapfelhecke', 'salzgarten', 'bootsschuppen', 'gemuesekahn', 'glockenturm', 'inselfest'] },
   { id: 'beerenwald', number: 23, layout: 'SPIRAL', areas: ['heidelbeerhang', 'preiselbeeren', 'moltebeeren', 'rotehuette', 'saftkueche', 'pilzlichtung', 'holzstapel', 'seesauna', 'mittsommer', 'jedermannspfad'] },
-  { id: 'patio', number: 24, layout: 'RING', areas: placeholder('patio') },
-  { id: 'korkeichen', number: 25, layout: 'ZIGZAG', areas: placeholder('korkeichen') },
-  { id: 'paprikafelder', number: 26, layout: 'ROWS', areas: placeholder('paprikafelder') },
-  { id: 'aranfelder', number: 27, layout: 'TERRACES', areas: placeholder('aranfelder') },
-  { id: 'rosental', number: 28, layout: 'ROWS', areas: placeholder('rosental') },
-  { id: 'pistazien', number: 29, layout: 'TERRACES', areas: placeholder('pistazien') },
+  { id: 'patio', number: 24, layout: 'RING', areas: ['orangenhof', 'azulejobrunnen', 'geranienwand', 'acequia', 'jasminbogen', 'granatapfelbaum', 'galerie', 'marmeladenkueche', 'gitterfenster', 'patiofest'] },
+  { id: 'korkeichen', number: 25, layout: 'ZIGZAG', areas: ['korkhain', 'schaelplatz', 'eichelweide', 'storchenmast', 'schoepfrad', 'korkstapel', 'lehmhaus', 'honighaus', 'korkwerkstatt', 'korkfest'] },
+  { id: 'paprikafelder', number: 26, layout: 'ROWS', areas: ['paprikareihen', 'paprikaschnuere', 'paprikamuehle', 'kalocsastube', 'schwengelbrunnen', 'tomatenfeld', 'akazienhain', 'schilfscheune', 'paprikamarkt', 'paprikafest'] },
+  { id: 'aranfelder', number: 27, layout: 'TERRACES', areas: ['feldmauern', 'tangbeete', 'kartoffelfurchen', 'burrenblumen', 'aranweide', 'strickstube', 'strohcottage', 'klippenpfad', 'hafenmauer', 'ceili'] },
+  { id: 'rosental', number: 28, layout: 'ROWS', areas: ['rosenreihen', 'pflueckkoerbe', 'destillierkessel', 'walnussallee', 'imkerwagen', 'rosenwasser', 'bergquelle', 'veranda', 'rosenboden', 'rosenfest'] },
+  { id: 'pistazien', number: 29, layout: 'TERRACES', areas: ['pistazienhain', 'steinterrassen', 'kapellchen', 'mandelbaeume', 'kapernhang', 'roestplatz', 'inselhaus', 'zisterne', 'hafenmarkt', 'pistazienfest'] },
   // Bogen III — Wo die Samen herkommen
   { id: 'andenkartoffeln', number: 30, layout: 'TERRACES', areas: placeholder('andenkartoffeln') },
   { id: 'milpa', number: 31, layout: 'RING', areas: placeholder('milpa') },

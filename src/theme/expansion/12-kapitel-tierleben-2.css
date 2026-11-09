@@ -1,4 +1,4 @@
-/* Kapitel 18–23: Tierleben — Teil von expansion.css (nach 11-kapitel-tierleben.css). */
+/* Kapitel 18–29: Tierleben — Teil von expansion.css (nach 11-kapitel-tierleben.css). */
 
 /* —— Deichgarten —— */
 .k2-sheep {
@@ -165,6 +165,203 @@
   to { opacity: 1; transform: translateX(4%) skewX(6deg); }
 }
 
+/* —— Andalusischer Patio —— */
+.k3-jet {
+  width: calc(var(--u) * 3);
+  top: calc(57% - var(--u) * 4.2);
+  left: calc(50% - var(--u) * 1.5);
+  transform-origin: 50% 100%;
+  animation: k3-jet 2.4s ease-in-out infinite;
+}
+
+@keyframes k3-jet {
+  0%, 100% { transform: scaleY(0.86); opacity: 0.85; }
+  50% { transform: scaleY(1.08); opacity: 1; }
+}
+
+.k3-swallow {
+  width: calc(var(--u) * 3);
+  top: 22%;
+  left: 18%;
+  animation: k3-swoop 11s ease-in-out infinite;
+}
+
+.k3-swallow.s1 { top: 27%; left: 58%; animation-delay: -5s; animation-duration: 13s; }
+
+@keyframes k3-swoop {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(calc(var(--u) * 14), calc(var(--u) * 3)) rotate(8deg); }
+  50% { transform: translate(calc(var(--u) * 24), calc(var(--u) * -1)) rotate(-6deg); }
+  75% { transform: translate(calc(var(--u) * 8), calc(var(--u) * 4)) rotate(4deg); }
+}
+
+.k3-cat {
+  width: calc(var(--u) * 5);
+  top: 69%;
+  left: 55%;
+  transform-origin: 50% 100%;
+  animation: k3-breathe 4s ease-in-out infinite;
+}
+
+.k3-cat .k3-tail {
+  transform-origin: 2.4px 8px;
+  animation: k3-tail 6s ease-in-out infinite;
+}
+
+@keyframes k3-breathe {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(1.06); }
+}
+
+@keyframes k3-tail {
+  0%, 80%, 100% { transform: rotate(0deg); }
+  88% { transform: rotate(-18deg); }
+}
+
+/* —— Korkeichenhain + Paprikafelder —— */
+.k3-stork-fly {
+  width: calc(var(--u) * 6);
+  top: 20%;
+  left: -12%;
+  animation: k3-fly-across 38s linear infinite;
+}
+
+.k3-stork-fly.f1 { top: 24%; animation-delay: -19s; animation-duration: 44s; }
+
+@keyframes k3-fly-across {
+  from { transform: translate(0, 0); }
+  50% { transform: translate(calc(var(--u) * 60), calc(var(--u) * -1.4)); }
+  to { transform: translate(calc(var(--u) * 124), 0); }
+}
+
+.k3-stork-walk {
+  width: calc(var(--u) * 3.4);
+  top: 88%;
+  left: 60%;
+  animation: chicken-walk 14s steps(18) infinite alternate;
+}
+
+.k3-jay {
+  width: calc(var(--u) * 2.4);
+  top: 47%;
+  left: 46%;
+  animation: chicken-walk 9s steps(12) infinite alternate;
+}
+
+.k3-sheep {
+  width: calc(var(--u) * 4.2);
+  top: 30%;
+  left: 42%;
+  animation: k2-graze-walk 28s ease-in-out infinite alternate;
+}
+
+.k3-sheep.k1 { top: 33%; left: 52%; animation-delay: -12s; animation-duration: 33s; }
+.k3-sheep.a0 { top: 39%; left: 44%; }
+.k3-sheep.a1 { top: 62%; left: 50%; animation-delay: -9s; animation-duration: 31s; }
+
+.k3-horse {
+  width: calc(var(--u) * 6);
+  top: 33%;
+  left: 5%;
+  animation: sheep-bob 5s ease-in-out infinite;
+}
+
+.k3-lark {
+  width: calc(var(--u) * 2.2);
+  top: 18%;
+  left: 72%;
+  animation: k3-hover 3s ease-in-out infinite;
+}
+
+@keyframes k3-hover {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(calc(var(--u) * -1.6)); }
+}
+
+/* —— Aran —— */
+.k3-surf {
+  width: calc(var(--u) * 14);
+  top: 18%;
+  left: 74%;
+  animation: k3-surf 5s ease-in-out infinite;
+}
+
+@keyframes k3-surf {
+  0%, 100% { opacity: 0.25; transform: translateX(0); }
+  50% { opacity: 1; transform: translateX(calc(var(--u) * -1)); }
+}
+
+.k3-puffin {
+  width: calc(var(--u) * 2.4);
+  top: 21%;
+  left: -6%;
+  animation: k3-fly-across 22s linear infinite;
+}
+
+.k3-puffin.p1 { top: 23.5%; animation-delay: -1.4s; }
+
+/* —— Rosental —— */
+.k3-bee {
+  width: calc(var(--u) * 1.6);
+  top: 60%;
+  left: 40%;
+  animation: k3-buzz 6s ease-in-out infinite;
+}
+
+.k3-bee.b1 { top: 72%; left: 58%; animation-delay: -2s; }
+.k3-bee.b2 { top: 84%; left: 46%; animation-delay: -4s; }
+
+@keyframes k3-buzz {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(calc(var(--u) * 3), calc(var(--u) * -1)); }
+  50% { transform: translate(calc(var(--u) * 1), calc(var(--u) * 1.4)); }
+  75% { transform: translate(calc(var(--u) * -2), calc(var(--u) * -0.6)); }
+}
+
+.k3-donkey {
+  width: calc(var(--u) * 6);
+  top: 74%;
+  left: 8%;
+  animation: k3-donkey-walk 40s ease-in-out infinite alternate;
+}
+
+@keyframes k3-donkey-walk {
+  0%, 10% { transform: translateX(0) scaleX(1); }
+  45% { transform: translateX(calc(var(--u) * 26)) scaleX(1); }
+  50% { transform: translateX(calc(var(--u) * 26)) scaleX(-1); }
+  90%, 100% { transform: translateX(0) scaleX(-1); }
+}
+
+/* —— Ägina —— */
+.k3-haze {
+  inset: 17% 0 45% 0;
+  background: repeating-linear-gradient(180deg, rgba(255, 240, 200, 0) 0, rgba(255, 240, 200, 0.18) 3px, rgba(255, 240, 200, 0) 6px);
+  animation: k3-haze 1.6s ease-in-out infinite alternate;
+}
+
+@keyframes k3-haze {
+  from { opacity: 0.35; transform: translateY(0); }
+  to { opacity: 0.8; transform: translateY(2px); }
+}
+
+.k3-cicada {
+  width: calc(var(--u) * 1.2);
+  top: 40%;
+  left: 31%;
+  animation: k3-buzz 1.2s steps(4) infinite;
+}
+
+.k3-cicada.c1 { top: 66%; left: 69%; animation-delay: -0.6s; }
+
+.k3-goat {
+  width: calc(var(--u) * 3.6);
+  top: 50%;
+  left: 46%;
+  animation: k2-graze-walk 24s ease-in-out infinite alternate;
+}
+
+.k3-goat.g1 { top: 76%; left: 52%; animation-delay: -10s; animation-duration: 29s; }
+
 @media (prefers-reduced-motion: reduce) {
   .k2-sheep,
   .k2-oyster,
@@ -181,11 +378,33 @@
   .k2-squirrel,
   .k2-aurora,
   .k2-mill .ha-wheel,
-  .k2-sails .ha-wheel {
+  .k2-sails .ha-wheel,
+  .k3-jet,
+  .k3-swallow,
+  .k3-cat,
+  .k3-cat .k3-tail,
+  .k3-stork-fly,
+  .k3-stork-walk,
+  .k3-jay,
+  .k3-sheep,
+  .k3-horse,
+  .k3-lark,
+  .k3-surf,
+  .k3-puffin,
+  .k3-bee,
+  .k3-donkey,
+  .k3-haze,
+  .k3-cicada,
+  .k3-goat {
     animation: none !important;
   }
 
   .k2-train {
     left: 60%;
+  }
+
+  .k3-stork-fly,
+  .k3-puffin {
+    left: 40%;
   }
 }

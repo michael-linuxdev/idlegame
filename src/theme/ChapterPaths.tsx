@@ -6,7 +6,7 @@
 import type { ReactNode } from 'react'
 import { P } from './art/palette'
 
-export type PathStyle = 'track' | 'loop' | 'shore' | 'cross' | 'rondel' | 'switchback' | 'lane' | 'stones' | 'promenade' | 'yard' | 'cloister' | 'axis' | 'nurseryRows' | 'boardwalk' | 'dikeTrack' | 'fliess' | 'flagstones' | 'bulbLanes' | 'canals' | 'forestTrail'
+export type PathStyle = 'track' | 'loop' | 'shore' | 'cross' | 'rondel' | 'switchback' | 'lane' | 'stones' | 'promenade' | 'yard' | 'cloister' | 'axis' | 'nurseryRows' | 'boardwalk' | 'dikeTrack' | 'fliess' | 'flagstones' | 'bulbLanes' | 'canals' | 'forestTrail' | 'patioTiles' | 'montadoTrack' | 'pepperLanes' | 'limestone' | 'roseLanes' | 'terraceSteps'
 
 const NS = { vectorEffect: 'non-scaling-stroke' as const, fill: 'none', strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const }
 
@@ -276,6 +276,80 @@ export function ChapterPath({ style, color }: { style: PathStyle; color: string 
           <path d="M52 90 l4 -1 M71 60 l3 2 M36 45 l-2 3 M30 66 l3 1" stroke={P.bark} strokeWidth="1.4" {...NS} />
           <Dots pts={[[62, 84], [76, 66], [44, 41], [24, 62], [46, 70]]} n={5} rx={0.8} color={P.orange} />
           <path d="M50 52 L50 22" stroke={color} strokeWidth="5" {...NS} opacity=".8" />
+        </g>
+      )
+    }
+    /* Patio: Ziegelweg rund um den Brunnen, Wasserrinnen (Acequias) in vier Richtungen */
+    case 'patioTiles':
+      return (
+        <g>
+          <Way d="M50 100 V72" color={color} w={12} edge={P.terracottaLight} edgeW={2} />
+          <ellipse cx="50" cy="58" rx="17" ry="13" stroke={P.terracottaLight} strokeWidth="13" {...NS} />
+          <ellipse cx="50" cy="58" rx="17" ry="13" stroke={color} strokeWidth="11" strokeDasharray="2 .5" {...NS} />
+          <path d="M50 45 V22" stroke={color} strokeWidth="9" {...NS} />
+          <path d="M33 58 H44 M56 58 H67 M50 45 V52 M50 64 V71" stroke={P.water} strokeWidth="2.4" {...NS} />
+          <ellipse cx="50" cy="58" rx="6" ry="4" fill={P.white} />
+          <ellipse cx="50" cy="58" rx="5" ry="3.2" fill={P.blue} />
+          <ellipse cx="50" cy="58" rx="3.8" ry="2.4" fill={P.water} />
+          <ellipse cx="50" cy="57.2" rx=".7" ry="1.4" fill={P.glassEdge} />
+        </g>
+      )
+    /* Korkeichenhain: roter Erdweg im Zickzack, Fahrspuren, Eicheln am Rand */
+    case 'montadoTrack': {
+      const pts: [number, number][] = [[50, 100], [47, 90], [54, 78], [45, 64], [55, 50], [46, 37], [50, 22]]
+      const d = 'M' + pts.map((p) => p.join(' ')).join(' L')
+      return (
+        <g>
+          <Way d={d} color={color} w={13} edge="#a86a3a" edgeW={2} />
+          <path d={d} stroke="#b07a4a" strokeWidth="1.2" {...NS} transform="translate(-2 0)" />
+          <path d={d} stroke="#b07a4a" strokeWidth="1.2" {...NS} transform="translate(2 0)" />
+          <Dots pts={pts.map(([x, y]) => [x + 6, y] as [number, number])} n={9} rx={0.6} color={P.woodDark} />
+        </g>
+      )
+    }
+    /* Paprikafelder: gerader Feldweg, Querwege, rote und grüne Reihen am Rand */
+    case 'pepperLanes':
+      return (
+        <g>
+          <Way d="M50 100 V22" color={color} w={11} edge="#b8a070" edgeW={2} />
+          <path d="M16 79 H84 M16 64 H84 M22 47 H78" stroke={color} strokeWidth="6" {...NS} opacity=".9" />
+          <Dots pts={[[44, 98], [44, 26]]} n={14} rx={0.6} color={[P.tomato, P.leafDark]} />
+          <Dots pts={[[56, 98], [56, 26]]} n={14} rx={0.6} color={[P.leafDark, P.tomato]} />
+        </g>
+      )
+    /* Aran: Weg aus Kalkstein im Zickzack zwischen Trockenmauern */
+    case 'limestone': {
+      const pts: [number, number][] = [[50, 100], [48, 88], [56, 76], [44, 62], [56, 48], [46, 36], [50, 22]]
+      const d = 'M' + pts.map((p) => p.join(' ')).join(' L')
+      return (
+        <g>
+          <Way d={d} color={color} w={10} edge={P.stoneDark} edgeW={2} />
+          <path d={d} stroke={P.stoneDark} strokeWidth="1" strokeDasharray="3 2" {...NS} opacity=".6" />
+          <path d="M0 80 H38 M62 70 H100 M0 54 H36 M64 42 H100" stroke={P.stone} strokeWidth="3" strokeDasharray="1.2 .6" {...NS} />
+        </g>
+      )
+    }
+    /* Rosental: gerader Weg zwischen rosa Rosenreihen */
+    case 'roseLanes':
+      return (
+        <g>
+          <Way d="M50 100 V22" color={color} w={11} edge="#b8a070" edgeW={2} />
+          <path d="M14 79 H86 M14 64 H86 M22 47 H78" stroke={color} strokeWidth="5" {...NS} opacity=".85" />
+          <Dots pts={[[43.6, 98], [43.6, 26]]} n={16} rx={1} color={[P.pink, P.leafDark, P.blossom]} />
+          <Dots pts={[[56.4, 98], [56.4, 26]]} n={16} rx={1} color={[P.leafDark, P.pink, P.blossom]} />
+        </g>
+      )
+    /* Ägina: Treppenweg die Terrassen hinauf, Mauern quer am Hang */
+    case 'terraceSteps': {
+      const pts: [number, number][] = [[50, 100], [50, 88], [44, 80], [56, 66], [44, 52], [56, 40], [50, 22]]
+      const d = 'M' + pts.map((p) => p.join(' ')).join(' L')
+      return (
+        <g>
+          {[92, 76, 60, 44, 30].map((y) => (
+            <path key={y} d={`M4 ${y} H96`} stroke="#d4c49a" strokeWidth="2.4" strokeDasharray="1.6 .5" {...NS} />
+          ))}
+          <Way d={d} color={color} w={9} edge={P.stone} edgeW={2} />
+          <path d={d} stroke={P.stoneLight} strokeWidth="9" strokeDasharray=".6 1.6" {...NS} strokeLinecap="butt" />
         </g>
       )
     }

@@ -308,6 +308,21 @@ Jede Welle ist für sich spielbar: Hinter dem letzten gebauten Kapitel zeigen
 
 Großprojekt Bogen I: `gartenroute` („Omas Gartenroute“, Kapitel 13–19, Belohnung 300 Samen).
 
+## Welle 3 — Bereichs-IDs
+
+| Kapitel | IDs (Reihenfolge = Leiter) |
+|---|---|
+| 24 patio | orangenhof, azulejobrunnen, geranienwand, acequia, jasminbogen, granatapfelbaum, galerie, marmeladenkueche, gitterfenster, patiofest |
+| 25 korkeichen | korkhain, schaelplatz, eichelweide, storchenmast, schoepfrad, korkstapel, lehmhaus, honighaus, korkwerkstatt, korkfest |
+| 26 paprikafelder | paprikareihen, paprikaschnuere, paprikamuehle, kalocsastube, schwengelbrunnen, tomatenfeld, akazienhain, schilfscheune, paprikamarkt, paprikafest |
+| 27 aranfelder | feldmauern, tangbeete, kartoffelfurchen, burrenblumen, aranweide, strickstube, strohcottage, klippenpfad, hafenmauer, ceili |
+| 28 rosental | rosenreihen, pflueckkoerbe, destillierkessel, walnussallee, imkerwagen, rosenwasser, bergquelle, veranda, rosenboden, rosenfest |
+| 29 pistazien | pistazienhain, steinterrassen, kapellchen, mandelbaeume, kapernhang, roestplatz, inselhaus, zisterne, hafenmarkt, pistazienfest |
+
+Abweichungen vom Plan: Kapitel 26 „Strohdachscheune“ → *Scheune mit Schilfdach* (in Ungarn deckt man mit Donau-Schilf); Kapitel 25 „Brunnen“ → *Schöpfbrunnen* (Nora); Kapitel 27 heißt im Spiel kurz „Steinfelder von Aran“ (passt in die Kopfleiste); Kapitel 29: Das Fischerboot liegt in der Grafik „Hafenmarkt“, nicht im Tierleben (das Meer liegt hinter der Kopfleiste).
+
+Großprojekt Bogen II: `tauschpost` („Omas Tauschpost“, Kapitel 20–29, Belohnung 400 Samen).
+
 ## Fortschritt
 
 - [x] **Paket 0** — Plan & Geschichte (dieses Dokument)
@@ -315,7 +330,7 @@ Großprojekt Bogen I: `gartenroute` („Omas Gartenroute“, Kapitel 13–19, Be
 - [x] **Welle 1** — Kapitel 13–17 (Texte de + en, Grafik je Bereich in 5 Stufen + Jahreszeiten, Kulissen `cityYard`/`monastery`/`palace`/`nursery`/`moor`, eigene Wege `yard`/`cloister`/`axis`/`nurseryRows`/`boardwalk`, Tierleben, Währungs-Symbole; `RELEASED_UP_TO = 17`)
   - Großprojekt für Bogen I: erledigt in Welle 2 (`gartenroute`).
 - [x] **Welle 2** — Kapitel 18–23 (Texte de + en, Bogen II in `stringsChaptersArc2.ts`; Grafik je Bereich in 5 Stufen + Jahreszeiten, gesperrte Ecken `wildD`, Kulissen `dike`/`spreewald`/`cotswolds`/`bulbFields`/`lagoon`/`swedishWoods` in `backdropArc1/2.tsx`, Wege `dikeTrack`/`fliess`/`flagstones`/`bulbLanes`/`canals`/`forestTrail`, Tierleben in `12-kapitel-tierleben-2.css`, Währungs-Symbole; Großprojekt `gartenroute` für Bogen I; `RELEASED_UP_TO = 23`)
-- [ ] Welle 3 — Kapitel 24–29
+- [x] **Welle 3** — Kapitel 24–29 (Texte de + en in `stringsChaptersArc2.ts`: Inés Morales, João Ferreira, Erzsébet Kovács, Siobhán Ní Fhlatharta, Petar Ivanov, Eleni Papadaki; Grafik je Bereich in 5 Stufen + Jahreszeiten, Teile `partsE`, gesperrte Ecken `wildE`, Kulissen `andalusia`/`montado`/`kalocsa`/`aran`/`roseValley`/`aegina` in `backdropArc2.tsx`, Wege `patioTiles`/`montadoTrack`/`pepperLanes`/`limestone`/`roseLanes`/`terraceSteps`, Tierleben `k3-*`, Währungs-Symbole; Großprojekt `tauschpost` für Bogen II; `RELEASED_UP_TO = 29`)
 - [ ] Welle 4 — Kapitel 30–34
 - [ ] Welle 5 — Kapitel 35–39
 - [ ] Welle 6 — Kapitel 40–44

@@ -54,6 +54,68 @@ export function GroundExtrasArc2({ spec }: { spec: BackdropSpec }) {
             </g>
           ))
         : null}
+      {spec.andalusia
+        ? CORNERS.map(([x, y], i) => (
+            <g key={`an${i}`}>
+              <path d={`M${x - 1.2} ${y - 0.6}h2.4l-.4 1.4h-1.6z`} fill={P.terracotta} />
+              <ellipse cx={x} cy={y - 0.9} rx="1.4" ry=".5" fill={P.leafDark} />
+              {[-0.6, 0.6].map((d) => (
+                <ellipse key={d} cx={x + d} cy={y - 1.2} rx=".35" ry=".25" fill={i % 2 ? P.red : P.pink} />
+              ))}
+            </g>
+          ))
+        : null}
+      {spec.montado
+        ? CORNERS.map(([x, y], i) => (
+            <g key={`mo${i}`}>
+              <ellipse cx={x} cy={y} rx="2" ry=".8" fill={P.leafDark} opacity=".8" />
+              <ellipse cx={x - 0.4} cy={y - 0.2} rx="1" ry=".35" fill={P.leaf} opacity=".7" />
+              {[0, 1].map((k) => (
+                <ellipse key={k} cx={x + 1.4 + k * 0.6} cy={y + 0.8} rx=".2" ry=".15" fill={P.woodDark} />
+              ))}
+            </g>
+          ))
+        : null}
+      {spec.kalocsa
+        ? CORNERS.map(([x, y], i) => (
+            <g key={`ka${i}`}>
+              <ellipse cx={x} cy={y} rx="1.6" ry=".7" fill={P.leafDark} />
+              {[-0.8, 0, 0.8].map((d) => (
+                <ellipse key={d} cx={x + d} cy={y + 0.4} rx=".22" ry=".4" fill={i % 2 ? P.tomato : P.berry} />
+              ))}
+            </g>
+          ))
+        : null}
+      {spec.aran
+        ? CORNERS.map(([x, y], i) => (
+            <g key={`ar${i}`}>
+              {[-1.4, -0.4, 0.6, 1.6].map((d, k) => (
+                <ellipse key={d} cx={x + d} cy={y} rx=".45" ry=".3" fill={(i + k) % 2 ? P.stone : P.stoneLight} />
+              ))}
+              <ellipse cx={x} cy={y + 0.8} rx=".3" ry=".2" fill={P.blue} />
+            </g>
+          ))
+        : null}
+      {spec.roseValley
+        ? CORNERS.map(([x, y], i) => (
+            <g key={`rv${i}`}>
+              <ellipse cx={x} cy={y} rx="1.8" ry=".7" fill={P.leafDark} />
+              {[-1, 0, 1].map((d) => (
+                <ellipse key={d} cx={x + d} cy={y - 0.4} rx=".35" ry=".25" fill={i % 2 ? P.pink : P.blossom} />
+              ))}
+            </g>
+          ))
+        : null}
+      {spec.aegina
+        ? CORNERS.map(([x, y], i) => (
+            <g key={`ae${i}`}>
+              <ellipse cx={x} cy={y} rx="1.2" ry=".5" fill={P.stone} />
+              {[-1.4, 1.2].map((d) => (
+                <ellipse key={d} cx={x + d} cy={y + 0.2} rx=".5" ry=".3" fill={i % 2 ? P.lavender : P.winterLeafDark} />
+              ))}
+            </g>
+          ))
+        : null}
     </>
   )
 }
@@ -129,6 +191,127 @@ export function HorizonExtrasArc2({ spec }: { spec: BackdropSpec }) {
           <rect x="270" y="30" width="26" height="16" fill={P.barn} />
           <path d="M266 30 L283 20 L300 30z" fill={P.charcoal} />
           <path d="M270 30v16M296 30v16" stroke={P.white} strokeWidth="1.6" />
+        </g>
+      ) : null}
+      {spec.andalusia ? (
+        <g>
+          {[[60, 18], [120, 22], [280, 20], [340, 16]].map(([x, y]) => (
+            <g key={x}>
+              <rect x={x} y={y} width="44" height={44 - y!} fill={P.white} />
+              <path d={`M${x! - 3} ${y} L${x! + 22} ${y! - 8} L${x! + 47} ${y}z`} fill={P.terracotta} />
+            </g>
+          ))}
+          <rect x="190" y="-2" width="16" height="46" fill={P.paper} />
+          <rect x="188" y="8" width="20" height="5" fill={P.canvas} />
+          <path d="M192 -2 L198 -12 L204 -2z" fill={P.terracotta} />
+          {[0, 1, 2].map((k) => (
+            <path key={k} d={`M${193 + k * 4} 22 v6 a2 2 0 0 1 2 0 v-6z`} fill={P.charcoal} opacity=".6" />
+          ))}
+          <path d="M240 44 V16" stroke={P.bark} strokeWidth="2" />
+          <path d="M240 16 q-10 -2 -16 6 M240 16 q10 -2 16 6 M240 16 q-6 -8 -14 -8 M240 16 q6 -8 14 -8" stroke={P.leafDark} strokeWidth="3" fill="none" />
+          <rect x="0" y="36" width="400" height="24" fill={P.white} />
+          {Array.from({ length: 16 }, (_, i) => (
+            <path key={i} d={`M${6 + i * 25} 60 V46 a8 8 0 0 1 16 0 V60z`} fill={P.charcoal} opacity=".22" />
+          ))}
+          <path d="M0 36 H400" stroke={P.terracotta} strokeWidth="2.4" />
+          {Array.from({ length: 40 }, (_, i) => (
+            <rect key={`t${i}`} x={i * 10} y="56" width="5" height="4" fill={i % 2 ? P.blue : P.denim} />
+          ))}
+        </g>
+      ) : null}
+      {spec.montado ? (
+        <g>
+          {Array.from({ length: 12 }, (_, i) => {
+            const x = 14 + i * 34 + (i % 3) * 6
+            const y = 34 + (i % 3) * 5
+            return (
+              <g key={i}>
+                <path d={`M${x} ${y + 8}V${y}`} stroke={P.bark} strokeWidth="1.6" />
+                <ellipse cx={x} cy={y - 2} rx="12" ry="6" fill={i % 2 ? P.leafDark : P.leafMoss} />
+              </g>
+            )
+          })}
+          <rect x="180" y="22" width="44" height="18" fill={P.white} />
+          <path d="M180 38 H224 M180 22 V40 M224 22 V40" stroke={P.blue} strokeWidth="2" />
+          <path d="M177 22 L202 14 L227 22z" fill={P.terracotta} />
+          <rect x="214" y="8" width="8" height="12" fill={P.white} />
+          {[110, 300].map((x) => (
+            <g key={x}>
+              <path d={`M${x - 5} 48 L${x} 6 L${x + 5} 48 M${x - 10} 12 H${x + 10}`} stroke={P.metal} strokeWidth="1.4" fill="none" />
+              <ellipse cx={x} cy="5" rx="6" ry="2" fill={P.woodMid} />
+              <path d={`M${x + 1} 4 v-6`} stroke={P.white} strokeWidth="2.6" />
+            </g>
+          ))}
+        </g>
+      ) : null}
+      {spec.kalocsa ? (
+        <g>
+          {Array.from({ length: 6 }, (_, i) => (
+            <path key={i} d={`M0 ${40 + i * 3}H400`} stroke={i % 2 ? P.tomato : P.leafDark} strokeWidth="2" opacity=".75" />
+          ))}
+          {[184, 216].map((x) => (
+            <g key={x}>
+              <rect x={x - 6} y="0" width="12" height="38" fill={P.paper} />
+              <path d={`M${x - 6} 0 Q${x} -10 ${x + 6} 0z`} fill={P.leafMoss} />
+              <rect x={x - 2} y="10" width="4" height="7" fill={P.charcoal} opacity=".5" />
+            </g>
+          ))}
+          <rect x="178" y="22" width="44" height="16" fill={P.paper} />
+          <path d="M60 38 V8 M40 4 L100 22 M98 22 V30" stroke={P.woodDark} strokeWidth="2" />
+          <rect x="300" y="24" width="40" height="14" fill={P.white} />
+          <path d="M296 25 Q320 4 344 25z" fill={P.woodLight} />
+          {[308, 316, 324].map((x) => (
+            <path key={x} d={`M${x} 25 v10`} stroke={P.tomato} strokeWidth="2.4" />
+          ))}
+        </g>
+      ) : null}
+      {spec.aran ? (
+        <g>
+          <rect x="0" y="22" width="400" height="16" fill={P.waterDeep} />
+          <path d="M20 28h30M120 32h40M240 26h26" stroke={P.waterLight} strokeWidth="1.4" />
+          <path d="M300 38 L310 16 L400 12 V38z" fill={P.stone} />
+          <path d="M300 38 L310 16" stroke={P.white} strokeWidth="2" />
+          <path d="M340 16 a20 10 0 0 1 40 0" stroke={P.stoneLight} strokeWidth="4" fill="none" />
+          {Array.from({ length: 7 }, (_, i) => (
+            <path key={i} d={`M${i * 44} 48 Q${i * 44 + 22} 42 ${i * 44 + 44} 48`} stroke={P.stoneLight} strokeWidth="2" strokeDasharray="3 1.4" fill="none" />
+          ))}
+          <path d="M0 42 H400" stroke={P.stoneLight} strokeWidth="2" strokeDasharray="3 1.4" />
+          <rect x="150" y="30" width="30" height="12" fill={P.white} />
+          <path d="M146 31 Q165 16 184 31z" fill={P.woodLight} />
+        </g>
+      ) : null}
+      {spec.roseValley ? (
+        <g>
+          <path d="M0 44 L40 14 L80 28 L130 4 L190 26 L240 8 L300 30 L350 10 L400 24 V44z" fill={spec.hills[1]} />
+          <path d="M124 9 L130 4 L136 9 M234 13 L240 8 L246 13 M344 15 L350 10 L356 15" stroke={P.white} strokeWidth="3" fill="none" />
+          {[150, 172, 194, 216].map((x, i) => (
+            <g key={x}>
+              <rect x={x} y={30 + (i % 2) * 3} width="18" height={14 - (i % 2) * 3} fill={P.white} />
+              <path d={`M${x - 2} ${30 + (i % 2) * 3} L${x + 9} ${24 + (i % 2) * 3} L${x + 20} ${30 + (i % 2) * 3}z`} fill={P.terracotta} />
+            </g>
+          ))}
+          <path d="M262 30 a6 6 0 0 1 12 0z" fill={P.gold} />
+          <rect x="262" y="30" width="12" height="14" fill={P.white} />
+          {Array.from({ length: 6 }, (_, i) => (
+            <path key={i} d={`M0 ${46 + i * 2.4}H400`} stroke={i % 2 ? P.pink : P.leafDark} strokeWidth="1.6" opacity=".8" />
+          ))}
+        </g>
+      ) : null}
+      {spec.aegina ? (
+        <g>
+          <rect x="0" y="24" width="400" height="22" fill={P.water} />
+          <path d="M40 34h30M160 40h40M300 30h30" stroke={P.waterLight} strokeWidth="1.2" />
+          <path d="M120 26 Q150 12 190 26z M240 26 Q260 18 290 26z" fill={P.stone} opacity=".7" />
+          <path d="M0 46 L0 22 Q30 6 70 20 L90 46z" fill={P.woodLight} />
+          <rect x="20" y="8" width="36" height="3" fill={P.paper} />
+          {[22, 30, 38, 46, 54].map((x) => (
+            <rect key={x} x={x} y="11" width="2.4" height="9" fill={P.paper} />
+          ))}
+          {[310, 330, 350, 370].map((x, i) => (
+            <rect key={x} x={x} y={34 - (i % 2) * 4} width="16" height={12 + (i % 2) * 4} fill={P.white} />
+          ))}
+          <path d="M376 26 a5 5 0 0 1 10 0z" fill={P.blue} />
+          <rect x="376" y="26" width="10" height="8" fill={P.white} />
         </g>
       ) : null}
     </>
