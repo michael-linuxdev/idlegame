@@ -16,6 +16,8 @@ import { WinterScene } from '../theme/WinterScene'
 const SHAPES = /<(path|circle|ellipse|rect|line|polygon|polyline|use|text)\b/g
 const count = (html: string) => (html.match(SHAPES) ?? []).length
 const SEASONS = ['spring', 'summer', 'autumn', 'winter'] as const
+/** Rendert alle Kapitel-Grafiken: wächst mit jeder Welle, auf CI langsamer (Kapitel 13–50). */
+const HEAVY = 60_000
 
 describe('Grafik: jede Stufe wächst sichtbar', () => {
   it('Hauptgarten: Stufe 1–5 liefern ein SVG, Stufe n+1 hat mehr Elemente als n', () => {
@@ -41,7 +43,7 @@ describe('Grafik: jede Stufe wächst sichtbar', () => {
         for (let i = 1; i < counts.length; i++) expect(counts[i], `${c.id}/${a.id}: ${counts.join(' → ')}`).toBeGreaterThan(counts[i - 1]!)
       }
     }
-  })
+  }, HEAVY)
 })
 
 /**
@@ -108,5 +110,5 @@ describe('Grafik: alle d-Attribute lassen sich parsen', () => {
     }
     expect(n).toBeGreaterThan(1000)
     expect(bad).toEqual([])
-  })
+  }, HEAVY)
 })
