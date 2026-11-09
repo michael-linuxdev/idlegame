@@ -750,6 +750,55 @@ export function IconChapterCurrency({ chapter }: { chapter: string }) {
           <path d="M9 14.4c0 2 1 3.4 2.6 4" stroke="#d6f0f6" strokeWidth="1.2" fill="none" strokeLinecap="round" />
         </Svg>
       )
+    case 'wildblumenband': // Hummel
+      return (
+        <Svg>
+          <ellipse cx="9" cy="7.4" rx="4" ry="2.6" fill="#ffffff" stroke="#8a8a8a" strokeWidth=".6" opacity=".9" />
+          <ellipse cx="15" cy="7" rx="3.6" ry="2.4" fill="#ffffff" stroke="#8a8a8a" strokeWidth=".6" opacity=".9" />
+          <ellipse cx="12" cy="14" rx="7" ry="5.6" fill="#3a3a3a" />
+          <path d="M8.6 9.6c-.6 3 -.6 6 0 9M15.4 9.6c.6 3 .6 6 0 9" stroke="#f5c542" strokeWidth="2.2" fill="none" />
+          <path d="M17.6 11.4c1 1.4 1.2 3.6 .6 5.4" stroke="#ffffff" strokeWidth="1.6" fill="none" strokeLinecap="round" />
+          <circle cx="6" cy="12.4" r="1" fill="#fbf6e8" />
+        </Svg>
+      )
+    case 'fassadengarten': // Weinranke mit rotem Blatt
+      return (
+        <Svg>
+          <path d="M5 21c4 -3 3 -8 7 -10s4 -6 7 -8" stroke="#7a5532" strokeWidth="1.2" fill="none" strokeLinecap="round" />
+          <path d="M8 15l-4 -3l1 -4l3 2l1 -4l3 4z" fill="#5f9e45" stroke="#3f7a30" strokeWidth=".8" />
+          <path d="M14 10l1 -5l3 2l2 -3l1 5l-3 3z" fill="#d7263d" stroke="#a5531a" strokeWidth=".8" />
+          <path d="M17 18c1 -1 2 -1 3 0" stroke="#3f7a30" strokeWidth="1" fill="none" />
+          <circle cx="18" cy="15" r="1.4" fill="#6a3d8f" />
+        </Svg>
+      )
+    case 'solawihof': // Gemüsekiste
+      return (
+        <Svg>
+          <circle cx="8" cy="10" r="3" fill="#f08a2c" stroke="#a5531a" strokeWidth=".7" />
+          <circle cx="13" cy="9" r="3.2" fill="#e2453c" stroke="#a5531a" strokeWidth=".7" />
+          <ellipse cx="17.4" cy="10" rx="3" ry="2.6" fill="#5f9e45" stroke="#3f7a30" strokeWidth=".7" />
+          <rect x="3.6" y="11.6" width="16.8" height="8.4" rx="1" fill="#c9a46b" stroke="#6e4a2b" strokeWidth="1" />
+          <path d="M3.6 15.6h16.8M8 11.6v8.4M16 11.6v8.4" stroke="#8a5a32" strokeWidth=".7" />
+        </Svg>
+      )
+    case 'saatguttausch': // Brief mit Samentütchen
+      return (
+        <Svg>
+          <rect x="3" y="8" width="15" height="11" rx="1" fill="#efe1c2" stroke="#8a6a40" strokeWidth="1" />
+          <path d="M3 8l7.5 6l7.5 -6" stroke="#8a6a40" strokeWidth="1" fill="none" />
+          <path d="M14 21v-9l1 -1h5l1 1v9z" fill="#fff6dc" stroke="#8a6a40" strokeWidth=".9" />
+          <circle cx="17.5" cy="16" r="1.8" fill="#5f9e45" />
+          <rect x="13.4" y="9.4" width="3" height="3" fill="#e0485e" />
+        </Svg>
+      )
+    case 'weltgartenschau': // Weltkugel mit Blatt
+      return (
+        <Svg>
+          <circle cx="12" cy="13" r="8" fill="#6aa6c9" stroke="#3d8db8" strokeWidth="1" />
+          <path d="M7 9c2 1 3 3 2 5s1 3 2 5M14 6c-1 2 1 3 3 3s2 2 1 4" fill="#7fbf5a" stroke="#3f7a30" strokeWidth=".8" />
+          <path d="M12 5c0 -2 2 -3 4 -3c0 2 -2 3 -4 3z" fill="#5f9e45" stroke="#3f7a30" strokeWidth=".6" />
+        </Svg>
+      )
     default: // Gartenschau: Besucher-Medaille
       return (
         <Svg>

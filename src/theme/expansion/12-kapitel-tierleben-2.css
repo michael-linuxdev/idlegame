@@ -1,4 +1,4 @@
-/* Kapitel 18–44: Tierleben — Teil von expansion.css (nach 11-kapitel-tierleben.css). */
+/* Kapitel 18–49: Tierleben — Teil von expansion.css (nach 11-kapitel-tierleben.css). */
 
 /* —— Deichgarten —— */
 .k2-sheep {
@@ -836,6 +836,183 @@
   animation: k3-fly-across 60s linear infinite;
 }
 
+/* —— Wildblumenband —— */
+.k7-bumble {
+  width: calc(var(--u) * 1.6);
+  top: 52%;
+  left: 28%;
+  animation: k3-buzz 5s ease-in-out infinite;
+}
+
+.k7-bumble.b1 { top: 40%; left: 64%; animation-delay: -1.6s; }
+.k7-bumble.b2 { top: 70%; left: 46%; animation-delay: -3.2s; }
+
+.k7-butterfly {
+  width: calc(var(--u) * 1.8);
+  top: 34%;
+  left: 40%;
+  animation: k3-buzz 8s ease-in-out infinite;
+}
+
+.k7-butterfly.f1 { top: 62%; left: 72%; animation-delay: -3s; }
+
+.k7-partridge {
+  width: calc(var(--u) * 2.6);
+  top: 82%;
+  left: 14%;
+  animation: chicken-walk 16s steps(18) infinite alternate;
+}
+
+.k7-partridge.p1 { left: 20%; top: 83%; animation-delay: -1.2s; }
+
+/* —— Fassadengarten —— */
+.k7-sparrow {
+  width: calc(var(--u) * 2);
+  top: 74%;
+  left: 22%;
+  animation: chicken-walk 9s steps(12) infinite alternate;
+}
+
+.k7-sparrow.s1 { top: 58%; left: 62%; animation-delay: -3s; }
+.k7-sparrow.s2 { top: 88%; left: 50%; animation-delay: -5s; }
+
+.k7-redleaf {
+  width: calc(var(--u) * 1.2);
+  height: calc(var(--u) * 0.8);
+  border-radius: 50% 0;
+  background: #d7263d;
+  animation: k7-blow 8s linear infinite;
+}
+
+@keyframes k7-blow {
+  from { transform: translate(0, 0) rotate(0); opacity: 0; }
+  10% { opacity: 1; }
+  to { transform: translate(calc(var(--u) * 12), calc(var(--u) * 18)) rotate(400deg); opacity: 0; }
+}
+
+.k7-drop {
+  width: calc(var(--u) * 0.4);
+  height: calc(var(--u) * 0.7);
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  background: #8fd0ec;
+  animation: k7-drip 2.6s ease-in infinite;
+}
+
+@keyframes k7-drip {
+  0%, 40% { transform: translateY(0); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateY(calc(var(--u) * 3)); opacity: 0; }
+}
+
+/* —— Solawi-Hof —— */
+.k7-hen {
+  width: calc(var(--u) * 2.2);
+  top: 76%;
+  left: 18%;
+  animation: chicken-walk 12s steps(14) infinite alternate;
+}
+
+.k7-hen.h1 { top: 80%; left: 62%; animation-delay: -4s; }
+.k7-hen.h2 { top: 66%; left: 70%; animation-delay: -7s; }
+
+.k7-tractor {
+  width: calc(var(--u) * 5);
+  top: 30%;
+  left: 8%;
+  animation: k5-amble 50s ease-in-out infinite alternate;
+}
+
+.k7-gull {
+  width: calc(var(--u) * 3);
+  top: 25%;
+  left: -10%;
+  animation: k3-fly-across 18s linear infinite;
+}
+
+.k7-gull.g1 { top: 28%; animation-delay: -7s; animation-duration: 21s; }
+
+/* —— Saatguttausch —— */
+.k7-pennants {
+  width: calc(var(--u) * 80);
+  top: 19.5%;
+  left: 10%;
+  transform-origin: 50% 0;
+  animation: k7-flutter 4s ease-in-out infinite alternate;
+}
+
+@keyframes k7-flutter {
+  from { transform: skewX(-3deg) scaleY(1); }
+  to { transform: skewX(3deg) scaleY(.92); }
+}
+
+.k7-pigeon {
+  width: calc(var(--u) * 3);
+  top: 24%;
+  left: -10%;
+  animation: k3-fly-across 15s linear infinite;
+}
+
+.k7-pigeon.d1 { top: 27%; animation-delay: -6s; animation-duration: 19s; }
+
+.k7-lantern {
+  width: 8px;
+  height: 9px;
+  border-radius: 45%;
+  background: #f08a2c;
+  box-shadow: 0 0 8px 3px rgba(255, 211, 107, 0.6);
+  animation: k6-blink 3s ease-in-out infinite;
+}
+
+/* —— Weltgartenschau —— */
+.k7-gondola {
+  width: calc(var(--u) * 2);
+  top: 21%;
+  left: -6%;
+  animation: k7-glide 30s linear infinite;
+}
+
+.k7-gondola.c1 { animation-delay: -10s; }
+.k7-gondola.c2 { animation-delay: -20s; }
+
+@keyframes k7-glide {
+  from { transform: translate(0, 0); }
+  50% { transform: translate(calc(var(--u) * 56), calc(var(--u) * 2)); }
+  to { transform: translate(calc(var(--u) * 112), 0); }
+}
+
+.k7-balloon {
+  width: calc(var(--u) * 1.4);
+  top: 70%;
+  left: 24%;
+  animation: k7-rise 14s ease-in infinite;
+}
+
+.k7-balloon.l1 { left: 58%; animation-delay: -5s; }
+.k7-balloon.l2 { left: 80%; animation-delay: -9s; }
+
+@keyframes k7-rise {
+  from { transform: translate(0, 0); opacity: 0; }
+  10% { opacity: 1; }
+  80% { opacity: 1; }
+  to { transform: translate(calc(var(--u) * 3), calc(var(--u) * -40)); opacity: 0; }
+}
+
+.k7-fountain {
+  width: calc(var(--u) * 1.4);
+  height: calc(var(--u) * 6);
+  top: 53.5%;
+  left: 49.3%;
+  border-radius: 50% 50% 20% 20%;
+  background: linear-gradient(to top, rgba(143, 208, 236, 0.9), rgba(143, 208, 236, 0));
+  transform-origin: 50% 100%;
+  animation: k7-spout 2.4s ease-in-out infinite alternate;
+}
+
+@keyframes k7-spout {
+  from { transform: scaleY(.55); }
+  to { transform: scaleY(1); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .k2-sheep,
   .k2-oyster,
@@ -909,7 +1086,22 @@
   .k6-swallow,
   .k6-lamp,
   .k6-hopper,
-  .k6-shade {
+  .k6-shade,
+  .k7-bumble,
+  .k7-butterfly,
+  .k7-partridge,
+  .k7-sparrow,
+  .k7-redleaf,
+  .k7-drop,
+  .k7-hen,
+  .k7-tractor,
+  .k7-gull,
+  .k7-pennants,
+  .k7-pigeon,
+  .k7-lantern,
+  .k7-gondola,
+  .k7-balloon,
+  .k7-fountain {
     animation: none !important;
   }
 
@@ -928,7 +1120,10 @@
   .k6-cloud,
   .k6-jay,
   .k6-swallow,
-  .k6-shade {
+  .k6-shade,
+  .k7-gull,
+  .k7-pigeon,
+  .k7-gondola {
     left: 40%;
   }
 }

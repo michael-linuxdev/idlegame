@@ -54,6 +54,11 @@ const LOADERS: Record<ChapterId, Loader> = {
   waldgarten: () => import('./kapitel/waldgarten'),
   samenbank: () => import('./kapitel/samenbank'),
   klimagarten: () => import('./kapitel/klimagarten'),
+  wildblumenband: () => import('./kapitel/wildblumenband'),
+  fassadengarten: () => import('./kapitel/fassadengarten'),
+  solawihof: () => import('./kapitel/solawihof'),
+  saatguttausch: () => import('./kapitel/saatguttausch'),
+  weltgartenschau: () => import('./kapitel/weltgartenschau'),
 }
 
 const loaded = new Map<ChapterId, ChapterArtEntry>()

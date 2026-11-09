@@ -118,6 +118,7 @@ export const lifeStrings = {
       gartenroute: 'Grandma’s Garden Route',
       tauschpost: 'Grandma’s Seed Post',
       herkunftsbeet: 'Grandma’s Origins Bed',
+      morgengarten: 'The Garden for Tomorrow',
     } as Record<string, string>,
     blurbs: {
       pavillon: 'Grandpa and Aunt Hilde help rebuild the old pavilion.',
@@ -127,6 +128,7 @@ export const lifeStrings = {
       gartenroute: 'A bike route from garden to garden — the way Grandma rode out to swap seeds.',
       tauschpost: 'A seed post office in the garden: packets from ten countries, sorted the way Grandma kept them in her tin.',
       herkunftsbeet: 'A bed where every plant has a label: where it comes from, and who sent the seeds.',
+      morgengarten: 'Mila and everyone from Arc IV build it together: wild bees, rainwater, a green wall and a bed where children sow.',
     } as Record<string, string>,
   },
   album: {

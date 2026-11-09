@@ -23,7 +23,7 @@ export interface PlannedChapter {
 }
 
 /** Bis zu diesem Kapitel ist alles gebaut (Texte, Grafik) und im Spiel. */
-export const RELEASED_UP_TO = 44
+export const RELEASED_UP_TO = 49
 
 const placeholder = (id: string) => Array.from({ length: 10 }, (_, i) => `${id}_${i + 1}`)
 
@@ -64,11 +64,11 @@ export const PLANNED_CHAPTERS: readonly PlannedChapter[] = [
   { id: 'waldgarten', number: 42, layout: 'SPIRAL', areas: ['kronenschicht', 'haselhecke', 'beerenschicht', 'kraeuterschicht', 'bodendecker', 'kletterpflanzen', 'pilzstaemme', 'weidenteich', 'lehrpfad', 'waldgartenfest'] },
   { id: 'samenbank', number: 43, layout: 'RING', areas: ['vermehrungsbeete', 'reinigungsraum', 'keimlabor', 'kuehltresor', 'sortengarten', 'samenarchiv', 'bestaeuberzelte', 'versandstelle', 'besucherpfad', 'offenertag'] },
   { id: 'klimagarten', number: 44, layout: 'ZIGZAG', areas: ['trockenbeet', 'schwammflaeche', 'mulchwege', 'schattenbaum', 'zisternenspiel', 'mischkultur', 'windhecke', 'wetterstation', 'lehrkueche', 'klimatag'] },
-  { id: 'wildblumenband', number: 45, layout: 'SPIRAL', areas: placeholder('wildblumenband') },
-  { id: 'fassadengarten', number: 46, layout: 'TERRACES', areas: placeholder('fassadengarten') },
-  { id: 'solawihof', number: 47, layout: 'ROWS', areas: placeholder('solawihof') },
-  { id: 'saatguttausch', number: 48, layout: 'RING', areas: placeholder('saatguttausch') },
-  { id: 'weltgartenschau', number: 49, layout: 'RING', areas: placeholder('weltgartenschau') },
+  { id: 'wildblumenband', number: 45, layout: 'SPIRAL', areas: ['bluehstreifen', 'totholz', 'sandarium', 'feldrain', 'feldhecke', 'tuempel', 'steinriegel', 'wildsaatgut', 'gruenbruecke', 'bestaeuberfest'] },
+  { id: 'fassadengarten', number: 46, layout: 'TERRACES', areas: ['moosfassade', 'kletterhortensie', 'hopfenranken', 'tropfschlauch', 'balkonbeete', 'nistwand', 'sensorgarten', 'fensterbank', 'hofcafe', 'lichterfassade'] },
+  { id: 'solawihof', number: 47, layout: 'ROWS', areas: ['gemueseschlaege', 'folientunnel', 'abholraum', 'kartoffelkeller', 'huehnermobil', 'hofsaatgut', 'versammlung', 'werkzeugscheune', 'kinderacker', 'solawifest'] },
+  { id: 'saatguttausch', number: 48, layout: 'RING', areas: ['tauschtische', 'sortenschau', 'erzaehlzelt', 'briefstation', 'samenwerkstatt', 'pflanzenboerse', 'weltkueche', 'musikbuehne', 'archivwagen', 'abschlussrunde'] },
+  { id: 'weltgartenschau', number: 49, layout: 'RING', areas: ['europabeete', 'weltbeete', 'zukunftshalle', 'gondelbahn', 'wasserlichter', 'saatguttempel', 'kinderwald', 'familienpavillon', 'aussichtssteg', 'eroeffnung'] },
   // Finale
   { id: 'omasgarten', number: 50, layout: 'ZIGZAG', areas: placeholder('omasgarten') },
 ]

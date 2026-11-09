@@ -6,7 +6,7 @@
 import { chapterDef, type ChapterId } from './chapters'
 import type { DecorId } from './decor'
 
-export type ProjectId = 'pavillon' | 'brunnen' | 'dorffest' | 'rosengarten' | 'gartenroute' | 'tauschpost' | 'herkunftsbeet'
+export type ProjectId = 'pavillon' | 'brunnen' | 'dorffest' | 'rosengarten' | 'gartenroute' | 'tauschpost' | 'herkunftsbeet' | 'morgengarten'
 
 export interface ProjectDef {
   id: ProjectId
@@ -36,6 +36,12 @@ export const PROJECTS: ProjectDef[] = [
     id: 'herkunftsbeet',
     chapters: ['andenkartoffeln', 'milpa', 'kaffeewald', 'reisterrassen', 'gewuerzgarten', 'oase', 'kakaogarten', 'buschgarten', 'farngarten', 'kimchigarten'],
     reward: { samen: 450 },
+  },
+  // Bogen IV „Saatgut für morgen“ (Kapitel 40–49)
+  {
+    id: 'morgengarten',
+    chapters: ['dachgarten', 'schulgarten', 'waldgarten', 'samenbank', 'klimagarten', 'wildblumenband', 'fassadengarten', 'solawihof', 'saatguttausch', 'weltgartenschau'],
+    reward: { samen: 500 },
   },
 ]
 
