@@ -128,8 +128,20 @@ export function useShopActions({ setState, offlineGained, setOfflineGained, offl
     })
   }, [setState])
 
-  const watchRewardedAd = useCallback((choice: AdChoice) => {
+  const watchRewardedAd = useCallback((choice: AdChoice, adFree = false) => {
     if (adRef.current) return
+    // Werbefrei gekauft: Belohnung sofort, ohne Werbung
+    if (adFree) {
+      setAdResult(null)
+      setState((s) => {
+        const result = claimRewardedAd(s, choice)
+        if (!result.ok) return s
+        logPlaytest('shop_tap', { action: 'rewarded_ad', choice, adFree: true })
+        setAdResult({ choice, ernte: result.ernteGained, samen: result.samenGained, at: Date.now() })
+        return result.state
+      })
+      return
+    }
     const blocking = TEST_WALLET_ENABLED
     const totalS = blocking ? pickTestAdSeconds() : Math.round(REWARDED_AD_DELAY_MS / 1000)
     const ad = { choice, totalS, leftMs: blocking ? totalS * 1000 : REWARDED_AD_DELAY_MS, blocking, last: Date.now() }
@@ -149,7 +161,7 @@ export function useShopActions({ setState, offlineGained, setOfflineGained, offl
       if (cur.leftMs <= 0) finishAd()
       else setAdPlaying({ choice: cur.choice, totalS: cur.totalS, leftMs: cur.leftMs, blocking: cur.blocking })
     }, 250)
-  }, [finishAd])
+  }, [finishAd, setState])
 
   /** Testphase: Werbung abbrechen — keine Belohnung, keine Abklingzeit. */
   const cancelAd = useCallback(() => {

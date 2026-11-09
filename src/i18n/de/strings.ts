@@ -778,6 +778,8 @@ export const strings = {
     adsWatching: 'Läuft…',
     adsCooldown: (left: string) => `Wieder in ${left}`,
     adsRemovedBadge: 'Werbefrei',
+    adFreeTitle: 'Bonus (werbefrei)',
+    adFreeIntro: 'Du hast Werbefrei: Die Belohnung gibt es ohne Werbung.',
     adsRewardSkip: (mins: number, amount: string) =>
       `+${mins} Min Zeitsprung (${amount})`,
     adsRewardSamen: (n: number) => `+${zahl(n)} ${SEEDS}`,

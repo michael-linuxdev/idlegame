@@ -18,6 +18,13 @@ describe('Markt', () => {
     if (s.ok) expect(claimRewardedAd(s.state, 'samen', now + REWARDED_AD_COOLDOWN_MS).ok).toBe(true)
   })
 
+  it('Werbefrei: Belohnung bleibt (ohne Werbung), Abklingzeit auch', () => {
+    const free = { ...base, adsRemoved: true }
+    const s = claimRewardedAd(free, 'samen', now)
+    expect(s.ok && s.state.samen).toBe(10 + AD_SAMEN)
+    if (s.ok) expect(claimRewardedAd(s.state, 'samen', now + 1000).ok).toBe(false)
+  })
+
   it('Tagesgeschenk once per day', () => {
     const a = claimMarketGift(base, now)
     expect(a.samen).toBe(10 + MARKET_GIFT_SAMEN)

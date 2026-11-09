@@ -188,10 +188,9 @@ export function ShopPanel({ game, onPreview }: Props) {
             </Row>
           </ul>
 
-          {!state.adsRemoved ? (
-            <>
-              <h3 className="subhead">{t.shop.adsTitle}</h3>
-              <p className="muted">{t.shop.adsIntro}</p>
+          <>
+              <h3 className="subhead">{state.adsRemoved ? t.shop.adFreeTitle : t.shop.adsTitle}</h3>
+              <p className="muted">{state.adsRemoved ? t.shop.adFreeIntro : t.shop.adsIntro}</p>
               <div className="shop-ad-box">
                 {adWatching ? (
                   <p className="shop-ad-status" role="status">
@@ -201,10 +200,10 @@ export function ShopPanel({ game, onPreview }: Props) {
                   <>
                     <p className="shop-ad-status">{t.shop.adsPick}</p>
                     <div className="shop-ad-choices">
-                      <button type="button" className="btn buy" onClick={() => watchRewardedAd('ernte')}>
+                      <button type="button" className="btn buy" onClick={() => watchRewardedAd('ernte', state.adsRemoved)}>
                         {t.shop.adsErnte(AD_ERNTE_MINUTES, formatErnte(adErnte))}
                       </button>
-                      <button type="button" className="btn buy" onClick={() => watchRewardedAd('samen')}>
+                      <button type="button" className="btn buy" onClick={() => watchRewardedAd('samen', state.adsRemoved)}>
                         {t.shop.adsSamen(AD_SAMEN)}
                       </button>
                     </div>
@@ -218,8 +217,7 @@ export function ShopPanel({ game, onPreview }: Props) {
                   </p>
                 ) : null}
               </div>
-            </>
-          ) : null}
+          </>
 
           {OFFERS_VISIBLE ? (
             <>
