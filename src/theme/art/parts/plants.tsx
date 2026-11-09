@@ -1,5 +1,6 @@
 import { P } from '../palette'
 import { Place } from './Place'
+import { foliage, useSeason } from './season'
 import { STROKE } from './style'
 
 /** Blume mit fünf Blütenblättern; Fußpunkt = Stängelende. Kopf auf Höhe r+4. */
@@ -38,12 +39,18 @@ export function Lettuce({ x, y, s = 1 }: { x: number; y: number; s?: number }) {
 }
 
 /** Busch, optional mit Beeren; Fußpunkt = Bodenmitte, Radius r. */
-export function Bush({ x, y, r = 9, berry }: { x: number; y: number; r?: number; berry?: string }) {
+export function Bush({ x, y, r = 9, berry: ripe }: { x: number; y: number; r?: number; berry?: string }) {
+  const season = useSeason()
+  // Beerenbüsche bleiben im Herbst grün mit buntem Laub, damit die Beeren sichtbar bleiben
+  const f = season === 'autumn' ? { crown: P.leafDark, mid: P.autumn, light: P.gold } : foliage(season)
+  // Frühling: weiße Blüten statt Beeren · Winter: kahl mit Schnee
+  const berry = season === 'spring' ? (ripe ? P.white : undefined) : season === 'winter' ? undefined : ripe
   return (
     <Place x={x} y={y}>
-      <circle cx="0" cy={-r} r={r} fill={P.leafDark} stroke={P.outline} strokeWidth={STROKE.contour} />
-      <circle cx={r * 0.3} cy={-r * 1.1} r={r * 0.6} fill={P.leaf} />
-      <circle cx={-r * 0.38} cy={-r * 1.35} r={r * 0.45} fill={P.leafLight} />
+      <circle cx="0" cy={-r} r={r} fill={f.crown} stroke={P.outline} strokeWidth={STROKE.contour} />
+      <circle cx={r * 0.3} cy={-r * 1.1} r={r * 0.6} fill={f.mid} />
+      <circle cx={-r * 0.38} cy={-r * 1.35} r={r * 0.45} fill={f.light} />
+      {season === 'winter' ? <path d={`M${-r * 0.75} ${-r * 1.55} Q0 ${-r * 2.2} ${r * 0.75} ${-r * 1.55}`} fill="none" stroke={P.white} strokeWidth={r * 0.28} strokeLinecap="round" className="art-snow" /> : null}
       {berry
         ? [
             [-0.4, 0.2],
@@ -60,7 +67,14 @@ export function Bush({ x, y, r = 9, berry }: { x: number; y: number; r?: number;
 }
 
 /** Laubbaum mit runder Krone, optional mit Früchten; Fußpunkt = Stammfuß. */
-export function Tree({ x, y, r = 14, fruit, trunk = 12, crown = P.leafDark, light = P.leafLight, mid = P.leaf }: { x: number; y: number; r?: number; fruit?: string; trunk?: number; crown?: string; light?: string; mid?: string }) {
+export function Tree({ x, y, r = 14, fruit, trunk = 12, ...colors }: { x: number; y: number; r?: number; fruit?: string; trunk?: number; crown?: string; light?: string; mid?: string }) {
+  const season = useSeason()
+  const f = foliage(season)
+  const crown = colors.crown ?? f.crown
+  const mid = colors.mid ?? f.mid
+  const light = colors.light ?? f.light
+  // Frühling: Blüten statt Früchten · Winter: keine Früchte, Schnee auf der Krone
+  const dots = season === 'spring' ? (fruit ? P.blossom : undefined) : season === 'winter' ? undefined : fruit
   const top = -trunk
   return (
     <Place x={x} y={y}>
@@ -68,7 +82,7 @@ export function Tree({ x, y, r = 14, fruit, trunk = 12, crown = P.leafDark, ligh
       <circle cx="0" cy={top - r * 0.4} r={r} fill={crown} stroke={P.outline} strokeWidth={STROKE.contour} />
       <circle cx={r * 0.4} cy={top - r * 0.2} r={r * 0.62} fill={mid} />
       <circle cx={-r * 0.3} cy={top - r * 0.75} r={r * 0.58} fill={light} />
-      {fruit
+      {dots
         ? [
             [-0.5, -0.1],
             [0.3, -0.3],
@@ -77,9 +91,10 @@ export function Tree({ x, y, r = 14, fruit, trunk = 12, crown = P.leafDark, ligh
             [0.05, 0.3],
             [-0.7, -0.6],
           ].map(([dx, dy], i) => (
-            <circle key={i} cx={dx! * r} cy={top - r * 0.4 + dy! * r} r={Math.max(1.8, r * 0.13)} fill={fruit} stroke="rgba(0,0,0,0.3)" strokeWidth={STROKE.hair} />
+            <circle key={i} cx={dx! * r} cy={top - r * 0.4 + dy! * r} r={Math.max(1.8, r * 0.13)} fill={dots} stroke={season === 'spring' ? P.pink : 'rgba(0,0,0,0.3)'} strokeWidth={STROKE.hair} />
           ))
         : null}
+      {season === 'winter' ? <path d={`M${-r * 0.8} ${top - r * 0.95} Q0 ${top - r * 1.75} ${r * 0.8} ${top - r * 0.95}`} fill="none" stroke={P.white} strokeWidth={r * 0.22} strokeLinecap="round" className="art-snow" /> : null}
     </Place>
   )
 }

@@ -1,9 +1,10 @@
 /** Hauptgarten-Bereich: huehnerstall. */
-import { Hen, Shadow } from '../parts'
+import { Hen, Shadow, SnowCap, useSeason } from '../parts'
 import { P, tone } from '../palette'
 import { OUT, WOOD, WOOD_D } from './shared'
 
 export function Huehnerstall({ t }: { t: number }) {
+  const winter = useSeason() === 'winter'
   return (
     <g>
       <Shadow rx={44} />
@@ -21,6 +22,7 @@ export function Huehnerstall({ t }: { t: number }) {
           {/* A-frame coop */}
           <path d="M30 70 L50 34 L70 70 Z" fill={WOOD} stroke={OUT} strokeWidth="1.4" strokeLinejoin="round" />
           <path d="M26 72 L50 30 L74 72" fill="none" stroke={P.roof} strokeWidth="4" strokeLinejoin="round" />
+          {winter ? <SnowCap d="M36 50 L50 31 L64 50" w={3.2} /> : null}
           <path d="M45 70 V58 Q50 52 55 58 V70 Z" fill={OUT} />
         </g>
       ) : (
@@ -33,6 +35,8 @@ export function Huehnerstall({ t }: { t: number }) {
             <path d="M24 40 H72 M24 46 H72 M24 52 H72" stroke={tone('#b8433f')} strokeWidth="1" />
           ) : null}
           <path d="M18 36 L48 18 L78 36 Z" fill={P.metal} stroke={OUT} strokeWidth="1.4" strokeLinejoin="round" />
+          {winter ? <SnowCap d="M20 34 L48 17 L76 34" w={3.4} /> : null}
+          {winter ? <SnowCap d="M20 34 L48 17 L76 34" w={3.4} /> : null}
           <path d="M40 58 V46 Q44 42 48 46 V58 Z" fill={OUT} />
           <rect x="56" y="42" width="10" height="8" fill={P.window} stroke={OUT} strokeWidth="1" className="art-window" />
           {/* ramp */}

@@ -1,5 +1,5 @@
 /** Hauptgarten-Bereich: kompost. */
-import { Shadow } from '../parts'
+import { Shadow, SnowCap, useSeason } from '../parts'
 import { P, tone } from '../palette'
 import { OUT, WOOD, WOOD_D } from './shared'
 
@@ -14,9 +14,12 @@ function Steam({ x, y }: { x: number; y: number }) {
 
 function KompostHeap({ x, w, base = 64, tall = 0.7 }: { x: number; w: number; base?: number; tall?: number }) {
   const peak = base - w * tall
+  const season = useSeason()
   return (
     <g>
       <path d={`M${x} ${base} Q${x + w / 2} ${peak - w * 0.25} ${x + w} ${base} Z`} fill={P.compost} stroke={OUT} strokeWidth="1.2" />
+      {season === 'winter' ? <SnowCap d={`M${x + w * 0.2} ${peak + w * 0.12} Q${x + w / 2} ${peak - w * 0.18} ${x + w * 0.8} ${peak + w * 0.12}`} w={w * 0.12} /> : null}
+      {season === 'autumn' ? <ellipse cx={x + w * 0.22} cy={base - 3} rx="2.6" ry="1.3" fill={P.autumn} transform={`rotate(25 ${x + w * 0.22} ${base - 3})`} /> : null}
       <ellipse cx={x + w * 0.35} cy={peak + w * 0.2} rx="3" ry="1.6" fill={tone('#8fbf5a')} transform={`rotate(-20 ${x + w * 0.35} ${peak + w * 0.2})`} />
       <ellipse cx={x + w * 0.66} cy={peak + w * 0.26} rx="2.4" ry="1.4" fill={tone('#d58a3a')} />
       <circle cx={x + w * 0.5} cy={peak + w * 0.08} r="1.6" fill={tone('#c9433a')} />
@@ -38,6 +41,7 @@ function KompostBin({ x, w = 24, full = true }: { x: number; w?: number; full?: 
 }
 
 export function Kompost({ t, producing }: { t: number; producing: boolean }) {
+  const season = useSeason()
   return (
     <g>
       <Shadow rx={42} />
@@ -60,6 +64,7 @@ export function Kompost({ t, producing }: { t: number; producing: boolean }) {
               <rect x="14" y="30" width="3" height="40" fill={WOOD_D} />
               <rect x="83" y="30" width="3" height="40" fill={WOOD_D} />
               <path d="M8 34 L50 22 L92 34 L92 38 L8 38 Z" fill={tone('#7d9f5a')} stroke={OUT} strokeWidth="1.3" strokeLinejoin="round" />
+              {season === 'winter' ? <SnowCap d="M11 32.6 L50 21.5 L89 32.6" w={3} /> : null}
             </g>
           ) : null}
           <KompostBin x={t >= 4 ? 18 : 26} w={22} />

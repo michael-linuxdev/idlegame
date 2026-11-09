@@ -20,7 +20,8 @@ import { Kompost } from './art/garden/kompost'
 import { Kraeuterspirale } from './art/garden/kraeuterspirale'
 import { Obstwiese } from './art/garden/obstwiese'
 import { Orangerie } from './art/garden/orangerie'
-import { GardenLamp } from './art/parts'
+import { GardenLamp, SeasonContext } from './art/parts'
+import type { Season } from './ambient'
 
 /** Gartenlaterne hinter dem Bereich (ab Stufe 3), leuchtet abends und nachts. */
 const LAMP: Record<GeneratorId, { x: number; y: number }> = {
@@ -41,6 +42,8 @@ interface Props {
   level: number
   producing?: boolean
   selected?: boolean
+  /** Jahreszeit aus useAmbient (Blüte, Herbstlaub, Schnee); ohne = Sommer */
+  season?: Season
 }
 
 function renderModule(id: GeneratorId, tier: number, producing: boolean): ReactNode {
@@ -68,7 +71,7 @@ function renderModule(id: GeneratorId, tier: number, producing: boolean): ReactN
   }
 }
 
-function ModuleArtImpl({ id, level, producing = false, selected = false }: Props) {
+function ModuleArtImpl({ id, level, producing = false, selected = false, season }: Props) {
   const tier = Math.max(1, moduleTier(level))
   // Stufenwechsel animiert GardenMap über PlotFx onTier + .tier-grow
   const cls =
@@ -77,17 +80,20 @@ function ModuleArtImpl({ id, level, producing = false, selected = false }: Props
     (selected ? ' selected' : '')
 
   return (
-    <ArtSvg className={cls} viewBox="0 0 100 86" data-tier={tier}>
-      {tier >= 3 ? <GardenLamp x={LAMP[id].x} y={LAMP[id].y} s={0.9} /> : null}
-      {renderModule(id, tier, producing)}
+    <ArtSvg className={cls} viewBox="0 0 100 86" data-tier={tier} data-season={season}>
+      <SeasonContext.Provider value={season}>
+        {tier >= 3 ? <GardenLamp x={LAMP[id].x} y={LAMP[id].y} s={0.9} /> : null}
+        {renderModule(id, tier, producing)}
+      </SeasonContext.Provider>
     </ArtSvg>
   )
 }
 
-/** Memoized on tier (not raw level) so per-level buys don't redraw the SVG. */
+/** Memoized on tier and season (not raw level) so per-level buys don't redraw the SVG. */
 export const ModuleArt = memo(ModuleArtImpl, (a, b) =>
   a.id === b.id &&
   moduleTier(a.level) === moduleTier(b.level) &&
   a.producing === b.producing &&
-  a.selected === b.selected,
+  a.selected === b.selected &&
+  a.season === b.season,
 )

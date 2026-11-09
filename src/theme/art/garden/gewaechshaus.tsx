@@ -1,9 +1,10 @@
 /** Hauptgarten-Bereich: gewaechshaus. */
-import { CitrusPot, Flower, Lettuce, Shadow, Sprout } from '../parts'
+import { CitrusPot, Flower, Lettuce, Shadow, SnowCap, Sprout, useSeason } from '../parts'
 import { P } from '../palette'
 import { Glass, LEAF, LEAF_D, LEAF_L, OUT, WOOD } from './shared'
 
 export function Gewaechshaus({ t }: { t: number }) {
+  const winter = useSeason() === 'winter'
   const tomatoes = (x0: number, x1: number, y: number) =>
     Array.from({ length: Math.floor((x1 - x0) / 8) + 1 }, (_, i) => {
       const x = x0 + i * 8
@@ -53,6 +54,7 @@ export function Gewaechshaus({ t }: { t: number }) {
         <path key={i} d={`M${x + (i + 1) * (w / (Math.floor(w / 10) + 1))} 66 V${wallTop}`} stroke={P.white} strokeWidth="1.2" />
       ))}
       <path d={`M${x - 3} ${wallTop + 1} L50 ${wallTop - 22} L${x + w + 3} ${wallTop + 1}`} fill="none" stroke={t >= 5 ? P.cream : P.glassEdge} strokeWidth="2.2" strokeLinejoin="round" />
+      {winter ? <SnowCap d={`M${x} ${wallTop - 1} L50 ${wallTop - 22.5} L${x + w} ${wallTop - 1}`} w={3} /> : null}
       {/* door */}
       <rect x="45" y={wallTop + 6} width="10" height={60 - wallTop} fill={P.white} fillOpacity="0.35" stroke={P.white} strokeWidth="1.2" />
       {t >= 4 ? (

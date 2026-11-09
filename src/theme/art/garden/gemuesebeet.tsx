@@ -1,5 +1,5 @@
 /** Hauptgarten-Bereich: gemuesebeet. */
-import { Bed, Flower, Lettuce, Shadow, Sprout } from '../parts'
+import { Bed, Flower, Lettuce, Shadow, Sprout, useSeason } from '../parts'
 import { P, tone } from '../palette'
 import { LEAF, LEAF_D, LEAF_L, OUT, WOOD_D } from './shared'
 
@@ -22,6 +22,9 @@ function Radish({ x, y }: { x: number; y: number }) {
 }
 
 export function Gemuesebeet({ t }: { t: number }) {
+  const season = useSeason()
+  // Beet je Stufe: linke Kante, Breite, Oberkante der Erde, Unterkante der Erde
+  const bed = t <= 1 ? { x: 18, w: 64, top: 48, bottom: 70 } : t === 2 ? { x: 12, w: 76, top: 46, bottom: 66 } : { x: 16, w: 68, top: 44, bottom: 64 }
   return (
     <g>
       <Shadow rx={42} />
@@ -89,6 +92,19 @@ export function Gemuesebeet({ t }: { t: number }) {
           )}
         </g>
       )}
+      {season === 'winter' ? (
+        <g className="art-snow">
+          {/* Vlies über dem Beet */}
+          <path d={`M${bed.x - 1} ${bed.bottom} V${bed.top - 2} Q${bed.x + bed.w / 2} ${bed.top - 12} ${bed.x + bed.w + 1} ${bed.top - 2} V${bed.bottom} Z`} fill={P.white} fillOpacity="0.78" stroke={P.frost} strokeWidth="0.9" />
+          <path d={`M${bed.x + 8} ${bed.top + 2} q6 -3 12 0 M${bed.x + bed.w - 24} ${bed.top + 1} q6 -3 12 0`} stroke={P.frost} strokeWidth="0.8" fill="none" />
+        </g>
+      ) : null}
+      {season === 'autumn' && t >= 2 && t <= 4 ? (
+        <g>
+          <ellipse cx={bed.x - 4} cy={bed.bottom - 4} rx="5.4" ry="4.2" fill={P.orange} stroke={OUT} strokeWidth="1.1" />
+          <path d={`M${bed.x - 4} ${bed.bottom - 8} v-3`} stroke={LEAF_D} strokeWidth="1.4" />
+        </g>
+      ) : null}
       {t >= 3 ? (
         <g>
           {/* Pflanzschilder */}

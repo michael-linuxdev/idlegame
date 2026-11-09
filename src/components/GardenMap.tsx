@@ -976,15 +976,16 @@ export function GardenMap({
               >
                 <span className={`plot-visual${growing === def.id ? ' tier-grow' : ''}`}>
                   {!unlocked ? (
-                    <WildPlot id={def.id} />
+                    <WildPlot id={def.id} season={ambient.season} />
                   ) : ready ? (
-                    <ClearedPlot />
+                    <ClearedPlot season={ambient.season} />
                   ) : (
                     <ModuleArt
                       id={def.id}
                       level={level}
                       producing={producing}
                       selected={selectedHere}
+                      season={ambient.season}
                     />
                   )}
                 </span>

@@ -20,6 +20,12 @@ export const HEX = {
   leafDark: '#3f7a30',
   leafMoss: '#4f7a2e',
   leafPale: '#9ad16f',
+  // Herbst- und Winterlaub
+  autumnDark: '#a5531a',
+  autumn: '#d2752c',
+  winterLeafDark: '#5f7a5a',
+  winterLeaf: '#7a8f72',
+  winterLeafLight: '#9aa88a',
   // Holz
   woodLight: '#c9a46b',
   wood: '#b98450',

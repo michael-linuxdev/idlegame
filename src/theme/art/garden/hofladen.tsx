@@ -1,9 +1,10 @@
 /** Hauptgarten-Bereich: hofladen. */
-import { Crate, Flower, Shadow } from '../parts'
+import { Crate, Flower, Shadow, SnowCap, useSeason } from '../parts'
 import { P, tone } from '../palette'
 import { OUT, WOOD, WOOD_D } from './shared'
 
 export function Hofladen({ t }: { t: number }) {
+  const season = useSeason()
   const produce = [P.red, P.orange, P.leafLight, P.yellow, P.plum]
   if (t === 1) {
     return (
@@ -31,6 +32,7 @@ export function Hofladen({ t }: { t: number }) {
           {/* shop hut behind the stall */}
           <rect x={x + 6} y="22" width={stallW - 12} height="34" fill={t >= 5 ? P.paper : WOOD} stroke={OUT} strokeWidth="1.4" />
           <path d={`M${x} 24 L50 6 L${x + stallW} 24 Z`} fill={P.roof} stroke={OUT} strokeWidth="1.4" strokeLinejoin="round" />
+          {season === 'winter' ? <SnowCap d={`M${x + 2} 22.5 L50 5.5 L${x + stallW - 2} 22.5`} w={3.2} /> : null}
           <rect x="44" y="34" width="12" height="22" fill={tone('#7d9f5a')} stroke={OUT} strokeWidth="1.2" />
           {/* Fenster im Laden (leuchten abends) */}
           <rect x="29" y="24.6" width="9" height="5" fill={P.window} stroke={OUT} strokeWidth="1" className="art-window" />
@@ -50,6 +52,14 @@ export function Hofladen({ t }: { t: number }) {
       <rect x={x + 2} y="36" width="3" height="36" fill={WOOD_D} />
       <rect x={x + stallW - 5} y="36" width="3" height="36" fill={WOOD_D} />
       <path d={`M${x - 3} 40 L${x + 4} 30 L${x + stallW - 4} 30 L${x + stallW + 3} 40 Z`} fill={P.white} stroke={OUT} strokeWidth="1.3" strokeLinejoin="round" />
+      {season === 'winter' ? <SnowCap d={`M${x + 5} 30 H${x + stallW - 5}`} w={2.6} /> : null}
+      {season === 'autumn' ? (
+        <g>
+          {/* Kürbisse vor dem Stand */}
+          <ellipse cx={x - 2} cy="68" rx="5" ry="3.8" fill={P.orange} stroke={OUT} strokeWidth="1" />
+          <ellipse cx={x + stallW + 3} cy="69" rx="4" ry="3" fill={P.amber} stroke={OUT} strokeWidth="1" />
+        </g>
+      ) : null}
       {Array.from({ length: Math.floor(stallW / 8) }, (_, i) => (
         <path
           key={i}

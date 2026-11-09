@@ -1,5 +1,6 @@
 import { memo, type ReactNode } from 'react'
 import type { GeneratorId } from '../game/generators'
+import type { Season } from './ambient'
 import { ArtSvg } from './ArtSvg'
 import { P, tone } from './art/palette'
 import { Shadow } from './art/parts'
@@ -230,7 +231,7 @@ function WildExtra({ kind }: { kind: 'pot' | 'board' | 'flowers' }) {
   )
 }
 
-export const WildPlot = memo(function WildPlot({ id }: { id: GeneratorId }) {
+export const WildPlot = memo(function WildPlot({ id, season }: { id: GeneratorId; season?: Season }) {
   const spec = WILD_FOR[id]
   const Art = WILD_ART[spec.kind]
   const dx = spec.dx ?? 0
@@ -242,12 +243,60 @@ export const WildPlot = memo(function WildPlot({ id }: { id: GeneratorId }) {
         <Art />
       </g>
       {spec.extra ? <WildExtra kind={spec.extra} /> : null}
+      <SeasonLayer season={season} />
     </ArtSvg>
   )
 })
 
+/**
+ * Jahreszeit auf Wildnis und geräumter Erde: Schneeflecken im Winter,
+ * Herbstlaub im Herbst, ein paar Frühblüher im Frühling.
+ */
+function SeasonLayer({ season, cleared = false }: { season?: Season; cleared?: boolean }) {
+  if (season === 'winter') {
+    return (
+      <g className="art-snow" fill={P.white}>
+        <ellipse cx="34" cy={cleared ? 50 : 62} rx="14" ry="2.6" opacity="0.9" />
+        <ellipse cx="62" cy={cleared ? 58 : 66} rx="16" ry="2.8" opacity="0.9" />
+        <ellipse cx="48" cy={cleared ? 66 : 70} rx="10" ry="2" opacity="0.8" />
+      </g>
+    )
+  }
+  if (season === 'autumn') {
+    return (
+      <g>
+        {[
+          [24, 70, P.autumn],
+          [40, 72, P.gold],
+          [58, 71, P.autumnDark],
+          [74, 70, P.autumn],
+        ].map(([x, y, c], i) => (
+          <ellipse key={i} cx={x as number} cy={y as number} rx="2.6" ry="1.3" fill={c as string} transform={`rotate(${i * 40 - 30} ${x} ${y})`} />
+        ))}
+      </g>
+    )
+  }
+  if (season === 'spring' && !cleared) {
+    return (
+      <g>
+        {[
+          [22, 68],
+          [78, 69],
+          [50, 72],
+        ].map(([x, y], i) => (
+          <g key={i}>
+            <circle cx={x} cy={y} r="1.6" fill={i === 1 ? P.yellow : P.white} />
+            <circle cx={x} cy={y} r="0.6" fill={P.amber} />
+          </g>
+        ))}
+      </g>
+    )
+  }
+  return null
+}
+
 /** Cleared & raked — the spot waits for its first planting. */
-export const ClearedPlot = memo(function ClearedPlot() {
+export const ClearedPlot = memo(function ClearedPlot({ season }: { season?: Season }) {
   return (
     <ArtSvg className="plot-art plot-cleared" viewBox={VIEWBOX}>
       <Shadow rx={40} />
@@ -279,6 +328,7 @@ export const ClearedPlot = memo(function ClearedPlot() {
       {/* rake */}
       <path d="M28 64 L44 34" stroke={tone('#a77d4c')} strokeWidth="2.6" strokeLinecap="round" />
       <path d="M38 30 L50 38" stroke={P.metal} strokeWidth="2.6" strokeLinecap="round" />
+      <SeasonLayer season={season} cleared />
     </ArtSvg>
   )
 })

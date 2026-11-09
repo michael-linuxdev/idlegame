@@ -1,6 +1,7 @@
 import { P } from '../palette'
 import { GRID, type Grid } from './grid'
 import { Place } from './Place'
+import { useSeason } from './season'
 import { STROKE } from './style'
 
 /** Einheitlicher Bodenschatten: gleiche Höhe und Farbe je Bildraster. */
@@ -13,7 +14,9 @@ export function Shadow({ cx, rx, grid = 'plot' }: { cx?: number; rx: number; gri
  * Beet mit Erdfläche oben und Holzfront. Fußpunkt = Mitte der Unterkante.
  * `h` = Tiefe der Erdfläche, `front` = Höhe der Holzfront (0 = ohne Rahmen).
  */
-export function Bed({ x, y, w, h = 14, front = 6, winter = false, s = 1 }: { x: number; y: number; w: number; h?: number; front?: number; winter?: boolean; s?: number }) {
+export function Bed({ x, y, w, h = 14, front = 6, winter: winterProp, s = 1 }: { x: number; y: number; w: number; h?: number; front?: number; winter?: boolean; s?: number }) {
+  const season = useSeason()
+  const winter = winterProp ?? season === 'winter'
   const left = -w / 2
   const top = -front - h
   const wood = front > 0
@@ -33,4 +36,9 @@ export function Bed({ x, y, w, h = 14, front = 6, winter = false, s = 1 }: { x: 
         : null}
     </Place>
   )
+}
+
+/** Schneekante entlang eines Dach-/Kantenpfads (nur im Winter zeichnen). */
+export function SnowCap({ d, w = 3 }: { d: string; w?: number }) {
+  return <path d={d} fill="none" stroke={P.white} strokeWidth={w} strokeLinecap="round" strokeLinejoin="round" className="art-snow" />
 }

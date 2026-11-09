@@ -1,9 +1,10 @@
 /** Hauptgarten-Bereich: orangerie. */
-import { CitrusPot, Shadow } from '../parts'
+import { CitrusPot, Shadow, SnowCap, useSeason } from '../parts'
 import { P, tone } from '../palette'
 import { Glass, OUT } from './shared'
 
 export function Orangerie({ t }: { t: number }) {
+  const winter = useSeason() === 'winter'
   if (t === 1) {
     return (
       <g>
@@ -51,11 +52,13 @@ export function Orangerie({ t }: { t: number }) {
         <path key={i} d={`M${x + (i + 1) * (w / (Math.floor(w / 9) + 1))} 64 V36`} stroke={P.white} strokeWidth="1.3" />
       ))}
       <rect x={x - 2} y="33" width={w + 4} height="4" rx="1" fill={P.cream} stroke={OUT} strokeWidth="1" />
+      {winter ? <SnowCap d={`M${x - 1} 32.6 H${x + w + 1}`} w={2.4} /> : null}
       {dome ? (
         <g>
           <Glass warm d={`M${50 - w * 0.28} 34 Q50 ${t >= 5 ? 0 : 8} ${50 + w * 0.28} 34 Z`} />
           <path d={`M50 ${t >= 5 ? 9 : 14} V34 M${50 - w * 0.14} 34 Q50 ${t >= 5 ? 8 : 14} ${50 + w * 0.14} 34`} stroke={P.white} strokeWidth="1.1" fill="none" />
           <circle cx="50" cy={t >= 5 ? 7 : 12} r="2.6" fill={P.brass} stroke={OUT} strokeWidth="0.8" />
+          {winter ? <SnowCap d={`M${50 - w * 0.18} ${t >= 5 ? 22 : 25} Q50 ${t >= 5 ? 10 : 15} ${50 + w * 0.18} ${t >= 5 ? 22 : 25}`} w={2.6} /> : null}
         </g>
       ) : (
         <Glass warm d={`M${x - 2} 34 L50 18 L${x + w + 2} 34 Z`} />

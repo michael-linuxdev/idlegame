@@ -1,9 +1,10 @@
 /** Hauptgarten-Bereich: kraeuterspirale. */
-import { Flower, Shadow } from '../parts'
+import { Flower, Shadow, useSeason } from '../parts'
 import { P, tone } from '../palette'
 import { LEAF, LEAF_D, OUT, SOIL } from './shared'
 
 export function Kraeuterspirale({ t }: { t: number }) {
+  const season = useSeason()
   const stones = (n: number, cx: number, cy: number, r0: number, grow: number, per = 9) =>
     Array.from({ length: n }, (_, i) => {
       const a = (i / per) * Math.PI * 2
@@ -43,6 +44,26 @@ export function Kraeuterspirale({ t }: { t: number }) {
           </g>
         )
       })}
+      {season === 'winter' ? (
+        <g className="art-snow" fill={P.white}>
+          {/* Schnee auf der Spirale */}
+          <ellipse cx="50" cy={t >= 3 ? 46 : 54} rx={t >= 3 ? 12 : 16} ry={t >= 3 ? 3.4 : 4.4} opacity="0.92" />
+          <ellipse cx="36" cy={t >= 3 ? 56 : 60} rx="7" ry="2" opacity="0.85" />
+          <ellipse cx="64" cy={t >= 3 ? 58 : 62} rx="6" ry="1.8" opacity="0.85" />
+        </g>
+      ) : null}
+      {season === 'spring' ? (
+        <g>
+          {/* Frühblüher zwischen den Steinen */}
+          {[
+            [30, 64, P.yellow],
+            [70, 63, P.white],
+            [44, 70, P.lilac],
+          ].map(([x, y, c], i) => (
+            <circle key={i} cx={x as number} cy={y as number} r="1.8" fill={c as string} stroke={P.leafDark} strokeWidth="0.4" />
+          ))}
+        </g>
+      ) : null}
       {t >= 5 ? (
         <g>
           {/* gnome */}

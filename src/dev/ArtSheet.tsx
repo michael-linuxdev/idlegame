@@ -40,14 +40,14 @@ function GardenBlock({ season, daypart }: { season: Season; daypart: Daypart }) 
           <div className="as-row" key={g.id}>
             <span className="as-label">{g.name}</span>
             <div className="as-cell plot-visual">
-              <WildPlot id={g.id} />
+              <WildPlot id={g.id} season={season} />
             </div>
             <div className="as-cell plot-visual">
-              <ClearedPlot />
+              <ClearedPlot season={season} />
             </div>
             {TIER_LEVELS.map((lv) => (
               <div className="as-cell plot-visual" key={lv}>
-                <ModuleArt id={g.id} level={lv} producing />
+                <ModuleArt id={g.id} level={lv} producing season={season} />
               </div>
             ))}
           </div>
