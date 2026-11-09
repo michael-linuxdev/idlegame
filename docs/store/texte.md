@@ -29,14 +29,14 @@ Oma hat dir ihren Schrebergarten vererbt. Er ist ziemlich verwildert, aber unter
 
 Roden, anlegen, ausbauen: Aus einem einzigen Gemüsebeet wird Schritt für Schritt ein Gartenpark mit Kräuterspirale, Obstwiese, Bienenstock, Hühnerstall, Gewächshaus, Hofladen und Omas Traum, einer eigenen Orangerie. Dein Garten wächst auch, wenn du nicht da bist.
 
-Später führt dich die Geschichte weiter: Unter Omas Gedenkbeet findet die Familie eine alte Blechdose voller Samentütchen, jedes mit einer Adresse beschriftet. Ihnen folgst du durch 50 Kapitel, vom Hinterhof in der Stadt über Gärten in ganz Europa bis zu den Ursprüngen der Pflanzen in Omas Beeten und zu den Gärten von morgen. Jedes Kapitel ist eine eigene Karte mit zehn Bereichen, einem Brief und einer eigenen Landschaft. Am Ende geht es zurück an den Anfang.
+Später führt dich die Geschichte weiter: Unter Omas Gedenkbeet findet die Familie eine alte Blechdose voller Samentütchen, jedes mit einer Adresse beschriftet. Ihnen folgst du durch 50 Kapitel, vom Hinterhof in der Stadt über Gärten in ganz Europa bis dorthin, wo Omas Pflanzen herkommen, und zu den Gärten von morgen. Jedes Kapitel ist eine eigene Karte mit zehn Bereichen, einem Brief und einer eigenen Landschaft. Am Ende geht es zurück an den Anfang.
 
 Gärtnern im eigenen Tempo: ein paar Minuten am Tag genügen. Keine Energie-Sperren, kein Konto, kein Tracking. Dein Spielstand bleibt auf deinem Gerät.
 
 ### Feature-Punkte (5)
 
 1. **Ein Garten, der sichtbar wächst:** zehn Bereiche mit je fünf Ausbaustufen, Wildnis, die Ecke für Ecke verschwindet, Tages- und Jahreszeiten.
-2. **50 Kapitel, eine Geschichte:** Omas Saatgutdose führt von der Gartenschau über Europa und alle Kontinente bis zurück in Omas Schrebergarten.
+2. **50 Kapitel, eine Geschichte:** Omas Saatgutdose führt von der Gartenschau quer durch Europa und um die Welt bis zurück in Omas Schrebergarten.
 3. **Briefe statt Pop-ups:** Oma, Jonas, Ilse und Briefpartner aus aller Welt schreiben dir; zu jedem Beet gibt es eine Notiz.
 4. **Echtes Idle:** Der Garten und alle Kapitel wachsen offline weiter; Saisonende, Tiefer Winter und Generationen machen jedes Gartenjahr reicher.
 5. **Fair und ruhig:** keine Energie-Sperren, kein Zeitdruck, Werbung nur freiwillig gegen Belohnung, Käufe optional. Auf Deutsch und Englisch.
@@ -70,7 +70,7 @@ Garden at your own pace: a few minutes a day are enough. No energy walls, no acc
 ### Feature bullets (5)
 
 1. **A garden you can watch grow:** ten areas with five upgrade stages each, wilderness that disappears corner by corner, times of day and seasons.
-2. **50 chapters, one story:** Grandma’s seed tin leads from the garden show across Europe and every continent, and back to Grandma’s allotment.
+2. **50 chapters, one story:** Grandma’s seed tin leads from the garden show across Europe and around the world, and back to Grandma’s allotment.
 3. **Letters, not pop-ups:** Grandma, Jonas, Ilse and pen friends from all over the world write to you; every bed has a note.
 4. **True idle:** your garden and all chapters keep growing offline; Season’s End, Deep Winter and generations make every garden year richer.
 5. **Fair and calm:** no energy walls, no time pressure, ads only if you choose them for a reward, purchases optional. In English and German.

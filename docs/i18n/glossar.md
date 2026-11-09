@@ -105,32 +105,32 @@ Vornamen bleiben deutsch (Flair). Verwandtschaft wird übersetzt.
 | Schwester Benedikta | **Sister Benedikta** | Kapitel 14; siezt die Familie → neutral-höflich |
 | Obergärtner Paul Weidner | **Paul Weidner, Head Gardener** | Kapitel 15 |
 | Lena (Onkel Fritz’ Enkelin) | **Lena** | Kapitel 16; „Mein Opa, für euch Onkel Fritz“ → *My grandpa, Uncle Fritz to you* (nie *Grandpa Fritz*: *Grandpa* ist Omas Mann) |
-| Greta Hansen (Ilses Nichte, Naturschutzwartin) | **Greta Hansen** | Kapitel 17; „Moin!“ mit Erklärung wie bei Jan |
-| Frauke Petersen (Deichschäferin) | **Frauke Petersen** | Kapitel 18; grüßt bewusst nicht mit „Moin“ (kennt man schon): „ein Nicken ist schon ein ganzer Satz“ → *a nod is a whole sentence*; Biike → *the Biike* (+ Erklärung *a great bonfire*) |
-| Mirko Nowak (Kahnfährmann, sorbische Familie) | **Mirko Nowak** | Kapitel 19; Gruß „Dobry źeń!“ (Niedersorbisch/Wendisch) bleibt + Erklärung; Fließe → *channels* (kein ß im Englischen), Kahn → *punt*, staken → *punt/pole* |
+| Greta Hansen (Ilses Nichte, Naturschutzwartin) | **Greta Hansen** | Kapitel 17 und 45; grüßt mit „Hallo, ihr Lieben“ → *Hello, you lot* / *Hello, all of you* (kein „Moin“ mehr, siehe `docs/kapitel/entschaerft.md`) |
+| Frauke Petersen (Deichschäferin) | **Frauke Petersen** | Kapitel 18; „ein Nicken ist schon ein ganzer Satz“ → *a nod is a whole sentence*; Winterfeuer → *winter fire* (statt Biike); Koog nur im Deutschen, englisch *land won back from the sea* / *Reclaimed Potato Field*; Teestube → *Tea Room* |
+| Mirko Nowak (Kahnfährmann im Spreewald) | **Mirko Nowak** | Kapitel 19; Gruß „Guten Tag, liebe Familie“ → *Good day, dear family*; Fließe → *channels* (kein ß im Englischen), Kahn → *punt*, staken → *punt/pole*; Heimatstube → *Heritage Room* |
 | Margaret Pryce | **Margaret Pryce** | Kapitel 20 (Bogen II); Unterschrift „Herzlich, …“ → *Warmly, Margaret Pryce* |
-| Joost de Vries | **Joost de Vries** | Kapitel 21; „Beste familie“ (Niederländisch) bleibt + Erklärung |
-| Giulia Zanon | **Giulia Zanon** | Kapitel 22; „Bondì!“ (Venezianisch) bleibt + Erklärung; *nonna*, *castraura*, *sagra*, *vaporetto*, *sandolo*, *barene* klein und ohne Anführungszeichen |
-| Ingrid Lund (Försterin in Dalarna) | **Ingrid Lund** | Kapitel 23; „Hej!“ + Erklärung; Jedermannsrecht → *right to roam* („Allemansrätten“ nur im Deutschen, wegen ä) |
-| Inés Morales (Gärtnerin der Stadt Córdoba) | **Inés Morales** | Kapitel 24; „Querida familia“ und „Un abrazo“ (Spanisch) bleiben + Erklärung; *azahar*, *acequia*, *Cruces de Mayo* ohne Anführungszeichen; Bitterorangen → *Seville oranges* / *bitter oranges* |
-| João Ferreira (Korkschäler im Alentejo) | **João Ferreira** | Kapitel 25; „Olá, família!“ und „Até breve“ (Portugiesisch) bleiben + Erklärung; Montado → *montado*, Korkschäler → *cork harvester*, schälen → *strip*, *cante alentejano* klein |
-| Erzsébet Kovács (Pflanzenzüchterin in Kalocsa) | **Erzsébet Kovács** | Kapitel 26; „Kedves Család!“ und „Szeretettel“ (Ungarisch) bleiben + Erklärung; *gémeskút*, *lecsó*, *halászlé* mit Akzenten (erlaubt); „Füzér“ nur im Deutschen (ü) |
-| Siobhán Ní Fhlatharta (Schafhalterin und Strickerin auf Inis Mór) | **Siobhán Ní Fhlatharta** | Kapitel 27; „Dia daoibh!“ und „Slán go fóill“ (Irisch) bleiben + Erklärung; Lazy Beds → *lazy beds*, *céilí*, *currach*; Pullover → *jumper* |
-| Petar Ivanov (Rosenbauer bei Kazanlak) | **Petar Ivanov** | Kapitel 28; „Zdraveyte!“ und „Pozdravi“ (Bulgarisch, lateinisch umschrieben) bleiben + Erklärung; Tscheschma → *cheshma*, Horo → *horo* |
-| Eleni Papadaki (Pistazienbäuerin auf Ägina) | **Eleni Papadaki** | Kapitel 29; „Yia sas!“ und „Me agapi“ (Griechisch, lateinisch umschrieben) bleiben + Erklärung; Ägina → *Aegina* |
-| Rosa Quispe (Agronomin, Quechua-Gemeinde bei Pisac) | **Rosa Quispe** | Kapitel 30; „Allillanchu?“ / „Allillanmi“ (Quechua) bleiben + Erklärung; *andenes*, *chuño*, *muña*, *huatia* klein; Kartoffelpark → *Potato Park* |
-| Teodoro Hernández (Bauer und Saatguthüter in Michoacán) | **Teodoro Hernández** | Kapitel 31; „¡Buenos días, familia!“ und „Hasta pronto“ (Spanisch) bleiben + Erklärung; *milpa*, *teosinte*, *comal*, *tianguis*, *alegría*, *elotes* klein; Mais → *corn* (US), Feldsalat → *lamb’s lettuce* |
-| Almaz Tesfaye (Kaffeebäuerin in Kaffa) | **Almaz Tesfaye** | Kapitel 32; „Selam!“ (Amharisch, lateinisch umschrieben) bleibt + Erklärung; *jebena*, *baraka*, *kocho*, *korarima*, *tukul* klein; Ensete bleibt |
-| Made Wirawan (Wasserverteiler des Subak in Jatiluwih) | **Made Wirawan** | Kapitel 33; „Om Swastiastu!“ und „Om Shanti Shanti Shanti Om“ (Balinesisch) bleiben + Erklärung; *subak*, *sawah*, *lumbung*, *canang*, *gamelan* klein; Laufenten → *runner ducks* |
-| Anjali Menon (Gewürzbäuerin in Kerala) | **Anjali Menon** | Kapitel 34; „Namaskaram!“ (Malayalam) bleibt + Erklärung; *pookalam* klein, Onam, Westghats → *Western Ghats*, Backwaters bleibt |
-| Youssef Amrani (Dattelbauer im Tafilalet) | **Youssef Amrani** | Kapitel 35; „Salam!“ (Arabisch) und „Azul“ (Tamazight) bleiben + Erklärung; *khettara*, *ksar* klein; Medjool groß; Stockwerkgarten → *layered garden* |
-| Ama Owusu (Kakaobäuerin, Kassenwartin der Genossenschaft, Ashanti-Region) | **Ama Owusu** | Kapitel 36; „Akwaaba!“ (Twi) bleibt + Erklärung; *kente*, *kelewele*, *fufu* klein; Genossenschaft → *cooperative*; Kochbananen → *plantains*; Fernando Póo mit Akzent |
-| Kirra Walker (Bushfood-Gärtnerin, First Nations, Norden von New South Wales) | **Kirra Walker** | Kapitel 37; kein Gruß in einer Sprache der First Nations (bewusst); Akaziensamen → *wattleseed*, Silberakazie → *silver wattle*, Salzbusch → *saltbush*, Eukalyptushain → *Gum Trees* |
-| Aroha Ngata (Māori, Rangerin in Northland) | **Aroha Ngata** | Kapitel 38; „Kia ora!“ und „Mā te wā“ (Te Reo Māori) bleiben + Erklärung; *kaitiaki*, *kuia*, *waka*, *rua*, *ponga*, *harakeke*, *kūmara* klein, Matariki und Aotearoa groß; Hängebrücke → *swing bridge* |
-| Kim Soo-ah (Gemüsebäuerin in Jeolla) | **Kim Soo-ah** | Kapitel 39; „Annyeonghaseyo!“ (Koreanisch, umschrieben) bleibt + Erklärung; Familienname zuerst; *kimjang*, *onggi*, *ondol*, *hanok*, *kkakdugi*, *gochugaru*, *songpyeon*, *kkachi-bap* klein, Chuseok groß; Chinakohl → *napa cabbage* |
+| Joost de Vries | **Joost de Vries** | Kapitel 21; „Liebe Familie“ → *Dear family* |
+| Giulia Zanon | **Giulia Zanon** | Kapitel 22; normale Anrede; Großmutter statt *nonna*; Wasserbus → *water bus*; Mönchsbart → *monk’s beard* |
+| Ingrid Lund (Försterin in Schweden) | **Ingrid Lund** | Kapitel 23; normale Anrede; Waldpfad für alle → *Forest Path for All*; Sommerwiese → *Summer Meadow* |
+| Inés Morales (Gärtnerin in einer Stadt in Andalusien) | **Inés Morales** | Kapitel 24; normale Anrede, Schluss „Eine herzliche Umarmung“ → *A big hug*; Kachelbrunnen → *Tiled Fountain*, Bewässerungsrinne → *Water Channel*; Bitterorangen → *Seville oranges* / *bitter oranges* |
+| João Ferreira (Korkschäler in Portugal) | **João Ferreira** | Kapitel 25; normale Anrede; Korkeichenhain → *Cork Oak Grove*, Korkschäler → *cork harvester*, schälen → *strip* |
+| Erzsébet Kovács (Pflanzenzüchterin in Ungarn) | **Erzsébet Kovács** | Kapitel 26; normale Anrede, Schluss „Mit lieben Grüßen“ → *With love*; Paprikatopf → *pepper stew* |
+| Siobhán Ní Fhlatharta (Schafhalterin und Strickerin auf den Aran-Inseln) | **Siobhán Ní Fhlatharta** | Kapitel 27; normale Anrede; Musikabend → *Music Night*, Felsblumen → *Rock Flowers*; Pullover → *jumper* |
+| Petar Ivanov (Rosenbauer in Bulgarien) | **Petar Ivanov** | Kapitel 28; normale Anrede; Ölrosen → *oil roses*; Tanz im Kreis → *circle dance* |
+| Eleni Papadaki (Pistazienbäuerin auf Ägina) | **Eleni Papadaki** | Kapitel 29; normale Anrede; Ägina → *Aegina* |
+| Rosa Quispe (Agronomin in einem Dorf in den Anden) | **Rosa Quispe** | Kapitel 30; normale Anrede; Bergterrassen → *Mountain Terraces*, Trockenplatz → *Drying Yard*; Kartoffelpark → *Potato Park* |
+| Teodoro Hernández (Bauer und Saatguthüter in Mexiko) | **Teodoro Hernández** | Kapitel 31; normale Anrede; Maisfelder in Mexiko → *The Mexican Corn Fields*, Maisküche → *Corn Kitchen*, Bienenstand → *Bee Stand*; Mais → *corn* (US), Feldsalat → *lamb’s lettuce* |
+| Almaz Tesfaye (Kaffeebäuerin in Äthiopien) | **Almaz Tesfaye** | Kapitel 32; normale Anrede; Scheinbananen → *False Bananas*, Rundhütte → *Round Hut*, Kaffeetisch → *Coffee Table*, Tonkanne → *clay pot* |
+| Made Wirawan (verteilt das Wasser für die Reisfelder seines Dorfes) | **Made Wirawan** | Kapitel 33; normale Anrede; Quellhaus → *Spring House*, Reisspeicher → *Rice Store*, Erntetag → *Harvest Day*; Laufenten → *runner ducks* |
+| Anjali Menon (Gewürzbäuerin in Kerala) | **Anjali Menon** | Kapitel 34; normale Anrede; Blumenteppich → *Flower Carpet*, Muskatblüte → *mace*, Monsun → *monsoon* |
+| Youssef Amrani (Dattelbauer in Marokko) | **Youssef Amrani** | Kapitel 35; normale Anrede; Wassertunnel → *Water Tunnel*, Lehmburg → *Adobe Fort*; Stockwerkgarten → *layered garden* |
+| Ama Owusu (Kakaobäuerin, Kassenwartin der Genossenschaft) | **Ama Owusu** | Kapitel 36; Gruß „Willkommen, liebe Familie“ → *Welcome, dear family*; Gärhaufen → *Fermenting*; Genossenschaft → *cooperative*; Kochbananen → *plantains* |
+| Kirra Walker (Gärtnerin an der Ostküste Australiens) | **Kirra Walker** | Kapitel 37; Akaziensamen → *acacia seeds*, Silberakazie → *silver acacia* (bei uns Mimose → *mimosa*), Salzbusch → *saltbush*, Eukalyptushain → *Gum Trees* |
+| Aroha Ngata (Rangerin im Norden Neuseelands) | **Aroha Ngata** | Kapitel 38; normale Anrede; Pfad der Riesen → *Path of Giants*, Flachsbeet → *Flax Bed*, Süßkartoffeln → *Sweet Potatoes*, Winternacht → *Winter Night*; Hängebrücke → *swing bridge* |
+| Kim Soo-ah (Gemüsebäuerin in Korea) | **Kim Soo-ah** | Kapitel 39; normale Anrede; Einlegetag → *pickling day*, Tontöpfe → *Clay Pots*, Blattkräuter → *Leaf Herbs*, Alter Hof → *Old Courtyard*, Herbstfest → *Autumn Festival*; Chinakohl → *napa cabbage*; Kimchi bleibt |
 | Mila (Jonas’ Tochter) | **Mila** | Ab Kapitel 40 (Bogen IV); schreibt die Bereichs-Notizen in Omas Notizbuch weiter („Aus Omas Notizbuch · Mila“ → *From Grandma’s notebook · Mila*); nennt Jonas „Papa“ → *Dad*; Kapitel 40 Absenderin |
 | Derya Yilmaz (Lehrerin, „Familie Yilmaz“ aus den Bestellungen) | **Derya Yilmaz** | Kapitel 41; siezt die Familie → neutral-höflich; Sachunterricht → *science and social studies*, Grundschule → *elementary school*, Sommerferien → *summer vacation*, Gießplan → *watering schedule*; Unterschrift *Warm regards, Derya Yilmaz* |
-| Dr. Amara Okafor (leitet eine Samenbank am Stadtrand) | **Dr. Amara Okafor** | Kapitel 43; siezt die Familie; Kühltresor → *cold vault*, Keimtest → *germination test*, minus 18 Grad → *minus 18 degrees Celsius*, Spitzbergen → *Svalbard* (nur als Vergleich), Tag der offenen Tür → *open house* |
+| Dr. Amara Okafor (leitet eine Samenbank am Stadtrand) | **Dr. Amara Okafor** | Kapitel 43; siezt die Familie; Kühltresor → *cold vault*, Keimtest → *germination test*, tiefgekühlt → *deep-frozen*, Tag der offenen Tür → *open house* |
 | Till (Onkel Fritz’ Enkel, Lenas Bruder) | **Till** | Kapitel 47; „Mein Opa, für euch Onkel Fritz“ → *My grandpa, Uncle Fritz to you*; Solawi / Solidarische Landwirtschaft → *CSA, community supported agriculture*, Ernteanteil → *share*, Bieterrunde → *pledge round*, Hühnermobil → *mobile henhouse*, Folientunnel → *polytunnel* |
 | Briefpartner aus aller Welt (Sammelbrief) | **Your pen friends from all over the world** | Kapitel 48; alle Absender der Kapitel 13–39 zusammen; Ort: die Wiese der alten Gartenschau |
 | Dr. Elisabeth Grün, Leiterin der Weltgartenschau | **Dr. Elisabeth Grün, Director of the World Garden Expo** | Kapitel 49 (wie Kapitel 8, siezt die Familie); in Milas Notizen „Frau Grün“ → *Dr. Grün*; Zukunftshalle → *Hall of the Future* |
@@ -159,24 +159,24 @@ Vornamen bleiben deutsch (Flair). Verwandtschaft wird übersetzt.
 | 17 | Moor- und Heidegarten | **The Moorland Garden** | Moosbeeren → **Cranberries** | Moor |
 | 18 | Deichgarten | **The Dike Garden** | Sanddorn → **Sea Buckthorn** | Dike |
 | 19 | Spreewald | **The Spreewald** | Gurken → **Gherkins** | Spree |
-| 20 | Cottage-Garten | **The Cotswold Cottage Garden** | Duftwicken → **Sweet Peas** | England |
+| 20 | Cottage-Garten | **The English Cottage Garden** | Duftwicken → **Sweet Peas** | England |
 | 21 | Tulpenfelder | **The Dutch Bulb Fields** | Blumenzwiebeln → **Bulbs** | Holland |
-| 22 | Artischockeninsel | **Sant’Erasmo Artichokes** | Artischocken → **Artichokes** | Venice |
+| 22 | Artischockeninsel | **The Artichoke Island** | Artischocken → **Artichokes** | Venice |
 | 23 | Beerenwald | **The Swedish Berry Woods** | Blaubeeren → **Blueberries** | Sweden |
 | 24 | Andalusischer Patio | **The Andalusian Patio** | Orangen → **Seville Oranges** | Spain |
-| 25 | Korkeichenhain | **The Cork Oak Montado** | Kork → **Cork** | Portugal |
-| 26 | Paprikafelder | **The Kalocsa Paprika Fields** | Paprika → **Paprika** | Hungary |
+| 25 | Korkeichenhain | **The Cork Oak Grove** | Kork → **Cork** | Portugal |
+| 26 | Paprikafelder | **The Hungarian Paprika Fields** | Paprika → **Paprika** | Hungary |
 | 27 | Steinfelder von Aran | **The Aran Island Fields** | Wolle → **Wool** | Ireland |
 | 28 | Rosental | **The Bulgarian Rose Valley** | Rosenöl → **Rose Oil** | Bulgaria |
 | 29 | Pistazienhain auf Ägina | **The Pistachio Groves of Aegina** | Pistazien → **Pistachios** | Aegina |
 | 30 | Kartoffeln der Anden | **The Andean Potato Terraces** | Kartoffeln → **Potatoes** | Peru |
-| 31 | Milpa in Mexiko | **The Milpa Fields of Mexico** | Mais → **Corn** | Mexico |
+| 31 | Maisfelder in Mexiko | **The Mexican Corn Fields** | Mais → **Corn** | Mexico |
 | 32 | Kaffeewald in Äthiopien | **The Ethiopian Coffee Forest** | Kaffee → **Coffee** | Ethiopia |
 | 33 | Reisterrassen auf Bali | **The Balinese Rice Terraces** | Reis → **Rice** | Bali |
 | 34 | Gewürzgarten in Kerala | **The Kerala Spice Garden** | Pfeffer → **Pepper** | Kerala |
 | 35 | Dattel-Oase in Marokko | **The Date Palm Oasis** | Datteln → **Dates** | Morocco |
 | 36 | Kakaogarten in Ghana | **The Ghana Cocoa Farm** | Kakao → **Cocoa** | Ghana |
-| 37 | Buschgarten in Australien | **The Australian Bush Garden** | Akaziensamen → **Wattleseed** | Australia |
+| 37 | Buschgarten in Australien | **The Australian Bush Garden** | Akaziensamen → **Acacia Seeds** | Australia |
 | 38 | Farnwald in Neuseeland | **The New Zealand Fern Forest** | Farnwedel → **Fern Fronds** | New Zealand |
 | 39 | Kimchi-Garten in Korea | **The Korean Kimchi Garden** | Chinakohl → **Napa Cabbage** | Korea |
 | 40 | Dachgarten | **The Rooftop Garden** | Salat → **Lettuce** | Rooftop |
@@ -201,14 +201,14 @@ dem Gartenstil *Cottage Garden* = Bauerngarten verwechseln; Bereich am Fließ he
 deshalb *Channel-side Garden*).
 
 Ab Kapitel 30 (Bogen III „Wo die Samen herkommen“ → *Where the Seeds Come From*):
-Jedes Kapitel erzählt, woher eine Pflanze aus Omas Garten stammt. Wissen
-indigener Gemeinschaften wird als ihr Wissen benannt (*our grandparents*,
-*Quechua communities*), nie als Folklore. Großprojekt Bogen III: Omas
-Herkunftsbeet → **Grandma’s Origins Bed**. Māori-Wörter mit Makron
-(*kūmara*, *Māori*, *tūī*, *Mā te wā*) – Makrons sind im Englischen erlaubt;
-*te reo Māori* klein, im Deutschen „Te Reo Māori“. Australien: *First Nations*,
-*bush food*, *wattle*/*wattleseed*, *gum trees* (dt. Eukalyptus); kein
-erfundener Gruß in einer Sprache der First Nations.
+Jedes Kapitel erzählt von einer Gärtnerin oder einem Gärtner, bei denen wächst,
+was in Omas Garten steht. Seit dem Nutzerentscheid „nichts, was Gegenlesen
+braucht“ (`docs/kapitel/entschaerft.md`) gilt für die Kapitel 13–50: **keine
+Fremdwörter, keine Grüße in Landessprache, keine Bräuche oder Wissen anderer
+Völker, keine prüfbaren Zahlen** — nur Personen- und bekannte Länder-/Ortsnamen
+(Peru, Bali, Kerala, Ghana …). Herkunft nur als sicherer Allgemeinplatz
+(„kommt ursprünglich aus Südamerika“ → *originally comes from South America*).
+Großprojekt Bogen III: Omas Herkunftsbeet → **Grandma’s Origins Bed**.
 
 Ab Kapitel 40 (Bogen IV „Saatgut für morgen“ → *Seeds for Tomorrow*): Die
 Bereichs-Notizen stammen von Mila, nicht mehr von Oma. Waldgarten → *forest
