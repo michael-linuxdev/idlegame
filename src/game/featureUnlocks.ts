@@ -22,8 +22,8 @@ export type FeatureId =
   | 'projects'
 
 export interface FeatureCtx {
-  prestiges: number
-  deepPrestiges: number
+  saisonenden: number
+  tiefeWinter: number
   generation: number
   sessions: number
   owned: Partial<Record<string, number>>
@@ -50,8 +50,8 @@ export function usedFeatures(s: {
 
 /** Fortschritt in „Schritten“: jede weitere Sitzung oder jedes Gartenjahr zählt. */
 export function featureStep(c: FeatureCtx): number {
-  if (c.deepPrestiges > 0 || c.generation > 0) return 99
-  return Math.max(c.sessions - 1, c.prestiges)
+  if (c.tiefeWinter > 0 || c.generation > 0) return 99
+  return Math.max(c.sessions - 1, c.saisonenden)
 }
 
 interface FeatureDef {
@@ -68,7 +68,7 @@ export const FEATURES: FeatureDef[] = [
   { id: 'weather', open: (_c, step) => step >= 3 },
   { id: 'clan', open: (_c, step) => step >= 4 },
   { id: 'decor', open: (c) => decorUnlocked(c) },
-  { id: 'album', open: (c) => c.prestiges >= 1 || c.deepPrestiges > 0 || c.generation > 0 },
+  { id: 'album', open: (c) => c.saisonenden >= 1 || c.tiefeWinter > 0 || c.generation > 0 },
   { id: 'cross', open: (c) => crossingUnlocked(c.collection) },
   { id: 'projects', open: (c) => c.openChapters > 0 },
 ]
@@ -111,7 +111,7 @@ export function saveFeaturesSeen(ids: readonly FeatureId[]): void {
  */
 export function initialFeaturesSeen(c: FeatureCtx, stored: FeatureId[] | null): FeatureId[] {
   if (stored) return stored
-  const veteran = c.sessions > 1 || c.prestiges > 0 || c.deepPrestiges > 0 || c.generation > 0
+  const veteran = c.sessions > 1 || c.saisonenden > 0 || c.tiefeWinter > 0 || c.generation > 0
   return veteran ? [...openFeatures(c)] : []
 }
 
@@ -148,7 +148,3 @@ export function markFeatureSeen(id: FeatureId): void {
   seenListeners.forEach((l) => l())
 }
 
-/** Test helper */
-export function resetFeaturesSeenCache(): void {
-  seenCache = null
-}

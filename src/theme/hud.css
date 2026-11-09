@@ -6,7 +6,7 @@
  * Paper/wood look, never stacked white cards over the map.
  */
 
-.fortress-home {
+.garten-home {
   --hud-paper: #fbf6e8;
   --hud-paper-2: #f3e9d2;
   --hud-edge: #c9b48a;
@@ -75,7 +75,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-family: var(--oc-font-display);
+  font-family: var(--ge-font-display);
   font-weight: 700;
   font-size: 0.86rem;
   line-height: 1.1;
@@ -90,7 +90,7 @@
 
 .hud-level-label {
   flex: none;
-  font-family: var(--oc-font-metric);
+  font-family: var(--ge-font-metric);
   font-size: 0.66rem;
   font-weight: 700;
   color: var(--hud-ink-soft);
@@ -144,7 +144,7 @@
   display: flex;
   align-items: center;
   gap: 0.3rem;
-  font-family: var(--oc-font-metric);
+  font-family: var(--ge-font-metric);
   font-weight: 700;
   font-size: 1.22rem;
   line-height: 1.05;
@@ -162,7 +162,7 @@
 }
 
 .hud-rate {
-  font-family: var(--oc-font-metric);
+  font-family: var(--ge-font-metric);
   font-weight: 700;
   font-size: 0.68rem;
   color: var(--hud-ink-soft);
@@ -176,7 +176,7 @@
 .hud-sub {
   display: flex;
   gap: 0.55rem;
-  font-family: var(--oc-font-metric);
+  font-family: var(--ge-font-metric);
   font-weight: 700;
   font-size: 0.66rem;
   color: var(--hud-ink-soft);
@@ -235,14 +235,14 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-family: var(--oc-font-display);
+  font-family: var(--ge-font-display);
   font-weight: 700;
   font-size: 0.84rem;
 }
 
 .hud-goal-detail {
   flex: none;
-  font-family: var(--oc-font-metric);
+  font-family: var(--ge-font-metric);
   font-weight: 700;
   font-size: 0.72rem;
   color: var(--hud-ink-soft);
@@ -275,7 +275,6 @@
     0 0 0 3px rgba(127, 191, 90, 0.28),
     0 5px 12px rgba(40, 32, 12, 0.14);
 }
-
 
 .hud-goal.tone-season {
   border-color: #8fb3d1;
@@ -336,7 +335,7 @@
   background: var(--hud-paper);
   box-shadow: 0 2px 0 var(--hud-edge);
   color: var(--hud-ink);
-  font-family: var(--oc-font-metric);
+  font-family: var(--ge-font-metric);
   font-weight: 700;
   font-size: 0.68rem;
   white-space: nowrap;
@@ -383,9 +382,9 @@
 }
 
 .hud-pill.claim {
-  border-color: var(--oc-ember-dim);
-  background: linear-gradient(180deg, var(--oc-ember-hot), var(--oc-ember));
-  box-shadow: 0 2px 0 var(--oc-ember-dim);
+  border-color: var(--ge-gruen-dunkel);
+  background: linear-gradient(180deg, var(--ge-gruen-hell), var(--ge-gruen));
+  box-shadow: 0 2px 0 var(--ge-gruen-dunkel);
   color: #fff;
 }
 
@@ -475,10 +474,10 @@
 }
 
 .hud-claim.daily {
-  border-color: var(--oc-ember-dim);
-  background: linear-gradient(180deg, var(--oc-ember-hot), var(--oc-ember));
+  border-color: var(--ge-gruen-dunkel);
+  background: linear-gradient(180deg, var(--ge-gruen-hell), var(--ge-gruen));
   box-shadow:
-    0 3px 0 var(--oc-ember-dim),
+    0 3px 0 var(--ge-gruen-dunkel),
     0 6px 14px rgba(20, 60, 20, 0.25);
   color: #fff;
 }
@@ -507,13 +506,13 @@
 }
 
 .hud-claim-title {
-  font-family: var(--oc-font-display);
+  font-family: var(--ge-font-display);
   font-weight: 700;
   font-size: 0.9rem;
 }
 
 .hud-claim-sub {
-  font-family: var(--oc-font-metric);
+  font-family: var(--ge-font-metric);
   font-weight: 700;
   font-size: 0.7rem;
   white-space: nowrap;
@@ -566,7 +565,7 @@
 }
 
 .hud-water-label {
-  font-family: var(--oc-font-display);
+  font-family: var(--ge-font-display);
   font-weight: 700;
   font-size: 0.72rem;
   line-height: 1;
@@ -596,7 +595,7 @@
 .hud-goal:focus-visible,
 .hud-pill:focus-visible,
 .hud-garden:focus-visible {
-  outline: 3px solid var(--oc-focus);
+  outline: 3px solid var(--ge-focus);
   outline-offset: 2px;
 }
 
@@ -613,7 +612,7 @@
   border-radius: 12px;
   background: var(--hud-paper);
   box-shadow: 0 6px 16px rgba(40, 32, 12, 0.22);
-  font-family: var(--oc-font-display);
+  font-family: var(--ge-font-display);
   font-weight: 700;
   font-size: 0.86rem;
   color: var(--hud-ink);
@@ -622,26 +621,11 @@
   pointer-events: none;
 }
 
-.fortress-home .float-pops {
+.garten-home .float-pops {
   top: 42%;
 }
 
 /* Menü FAB matches the HUD paper */
-.game-chrome.map-home .menu-fab {
-  bottom: calc(var(--safe-bottom) + 0.6rem);
-  right: 0.6rem;
-  border: 1.5px solid var(--oc-stroke-strong);
-  background: #fbf6e8;
-}
-
-.nav-menu-sound {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  padding: 0.35rem 0.55rem;
-  font-weight: 700;
-}
 
 @keyframes hud-dot {
   0%,
@@ -684,17 +668,8 @@
   }
 }
 
-.nav-menu-reminders {
-  width: 100%;
-  border: 0;
-  border-radius: 8px;
-  background: transparent;
-  font: inherit;
-  cursor: pointer;
-}
-
 .nav-toggle-state {
-  font-family: var(--oc-font-metric);
+  font-family: var(--ge-font-metric);
   font-weight: 700;
-  color: var(--oc-ember-dim);
+  color: var(--ge-gruen-dunkel);
 }

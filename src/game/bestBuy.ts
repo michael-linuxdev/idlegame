@@ -45,9 +45,9 @@ export function computeBestBuy(
       def,
       state.ernteSeason,
       state.owned,
-      state.emberUpgrades.firstFlame > 0,
+      state.truhe.kompostVomVorjahr > 0,
       opts.playerLevel,
-      gateSeasons(state.prestiges, state.deepUpgrades),
+      gateSeasons(state.saisonenden, state.sproesslingLaden),
     )
     if (!unlocked) continue
     const owned = state.owned[def.id] ?? 0
@@ -85,7 +85,7 @@ export function computeBestBuy(
       } else {
         const bestOwned = state.owned[bestAffordable.id] ?? 0
         // Prefer an already-online line when scores are close so Soft-Prestige
-        // with firstFlame doesn't spotlight an empty G2 over G1 Ausbauen.
+        // with kompostVomVorjahr doesn't spotlight an empty G2 over G1 Ausbauen.
         const preferOnline =
           owned >= 1 &&
           bestOwned < 1 &&

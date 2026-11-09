@@ -1,0 +1,101 @@
+/* Pflege-Zweige — Teil von App.css (Reihenfolge zählt). */
+.branch-title {
+  margin: 0 0 0.05rem;
+  font-family: var(--ge-font-display);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ge-ink-muted);
+  font-weight: 700;
+}
+
+.branch-block-hud .branch-title {
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.1rem;
+  color: var(--ge-ink-faint);
+}
+
+.branch-hint {
+  display: none;
+}
+
+.branch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.45rem;
+  padding: 0.35rem 0.45rem;
+  border: 1px solid color-mix(in srgb, var(--ge-stroke) 70%, transparent);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--ge-bg-inset) 28%, transparent);
+}
+
+.branch-block-hud .branch-row {
+  padding: 0.32rem 0.4rem 0.32rem 0.5rem;
+  border-radius: 12px;
+  border-color: color-mix(in srgb, var(--ge-stroke) 45%, transparent);
+  background: color-mix(in srgb, var(--ge-bg-raised) 72%, transparent);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+.branch-hud {
+  margin: 0;
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.12rem 0.28rem;
+  font-size: 0.72rem;
+  line-height: 1.2;
+  font-weight: 600;
+  color: var(--ge-ink);
+}
+
+.branch-name {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--ge-ink);
+}
+
+.branch-rank {
+  font-weight: 700;
+  color: var(--ge-ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.branch-sep {
+  color: var(--ge-ink-muted);
+  font-weight: 600;
+}
+
+.branch-per,
+.branch-effect {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--ge-bronze);
+  white-space: nowrap;
+}
+
+.branch-row .muted,
+.branch-copy {
+  display: none;
+}
+
+.branch-buy {
+  flex-shrink: 0;
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 0.28rem 0.55rem;
+  min-height: 2rem;
+  min-width: 5.5rem;
+  max-width: 9.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.1;
+  border-width: 1px;
+  border-radius: 999px;
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--ge-stroke-strong) 45%, transparent);
+}

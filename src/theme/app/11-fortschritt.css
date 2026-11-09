@@ -1,0 +1,145 @@
+/* Fortschritt, Erfolge, Aufgaben — Teil von App.css (Reihenfolge zählt). */
+.clan-boost-status {
+  margin-top: 0.55rem;
+  font-family: var(--ge-font-metric);
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--ge-clan);
+}
+
+.clan-boost-status.idle {
+  color: var(--ge-ink-muted);
+}
+
+.progress-sheet {
+  max-height: min(88vh, 640px);
+  overflow-y: auto;
+}
+
+.level-bar-block {
+  margin: 0.35rem 0 1rem;
+}
+
+.level-bar-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ge-ink);
+  margin-bottom: 0.35rem;
+}
+
+.level-bonus {
+  color: var(--ge-bronze);
+}
+
+.level-bar-track {
+  height: 0.55rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ge-bg-inset) 75%, transparent);
+  overflow: hidden;
+  border: 1px solid var(--ge-stroke);
+}
+
+.level-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #6a9a5a, var(--ge-gruen));
+  border-radius: inherit;
+}
+
+.progress-subhead {
+  margin: 1.1rem 0 0.25rem;
+  font-family: var(--ge-font-display);
+  font-size: 1.05rem;
+  color: var(--ge-ink);
+}
+
+.progress-intro {
+  margin: 0 0 0.55rem;
+  font-size: 0.9rem;
+}
+
+.quest-list,
+.achievement-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.quest-row,
+.achievement-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.65rem;
+  padding: 0.65rem 0.7rem;
+  border: 1px solid var(--ge-stroke);
+  border-radius: var(--ge-radius);
+  background: color-mix(in srgb, var(--ge-bg-raised) 88%, transparent);
+}
+
+.quest-row.done,
+.achievement-row.done {
+  opacity: 0.72;
+}
+
+.quest-copy,
+.achievement-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.quest-copy strong,
+.achievement-copy strong {
+  color: var(--ge-ink);
+  font-size: 0.95rem;
+}
+
+.quest-progress,
+.quest-reward,
+.achievement-reward,
+.branch-effect {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ge-bronze);
+}
+
+.quest-claim {
+  flex-shrink: 0;
+  padding: 0.45rem 0.65rem;
+  font-size: 0.8rem;
+}
+
+.quest-badge {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ge-ink-muted);
+  padding: 0.3rem 0.45rem;
+}
+
+.branch-block {
+  margin-top: 0.55rem;
+  padding-top: 0.45rem;
+  border-top: 1px dashed var(--ge-stroke);
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  opacity: 0.92;
+}
+
+.branch-block-hud {
+  margin-top: 0.35rem;
+  padding-top: 0.4rem;
+  gap: 0.28rem;
+  opacity: 1;
+  border-top: 1px solid color-mix(in srgb, var(--ge-stroke) 55%, transparent);
+}

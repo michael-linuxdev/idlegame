@@ -1,0 +1,207 @@
+/* Gartentiere, Kapitel-Schilder, Grundstücke-Auswahl — Teil von expansion.css (Reihenfolge zählt). */
+/* Garden critters */
+.critters {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.critter {
+  position: absolute;
+}
+
+.critter svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Größen nach der Maßtabelle (art/parts/style.ts SIZE): Huhn 9, Igel 7 Einheiten */
+.chicken {
+  width: calc(var(--u) * 3);
+  top: 52%;
+  animation: chicken-walk 14s ease-in-out infinite alternate;
+}
+
+.chicken.c0 { left: 10%; }
+.chicken.c1 { left: 14%; top: 54%; animation-delay: -5s; }
+.chicken.c2 { left: 6%; top: 50%; animation-delay: -9s; }
+
+.chicken-head {
+  transform-origin: 15px 9px;
+  animation: chicken-peck 1.6s ease-in-out infinite;
+}
+
+@keyframes chicken-walk {
+  from { transform: translateX(0) scaleX(1); }
+  49% { transform: translateX(calc(var(--u) * 8)) scaleX(1); }
+  50% { transform: translateX(calc(var(--u) * 8)) scaleX(-1); }
+  to { transform: translateX(0) scaleX(-1); }
+}
+
+@keyframes chicken-peck {
+  0%, 60%, 100% { transform: rotate(0); }
+  70% { transform: rotate(35deg); }
+  80% { transform: rotate(0); }
+}
+
+.bee-trail {
+  width: calc(var(--u) * 1.8);
+  left: 68%;
+  top: 46%;
+  animation: bee-trail 7s linear infinite;
+}
+
+.bee-trail.b1 { animation-delay: -1.7s; }
+.bee-trail.b2 { animation-delay: -3.4s; }
+.bee-trail.b3 { animation-delay: -5.1s; }
+
+@keyframes bee-trail {
+  0% { transform: translate(calc(var(--u) * -30), calc(var(--u) * 8)); opacity: 0; }
+  10% { opacity: 1; }
+  50% { transform: translate(calc(var(--u) * -12), calc(var(--u) * -4)); }
+  90% { opacity: 1; }
+  100% { transform: translate(calc(var(--u) * 8), calc(var(--u) * 2)); opacity: 0; }
+}
+
+.firefly {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #fff6a0;
+  box-shadow: 0 0 6px 2px rgba(255, 240, 120, 0.8);
+  animation: critter-firefly 5s ease-in-out infinite;
+}
+
+@keyframes critter-firefly {
+  0%, 100% { transform: translate(0, 0); opacity: 0.1; }
+  30% { opacity: 1; }
+  50% { transform: translate(10px, -14px); opacity: 0.4; }
+  70% { opacity: 1; }
+}
+
+.hedgehog {
+  width: calc(var(--u) * 4.5);
+  top: 90%;
+  left: 10%;
+  animation: hedgehog-walk 40s linear infinite;
+}
+
+@keyframes hedgehog-walk {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(var(--u) * 70)); }
+}
+
+.morning-mist {
+  position: absolute;
+  inset: 40% 0 0 0;
+  background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.35) 60%, rgba(255, 255, 255, 0.15));
+  animation: mist-drift 18s ease-in-out infinite alternate;
+}
+
+@keyframes mist-drift {
+  from { transform: translateX(-3%); opacity: 0.7; }
+  to { transform: translateX(3%); opacity: 1; }
+}
+
+.chapter-weinberg .lizard {
+  animation: bee-buzz 2.6s ease-in-out infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .speech-bubble,
+  .sky-event,
+  .plot-visual.tier-grow .t-new,
+  .chicken,
+  .chicken-head,
+  .bee-trail,
+  .firefly,
+  .hedgehog,
+  .morning-mist,
+  .chapter-weinberg .lizard {
+    animation: none !important;
+  }
+}
+
+html.tab-hidden .critters *,
+html.tab-hidden .sky-event {
+  animation-play-state: paused;
+}
+
+/* Chapter signs: long lock hints wrap instead of spilling out */
+.orchard-home .plot-sign {
+  max-width: calc(var(--u) * 26);
+}
+
+.orchard-home .plot-meta {
+  white-space: normal;
+  text-align: center;
+  line-height: 1.15;
+}
+
+/* Grundstücke picker */
+.plot-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.plot-row {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  margin: 0;
+  padding: 0.5rem 0.65rem;
+  border: 1.5px solid #c9b48a;
+  border-radius: 12px;
+  background: #fffcf4;
+  color: #33261a;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.plot-row.current {
+  border-color: #3f7a30;
+  background: #eef7e6;
+}
+
+.plot-row.locked {
+  border-style: dashed;
+  cursor: default;
+  font-size: 0.78rem;
+  color: #6a5434;
+}
+
+.plot-row-icon {
+  display: inline-flex;
+  font-size: 1.5rem;
+}
+
+.plot-row-name {
+  flex: 1;
+  font-weight: 700;
+  font-size: 0.86rem;
+}
+
+.plot-row-meta {
+  font-family: var(--ge-font-metric);
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #6a5434;
+}
+
+.fountain-jet {
+  animation: fest-twinkle 1.2s ease-in-out infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fountain-jet {
+    animation: none !important;
+  }
+}

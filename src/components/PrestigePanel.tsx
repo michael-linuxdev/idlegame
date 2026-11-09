@@ -1,32 +1,17 @@
 import { useEffect, useState } from 'react'
-import { DEEP_GATE_YEAR, DEEP_SHOP, canDeepReset } from '../game/longLoop'
-import { LEGACY_SHOP, generationGate } from '../game/generations'
 import { HELPER_RANKS, helperInterval, helperIsPro } from '../game/state'
 import { GENERATORS } from '../game/generators'
-import { IconFamily, IconHelper, IconIlse } from '../theme/icons'
-import { CHAPTERS, type ChapterId } from '../game/chapters'
-import { ILSE_RANKS } from '../game/extrasCore'
-import { chapterCopy } from './chapterCopy'
-import {
-  EMBER_SHOP,
-  PRESTIGE_BRANCHES,
-  PRESTIGE_MIN_MODULES_ONLINE,
-  countAffordableEmberBuys,
-  countAffordableEmberBuysAfterPrestige,
-  emberPayout,
-  emberRankUnlocked,
-  emberRankUnlockNeed,
-  emberUnlockProgress,
-  modulesOnlineCount,
-  modulesToNextEmberUnlock,
-  nextLockedEmberUnlock,
-  postPrestigeStartOwned,
-  prestigeBlockReason, isProbeYear } from '../game/economy'
-import { formatEta, formatAsh, formatDecimal, formatMult } from '../game/format'
+import { IconHelper } from '../theme/icons'
+import { type ChapterId } from '../game/chapters'
+import { PRESTIGE_MIN_MODULES_ONLINE, erbstueckePayout, modulesOnlineCount, prestigeBlockReason, isProbeYear } from '../game/economy'
+import { TRUHE_ITEMS, PRESTIGE_BRANCHES, countAffordableTruheBuys, countAffordableTruheBuysAfterPrestige, truheRankUnlocked, truheRankUnlockNeed, truheUnlockProgress, modulesToNextTruheUnlock, nextLockedTruheUnlock, postPrestigeStartOwned } from '../game/truhe'
+import { formatEta, formatErnte, formatDecimal, formatMult } from '../game/format'
 import { t } from '../i18n'
 import { CHALLENGE_IDS } from '../game/challenges'
 import { WinterScene } from '../theme/WinterScene'
 import type { useGame } from '../game/useGame'
+import { DeepWinterBlock } from './prestige/DeepWinterBlock'
+import { GenerationBlock } from './prestige/GenerationBlock'
 
 type GameApi = ReturnType<typeof useGame>
 
@@ -60,51 +45,47 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
       setJumps(JUMPS.filter((k) => document.getElementById(`jump-${k}`) != null)),
     )
     return () => cancelAnimationFrame(id)
-  }, [state.prestiges, state.deepPrestiges, state.generation, state.helperLevel])
+  }, [state.saisonenden, state.tiefeWinter, state.generation, state.helperLevel])
   const teaser = prestigeProgress.ratio >= 0.5 && !canPrestige
   const probe = isProbeYear(state)
-  const payout = emberPayout(state.ernteSeason, state.prestiges, probe)
+  const payout = erbstueckePayout(state.ernteSeason, state.saisonenden, probe)
   const online = modulesOnlineCount(state.owned)
   const block = prestigeBlockReason({
-    prestiges: state.prestiges,
+    saisonenden: state.saisonenden,
     ernteSeason: state.ernteSeason,
     owned: state.owned,
     probe,
   })
-  const unlockProgress = emberUnlockProgress(state.ernteSeason, state.owned)
-  const readyBuys = countAffordableEmberBuys(
-    state.emberUpgrades,
+  const unlockProgress = truheUnlockProgress(state.ernteSeason, state.owned)
+  const readyBuys = countAffordableTruheBuys(
+    state.truhe,
     state.erbstuecke,
     state.ernteSeason,
     state.owned,
-    state.prestiges,
+    state.saisonenden,
   )
-  const nextUnlock = nextLockedEmberUnlock(
-    state.emberUpgrades,
+  const nextUnlock = nextLockedTruheUnlock(
+    state.truhe,
     state.ernteSeason,
     state.owned,
-    state.prestiges,
+    state.saisonenden,
   )
-  const postBuys = countAffordableEmberBuysAfterPrestige({
-    upgrades: state.emberUpgrades,
+  const postBuys = countAffordableTruheBuysAfterPrestige({
+    upgrades: state.truhe,
     erbstuecke: state.erbstuecke,
     ernteSeason: state.ernteSeason,
-    prestiges: state.prestiges,
+    saisonenden: state.saisonenden,
     probe,
   })
 
-  const deepOpen = canDeepReset(state.prestiges)
-  const [deepArmed, setDeepArmed] = useState(false)
-  const deepPayout = game.deepSprouts
-  const [genArmed, setGenArmed] = useState(false)
   const helperRank = HELPER_RANKS[state.helperLevel]
 
   const postUnlockMods =
-    modulesToNextEmberUnlock(
-      state.emberUpgrades,
+    modulesToNextTruheUnlock(
+      state.truhe,
       0,
-      postPrestigeStartOwned(state.emberUpgrades),
-      state.prestiges + 1,
+      postPrestigeStartOwned(state.truhe),
+      state.saisonenden + 1,
     ) ?? 0
 
   let claimLabel: string
@@ -117,7 +98,7 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
     claimLabel = t.prestige.needModules(online, PRESTIGE_MIN_MODULES_ONLINE)
   } else {
     claimLabel = t.prestige.needMore(
-      formatAsh(Math.max(0, prestigeMin - state.ernteSeason)),
+      formatErnte(Math.max(0, prestigeMin - state.ernteSeason)),
     )
   }
 
@@ -127,10 +108,10 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
       aria-labelledby="prestige-heading"
     >
       <header className="panel-header">
-        <p className="eyebrow">{t.season.springTitle(state.prestiges + 1)}</p>
+        <p className="eyebrow">{t.season.springTitle(state.saisonenden + 1)}</p>
         <h2 id="prestige-heading">{t.prestige.title}</h2>
         <p className="muted">
-          {t.prestige.introBefore} <strong>{t.resources.credits}</strong>{' '}
+          {t.prestige.introBefore} <strong>{t.resources.erbstuecke}</strong>{' '}
           {t.prestige.introAfter}
         </p>
       </header>
@@ -157,7 +138,7 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
       <div className="prestige-block" id="jump-season">
         <dl className="season-stats">
           <div>
-            <dt>{t.prestige.credits.replace(':', '')}</dt>
+            <dt>{t.prestige.erbstuecke.replace(':', '')}</dt>
             <dd>{state.erbstuecke}</dd>
           </div>
           <div>
@@ -167,12 +148,12 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
           </div>
           <div>
             <dt>{t.prestige.runs.replace(':', '')}</dt>
-            <dd>{state.prestiges}</dd>
+            <dd>{state.saisonenden}</dd>
           </div>
         </dl>
         <p className="prestige-stats">
-          {t.prestige.thisRun} <strong>{formatAsh(state.ernteSeason)}</strong> /{' '}
-          {formatAsh(prestigeMin)} {t.resources.compute}
+          {t.prestige.thisRun} <strong>{formatErnte(state.ernteSeason)}</strong> /{' '}
+          {formatErnte(prestigeMin)} {t.resources.ernte}
         </p>
         <div className="prestige-bar" aria-hidden="true">
           <div
@@ -190,11 +171,11 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
         ) : null}
 
         <p className="prestige-stats">
-          {t.prestige.nextPayout} <strong>{t.prestige.creditsAmount(payout)}</strong>
+          {t.prestige.nextPayout} <strong>{t.prestige.erbstueckeAmount(payout)}</strong>
           {canPrestige ? (
             (() => {
               // Vorschau: was 10 Minuten weiter gärtnern bringen würde
-              const later = emberPayout(state.ernteSeason + game.rate * 600, state.prestiges, probe)
+              const later = erbstueckePayout(state.ernteSeason + game.rate * 600, state.saisonenden, probe)
               return later > payout ? (
                 <span className="prestige-teaser"> · {t.prestige.laterPayout(later)}</span>
               ) : (
@@ -202,7 +183,7 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
               )
             })()
           ) : null}
-          {teaser ? <span className="prestige-teaser"> · {t.prestige.creditsPreview(nextPrestige)}</span> : null}
+          {teaser ? <span className="prestige-teaser"> · {t.prestige.erbstueckePreview(nextPrestige)}</span> : null}
         </p>
 
         <div className="prestige-preview" aria-label={t.prestige.title}>
@@ -334,7 +315,7 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
             )}
           </p>
           <div
-            className="ember-unlock-bar"
+            className="truhe-unlock-bar"
             role="progressbar"
             aria-valuemin={0}
             aria-valuemax={100}
@@ -342,7 +323,7 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
             aria-label={t.prestige.shopUnlockAria(nextUnlock.item.name)}
           >
             <div
-              className="ember-unlock-bar-fill"
+              className="truhe-unlock-bar-fill"
               style={{ width: `${Math.round(nextUnlock.ratio * 100)}%` }}
             />
           </div>
@@ -351,17 +332,17 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
 
       <div className="prestige-tree">
         {PRESTIGE_BRANCHES.map((branch) => {
-          const items = EMBER_SHOP.filter((item) => item.branch === branch.id)
+          const items = TRUHE_ITEMS.filter((item) => item.branch === branch.id)
             .map((item) => {
-              const rank = state.emberUpgrades[item.id]
+              const rank = state.truhe[item.id]
               const maxed = rank >= item.maxRank
               const cost = item.cost(rank)
-              const unlocked = emberRankUnlocked(
+              const unlocked = truheRankUnlocked(
                 item,
                 rank,
                 state.ernteSeason,
                 state.owned,
-                state.prestiges,
+                state.saisonenden,
               )
               const affordable = state.erbstuecke >= cost && !maxed && unlocked
               const isNext =
@@ -389,12 +370,12 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
                 {branch.title}
               </h4>
               <p className="prestige-branch-blurb">{branch.blurb}</p>
-              <ul className="ember-shop">
+              <ul className="laden">
                 {items.map(({ item, rank, maxed, cost, unlocked, affordable, isNext }) => {
-                  const needAsh = emberRankUnlockNeed(
+                  const needErnte = truheRankUnlockNeed(
                     item.id,
                     rank,
-                    state.prestiges,
+                    state.saisonenden,
                   )
                   const needMods = item.unlockModulesOnline
                   let lockHint: string | null = null
@@ -402,46 +383,46 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
                   if (!maxed && !unlocked) {
                     if (needMods != null && online < needMods) {
                       lockHint = t.prestige.shopModulesLocked(needMods)
-                    } else if (needAsh > 0) {
-                      unlockRatio = Math.min(1, unlockProgress / needAsh)
+                    } else if (needErnte > 0) {
+                      unlockRatio = Math.min(1, unlockProgress / needErnte)
                       lockHint = t.prestige.shopRankLockedProgress(
                         Math.round(unlockRatio * 100),
-                        formatAsh(Math.max(0, needAsh - unlockProgress)),
+                        formatErnte(Math.max(0, needErnte - unlockProgress)),
                       )
                     }
                   }
                   return (
                     <li
                       key={item.id}
-                      className={`ember-shop-row${affordable ? ' ember-shop-row--ready' : ''}${!unlocked && !maxed ? ' ember-shop-row--locked' : ''}${isNext ? ' ember-shop-row--next' : ''}`}
+                      className={`laden-row${affordable ? ' laden-row--ready' : ''}${!unlocked && !maxed ? ' laden-row--locked' : ''}${isNext ? ' laden-row--next' : ''}`}
                     >
-                      <div className="ember-shop-info">
-                        <div className="ember-shop-name">
+                      <div className="laden-info">
+                        <div className="laden-name">
                           {item.name}{' '}
-                          <span className="ember-shop-rank">
+                          <span className="laden-rank">
                             {rank}/{item.maxRank}
                           </span>
                           {isNext ? (
-                            <span className="ember-shop-next-tag">
+                            <span className="laden-next-tag">
                               {t.prestige.shopNextTag}
                             </span>
                           ) : null}
                         </div>
-                        <p className="ember-shop-blurb">{item.blurb}</p>
-                        <p className="ember-shop-effect">{item.effectLabel(rank)}</p>
+                        <p className="laden-blurb">{item.blurb}</p>
+                        <p className="laden-effect">{item.effectLabel(rank)}</p>
                         {lockHint ? (
-                          <p className="ember-shop-lock muted">{lockHint}</p>
+                          <p className="laden-lock muted">{lockHint}</p>
                         ) : null}
-                        {!maxed && !unlocked && needAsh > 0 ? (
+                        {!maxed && !unlocked && needErnte > 0 ? (
                           <div
-                            className="ember-unlock-bar ember-unlock-bar--row"
+                            className="truhe-unlock-bar truhe-unlock-bar--row"
                             role="progressbar"
                             aria-valuemin={0}
                             aria-valuemax={100}
                             aria-valuenow={Math.round(unlockRatio * 100)}
                           >
                             <div
-                              className="ember-unlock-bar-fill"
+                              className="truhe-unlock-bar-fill"
                               style={{
                                 width: `${Math.round(unlockRatio * 100)}%`,
                               }}
@@ -459,7 +440,7 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
                           ? t.prestige.max
                           : !unlocked
                             ? t.upgrade.locked
-                            : t.prestige.costCredits(cost)}
+                            : t.prestige.costErbstuecke(cost)}
                       </button>
                     </li>
                   )
@@ -515,205 +496,9 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
         </section>
       ) : null}
 
-      <section className="long-loop-block deep-winter" id="jump-deep" aria-labelledby="deep-winter">
-        <h3 id="deep-winter" className="subhead">
-          {t.longLoop.title}
-        </h3>
-        <p className="muted">{t.longLoop.intro}</p>
-        <dl className="season-stats">
-          <div>
-            <dt>{t.longLoop.sprouts}</dt>
-            <dd>{state.sproesslinge}</dd>
-          </div>
-          <div>
-            <dt>{t.longLoop.winters}</dt>
-            <dd>{state.deepPrestiges}</dd>
-          </div>
-          <div>
-            <dt>{t.longLoop.payout}</dt>
-            <dd>+{deepPayout}</dd>
-          </div>
-        </dl>
-        {CHAPTERS.filter(
-          (d) => game.openChapters.includes(d.id) || d.id === CHAPTERS.find((c) => !game.openChapters.includes(c.id))?.id,
-        ).map((d) => {
-          const copy = chapterCopy(d.id)
-          return game.openChapters.includes(d.id) ? (
-            <button key={d.id} type="button" className="btn ghost orchard-entry" onClick={() => onOpenChapter?.(d.id)}>
-              {copy.icon} {copy.to}
-            </button>
-          ) : (
-            <p key={d.id} className="orchard-teaser">
-              {copy.icon} {copy.teaser}
-            </p>
-          )
-        })}
-        <IlseBlock game={game} />
-        <div className="prestige-preview">
-          <div className="prestige-preview-card keep">
-            <p className="prestige-preview-label">{t.prestige.keepTitle}</p>
-            <ul className="prestige-preview-list">
-              {t.longLoop.keepItems.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </div>
-          <div className="prestige-preview-card lose">
-            <p className="prestige-preview-label">{t.longLoop.loseTitle}</p>
-            <ul className="prestige-preview-list">
-              {t.longLoop.loseItems.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </div>
-        </div>
-        <button
-          type="button"
-          className="btn prestige deep"
-          disabled={!deepOpen}
-          onClick={() => {
-            if (deepArmed) {
-              setDeepArmed(false)
-              game.deepReset()
-            } else {
-              setDeepArmed(true)
-              window.setTimeout(() => setDeepArmed(false), 4000)
-            }
-          }}
-        >
-          {!deepOpen
-            ? t.longLoop.gateClosed(DEEP_GATE_YEAR)
-            : deepArmed
-              ? t.longLoop.confirmCta
-              : t.longLoop.cta(deepPayout)}
-        </button>
+      <DeepWinterBlock game={game} onOpenChapter={onOpenChapter} />
 
-        <h4 className="prestige-branch-title">{t.longLoop.shopTitle}</h4>
-        <ul className="ember-shop long-loop-shop">
-          {DEEP_SHOP.map((item) => {
-            const rank = state.deepUpgrades[item.id]
-            const copy = t.longLoop.items[item.id]
-            const maxed = rank >= item.maxRank
-            const cost = item.cost(rank)
-            const affordable = !maxed && state.sproesslinge >= cost
-            return (
-              <li
-                key={item.id}
-                className={`ember-shop-row${affordable ? ' ember-shop-row--ready' : ''}`}
-              >
-                <div className="ember-shop-info">
-                  <div className="ember-shop-name">
-                    {copy.name}{' '}
-                    <span className="ember-shop-rank">
-                      {t.longLoop.rank(rank, item.maxRank)}
-                    </span>
-                  </div>
-                  <p className="ember-shop-blurb">{copy.blurb}</p>
-                  <p className="ember-shop-effect">{copy.effect(rank)}</p>
-                </div>
-                <button
-                  type="button"
-                  className="btn buy"
-                  disabled={!affordable}
-                  onClick={() => game.buyDeep(item.id)}
-                >
-                  {maxed ? t.prestige.max : t.longLoop.cost(cost)}
-                </button>
-              </li>
-            )
-          })}
-        </ul>
-      </section>
-
-      <section className="long-loop-block generation-block" id="jump-generation" aria-labelledby="generation-heading">
-        <h3 id="generation-heading" className="subhead">
-          <IconFamily /> {t.generation.title}
-        </h3>
-        <p className="muted">{t.generation.intro}</p>
-        <FamilyTree generation={state.generation} />
-        <dl className="season-stats">
-          <div>
-            <dt>{t.generation.vermaechtnis}</dt>
-            <dd>{state.vermaechtnis}</dd>
-          </div>
-          <div>
-            <dt>{t.generation.generations}</dt>
-            <dd>{t.generation.current(state.generation)}</dd>
-          </div>
-          <div>
-            <dt>{t.generation.payout}</dt>
-            <dd>+{game.generationPayout}</dd>
-          </div>
-        </dl>
-        <div className="prestige-preview">
-          <div className="prestige-preview-card keep">
-            <p className="prestige-preview-label">{t.prestige.keepTitle}</p>
-            <ul className="prestige-preview-list">
-              {t.generation.keepItems.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </div>
-          <div className="prestige-preview-card lose">
-            <p className="prestige-preview-label">{t.generation.loseTitle}</p>
-            <ul className="prestige-preview-list">
-              {t.generation.loseItems.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </div>
-        </div>
-        <button
-          type="button"
-          className="btn prestige deep generation"
-          disabled={!game.canHandDown}
-          onClick={() => {
-            if (genArmed) {
-              setGenArmed(false)
-              game.handDown()
-            } else {
-              setGenArmed(true)
-              window.setTimeout(() => setGenArmed(false), 4000)
-            }
-          }}
-        >
-          {!game.canHandDown
-            ? t.generation.gate(state.deepPrestiges, generationGate(state.generation))
-            : genArmed
-              ? t.generation.confirmCta
-              : t.generation.cta(game.generationPayout)}
-        </button>
-
-        <h4 className="prestige-branch-title">{t.generation.shopTitle}</h4>
-        <p className="muted">{t.generation.shopIntro}</p>
-        <ul className="ember-shop long-loop-shop">
-          {LEGACY_SHOP.map((item) => {
-            const rank = state.legacy[item.id]
-            const copy = t.generation.items[item.id]
-            const cost = item.cost(rank)
-            const affordable = state.vermaechtnis >= cost
-            return (
-              <li key={item.id} className={`ember-shop-row${affordable ? ' ember-shop-row--ready' : ''}`}>
-                <div className="ember-shop-info">
-                  <div className="ember-shop-name">
-                    {copy.name} <span className="ember-shop-rank">{t.generation.rank(rank)}</span>
-                  </div>
-                  <p className="ember-shop-blurb">{copy.blurb}</p>
-                  <p className="ember-shop-effect">{copy.effect(rank)}</p>
-                </div>
-                <button
-                  type="button"
-                  className="btn buy"
-                  disabled={!affordable}
-                  onClick={() => game.buyLegacyRank(item.id)}
-                >
-                  {t.generation.cost(cost)}
-                </button>
-              </li>
-            )
-          })}
-        </ul>
-      </section>
+      <GenerationBlock game={game} />
 
       {canPrestige ? (
         <div className="prestige-sticky">
@@ -721,79 +506,6 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
             {claimLabel}
           </button>
         </div>
-      ) : null}
-    </section>
-  )
-}
-
-/** Stammbaum: one leaf-node per generation, the current one glowing. */
-function FamilyTree({ generation }: { generation: number }) {
-  const n = Math.min(8, generation + 1)
-  const w = 280
-  return (
-    <svg
-      className="family-tree"
-      viewBox={`0 0 ${w} 70`}
-      role="img"
-      aria-label={t.generation.treeAria(generation + 1)}
-    >
-      <path d={`M20 52 H${w - 20}`} stroke="#8a6a40" strokeWidth="3" strokeLinecap="round" />
-      {Array.from({ length: n }, (_, i) => {
-        const x = n === 1 ? w / 2 : 24 + (i * (w - 48)) / (n - 1)
-        const current = i === n - 1
-        return (
-          <g key={i}>
-            <path d={`M${x} 52 V36`} stroke="#8a6a40" strokeWidth="2.4" />
-            <circle cx={x} cy={26} r={current ? 14 : 11} fill={current ? '#7fbf5a' : '#5f9e45'} stroke="#3f7a30" strokeWidth="1.5" className={current ? 'family-now' : undefined} />
-            <text x={x} y={30} textAnchor="middle" fontSize="11" fontWeight="700" fill="#fff">
-              {generation + 1 - (n - 1 - i)}
-            </text>
-          </g>
-        )
-      })}
-    </svg>
-  )
-}
-
-/** Oma Ilse — helper for the chapter plots, paid in Obst. */
-function IlseBlock({ game }: { game: GameApi }) {
-  const { state } = game
-  const rank = ILSE_RANKS[state.ilseLevel]
-  const obst = state.chapters.obstwiese.cur
-  return (
-    <section className="helper-block ilse-block" aria-labelledby="ilse-heading">
-      <div className="helper-head">
-        <span className="helper-avatar" aria-hidden="true">
-          <IconIlse />
-        </span>
-        <div>
-          <h4 id="ilse-heading" className="subhead">
-            {t.ilse.title}
-          </h4>
-          <p className="helper-name">
-            {t.ilse.name}
-            {state.ilseLevel > 0 ? ` · ${t.ilse.rank(state.ilseLevel, ILSE_RANKS.length)}` : ''}
-          </p>
-        </div>
-      </div>
-      <p className="muted">{game.ilseUnlocked ? t.ilse.intro : t.ilse.locked}</p>
-      {state.ilseLevel > 0 ? (
-        <p className="helper-speed">
-          {t.ilse.speed(formatDecimal(ILSE_RANKS[state.ilseLevel - 1]!.intervalMs / 1000, 2))}
-          {' · '}
-          <button type="button" className="link-btn" onClick={game.switchIlse}>
-            {state.ilseOn ? t.ilse.chipOn : t.ilse.chipOff}
-          </button>
-        </p>
-      ) : null}
-      {game.ilseUnlocked ? (
-        <button type="button" className="btn buy" disabled={!rank || obst < rank.cost} onClick={game.hireIlse}>
-          {!rank
-            ? t.ilse.maxed
-            : state.ilseLevel === 0
-              ? t.ilse.hire(formatAsh(rank.cost))
-              : t.ilse.upgrade(formatAsh(rank.cost))}
-        </button>
       ) : null}
     </section>
   )

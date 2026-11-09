@@ -160,6 +160,3 @@ export function festShop(f: FestDef): FestShopItem[] {
   return items
 }
 
-export function festVarietyIds(): Set<string> {
-  return new Set(FESTS.flatMap((f) => f.varieties))
-}

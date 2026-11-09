@@ -1,0 +1,107 @@
+/* Ruhiges Spielfeld, Menü, kompaktes Ausbau-Fenster — Teil von expansion.css (Reihenfolge zählt). */
+/* —— Ruhiges Spielfeld: Plaketten statt Schilder, Pillen kompakt —— */
+.plot-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.1rem;
+  margin-top: calc(var(--sign-zone, calc(var(--u) * 3.36)) * -0.9);
+  padding: 0 0.32rem;
+  min-width: 1.35rem;
+  height: 1.05rem;
+  justify-content: center;
+  border: 1.5px solid #8a6a40;
+  border-radius: 999px;
+  background: #fbf3e0;
+  box-shadow: 0 1px 0 #8a6a40;
+  font-family: var(--ge-font-metric);
+  font-weight: 700;
+  font-size: 0.58rem;
+  line-height: 1;
+  color: #3b2c18;
+  pointer-events: none;
+}
+
+.plot-badge-stars {
+  color: #e0a21a;
+  font-size: 0.5rem;
+  letter-spacing: -0.08em;
+}
+
+.garten-home.photo-mode .plot-badge {
+  display: none;
+}
+
+.map-side {
+  gap: 0.45rem;
+}
+
+.hud-pill:not(:has(.hud-pill-label)) {
+  padding: 0 0.4rem;
+}
+
+/* —— Menü: passt immer ins Bild —— */
+.nav-menu {
+  top: auto;
+  max-height: calc(100dvh - var(--safe-top, 0px) - var(--safe-bottom, 0px) - 5rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  width: min(17rem, calc(100vw - 1.4rem));
+}
+
+.nav-menu .nav-menu-item {
+  min-height: 2.5rem;
+  padding: 0.35rem 0.65rem;
+}
+
+/* toggle rows are <button>s: no browser blue, same type as the menu */
+
+.nav-menu .nav-toggle-state {
+  color: #3f7a30;
+  font-weight: 700;
+}
+
+.nav-menu-settings {
+  justify-content: space-between;
+  margin-top: 0.2rem;
+  border-top: 1px solid var(--ge-stroke) !important;
+  border-radius: 0 0 8px 8px;
+}
+
+.nav-menu-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding-left: 0.3rem;
+  border-left: 2px solid color-mix(in srgb, var(--ge-gruen) 30%, transparent);
+}
+
+/* —— Ausbau-Fenster kompakt —— */
+.upgrade-gain {
+  color: #3f7a30;
+  font-weight: 700;
+}
+
+.care-details > summary {
+  cursor: pointer;
+  list-style: none;
+}
+
+.care-details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.care-details > summary::after {
+  content: ' ▸';
+  font-size: 0.8em;
+}
+
+.care-details[open] > summary::after {
+  content: ' ▾';
+}
+
+.care-details[open] {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}

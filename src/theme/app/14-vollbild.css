@@ -1,0 +1,115 @@
+/* Vollbild-Karte, Leistung, FTUE — Teil von App.css (Reihenfolge zählt). */
+/*
+ * Gaming fullscreen portrait — ONE full-bleed garden map.
+ * HUD = floating chips / pill strip / FAB only. Zero stacked card tiles.
+ */
+.app-main.map-mode {
+  padding: 0;
+}
+
+.app-main.map-mode .garten-home {
+  position: relative;
+  height: 100%;
+  min-height: 0;
+  display: block;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sheet-backdrop,
+  .sheet,
+  .upgrade-hud-layer,
+  .upgrade-hud,
+  .ftue-coach,
+  .install-gate,
+  .install-gate-card,
+  .float-pop,
+  .btn.pulse-ready,
+  .btn.buy.just-bought,
+  .upgrade-hud-buy.pulse-ready {
+    animation: none;
+  }
+
+    
+}
+
+/* Pause CSS motion while the PWA/tab is backgrounded (class set in useGame). */
+html.tab-hidden .app-shell *,
+html.tab-hidden .app-shell *::before,
+html.tab-hidden .app-shell *::after {
+  animation-play-state: paused !important;
+}
+
+/*
+ * Thermal lite for phones (Safari iPhone 13 PWA overheated with continuous
+ * blur + SVG filter motion + 3D map transforms). Glass stays translucent via
+ * stronger fills — no live backdrop-filter compositing.
+ */
+@media (hover: none) and (pointer: coarse) {
+    .upgrade-hud,
+  .upgrade-hud-close,
+  .menu-fab,
+  .nav-menu {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .upgrade-hud {
+    background: color-mix(in srgb, var(--ge-bg-raised) 86%, transparent);
+  }
+
+  .upgrade-hud-close {
+    background: color-mix(in srgb, var(--ge-bg-raised) 78%, transparent);
+  }
+
+  .menu-fab {
+    background: color-mix(in srgb, var(--ge-bg-raised) 92%, transparent);
+  }
+
+    .btn.pulse-ready,
+  .upgrade-hud-buy.pulse-ready {
+    animation: none !important;
+  }
+}
+
+/* FTUE: the coach dodges its own target (moved above it) */
+.ftue-coach.at-top {
+  bottom: auto;
+  animation: none;
+}
+
+/* FTUE: a bouncing pointer on the plot the coach talks about */
+.garden-plot.ftue-target::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -1.9rem;
+  width: 1.6rem;
+  height: 1.6rem;
+  margin-left: -0.8rem;
+  border-radius: 50%;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 4v14M6 12l6 6 6-6' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+      center / 70% no-repeat,
+    var(--ge-gruen-hell, #e07a2c);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+  animation: ftue-point 0.9s ease-in-out infinite;
+  z-index: 5;
+}
+
+@keyframes ftue-point {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .garden-plot.ftue-target::after {
+    animation: none;
+  }
+}

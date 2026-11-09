@@ -1,33 +1,33 @@
 /**
  * Event stub — Bandbreiten-Schub (local clock, weekend-style).
- * Buffs production; optional Compute goal with Obsidian crumb. Dismissible UI.
+ * Buffs production; optional Ernte goal with Samen crumb. Dismissible UI.
  * Never energy walls. Player-facing copy: German via i18n.
  */
 
 import { t } from '../i18n'
 import { dayKey } from './monetization'
 
-/** +25% Compute/sec while surge is live */
-export const BANDWIDTH_SURGE_MULT = 1.25
+/** +25% Ernte/s while the Erntefest is live */
+export const ERNTEFEST_MULT = 1.25
 
 /**
- * Goal: earn this much Compute during the active window.
+ * Goal: earn this much Ernte during the active window.
  * IG-31: 10_000 → 25_000 so the weekend Ziel tracks the slower midgame curve
  * (still clearable in one engaged session once G3 is online).
  */
-export const BANDWIDTH_SURGE_GOAL = 25_000
+export const ERNTEFEST_GOAL = 25_000
 
-/** Obsidian crumb when goal is claimed */
-export const BANDWIDTH_SURGE_GOAL_REWARD = 15
+/** Samen crumb when goal is claimed */
+export const ERNTEFEST_GOAL_REWARD = 15
 
-export const BANDWIDTH_SURGE_NAME = t.event.name
-export const BANDWIDTH_SURGE_BLURB = t.event.blurb
+export const ERNTEFEST_NAME = t.event.name
+export const ERNTEFEST_BLURB = t.event.blurb
 
 /**
  * Weekend window in local time: Sat 00:00 → Sun 23:59:59.
  * Also active Friday after 18:00 local (early open).
  */
-export function isBandwidthSurgeActive(now = Date.now()): boolean {
+export function isErntefestActive(now = Date.now()): boolean {
   const d = new Date(now)
   const day = d.getDay() // 0 Sun … 6 Sat
   if (day === 0 || day === 6) return true
@@ -37,9 +37,9 @@ export function isBandwidthSurgeActive(now = Date.now()): boolean {
 
 /**
  * Stable window id for dismiss / goal progress (local weekend start Friday).
- * Format: `bw-YYYY-MM-DD` where date is the Friday that opened the window.
+ * Format: `ef-YYYY-MM-DD` where date is the Friday that opened the window.
  */
-export function bandwidthSurgeWindowKey(now = Date.now()): string {
+export function erntefestWindowKey(now = Date.now()): string {
   const d = new Date(now)
   const day = d.getDay()
   const start = new Date(d)
@@ -49,10 +49,10 @@ export function bandwidthSurgeWindowKey(now = Date.now()): string {
   } else if (day === 6) {
     start.setDate(start.getDate() - 1)
   }
-  return `bw-${dayKey(start.getTime())}`
+  return `ef-${dayKey(start.getTime())}`
 }
 
-export function surgeEndsLabel(now = Date.now()): string {
+export function erntefestEndsLabel(now = Date.now()): string {
   const d = new Date(now)
   const day = d.getDay()
   if (day === 5) return t.event.endsFri
@@ -61,7 +61,7 @@ export function surgeEndsLabel(now = Date.now()): string {
   return t.event.endsDefault
 }
 
-export interface BandwidthSurgeStatus {
+export interface ErntefestStatus {
   active: boolean
   windowKey: string
   mult: number
@@ -72,16 +72,16 @@ export interface BandwidthSurgeStatus {
   blurb: string
 }
 
-export function bandwidthSurgeStatus(now = Date.now()): BandwidthSurgeStatus {
-  const active = isBandwidthSurgeActive(now)
+export function erntefestStatus(now = Date.now()): ErntefestStatus {
+  const active = isErntefestActive(now)
   return {
     active,
-    windowKey: bandwidthSurgeWindowKey(now),
-    mult: active ? BANDWIDTH_SURGE_MULT : 1,
-    goal: BANDWIDTH_SURGE_GOAL,
-    goalReward: BANDWIDTH_SURGE_GOAL_REWARD,
-    endsLabel: surgeEndsLabel(now),
-    name: BANDWIDTH_SURGE_NAME,
-    blurb: BANDWIDTH_SURGE_BLURB,
+    windowKey: erntefestWindowKey(now),
+    mult: active ? ERNTEFEST_MULT : 1,
+    goal: ERNTEFEST_GOAL,
+    goalReward: ERNTEFEST_GOAL_REWARD,
+    endsLabel: erntefestEndsLabel(now),
+    name: ERNTEFEST_NAME,
+    blurb: ERNTEFEST_BLURB,
   }
 }

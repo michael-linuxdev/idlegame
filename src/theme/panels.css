@@ -45,7 +45,7 @@
 }
 
 .app-main:not(.map-mode) .panel-header .eyebrow {
-  font-family: var(--oc-font-hand);
+  font-family: var(--ge-font-hand);
   font-size: 1.15rem;
   letter-spacing: 0;
   text-transform: none;
@@ -81,13 +81,11 @@
 .app-main:not(.map-mode) .prestige-block,
 .app-main:not(.map-mode) .long-loop-block,
 .app-main:not(.map-mode) .clan-card,
-.app-main:not(.map-mode) .ember-shop-row,
+.app-main:not(.map-mode) .laden-row,
 .app-main:not(.map-mode) .shop-wallet-chip,
 .app-main:not(.map-mode) .cosmetic-card,
 .app-main:not(.map-mode) .leaderboard,
 .app-main:not(.map-mode) .shop-bp-row,
-.app-main:not(.map-mode) .clan-boost-row,
-.app-main:not(.map-mode) .shop-ad-row,
 .app-main:not(.map-mode) .panel-empty {
   border: 1.5px solid var(--pp-edge);
   border-radius: 14px;
@@ -98,10 +96,8 @@
   color: var(--pp-ink);
 }
 
-.app-main:not(.map-mode) .ember-shop-row,
+.app-main:not(.map-mode) .laden-row,
 .app-main:not(.map-mode) .clan-card,
-.app-main:not(.map-mode) .shop-ad-row,
-.app-main:not(.map-mode) .clan-boost-row,
 .app-main:not(.map-mode) .shop-bp-row,
 .app-main:not(.map-mode) .cosmetic-card {
   padding: 0.65rem 0.8rem;
@@ -118,27 +114,27 @@
   border-color: color-mix(in srgb, var(--pp-edge) 70%, transparent);
 }
 
-.app-main:not(.map-mode) .ember-shop-row--ready {
+.app-main:not(.map-mode) .laden-row--ready {
   border-color: #7fbf5a;
   box-shadow:
     0 2px 0 #5f9e45,
     0 0 0 3px rgba(127, 191, 90, 0.22);
 }
 
-.app-main:not(.map-mode) .ember-shop-row--locked {
+.app-main:not(.map-mode) .laden-row--locked {
   background:
     repeating-linear-gradient(135deg, rgba(220, 199, 158, 0.18) 0 8px, transparent 8px 16px),
     var(--pp-paper-2);
   opacity: 0.85;
 }
 
-.app-main:not(.map-mode) .ember-shop-name {
-  font-family: var(--oc-font-display);
+.app-main:not(.map-mode) .laden-name {
+  font-family: var(--ge-font-display);
   color: var(--pp-ink);
 }
 
-.app-main:not(.map-mode) .ember-shop-blurb,
-.app-main:not(.map-mode) .ember-shop-effect,
+.app-main:not(.map-mode) .laden-blurb,
+.app-main:not(.map-mode) .laden-effect,
 .app-main:not(.map-mode) .muted {
   color: var(--pp-ink-soft);
 }
@@ -149,7 +145,7 @@
 }
 
 .app-main:not(.map-mode) .prestige-bar,
-.app-main:not(.map-mode) .ember-unlock-bar {
+.app-main:not(.map-mode) .truhe-unlock-bar {
   background: color-mix(in srgb, var(--pp-edge) 45%, transparent);
 }
 
@@ -195,12 +191,12 @@
 }
 
 .sheet .progress-subhead {
-  font-family: var(--oc-font-display);
+  font-family: var(--ge-font-display);
   color: var(--pp-ink);
 }
 
 .sheet .progress-intro {
-  font-family: var(--oc-font-hand);
+  font-family: var(--ge-font-hand);
   font-size: 1.12rem;
 }
 
@@ -213,11 +209,6 @@
   box-shadow:
     0 3px 0 var(--pp-edge-d),
     0 12px 28px rgba(40, 30, 10, 0.28);
-}
-
-.upgrade-hud .upgrade-hud-row {
-  border: 1.5px solid var(--pp-edge);
-  background: #fffcf4;
 }
 
 .upgrade-hud .upgrade-hud-close {
@@ -290,7 +281,7 @@
 
 .season-stats dd {
   margin: 0;
-  font-family: var(--oc-font-metric);
+  font-family: var(--ge-font-metric);
   font-weight: 700;
   font-size: 1.15rem;
   color: var(--pp-ink);
@@ -324,6 +315,6 @@
 
 .app-main:not(.map-mode) .deep-winter .prestige-branch-title {
   margin: 1.1rem 0 0.5rem;
-  font-family: var(--oc-font-display);
+  font-family: var(--ge-font-display);
   font-size: 1.05rem;
 }

@@ -13,9 +13,15 @@ import { saveFile, type SaveResult } from './saveFile'
 const PREFIX = 'GARTENERBE1:'
 const KEYS = [STORAGE_KEY, NOTEBOOK_STORAGE_KEY, EXTRAS_STORAGE_KEY, FTUE_STORAGE_KEY] as const
 
+/**
+ * Bündel-Format. v1 (bis 2026-11-09) trug den alten Spielstand
+ * (`gartenerbe-save-v1`, Format vor der Aufräum-Runde) und wird abgelehnt.
+ */
+export const BUNDLE_VERSION = 2
+
 interface Bundle {
   app: 'gartenerbe'
-  v: 1
+  v: typeof BUNDLE_VERSION
   at: number
   data: Partial<Record<(typeof KEYS)[number], string>>
   /** App-Version und Speicherformat beim Sichern (ab 2026-11-09) */
@@ -50,11 +56,11 @@ export function exportCode(now = Date.now()): string {
       /* ignore */
     }
   }
-  const bundle: Bundle = { app: 'gartenerbe', v: 1, at: now, data, appVersion: APP_VERSION, saveVersion: SAVE_VERSION }
+  const bundle: Bundle = { app: 'gartenerbe', v: BUNDLE_VERSION, at: now, data, appVersion: APP_VERSION, saveVersion: SAVE_VERSION }
   return PREFIX + toBase64(JSON.stringify(bundle))
 }
 
-export type ImportResult = { ok: true; bundle: Bundle } | { ok: false; newer?: boolean }
+export type ImportResult = { ok: true; bundle: Bundle } | { ok: false; newer?: boolean; old?: boolean }
 
 /** Validate a code (or raw JSON file contents) without applying it. */
 export function readCode(input: string): ImportResult {
@@ -62,7 +68,11 @@ export function readCode(input: string): ImportResult {
     const trimmed = input.trim()
     const json = trimmed.startsWith(PREFIX) ? fromBase64(trimmed.slice(PREFIX.length)) : trimmed
     const bundle = JSON.parse(json) as Bundle
-    if (bundle?.app !== 'gartenerbe' || bundle.v !== 1 || !bundle.data) return { ok: false }
+    if (bundle?.app !== 'gartenerbe' || !bundle.data) return { ok: false }
+    const v = bundle.v as number
+    // Code aus einer Vorversion (altes Speicherformat): nicht still falsch einspielen
+    if (v < BUNDLE_VERSION) return { ok: false, old: true }
+    if (v > BUNDLE_VERSION) return { ok: false, newer: true }
     const save = bundle.data[STORAGE_KEY]
     if (!save) return { ok: false }
     const raw: unknown = JSON.parse(save)

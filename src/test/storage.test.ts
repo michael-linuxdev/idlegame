@@ -1,27 +1,20 @@
 import { describe, expect, it } from 'vitest'
-import { migrateFieldNames, parseSave } from '../game/storage'
+import { parseSave } from '../game/storage'
 
-describe('save compatibility', () => {
-  it('loads saves written with the old internal field names', () => {
-    const old = { ash: 123, ashEarned: 456, lifetimeAshEarned: 789, embers: 7, obsidian: 42, deepEmbers: 3, owned: { gemuesebeet: 5 } }
-    const s = parseSave(old)!
-    expect(s.ernte).toBe(123)
-    expect(s.ernteSeason).toBe(456)
-    expect(s.ernteLifetime).toBe(789)
-    expect(s.erbstuecke).toBe(7)
-    expect(s.samen).toBe(42)
-    expect(s.sproesslinge).toBe(3)
-    expect(s.owned.gemuesebeet).toBe(5)
-  })
-  it('prefers new names when both exist', () => {
-    expect(migrateFieldNames({ ash: 1, ernte: 2 }).ernte).toBe(2)
-  })
+describe('save parsing', () => {
   it('rejects garbage', () => {
     expect(parseSave('nope')).toBeNull()
   })
+  it('liest keine Felder aus dem alten Format (Neustart 2026-11-09)', () => {
+    // altname-ok: Stand im alten Format
+    const s = parseSave({ ash: 123, embers: 7, obsidian: 42, emberUpgrades: { dominionYield: 3 } })!
+    expect(s.ernte).not.toBe(123)
+    expect(s.erbstuecke).toBe(0)
+    expect(s.truhe.gartenschere).toBe(0)
+  })
 })
 
-import { exportCode, readCode } from '../game/backup'
+import { BUNDLE_VERSION, exportCode, readCode } from '../game/backup'
 import { createInitialState, STORAGE_KEY } from '../game/state'
 
 describe('Spielstand sichern', () => {
@@ -41,5 +34,12 @@ describe('Spielstand sichern', () => {
     expect(r.ok).toBe(true)
     if (r.ok) expect(JSON.parse(r.bundle.data[STORAGE_KEY]!).samen).toBe(99)
     expect(readCode('GARTENERBE1:kaputt').ok).toBe(false)
+  })
+
+  it('lehnt Codes aus der Vorversion verständlich ab', () => {
+    const old = { app: 'gartenerbe', v: 1, at: 0, data: { 'gartenerbe-save-v1': JSON.stringify({ ash: 5, saveVersion: 2 }) } }
+    const code = 'GARTENERBE1:' + btoa(JSON.stringify(old))
+    expect(readCode(code)).toEqual({ ok: false, old: true })
+    expect(readCode(JSON.stringify({ ...old, v: BUNDLE_VERSION + 1 }))).toEqual({ ok: false, newer: true })
   })
 })

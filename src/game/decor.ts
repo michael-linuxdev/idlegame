@@ -67,8 +67,8 @@ export function decorDef(id: string): DecorDef | undefined {
 }
 
 /** Dekoplätze open after the first Saisonende (garden has shape by then). */
-export function decorUnlocked(s: { prestiges: number; deepPrestiges: number; generation: number }): boolean {
-  return s.prestiges >= 1 || s.deepPrestiges > 0 || s.generation > 0
+export function decorUnlocked(s: { saisonenden: number; tiefeWinter: number; generation: number }): boolean {
+  return s.saisonenden >= 1 || s.tiefeWinter > 0 || s.generation > 0
 }
 
 export function emptySlots(): (DecorId | null)[] {

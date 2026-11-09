@@ -1,0 +1,249 @@
+/* Knöpfe — Teil von App.css (Reihenfolge zählt). */
+/* Buttons — casual-game chrome (bevel + weight, bright fills) */
+
+.btn {
+  border: 2px solid var(--ge-stroke-strong);
+  border-radius: 12px;
+  padding: 0.7rem 1.05rem;
+  min-height: var(--ge-target-min);
+  min-width: var(--ge-target-min);
+  background: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    var(--ge-bg-raised) 55%,
+    color-mix(in srgb, var(--ge-bg-inset) 35%, var(--ge-bg-raised)) 100%
+  );
+  color: var(--ge-ink);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  box-shadow:
+    0 3px 0 color-mix(in srgb, var(--ge-stroke-strong) 75%, #1e2e1a),
+    0 5px 12px rgba(30, 50, 30, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.12s ease,
+    filter 0.12s ease,
+    transform 0.1s ease;
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow:
+    0 1px 0 color-mix(in srgb, var(--ge-stroke-strong) 75%, #1e2e1a),
+    0 2px 6px rgba(30, 50, 30, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.btn.buy {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--ge-gruen-hell) 72%, #fff) 0%,
+    var(--ge-gruen-hell) 36%,
+    var(--ge-gruen) 100%
+  );
+  border-color: var(--ge-gruen-dunkel);
+  color: #ffffff;
+  font-family: var(--ge-font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.03em;
+  text-shadow: 0 1px 0 rgba(20, 50, 25, 0.35);
+  box-shadow:
+    0 4px 0 var(--ge-gruen-dunkel),
+    0 7px 16px rgba(31, 110, 50, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.48);
+}
+
+.btn.buy:disabled {
+  background: linear-gradient(
+    180deg,
+    #eef3ea 0%,
+    color-mix(in srgb, var(--ge-bg-inset) 70%, #dce6d6) 100%
+  );
+  border-color: var(--ge-stroke-strong);
+  color: var(--ge-ink-muted);
+  text-shadow: none;
+  opacity: 1;
+  box-shadow:
+    0 2px 0 color-mix(in srgb, var(--ge-stroke) 80%, #6b8f5e),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+.btn.buy:not(:disabled):hover {
+  border-color: color-mix(in srgb, var(--ge-gruen-hell) 60%, var(--ge-gruen-dunkel));
+  filter: brightness(1.05);
+}
+
+.btn.buy:active:not(:disabled) {
+  box-shadow:
+    0 1px 0 var(--ge-gruen-dunkel),
+    0 2px 8px rgba(31, 110, 50, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.btn.prestige {
+  width: 100%;
+  margin-top: 0.85rem;
+  padding: 0.9rem 1.05rem;
+  background: linear-gradient(
+    180deg,
+    #e8d49a 0%,
+    #c4a868 42%,
+    var(--ge-bronze) 100%
+  );
+  border: 2px solid color-mix(in srgb, var(--ge-bronze) 70%, #5a4a28);
+  color: #1a160c;
+  font-family: var(--ge-font-display);
+  letter-spacing: 0.03em;
+  font-weight: 700;
+  font-size: 1.05rem;
+  text-shadow: 0 1px 0 rgba(255, 245, 210, 0.45);
+  box-shadow:
+    0 4px 0 color-mix(in srgb, var(--ge-bronze) 75%, #3d3218),
+    0 7px 16px rgba(90, 70, 30, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.btn.prestige:disabled {
+  background: linear-gradient(180deg, #eef2e8 0%, #cfd9c6 100%);
+  border-color: var(--ge-stroke-strong);
+  color: var(--ge-ink-muted);
+  text-shadow: none;
+  box-shadow:
+    0 2px 0 color-mix(in srgb, var(--ge-stroke) 80%, #6b8f5e),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+.btn.prestige:active:not(:disabled) {
+  box-shadow:
+    0 1px 0 color-mix(in srgb, var(--ge-bronze) 75%, #3d3218),
+    0 2px 8px rgba(90, 70, 30, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.btn.ghost {
+  align-self: flex-start;
+  background: linear-gradient(180deg, #ffffff 0%, var(--ge-bg-field) 100%);
+  border-color: var(--ge-stroke-strong);
+  color: var(--ge-ink);
+  min-height: var(--ge-target-min);
+  font-weight: 700;
+}
+
+.prestige-block {
+  margin-top: 0.75rem;
+  padding: 0.85rem 0.9rem 1rem;
+  background: color-mix(in srgb, var(--ge-bg-raised) 88%, var(--ge-bronze-pale));
+  border: 1px solid var(--ge-stroke-strong);
+  border-radius: var(--ge-radius);
+}
+
+.prestige-stats {
+  margin: 0.5rem 0 0;
+  color: var(--ge-ink);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.prestige-preview {
+  margin-top: 0.75rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.55rem;
+}
+
+.prestige-preview-card {
+  padding: 0.55rem 0.65rem;
+  border-radius: var(--ge-radius);
+  border: 1px solid var(--ge-stroke);
+  background: var(--ge-bg-raised);
+}
+
+.prestige-preview-card.keep {
+  border-color: var(--ge-gain);
+}
+
+.prestige-preview-card.lose {
+  border-color: var(--ge-danger);
+}
+
+.prestige-preview-label {
+  margin: 0;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--ge-ink-muted);
+}
+
+.prestige-preview-card.keep .prestige-preview-label {
+  color: var(--ge-gain);
+}
+
+.prestige-preview-card.lose .prestige-preview-label {
+  color: var(--ge-danger);
+}
+
+.prestige-preview-list {
+  margin: 0.35rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.88rem;
+  color: var(--ge-ink);
+  line-height: 1.4;
+}
+
+.prestige-tree {
+  margin: 0.85rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.prestige-branch {
+  padding: 0.75rem 0.8rem 0.85rem;
+  border: 1px solid var(--ge-stroke);
+  border-radius: var(--ge-radius);
+  background: color-mix(in srgb, var(--ge-bg-field) 70%, var(--ge-bg-raised));
+}
+
+.prestige-branch-title {
+  margin: 0;
+  font-family: var(--ge-font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--ge-ink);
+}
+
+.prestige-branch-blurb {
+  margin: 0.25rem 0 0.55rem;
+  font-size: 0.88rem;
+  color: var(--ge-ink-muted);
+  line-height: 1.4;
+}
+
+.prestige-branch .laden {
+  margin: 0;
+}
+
+.prestige-branch .laden-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.long-loop-block {
+  margin: 1.25rem 0 0;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--ge-stroke);
+}
+
+.long-loop-block .long-loop-shop {
+  margin: 0.55rem 0 0;
+  opacity: 0.85;
+}
+
+.long-loop-block .btn.buy:disabled {
+  cursor: not-allowed;
+}

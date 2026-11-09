@@ -1,0 +1,529 @@
+/* Schließen-Knopf, Fortschritt, Notizbuch, Korb, Pillen, Schilder, Willkommen, Omas Hinweis — Teil von ux.css (Reihenfolge zählt). */
+/*
+ * UX pass (2026-11): shared building blocks that every window uses —
+ * the round × close button, task meters, layer tokens.
+ * Loaded last, so it may refine older rules.
+ */
+
+/* —— Round × close button (one look for every window) —— */
+.sheet-x {
+  appearance: none;
+  flex-shrink: 0;
+  display: inline-grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin: -0.35rem -0.35rem 0 0;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--ge-stroke-strong) 50%, transparent);
+  border-radius: 999px;
+  background: var(--ge-bg-raised);
+  color: var(--ge-ink-muted);
+  font-size: 1.35rem;
+  line-height: 1;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.sheet-x:hover {
+  color: var(--ge-ink);
+}
+
+.sheet-x:focus-visible {
+  outline: 2px solid var(--ge-focus);
+  outline-offset: 2px;
+}
+
+/* —— Task meter: open tasks show progress, not a dead button —— */
+.quest-meter {
+  --p: 0;
+  flex-shrink: 0;
+  display: inline-grid;
+  place-items: center;
+  width: 3.1rem;
+  height: 3.1rem;
+  border-radius: 50%;
+  background:
+    radial-gradient(closest-side, var(--ge-bg-raised) 76%, transparent 78%),
+    conic-gradient(var(--ge-gruen, #5f9e45) calc(var(--p) * 1%), color-mix(in srgb, var(--ge-stroke) 70%, transparent) 0);
+  color: var(--ge-ink-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* —— Notizbuch-Tabs: label on one line, counter as a small badge —— */
+.notebook-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.1rem;
+  min-height: 2.9rem;
+  min-width: 0;
+}
+
+.notebook-tab-label {
+  font-size: 1.08rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.notebook-tab-count {
+  font-family: var(--ge-font-ui);
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1;
+  padding: 0.12rem 0.4rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, #dcc79e 45%, transparent);
+  font-variant-numeric: tabular-nums;
+}
+
+/* —— Notizbuch: next unread letter as a shortcut above the pages —— */
+.notebook-next {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  min-height: 2.75rem;
+  margin: 0 0 0.7rem;
+  padding: 0.5rem 0.8rem;
+  border: 1.5px solid #7d9f5a;
+  border-radius: 10px;
+  background: #eef7e6;
+  color: #2f4a22;
+  font-family: var(--ge-font-ui);
+  font-weight: 700;
+  font-size: 0.92rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.notebook-next span:nth-child(2) {
+  flex: 1;
+}
+
+.notebook-next-dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: #d0573a;
+  flex-shrink: 0;
+}
+
+/* —— Wallet: tap for the multiplier breakdown —— */
+button.hud-wallet {
+  appearance: none;
+  font: inherit;
+  color: inherit;
+  text-align: right;
+  cursor: pointer;
+}
+
+.mult-layer {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-sheet);
+}
+
+.mult-sheet {
+  position: absolute;
+  top: calc(var(--safe-top, 0px) + 5.4rem);
+  right: max(0.7rem, calc((100vw - 480px) / 2 + 0.7rem));
+  width: min(19rem, calc(100vw - 1.4rem));
+  padding: 0.85rem 0.95rem 0.9rem;
+  background: var(--ge-bg-raised);
+  border: 1.5px solid #c9b48a;
+  border-radius: 14px;
+  box-shadow: 0 12px 28px rgba(30, 50, 30, 0.22);
+  animation: sheet-up 0.16s ease-out;
+}
+
+.mult-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.mult-head h2 {
+  margin: 0.2rem 0 0;
+  font-family: var(--ge-font-display);
+  font-size: 1.08rem;
+  color: var(--ge-ink);
+}
+
+.mult-intro,
+.mult-none {
+  margin: 0.2rem 0 0.55rem;
+  font-size: 0.85rem;
+  color: var(--ge-ink-muted);
+}
+
+.mult-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.15rem;
+}
+
+.mult-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.32rem 0;
+  border-bottom: 1px dashed color-mix(in srgb, var(--ge-stroke) 80%, transparent);
+  font-size: 0.9rem;
+  color: var(--ge-ink);
+}
+
+.mult-list li strong {
+  font-family: var(--ge-font-metric);
+  color: #2f7a2a;
+  font-variant-numeric: tabular-nums;
+}
+
+.mult-list li.down strong {
+  color: #a0472c;
+}
+
+.mult-list li.mult-total {
+  border-bottom: none;
+  padding-top: 0.45rem;
+  font-weight: 700;
+}
+
+/* —— Event-Pillen: name until first tap, „+N“ for the rest —— */
+.hud-pill-name {
+  font-weight: 700;
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+.hud-pill-name + .hud-pill-label::before {
+  content: '·';
+  margin-right: 0.25rem;
+  opacity: 0.6;
+}
+
+.hud-pill.pill-more {
+  min-width: 2.6rem;
+  justify-content: center;
+}
+
+/* —— Beet-Schild: name + level, so the map reads without „Schilder immer“ —— */
+.plot-badge {
+  height: auto;
+  min-height: 1.05rem;
+  padding: 0.08rem 0.38rem;
+  gap: 0.25rem;
+  white-space: nowrap;
+}
+
+.plot-badge-name {
+  font-family: var(--ge-font-ui);
+  font-weight: 700;
+  font-size: 0.56rem;
+  color: #5a4126;
+}
+
+.plot-badge-level {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.1rem;
+  padding-left: 0.25rem;
+  border-left: 1px solid color-mix(in srgb, #8a6a40 45%, transparent);
+}
+
+/* —— „Ausbau möglich“: a small green arrow at the corner of the plot —— */
+.plot-canbuy {
+  position: absolute;
+  right: 6%;
+  top: 4%;
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 50%;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 19V6M6 11l6-6 6 6' fill='none' stroke='%23fff' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+      center / 70% no-repeat,
+    #3f9a3a;
+  border: 1.5px solid #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  animation: canbuy-bob 1.6s ease-in-out infinite;
+}
+
+.garden-plot.selected .plot-canbuy,
+.garten-home.photo-mode .plot-canbuy {
+  display: none;
+}
+
+@keyframes canbuy-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plot-canbuy {
+    animation: none;
+  }
+}
+
+html.idle .plot-canbuy {
+  animation: none;
+}
+
+.plot-canbuy.in-badge {
+  position: static;
+  width: 0.9rem;
+  height: 0.9rem;
+  margin-left: -0.22rem;
+  border-width: 1px;
+  flex-shrink: 0;
+}
+
+.garden-plot.can-buy .plot-badge {
+  border-color: #3f9a3a;
+  box-shadow: 0 1px 0 #2f7a2a;
+}
+
+/* —— Ausbau-Fenster: Max preview + collapsible Pflege —— */
+.gc-max-preview {
+  margin: 0.15rem 0 0;
+  text-align: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #3f7a30;
+}
+
+.gc-care-toggle {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  width: 100%;
+  min-height: 2.6rem;
+  margin-top: 0.2rem;
+  padding: 0.3rem 0.75rem;
+  border: 1px dashed color-mix(in srgb, var(--ge-stroke-strong) 60%, transparent);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ge-ink);
+  font-family: var(--ge-font-display);
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.gc-care-toggle span:first-child {
+  flex: 1;
+  text-align: left;
+}
+
+.gc-care-count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.3rem;
+  height: 1.3rem;
+  padding: 0 0.3rem;
+  border-radius: 999px;
+  background: #3f9a3a;
+  color: #fff;
+  font-family: var(--ge-font-metric);
+  font-size: 0.72rem;
+}
+
+.gc-care-toggle.open {
+  border-style: solid;
+  margin-bottom: 0.35rem;
+}
+
+/* —— HUD parts that appear after the first minutes slide in once —— */
+.hud-pills-wrap,
+.hud-reveal {
+  animation: hud-reveal 0.5s ease-out both;
+}
+
+@keyframes hud-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hud-pills-wrap,
+  .hud-reveal {
+    animation: none;
+  }
+}
+
+/* —— Willkommen zurück —— */
+.welcome-layer {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(30, 45, 28, 0.38);
+}
+
+.welcome-card {
+  width: min(22rem, 100%);
+  padding: 1.15rem 1.2rem 1.1rem;
+  background: var(--ge-bg-raised);
+  border: 1.5px solid #c9b48a;
+  border-radius: 16px;
+  box-shadow: 0 14px 34px rgba(30, 50, 30, 0.3);
+  text-align: center;
+  animation: sheet-up 0.22s ease-out;
+}
+
+.welcome-card h2 {
+  margin: 0 0 0.35rem;
+  font-family: var(--ge-font-display);
+  font-size: 1.3rem;
+  color: var(--ge-ink);
+}
+
+.welcome-card p {
+  margin: 0.2rem 0;
+  color: var(--ge-ink-muted);
+}
+
+.welcome-amount {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0.6rem 0 !important;
+  font-family: var(--ge-font-metric);
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #2f7a2a !important;
+}
+
+.welcome-claim {
+  width: 100%;
+  margin-top: 0.7rem;
+}
+
+.prestige-eta {
+  margin: 0.3rem 0 0;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #3f7a30;
+}
+
+/* —— Wildnis: how far until the next corner can be cleared —— */
+.plot-wild-progress {
+  display: block;
+  height: 4px;
+  margin-top: 0.18rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, #8a6a40 25%, transparent);
+  overflow: hidden;
+}
+
+.plot-wild-progress span {
+  display: block;
+  height: 100%;
+  background: #5f9e45;
+  border-radius: inherit;
+}
+
+/* —— Map side buttons carry a small label —— */
+.map-side-btn {
+  overflow: visible;
+}
+
+.map-side-label {
+  position: absolute;
+  top: calc(100% + 1px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.05rem 0.35rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, #fbf6e8 92%, transparent);
+  border: 1px solid #c9b48a;
+  font-family: var(--ge-font-ui);
+  font-size: 0.56rem;
+  font-weight: 800;
+  line-height: 1.25;
+  color: #3b2c18;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.helper-chip:not(.on) .map-side-label {
+  color: #8a6a40;
+}
+
+.helper-chip:not(.on) svg {
+  opacity: 0.55;
+}
+
+.garten-home.photo-mode .map-side-label {
+  display: none;
+}
+
+/* —— Omas Hinweis: compact, next to what it explains —— */
+.oma-hint {
+  left: auto;
+  right: 0.6rem;
+  width: min(20rem, calc(100% - 1.2rem));
+  padding: 0.5rem 0.75rem 0.6rem 1.5rem;
+}
+
+.oma-hint .oma-hint-text {
+  font-size: 1.08rem;
+  line-height: 1.3rem;
+  margin-bottom: 0.35rem;
+}
+
+.oma-hint .oma-hint-ok {
+  min-height: 2.75rem;
+  padding: 0.25rem 0.9rem;
+  font-size: 0.95rem;
+}
+
+.oma-hint.at-top {
+  top: var(--hud-bottom, 11.2rem);
+  bottom: auto;
+}
+
+.oma-hint.at-top::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 2.2rem;
+  width: 14px;
+  height: 14px;
+  background: #fdf8ec;
+  border-left: 1.5px solid #c9b48a;
+  border-top: 1.5px solid #c9b48a;
+  transform: rotate(45deg);
+}
+
+.oma-hint.at-bottom {
+  bottom: calc(var(--safe-bottom) + 6.4rem);
+}
+
+/* —— Kapitel-Karten: the goal area glows softly —— */
+.garden-plot.goal-target .plot-visual {
+  filter: drop-shadow(0 0 7px rgba(255, 236, 140, 0.95));
+}

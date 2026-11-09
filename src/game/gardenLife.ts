@@ -165,18 +165,18 @@ export type WheelKind = 'yield' | 'water' | 'seeds' | 'variety'
 
 export interface WheelBuff {
   kind: WheelKind
-  /** Active while state.prestiges equals this value */
+  /** Active while state.saisonenden equals this value */
   prestige: number
 }
 
 export const WHEEL_SEGMENTS: WheelKind[] = ['yield', 'water', 'seeds', 'yield', 'variety', 'water']
 
-export function wheelYieldMult(buff: WheelBuff | null, prestiges: number): number {
-  return buff && buff.kind === 'yield' && buff.prestige === prestiges ? 1.25 : 1
+export function wheelYieldMult(buff: WheelBuff | null, saisonenden: number): number {
+  return buff && buff.kind === 'yield' && buff.prestige === saisonenden ? 1.25 : 1
 }
 
-export function wheelWaterMult(buff: WheelBuff | null, prestiges: number): number {
-  return buff && buff.kind === 'water' && buff.prestige === prestiges ? 2 : 1
+export function wheelWaterMult(buff: WheelBuff | null, saisonenden: number): number {
+  return buff && buff.kind === 'water' && buff.prestige === saisonenden ? 2 : 1
 }
 
 export const WHEEL_SEEDS = 30

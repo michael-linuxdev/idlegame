@@ -30,7 +30,7 @@ describe('Kapitel 2–12', () => {
       const c = s.chapters[id]
       return { ...s, chapters: { ...s.chapters, [id]: { ...c, owned: { ...c.owned, [def.areas[7]!.id]: 1 } } } }
     }
-    let s: GameState = { ...base, generation: 1, deepPrestiges: 1 }
+    let s: GameState = { ...base, generation: 1, tiefeWinter: 1 }
     s = syncChaptersOpen(s, 1)
     expect(s.chapters.weinberg.openedAt).toBe(1)
     expect(s.chapters.bauernhof.openedAt).toBe(0)

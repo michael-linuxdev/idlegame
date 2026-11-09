@@ -15,16 +15,16 @@ const ids = ['gemuesebeet', 'kompost', 'kraeuterspirale', 'beerenhecke', 'obstwi
 const lv = (arr) => Object.fromEntries(ids.map((id, i) => [id, arr[i] ?? 0]))
 
 const SCENES = [
-  { name: 'frueh-tag', owned: lv([34, 18, 9, 1]), extra: { prestiges: 1 }, ambient: 'day-summer' },
-  { name: 'voll-tag-sommer', owned: lv([130, 120, 108, 96, 84, 72, 60, 50, 40, 30]), extra: { prestiges: 14 }, ambient: 'day-summer' },
-  { name: 'voll-abend', owned: lv([130, 120, 108, 96, 84, 72, 60, 50, 40, 30]), extra: { prestiges: 14 }, ambient: 'evening-summer' },
-  { name: 'voll-nacht', owned: lv([130, 120, 108, 96, 84, 72, 60, 50, 40, 30]), extra: { prestiges: 14 }, ambient: 'night-summer' },
-  { name: 'voll-fruehling', owned: lv([130, 120, 108, 96, 84, 72, 60, 50, 40, 30]), extra: { prestiges: 14 }, ambient: 'day-spring' },
-  { name: 'voll-herbst', owned: lv([130, 120, 108, 96, 84, 72, 60, 50, 40, 30]), extra: { prestiges: 14 }, ambient: 'day-autumn' },
-  { name: 'voll-winter', owned: lv([130, 120, 108, 96, 84, 72, 60, 50, 40, 30]), extra: { prestiges: 14 }, ambient: 'day-winter' },
-  { name: 'regen', owned: lv([60, 40, 30, 20, 10, 1]), extra: { prestiges: 4 }, ambient: 'day-summer', query: '&wetter=regen' },
-  { name: 'wind', owned: lv([60, 40, 30, 20, 10, 1]), extra: { prestiges: 4 }, ambient: 'day-autumn', query: '&wetter=wind' },
-  { name: 'mittel-tag', owned: lv([30, 26, 12, 10, 1, 1]), extra: { prestiges: 4 }, ambient: 'day-summer' },
+  { name: 'frueh-tag', owned: lv([34, 18, 9, 1]), extra: { saisonenden: 1 }, ambient: 'day-summer' },
+  { name: 'voll-tag-sommer', owned: lv([130, 120, 108, 96, 84, 72, 60, 50, 40, 30]), extra: { saisonenden: 14 }, ambient: 'day-summer' },
+  { name: 'voll-abend', owned: lv([130, 120, 108, 96, 84, 72, 60, 50, 40, 30]), extra: { saisonenden: 14 }, ambient: 'evening-summer' },
+  { name: 'voll-nacht', owned: lv([130, 120, 108, 96, 84, 72, 60, 50, 40, 30]), extra: { saisonenden: 14 }, ambient: 'night-summer' },
+  { name: 'voll-fruehling', owned: lv([130, 120, 108, 96, 84, 72, 60, 50, 40, 30]), extra: { saisonenden: 14 }, ambient: 'day-spring' },
+  { name: 'voll-herbst', owned: lv([130, 120, 108, 96, 84, 72, 60, 50, 40, 30]), extra: { saisonenden: 14 }, ambient: 'day-autumn' },
+  { name: 'voll-winter', owned: lv([130, 120, 108, 96, 84, 72, 60, 50, 40, 30]), extra: { saisonenden: 14 }, ambient: 'day-winter' },
+  { name: 'regen', owned: lv([60, 40, 30, 20, 10, 1]), extra: { saisonenden: 4 }, ambient: 'day-summer', query: '&wetter=regen' },
+  { name: 'wind', owned: lv([60, 40, 30, 20, 10, 1]), extra: { saisonenden: 4 }, ambient: 'day-autumn', query: '&wetter=wind' },
+  { name: 'mittel-tag', owned: lv([30, 26, 12, 10, 1, 1]), extra: { saisonenden: 4 }, ambient: 'day-summer' },
 ]
 
 const server = spawn('npx', ['vite', 'preview', '--port', String(PORT), '--strictPort'], { stdio: 'ignore' })
@@ -46,7 +46,7 @@ try {
     const st = { owned: s.owned, ernte: 2e6, ernteSeason: 2e6, lastSeen: Date.now(), ...s.extra }
     await ctx.addInitScript((v) => {
       if (sessionStorage.getItem('seed')) return
-      localStorage.setItem('gartenerbe-save-v1', v)
+      localStorage.setItem('gartenerbe-spielstand-v1', v)
       localStorage.setItem('gartenerbe-ftue-v1', JSON.stringify({ beat: 'done', dismissed: true, completed: [], startedAt: 1 }))
       localStorage.setItem('gartenerbe-install-v1', JSON.stringify({ dismissed: true, installed: false, shown: true }))
       localStorage.setItem('gartenerbe-notebook-v1', JSON.stringify({ unlocked: ['welcome'], read: ['welcome'], maxStage: 0 }))

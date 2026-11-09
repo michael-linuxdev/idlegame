@@ -18,7 +18,7 @@ describe('Ernte aus Abwesenheit', () => {
   })
 
   it('Jonas spends part of it; only the rest waits', () => {
-    const withJonas = { ...s, prestiges: 1, helperLevel: 5, helperOn: true }
+    const withJonas = { ...s, saisonenden: 1, helperLevel: 5, helperOn: true }
     const { state, gained } = applyOfflineCatchup(withJonas, now)
     expect(state.helperReport).toBeGreaterThan(0)
     expect(state.offlinePending).toBeLessThan(gained)

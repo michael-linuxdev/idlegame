@@ -45,7 +45,7 @@ export function FestSheet({ game, onClose }: Props) {
       case 'heirlooms':
         return {
           title: t.fest.items.heirlooms,
-          blurb: t.fest.items.heirloomsBlurb(Math.max(5, Math.round(payoutAtGate(state.prestiges) * 0.5))),
+          blurb: t.fest.items.heirloomsBlurb(Math.max(5, Math.round(payoutAtGate(state.saisonenden) * 0.5))),
         }
       case 'seeds':
         return { title: t.fest.items.seeds, blurb: t.fest.items.seedsBlurb(item.amount ?? 0) }

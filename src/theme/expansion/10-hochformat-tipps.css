@@ -1,0 +1,90 @@
+/* Hochformat-Hinweis, Omas Tipp, Kapitel-Zeile — Teil von expansion.css (Reihenfolge zählt). */
+/* —— Nur Hochformat: Hinweis, wenn ein Handy quer gehalten wird —— */
+.rotate-lock {
+  display: none;
+}
+
+@media (orientation: landscape) and (max-height: 540px) and (pointer: coarse) {
+  .rotate-lock {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-lock);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    padding: 1.5rem;
+    background: linear-gradient(180deg, #e8f0e4, #dce8d6);
+    color: #33261a;
+    font-family: var(--ge-font-display);
+    font-size: 1.1rem;
+    text-align: center;
+  }
+
+  .rotate-lock svg {
+    animation: rotate-hint 2.4s ease-in-out infinite;
+  }
+
+  .rotate-lock ~ * {
+    visibility: hidden;
+  }
+}
+
+@keyframes rotate-hint {
+  0%, 30% { transform: rotate(-90deg); }
+  60%, 100% { transform: rotate(0deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rotate-lock svg {
+    animation: none;
+  }
+}
+
+/* Omas Tipp im Ausbau-Fenster (neue Kaufoptionen) */
+.gc-tip {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.6rem;
+  border: 1.5px dashed #c4553f;
+  border-radius: 12px;
+  background: #fff6ea;
+  animation: claim-pop 200ms ease-out;
+}
+
+.gc-tip p {
+  margin: 0;
+  flex: 1;
+  font-size: 0.74rem;
+  line-height: 1.3;
+  color: #4a3208;
+}
+
+.gc-tip-ok {
+  flex: none;
+  min-height: 2rem;
+  padding: 0 0.7rem;
+  border: 2px solid #3f7a30;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #8fcf5f, #5f9e45);
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+
+/* Kapitel-Karte: kleine Kapitel-Zeile über dem Namen */
+.gc-eyebrow {
+  margin: 0 0 0.05rem;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #8a6a40;
+}
+
+.chapter-card .gc-portrait {
+  background: radial-gradient(circle at 50% 70%, #cfe3a8, #93c167);
+}

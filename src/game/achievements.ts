@@ -38,7 +38,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     blurb: () => t.achievements.firstUpgrade.blurb,
     rewardKind: 'ernte',
     rewardAmount: 30,
-    rewardLabel: () => t.achievements.rewardAsh(30),
+    rewardLabel: () => t.achievements.rewardErnte(30),
   },
   {
     id: 'bedTen',
@@ -46,7 +46,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     blurb: () => t.achievements.bedTen.blurb,
     rewardKind: 'ernte',
     rewardAmount: 120,
-    rewardLabel: () => t.achievements.rewardAsh(120),
+    rewardLabel: () => t.achievements.rewardErnte(120),
   },
   {
     id: 'compostOnline',
@@ -54,7 +54,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     blurb: () => t.achievements.compostOnline.blurb,
     rewardKind: 'samen',
     rewardAmount: 8,
-    rewardLabel: () => t.achievements.rewardObsidian(8),
+    rewardLabel: () => t.achievements.rewardSamen(8),
   },
   {
     id: 'earn10k',
@@ -62,7 +62,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     blurb: () => t.achievements.earn10k.blurb,
     rewardKind: 'erbstuecke',
     rewardAmount: 1,
-    rewardLabel: () => t.achievements.rewardEmbers(1),
+    rewardLabel: () => t.achievements.rewardErbstuecke(1),
   },
   {
     id: 'dailyOnce',
@@ -70,7 +70,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     blurb: () => t.achievements.dailyOnce.blurb,
     rewardKind: 'ernte',
     rewardAmount: 60,
-    rewardLabel: () => t.achievements.rewardAsh(60),
+    rewardLabel: () => t.achievements.rewardErnte(60),
   },
   {
     id: 'offlineOnce',
@@ -78,7 +78,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     blurb: () => t.achievements.offlineOnce.blurb,
     rewardKind: 'samen',
     rewardAmount: 5,
-    rewardLabel: () => t.achievements.rewardObsidian(5),
+    rewardLabel: () => t.achievements.rewardSamen(5),
   },
   {
     id: 'fiveOnline',
@@ -86,7 +86,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     blurb: () => t.achievements.fiveOnline.blurb,
     rewardKind: 'ernte',
     rewardAmount: 400,
-    rewardLabel: () => t.achievements.rewardAsh(400),
+    rewardLabel: () => t.achievements.rewardErnte(400),
   },
   {
     id: 'levelFive',
@@ -94,7 +94,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     blurb: () => t.achievements.levelFive.blurb,
     rewardKind: 'samen',
     rewardAmount: 15,
-    rewardLabel: () => t.achievements.rewardObsidian(15),
+    rewardLabel: () => t.achievements.rewardSamen(15),
   },
   {
     id: 'prestigeOnce',
@@ -111,7 +111,7 @@ export const ACHIEVEMENTS: AchievementDef[] = [
     blurb: () => t.achievements.upgradesFifty.blurb,
     rewardKind: 'erbstuecke',
     rewardAmount: 2,
-    rewardLabel: () => t.achievements.rewardEmbers(2),
+    rewardLabel: () => t.achievements.rewardErbstuecke(2),
   },
 ]
 
@@ -123,7 +123,7 @@ export interface AchievementStats {
   claimedDailyOnce: boolean
   claimedOfflineOnce: boolean
   playerLevel: number
-  prestiges: number
+  saisonenden: number
   owned: Record<GeneratorId, number>
 }
 
@@ -154,7 +154,7 @@ export function isAchievementComplete(
     case 'levelFive':
       return stats.playerLevel >= 5
     case 'prestigeOnce':
-      return stats.prestiges >= 1
+      return stats.saisonenden >= 1
     case 'upgradesFifty':
       return stats.totalUpgrades >= 50
     default:

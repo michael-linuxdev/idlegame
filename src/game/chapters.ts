@@ -52,7 +52,7 @@ export interface ChapterDef {
 }
 
 export interface UnlockCtx {
-  deepPrestiges: number
+  tiefeWinter: number
   generation: number
   chapters: Record<string, { owned: Record<string, number>; openedAt: number }>
 }
@@ -155,7 +155,7 @@ export const CHAPTERS: ChapterDef[] = [
       1,
     ),
     gardenBonusPerLevel: 0.004,
-    unlock: (s) => s.deepPrestiges >= 1 || s.generation >= 1,
+    unlock: (s) => s.tiefeWinter >= 1 || s.generation >= 1,
   },
   {
     id: 'weinberg',
@@ -175,8 +175,6 @@ export const CHAPTERS: ChapterDef[] = [
     }
   }),
 ]
-
-export const CHAPTER_IDS: ChapterId[] = CHAPTERS.map((c) => c.id)
 
 export function chapterDef(id: ChapterId): ChapterDef {
   return CHAPTERS.find((c) => c.id === id)!

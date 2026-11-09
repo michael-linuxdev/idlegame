@@ -1,0 +1,166 @@
+/* Markt, Gartenwoche, Gartenstile — Teil von App.css (Reihenfolge zählt). */
+.shop-wallet-chip {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 7.5rem;
+  padding: 0.55rem 0.75rem;
+  background: var(--ge-bg-raised);
+  border: 1px solid var(--ge-stroke-strong);
+  border-radius: var(--ge-radius);
+}
+
+.shop-wallet-chip.secondary {
+  border-color: var(--ge-stroke);
+}
+
+.shop-wallet-chip.ads-free {
+  border-color: color-mix(in srgb, var(--ge-gruen) 45%, var(--ge-stroke));
+}
+
+.shop-ad-toast {
+  margin: 0.35rem 0 0;
+  padding: 0.4rem 0.55rem;
+  border-radius: var(--ge-radius);
+  background: color-mix(in srgb, var(--ge-gruen) 18%, var(--ge-bg-raised));
+  border: 1px solid color-mix(in srgb, var(--ge-gruen) 40%, var(--ge-stroke));
+  color: var(--ge-ink);
+  font-family: var(--ge-font-metric);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.shop-bp-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  align-items: center;
+  margin: 0.75rem 0 0.5rem;
+}
+
+.shop-bp-list {
+  list-style: none;
+  margin: 0.5rem 0 1rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.shop-bp-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border: 1px solid var(--ge-stroke);
+  border-radius: var(--ge-radius);
+  background: var(--ge-bg-raised);
+}
+
+.shop-bp-tier {
+  display: flex;
+  gap: 0.5rem;
+  align-items: baseline;
+}
+
+.shop-bp-tier-num {
+  font-family: var(--ge-font-metric);
+  font-weight: 700;
+  color: var(--ge-ink);
+}
+
+.shop-bp-track {
+  display: grid;
+  grid-template-columns: 4.5rem 1fr auto;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.shop-bp-track.premium {
+  padding-top: 0.35rem;
+  border-top: 1px dashed var(--ge-stroke);
+}
+
+.shop-bp-track-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--ge-ink-muted);
+}
+
+.shop-wallet-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ge-ink-muted);
+  font-weight: 600;
+}
+
+.shop-wallet-value {
+  font-family: var(--ge-font-metric);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--ge-ink);
+}
+
+.cosmetic-grid {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.cosmetic-card {
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.75rem;
+  border: 1px solid var(--ge-stroke);
+  border-radius: var(--ge-radius);
+  background: var(--ge-bg-raised);
+}
+
+.cosmetic-card.equipped {
+  border-color: var(--ge-gruen);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ge-gruen) 35%, transparent);
+}
+
+.cosmetic-swatch {
+  width: 48px;
+  height: 48px;
+  border-radius: 4px;
+  border: 1px solid var(--ge-stroke-strong);
+}
+
+.cosmetic-swatch.skin-wiese {
+  background: linear-gradient(145deg, #e8eef4, #c5d0dc);
+}
+
+.cosmetic-swatch.skin-bauerngarten {
+  background: linear-gradient(145deg, #f0d4a8, #d4893a);
+}
+
+.cosmetic-swatch.skin-bluetenmeer {
+  background: linear-gradient(145deg, #cfe8f4, #3d8eb8);
+}
+
+.cosmetic-swatch.skin-goldherbst {
+  background: linear-gradient(145deg, #e8d9a8, #8a7348);
+}
+
+.cosmetic-tag {
+  margin-left: 0.4rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ge-gruen-dunkel);
+  font-weight: 700;
+}
+
+.shop-list {
+  margin-top: 0.35rem;
+}

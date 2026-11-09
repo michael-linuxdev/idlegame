@@ -10,7 +10,7 @@ import {
   areaCost,
   areaUnlocked, chapterDef, chapterLevels, chapterStage, type ChapterId } from '../game/chapters'
 import { milestonesReached, nextMilestone } from '../game/generators'
-import { formatAsh, formatClock, formatDecimal } from '../game/format'
+import { formatErnte, formatClock, formatDecimal } from '../game/format'
 import { playSfx } from '../game/sound'
 import { bestChapterBuy } from '../game/state'
 import { WEINLESE } from '../game/extrasCore'
@@ -90,7 +90,7 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
   const goal: HudGoal = {
     key: `${chapter}-${target}`,
     title: (c.owned[target] ?? 0) > 0 ? t.chapterUi.goal(targetName) : t.chapterUi.goalPlant(targetName),
-    detail: `${formatAsh(targetCost)} ${copy.currency}`,
+    detail: `${formatErnte(targetCost)} ${copy.currency}`,
     ratio: targetCost > 0 ? Math.min(1, c.cur / targetCost) : 1,
     tone: best ? 'tip' : 'goal',
     icon: <IconSprout />,
@@ -100,7 +100,7 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
 
 
   return (
-    <section className={`fortress-home orchard-home chapter-${chapter}`} aria-labelledby="chapter-heading">
+    <section className={`garten-home orchard-home chapter-${chapter}`} aria-labelledby="chapter-heading">
       <h1 id="chapter-heading" className="sr-only">
         {copy.title}
       </h1>
@@ -113,13 +113,13 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
           <div
             className="hud-card hud-wallet"
             role="status"
-            aria-label={t.chapterUi.walletAria(formatAsh(c.cur), copy.currency, formatAsh(rate))}
+            aria-label={t.chapterUi.walletAria(formatErnte(c.cur), copy.currency, formatErnte(rate))}
           >
             <span className="hud-amount">
               <span className="hud-amount-icon">{copy.icon}</span>
-              {formatAsh(c.cur)}
+              {formatErnte(c.cur)}
             </span>
-            <span className="hud-rate">{t.chapterUi.rate(formatAsh(rate), copy.currency)}</span>
+            <span className="hud-rate">{t.chapterUi.rate(formatErnte(rate), copy.currency)}</span>
           </div>
         </div>
         <GoalStrip goal={goal} />
@@ -388,8 +388,8 @@ function ChapterSheet({
                   {stars > 5 ? <em>+{stars - 5}</em> : null}
                 </div>
                 <p className="gc-rate">
-                  {copy.icon} {formatAsh(rate)}/s
-                  <span className="upgrade-gain"> +{formatAsh(gain)}/s</span>
+                  {copy.icon} {formatErnte(rate)}/s
+                  <span className="upgrade-gain"> +{formatErnte(gain)}/s</span>
                 </p>
               </>
             ) : (
@@ -444,7 +444,7 @@ function ChapterSheet({
               onPointerLeave={up}
               onPointerCancel={up}
               onContextMenu={(e) => e.preventDefault()}
-              aria-label={t.chapterUi.cost(action, formatAsh(cost), copy.currency)}
+              aria-label={t.chapterUi.cost(action, formatErnte(cost), copy.currency)}
             >
               <span className="gc-buy-fill" style={{ width: `${Math.round(affordRatio * 100)}%` }} aria-hidden="true" />
               <span className="gc-buy-label">
@@ -452,7 +452,7 @@ function ChapterSheet({
                 {bulk !== 1 ? ` ×${count}` : ''}
               </span>
               <span className="gc-buy-cost">
-                {copy.icon} {formatAsh(cost)}
+                {copy.icon} {formatErnte(cost)}
               </span>
             </button>
             <p className="upgrade-hold-hint">
@@ -460,7 +460,7 @@ function ChapterSheet({
                 ? bulk === 1
                   ? t.upgrade.holdHint
                   : ''
-                : t.chapterUi.needMore(formatAsh(Math.max(0, cost - c.cur)), copy.currency)}
+                : t.chapterUi.needMore(formatErnte(Math.max(0, cost - c.cur)), copy.currency)}
             </p>
             {level >= 1 ? (
               <div className="gc-care" aria-label={t.chapterCare.title}>
@@ -498,9 +498,9 @@ function ChapterSheet({
                             game.buyChapterCareRank(chapter, area, kind)
                             pop()
                           }}
-                          aria-label={t.chapterUi.cost(name, formatAsh(price), copy.currency)}
+                          aria-label={t.chapterUi.cost(name, formatErnte(price), copy.currency)}
                         >
-                          {copy.icon} {formatAsh(price)}
+                          {copy.icon} {formatErnte(price)}
                         </button>
                       )}
                     </div>
@@ -606,7 +606,7 @@ function WeinleseGame({ onDone, rewardPerHit }: { onDone: (hits: number) => void
           <>
             <p className="weinlese-score" role="status">
               {finished
-                ? t.weinlese.result(hits, formatAsh(Math.max(hits * 10, rewardPerHit * hits)))
+                ? t.weinlese.result(hits, formatErnte(Math.max(hits * 10, rewardPerHit * hits)))
                 : feedback ?? t.weinlese.hits(hits, WEINLESE.grapes)}
             </p>
             <div className="weinlese-vine">

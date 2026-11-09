@@ -1,0 +1,72 @@
+/* Kleingartenverein — Teil von App.css (Reihenfolge zählt). */
+/* Clan */
+
+.clan-panel .panel-header {
+  margin-bottom: 1rem;
+}
+
+.clan-card {
+  padding: 1rem 0 1.1rem;
+  border-bottom: 1px solid var(--ge-stroke);
+}
+
+.clan-card-label {
+  font-size: 0.8rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ge-ink-muted);
+  font-weight: 600;
+}
+
+.clan-card-name {
+  font-family: var(--ge-font-display);
+  font-size: 1.45rem;
+  margin-top: 0.25rem;
+  color: var(--ge-ink);
+  font-weight: 700;
+}
+
+.clan-card-meta {
+  margin-top: 0.35rem;
+  color: var(--ge-ink-muted);
+  font-size: 0.95rem;
+}
+
+.leaderboard {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+}
+
+.leaderboard-row {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr auto;
+  gap: 0.5rem;
+  align-items: baseline;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--ge-stroke);
+  color: var(--ge-ink);
+  font-size: 1rem;
+}
+
+.leaderboard-row.you {
+  color: var(--ge-clan);
+  font-weight: 600;
+}
+
+.lb-rank {
+  color: var(--ge-ink-muted);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.lb-score {
+  font-variant-numeric: tabular-nums;
+  color: var(--ge-ink);
+  font-family: var(--ge-font-metric);
+  font-weight: 600;
+}
+
+.leaderboard-row.you .lb-score {
+  color: var(--ge-clan);
+}

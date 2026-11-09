@@ -13,7 +13,7 @@ export type ChallengeId = 'ohneKompost' | 'fuenfBeete' | 'ohneGiessen'
 
 export const CHALLENGE_IDS: ChallengeId[] = ['ohneKompost', 'fuenfBeete', 'ohneGiessen']
 
-/** Ab diesem Gartenjahr (prestiges) wählbar */
+/** Ab diesem Gartenjahr (saisonenden) wählbar */
 export const CHALLENGES_FROM_PRESTIGES = 7
 
 export const CHALLENGE_BONUS = 0.03

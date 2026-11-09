@@ -1,0 +1,91 @@
+/* Gartenkarte — Teil von App.css (Reihenfolge zählt). */
+/* —— Outpost home / map —— */
+
+.garten-home {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  position: relative;
+}
+
+.prestige-shop-ready {
+  margin: 0.35rem 0 0.15rem;
+  padding: 0.45rem 0.65rem;
+  border-radius: 0.55rem;
+  background: color-mix(in srgb, var(--ge-gain) 14%, transparent);
+  color: var(--ge-gain);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.prestige-shop-ready--wait {
+  background: color-mix(in srgb, var(--ge-accent, #2a7a4b) 12%, transparent);
+  color: var(--text);
+  font-weight: 650;
+}
+
+.prestige-shop-waiting {
+  margin: 0.35rem 0 0.4rem;
+}
+
+.truhe-unlock-bar {
+  margin-top: 0.35rem;
+  height: 0.4rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--text) 12%, transparent);
+  overflow: hidden;
+}
+
+.truhe-unlock-bar--row {
+  margin-top: 0.3rem;
+  max-width: 12rem;
+}
+
+.truhe-unlock-bar-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: color-mix(in srgb, var(--ge-gain) 70%, var(--ge-accent, #2a7a4b));
+  transition: width 0.25s ease-out;
+}
+
+.laden-row--ready {
+  background: color-mix(in srgb, var(--ge-gain) 8%, transparent);
+  margin: 0 -0.35rem;
+  padding-left: 0.35rem;
+  padding-right: 0.35rem;
+  border-radius: 0.45rem;
+}
+
+.laden-row--locked {
+  opacity: 0.78;
+}
+
+.laden-row--next {
+  opacity: 1;
+  outline: 1px solid color-mix(in srgb, var(--ge-gain) 35%, transparent);
+  outline-offset: 1px;
+  border-radius: 0.45rem;
+  padding-left: 0.35rem;
+  padding-right: 0.35rem;
+  margin: 0 -0.35rem;
+}
+
+.laden-next-tag {
+  margin-left: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--ge-gain);
+}
+
+.laden-lock {
+  margin: 0.15rem 0 0;
+  font-size: 0.82rem;
+}
+
+.upgrade-hold-hint {
+  margin: 0.25rem 0 0;
+  font-size: 0.62rem;
+  opacity: 0.72;
+  text-align: center;
+}

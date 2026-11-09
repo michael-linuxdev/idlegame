@@ -27,7 +27,7 @@ function playDay(log: LogState, dayStart: number): LogState {
       l = recordEvent(l, 'upgrade', { id: `bereich${i % 10}`, level: i, kind: 'module' }, t + i * 300)
       if (i % 4 === 0) l = recordEvent(l, 'surprise', { kind: 'milestone', amount: 123456789 }, t + i * 300 + 1)
     }
-    for (let i = 0; i < 25; i++) l = recordEvent(l, 'tab_open', { tab: i % 2 ? 'shop' : 'fortress' }, t + 3 * MIN + i)
+    for (let i = 0; i < 25; i++) l = recordEvent(l, 'tab_open', { tab: i % 2 ? 'shop' : 'garten' }, t + 3 * MIN + i)
     l = recordEvent(l, 'prestige', { run: 3, erbstuecke: 500 }, t + 10 * MIN)
     l = setSnapshot(l, { saisons: 3, stufe: 20, erntePerS: 123456 }, t + 15 * MIN)
     l = addPlayTime(l, t, t + 20 * MIN, 'test')
@@ -92,8 +92,9 @@ describe('Playtest-Log über Monate', () => {
   it('übernimmt das alte v1-Log und übersetzt alte Namen', () => {
     const legacy = [
       { t: T0, type: 'session_start', data: { app: 'gartenerbe' } },
+      // altname-ok: Einträge aus einem alten Log werden übersetzt
       { t: T0 + 1000, type: 'upgrade', data: { id: 'dominionYield', kind: 'ember' } },
-      { t: T0 + 2000, type: 'tab_open', data: { tab: 'fortress' } },
+      { t: T0 + 2000, type: 'tab_open', data: { tab: 'fortress' } }, // altname-ok
       { t: T0 + 3000, type: 'session_end' },
       { t: T0 + 4000, type: 'session_start' },
       { nonsense: true },

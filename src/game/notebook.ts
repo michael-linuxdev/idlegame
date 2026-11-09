@@ -36,7 +36,7 @@ export interface NotebookEntryDef {
   id: NotebookEntryId
   /** Unlock by garden stage (areas angelegt in one season) */
   stage?: number
-  /** Unlock by Gartenjahr (prestiges + 1) */
+  /** Unlock by Gartenjahr (saisonenden + 1) */
   year?: number
   /** Unlock by Tiefe Winter completed */
   deep?: number

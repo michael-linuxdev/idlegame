@@ -1,5 +1,5 @@
 /**
- * Module definitions — Bau-Map content depth (10 slots) + economy.md formulas for G1–G3.
+ * Module definitions — Bau-Map content depth (10 slots) + Kosten-/Ertragsformeln (Balance: ROADMAP.md).
  * Display names come from src/theme/strings.ts (DE).
  *
  * Garden ladder (G1 → G10): Gemüsebeet, Kompost, Kräuterspirale, Beerenhecke,
@@ -7,7 +7,7 @@
  */
 
 import { t } from '../i18n'
-import { formatAsh } from './format'
+import { formatErnte } from './format'
 import { LEVEL_MODULE_GATES } from './progression'
 
 export type GeneratorId =
@@ -21,7 +21,6 @@ export type GeneratorId =
   | 'gewaechshaus'
   | 'hofladen'
   | 'orangerie'
-
 
 export type EconomyId =
   | 'G1'
@@ -41,7 +40,7 @@ export interface UnlockGate {
    * Omas garden can be cleared at all. Paces content across seasons.
    */
   seasons?: number
-  /** Lifetime Compute earned this run (economy Ash) */
+  /** Ernte earned this run */
   ernteSeason?: number
   /** Prior module at least this level (OR with ernteSeason) */
   requires?: { id: GeneratorId; level: number }
@@ -56,7 +55,7 @@ export interface GeneratorDef {
   note: string
   /** Plot centre on the garden map (percent of map box) */
   slot: { left: string; top: string }
-  /** Base Compute/sec at level 1 (`r0`) */
+  /** Base Ernte/s at level 1 (`r0`) */
   baseRate: number
   /** Cost C0 for level 0 → 1 */
   baseCost: number
@@ -207,9 +206,6 @@ export const GENERATORS: GeneratorDef[] = [
 
 export const GENERATOR_IDS: GeneratorId[] = GENERATORS.map((g) => g.id)
 
-/** @deprecated alias — prefer GENERATOR_IDS */
-export const MVP_GENERATOR_IDS = GENERATOR_IDS
-
 /** Cost to buy level n → n+1: C(n) = C0 · g^n */
 export function generatorCost(def: GeneratorDef, owned: number, discountMult = 1): number {
   const raw = def.baseCost * Math.pow(def.costScale, owned) * discountMult
@@ -259,13 +255,13 @@ export function isGeneratorUnlocked(
   owned: Record<GeneratorId, number>,
   firstBeacon = false,
   playerLevel = 1,
-  prestiges = 0,
+  saisonenden = 0,
 ): boolean {
   if (!def.unlock) return true
-  if ((def.unlock.seasons ?? 0) > prestiges) return false
+  if ((def.unlock.seasons ?? 0) > saisonenden) return false
   if (firstBeacon && def.id === 'kompost') return true
-  const { ernteSeason: needAsh, requires } = def.unlock
-  if (needAsh != null && ernteSeason >= needAsh) return true
+  const { ernteSeason: needErnte, requires } = def.unlock
+  if (needErnte != null && ernteSeason >= needErnte) return true
   if (requires && (owned[requires.id] ?? 0) >= requires.level) return true
   const levelGate = LEVEL_MODULE_GATES[def.id]
   if (levelGate != null && playerLevel >= levelGate) {
@@ -278,32 +274,20 @@ export function isGeneratorUnlocked(
   return false
 }
 
-/** Legacy helper */
-export function isUnlocked(
-  def: GeneratorDef,
-  ernteSeason: number,
-  firstFlame: boolean,
-  owned: Record<GeneratorId, number> = {} as Record<GeneratorId, number>,
-  playerLevel = 1,
-  prestiges = 0,
-): boolean {
-  return isGeneratorUnlocked(def, ernteSeason, owned, firstFlame, playerLevel, prestiges)
-}
-
 /** Gartenjahr still missing for this corner (0 = no season gate left). */
-export function seasonsMissing(def: GeneratorDef, prestiges: number): number {
-  return Math.max(0, (def.unlock?.seasons ?? 0) - prestiges)
+export function seasonsMissing(def: GeneratorDef, saisonenden: number): number {
+  return Math.max(0, (def.unlock?.seasons ?? 0) - saisonenden)
 }
 
-export function unlockHint(def: GeneratorDef, prestiges = 0): string {
+export function unlockHint(def: GeneratorDef, saisonenden = 0): string {
   if (!def.unlock) return ''
-  if (seasonsMissing(def, prestiges) > 0) {
+  if (seasonsMissing(def, saisonenden) > 0) {
     return t.unlock.seasonGate(def.unlock.seasons! + 1)
   }
   const parts: string[] = []
   if (def.unlock.ernteSeason != null) {
     parts.push(
-      t.unlock.computeEarned(def.unlock.ernteSeason.toLocaleString('de-DE')),
+      t.unlock.ernteEarned(def.unlock.ernteSeason.toLocaleString('de-DE')),
     )
   }
   if (def.unlock.requires) {
@@ -323,11 +307,11 @@ export function unlockHint(def: GeneratorDef, prestiges = 0): string {
 }
 
 /** Compact unlock gate for map plaques (phone-scale labels). */
-export function shortUnlockGate(def: GeneratorDef, prestiges = 0): string {
+export function shortUnlockGate(def: GeneratorDef, saisonenden = 0): string {
   if (!def.unlock) return t.hud.locked
-  if (seasonsMissing(def, prestiges) > 0) return t.unlock.seasonShort(def.unlock.seasons! + 1)
+  if (seasonsMissing(def, saisonenden) > 0) return t.unlock.seasonShort(def.unlock.seasons! + 1)
   if (def.unlock.ernteSeason != null) {
-    return t.hud.gateCompute(formatAsh(def.unlock.ernteSeason).replace(/,0+(?=\D|$)/, ''))
+    return t.hud.gateErnte(formatErnte(def.unlock.ernteSeason).replace(/,0+(?=\D|$)/, ''))
   }
   if (def.unlock.requires) {
     const prior = GENERATORS.find((g) => g.id === def.unlock!.requires!.id)

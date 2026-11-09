@@ -26,7 +26,7 @@ interface Props {
 
 
 export function ClanPanel({ game, onOpenShop }: Props) {
-  const { clanBoostActive, clanBoostMsLeft, clanMult } = game
+  const { clanBoostActive, clanBoostMsLeft, vereinMult } = game
 
   return (
     <section className="panel clan-panel" aria-labelledby="clan-heading">
@@ -43,7 +43,7 @@ export function ClanPanel({ game, onOpenShop }: Props) {
         {clanBoostActive || !onOpenShop ? (
           <div className={`clan-boost-status${clanBoostActive ? ' active' : ' idle'}`}>
             {clanBoostActive
-              ? t.clan.boostActive(formatDecimal(clanMult, 2), formatClock(clanBoostMsLeft))
+              ? t.clan.boostActive(formatDecimal(vereinMult, 2), formatClock(clanBoostMsLeft))
               : t.clan.boostInactive}
           </div>
         ) : (

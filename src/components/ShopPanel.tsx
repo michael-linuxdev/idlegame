@@ -1,10 +1,10 @@
 import { useState, type ReactNode } from 'react'
-import { formatAsh, formatDecimal, formatMult } from '../game/format'
+import { formatErnte, formatDecimal, formatMult } from '../game/format'
 import {
   AD_ERNTE_MINUTES,
   AD_SAMEN,
-  BATTLE_PASS_MAX_XP,
-  BATTLE_PASS_TIERS,
+  GARTENWOCHE_MAX_XP,
+  GARTENWOCHE_TIERS,
   CLAN_BOOST,
   COSMETICS,
   type CosmeticId,
@@ -54,13 +54,13 @@ function loadTab(): Tab {
 /** One shop row: name, short text, effect line, action on the right. */
 function Row({ name, blurb, effect, children }: { name: string; blurb?: string; effect?: ReactNode; children: ReactNode }) {
   return (
-    <li className="ember-shop-row">
-      <div className="ember-shop-info">
-        <div className="ember-shop-name">{name}</div>
-        {blurb ? <p className="ember-shop-blurb">{blurb}</p> : null}
-        {effect ? <p className="ember-shop-effect">{effect}</p> : null}
+    <li className="laden-row">
+      <div className="laden-info">
+        <div className="laden-name">{name}</div>
+        {blurb ? <p className="laden-blurb">{blurb}</p> : null}
+        {effect ? <p className="laden-effect">{effect}</p> : null}
       </div>
-      <div className="ember-shop-action">{children}</div>
+      <div className="laden-action">{children}</div>
     </li>
   )
 }
@@ -101,9 +101,9 @@ export function ShopPanel({ game, onPreview }: Props) {
     watchRewardedAd,
     claimGift,
     buyWaterRefill,
-    claimBpDailyXp,
-    claimBpTier,
-    bpDailyXpReady,
+    gartenwocheClaimXp,
+    gartenwocheClaimTier,
+    gartenwocheXpReady,
   } = game
 
   const [tab, setTab] = useState<Tab>(loadTab)
@@ -118,7 +118,7 @@ export function ShopPanel({ game, onPreview }: Props) {
 
   const offerOwned = (offer: ShopOfferDef) => {
     if (offer.kind === 'removeAds') return state.adsRemoved
-    if (offer.kind === 'battlePassPremium') return state.bpPremium
+    if (offer.kind === 'gartenwochePlus') return state.gartenwochePremium
     if (offer.once) return state.ownedOfferIds.includes(offer.id)
     return false
   }
@@ -127,10 +127,10 @@ export function ShopPanel({ game, onPreview }: Props) {
   const removeAds = SHOP_OFFERS.filter((o) => o.section === 'removeAds')
   const currency = SHOP_OFFERS.filter((o) => o.section === 'currency')
   const cosmeticPacks = SHOP_OFFERS.filter((o) => o.section === 'cosmetics')
-  const bpPremiumOffer = SHOP_OFFERS.find((o) => o.kind === 'battlePassPremium')
+  const gartenwochePlusOffer = SHOP_OFFERS.find((o) => o.kind === 'gartenwochePlus')
 
-  const rewardLabel = (kind: 'samen' | 'computeSec', amount: number) =>
-    kind === 'samen' ? t.shop.rewardObsidian(amount) : t.shop.rewardComputeSec(amount)
+  const rewardLabel = (kind: 'samen' | 'ernteSec', amount: number) =>
+    kind === 'samen' ? t.shop.rewardSamen(amount) : t.shop.rewardErnteSec(amount)
 
   const adErnte = rate * AD_ERNTE_MINUTES * 60
 
@@ -171,7 +171,7 @@ export function ShopPanel({ game, onPreview }: Props) {
 
       {tab === 'free' ? (
         <div role="tabpanel">
-          <ul className="ember-shop shop-list">
+          <ul className="laden shop-list">
             <Row name={t.shop.giftTitle} blurb={t.shop.giftIntro}>
               <button type="button" className="btn buy" disabled={!giftReady} onClick={claimGift}>
                 {giftReady ? t.shop.giftClaim(MARKET_GIFT_SAMEN) : t.shop.giftDone}
@@ -193,7 +193,7 @@ export function ShopPanel({ game, onPreview }: Props) {
                     <p className="shop-ad-status">{t.shop.adsPick}</p>
                     <div className="shop-ad-choices">
                       <button type="button" className="btn buy" onClick={() => watchRewardedAd('ernte')}>
-                        {t.shop.adsErnte(AD_ERNTE_MINUTES, formatAsh(adErnte))}
+                        {t.shop.adsErnte(AD_ERNTE_MINUTES, formatErnte(adErnte))}
                       </button>
                       <button type="button" className="btn buy" onClick={() => watchRewardedAd('samen')}>
                         {t.shop.adsSamen(AD_SAMEN)}
@@ -205,7 +205,7 @@ export function ShopPanel({ game, onPreview }: Props) {
                 )}
                 {adResult && !adWatching ? (
                   <p className="shop-ad-toast" role="status" aria-live="polite">
-                    {t.shop.adsGot(adResult.choice === 'ernte' ? t.shop.adsGotErnte(formatAsh(adResult.ernte)) : t.shop.adsSamen(adResult.samen))}
+                    {t.shop.adsGot(adResult.choice === 'ernte' ? t.shop.adsGotErnte(formatErnte(adResult.ernte)) : t.shop.adsSamen(adResult.samen))}
                   </p>
                 ) : null}
               </div>
@@ -214,51 +214,51 @@ export function ShopPanel({ game, onPreview }: Props) {
 
           {STORE_ENABLED ? (
             <>
-              <h3 className="subhead">{t.shop.battlePassTitle}</h3>
-              <p className="muted">{t.shop.battlePassIntro}</p>
+              <h3 className="subhead">{t.shop.gartenwocheTitle}</h3>
+              <p className="muted">{t.shop.gartenwocheIntro}</p>
               <div className="shop-bp-header">
                 <div className="shop-wallet-chip">
                   <span className="shop-wallet-label">EP</span>
-                  <span className="shop-wallet-value">{t.shop.battlePassXp(state.bpXp, BATTLE_PASS_MAX_XP)}</span>
+                  <span className="shop-wallet-value">{t.shop.gartenwocheXpLabel(state.gartenwocheXp, GARTENWOCHE_MAX_XP)}</span>
                 </div>
-                <button type="button" className="btn ghost" disabled={!bpDailyXpReady} onClick={claimBpDailyXp}>
-                  {bpDailyXpReady ? t.shop.battlePassDailyXp : t.shop.battlePassDailyDone}
+                <button type="button" className="btn ghost" disabled={!gartenwocheXpReady} onClick={gartenwocheClaimXp}>
+                  {gartenwocheXpReady ? t.shop.gartenwocheDailyXp : t.shop.gartenwocheDailyDone}
                 </button>
               </div>
               <ul className="shop-bp-list">
-                {BATTLE_PASS_TIERS.map((tier) => {
-                  const xpOk = state.bpXp >= tier.xp
-                  const freeClaimed = state.bpClaimedFree.includes(tier.tier)
-                  const premClaimed = state.bpClaimedPremium.includes(tier.tier)
+                {GARTENWOCHE_TIERS.map((tier) => {
+                  const xpOk = state.gartenwocheXp >= tier.xp
+                  const freeClaimed = state.gartenwocheClaimedFree.includes(tier.tier)
+                  const premClaimed = state.gartenwocheClaimedPremium.includes(tier.tier)
                   return (
                     <li key={tier.tier} className="shop-bp-row">
                       <div className="shop-bp-tier">
                         <span className="shop-bp-tier-num">T{tier.tier}</span>
-                        <span className="muted">{t.shop.battlePassNeedXp(tier.xp)}</span>
+                        <span className="muted">{t.shop.gartenwocheNeedXp(tier.xp)}</span>
                       </div>
                       <div className="shop-bp-track">
-                        <span className="shop-bp-track-label">{t.shop.battlePassFree}</span>
-                        <span className="ember-shop-effect">{rewardLabel(tier.free.kind, tier.free.amount)}</span>
-                        <button type="button" className="btn ghost" disabled={!xpOk || freeClaimed} onClick={() => claimBpTier(tier.tier, 'free')}>
-                          {freeClaimed ? t.shop.battlePassClaimed : xpOk ? t.shop.battlePassClaim : t.shop.battlePassLocked}
+                        <span className="shop-bp-track-label">{t.shop.gartenwocheFree}</span>
+                        <span className="laden-effect">{rewardLabel(tier.free.kind, tier.free.amount)}</span>
+                        <button type="button" className="btn ghost" disabled={!xpOk || freeClaimed} onClick={() => gartenwocheClaimTier(tier.tier, 'free')}>
+                          {freeClaimed ? t.shop.gartenwocheClaimed : xpOk ? t.shop.gartenwocheClaim : t.shop.gartenwocheLocked}
                         </button>
                       </div>
                       <div className="shop-bp-track premium">
-                        <span className="shop-bp-track-label">{t.shop.battlePassPremium}</span>
-                        <span className="ember-shop-effect">{rewardLabel(tier.premium.kind, tier.premium.amount)}</span>
+                        <span className="shop-bp-track-label">{t.shop.gartenwochePlus}</span>
+                        <span className="laden-effect">{rewardLabel(tier.premium.kind, tier.premium.amount)}</span>
                         <button
                           type="button"
                           className="btn ghost"
-                          disabled={!state.bpPremium || !xpOk || premClaimed}
-                          onClick={() => claimBpTier(tier.tier, 'premium')}
+                          disabled={!state.gartenwochePremium || !xpOk || premClaimed}
+                          onClick={() => gartenwocheClaimTier(tier.tier, 'premium')}
                         >
                           {premClaimed
-                            ? t.shop.battlePassClaimed
-                            : !state.bpPremium
-                              ? t.shop.battlePassNeedPremium
+                            ? t.shop.gartenwocheClaimed
+                            : !state.gartenwochePremium
+                              ? t.shop.gartenwocheNeedPremium
                               : xpOk
-                                ? t.shop.battlePassClaim
-                                : t.shop.battlePassLocked}
+                                ? t.shop.gartenwocheClaim
+                                : t.shop.gartenwocheLocked}
                         </button>
                       </div>
                     </li>
@@ -272,7 +272,7 @@ export function ShopPanel({ game, onPreview }: Props) {
 
       {tab === 'boosts' ? (
         <div role="tabpanel">
-          <ul className="ember-shop shop-list">
+          <ul className="laden shop-list">
             <Row
               name={t.shop.refillTitle}
               blurb={t.shop.refillIntro}
@@ -284,7 +284,7 @@ export function ShopPanel({ game, onPreview }: Props) {
                 disabled={tapReady || state.samen < WATER_REFILL_COST || waterRefillsLeft(state) <= 0}
                 onClick={buyWaterRefill}
               >
-                {t.shop.costObsidian(WATER_REFILL_COST)}
+                {t.shop.costSamen(WATER_REFILL_COST)}
               </button>
               {state.samen < WATER_REFILL_COST ? <span className="shop-need">{t.ux.shop.need(WATER_REFILL_COST - state.samen)}</span> : null}
             </Row>
@@ -301,10 +301,10 @@ export function ShopPanel({ game, onPreview }: Props) {
             <Row
               name={CLAN_BOOST.name}
               blurb={CLAN_BOOST.blurb}
-              effect={clanBoostActive ? t.shop.boostActiveShort(formatDecimal(game.clanMult, 2), formatMsLeft(clanBoostMsLeft)) : t.shop.boostInactiveShort}
+              effect={clanBoostActive ? t.shop.boostActiveShort(formatDecimal(game.vereinMult, 2), formatMsLeft(clanBoostMsLeft)) : t.shop.boostInactiveShort}
             >
               <button type="button" className="btn buy" disabled={state.samen < CLAN_BOOST.cost} onClick={purchaseClanBoost}>
-                {t.shop.costObsidian(CLAN_BOOST.cost)}
+                {t.shop.costSamen(CLAN_BOOST.cost)}
               </button>
               {state.samen < CLAN_BOOST.cost ? <span className="shop-need">{t.ux.shop.need(CLAN_BOOST.cost - state.samen)}</span> : null}
             </Row>
@@ -312,17 +312,17 @@ export function ShopPanel({ game, onPreview }: Props) {
 
           <h3 className="subhead">{t.shop.skipsTitle}</h3>
           <p className="muted">
-            {t.shop.skipsIntro(formatAsh(rate), DAILY_SKIP_CAP_HOURS)} · {t.shop.skipLeftToday} {t.shop.skipHours(skipHoursRemaining, DAILY_SKIP_CAP_HOURS)}
+            {t.shop.skipsIntro(formatErnte(rate), DAILY_SKIP_CAP_HOURS)} · {t.shop.skipLeftToday} {t.shop.skipHours(skipHoursRemaining, DAILY_SKIP_CAP_HOURS)}
           </p>
-          <ul className="ember-shop shop-list">
+          <ul className="laden shop-list">
             {TIME_SKIPS.map((skip) => {
               const capped = skipHoursRemaining <= 0
               const hours = Math.min(skip.hours, skipHoursRemaining, 4)
               const disabled = capped || state.samen < skip.cost || hours <= 0
               return (
-                <Row key={skip.id} name={skip.name} blurb={skip.blurb} effect={capped ? t.shop.dailyCapReached : t.shop.computeGain(formatAsh(rate * hours * 3600))}>
+                <Row key={skip.id} name={skip.name} blurb={skip.blurb} effect={capped ? t.shop.dailyCapReached : t.shop.ernteGain(formatErnte(rate * hours * 3600))}>
                   <button type="button" className="btn buy" disabled={disabled} onClick={() => purchaseTimeSkip(skip.id)}>
-                    {t.shop.costObsidian(skip.cost)}
+                    {t.shop.costSamen(skip.cost)}
                   </button>
               {state.samen < skip.cost ? <span className="shop-need">{t.ux.shop.need(skip.cost - state.samen)}</span> : null}
                 </Row>
@@ -344,11 +344,11 @@ export function ShopPanel({ game, onPreview }: Props) {
                 <li key={skin.id} className={`cosmetic-card${equipped ? ' equipped' : ''}`}>
                   <div className={`cosmetic-swatch ${skin.accentClass}`} aria-hidden="true" />
                   <div className="cosmetic-info">
-                    <div className="ember-shop-name">
+                    <div className="laden-name">
                       {skin.name}
                       {equipped ? <span className="cosmetic-tag">{t.shop.equipped}</span> : null}
                     </div>
-                    <p className="ember-shop-blurb">{skin.blurb}</p>
+                    <p className="laden-blurb">{skin.blurb}</p>
                   </div>
                   {owned ? (
                     <button type="button" className="btn ghost" disabled={equipped} onClick={() => setEquippedCosmetic(skin.id)}>
@@ -362,7 +362,7 @@ export function ShopPanel({ game, onPreview }: Props) {
                         </button>
                       ) : null}
                       <button type="button" className="btn buy" disabled={!afford || skin.cost <= 0} onClick={() => purchaseCosmetic(skin.id)}>
-                        {skin.cost <= 0 ? t.shop.free : t.shop.costObsidian(skin.cost)}
+                        {skin.cost <= 0 ? t.shop.free : t.shop.costSamen(skin.cost)}
                       </button>
                       {!afford && skin.cost > 0 ? <span className="shop-need">{t.ux.shop.need(skin.cost - state.samen)}</span> : null}
                     </div>
@@ -375,7 +375,7 @@ export function ShopPanel({ game, onPreview }: Props) {
             <>
               <h3 className="subhead">{t.shop.cosmeticPacksTitle}</h3>
               <p className="muted">{t.shop.cosmeticPacksIntro}</p>
-              <ul className="ember-shop shop-list">
+              <ul className="laden shop-list">
                 {cosmeticPacks.map((offer) => (
                   <OfferButton key={offer.id} offer={offer} owned={offerOwned(offer)} onBuy={() => purchaseOffer(offer)} />
                 ))}
@@ -392,25 +392,25 @@ export function ShopPanel({ game, onPreview }: Props) {
           </p>
           <h3 className="subhead">{t.shop.packsTitle}</h3>
           <p className="muted">{t.shop.packsIntro}</p>
-          <ul className="ember-shop shop-list">
+          <ul className="laden shop-list">
             {bundles.map((offer) => (
               <OfferButton key={offer.id} offer={offer} owned={offerOwned(offer)} onBuy={() => purchaseOffer(offer)} />
             ))}
           </ul>
           <h3 className="subhead">{t.shop.currencyPacksTitle}</h3>
           <p className="muted">{t.shop.currencyPacksIntro}</p>
-          <ul className="ember-shop shop-list">
+          <ul className="laden shop-list">
             {currency.map((offer) => (
               <OfferButton key={offer.id} offer={offer} owned={false} onBuy={() => purchaseOffer(offer)} />
             ))}
           </ul>
           <h3 className="subhead">{t.shop.removeAdsTitle}</h3>
           <p className="muted">{t.shop.removeAdsIntro}</p>
-          <ul className="ember-shop shop-list">
+          <ul className="laden shop-list">
             {removeAds.map((offer) => (
               <OfferButton key={offer.id} offer={offer} owned={offerOwned(offer)} onBuy={() => purchaseOffer(offer)} />
             ))}
-            {bpPremiumOffer ? <OfferButton offer={bpPremiumOffer} owned={state.bpPremium} onBuy={() => purchaseOffer(bpPremiumOffer)} /> : null}
+            {gartenwochePlusOffer ? <OfferButton offer={gartenwochePlusOffer} owned={state.gartenwochePremium} onBuy={() => purchaseOffer(gartenwochePlusOffer)} /> : null}
           </ul>
         </div>
       ) : null}

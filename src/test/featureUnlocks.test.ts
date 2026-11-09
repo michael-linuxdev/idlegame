@@ -3,11 +3,10 @@ import { FEATURES, featureStep, initialFeaturesSeen, openFeatures, usedFeatures,
 import { countSession, createInitialState, SESSION_GAP_MS } from '../game/state'
 import { parseSave } from '../game/storage'
 import v1 from './fixtures/save-v1.json'
-import v2 from './fixtures/save-v2.json'
 
 const fresh: FeatureCtx = {
-  prestiges: 0,
-  deepPrestiges: 0,
+  saisonenden: 0,
+  tiefeWinter: 0,
   generation: 0,
   sessions: 1,
   owned: { gemuesebeet: 1 },
@@ -29,7 +28,7 @@ describe('Systeme nach und nach freischalten', () => {
     const order = ['recipe', 'fest', 'weather', 'clan'] as const
     for (let step = 1; step <= 4; step++) {
       const bySession = openFeatures({ ...fresh, sessions: step + 1 })
-      const byYear = openFeatures({ ...fresh, prestiges: step })
+      const byYear = openFeatures({ ...fresh, saisonenden: step })
       for (let i = 0; i < order.length; i++) {
         expect(bySession.has(order[i])).toBe(i < step)
         expect(byYear.has(order[i])).toBe(i < step)
@@ -38,7 +37,7 @@ describe('Systeme nach und nach freischalten', () => {
   })
 
   it('Tiefer Winter / Generation: alles offen', () => {
-    expect(featureStep({ ...fresh, deepPrestiges: 1 })).toBe(99)
+    expect(featureStep({ ...fresh, tiefeWinter: 1 })).toBe(99)
     const open = openFeatures({ ...fresh, generation: 1 })
     for (const id of ['events', 'recipe', 'fest', 'weather', 'clan', 'decor', 'album'] as const) expect(open.has(id)).toBe(true)
   })
@@ -58,14 +57,16 @@ describe('Sitzungszähler', () => {
   })
 
   it('bestehende Spielstände bekommen den Zähler aus dem Fortschritt', () => {
-    // v1/v2 haben schon Saisonenden → alles, was es vorher gab, bleibt sichtbar
-    const a = parseSave(v1)!
-    const b = parseSave(v2)!
+    // Stand ohne Sitzungszähler, aber mit Saisonenden → alles bleibt sichtbar
+    const { sessions: _drop, ...noSessions } = v1
+    void _drop
+    const a = parseSave(noSessions)!
+    const b = parseSave({ owned: { gemuesebeet: 30 }, saisonenden: 2 })!
     expect(a.sessions).toBeGreaterThanOrEqual(5)
     expect(b.sessions).toBeGreaterThanOrEqual(5)
     const ctx = (s: typeof a): FeatureCtx => ({
-      prestiges: s.prestiges,
-      deepPrestiges: s.deepPrestiges,
+      saisonenden: s.saisonenden,
+      tiefeWinter: s.tiefeWinter,
       generation: s.generation,
       sessions: s.sessions,
       owned: s.owned,
@@ -77,12 +78,12 @@ describe('Sitzungszähler', () => {
       expect(openFeatures(ctx(b)).has(id)).toBe(true)
     }
     // gespeicherter Zähler bleibt
-    expect(parseSave({ ...v2, sessions: 3 })!.sessions).toBe(3)
+    expect(parseSave({ ...v1, sessions: 3 })!.sessions).toBe(3)
   })
 
   it('Neu-Abzeichen: Veteranen kennen schon alles Offene, Neue starten leer', () => {
     expect(initialFeaturesSeen(fresh, null)).toEqual([])
-    const vet = { ...fresh, prestiges: 5, sessions: 10, owned: { kompost: 1 } }
+    const vet = { ...fresh, saisonenden: 5, sessions: 10, owned: { kompost: 1 } }
     expect(initialFeaturesSeen(vet, null)).toEqual([...openFeatures(vet)])
     expect(initialFeaturesSeen(vet, ['decor'])).toEqual(['decor'])
   })

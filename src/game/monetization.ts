@@ -1,7 +1,7 @@
 /**
- * Monetization stubs from docs/economy.md §8 + ads / battle-pass lite.
- * Local only — no real ad SDK, no IAP backend.
- * Hard currency: Obsidian (UI: Samen / Obsidian via theme).
+ * Markt-Attrappen (Samen-Päckchen, Werbefrei, Gartenstile) + optionale Werbung / Gartenwoche.
+ * Local only — no real ad SDK, no IAP backend. Store-Pläne: docs/store/.
+ * Premium-Währung: Samen.
  * Soft power stays free; ads are optional rewards, never energy walls.
  */
 
@@ -43,7 +43,7 @@ export interface CosmeticDef {
   id: CosmeticId
   name: string
   blurb: string
-  /** Obsidian cost; 0 = free starter */
+  /** Samen cost; 0 = free starter */
   cost: number
   /** CSS accent class applied to the garden map */
   accentClass: string
@@ -162,10 +162,10 @@ export const CLAN_BOOST: ClanBoostDef = {
 
 /** Mock IAP / shop offer kinds */
 export type ShopOfferKind =
-  | 'grantObsidian'
+  | 'grantSamen'
   | 'removeAds'
   | 'cosmeticPack'
-  | 'battlePassPremium'
+  | 'gartenwochePlus'
   | 'starterBundle'
 
 export interface ShopOfferDef {
@@ -175,14 +175,14 @@ export interface ShopOfferDef {
   blurb: string
   /** Mock purchase label */
   label: string
-  /** Obsidian granted (IAP stub credit) */
+  /** Samen granted (IAP stub credit) */
   samen?: number
   /** Cosmetics unlocked on mock buy */
   cosmeticIds?: CosmeticId[]
   /** One-time; tracked via ownedOfferIds */
   once?: boolean
   /** Section grouping in shop UI */
-  section: 'bundles' | 'currency' | 'cosmetics' | 'removeAds' | 'battlePass'
+  section: 'bundles' | 'currency' | 'cosmetics' | 'removeAds' | 'gartenwoche'
 }
 
 export const SHOP_OFFERS: ShopOfferDef[] = [
@@ -207,29 +207,29 @@ export const SHOP_OFFERS: ShopOfferDef[] = [
     section: 'removeAds',
   },
   {
-    id: 'obsidian50',
-    kind: 'grantObsidian',
-    name: t.packs.obsidian50.name,
-    blurb: t.packs.obsidian50.blurb,
-    label: t.packs.obsidian50.label,
+    id: 'samen50',
+    kind: 'grantSamen',
+    name: t.packs.samen50.name,
+    blurb: t.packs.samen50.blurb,
+    label: t.packs.samen50.label,
     samen: 50,
     section: 'currency',
   },
   {
-    id: 'obsidian150',
-    kind: 'grantObsidian',
-    name: t.packs.obsidian150.name,
-    blurb: t.packs.obsidian150.blurb,
-    label: t.packs.obsidian150.label,
+    id: 'samen150',
+    kind: 'grantSamen',
+    name: t.packs.samen150.name,
+    blurb: t.packs.samen150.blurb,
+    label: t.packs.samen150.label,
     samen: 150,
     section: 'currency',
   },
   {
-    id: 'obsidian500',
-    kind: 'grantObsidian',
-    name: t.packs.obsidian500.name,
-    blurb: t.packs.obsidian500.blurb,
-    label: t.packs.obsidian500.label,
+    id: 'samen500',
+    kind: 'grantSamen',
+    name: t.packs.samen500.name,
+    blurb: t.packs.samen500.blurb,
+    label: t.packs.samen500.label,
     samen: 500,
     section: 'currency',
   },
@@ -244,23 +244,17 @@ export const SHOP_OFFERS: ShopOfferDef[] = [
     section: 'cosmetics',
   },
   {
-    id: 'battlePassPremium',
-    kind: 'battlePassPremium',
-    name: t.packs.battlePassPremium.name,
-    blurb: t.packs.battlePassPremium.blurb,
-    label: t.packs.battlePassPremium.label,
+    id: 'gartenwochePlus',
+    kind: 'gartenwochePlus',
+    name: t.packs.gartenwochePlus.name,
+    blurb: t.packs.gartenwochePlus.blurb,
+    label: t.packs.gartenwochePlus.label,
     once: false,
-    section: 'battlePass',
+    section: 'gartenwoche',
   },
 ]
 
-/** @deprecated Prefer SHOP_OFFERS — kept for older call sites */
-export type ObsidianPackDef = ShopOfferDef
-export const OBSIDIAN_PACKS: ShopOfferDef[] = SHOP_OFFERS.filter(
-  (o) => o.section === 'bundles' || o.section === 'currency',
-)
-
-export type RewardedAdRewardKind = 'skipCrumb' | 'obsidianCrumb' | 'yieldCrumb'
+export type RewardedAdRewardKind = 'skipCrumb' | 'samenCrumb' | 'yieldCrumb'
 
 export interface RewardedAdRewardDef {
   kind: RewardedAdRewardKind
@@ -287,22 +281,22 @@ export const WATER_REFILL_PER_DAY = 3
 /** @deprecated old rotating ad rewards (kept for reference; ads now use AdChoice) */
 export const REWARDED_AD_REWARDS: RewardedAdRewardDef[] = [
   { kind: 'skipCrumb', minutes: 5 },
-  { kind: 'obsidianCrumb', samen: 8 },
+  { kind: 'samenCrumb', samen: 8 },
   { kind: 'yieldCrumb', minutes: 2 },
 ]
 
-export type BattlePassRewardKind = 'samen' | 'computeSec'
+export type GartenwocheRewardKind = 'samen' | 'ernteSec'
 
-export interface BattlePassTierDef {
+export interface GartenwocheTierDef {
   tier: number
   /** Cumulative XP required */
   xp: number
-  free: { kind: BattlePassRewardKind; amount: number }
-  premium: { kind: BattlePassRewardKind; amount: number }
+  free: { kind: GartenwocheRewardKind; amount: number }
+  premium: { kind: GartenwocheRewardKind; amount: number }
 }
 
 /** Weekly battle-pass lite — free + paid stub tracks */
-export const BATTLE_PASS_TIERS: BattlePassTierDef[] = [
+export const GARTENWOCHE_TIERS: GartenwocheTierDef[] = [
   {
     tier: 1,
     xp: 0,
@@ -312,8 +306,8 @@ export const BATTLE_PASS_TIERS: BattlePassTierDef[] = [
   {
     tier: 2,
     xp: 25,
-    free: { kind: 'computeSec', amount: 90 },
-    premium: { kind: 'computeSec', amount: 300 },
+    free: { kind: 'ernteSec', amount: 90 },
+    premium: { kind: 'ernteSec', amount: 300 },
   },
   {
     tier: 3,
@@ -324,8 +318,8 @@ export const BATTLE_PASS_TIERS: BattlePassTierDef[] = [
   {
     tier: 4,
     xp: 75,
-    free: { kind: 'computeSec', amount: 180 },
-    premium: { kind: 'computeSec', amount: 600 },
+    free: { kind: 'ernteSec', amount: 180 },
+    premium: { kind: 'ernteSec', amount: 600 },
   },
   {
     tier: 5,
@@ -335,9 +329,9 @@ export const BATTLE_PASS_TIERS: BattlePassTierDef[] = [
   },
 ]
 
-export const BATTLE_PASS_DAILY_XP = 25
-export const BATTLE_PASS_AD_XP = 10
-export const BATTLE_PASS_MAX_XP = 100
+export const GARTENWOCHE_DAILY_XP = 25
+export const GARTENWOCHE_AD_XP = 10
+export const GARTENWOCHE_MAX_XP = 100
 
 /** Calendar day key in local time for daily skip caps */
 export function dayKey(now = Date.now()): string {
@@ -383,8 +377,3 @@ export function rewardedAdCooldownMsLeft(
   return Math.max(0, REWARDED_AD_COOLDOWN_MS - (now - lastRewardedAdAt))
 }
 
-/** Deterministic rotating reward index from claim count */
-export function nextRewardedAdReward(claimCount: number): RewardedAdRewardDef {
-  const i = Math.abs(claimCount) % REWARDED_AD_REWARDS.length
-  return REWARDED_AD_REWARDS[i]!
-}

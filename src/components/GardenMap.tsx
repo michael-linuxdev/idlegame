@@ -1,43 +1,20 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { WeatherDecision } from './WeatherDecision'
-import { CrossSheet } from './CrossSheet'
 import { Residents } from './Residents'
 import { DecorLayer } from './DecorLayer'
 import { WeatherLayer } from './WeatherLayer'
-import { DecorSheet } from './DecorSheet'
 import { computeBestBuy } from '../game/bestBuy'
-import {
-  countAffordableEmberBuys,
-  countAffordableEmberBuysAfterPrestige,
-  emberPayout,
-  modulesToNextEmberUnlock,
-  postPrestigeStartOwned, isProbeYear } from '../game/economy'
-import {
-  GENERATORS,
-  generatorRate,
-  milestoneMult,
-  milestonesReached,
-  nextMilestone,
-  seasonsMissing,
-  shortUnlockGate,
-  unlockHint,
-  type GeneratorId,
-} from '../game/generators'
-import { formatAsh, formatEta, formatMult, formatRate } from '../game/format'
+import { GENERATORS, milestoneMult, milestonesReached, type GeneratorId } from '../game/generators'
+import { formatErnte, formatEta, formatMult } from '../game/format'
 import { computeNextGoal } from '../game/nextGoal'
 import { xpFromOfflineClaim } from '../game/progression'
 import { logPlaytest } from '../game/playtestLog'
 import { playSfx } from '../game/sound'
-import {
-  PRESTIGE_SPIKE_RATIOS,
-  type SurpriseKind,
-} from '../game/surpriseJumps'
-import { gatePrestiges, multBreakdown } from '../game/state'
+import { type SurpriseKind } from '../game/surpriseJumps'
+import { multBreakdown } from '../game/state'
 import { t } from '../i18n'
 import type { useGame } from '../game/useGame'
 import type { Tab } from './AppNav'
-import { ModuleArt } from '../theme/ModuleArt'
-import { ClearedPlot, WildPlot } from '../theme/PlotArt'
 import { FloatPops, type FloatPopItem } from './FloatPops'
 import { BottomBar } from './hud/BottomBar'
 import { Visitors } from './Visitors'
@@ -45,7 +22,6 @@ import { OmaHint } from './OmaHint'
 import { hasOpenWindow, useOverlayOpen } from '../game/overlays'
 import { MultSheet } from './hud/MultSheet'
 import { WelcomeBack } from './hud/WelcomeBack'
-import { nearSets } from '../game/collections'
 import { pickHint, useHints } from '../game/hints'
 import { canDeepReset } from '../game/longLoop'
 import {
@@ -57,29 +33,14 @@ import {
   type WeeklyTaskId,
 } from '../game/extras'
 import { RARITY_BONUS, VARIETIES, weatherAt } from '../game/gardenLife'
-import { TIER_LEVELS, moduleTier } from '../theme/tiers'
 import { formatClock, formatDecimal } from '../game/format'
 import { ArtSvg } from '../theme/ArtSvg'
 import { ArtDefs } from '../theme/art/parts'
-import { PlotFx } from './PlotFx'
 import { useHarvestFlight } from './HarvestFlight'
-import { EventPills } from './hud/EventPills'
-import { GoalStrip, type HudGoal } from './hud/GoalStrip'
-import {
-  IconBasket,
-  IconChest,
-  IconNotebook,
-  IconSeeds,
-  IconSnow,
-  IconSprout,
-  IconStar,
-  IconStars,
-} from '../theme/icons'
-import { ProgressSheet } from './ProgressSheet'
+import { type HudGoal } from './hud/GoalStrip'
 import { MapBackdrop } from '../theme/MapBackdrop'
 import { useAmbient, weatherOverride } from '../theme/ambient'
 import { UpgradeSheet } from './UpgradeSheet'
-import { FestSheet } from './FestSheet'
 import { HelperWalker } from './HelperWalker'
 import { festAt } from '../game/fests'
 import { IconHelper } from '../theme/icons'
@@ -88,6 +49,11 @@ import { useSignsAlways } from '../game/prefs'
 import type { ChapterId } from '../game/chapters'
 import { COSMETICS, type CosmeticId } from '../game/monetization'
 import { SpeechBubble } from './SpeechBubble'
+import { CrossSheet, DecorSheet, FestSheet, ProgressSheet } from './lazy'
+import { GardenPlot } from './map/GardenPlot'
+import { usePrestigeCta } from './map/usePrestigeCta'
+import { buildHudGoal } from './map/hudGoal'
+import { MapHud } from './map/MapHud'
 import { GardenCritters } from './GardenCritters'
 import { PhotoOverlay, RecipeSheet, SkyEventButton, WishSheet } from './GardenExtras'
 
@@ -157,7 +123,6 @@ export function GardenMap({
     playerLevel,
     ackSurprise,
     ackVariety,
-    nextPrestige,
     canPrestige,
     prestigeProgress,
   } = game
@@ -176,7 +141,7 @@ export function GardenMap({
   const [claimFlash, setClaimFlash] = useState<string | null>(null)
   const [pops, setPops] = useState<FloatPopItem[]>([])
   const [levelPulse, setLevelPulse] = useState(false)
-  const prevAsh = useRef(state.ernte)
+  const prevErnte = useRef(state.ernte)
   const prevLevel = useRef(playerLevel.level)
   const multRows = multBreakdown(state, game.nowTick)
   const totalMult = multRows.reduce((p, r) => p * r.mult, 1)
@@ -294,147 +259,20 @@ export function GardenMap({
     if (postPrestigeFocus) clearPostPrestigeFocus()
   }, [postPrestigeFocus, clearPostPrestigeFocus])
 
-  /** Map CTA: spend leftover Münzen, or honest prestige preview (never false „lohnt sich“). */
-  const probe = isProbeYear(state)
-  const prestigeCta = useMemo(() => {
-    const readyBuys = countAffordableEmberBuys(
-      state.emberUpgrades,
-      state.erbstuecke,
-      state.ernteSeason,
-      state.owned,
-      state.prestiges,
-    )
-    // Truhe erst nach dem ersten Saisonende als Ziel (vorher verwirrt sie nur)
-    if (readyBuys > 0 && state.erbstuecke > 0 && (state.prestiges > 0 || state.deepPrestiges > 0 || state.generation > 0)) {
-      return {
-        ready: true,
-        erbstuecke: state.erbstuecke,
-        label: t.prestige.spendCta(readyBuys),
-        aria: t.prestige.spendAria,
-        spend: true,
-      }
-    }
-    const nearTier = PRESTIGE_SPIKE_RATIOS.findIndex((r) => prestigeProgress.ratio >= r)
-    if (nearTier < 0 && !canPrestige) return null
-    const erbstuecke = Math.max(nextPrestige, emberPayout(state.ernteSeason, state.prestiges, probe))
-    if (erbstuecke <= 0) return null
-    const ready = canPrestige || prestigeProgress.ratio >= 1
-    const postBuys = countAffordableEmberBuysAfterPrestige({
-      upgrades: state.emberUpgrades,
-      erbstuecke: state.erbstuecke,
-      ernteSeason: state.ernteSeason,
-      prestiges: state.prestiges,
-      probe,
-    })
-    if (postBuys > 0) {
-      return {
-        ready,
-        erbstuecke,
-        label: ready
-          ? t.prestige.worthItCta(erbstuecke)
-          : t.prestige.worthItNear(erbstuecke),
-        aria: t.prestige.worthItAria,
-        spend: false,
-      }
-    }
-    const mods =
-      modulesToNextEmberUnlock(
-        state.emberUpgrades,
-        0,
-        postPrestigeStartOwned(state.emberUpgrades),
-        state.prestiges + 1,
-      ) ?? 0
-    return {
-      ready,
-      erbstuecke,
-      label: ready
-        ? t.prestige.worthItRebuild(erbstuecke, mods)
-        : t.prestige.worthItNearRebuild(erbstuecke, mods),
-      aria: t.prestige.worthItRebuildAria,
-      spend: false,
-    }
-  }, [
-    canPrestige,
-    nextPrestige,
-    prestigeProgress.ratio,
-    state.ernteSeason,
-    state.erbstuecke,
-    state.emberUpgrades,
-    state.owned,
-    state.prestiges,
-    state.deepPrestiges,
-    state.generation,
-    probe,
-  ])
+  const prestigeCta = usePrestigeCta(game)
 
   const stageName =
     t.gardenStage.names[Math.min(gardenStage, t.gardenStage.names.length - 1)]
 
-  /**
-   * One goal line, no contradictions: Saisonende/Truhe wins when ready,
-   * otherwise Omas best-buy tip replaces a generic „ausbauen“ goal, else the
-   * next unlock / level goal.
-   */
-  const hudGoal: HudGoal = (() => {
-    if (prestigeCta && (prestigeCta.ready || prestigeCta.spend)) {
-      return {
-        key: 'season',
-        title: prestigeCta.spend ? t.prestige.shopTitle : t.goal.prestigeReady,
-        detail: prestigeCta.spend
-          ? prestigeCta.label.replace(`${t.prestige.shopTitle} · `, '')
-          : t.prestige.creditsAmount(prestigeCta.erbstuecke),
-        ratio: 1,
-        tone: 'season',
-        icon: prestigeCta.spend ? <IconChest /> : <IconSnow />,
-        aria: prestigeCta.aria,
-        onActivate: openPrestigeCta,
-      }
-    }
-    if (nextGoal.kind === 'upgrade' && bestBuy) {
-      const cost = bestBuy.cost
-      const owned = state.owned[bestBuy.id] ?? 0
-      const action = owned === 0 ? t.upgrade.online : t.upgrade.upgrade
-      return {
-        key: `tip-${bestBuy.id}`,
-        title: t.goal.upgradeTitle(action, bestBuy.name),
-        detail: t.goal.upgradeDetail(formatAsh(cost)),
-        ratio: cost > 0 ? Math.min(1, state.ernte / cost) : 1,
-        tone: bestBuy.affordable ? 'tip' : 'goal',
-        icon: <IconSprout />,
-        aria: `${t.bestBuy.aria}: ${bestBuy.name}`,
-        onActivate: () => {
-          logPlaytest('best_buy_tap', { id: bestBuy.id, affordable: bestBuy.affordable })
-          setSelected(bestBuy.id)
-        },
-      }
-    }
-    // Ab Gartenjahr 2: ein fast fertiges Pflanzenbuch-Set als Ziel, wenn gerade kein Kauf ansteht
-    const near = state.prestiges >= 1 && !(bestBuy?.affordable) ? nearSets(state.collection, 1)[0] : undefined
-    if (near && nextGoal.kind !== 'prestige') {
-      const area = GENERATORS.find((g) => g.id === near.module)?.name ?? near.module
-      return {
-        key: `set-${near.module}`,
-        title: t.collections.goalTitle(area),
-        detail: t.collections.goalDetail(near.missing),
-        ratio: 0.9,
-        tone: 'goal',
-        icon: <IconNotebook />,
-        aria: `${t.goal.stripAria}: ${t.collections.goalTitle(area)}. ${t.collections.goalDetail(near.missing)}`,
-        onActivate: onGoalActivate,
-      }
-    }
-    return {
-      key: `goal-${nextGoal.kind}`,
-      title: nextGoal.title,
-      detail: nextGoal.detail,
-      ratio: nextGoal.ratio,
-      tone: 'goal',
-      nearMiss: nextGoal.nearMiss,
-      icon: nextGoal.kind === 'prestige' ? <IconSnow /> : <IconNotebook />,
-      aria: `${t.goal.stripAria}: ${nextGoal.title}. ${nextGoal.detail}`,
-      onActivate: onGoalActivate,
-    }
-  })()
+  const hudGoal: HudGoal = buildHudGoal({
+    state,
+    prestigeCta,
+    nextGoal,
+    bestBuy,
+    onOpenPrestige: openPrestigeCta,
+    onGoal: onGoalActivate,
+    onSelect: setSelected,
+  })
 
   /** Saisonende in sight but not yet the main goal → small pill. */
   const seasonPill =
@@ -451,15 +289,15 @@ export function GardenMap({
 
   useEffect(() => {
     // Ignore passive economy ticks — flashing every 250ms forces layout/paint on iPhone.
-    const jump = state.ernte - prevAsh.current
+    const jump = state.ernte - prevErnte.current
     const meaningful = Math.max(rate * 1.25, 1)
     if (jump > meaningful) {
       setTickFlash(true)
       const timer = window.setTimeout(() => setTickFlash(false), 280)
-      prevAsh.current = state.ernte
+      prevErnte.current = state.ernte
       return () => window.clearTimeout(timer)
     }
-    prevAsh.current = state.ernte
+    prevErnte.current = state.ernte
   }, [state.ernte, rate])
 
   // Surprise pops: add the pop during render (guarded by identity) …
@@ -471,7 +309,7 @@ export function GardenMap({
       ...list.slice(-4),
       {
         id: (list.at(-1)?.id ?? 0) + 1,
-        text: surpriseLabel(surprise.kind, formatAsh(surprise.amount)),
+        text: surpriseLabel(surprise.kind, formatErnte(surprise.amount)),
         kind: 'claim',
       },
     ])
@@ -508,11 +346,11 @@ export function GardenMap({
     const xp = xpFromOfflineClaim(amount)
     game.dismissOffline()
     playSfx('claim')
-    pushPop(`+${formatAsh(amount)}`, 'claim')
+    pushPop(`+${formatErnte(amount)}`, 'claim')
     const toast =
       xp > 0
-        ? t.hud.claimCelebrate(formatAsh(amount), xp)
-        : t.hud.claimCelebrateShort(formatAsh(amount))
+        ? t.hud.claimCelebrate(formatErnte(amount), xp)
+        : t.hud.claimCelebrateShort(formatErnte(amount))
     const helped = state.helperReport
     showToast(helped > 0 ? `${toast} · ${t.helper.report(helped)}` : toast)
     if (helped > 0) game.ackHelperReport()
@@ -533,7 +371,7 @@ export function GardenMap({
     rake()
     // Burst grant lands on next state tick; optimistic pop from ~45s rate
     const estimate = Math.max(rate * 45, 1)
-    pushPop(`+${formatAsh(estimate)}`, 'gain')
+    pushPop(`+${formatErnte(estimate)}`, 'gain')
     void before
   }  useEffect(() => {
     onRakeRef.current = onRake
@@ -544,9 +382,9 @@ export function GardenMap({
     harvest.launch(document.querySelector('.hud-claim'))
     const preview = game.dailyPreview
     const bits: string[] = []
-    if (preview.compute > 0) bits.push(t.daily.rewardCompute(formatAsh(preview.compute)))
-    if (preview.credits > 0) bits.push(t.daily.rewardCredits(preview.credits))
-    if (preview.samen > 0) bits.push(t.daily.rewardObsidian(preview.samen))
+    if (preview.ernte > 0) bits.push(t.daily.rewardErnte(formatErnte(preview.ernte)))
+    if (preview.erbstuecke > 0) bits.push(t.daily.rewardErbstuecke(preview.erbstuecke))
+    if (preview.samen > 0) bits.push(t.daily.rewardSamen(preview.samen))
     game.claimDaily()
     track('daily')
     playSfx('streak')
@@ -575,7 +413,7 @@ export function GardenMap({
   function onUpgradeBought(deltaCost: number) {
     track('upgrades')
     playSfx('upgrade')
-    pushPop(`−${formatAsh(deltaCost)}`, 'upgrade')
+    pushPop(`−${formatErnte(deltaCost)}`, 'upgrade')
   }
 
   // —— Hofladen-Bestellungen ——
@@ -624,11 +462,11 @@ export function GardenMap({
           label: orderDone
             ? t.orders.claim(name)
             : t.orders.progress(
-                formatAsh(Math.min(orderHave, order.need)),
-                formatAsh(order.need),
+                formatErnte(Math.min(orderHave, order.need)),
+                formatErnte(order.need),
                 formatClock(order.expiresAt - game.nowTick),
               ),
-          detail: `${t.orders.label(name)} — ${t.orders.detail(formatAsh(order.need))} ${t.orders.reward(order.seeds)}`,
+          detail: `${t.orders.label(name)} — ${t.orders.detail(formatErnte(order.need))} ${t.orders.reward(order.seeds)}`,
           ratio: Math.min(1, orderHave / order.need),
           claim: orderDone,
           onClaim: claimOrder,
@@ -696,10 +534,10 @@ export function GardenMap({
           visitor: visitorPresent,
           order: Boolean(extras.order),
           variety: state.collection.length > 0,
-          season: canPrestige && state.prestiges === 0,
+          season: canPrestige && state.saisonenden === 0,
           truhe: Boolean(prestigeCta?.spend),
-          weekly: state.prestiges >= 1,
-          deep: canDeepReset(state.prestiges),
+          weekly: state.saisonenden >= 1,
+          deep: canDeepReset(state.saisonenden),
           helperAreas: state.helperLevel > 0,
           recipeNew: !earlyGame && game.features.has('recipe') && state.recipe.areas.length > 0,
           festNew: !earlyGame && game.features.has('fest'),
@@ -715,75 +553,28 @@ export function GardenMap({
   const hint = candidate !== null && candidate === shownHint ? candidate : null
 
   return (
-    <section className={`fortress-home${photoMode ? ' photo-mode' : ''}`} aria-labelledby="ernte-heading">
+    <section className={`garten-home${photoMode ? ' photo-mode' : ''}`} aria-labelledby="ernte-heading">
       <h1 id="ernte-heading" className="sr-only">
         {t.brand}
       </h1>
       {/* Clash HUD: floating chips only — no white card tiles */}
-      <header className="hud" ref={hudRef}>
-        <div className="hud-row">
-          <button
-            type="button"
-            className={`hud-card hud-garden${levelPulse ? ' level-up' : ''}`}
-            onClick={() => setProgressOpen(true)}
-            aria-label={t.hud.gardenAria(stageName, playerLevel.level)}
-          >
-            <span className="hud-stage">{stageName}</span>
-            <span className="hud-level">
-              <span className="hud-level-label">
-                {t.level.short} {playerLevel.level}
-              </span>
-              <span className="hud-xp" aria-hidden="true">
-                <span style={{ width: `${Math.round(playerLevel.ratio * 100)}%` }} />
-              </span>
-            </span>
-            {questReady ? (
-              <span className="hud-dot" title={t.hud.questReady} aria-hidden="true" />
-            ) : null}
-          </button>
-
-          <button
-            type="button"
-            className="hud-card hud-wallet"
-            onClick={() => setMultOpen(true)}
-            aria-label={`${t.hud.walletAria(formatAsh(state.ernte), formatRate(rate))} — ${t.ux.mults.walletHint}`}
-          >
-            <span className={`hud-amount${tickFlash ? ' tick' : ''}`}>
-              <span className="hud-amount-icon">
-                <IconBasket />
-              </span>
-              {formatAsh(state.ernte)}
-            </span>
-            <span className="hud-rate">
-              {formatRate(rate)}
-              {totalMult > 1 ? <span className="hud-mult"> {formatMult(totalMult)}</span> : null}
-            </span>
-            <span className="hud-sub">
-              {state.erbstuecke > 0 ? (
-                <span className="hud-sub-item" title={t.resources.credits}>
-                  <IconChest /> {state.erbstuecke}
-                </span>
-              ) : null}
-              {!earlyGame ? (
-                <span className="hud-sub-item hud-reveal" title={t.resources.samen}>
-                  <IconSeeds /> {state.samen}
-                </span>
-              ) : null}
-            </span>
-          </button>
-        </div>
-
-        <GoalStrip goal={hudGoal} />
-        {earlyGame ? null : (
-        <EventPills
-          game={game}
-          season={seasonPill}
-          order={orderPill}
-          onOpenFest={() => setFestOpen(true)}
-          onOpenRecipe={() => setRecipeOpen(true)}
-        />
-        )}
-      </header>
+      <MapHud
+        game={game}
+        hudRef={hudRef}
+        stageName={stageName}
+        levelPulse={levelPulse}
+        questReady={questReady}
+        tickFlash={tickFlash}
+        totalMult={totalMult}
+        earlyGame={earlyGame}
+        hudGoal={hudGoal}
+        seasonPill={seasonPill}
+        orderPill={orderPill}
+        onOpenProgress={() => setProgressOpen(true)}
+        onOpenMult={() => setMultOpen(true)}
+        onOpenFest={() => setFestOpen(true)}
+        onOpenRecipe={() => setRecipeOpen(true)}
+      />
 
       <FloatPops items={pops} onDone={removePop} />
       {harvest.layer}
@@ -849,7 +640,7 @@ export function GardenMap({
 
       {photoMode ? (
         <PhotoOverlay
-          caption={t.photo.caption(stageName, state.prestiges + 1)}
+          caption={t.photo.caption(stageName, state.saisonenden + 1)}
           onClose={() => onExitPhoto?.()}
         />
       ) : null}
@@ -942,145 +733,28 @@ export function GardenMap({
             ) : null}
           </button>
 
-          {GENERATORS.map((def) => {
-            const level = state.owned[def.id] ?? 0
-            const unlocked = game.unlocked(def.id)
-            const selectedHere = selected === def.id
-            const buildingRate =
-              unlocked && level > 0 ? generatorRate(def, level) * totalMult : 0
-            const producing = buildingRate > 0
-            const hint = !unlocked ? unlockHint(def, gatePrestiges(state)) : ''
-            const hl = highlightId === def.id
-            const ready = unlocked && level === 0
-            // Calm map: full signs only for the selected, new or next corner
-            const showSign = selectedHere || ready || def.id === nextWildId || (signsAll && unlocked)
-            const stars = milestonesReached(level)
-            const canBuy = unlocked && game.costOf(def.id) <= state.ernte
-            const isBestBuy = canBuy && level > 0 && bestBuy?.id === def.id && bestBuy.affordable
-            const nextStar = level > 0 ? nextMilestone(level) : null
-            const toStar = nextStar && nextStar.at - level <= 10 ? nextStar.at - level : 0
-            const cls =
-              'garden-plot' +
-              (selectedHere ? ' selected' : '') +
-              (animId === def.id ? ' anim' : '') +
-              (!unlocked ? ' wild' : ready ? ' ready' : ' planted') +
-              (producing ? ' producing' : '') +
-              (canBuy ? ' can-buy' : '') +
-              (isBestBuy ? ' best-buy' : '') +
-              (hl ? ' ftue-target' : '')
-            return (
-              <button
-                key={def.id}
-                type="button"
-                className={cls}
-                style={{
-                  left: def.slot.left,
-                  top: def.slot.top,
-                  zIndex: 2 + Math.round(Number.parseFloat(def.slot.top)),
-                }}
-                aria-label={
-                  unlocked
-                    ? t.hud.buildingAriaUnlocked(
-                        def.name,
-                        level,
-                        formatRate(buildingRate),
-                      )
-                    : t.hud.buildingAriaLocked(def.name, hint)
-                }
-                aria-pressed={selectedHere}
-                onClick={() => setSelected(def.id)}
-                onContextMenu={(e) => e.preventDefault()}
-                onDragStart={(e) => e.preventDefault()}
-              >
-                <span className={`plot-visual${growing === def.id ? ' tier-grow' : ''}`}>
-                  {!unlocked ? (
-                    <WildPlot id={def.id} season={ambient.season} />
-                  ) : ready ? (
-                    <ClearedPlot season={ambient.season} />
-                  ) : (
-                    <ModuleArt
-                      id={def.id}
-                      level={level}
-                      producing={producing}
-                      selected={selectedHere}
-                      season={ambient.season}
-                    />
-                  )}
-                </span>
-                <PlotFx
-                  unlocked={unlocked}
-                  planted={level > 0}
-                  tier={moduleTier(level)}
-                  onTier={(tier) => {
-                    if (tier >= 2) showToast(t.milestone.tier(def.name, tier))
-                    setGrowing(def.id)
-                    window.setTimeout(() => setGrowing((g) => (g === def.id ? null : g)), 1300)
-                  }}
-                />
-                {!showSign && unlocked && level > 0 ? (
-                  <span className="plot-badge" aria-hidden="true">
-                    {canBuy ? <span className="plot-canbuy in-badge" title={t.ux.signs.canBuy} /> : null}
-                    <span className="plot-badge-name">{def.name}</span>
-                    <span className="plot-badge-level">
-                      {level}
-                      {stars > 0 ? <span className="plot-badge-stars"><IconStars n={Math.min(3, stars)} /></span> : null}
-                    </span>
-                  </span>
-                ) : null}
-                {canBuy && showSign ? <span className="plot-canbuy" title={t.ux.signs.canBuy} aria-hidden="true" /> : null}
-                {showSign ? (
-                  <span className="plot-sign">
-                    <span className="plot-name">{def.name}</span>
-                    <span className="plot-meta">
-                      {!unlocked ? (
-                        seasonsMissing(def, gatePrestiges(state)) > 0 ? (
-                          shortUnlockGate(def, gatePrestiges(state))
-                        ) : (
-                          <>
-                            {t.hud.locked} · {shortUnlockGate(def, gatePrestiges(state))}
-                            {(() => {
-                              const r = unlockRatio(def, state)
-                              return r != null && r > 0 ? (
-                                <span className="plot-wild-progress" aria-label={t.ux.signs.wildIn(Math.floor(r * 100))}>
-                                  <span style={{ width: `${Math.floor(r * 100)}%` }} />
-                                </span>
-                              ) : null
-                            })()}
-                          </>
-                        )
-                      ) : ready ? (
-                        t.upgrade.online
-                      ) : (
-                        <>
-                          {t.hud.levelShort(level)}
-                          {milestonesReached(level) > 0 ? (
-                            <span className="plot-stars" aria-label={t.milestones.starsAria(milestonesReached(level))}>
-                              {' '}
-                              <IconStars n={Math.min(3, milestonesReached(level))} />
-                            </span>
-                          ) : null}
-                          {producing && selectedHere ? (
-                            <> · {formatRate(buildingRate)}</>
-                          ) : null}
-                          <TierBar level={level} />
-                          {toStar > 0 && nextStar ? (
-                            <span className="plot-to-star" aria-label={t.milestone.toStarAria(toStar, nextStar.at)}>
-                              <span
-                                className="plot-to-star-ring"
-                                style={{ ['--p' as string]: `${Math.round(((level - nextStar.from) / (nextStar.at - nextStar.from)) * 100)}%` }}
-                                aria-hidden="true"
-                              />
-                              {t.milestone.toStar(toStar)} <IconStar />
-                            </span>
-                          ) : null}
-                        </>
-                      )}
-                    </span>
-                  </span>
-                ) : null}
-              </button>
-            )
-          })}
+          {GENERATORS.map((def) => (
+            <GardenPlot
+              key={def.id}
+              def={def}
+              game={game}
+              selectedHere={selected === def.id}
+              animated={animId === def.id}
+              totalMult={totalMult}
+              hl={highlightId === def.id}
+              nextWild={def.id === nextWildId}
+              signsAll={signsAll}
+              bestBuy={bestBuy}
+              growing={growing === def.id}
+              season={ambient.season}
+              onSelect={() => setSelected(def.id)}
+              onTier={(tier) => {
+                if (tier >= 2) showToast(t.milestone.tier(def.name, tier))
+                setGrowing(def.id)
+                window.setTimeout(() => setGrowing((g) => (g === def.id ? null : g)), 1300)
+              }}
+            />
+          ))}
         </div>
       </div>
 
@@ -1118,27 +792,4 @@ export function GardenMap({
       ) : null}
     </section>
   )
-}
-
-/** Thin progress bar on the plant sign toward the next growth tier. */
-function TierBar({ level }: { level: number }) {
-  const tier = moduleTier(level)
-  if (tier >= TIER_LEVELS.length) return null
-  const from = tier === 0 ? 0 : TIER_LEVELS[tier - 1]!
-  const to = TIER_LEVELS[tier]!
-  const pct = Math.round(((level - from) / (to - from)) * 100)
-  return (
-    <span className="plot-tierbar" aria-hidden="true">
-      <span style={{ width: `${pct}%` }} />
-    </span>
-  )
-}
-
-/** How close a wild corner is to being cleared (0…1), or null for season gates. */
-function unlockRatio(def: (typeof GENERATORS)[number], state: GameApi['state']): number | null {
-  const u = def.unlock
-  if (!u) return null
-  if (u.ernteSeason != null) return Math.min(1, state.ernteSeason / u.ernteSeason)
-  if (u.requires) return Math.min(1, (state.owned[u.requires.id] ?? 0) / u.requires.level)
-  return null
 }

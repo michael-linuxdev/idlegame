@@ -11,6 +11,7 @@
  *  7. Spielstand-Schutz: zweites Fenster speichert nicht, neuerer Stand bleibt unberührt
  *  8. Installations-Hinweis: Handy-Browser ja (mit ?installGate=1), Computer nein
  *  9. Testphase: Aufzeichnungs-Hinweis bestätigen, Häkchen an/aus, nur einmal
+ * 10. Offline: nach dem ersten Laden aus dem Precache, auch die nachgeladenen Fenster
  * Fails on any uncaught page error. Run: npm run build && npm run e2e
  */
 import { spawn } from 'node:child_process'
@@ -75,7 +76,7 @@ try {
     await ctx.addInitScript(() => {
       if (sessionStorage.getItem('seed')) return
       const owned = { gemuesebeet: 40, kompost: 30, kraeuterspirale: 20, beerenhecke: 10 }
-      localStorage.setItem('gartenerbe-save-v1', JSON.stringify({ owned, ernte: 5e7, ernteSeason: 5e7, lastSeen: Date.now() }))
+      localStorage.setItem('gartenerbe-spielstand-v1', JSON.stringify({ owned, ernte: 5e7, ernteSeason: 5e7, lastSeen: Date.now() }))
       localStorage.setItem('gartenerbe-ftue-v1', JSON.stringify({ beat: 'done', dismissed: true, completed: [], startedAt: 1 }))
       localStorage.setItem('gartenerbe-install-v1', JSON.stringify({ dismissed: true, installed: false, shown: true }))
       localStorage.setItem('gartenerbe-hints-v1', JSON.stringify(['season', 'truhe', 'deep', 'visitor', 'order', 'variety', 'weekly']))
@@ -117,7 +118,7 @@ try {
     await ctx.addInitScript(() => {
       if (sessionStorage.getItem('seed')) return
       const owned = { gemuesebeet: 30, kompost: 12 }
-      localStorage.setItem('gartenerbe-save-v1', JSON.stringify({ owned, ernte: 1e5, prestiges: 2, erbstuecke: 500, lastSeen: Date.now() }))
+      localStorage.setItem('gartenerbe-spielstand-v1', JSON.stringify({ owned, ernte: 1e5, saisonenden: 2, erbstuecke: 500, lastSeen: Date.now() }))
       localStorage.setItem('gartenerbe-ftue-v1', JSON.stringify({ beat: 'done', dismissed: true, completed: [], startedAt: 1 }))
       localStorage.setItem('gartenerbe-install-v1', JSON.stringify({ dismissed: true, installed: false, shown: true }))
       localStorage.setItem('gartenerbe-hints-v1', JSON.stringify(['season', 'truhe', 'deep', 'visitor', 'order', 'variety', 'weekly']))
@@ -158,7 +159,7 @@ try {
     const ctx = await browser.newContext({ ...devices['iPhone 13'], reducedMotion: 'reduce' })
     await ctx.addInitScript(() => {
       if (sessionStorage.getItem('seed')) return
-      localStorage.setItem('gartenerbe-save-v1', JSON.stringify({ owned: { gemuesebeet: 20 }, ernte: 1e4, lastSeen: Date.now(), saveVersion: 2 }))
+      localStorage.setItem('gartenerbe-spielstand-v1', JSON.stringify({ owned: { gemuesebeet: 20 }, ernte: 1e4, lastSeen: Date.now(), saveVersion: 1 }))
       localStorage.setItem('gartenerbe-ftue-v1', JSON.stringify({ beat: 'done', dismissed: true, completed: [], startedAt: 1 }))
       localStorage.setItem('gartenerbe-install-v1', JSON.stringify({ dismissed: true, installed: false, shown: true }))
       localStorage.setItem('gartenerbe-hints-v1', JSON.stringify(['season', 'truhe', 'deep', 'visitor', 'order', 'variety', 'weekly']))
@@ -211,7 +212,7 @@ try {
       await ctx.addInitScript(() => {
         if (sessionStorage.getItem('seed')) return
         const owned = { gemuesebeet: 60, kompost: 40, kraeuterspirale: 30, beerenhecke: 20, obstwiese: 10, bienenstock: 5 }
-        localStorage.setItem('gartenerbe-save-v1', JSON.stringify({ owned, ernte: 3e6, ernteSeason: 4e6, prestiges: 4, erbstuecke: 900, lastSeen: Date.now(), saveVersion: 2 }))
+        localStorage.setItem('gartenerbe-spielstand-v1', JSON.stringify({ owned, ernte: 3e6, ernteSeason: 4e6, saisonenden: 4, erbstuecke: 900, lastSeen: Date.now(), saveVersion: 1 }))
         localStorage.setItem('gartenerbe-ftue-v1', JSON.stringify({ beat: 'done', dismissed: true, completed: [], startedAt: 1 }))
         localStorage.setItem('gartenerbe-install-v1', JSON.stringify({ dismissed: true, installed: false, shown: true }))
         sessionStorage.setItem('seed', '1')
@@ -227,7 +228,7 @@ try {
       await p.goto(URL + '?kapitel=all')
       await p.locator('.garden-map').waitFor()
       await p.screenshot({ path: `${SHOTS}/map.png` })
-      await p.locator('.tabbar .tab-fortress').click() // Garten again → Grundstücke
+      await p.locator('.tabbar .tab-garten').click() // Garten again → Grundstücke
       await p.locator('.plot-sheet').waitFor()
       await p.waitForTimeout(400)
       assert((await p.locator('.oma-hint').count()) === 0, 'Omas note shows over the Grundstücke window')
@@ -297,7 +298,7 @@ try {
       if (sessionStorage.getItem('seed')) return
       sessionStorage.setItem('seed', '1')
       const save = { saveVersion: 99, zukunft: { x: 1 }, samen: 777, ernte: 5, lastSeen: Date.now(), owned: { gemuesebeet: 3 } }
-      localStorage.setItem('gartenerbe-save-v1', JSON.stringify(save))
+      localStorage.setItem('gartenerbe-spielstand-v1', JSON.stringify(save))
     })
     const p = await ctx2.newPage()
     p.on('pageerror', (e) => errors.push(e.message))
@@ -305,9 +306,29 @@ try {
     await p.locator('.save-guard').waitFor()
     await p.reload()
     await p.waitForTimeout(500)
-    const kept = await p.evaluate(() => JSON.parse(localStorage.getItem('gartenerbe-save-v1') || '{}'))
+    const kept = await p.evaluate(() => JSON.parse(localStorage.getItem('gartenerbe-spielstand-v1') || '{}'))
     assert(kept.saveVersion === 99 && kept.samen === 777 && kept.zukunft?.x === 1, 'newer save stays untouched')
     await ctx2.close()
+
+    // Neues Speicherformat (2026-11-09): frischer Start unter neuem Schlüssel, alter Stand bleibt liegen
+    const ctx3 = await browser.newContext({ ...devices['iPhone 13'], reducedMotion: 'reduce' })
+    // altname-ok: alter Stand unter altem Schlüssel
+    const OLD = JSON.stringify({ saveVersion: 2, ash: 1, emberUpgrades: { dominionYield: 3 }, ernte: 4242, samen: 555, lastSeen: 1 })
+    await ctx3.addInitScript((old) => {
+      if (sessionStorage.getItem('seed')) return
+      sessionStorage.setItem('seed', '1')
+      localStorage.setItem('gartenerbe-save-v1', old)
+    }, OLD)
+    const q = await ctx3.newPage()
+    q.on('pageerror', (e) => errors.push(e.message))
+    await q.goto(URL)
+    await q.waitForFunction(() => localStorage.getItem('gartenerbe-spielstand-v1') !== null, null, { timeout: 15000 })
+    const fresh = await q.evaluate(() => JSON.parse(localStorage.getItem('gartenerbe-spielstand-v1') || '{}'))
+    assert(fresh.saveVersion === 1, 'new save key with saveVersion 1')
+    // altname-ok
+    assert(fresh.samen !== 555 && fresh.truhe && fresh.emberUpgrades === undefined, 'old save is not read')
+    assert((await q.evaluate(() => localStorage.getItem('gartenerbe-save-v1'))) === OLD, 'old save key stays untouched')
+    await ctx3.close()
   }
 
   // 8 — Installations-Hinweis (Web-Fassung): Handy-Browser ja, Computer nein, „weiter“ merkt sich das
@@ -355,6 +376,45 @@ try {
       assert((await p.locator('.test-phase').count()) === 0, 'asked only once')
       await ctx.close()
     }
+  }
+
+  // 10 — Offline: nach dem ersten Laden läuft alles aus dem Precache, auch die nachgeladenen Fenster
+  {
+    const ctx = await browser.newContext({ ...devices['iPhone 13'], reducedMotion: 'reduce' })
+    await ctx.addInitScript(() => {
+      if (sessionStorage.getItem('seed')) return
+      const owned = { gemuesebeet: 30, kompost: 12 }
+      localStorage.setItem('gartenerbe-spielstand-v1', JSON.stringify({ owned, ernte: 1e5, saisonenden: 2, erbstuecke: 500, lastSeen: Date.now(), saveVersion: 1 }))
+      localStorage.setItem('gartenerbe-ftue-v1', JSON.stringify({ beat: 'done', dismissed: true, completed: [], startedAt: 1 }))
+      localStorage.setItem('gartenerbe-install-v1', JSON.stringify({ dismissed: true, installed: false, shown: true }))
+      localStorage.setItem('gartenerbe-hints-v1', JSON.stringify(['season', 'truhe', 'deep', 'visitor', 'order', 'variety', 'weekly']))
+      sessionStorage.setItem('seed', '1')
+    })
+    const p = await ctx.newPage()
+    p.on('pageerror', (e) => errors.push(e.message))
+    await p.goto(URL)
+    await p.locator('.garden-map').waitFor()
+    // Service Worker aktiv und Precache fertig
+    await p.evaluate(async () => {
+      const reg = await navigator.serviceWorker.ready
+      if (!navigator.serviceWorker.controller) {
+        await new Promise((r) => navigator.serviceWorker.addEventListener('controllerchange', r, { once: true }))
+      }
+      return reg.active?.state
+    })
+    await ctx.setOffline(true)
+    await p.reload()
+    await p.locator('.garden-map').waitFor()
+    assert(await p.evaluate(() => !navigator.onLine), 'context is offline')
+    for (const tab of ['prestige', 'shop']) {
+      await p.locator(`.tabbar .tab-${tab}`).click()
+      await p.locator(tab === 'shop' ? '.shop-panel' : '#jump-truhe').first().waitFor({ timeout: 10_000 })
+    }
+    await p.locator('.tabbar .tab-garten').click()
+    await p.locator('.menu-fab').click()
+    await p.getByRole('menuitem', { name: 'Omas Notizbuch' }).click()
+    await p.getByText('Omas Notizbuch').first().waitFor({ timeout: 10_000 })
+    await ctx.close()
   }
 
   assert(errors.length === 0, 'page errors: ' + errors.join(' | '))

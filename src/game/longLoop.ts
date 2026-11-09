@@ -15,53 +15,53 @@ import type { WheelBuff } from './gardenLife'
 
 export interface DeepMetaUpgrades {
   /** Tiefe Wurzeln — +10 % global Ernte/s per rank */
-  deepYield: number
+  tiefeWurzeln: number
   /** Winterschutz — +1 h soft / +2 h hard offline per rank */
-  deepWatch: number
+  winterschutz: number
   /** Saatgutvorrat — start each Tiefer Winter cycle with Erbstücke */
-  deepPurse: number
+  saatgutvorrat: number
   /** Gartenwissen — Gartenjahr gates open one year earlier per rank */
-  deepStart: number
+  gartenwissen: number
 }
 
 export const EMPTY_DEEP_META: DeepMetaUpgrades = {
-  deepYield: 0,
-  deepWatch: 0,
-  deepPurse: 0,
-  deepStart: 0,
+  tiefeWurzeln: 0,
+  winterschutz: 0,
+  saatgutvorrat: 0,
+  gartenwissen: 0,
 }
 
 /** First Gartenjahr in which a Tiefer Winter is possible (all corners open). */
 export const DEEP_GATE_YEAR = 15
 
-/** Sprösslinge for ending the cycle in Gartenjahr `year` (prestiges + 1). */
-export function sproutPayout(prestiges: number): number {
-  const over = prestiges + 1 - (DEEP_GATE_YEAR - 2)
+/** Sprösslinge for ending the cycle in Gartenjahr `year` (saisonenden + 1). */
+export function sproutPayout(saisonenden: number): number {
+  const over = saisonenden + 1 - (DEEP_GATE_YEAR - 2)
   if (over < 2) return 0
   // √-like tail: pushing far past Gartenjahr 21 still pays, but linearly
   if (over <= 8) return Math.floor(2 * Math.pow(over, 1.3))
   return Math.floor(2 * Math.pow(8, 1.3) + 3 * (over - 8))
 }
 
-export function canDeepReset(prestiges: number): boolean {
-  return prestiges + 1 >= DEEP_GATE_YEAR
+export function canDeepReset(saisonenden: number): boolean {
+  return saisonenden + 1 >= DEEP_GATE_YEAR
 }
 
 export function deepYieldMult(d: DeepMetaUpgrades): number {
-  return 1 + 0.1 * d.deepYield
+  return 1 + 0.1 * d.tiefeWurzeln
 }
 
 export function deepOfflineBonusHours(d: DeepMetaUpgrades): { soft: number; hard: number } {
-  return { soft: d.deepWatch, hard: d.deepWatch * 2 }
+  return { soft: d.winterschutz, hard: d.winterschutz * 2 }
 }
 
-export function deepStartEmbers(d: DeepMetaUpgrades): number {
-  return d.deepPurse * 60
+export function deepStartErbstuecke(d: DeepMetaUpgrades): number {
+  return d.saatgutvorrat * 60
 }
 
 /** Effective season count for Gartenjahr gates (Gartenwissen). */
-export function gateSeasons(prestiges: number, d: DeepMetaUpgrades): number {
-  return prestiges + d.deepStart
+export function gateSeasons(saisonenden: number, d: DeepMetaUpgrades): number {
+  return saisonenden + d.gartenwissen
 }
 
 export type DeepMetaId = keyof DeepMetaUpgrades
@@ -75,18 +75,18 @@ export interface DeepShopItem {
 
 /** Sprösslings-Laden. */
 export const DEEP_SHOP: DeepShopItem[] = [
-  { id: 'deepYield', maxRank: 20, cost: (rank) => 3 + 2 * rank },
-  { id: 'deepWatch', maxRank: 8, cost: (rank) => 4 + 3 * rank },
-  { id: 'deepPurse', maxRank: 10, cost: (rank) => 3 + 3 * rank },
-  { id: 'deepStart', maxRank: 3, cost: (rank) => 12 + 12 * rank },
+  { id: 'tiefeWurzeln', maxRank: 20, cost: (rank) => 3 + 2 * rank },
+  { id: 'winterschutz', maxRank: 8, cost: (rank) => 4 + 3 * rank },
+  { id: 'saatgutvorrat', maxRank: 10, cost: (rank) => 3 + 3 * rank },
+  { id: 'gartenwissen', maxRank: 3, cost: (rank) => 12 + 12 * rank },
 ]
 
 export interface LongLoopStateSlice {
   /** Sprösslinge — Tiefer-Winter currency */
   sproesslinge: number
-  deepUpgrades: DeepMetaUpgrades
+  sproesslingLaden: DeepMetaUpgrades
   /** How many deep resets completed. */
-  deepPrestiges: number
+  tiefeWinter: number
   /** Pflanzenbuch — variety ids found (permanent) */
   collection: string[]
   /** Glücksrad buff for one Gartenjahr */
@@ -96,8 +96,8 @@ export interface LongLoopStateSlice {
 export function emptyLongLoopSlice(): LongLoopStateSlice {
   return {
     sproesslinge: 0,
-    deepUpgrades: { ...EMPTY_DEEP_META },
-    deepPrestiges: 0,
+    sproesslingLaden: { ...EMPTY_DEEP_META },
+    tiefeWinter: 0,
     collection: [],
     wheelBuff: null,
   }

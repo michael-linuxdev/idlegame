@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react'
-import { FLASH_GOAL_REWARD_OBSIDIAN } from '../../game/flashEvent'
-import { formatAsh, formatClock, formatMult } from '../../game/format'
+import { FLASH_GOAL_REWARD_SAMEN } from '../../game/flashEvent'
+import { formatErnte, formatClock, formatMult } from '../../game/format'
 import type { useGame } from '../../game/useGame'
 import { t } from '../../i18n'
 import { weatherAt, weatherTomorrow } from '../../game/gardenLife'
@@ -56,7 +56,7 @@ const WEATHER_ICON = {
 
 const MAX_VISIBLE = 3
 /** What stays visible when the bar is crowded (claimable pills always lead). */
-const PRIORITY = ['season', 'order', 'fest', 'turbo', 'rainbow', 'surge', 'flash', 'recipe', 'boost', 'clan', 'wheel', 'weather']
+const PRIORITY = ['season', 'order', 'fest', 'turbo', 'rainbow', 'erntefest', 'flash', 'recipe', 'boost', 'clan', 'wheel', 'weather']
 const PILLS_SEEN_KEY = 'gartenerbe-pills-seen-v1'
 
 function loadSeen(): string[] {
@@ -83,7 +83,7 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
       /* ignore */
     }
   }
-  const { surge, surgeVisible, surgeGoalDone, surgeGoalClaimed, state, eventMult, flash } = game
+  const { erntefest, erntefestVisible, erntefestGoalDone, erntefestGoalClaimed, state, eventMult, flash } = game
   const pills: Pill[] = []
 
   if (order) {
@@ -162,7 +162,7 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
 
   {
     const buff = state.wheelBuff
-    if (buff && buff.prestige === state.prestiges && (buff.kind === 'yield' || buff.kind === 'water')) {
+    if (buff && buff.prestige === state.saisonenden && (buff.kind === 'yield' || buff.kind === 'water')) {
       pills.push({
         key: 'wheel',
         icon: <IconWheel />,
@@ -173,28 +173,28 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
     }
   }
 
-  if (surgeVisible) {
-    const claim = surgeGoalDone && !surgeGoalClaimed
-    const prog = `${formatAsh(Math.min(state.eventAshProgress, surge.goal))} / ${formatAsh(surge.goal)}`
+  if (erntefestVisible) {
+    const claim = erntefestGoalDone && !erntefestGoalClaimed
+    const prog = `${formatErnte(Math.min(state.erntefestErnte, erntefest.goal))} / ${formatErnte(erntefest.goal)}`
     pills.push({
-      key: 'surge',
+      key: 'erntefest',
       icon: <IconFestival />,
       label: claim ? t.event.claimGoal : formatMult(eventMult),
-      aria: `${surge.name} ${formatMult(eventMult)}`,
+      aria: `${erntefest.name} ${formatMult(eventMult)}`,
       claim,
       onClick: claim ? game.claimEventGoal : undefined,
-      detail: surgeGoalClaimed
-        ? { line: `${surge.endsLabel} · ${t.event.claimed}`, ratio: 1, aria: t.event.goalAria }
+      detail: erntefestGoalClaimed
+        ? { line: `${erntefest.endsLabel} · ${t.event.claimed}`, ratio: 1, aria: t.event.goalAria }
         : {
-            line: `${surge.endsLabel} · ${t.event.goalLine(prog, surge.goalReward)}`,
-            ratio: Math.min(1, state.eventAshProgress / surge.goal),
+            line: `${erntefest.endsLabel} · ${t.event.goalLine(prog, erntefest.goalReward)}`,
+            ratio: Math.min(1, state.erntefestErnte / erntefest.goal),
             aria: t.event.goalAria,
           },
     })
   }
 
   if (flash.visible) {
-    const prog = `${formatAsh(Math.min(flash.progress, flash.goal))} / ${formatAsh(flash.goal)}`
+    const prog = `${formatErnte(Math.min(flash.progress, flash.goal))} / ${formatErnte(flash.goal)}`
     pills.push({
       key: 'flash',
       icon: <IconSun />,
@@ -203,7 +203,7 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
       claim: flash.claimable,
       onClick: flash.claimable ? game.claimFlashGoal : undefined,
       detail: {
-        line: `${flash.name} · ${t.flash.goalLine(prog, FLASH_GOAL_REWARD_OBSIDIAN)}`,
+        line: `${flash.name} · ${t.flash.goalLine(prog, FLASH_GOAL_REWARD_SAMEN)}`,
         ratio: flash.ratio,
         aria: t.flash.goalAria,
       },
@@ -223,7 +223,7 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
     pills.push({
       key: 'clan',
       icon: <IconFlag />,
-      label: `${formatMult(game.clanMult)} · ${formatClock(game.clanBoostMsLeft)}`,
+      label: `${formatMult(game.vereinMult)} · ${formatClock(game.clanBoostMsLeft)}`,
       detail: { line: t.clanBoost.name, ratio: 0, aria: t.clanBoost.name },
     })
   }

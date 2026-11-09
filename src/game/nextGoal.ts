@@ -4,14 +4,14 @@
  * No energy walls.
  */
 
-import { formatAsh } from './format'
+import { formatErnte } from './format'
 import {
   GENERATORS,
   isGeneratorUnlocked,
   type GeneratorId,
 } from './generators'
-import { LEVEL_MODULE_GATES, xpForLevel } from './progression'
-import { prestigeMinAsh, isProbeYear } from './economy'
+import { LEVEL_MODULE_GATES } from './progression'
+import { prestigeMinErnte, isProbeYear } from './economy'
 import { gateSeasons } from './longLoop'
 import type { GameState } from './state'
 import { t } from '../i18n'
@@ -59,7 +59,7 @@ function unlockProgress(
 ): { ratio: number; detail: string } | null {
   const def = GENERATORS.find((g) => g.id === id)
   if (!def?.unlock) return null
-  if ((def.unlock.seasons ?? 0) > gateSeasons(state.prestiges, state.deepUpgrades)) return null
+  if ((def.unlock.seasons ?? 0) > gateSeasons(state.saisonenden, state.sproesslingLaden)) return null
 
   let best = 0
   let detail = ''
@@ -73,7 +73,7 @@ function unlockProgress(
       detail =
         r >= 1
           ? t.goal.ready
-          : t.goal.unlockAshLeft(formatAsh(left))
+          : t.goal.unlockErnteLeft(formatErnte(left))
     }
   }
 
@@ -126,9 +126,9 @@ export function computeNextGoal(
       def,
       state.ernteSeason,
       state.owned,
-      state.emberUpgrades.firstFlame > 0,
+      state.truhe.kompostVomVorjahr > 0,
       opts.playerLevel,
-      gateSeasons(state.prestiges, state.deepUpgrades),
+      gateSeasons(state.saisonenden, state.sproesslingLaden),
     )
     if (!unlocked) continue
     const cost = opts.costOf(def.id)
@@ -143,7 +143,7 @@ export function computeNextGoal(
     const goal: NextGoal = withNearMiss({
       kind: 'upgrade',
       title: t.goal.upgradeTitle(action, def.name),
-      detail: t.goal.upgradeDetail(formatAsh(cost)),
+      detail: t.goal.upgradeDetail(formatErnte(cost)),
       ratio,
       focusId: def.id,
       urgency,
@@ -160,9 +160,9 @@ export function computeNextGoal(
       def,
       state.ernteSeason,
       state.owned,
-      state.emberUpgrades.firstFlame > 0,
+      state.truhe.kompostVomVorjahr > 0,
       opts.playerLevel,
-      gateSeasons(state.prestiges, state.deepUpgrades),
+      gateSeasons(state.saisonenden, state.sproesslingLaden),
     )
     if (unlocked) continue
     const prog = unlockProgress(state, def.id, opts.playerLevel)
@@ -195,7 +195,7 @@ export function computeNextGoal(
   }
 
   // Prestige gate — strong Zeigarnik when “almost ready”
-  const prestigeMin = prestigeMinAsh(state.prestiges, isProbeYear(state))
+  const prestigeMin = prestigeMinErnte(state.saisonenden, isProbeYear(state))
   const prestigeRatio =
     prestigeMin > 0 ? Math.min(1, state.ernteSeason / prestigeMin) : 1
   const prestigeUrgency =
@@ -216,7 +216,7 @@ export function computeNextGoal(
         prestigeRatio >= 1
           ? t.goal.prestigeReadyDetail
           : t.goal.prestigeDetail(
-              formatAsh(Math.max(0, prestigeMin - state.ernteSeason)),
+              formatErnte(Math.max(0, prestigeMin - state.ernteSeason)),
             ),
       ratio: prestigeRatio,
       urgency: prestigeUrgency,
@@ -236,7 +236,3 @@ export function computeNextGoal(
   )
 }
 
-/** Unused helper kept for tests / debug — XP remaining to next level. */
-export function xpRemaining(level: number, intoLevel: number): number {
-  return Math.max(0, xpForLevel(level) - intoLevel)
-}

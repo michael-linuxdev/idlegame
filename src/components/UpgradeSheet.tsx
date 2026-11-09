@@ -19,7 +19,7 @@ import {
   type GeneratorId,
 } from '../game/generators'
 import { efficiencyMult, type BranchKind } from '../game/branches'
-import { formatAsh, formatDecimal, formatRate } from '../game/format'
+import { formatErnte, formatDecimal, formatRate } from '../game/format'
 import { playSfx } from '../game/sound'
 import { gatePrestiges, totalGardenMult } from '../game/state'
 import { t } from '../i18n'
@@ -135,11 +135,11 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
       return rank < game.branchMaxRank && game.state.ernte >= game.branchCostOf(def.id, k)
     }).length
   const safeCost = Number.isFinite(cost) && cost > 0 ? cost : 0
-  const safeAsh = Number.isFinite(game.state.ernte) ? Math.max(0, game.state.ernte) : 0
+  const safeErnte = Number.isFinite(game.state.ernte) ? Math.max(0, game.state.ernte) : 0
   const affordRatio =
-    safeCost > 0 ? Math.min(1, safeAsh / safeCost) : unlocked ? 1 : 0
+    safeCost > 0 ? Math.min(1, safeErnte / safeCost) : unlocked ? 1 : 0
   const actionLabel = owned === 0 ? t.upgrade.online : t.upgrade.upgrade
-  const needMore = Math.max(0, safeCost - safeAsh)
+  const needMore = Math.max(0, safeCost - safeErnte)
 
   function buyBranch(kind: BranchKind) {
     game.buyModuleBranch(selectedId, kind)
@@ -280,7 +280,7 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
             </div>
             ) : null}
             {unlocks.max && maxGain > 0 ? (
-              <p className="gc-max-preview">{t.ux.upgrade.maxPreview(maxInfo.count, formatAsh(maxGain))}</p>
+              <p className="gc-max-preview">{t.ux.upgrade.maxPreview(maxInfo.count, formatErnte(maxGain))}</p>
             ) : null}
             {newHint && owned >= 1 ? (
               <aside className="gc-tip" role="status">
@@ -304,8 +304,8 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
               onContextMenu={(e) => e.preventDefault()}
               aria-label={
                 bulk === 1
-                  ? t.upgrade.costLine(actionLabel, formatAsh(safeCost || cost))
-                  : t.bulk.buyN(actionLabel, bulkCount, formatAsh(safeCost || cost))
+                  ? t.upgrade.costLine(actionLabel, formatErnte(safeCost || cost))
+                  : t.bulk.buyN(actionLabel, bulkCount, formatErnte(safeCost || cost))
               }
             >
               <span className="gc-buy-fill" style={{ width: `${Math.round(affordRatio * 100)}%` }} aria-hidden="true" />
@@ -314,11 +314,11 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
                 {bulk !== 1 ? ` ×${bulkCount}` : ''}
               </span>
               <span className="gc-buy-cost">
-                <IconBasket /> {formatAsh(safeCost || cost)}
+                <IconBasket /> {formatErnte(safeCost || cost)}
               </span>
             </button>
             <p className="upgrade-hold-hint">
-              {affordable ? (bulk === 1 ? t.upgrade.holdHint : '') : needMore > 0 ? t.upgrade.needMore(formatAsh(needMore)) : ''}
+              {affordable ? (bulk === 1 ? t.upgrade.holdHint : '') : needMore > 0 ? t.upgrade.needMore(formatErnte(needMore)) : ''}
             </p>
 
             {owned >= 1 ? (
@@ -421,9 +421,9 @@ function CareTile({
           className="gc-care-buy"
           disabled={ernte < cost}
           onClick={onBuy}
-          aria-label={t.upgrade.costLine(name, formatAsh(cost))}
+          aria-label={t.upgrade.costLine(name, formatErnte(cost))}
         >
-          <IconBasket /> {formatAsh(cost)}
+          <IconBasket /> {formatErnte(cost)}
         </button>
       )}
     </div>

@@ -1,0 +1,321 @@
+/* Navigation und Menü — Teil von App.css (Reihenfolge zählt). */
+/* Nav — single floating Menü FAB (no tab strip) */
+
+.menu-fab {
+  pointer-events: auto;
+  position: absolute;
+  right: 0.7rem;
+  bottom: calc(0.7rem + var(--safe-bottom));
+  z-index: 2;
+  appearance: none;
+  width: 3rem;
+  height: 3rem;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid color-mix(in srgb, var(--ge-stroke-strong) 55%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ge-bg-raised) 78%, transparent);
+  color: var(--ge-ink);
+  box-shadow:
+    0 4px 14px rgba(20, 35, 25, 0.22),
+    0 1px 0 rgba(255, 255, 255, 0.45) inset;
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+}
+
+.menu-fab:focus-visible {
+  outline: 2px solid var(--ge-focus);
+  outline-offset: 2px;
+}
+
+.menu-fab.active {
+  color: var(--ge-gruen-dunkel);
+  border-color: color-mix(in srgb, var(--ge-gruen) 55%, var(--ge-stroke-strong));
+  background: color-mix(in srgb, var(--ge-bg-raised) 86%, var(--ge-gruen-hell));
+}
+
+.menu-fab.ftue-tab {
+  color: var(--ge-bronze);
+  box-shadow:
+    0 4px 14px rgba(20, 35, 25, 0.22),
+    0 0 0 2px color-mix(in srgb, var(--ge-bronze) 55%, transparent);
+}
+
+.tab-icon {
+  display: flex;
+  line-height: 0;
+  opacity: 0.85;
+}
+
+.tab-label {
+  line-height: 1.1;
+}
+
+.nav-menu {
+  pointer-events: auto;
+  position: absolute;
+  right: 0.7rem;
+  bottom: calc(3.85rem + var(--safe-bottom));
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 11rem;
+  padding: 0.35rem;
+  background: var(--ge-bg-raised);
+  border: 1px solid var(--ge-stroke-strong);
+  border-radius: 12px;
+  box-shadow: 0 10px 24px rgba(30, 50, 30, 0.2);
+  animation: sheet-up 0.16s ease-out;
+}
+
+.nav-menu-item {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--ge-ink);
+  font-family: var(--ge-font-display);
+  letter-spacing: 0.01em;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  min-height: var(--ge-target-min);
+  padding: 0.5rem 0.65rem;
+  border-radius: 8px;
+  text-align: left;
+}
+
+.nav-menu-item:hover,
+.nav-menu-item:focus-visible {
+  background: color-mix(in srgb, var(--ge-gruen) 14%, transparent);
+  outline: none;
+}
+
+.nav-menu-item.active {
+  background: color-mix(in srgb, var(--ge-gruen) 18%, transparent);
+  box-shadow: inset 3px 0 0 var(--ge-gruen);
+  font-weight: 700;
+}
+
+.nav-menu-item.ftue-tab {
+  color: var(--ge-bronze);
+  box-shadow: inset 3px 0 0 var(--ge-bronze);
+}
+
+.nav-menu-playtest {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  margin-top: 0.25rem;
+  padding-top: 0.3rem;
+  border-top: 1px solid var(--ge-stroke);
+}
+
+.nav-menu-item.playtest-toggle .tab-label,
+.nav-menu-item.playtest-action .tab-label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.55rem;
+  width: 100%;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  font-size: 0.72rem;
+}
+
+.playtest-state,
+.playtest-count {
+  color: var(--ge-ink-muted);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.nav-menu-item.playtest-toggle.active .playtest-state {
+  color: var(--ge-gruen);
+}
+
+.playtest-note {
+  margin: 0.2rem 0.6rem;
+  font-size: 0.8rem;
+  color: var(--ge-ink-muted);
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes sheet-up {
+  from {
+    transform: translateY(14px);
+    opacity: 0.55;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes claim-pop {
+  from {
+    transform: translateY(6px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.prestige-bar {
+  margin-top: 0.65rem;
+  height: 8px;
+  background: var(--ge-bg-inset);
+  border: 1px solid var(--ge-stroke-strong);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.prestige-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--ge-gruen-dunkel), var(--ge-gruen-hell));
+  transition: width 0.25s ease;
+}
+
+.prestige-teaser {
+  color: var(--ge-bronze);
+  font-weight: 700;
+}
+
+.laden {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+}
+
+.laden-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--ge-stroke);
+}
+
+.laden-name {
+  font-family: var(--ge-font-display);
+  font-weight: 700;
+  color: var(--ge-ink);
+  font-size: 1.05rem;
+}
+
+.laden-rank {
+  font-family: var(--ge-font-metric);
+  font-weight: 600;
+  color: var(--ge-ink-muted);
+  font-size: 0.9rem;
+}
+
+.laden-blurb,
+.laden-effect {
+  margin: 0.2rem 0 0;
+  color: var(--ge-ink-muted);
+  font-size: 0.95rem;
+}
+
+.laden-effect {
+  color: var(--ge-gain);
+  font-family: var(--ge-font-metric);
+  font-weight: 600;
+}
+
+.ftue-coach {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(3.35rem + var(--safe-bottom));
+  width: calc(100% - 1.25rem);
+  max-width: 460px;
+  z-index: var(--z-coach);
+  pointer-events: none;
+  animation: sheet-up 0.28s ease-out;
+}
+
+.ftue-coach-inner {
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 0.9rem 1.05rem;
+  background: linear-gradient(180deg, #ffffff 0%, #f3f8ef 100%);
+  border: 2px solid var(--ge-stroke-strong);
+  border-radius: 14px;
+  box-shadow:
+    0 4px 0 color-mix(in srgb, var(--ge-stroke-strong) 55%, #1e2e1a),
+    0 12px 28px rgba(30, 50, 30, 0.18);
+}
+
+.ftue-eyebrow {
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ge-ink-muted);
+  font-weight: 700;
+}
+
+.ftue-title {
+  margin: 0.15rem 0 0;
+  font-family: var(--ge-font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--ge-ink);
+}
+
+.ftue-body {
+  margin: 0.2rem 0 0;
+  color: var(--ge-ink);
+  font-size: 0.95rem;
+  line-height: 1.35;
+  font-weight: 600;
+}
+
+.ftue-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.ftue-cta {
+  min-height: var(--ge-target-min);
+  flex: 1 1 auto;
+}
+
+.ftue-secondary {
+  margin-left: auto;
+  font-size: 0.9rem;
+  min-height: var(--ge-target-min);
+}
+
+.panel.ftue-target {
+  outline: 2px solid var(--ge-gruen-hell);
+  outline-offset: 3px;
+}
+
+.tab.ftue-tab {
+  color: var(--ge-bronze);
+  box-shadow: inset 0 -2px 0 var(--ge-bronze);
+}

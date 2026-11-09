@@ -220,7 +220,7 @@
 }
 
 .ftue-coach .ftue-title {
-  font-family: var(--oc-font-hand);
+  font-family: var(--ge-font-hand);
   font-weight: 700;
   font-size: 1.65rem;
   line-height: 1.55rem;
@@ -228,7 +228,7 @@
 }
 
 .ftue-coach .ftue-body {
-  font-family: var(--oc-font-hand);
+  font-family: var(--ge-font-hand);
   font-weight: 500;
   font-size: 1.32rem;
   line-height: 1.55rem;

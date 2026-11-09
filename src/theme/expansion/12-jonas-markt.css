@@ -1,0 +1,150 @@
+/* Jonas-Bereiche, Log leeren, Markt-Reiter, Profi-Jonas — Teil von expansion.css (Reihenfolge zählt). */
+/* Jonas: Bereiche erlauben / sperren */
+.helper-areas {
+  margin: 0.5rem 0;
+}
+
+.helper-areas summary {
+  cursor: pointer;
+  font-weight: 800;
+  color: #4a6a2e;
+  padding: 0.35rem 0;
+}
+
+.helper-area-chips {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.4rem;
+  margin-top: 0.4rem;
+}
+
+.helper-area-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.05rem;
+  min-height: 44px;
+  padding: 0.35rem 0.6rem;
+  border-radius: 12px;
+  border: 2px solid #c9b48a;
+  background: #efe6d4;
+  color: #6e5a3a;
+  font: inherit;
+  font-size: 0.8rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.helper-area-chip small {
+  font-weight: 700;
+  color: #a0503a;
+}
+
+.helper-area-chip.on {
+  border-color: #6f9a48;
+  background: #e4f1d2;
+  color: #2f4a1e;
+}
+
+.helper-area-chip.on small {
+  color: #4a7a2e;
+}
+
+/* Log leeren: abgesetzt von den übrigen Menüpunkten, zweistufig bestätigen */
+.nav-menu-item.playtest-clear {
+  margin: 0.5rem 0 0.9rem;
+  color: #a0503a;
+}
+
+.nav-menu-item.playtest-clear.confirm {
+  background: #f6dcd4;
+  color: #8a2a1a;
+  font-weight: 800;
+}
+
+/* Markt: Reiter + Werbung mit Auswahl */
+.shop-tabs {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 0.3rem;
+  margin: 0.6rem 0 0.4rem;
+  padding: 0.3rem;
+  border-radius: 14px;
+  background: #e8dcc0;
+  box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.08);
+}
+
+.shop-tab {
+  position: relative;
+  min-height: 44px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: #6e5a3a;
+  font: inherit;
+  font-weight: 800;
+  font-size: 0.86rem;
+  cursor: pointer;
+}
+
+.shop-tab.active {
+  background: #fbf6e8;
+  color: #2f4a1e;
+  box-shadow: 0 2px 0 #c9b48a;
+}
+
+.shop-tab.has-new::after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #e0485e;
+}
+
+.shop-ad-box {
+  padding: 0.7rem;
+  border-radius: 14px;
+  background: #fbf6e8;
+  border: 2px solid #e2d4ae;
+}
+
+.shop-ad-status {
+  margin: 0 0 0.5rem;
+  font-weight: 700;
+  color: #6e5a3a;
+}
+
+.shop-ad-choices {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.shop-ad-choices .btn {
+  width: 100%;
+}
+
+/* Profi-Jonas (letzte Stufe) */
+.helper-pro {
+  margin: 0.5rem 0;
+  padding: 0.55rem 0.7rem;
+  border-radius: 12px;
+  border: 2px solid #e0a21a;
+  background: #fbf0d0;
+  color: #5a3d12;
+}
+
+.helper-pro p {
+  margin: 0.2rem 0 0;
+}
+
+.helper-pro-note {
+  margin-top: 0.35rem;
+  font-size: 0.82rem;
+}

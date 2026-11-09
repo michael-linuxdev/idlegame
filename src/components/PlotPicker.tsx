@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useDismiss } from '../game/overlays'
 import { CHAPTERS, type ChapterId } from '../game/chapters'
-import { formatAsh } from '../game/format'
+import { formatErnte } from '../game/format'
 import type { useGame } from '../game/useGame'
 import { t } from '../i18n'
 import { IconMap, IconSprout } from '../theme/icons'
@@ -107,7 +107,7 @@ function PlotSheet({ game, current, onGo, onClose }: { game: GameApi; current: P
                   <span className="plot-row-name">
                     {t.chapterUi.chapter(c.number)} · {copy.title}
                   </span>
-                  <span className="plot-row-meta">{t.plots.open(copy.currency, formatAsh(game.state.chapters[c.id].cur))}</span>
+                  <span className="plot-row-meta">{t.plots.open(copy.currency, formatErnte(game.state.chapters[c.id].cur))}</span>
                 </button>
               </li>
             )

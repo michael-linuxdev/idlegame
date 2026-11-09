@@ -153,7 +153,7 @@ export function Visitors({ game, extras, update, onVisited, onPresence }: Props)
         game.refillWater()
         break
       case 'postbote':
-        game.grant(game.state.prestiges >= 1 ? { erbstuecke: 3, fest: 2, kg: 0.5 } : { samen: 4, fest: 2, kg: 0.5 })
+        game.grant(game.state.saisonenden >= 1 ? { erbstuecke: 3, fest: 2, kg: 0.5 } : { samen: 4, fest: 2, kg: 0.5 })
         break
     }
     playSfx('level')

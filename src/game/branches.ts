@@ -1,11 +1,9 @@
 /**
  * Branch upgrades (Effizienz / Kapazität) on existing modules.
- * Paid in soft currency (Phyto / Tokens); reset on prestige so runs stay fair.
+ * Paid in Ernte; reset on prestige so runs stay fair.
  * Main Upgrade CTA stays primary — branches are secondary sinks.
  */
 
-import { careNamesFor } from '../theme/careNames'
-import { t } from '../i18n'
 import type { GeneratorDef, GeneratorId } from './generators'
 
 export type BranchKind = 'efficiency' | 'capacity'
@@ -46,32 +44,3 @@ export function branchCost(
   return Math.max(25, Math.floor(raw))
 }
 
-export function branchLabel(kind: BranchKind, area?: string): string {
-  const names = careNamesFor(area ?? '', [t.branches.efficiency, t.branches.capacity])
-  return kind === 'efficiency' ? names[0] : names[1]
-}
-
-export function branchBlurb(kind: BranchKind): string {
-  return kind === 'efficiency'
-    ? t.branches.efficiencyBlurb
-    : t.branches.capacityBlurb
-}
-
-export function branchEffectLabel(kind: BranchKind, rank: number): string {
-  if (kind === 'efficiency') {
-    return t.branches.efficiencyEffect(rank * 4)
-  }
-  return t.branches.capacityEffect(
-    Math.pow(0.97, rank).toFixed(3),
-  )
-}
-
-/** Branches unlock once the module is online (owned ≥ 1). */
-export function canBuyBranch(
-  owned: number,
-  rank: number,
-  ernte: number,
-  cost: number,
-): boolean {
-  return owned >= 1 && rank < BRANCH_MAX_RANK && ernte >= cost
-}

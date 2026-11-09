@@ -1,30 +1,33 @@
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { AppNav, type Tab } from './components/AppNav'
-import { ClanPanel } from './components/ClanPanel'
+import {
+  ClanPanel,
+  ChapterMap,
+  PrestigePanel,
+  ShopPanel,
+  NotebookSheet,
+  ProjectSheet,
+  AlbumSheet,
+  SeasonCeremony,
+  CollectionSheet,
+  LegalSheet,
+  SaveSheet,
+  preloadLazy,
+} from './components/lazy'
 import { GardenMap } from './components/GardenMap'
-import { ChapterMap } from './components/ChapterMap'
 import { CHAPTERS, type ChapterId } from './game/chapters'
 import type { CosmeticId } from './game/monetization'
 import { FtueCoach } from './components/FtueCoach'
 import { InstallPrompt } from './components/InstallPrompt'
 import { InstallGate } from './components/InstallGate'
 import { TestPhaseNotice } from './components/TestPhaseNotice'
-import { PrestigePanel } from './components/PrestigePanel'
-import { ShopPanel } from './components/ShopPanel'
 import { bootPlaytestLog, logPlaytest } from './game/playtestLog'
 import { SaveGuardBanner } from './components/SaveGuardBanner'
 import { useGame } from './game/useGame'
 import { GENERATORS } from './game/generators'
 import { useNotebook, yearLetterFor, type NotebookEntryId } from './game/notebook'
-import { NotebookSheet } from './components/story/NotebookSheet'
-import { ProjectSheet } from './components/ProjectSheet'
-import { AlbumSheet } from './components/AlbumSheet'
 import { getFeaturesSeen, markFeatureSeen, MENU_FEATURES, subscribeFeaturesSeen, type FeatureId } from './game/featureUnlocks'
-import { SeasonCeremony } from './components/story/SeasonCeremony'
 import { SeasonCardPicker } from './components/SeasonCardPicker'
-import { CollectionSheet } from './components/CollectionSheet'
-import { LegalSheet } from './components/LegalSheet'
-import { SaveSheet } from './components/SaveSheet'
 import { ComebackLetter, COMEBACK_SEEDS } from './components/story/ComebackLetter'
 import { useExtras } from './game/extras'
 import { deliver, planReminder, pruneSent, type ReminderCandidate } from './game/notify'
@@ -33,7 +36,7 @@ import { t } from './i18n'
 import { formatClock } from './game/format'
 import { applyPrefClasses } from './game/prefs'
 import { useDismiss } from './game/overlays'
-import { countAffordableEmberBuys, offlineCapsHours } from './game/economy'
+import { countAffordableTruheBuys, offlineCapsHours } from './game/truhe'
 import { chapterCopy } from './components/chapterCopy'
 import './App.css'
 import './theme/garden.css'
@@ -49,7 +52,7 @@ export default function App() {
   const game = useGame()
   const featuresSeen = useSyncExternalStore(subscribeFeaturesSeen, getFeaturesSeen)
   const newMenuKeys = new Set<string>(MENU_FEATURES.filter((id) => game.features.has(id) && !featuresSeen.includes(id)))
-  const [tab, setTab] = useState<Tab>('fortress')
+  const [tab, setTab] = useState<Tab>('garten')
   const [plot, setPlot] = useState<'garden' | ChapterId>('garden')
   const [previewSkin, setPreviewSkin] = useState<CosmeticId | null>(null)
   const [photoMode, setPhotoMode] = useState(false)
@@ -59,6 +62,8 @@ export default function App() {
   useEffect(() => {
     if (openKey) prefetchChapterArt(openKey.split(',') as ChapterId[])
   }, [openKey])
+  // Selten genutzte Fenster (eigene Bündel) im Leerlauf vorladen
+  useEffect(() => preloadLazy(), [])
 
   // Test hooks: ?kapitel2=1 / ?kapitel3=1 open a chapter right away
   const { forceChapter } = game
@@ -113,7 +118,7 @@ export default function App() {
     reminderRef.current = {
       water: game.tapCooldownLeftMs,
       cross: s.crossing ? s.crossing.endsAt : 0,
-      basketHours: offlineCapsHours(s.emberUpgrades).hard,
+      basketHours: offlineCapsHours(s.truhe).hard,
       sent: extras.notifySent ?? [],
     }
   })
@@ -163,8 +168,8 @@ export default function App() {
   const gardenStage = GENERATORS.filter(
     (g) => (game.state.owned[g.id] ?? 0) > 0 && game.unlocked(g.id),
   ).length
-  const year = game.state.prestiges + 1
-  const { notebook, unread, markRead } = useNotebook(gardenStage, year, game.state.deepPrestiges, { helper: game.state.helperLevel, ilse: game.state.ilseLevel, generation: game.state.generation })
+  const year = game.state.saisonenden + 1
+  const { notebook, unread, markRead } = useNotebook(gardenStage, year, game.state.tiefeWinter, { helper: game.state.helperLevel, ilse: game.state.ilseLevel, generation: game.state.generation })
   const openNotebook = useCallback(
     (entry: NotebookEntryId | null = null) => setNotebookOpen({ entry }),
     [],
@@ -186,7 +191,7 @@ export default function App() {
   }, [])
 
   // Panels (Saison, Markt, Verein): Escape / Zurück returns to the garden
-  useDismiss(() => onTabChange('fortress'), tab !== 'fortress')
+  useDismiss(() => onTabChange('garten'), tab !== 'garten')
 
   // ≥ 900 px: map on the left, the open panel as a column on the right
   const wide = useWide()
@@ -199,12 +204,12 @@ export default function App() {
   const seasonReady =
     game.canPrestige ||
     (game.state.erbstuecke > 0 &&
-      countAffordableEmberBuys(
-        game.state.emberUpgrades,
+      countAffordableTruheBuys(
+        game.state.truhe,
         game.state.erbstuecke,
         game.state.ernteSeason,
         game.state.owned,
-        game.state.prestiges,
+        game.state.saisonenden,
       ) > 0)
   const plotLabel = chapterShown ? chapterCopy(chapterShown).chip : undefined
 
@@ -216,7 +221,7 @@ export default function App() {
             highlight={ftueHighlight === 'prestige'}
             onOpenChapter={(id) => {
               goPlot(id)
-              onTabChange('fortress')
+              onTabChange('garten')
             }}
           />
         ) : null}
@@ -227,7 +232,7 @@ export default function App() {
             onPreview={(id) => {
               setPreviewSkin(id)
               setPlot('garden')
-              onTabChange('fortress')
+              onTabChange('garten')
             }}
           />
         ) : null}
@@ -235,7 +240,7 @@ export default function App() {
   )
 
   return (
-    <div className={`app-shell${wide ? ' wide' : ''}${wide && tab !== 'fortress' ? ' with-side' : ''}`}>
+    <div className={`app-shell${wide ? ' wide' : ''}${wide && tab !== 'garten' ? ' with-side' : ''}`}>
       <div className="rotate-lock" role="alert">
         <svg viewBox="0 0 64 64" width="64" height="64" aria-hidden="true">
           <rect x="20" y="8" width="24" height="44" rx="5" fill="#fbf6e8" stroke="#6e4a2b" strokeWidth="3" />
@@ -247,11 +252,11 @@ export default function App() {
       </div>
       <SaveGuardBanner />
       <main
-        className={`app-main${tab === 'fortress' || wide ? ' map-mode' : ''}`}
-        tabIndex={tab === 'fortress' || wide ? undefined : 0}
+        className={`app-main${tab === 'garten' || wide ? ' map-mode' : ''}`}
+        tabIndex={tab === 'garten' || wide ? undefined : 0}
       >
-        {(tab === 'fortress' || wide) && chapterShown ? <ChapterMap key={chapterShown} game={game} chapter={chapterShown} onGo={goPlot} /> : null}
-        {(tab === 'fortress' || wide) && !chapterShown ? (
+        {(tab === 'garten' || wide) && chapterShown ? <ChapterMap key={chapterShown} game={game} chapter={chapterShown} onGo={goPlot} /> : null}
+        {(tab === 'garten' || wide) && !chapterShown ? (
           <GardenMap
             game={game}
             highlightId={ftueHighlight}
@@ -276,7 +281,7 @@ export default function App() {
         ) : null}
         {!wide ? panelView : null}
       </main>
-      {wide && tab !== 'fortress' ? (
+      {wide && tab !== 'garten' ? (
         <aside className="app-side" aria-label={t.nav.ariaLabel} tabIndex={0}>
           {panelView}
         </aside>
@@ -293,13 +298,13 @@ export default function App() {
       {/* Testphase: Hinweis zur Aufzeichnung beim ersten Start der installierten App (game/distribution.ts) */}
       <TestPhaseNotice />
       {/* Web-Fassung: Vollbild-Hinweis „Zuerst installieren“ (Store-Fassung: aus, siehe game/distribution.ts) */}
-      <InstallGate hasProgress={game.state.totalUpgrades > 1 || game.state.prestiges > 0 || game.state.deepPrestiges > 0} />
+      <InstallGate hasProgress={game.state.totalUpgrades > 1 || game.state.saisonenden > 0 || game.state.tiefeWinter > 0} />
 
       {/* Install cue waits for the first Saisonende — never in the first session */}
       <InstallPrompt
         holdForFtue={
           holdInstall ||
-          (game.state.prestiges < 1 && game.state.deepPrestiges === 0 && game.state.generation === 0)
+          (game.state.saisonenden < 1 && game.state.tiefeWinter === 0 && game.state.generation === 0)
         }
       />
 
@@ -336,13 +341,13 @@ export default function App() {
         }}
         onOpenPhoto={() => {
           setPlot('garden')
-          onTabChange('fortress')
+          onTabChange('garten')
           setPhotoMode(true)
         }}
         reminders={extras.notify}
         // Erinnerungen erst nach dem ersten Saisonende anbieten (wer sie schon an hat, behält den Schalter)
         onToggleReminders={
-          extras.notify || game.state.prestiges > 0 || game.state.deepPrestiges > 0 || game.state.generation > 0
+          extras.notify || game.state.saisonenden > 0 || game.state.tiefeWinter > 0 || game.state.generation > 0
             ? toggleReminders
             : undefined
         }
@@ -386,7 +391,7 @@ export default function App() {
             if (letter) markRead(letter)
             game.ackSeasonEnd()
             track('seasons')
-            onTabChange('fortress')
+            onTabChange('garten')
           }}
         />
       ) : null}

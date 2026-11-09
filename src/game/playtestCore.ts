@@ -92,7 +92,11 @@ const PLAY_SLICE_MAX_MS = 2 * 3600_000
 /** Ereignisse, die nur gezählt (Minute + Tag), nie einzeln gespeichert werden. */
 export const HIGH_FREQUENCY = new Set<PlaytestEventType>(['upgrade', 'surprise', 'schub'])
 
-/** Alte interne Namen → deutsche Begriffe (nur im Log). */
+/**
+ * Alte interne Namen → deutsche Begriffe (nur im Log). Seit der Aufräum-Runde
+ * (2026-11-09) heißen Spielstand und Ereignisse schon so wie die Ziele hier;
+ * die Tabelle übersetzt nur noch Einträge aus älteren Logs.
+ */
 export const LOG_NAMES: Record<string, string> = {
   fortress: 'garten',
   prestige: 'saison',
@@ -112,6 +116,12 @@ export const LOG_NAMES: Record<string, string> = {
   obsidian50: 'samen50',
   obsidian150: 'samen150',
   obsidian500: 'samen500',
+  battlePassPremium: 'gartenwochePlus',
+  // Sprösslings-Laden (Schlüssel bis zur Aufräum-Runde 2026-11-09)
+  deepYield: 'tiefeWurzeln',
+  deepWatch: 'winterschutz',
+  deepPurse: 'saatgutvorrat',
+  deepStart: 'gartenwissen',
 }
 
 export function emptyLog(): LogState {

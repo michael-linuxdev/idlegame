@@ -49,7 +49,7 @@ export const SEASON_CARDS: SeasonCardDef[] = [
   { id: 'gutesJahr', mult: 1.05 },
 ]
 
-/** Ab diesem Gartenjahr gibt es Saison-Karten (prestiges nach dem Saisonende). */
+/** Ab diesem Gartenjahr gibt es Saison-Karten (saisonenden nach dem Saisonende). */
 export const SEASON_CARDS_FROM_PRESTIGES = 3
 
 export function seasonCardDef(id: string | null | undefined): SeasonCardDef | null {

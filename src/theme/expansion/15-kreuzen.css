@@ -1,0 +1,110 @@
+/* Saatgut kreuzen — Teil von expansion.css (Reihenfolge zählt). */
+/* —— Saatgut kreuzen —— */
+
+.map-side-btn.has-new::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #e0485e;
+  box-shadow: 0 0 0 2px #fffcf4;
+}
+
+.cross-box {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0.6rem 0;
+  padding: 0.7rem;
+  border-radius: 14px;
+  border: 2px solid #e2d4ae;
+  background: #fbf6e8;
+}
+
+.cross-pick {
+  display: grid;
+  gap: 0.2rem;
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: #6e5a3a;
+}
+
+.cross-pick select {
+  min-height: 44px;
+  padding: 0 0.5rem;
+  border-radius: 10px;
+  border: 1.5px solid #c9b48a;
+  background: #fffcf4;
+  font: inherit;
+  font-weight: 600;
+  color: #33261a;
+}
+
+.cross-pair {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  font-weight: 800;
+  color: #4a3a22;
+  text-align: center;
+}
+
+.cross-bar {
+  height: 10px;
+  border-radius: 999px;
+  background: #e8dcc0;
+  overflow: hidden;
+}
+
+.cross-bar span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #9cc072, #5f9e45);
+}
+
+.cross-status {
+  margin: 0;
+  text-align: center;
+  font-weight: 700;
+  color: #4a7a2e;
+}
+
+.hybrid-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin: 0.4rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hybrid-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.4rem 0.3rem;
+  border-radius: 12px;
+  border: 1.5px dashed #c9b48a;
+  text-align: center;
+  font-size: 0.78rem;
+  color: #6e5a3a;
+}
+
+.hybrid-card.found {
+  border-style: solid;
+  border-color: #9cc072;
+  background: #eef6e2;
+}
+
+.hybrid-card svg {
+  width: 40px;
+  height: 50px;
+}
+
+.hybrid-card small {
+  font-size: 0.68rem;
+  line-height: 1.2;
+}

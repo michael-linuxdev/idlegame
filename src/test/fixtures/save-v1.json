@@ -1,208 +1,579 @@
 {
- "ernteSeason": 0,
- "owned": {
-  "gemuesebeet": 37,
-  "kompost": 12,
-  "kraeuterspirale": 0,
-  "beerenhecke": 0,
-  "obstwiese": 0,
-  "bienenstock": 0,
-  "huehnerstall": 0,
-  "gewaechshaus": 0,
-  "hofladen": 0,
-  "orangerie": 0
- },
- "erbstuecke": 893,
- "emberUpgrades": {
-  "dominionYield": 0,
-  "longWatch": 0,
-  "foundryDiscount": 0,
-  "firstFlame": 0,
-  "tapMastery": 0,
-  "seedPurse": 0,
-  "canopyBoost": 0,
-  "nightSoil": 0,
-  "saplingSurge": 0,
-  "greenLattice": 0
- },
- "prestiges": 1,
- "lastSeen": 1794157421389,
- "lastTapAt": 0,
- "clanMult": 1,
- "samen": 333,
- "ownedCosmetics": [
-  "wiese",
-  "festAdvent"
- ],
- "equippedCosmetic": "festAdvent",
- "skipHoursUsedToday": 0,
- "skipDayKey": "2026-11-08",
- "clanBoostExpiresAt": 0,
- "dailyClaimDay": "",
- "dailyStreak": 0,
- "eventDismissedKey": "",
- "eventAshProgress": 0,
- "eventProgressKey": "",
- "eventGoalClaimedKey": "",
- "playerXp": 4321,
- "claimedLevelRewards": [
-  2,
-  3,
-  5
- ],
- "totalUpgrades": 120,
- "ernteLifetime": 3636869,
- "claimedDailyOnce": false,
- "claimedOfflineOnce": false,
- "claimedAchievements": [
-  "firstUpgrade",
-  "compostOnline",
-  "earn10k",
-  "bedTen",
-  "upgradesFifty",
-  "levelFive",
-  "prestigeOnce"
- ],
- "branches": {
-  "gemuesebeet": {
-   "efficiency": 0,
-   "capacity": 0
-  },
-  "kompost": {
-   "efficiency": 0,
-   "capacity": 0
-  },
-  "kraeuterspirale": {
-   "efficiency": 0,
-   "capacity": 0
-  },
-  "beerenhecke": {
-   "efficiency": 0,
-   "capacity": 0
-  },
-  "obstwiese": {
-   "efficiency": 0,
-   "capacity": 0
-  },
-  "bienenstock": {
-   "efficiency": 0,
-   "capacity": 0
-  },
-  "huehnerstall": {
-   "efficiency": 0,
-   "capacity": 0
-  },
-  "gewaechshaus": {
-   "efficiency": 0,
-   "capacity": 0
-  },
-  "hofladen": {
-   "efficiency": 0,
-   "capacity": 0
-  },
-  "orangerie": {
-   "efficiency": 0,
-   "capacity": 0
-  }
- },
- "questDayKey": "2026-11-08",
- "quests": [
-  {
-   "id": "2026-11-08-0-earnAsh-25000",
-   "kind": "earnAsh",
-   "target": 25000,
-   "progress": 25000,
-   "rewardAsh": 500,
-   "rewardObsidian": 8,
-   "claimed": false
-  },
-  {
-   "id": "2026-11-08-1-earnAsh-5000",
-   "kind": "earnAsh",
-   "target": 5000,
-   "progress": 5000,
-   "rewardAsh": 200,
-   "rewardObsidian": 5,
-   "claimed": false
-  },
-  {
-   "id": "2026-11-08-2-upgrades-12",
-   "kind": "upgrades",
-   "target": 12,
-   "progress": 12,
-   "rewardAsh": 90,
-   "rewardObsidian": 3,
-   "claimed": false
-  }
- ],
- "ownedOfferIds": [],
- "adsRemoved": false,
- "lastRewardedAdAt": 0,
- "rewardedAdClaims": 0,
- "yieldBoostExpiresAt": 0,
- "bpWeekKey": "2026-W1102",
- "bpXp": 0,
- "bpClaimedFree": [],
- "bpPremium": false,
- "bpClaimedPremium": [],
- "bpDailyXpDay": "",
- "prestigeSpikeFlags": 0,
- "lastSurprise": null,
- "lastVariety": "radieschenEiszapfen",
- "flashEventId": "",
- "flashEndsAt": 0,
- "flashProgress": 0,
- "flashGoal": 0,
- "flashClaimed": false,
- "flashDismissed": false,
- "lastFlashAt": 0,
- "sproesslinge": 9,
- "deepUpgrades": {
-  "deepYield": 0,
-  "deepWatch": 0,
-  "deepPurse": 0,
-  "deepStart": 0
- },
- "deepPrestiges": 1,
- "collection": [
-  "wurmhumus",
-  "physalis"
- ],
- "wheelBuff": null,
- "helperLevel": 2,
- "helperOn": true,
- "helperCarryMs": 0,
- "helperReport": 0,
- "turboEndsAt": 1794157541389,
- "generation": 1,
- "vermaechtnis": 4,
- "legacy": {
-  "familie": 2,
-  "obstbau": 0,
-  "wurzelwerk": 0,
-  "daumen": 0,
-  "hausrezept": 0
- },
- "festKey": "laternenfest-2026",
- "festTokens": 41.5,
- "festBought": {},
- "orchard": {
-  "obst": 7777,
-  "obstLifetime": 9000,
+  "ernte": 129732269572.66489,
+  "ernteSeason": 1599305494718.799,
   "owned": {
-   "apfel": 42,
-   "birne": 11,
-   "kirsche": 0,
-   "zwetschge": 0,
-   "schafe": 0,
-   "wildbienen": 0,
-   "walnuss": 0,
-   "mosterei": 0,
-   "doerrhaus": 0,
-   "obstmarkt": 0
+    "gemuesebeet": 126,
+    "kompost": 121,
+    "kraeuterspirale": 111,
+    "beerenhecke": 100,
+    "obstwiese": 90,
+    "bienenstock": 81,
+    "huehnerstall": 70,
+    "gewaechshaus": 0,
+    "hofladen": 0,
+    "orangerie": 0
   },
-  "openedAt": 1794150000000,
-  "introSeen": true
- },
- "ash": 123456
+  "erbstuecke": 11,
+  "truhe": {
+    "gartenschere": 4,
+    "alteGiesskanne": 1,
+    "saatgutkiste": 4,
+    "kompostVomVorjahr": 0,
+    "messingBrause": 2,
+    "notgroschen": 1,
+    "strohhut": 3,
+    "laterne": 0,
+    "guteErde": 0,
+    "rosenbogen": 0
+  },
+  "saisonenden": 4,
+  "lastSeen": 1794221700000,
+  "lastTapAt": 0,
+  "vereinMult": 1.1,
+  "samen": 354,
+  "ownedCosmetics": [
+    "wiese",
+    "goldherbst",
+    "bauerngarten",
+    "bluetenmeer"
+  ],
+  "equippedCosmetic": "bauerngarten",
+  "skipHoursUsedToday": 1,
+  "skipDayKey": "2026-11-09",
+  "vereinBoostExpiresAt": 1794225300000,
+  "dailyClaimDay": "2026-11-09",
+  "dailyStreak": 1,
+  "erntefestDismissedKey": "",
+  "erntefestErnte": 337653945924680.4,
+  "erntefestProgressKey": "ef-2026-11-06",
+  "erntefestGoalClaimedKey": "",
+  "playerXp": 74171,
+  "claimedLevelRewards": [
+    2,
+    3,
+    5,
+    7,
+    10,
+    15,
+    20
+  ],
+  "totalUpgrades": 9322,
+  "ernteLifetime": 371799346494430.4,
+  "claimedDailyOnce": true,
+  "claimedOfflineOnce": false,
+  "offlinePending": 235703147623.13412,
+  "claimedAchievements": [
+    "firstUpgrade",
+    "compostOnline",
+    "bedTen",
+    "earn10k",
+    "upgradesFifty",
+    "levelFive",
+    "prestigeOnce",
+    "fiveOnline",
+    "dailyOnce"
+  ],
+  "branches": {
+    "gemuesebeet": {
+      "efficiency": 1,
+      "capacity": 0
+    },
+    "kompost": {
+      "efficiency": 0,
+      "capacity": 0
+    },
+    "kraeuterspirale": {
+      "efficiency": 0,
+      "capacity": 0
+    },
+    "beerenhecke": {
+      "efficiency": 0,
+      "capacity": 0
+    },
+    "obstwiese": {
+      "efficiency": 0,
+      "capacity": 0
+    },
+    "bienenstock": {
+      "efficiency": 0,
+      "capacity": 0
+    },
+    "huehnerstall": {
+      "efficiency": 0,
+      "capacity": 0
+    },
+    "gewaechshaus": {
+      "efficiency": 0,
+      "capacity": 0
+    },
+    "hofladen": {
+      "efficiency": 0,
+      "capacity": 0
+    },
+    "orangerie": {
+      "efficiency": 0,
+      "capacity": 0
+    }
+  },
+  "questDayKey": "2026-11-09",
+  "quests": [
+    {
+      "id": "2026-11-09-0-upgrades-5",
+      "kind": "upgrades",
+      "target": 5,
+      "progress": 5,
+      "rewardErnte": 40,
+      "rewardSamen": 0,
+      "claimed": false
+    },
+    {
+      "id": "2026-11-09-1-earnErnte-5000",
+      "kind": "earnErnte",
+      "target": 5000,
+      "progress": 5000,
+      "rewardErnte": 200,
+      "rewardSamen": 5,
+      "claimed": false
+    },
+    {
+      "id": "2026-11-09-2-earnErnte-500",
+      "kind": "earnErnte",
+      "target": 500,
+      "progress": 500,
+      "rewardErnte": 50,
+      "rewardSamen": 0,
+      "claimed": false
+    }
+  ],
+  "ownedOfferIds": [
+    "removeAds",
+    "starterBundle"
+  ],
+  "adsRemoved": true,
+  "lastRewardedAdAt": 1794221700000,
+  "rewardedAdClaims": 1,
+  "marketGiftDay": "2026-11-09",
+  "waterRefillDay": "2026-11-09",
+  "waterRefills": 1,
+  "sessions": 2,
+  "seasonCard": null,
+  "lastSeasonCard": "fleissjahr",
+  "seasonCardOffer": [
+    {
+      "id": "ruhigesJahr",
+      "preview": 0.8
+    },
+    {
+      "id": "bienenjahr",
+      "preview": 1.6516382593112997
+    },
+    {
+      "id": "obstjahr",
+      "preview": 1.1198403486264688
+    }
+  ],
+  "challengesDone": [],
+  "challenge": null,
+  "challengeNext": "ohneKompost",
+  "yieldBoostExpiresAt": 1794223500000,
+  "gartenwocheKey": "2026-W1109",
+  "gartenwocheXp": 35,
+  "gartenwocheClaimedFree": [
+    1
+  ],
+  "gartenwochePremium": true,
+  "gartenwocheClaimedPremium": [
+    1
+  ],
+  "gartenwocheXpDay": "2026-11-09",
+  "saisonendeSpikeFlags": 7,
+  "lastSurprise": {
+    "kind": "milestone",
+    "amount": 1048485774
+  },
+  "lastSurpriseAt": 1794221400000,
+  "lastVariety": "huhnAraucana",
+  "flashEventId": "flash-1794221700000",
+  "flashEndsAt": 1794222780000,
+  "flashProgress": 235703147623.13412,
+  "flashGoal": 10146497960,
+  "flashClaimed": false,
+  "flashDismissed": true,
+  "lastFlashAt": 1794221700000,
+  "sproesslinge": 5,
+  "sproesslingLaden": {
+    "tiefeWurzeln": 1,
+    "winterschutz": 1,
+    "saatgutvorrat": 0,
+    "gartenwissen": 0
+  },
+  "tiefeWinter": 1,
+  "collection": [
+    "johannisbeereRosetta",
+    "apfelGoldparmaene",
+    "wurmhumus",
+    "honigLinde",
+    "radieschenEiszapfen",
+    "birneGuteLuise",
+    "thymianZitrone",
+    "stachelbeereHinnonmaeki",
+    "huhnSulmtaler",
+    "paprikaSpitz",
+    "safranKrokus",
+    "kartoffelBamberger",
+    "tomateOchsenherz",
+    "bohneBlauhilde",
+    "feigeBrunswick",
+    "lavendelHidcote",
+    "gurkeSchlange",
+    "zitroneAmalfi",
+    "bokashi",
+    "zwetschgeHauszwetschge",
+    "honigHeide",
+    "huhnAraucana"
+  ],
+  "wheelBuff": {
+    "kind": "yield",
+    "prestige": 4
+  },
+  "helperLevel": 0,
+  "helperOn": true,
+  "helperBlocked": [
+    "kompost"
+  ],
+  "decorOwned": [
+    "zwerg"
+  ],
+  "decorSlots": [
+    "zwerg",
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+  ],
+  "residentsSeen": {
+    "amsel": 1
+  },
+  "residentNow": {
+    "id": "amsel",
+    "until": 1794221761000
+  },
+  "residentNextAt": 1794221903364.6335,
+  "crossing": {
+    "a": "johannisbeereRosetta",
+    "b": "wurmhumus",
+    "endsAt": 1794236100000
+  },
+  "hybrids": [
+    "beerenapfel"
+  ],
+  "projects": {},
+  "album": {
+    "key": "2026-autumn",
+    "base": {
+      "water": 0,
+      "seasons": 0,
+      "daily": 0,
+      "offline": 0,
+      "upgrades": 2,
+      "varieties": 0,
+      "visits": 0,
+      "species": 0,
+      "hybrids": 0,
+      "decor": 0,
+      "chapterLevels": 11,
+      "projectStages": 0
+    },
+    "counts": {
+      "seasons": 20,
+      "water": 1,
+      "daily": 1
+    },
+    "claimed": [],
+    "rewarded": false
+  },
+  "weatherDecided": "2026-11-09",
+  "weatherBuff": {
+    "mult": 0.75,
+    "until": 1794228900000
+  },
+  "helperCarryMs": 0,
+  "helperReport": 0,
+  "turboEndsAt": 1794161820000,
+  "chapters": {
+    "obstwiese": {
+      "cur": 46.0000000007567,
+      "curLifetime": 186984.00000000076,
+      "owned": {
+        "apfel": 32,
+        "birne": 18,
+        "kirsche": 11,
+        "zwetschge": 2,
+        "schafe": 0,
+        "wildbienen": 0,
+        "walnuss": 0,
+        "mosterei": 0,
+        "doerrhaus": 0,
+        "obstmarkt": 0
+      },
+      "openedAt": 1794149400000,
+      "introSeen": false,
+      "care": {}
+    },
+    "weinberg": {
+      "cur": 20,
+      "curLifetime": 0,
+      "owned": {
+        "riesling": 1,
+        "silvaner": 0,
+        "spaetburgunder": 0,
+        "dornfelder": 0,
+        "trockenmauer": 0,
+        "wingerthaus": 0,
+        "kelter": 0,
+        "weinkeller": 0,
+        "strausse": 0,
+        "weinfest": 0
+      },
+      "openedAt": 0,
+      "introSeen": false,
+      "care": {}
+    },
+    "bauernhof": {
+      "cur": 20,
+      "curLifetime": 0,
+      "owned": {
+        "kuhweide": 1,
+        "ziegenstall": 0,
+        "schweinekoben": 0,
+        "gaensewiese": 0,
+        "kartoffelacker": 0,
+        "heuscheune": 0,
+        "melkhaus": 0,
+        "kaeserei": 0,
+        "hofbaeckerei": 0,
+        "bauernmarkt": 0
+      },
+      "openedAt": 0,
+      "introSeen": false,
+      "care": {}
+    },
+    "imkerei": {
+      "cur": 20,
+      "curLifetime": 0,
+      "owned": {
+        "bienenhaus": 1,
+        "lindenallee": 0,
+        "heide": 0,
+        "rapsfeld": 0,
+        "kirschhain": 0,
+        "wildblumen": 0,
+        "schleuder": 0,
+        "wachszieherei": 0,
+        "metkeller": 0,
+        "honigladen": 0
+      },
+      "openedAt": 0,
+      "introSeen": false,
+      "care": {}
+    },
+    "teich": {
+      "cur": 20,
+      "curLifetime": 0,
+      "owned": {
+        "seerosen": 1,
+        "schilf": 0,
+        "karpfenteich": 0,
+        "forellenbach": 0,
+        "steg": 0,
+        "fischerhuette": 0,
+        "raeucherei": 0,
+        "bootsverleih": 0,
+        "entenbucht": 0,
+        "seefest": 0
+      },
+      "openedAt": 0,
+      "introSeen": false,
+      "care": {}
+    },
+    "kraeuter": {
+      "cur": 20,
+      "curLifetime": 0,
+      "owned": {
+        "kamille": 1,
+        "pfefferminze": 0,
+        "ringelblume": 0,
+        "johanniskraut": 0,
+        "salbei": 0,
+        "trockenboden": 0,
+        "destille": 0,
+        "salbenkueche": 0,
+        "teestube": 0,
+        "apothekergarten": 0
+      },
+      "openedAt": 0,
+      "introSeen": false,
+      "care": {}
+    },
+    "botanik": {
+      "cur": 20,
+      "curLifetime": 0,
+      "owned": {
+        "palmenhaus": 1,
+        "kakteenhaus": 0,
+        "orchideenhaus": 0,
+        "victoriahaus": 0,
+        "rosarium": 0,
+        "steingarten": 0,
+        "arboretum": 0,
+        "farnschlucht": 0,
+        "herbarium": 0,
+        "glaskuppel": 0
+      },
+      "openedAt": 0,
+      "introSeen": false,
+      "care": {}
+    },
+    "alm": {
+      "cur": 20,
+      "curLifetime": 0,
+      "owned": {
+        "almwiese": 1,
+        "kuhherde": 0,
+        "sennhuette": 0,
+        "edelweiss": 0,
+        "enzian": 0,
+        "bergbach": 0,
+        "kaesekeller": 0,
+        "seilbahn": 0,
+        "gipfelhuette": 0,
+        "almfest": 0
+      },
+      "openedAt": 0,
+      "introSeen": false,
+      "care": {}
+    },
+    "lavendel": {
+      "cur": 20,
+      "curLifetime": 0,
+      "owned": {
+        "lavendelreihen": 1,
+        "sonnenblumen": 0,
+        "olivenhain": 0,
+        "rosmarin": 0,
+        "feigenbaum": 0,
+        "destillerie": 0,
+        "seifenmanufaktur": 0,
+        "marktstand": 0,
+        "mas": 0,
+        "lavendelfest": 0
+      },
+      "openedAt": 0,
+      "introSeen": false,
+      "care": {}
+    },
+    "japangarten": {
+      "cur": 20,
+      "curLifetime": 0,
+      "owned": {
+        "teestrauch": 1,
+        "moosgarten": 0,
+        "bambushain": 0,
+        "kirschallee": 0,
+        "koiteich": 0,
+        "zengarten": 0,
+        "teehaus": 0,
+        "bonsai": 0,
+        "rotebruecke": 0,
+        "laternenweg": 0
+      },
+      "openedAt": 0,
+      "introSeen": false,
+      "care": {}
+    },
+    "gartenschau": {
+      "cur": 20,
+      "curLifetime": 0,
+      "owned": {
+        "eingangstor": 1,
+        "blumenkorso": 0,
+        "rosenbogen": 0,
+        "labyrinth": 0,
+        "wasserspiele": 0,
+        "aussichtsturm": 0,
+        "festzelt": 0,
+        "seebuehne": 0,
+        "ehrenpavillon": 0,
+        "gedenkgarten": 0
+      },
+      "openedAt": 0,
+      "introSeen": false,
+      "care": {}
+    }
+  },
+  "ilseLevel": 1,
+  "ilseOn": true,
+  "ilseCarryMs": 2500,
+  "weinleseAt": 0,
+  "milestoneRecord": {
+    "g:gemuesebeet": 3,
+    "g:kompost": 3,
+    "g:kraeuterspirale": 3,
+    "g:beerenhecke": 3,
+    "g:obstwiese": 2,
+    "g:bienenstock": 2,
+    "g:huehnerstall": 2,
+    "g:gewaechshaus": 2,
+    "g:hofladen": 2,
+    "g:orangerie": 2,
+    "obstwiese:apfel": 1
+  },
+  "lastChest": {
+    "kind": "variety",
+    "amount": 1,
+    "variety": "huhnAraucana"
+  },
+  "recipe": {
+    "day": "2026-11-09",
+    "areas": [
+      "gemuesebeet",
+      "kraeuterspirale",
+      "bienenstock"
+    ],
+    "have": [
+      8,
+      7,
+      8
+    ],
+    "claimed": false,
+    "dish": 0
+  },
+  "skyEvent": null,
+  "skyNextAt": 1794222162874.4087,
+  "rainbowEndsAt": 0,
+  "shieldWeek": "",
+  "contestWeek": "2026-W1109",
+  "contestKg": 7.280000000000001,
+  "contestResult": {
+    "week": "2026-W1102",
+    "rank": 10,
+    "kg": 9.119999999999894,
+    "claimed": false
+  },
+  "generation": 0,
+  "vermaechtnis": 0,
+  "legacy": {
+    "familie": 0,
+    "obstbau": 0,
+    "wurzelwerk": 0,
+    "daumen": 0,
+    "hausrezept": 0
+  },
+  "festKey": "laternenfest-2026",
+  "festTokens": 2744.1000000000113,
+  "festBought": {},
+  "saveVersion": 1
 }

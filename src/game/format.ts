@@ -27,7 +27,7 @@ function de(n: number, digits: number): string {
   return n.toFixed(digits).replace('.', ',')
 }
 
-export function formatAsh(n: number): string {
+export function formatErnte(n: number): string {
   if (!Number.isFinite(n)) return '0'
   const abs = Math.abs(n)
   if (abs < 1000) {
@@ -45,7 +45,7 @@ export function formatAsh(n: number): string {
 }
 
 export function formatRate(n: number): string {
-  return `${formatAsh(n)}/s`
+  return `${formatErnte(n)}/s`
 }
 
 /** m:ss for short countdowns */
