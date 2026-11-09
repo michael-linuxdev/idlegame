@@ -88,5 +88,5 @@ describe('ART_REGISTRY', () => {
         }
       }
     }
-  })
+  }, 60_000) // alle Kapitel-Grafiken, wächst mit jeder Welle
 })
