@@ -311,7 +311,7 @@ function ChapterSheet({
   const rate = areaRateWithCare(a, level, c) * mult
   const gain = (areaRateWithCare(a, level + count, c) - areaRateWithCare(a, level, c)) * mult
   const care = careOf(c, area)
-  const careNames = careNamesFor(area, t.chapterCare.names[chapter] ?? ['Pflege', 'Sparen'])
+  const careNames = careNamesFor(area, t.chapterCare.names[chapter] ?? t.chapterCare.fallback)
   const action = level === 0 ? t.chapterUi.plant : t.chapterUi.upgrade
 
   useEffect(
@@ -620,7 +620,7 @@ function WeinleseGame({ onDone, rewardPerHit }: { onDone: (hits: number) => void
                     className={`weinlese-grape look-${look}`}
                     onClick={() => tap(i)}
                     disabled={g !== 'green' || p === 'wait'}
-                    aria-label={`Traube ${i + 1}`}
+                    aria-label={t.weinlese.grapeAria(i + 1)}
                   >
                     <ArtSvg viewBox="0 0 30 40">
                       <path d="M15 2v6" stroke="#6e4a2b" strokeWidth="1.6" />

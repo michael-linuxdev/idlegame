@@ -121,7 +121,10 @@ export function SeasonCeremony({ event, onDone, onSpin }: Props) {
 }
 
 const SEG_COLORS = ['#e0485e', '#f5c542', '#7fbf5a', '#6aa6c9', '#f08a2c', '#c76bd9']
-const SEG_GLYPH: Record<WheelKind, string> = { yield: '+25 %', water: '×2', seeds: '+30', variety: 'Sorte' }
+/** Kurzbeschriftung je Segment (Sorte aus den Sprachdateien). */
+function segGlyph(kind: WheelKind): string {
+  return kind === 'yield' ? '+25 %' : kind === 'water' ? '×2' : kind === 'seeds' ? '+30' : t.wheel.glyphVariety
+}
 
 /** Glücksrad — one spin per Saisonende, buff for the coming Gartenjahr. */
 function LuckyWheel({ onSpin, onDone }: { onSpin: (k: WheelKind) => void; onDone: () => void }) {
@@ -174,7 +177,7 @@ function LuckyWheel({ onSpin, onDone }: { onSpin: (k: WheelKind) => void; onDone
                   paintOrder="stroke"
                   transform={`rotate(${i * 60 + 30} ${29 * Math.cos(mid)} ${29 * Math.sin(mid)})`}
                 >
-                  {SEG_GLYPH[kind]}
+                  {segGlyph(kind)}
                 </text>
               </g>
             )

@@ -13,18 +13,20 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>
 }
 
-const SHARE_ICON = (
-  <svg className="web-install-share" viewBox="0 0 24 24" aria-label="Teilen" role="img">
-    <path d="M12 3v12M8 7l4-4 4 4M5 12v8h14v-8" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-)
+function ShareIcon() {
+  return (
+    <svg className="web-install-share" viewBox="0 0 24 24" aria-label={t.install.iosShare} role="img">
+      <path d="M12 3v12M8 7l4-4 4 4M5 12v8h14v-8" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
 
 function withShareIcon(text: string) {
   const parts = text.split('{S}')
   return parts.map((p, i) => (
     <span key={i}>
       {p}
-      {i < parts.length - 1 ? SHARE_ICON : null}
+      {i < parts.length - 1 ? <ShareIcon /> : null}
     </span>
   ))
 }

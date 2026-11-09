@@ -14,7 +14,7 @@ import { manifestStrings as en } from './src/i18n/en/manifest.ts'
 const APP = {
   name: de.name,
   short_name: de.name,
-  description: de.description === en.description ? de.description : `${de.description} · ${en.description}`,
+  description: `${de.description} · ${en.description}`,
   theme_color: '#e8f0e4',
   background_color: '#dce8d6',
 }

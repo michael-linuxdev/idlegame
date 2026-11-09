@@ -449,6 +449,7 @@ try {
     await e.goto(URL)
     await e.locator('.garden-map').waitFor()
     assert((await lang(e)) === 'en', 'en-US browser starts in English')
+    assert((await e.locator('.tabbar .tab-garten').innerText()).includes('Garden'), 'English tab bar')
     await enCtx.close()
 
     // Deutscher Browser → Deutsch; Umschalter wechselt live und bleibt gespeichert
@@ -465,7 +466,9 @@ try {
     await p.waitForFunction(() => document.documentElement.lang === 'en')
     assert(await p.evaluate(() => (window).__noReload === true), 'language switch needs no reload')
     assert((await p.locator('.nav-lang [data-lang="en"]').getAttribute('aria-checked')) === 'true', 'English is checked')
-    assert((await p.locator('.nav-settings').innerText()).length > 0, 'settings still open after the switch')
+    assert((await p.locator('.nav-settings').innerText()).includes('Large text'), 'settings switch to English live and stay open')
+    await p.locator('.nav-sheet-back').click()
+    assert((await p.locator('.nav-menu-settings').innerText()).includes('Settings'), 'menu in English')
     await p.reload()
     await p.locator('.garden-map').waitFor()
     assert((await lang(p)) === 'en', 'language choice survives a reload')

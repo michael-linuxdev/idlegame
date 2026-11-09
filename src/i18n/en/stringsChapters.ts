@@ -1,4 +1,4 @@
-// TODO(en): Übersetzung ausstehend — vorerst eine typgleiche Kopie der deutschen Datei.
+// TODO(en, Paket 4): Briefe und Bereiche übersetzen (Titel, Währung, Chip schon englisch).
 /**
  * German copy for Kapitel 4–12 (data-only chapters, see game/chapters.ts).
  * Each chapter: title, currency, map chip, intro letter and ten areas.
@@ -16,11 +16,11 @@ function a(name: string, blurb: string, note: string): Area {
 
 export const laterChapterStrings = {
   bauernhof: {
-    title: 'Bauernhof',
-    currency: 'Milch',
-    chip: 'Hof',
-    to: 'Zum Bauernhof',
-    teaser: 'Kapitel 4: Onkel Fritz’ Bauernhof — ab der 2. Generation, wenn der Weinkeller steht.',
+    title: 'Uncle Fritz’s Farm',
+    currency: 'Milk',
+    chip: 'Farm',
+    to: 'To the farm',
+    teaser: 'Chapter 4: Uncle Fritz’s farm — from the 2nd generation, once the wine cellar stands.',
     intro: {
       title: 'Post von Onkel Fritz',
       body: [
@@ -46,11 +46,11 @@ export const laterChapterStrings = {
     },
   },
   imkerei: {
-    title: 'Imkerei am Waldrand',
-    currency: 'Honig',
-    chip: 'Imkerei',
-    to: 'Zur Imkerei',
-    teaser: 'Kapitel 5: Die Imkerei am Waldrand — ab der 3. Generation, wenn die Käserei läuft.',
+    title: 'The Apiary by the Woods',
+    currency: 'Honey',
+    chip: 'Apiary',
+    to: 'To the apiary',
+    teaser: 'Chapter 5: The apiary by the woods — from the 3rd generation, once the cheese dairy is running.',
     intro: {
       title: 'Ein Brief, der nach Wachs riecht',
       body: [
@@ -76,11 +76,11 @@ export const laterChapterStrings = {
     },
   },
   teich: {
-    title: 'Teich & Fischerhütte',
-    currency: 'Fisch',
-    chip: 'Teich',
-    to: 'Zum Teich',
-    teaser: 'Kapitel 6: Teich & Fischerhütte — ab der 4. Generation, wenn der Schleuderraum steht.',
+    title: 'Pond & Fisher’s Hut',
+    currency: 'Fish',
+    chip: 'Pond',
+    to: 'To the pond',
+    teaser: 'Chapter 6: Pond & Fisher’s Hut — from the 4th generation, once the extracting room stands.',
     intro: {
       title: 'Eine Karte vom Fischer',
       body: [
@@ -106,11 +106,11 @@ export const laterChapterStrings = {
     },
   },
   kraeuter: {
-    title: 'Kräuterapotheke',
-    currency: 'Kräuter',
-    chip: 'Kräuter',
-    to: 'Zur Kräuterapotheke',
-    teaser: 'Kapitel 7: Die Kräuterapotheke — ab der 5. Generation, wenn die Räucherei raucht.',
+    title: 'The Herb Apothecary',
+    currency: 'Herbs',
+    chip: 'Herbs',
+    to: 'To the herb apothecary',
+    teaser: 'Chapter 7: The herb apothecary — from the 5th generation, once the smokehouse is smoking.',
     intro: {
       title: 'Ein Rezeptbuch mit Lesezeichen',
       body: [
@@ -136,11 +136,11 @@ export const laterChapterStrings = {
     },
   },
   botanik: {
-    title: 'Botanischer Garten',
-    currency: 'Blüten',
-    chip: 'Botanik',
-    to: 'Zum Botanischen Garten',
-    teaser: 'Kapitel 8: Der Botanische Garten — ab der 6. Generation, wenn die Destille läuft.',
+    title: 'The Botanical Garden',
+    currency: 'Blossoms',
+    chip: 'Botanic',
+    to: 'To the botanical garden',
+    teaser: 'Chapter 8: The botanical garden — from the 6th generation, once the still is running.',
     intro: {
       title: 'Ein Brief der Stadt',
       body: [
@@ -166,11 +166,11 @@ export const laterChapterStrings = {
     },
   },
   alm: {
-    title: 'Alpen-Alm',
-    currency: 'Almkäse',
-    chip: 'Alm',
-    to: 'Zur Alm',
-    teaser: 'Kapitel 9: Die Alpen-Alm — ab der 7. Generation, wenn das Arboretum wächst.',
+    title: 'The Alpine Pasture',
+    currency: 'Alpine Cheese',
+    chip: 'Alps',
+    to: 'To the alpine pasture',
+    teaser: 'Chapter 9: The alpine pasture — from the 7th generation, once the arboretum is growing.',
     intro: {
       title: 'Eine Postkarte aus den Bergen',
       body: [
@@ -196,11 +196,11 @@ export const laterChapterStrings = {
     },
   },
   lavendel: {
-    title: 'Lavendelfeld',
-    currency: 'Lavendel',
+    title: 'The Lavender Field',
+    currency: 'Lavender',
     chip: 'Provence',
-    to: 'Zum Lavendelfeld',
-    teaser: 'Kapitel 10: Das Lavendelfeld in der Provence — ab der 8. Generation, wenn die Seilbahn fährt.',
+    to: 'To the lavender field',
+    teaser: 'Chapter 10: The lavender field in Provence — from the 8th generation, once the cable car is running.',
     intro: {
       title: 'Une lettre de Provence',
       body: [
@@ -226,11 +226,11 @@ export const laterChapterStrings = {
     },
   },
   japangarten: {
-    title: 'Japanischer Garten',
-    currency: 'Tee',
+    title: 'The Japanese Garden',
+    currency: 'Tea',
     chip: 'Japan',
-    to: 'Zum Japanischen Garten',
-    teaser: 'Kapitel 11: Der Japanische Garten — ab der 9. Generation, wenn die Seifenmanufaktur läuft.',
+    to: 'To the Japanese garden',
+    teaser: 'Chapter 11: The Japanese garden — from the 9th generation, once the soap workshop is running.',
     intro: {
       title: 'Ein Brief mit Kirschblüte',
       body: [
@@ -256,11 +256,11 @@ export const laterChapterStrings = {
     },
   },
   gartenschau: {
-    title: 'Gartenschau',
-    currency: 'Besucher',
-    chip: 'Schau',
-    to: 'Zur Gartenschau',
-    teaser: 'Kapitel 12: Die große Gartenschau — ab der 10. Generation, wenn das Teehaus steht.',
+    title: 'The Garden Show',
+    currency: 'Visitors',
+    chip: 'Show',
+    to: 'To the garden show',
+    teaser: 'Chapter 12: The great garden show — from the 10th generation, once the teahouse stands.',
     intro: {
       title: 'Die Einladung',
       body: [
