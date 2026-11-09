@@ -1,0 +1,88 @@
+/* Ausbau-Fenster — Teil von App.css (Reihenfolge zählt). */
+/* Ausbauen — glass HUD overlay (map stays readable; no opaque sheet / dimmer) */
+
+.upgrade-hud-layer {
+  position: fixed;
+  inset: 0;
+  max-width: 480px;
+  margin: 0 auto;
+  z-index: var(--z-sheet);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  /* Transparent hit target only — map stays bright and readable */
+  background: transparent;
+  padding: 0 0.5rem calc(0.45rem + var(--safe-bottom));
+  animation: fade-in var(--ge-motion-sheet) ease-out;
+  pointer-events: auto;
+}
+
+.upgrade-hud {
+  width: 100%;
+  /* Clear Menü FAB so map chrome stays usable */
+  margin: 0 0 3.55rem;
+  padding: 0.55rem 0.7rem 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.28rem;
+  color: var(--ge-ink);
+  border: 1px solid color-mix(in srgb, var(--ge-stroke-strong) 38%, transparent);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--ge-bg-raised) 38%, transparent);
+  backdrop-filter: blur(10px);
+  box-shadow:
+    0 6px 20px rgba(20, 35, 25, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.42);
+  animation: sheet-up var(--ge-motion-sheet) ease-out;
+}
+
+.upgrade-hud.upgrade-flash {
+  box-shadow:
+    0 6px 20px rgba(20, 35, 25, 0.16),
+    0 0 0 2px color-mix(in srgb, var(--ge-gruen) 40%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.upgrade-hud-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.upgrade-hud-heading {
+  min-width: 0;
+  flex: 1;
+}
+
+.upgrade-hud-heading h2 {
+  margin: 0;
+  font-family: var(--ge-font-display);
+  font-size: 1.02rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--ge-ink);
+  line-height: 1.15;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.35);
+}
+
+.upgrade-hud-blurb {
+  margin: 0.12rem 0 0;
+  font-size: 0.66rem;
+  line-height: 1.25;
+  font-weight: 500;
+  color: var(--ge-ink-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.upgrade-hud-eyebrow {
+  margin: 0;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ge-ink-faint);
+}

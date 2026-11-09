@@ -158,9 +158,7 @@
   transform: scale(0.95);
 }
 
-.plot-visual svg,
-.plot-visual .building-sil,
-.plot-visual .sil-svg {
+.plot-visual svg {
   display: block;
   width: 100%;
   height: auto;

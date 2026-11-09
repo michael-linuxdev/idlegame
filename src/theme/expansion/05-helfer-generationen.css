@@ -1,0 +1,112 @@
+/* Gartenhelfer, Generationen, Update-Prüfung, Festsorten — Teil von expansion.css (Reihenfolge zählt). */
+/* —— Gartenhelfer & Generationen (Truhe panel) —— */
+.helper-block {
+  margin: 1rem 0 0.5rem;
+  padding: 0.75rem 0.85rem;
+  border: 1.5px solid #c9b48a;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #fbf6e8, #f3e9d2);
+}
+
+.helper-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.helper-head .subhead {
+  margin: 0;
+}
+
+.helper-avatar {
+  display: inline-flex;
+  font-size: 2.4rem;
+}
+
+.helper-name,
+.helper-speed {
+  margin: 0.1rem 0 0.3rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #6a5434;
+}
+
+.generation-block {
+  border-top: 3px solid #7fbf5a;
+}
+
+.generation-block .prestige-branch-title {
+  margin-top: 1rem;
+}
+
+.generation-block .subhead {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.family-tree {
+  display: block;
+  width: 100%;
+  max-width: 22rem;
+  height: auto;
+  margin: 0.2rem auto 0.4rem;
+}
+
+.family-now {
+  animation: fest-twinkle 1.6s ease-in-out infinite alternate;
+}
+
+.btn.prestige.generation {
+  background: linear-gradient(180deg, #8fcf5f, #3f7a30);
+}
+
+/* —— Update check in the menu —— */
+.nav-menu-update {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.nav-update-note,
+.nav-version {
+  margin: 0 0.75rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--ge-ink-soft, #6a5434);
+}
+
+.nav-version {
+  opacity: 0.7;
+}
+
+/* Pflanzenbuch Festsorten */
+.plantbook-group.fest h4 {
+  color: #c4553f;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .helper-walker,
+  .helper-walker svg,
+  .helper-walker .hw-f,
+  .helper-walker .hw-pause,
+  .helper-walker .hw-walk,
+  .fest-glow,
+  .fest-twinkle,
+  .fest-flame,
+  .fest-snow,
+  .orchard-stream,
+  .orchard-home .sheep,
+  .orchard-home .bee,
+  .family-now,
+  .hud-pill.pill-turbo {
+    animation: none !important;
+  }
+}
+
+html.tab-hidden .helper-walker,
+html.tab-hidden .helper-walker svg,
+html.tab-hidden .helper-walker svg *,
+html.tab-hidden .fest-snow {
+  animation-play-state: paused;
+}

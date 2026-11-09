@@ -1,0 +1,67 @@
+/* Große Schrift, weniger Animation, Menü-Tab, Playtest-Log — Teil von ux.css (Reihenfolge zählt). */
+/* ————————————————————————————————————————————————————————————————
+   Einstellungen: Große Schrift, Animationen reduzieren
+   ———————————————————————————————————————————————————————————————— */
+html.pref-big-text {
+  font-size: 112.5%;
+}
+
+html.pref-calm *,
+html.pref-calm *::before,
+html.pref-calm *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+}
+
+/* Menü tab: drop the old floating-button look */
+.tabbar .tabbar-btn.menu-fab {
+  position: relative;
+  inset: auto;
+  width: auto;
+  height: auto;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  color: #6a5434;
+}
+
+.tabbar .tabbar-btn.menu-fab.active {
+  color: #2f6a24;
+  background: color-mix(in srgb, #5f9e45 16%, transparent);
+}
+
+/* Bottom HUD never overlaps itself (long „Gartenrunde“ with big text) */
+.hud-claim-slot {
+  overflow: hidden;
+}
+
+.hud-claim {
+  max-width: 100%;
+}
+
+.hud-claim-text {
+  min-width: 0;
+}
+
+.hud-claim-title,
+.hud-claim-sub {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.map-side {
+  bottom: calc(var(--safe-bottom) + 5.4rem);
+}
+
+/* Playtest-Log inside Einstellungen: plain rows */
+.nav-settings .nav-menu-group {
+  border: none;
+  padding: 0;
+  margin: 0;
+}

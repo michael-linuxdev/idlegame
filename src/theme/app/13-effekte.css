@@ -1,0 +1,127 @@
+/* Ton-Schalter, Pops, Kauf-Effekte — Teil von App.css (Reihenfolge zählt). */
+.mute-toggle {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--ge-stroke);
+  border-radius: var(--ge-radius);
+  background: color-mix(in srgb, var(--ge-bg-raised) 90%, transparent);
+  color: var(--ge-ink-muted);
+  padding: 0;
+}
+
+.mute-toggle.muted {
+  color: var(--ge-warn);
+  border-color: color-mix(in srgb, var(--ge-warn) 45%, var(--ge-stroke));
+}
+
+.float-pops {
+  pointer-events: none;
+  position: absolute;
+  left: 50%;
+  top: 7.5rem;
+  transform: translateX(-50%);
+  z-index: var(--z-pops);
+  width: 0;
+  height: 0;
+}
+
+.float-pop {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translate(-50%, 0);
+  white-space: nowrap;
+  font-family: var(--ge-font-metric);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--ge-gain);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.65);
+  animation: float-rise 0.95s ease-out forwards;
+}
+
+.float-pop.kind-upgrade {
+  color: var(--ge-gruen-dunkel);
+}
+
+.float-pop.kind-claim {
+  color: var(--ge-bronze);
+  font-size: 1.15rem;
+}
+
+.float-pop.leaving {
+  opacity: 0;
+}
+
+.btn.pulse-ready:not(:disabled) {
+  animation: cta-pulse 1.8s ease-in-out infinite;
+}
+
+.btn.buy.just-bought {
+  animation: buy-flash 0.42s ease-out;
+}
+
+@keyframes float-rise {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 8px) scale(0.92);
+  }
+  18% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -36px) scale(1.05);
+  }
+}
+
+@keyframes level-pop {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.04);
+    border-color: var(--ge-gruen-hell);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes bar-shine {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.12);
+  }
+}
+
+@keyframes cta-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--ge-gruen) 0%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--ge-gruen) 22%, transparent);
+  }
+}
+
+@keyframes buy-flash {
+  0% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  35% {
+    transform: scale(1.03);
+    filter: brightness(1.12);
+  }
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+}

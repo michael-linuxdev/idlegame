@@ -1,0 +1,91 @@
+/* Kapitel 2: Streuobstwiese — Teil von expansion.css (Reihenfolge zählt). */
+/* —— Kapitel 2: Streuobstwiese —— */
+.orchard-card {
+  cursor: default;
+}
+
+.orchard-bonus {
+  font-family: var(--ge-font-metric);
+  font-size: 0.66rem;
+  font-weight: 700;
+  color: #3f7a30;
+}
+
+.orchard-stage {
+  --g-grass: #93c167;
+}
+
+.orchard-hills {
+  height: calc(var(--u) * 14);
+}
+
+.orchard-hills > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.orchard-stream {
+  animation: orchard-stream 6s linear infinite;
+}
+
+@keyframes orchard-stream {
+  to { stroke-dashoffset: -28; }
+}
+
+.orchard-home .sheep {
+  animation: sheep-bob 3.2s ease-in-out infinite;
+}
+
+@keyframes sheep-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-0.8px); }
+}
+
+.orchard-home .bee {
+  animation: bee-buzz 1.6s ease-in-out infinite alternate;
+}
+
+@keyframes bee-buzz {
+  from { transform: translate(0, 0); }
+  to { transform: translate(3px, -2px); }
+}
+
+.orchard-home .smoke {
+  animation: fest-twinkle 2s ease-in-out infinite alternate;
+}
+
+.helper-walker.orchard {
+  animation-duration: 54s;
+}
+
+.orchard-intro .season-letter p {
+  margin: 0 0 0.6rem;
+}
+
+.orchard-entry {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0.2rem 0 0.6rem;
+}
+
+.orchard-teaser {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.3rem 0 0.6rem;
+  padding: 0.45rem 0.7rem;
+  border: 1.5px dashed #c4553f;
+  border-radius: 10px;
+  background: #fff6f0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #6a3a2a;
+}
+
+.orchard-teaser .g-icon,
+.orchard-entry .g-icon {
+  flex: none;
+  font-size: 1.3rem;
+}

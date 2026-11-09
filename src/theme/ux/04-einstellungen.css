@@ -1,0 +1,93 @@
+/* Einstellungen — Teil von ux.css (Reihenfolge zählt). */
+/* ———————— Einstellungen ———————— */
+.nav-group-title {
+  margin: 0.9rem 0 0.3rem;
+  font-family: var(--ge-font-ui);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ge-ink-muted);
+}
+
+.nav-group-title:first-child {
+  margin-top: 0.2rem;
+}
+
+.nav-toggle {
+  appearance: none;
+  width: 100%;
+  min-height: 3rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.35rem 0.2rem;
+  border: none;
+  border-bottom: 1px solid color-mix(in srgb, #c9b48a 50%, transparent);
+  background: transparent;
+  color: var(--ge-ink);
+  font-family: var(--ge-font-ui);
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+
+.nav-toggle .tab-label {
+  flex: 1;
+}
+
+.nav-toggle .nav-toggle-state {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.nav-switch {
+  position: relative;
+  width: 2.7rem;
+  height: 1.55rem;
+  border-radius: 999px;
+  background: #cfc3a6;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+
+.nav-switch span {
+  position: absolute;
+  top: 0.15rem;
+  left: 0.15rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  transition: transform 0.15s;
+}
+
+.nav-toggle.on .nav-switch {
+  background: #4f9a3a;
+}
+
+.nav-toggle.on .nav-switch span {
+  transform: translateX(1.15rem);
+}
+
+.nav-settings .nav-menu-group,
+.nav-settings .nav-menu-update {
+  margin-top: 0.2rem;
+}
+
+.nav-shortcuts {
+  margin: 0.9rem 0 0;
+  font-size: 0.75rem;
+  color: var(--ge-ink-muted);
+}
+
+@media (hover: none) {
+  .nav-shortcuts {
+    display: none;
+  }
+}

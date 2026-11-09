@@ -86,8 +86,6 @@
 .app-main:not(.map-mode) .cosmetic-card,
 .app-main:not(.map-mode) .leaderboard,
 .app-main:not(.map-mode) .shop-bp-row,
-.app-main:not(.map-mode) .clan-boost-row,
-.app-main:not(.map-mode) .shop-ad-row,
 .app-main:not(.map-mode) .panel-empty {
   border: 1.5px solid var(--pp-edge);
   border-radius: 14px;
@@ -100,8 +98,6 @@
 
 .app-main:not(.map-mode) .laden-row,
 .app-main:not(.map-mode) .clan-card,
-.app-main:not(.map-mode) .shop-ad-row,
-.app-main:not(.map-mode) .clan-boost-row,
 .app-main:not(.map-mode) .shop-bp-row,
 .app-main:not(.map-mode) .cosmetic-card {
   padding: 0.65rem 0.8rem;
@@ -213,11 +209,6 @@
   box-shadow:
     0 3px 0 var(--pp-edge-d),
     0 12px 28px rgba(40, 30, 10, 0.28);
-}
-
-.upgrade-hud .upgrade-hud-row {
-  border: 1.5px solid var(--pp-edge);
-  background: #fffcf4;
 }
 
 .upgrade-hud .upgrade-hud-close {

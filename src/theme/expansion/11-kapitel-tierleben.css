@@ -1,0 +1,274 @@
+/* Kapitel 4–12: Tierleben und Animationen — Teil von expansion.css (Reihenfolge zählt). */
+/* —— Kapitel 4–6: Tierleben & Handgrafik-Animationen —— */
+.ha-graze {
+  animation: sheep-bob 3.4s ease-in-out infinite;
+}
+
+.ha-swim {
+  animation: ha-swim 6s ease-in-out infinite alternate;
+}
+
+@keyframes ha-swim {
+  from { transform: translateX(-2px); }
+  to { transform: translateX(3px); }
+}
+
+.ha-fish {
+  animation: ha-swim 4s ease-in-out infinite alternate;
+}
+
+.ha-jump {
+  transform-box: fill-box;
+  animation: ha-jump 3.2s ease-in-out infinite;
+}
+
+@keyframes ha-jump {
+  0%, 70%, 100% { transform: translateY(0); opacity: 0; }
+  78% { opacity: 1; }
+  85% { transform: translateY(-8px) rotate(-20deg); opacity: 1; }
+  95% { transform: translateY(0); opacity: 0; }
+}
+
+.chicken.farm.c0 { left: 44%; top: 72%; }
+.chicken.farm.c1 { left: 52%; top: 76%; }
+.chicken.farm.c2 { left: 40%; top: 66%; }
+
+.farm-cat {
+  width: calc(var(--u) * 6);
+  top: 48%;
+  left: 8%;
+  animation: hedgehog-walk 30s linear infinite alternate;
+}
+
+.bee-trail.swarm {
+  animation-duration: 5s;
+}
+
+.duck-cross {
+  width: calc(var(--u) * 12);
+  top: 58%;
+  left: 22%;
+  animation: duck-cross 28s ease-in-out infinite alternate;
+}
+
+@keyframes duck-cross {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(var(--u) * 40)); }
+}
+
+.fish-jump {
+  width: calc(var(--u) * 4);
+  top: 60%;
+  left: 60%;
+  animation: ha-jump 5s ease-in-out infinite;
+}
+
+.dragonfly {
+  width: calc(var(--u) * 4);
+  top: 44%;
+  left: 30%;
+  animation: bee-trail 9s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ha-graze,
+  .ha-swim,
+  .ha-fish,
+  .ha-jump,
+  .farm-cat,
+  .duck-cross,
+  .fish-jump,
+  .dragonfly {
+    animation: none !important;
+  }
+}
+
+/* —— Kapitel 7–9: Tierleben —— */
+.butterfly-flit {
+  width: calc(var(--u) * 3);
+  top: 50%;
+  left: 20%;
+  animation: bee-trail 11s linear infinite;
+}
+
+.butterfly-flit.f1 { top: 64%; left: 64%; animation-delay: -4s; animation-duration: 13s; }
+.butterfly-flit.f2 { top: 38%; left: 52%; animation-delay: -8s; }
+
+.butterfly-flit .wing {
+  transform-origin: 6px 4px;
+  animation: wing-flap 0.35s ease-in-out infinite alternate;
+}
+
+@keyframes wing-flap {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0.35); }
+}
+
+.blackbird {
+  width: calc(var(--u) * 4);
+  top: 80%;
+  left: 40%;
+  animation: chicken-walk 12s steps(18) infinite alternate;
+}
+
+.peacock {
+  width: calc(var(--u) * 8);
+  top: 70%;
+  left: 36%;
+  animation: chicken-walk 26s ease-in-out infinite alternate;
+}
+
+.marmot {
+  width: calc(var(--u) * 3.6);
+  top: 52%;
+  left: 47%;
+  animation: marmot-peek 9s ease-in-out infinite;
+  transform-origin: 50% 100%;
+}
+
+@keyframes marmot-peek {
+  0%, 40%, 100% { transform: scaleY(0.25); opacity: 0.6; }
+  50%, 80% { transform: scaleY(1); opacity: 1; }
+}
+
+.eagle {
+  width: calc(var(--u) * 7);
+  top: 24%;
+  left: 40%;
+  animation: eagle-circle 22s linear infinite;
+}
+
+@keyframes eagle-circle {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(calc(var(--u) * 16), calc(var(--u) * 3)); }
+  50% { transform: translate(0, calc(var(--u) * 6)); }
+  75% { transform: translate(calc(var(--u) * -16), calc(var(--u) * 3)); }
+  100% { transform: translate(0, 0); }
+}
+
+.star-twinkle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #fffbe0;
+  box-shadow: 0 0 4px 1px rgba(255, 250, 200, 0.7);
+  animation: critter-firefly 4s ease-in-out infinite;
+}
+
+.ha-wheel {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ha-spin 6s linear infinite;
+}
+
+@keyframes ha-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .butterfly-flit,
+  .butterfly-flit .wing,
+  .blackbird,
+  .peacock,
+  .marmot,
+  .eagle,
+  .star-twinkle,
+  .ha-wheel {
+    animation: none !important;
+  }
+}
+
+/* —— Kapitel 10–12: Tierleben —— */
+.koi-swim {
+  width: calc(var(--u) * 4);
+  top: 60%;
+  left: 40%;
+  animation: koi-swim 14s ease-in-out infinite alternate;
+}
+
+.koi-swim.k1 { top: 64%; left: 52%; animation-delay: -6s; animation-direction: alternate-reverse; }
+
+@keyframes koi-swim {
+  from { transform: translateX(calc(var(--u) * -6)); }
+  49% { transform: translateX(calc(var(--u) * 6)) scaleX(1); }
+  50% { transform: translateX(calc(var(--u) * 6)) scaleX(-1); }
+  to { transform: translateX(calc(var(--u) * -6)) scaleX(-1); }
+}
+
+.heron {
+  width: calc(var(--u) * 4);
+  top: 54%;
+  left: 62%;
+  animation: sheep-bob 4s ease-in-out infinite;
+}
+
+.petal-fall {
+  position: absolute;
+  top: 18%;
+  width: 6px;
+  height: 4px;
+  border-radius: 50% 0;
+  background: #f7c6d9;
+  animation: petal-fall 9s linear infinite;
+}
+
+@keyframes petal-fall {
+  from { transform: translate(0, 0) rotate(0); opacity: 0; }
+  10% { opacity: 1; }
+  to { transform: translate(40px, 70vh) rotate(540deg); opacity: 0; }
+}
+
+.visitor {
+  width: calc(var(--u) * 2.4);
+  top: 84%;
+  left: 47%;
+  animation: visitor-walk 30s linear infinite;
+}
+
+.visitor.v1 { animation-delay: -10s; }
+.visitor.v2 { animation-delay: -20s; }
+
+@keyframes visitor-walk {
+  0% { transform: translate(0, 0); opacity: 0; }
+  5% { opacity: 1; }
+  45% { transform: translate(0, calc(var(--u) * -40)); }
+  55% { transform: translate(calc(var(--u) * 2), calc(var(--u) * -48)); opacity: 1; }
+  60%, 100% { transform: translate(calc(var(--u) * 2), calc(var(--u) * -48)); opacity: 0; }
+}
+
+.balloon {
+  width: calc(var(--u) * 2.4);
+  top: 70%;
+  left: 30%;
+  animation: balloon-rise 16s linear infinite;
+}
+
+.balloon.l1 { left: 66%; animation-delay: -8s; }
+
+@keyframes balloon-rise {
+  from { transform: translate(0, 0); opacity: 0; }
+  10% { opacity: 1; }
+  to { transform: translate(calc(var(--u) * 4), calc(var(--u) * -70)); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .koi-swim,
+  .heron,
+  .petal-fall,
+  .visitor,
+  .balloon {
+    animation: none !important;
+  }
+
+  .petal-fall,
+  .balloon {
+    display: none;
+  }
+}
+
+/* Kapitel 4–12: Motive füllen ihren Platz (Zeichnungen sitzen unten im viewBox) */
+.orchard-home:not(.chapter-obstwiese):not(.chapter-weinberg) .garden-plot .plot-visual svg {
+  transform: scale(1.35);
+  transform-origin: 50% 88%;
+}

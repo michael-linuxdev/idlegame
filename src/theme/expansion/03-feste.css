@@ -1,0 +1,303 @@
+/* Meilensteine, Festladen, Fest-Deko, Fest-Gartenstile — Teil von expansion.css (Reihenfolge zählt). */
+/* —— Meilensteine & Mengenkauf —— */
+.plot-stars {
+  color: #e0a21a;
+  letter-spacing: -0.05em;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.milestone-track {
+  flex: 1;
+  height: 0.32rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, #c9b48a 45%, transparent);
+  overflow: hidden;
+}
+
+.milestone-track > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #e0a21a, #f5c542);
+}
+
+/* —— Festladen —— */
+.fest-sheet {
+  --fest: #e39a2d;
+  border-top: 6px solid var(--fest) !important;
+  max-height: calc(100dvh - var(--safe-top, 0px) - var(--safe-bottom, 0px) - 5.4rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Long sheets never run off the top: room for the status bar, the home
+   indicator (safe-bottom) and the Menü button below the sheet */
+.upgrade-hud {
+  max-height: calc(100dvh - var(--safe-top, 0px) - var(--safe-bottom, 0px) - 5.4rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.upgrade-hud > * {
+  flex-shrink: 0;
+}
+
+/* Title + × stay reachable while a long sheet scrolls */
+.decor-sheet > .upgrade-hud-header,
+.decor-picker > .upgrade-hud-header,
+.cross-sheet > .upgrade-hud-header,
+.project-sheet > .upgrade-hud-header,
+.album-sheet > .upgrade-hud-header {
+  position: sticky;
+  top: -0.55rem;
+  z-index: 2;
+  margin: -0.55rem -0.7rem 0;
+  padding: 0.55rem 0.7rem 0.4rem;
+  background: var(--ge-bg-raised, #fffcf4);
+  border-bottom: 1px solid rgba(138, 106, 64, 0.15);
+}
+
+.fest-header .upgrade-hud-eyebrow {
+  color: var(--fest);
+}
+
+.fest-wallet {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.2rem 0 0.1rem;
+  font-family: var(--ge-font-metric);
+  font-size: 1.05rem;
+}
+
+.fest-token-big {
+  display: inline-flex;
+  font-size: 2rem;
+}
+
+.fest-wallet-seeds {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  margin-left: auto;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #6a5434;
+}
+
+.fest-expire,
+.fest-next {
+  margin: 0.1rem 0 0.4rem;
+  font-size: 0.72rem;
+  color: #6a5434;
+}
+
+.fest-note {
+  margin: 0.2rem 0;
+  padding: 0.3rem 0.6rem;
+  border-radius: 8px;
+  background: #eaf6df;
+  color: #2f5a22;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.fest-shop,
+.fest-earn {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fest-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid color-mix(in srgb, #c9b48a 50%, transparent);
+}
+
+.fest-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.fest-item-title {
+  margin: 0;
+  font-weight: 700;
+  font-size: 0.86rem;
+}
+
+.fest-item-blurb,
+.fest-item-left {
+  margin: 0.1rem 0 0;
+  font-size: 0.72rem;
+  color: #6a5434;
+}
+
+.fest-paid {
+  margin-left: 0.4rem;
+  padding: 0.05rem 0.4rem;
+  border-radius: 999px;
+  background: var(--fest);
+  color: #fff;
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  vertical-align: 1px;
+}
+
+.fest-item.owned {
+  opacity: 0.7;
+}
+
+.fest-buy {
+  flex: none;
+  max-width: 46%;
+  white-space: normal;
+}
+
+.fest-earn {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-bottom: 0.4rem;
+}
+
+.fest-earn li {
+  padding: 0.15rem 0.5rem;
+  border: 1px solid #c9b48a;
+  border-radius: 999px;
+  background: #fbf6e8;
+  font-size: 0.68rem;
+  font-weight: 600;
+}
+
+/* —— Fest-Deko on the map —— */
+.fest-layer-map {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.decor-fest > svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.fest-glow {
+  animation: fest-glow 2.4s ease-in-out infinite alternate;
+}
+
+.garden-stage[data-daypart='night'] .fest-glow,
+.garden-stage[data-daypart='evening'] .fest-glow {
+  opacity: 0.8;
+}
+
+@keyframes fest-glow {
+  from { opacity: 0.25; }
+  to { opacity: 0.6; }
+}
+
+.fest-twinkle {
+  animation: fest-twinkle 1.8s ease-in-out infinite alternate;
+}
+
+@keyframes fest-twinkle {
+  from { opacity: 0.35; }
+  to { opacity: 1; }
+}
+
+.fest-flame {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: fest-flame 0.9s ease-in-out infinite alternate;
+}
+
+@keyframes fest-flame {
+  from { transform: scale(0.9, 0.85); }
+  to { transform: scale(1.05, 1.1); }
+}
+
+.fest-bunting {
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  top: 33%;
+  height: calc(var(--u) * 6);
+}
+
+.fest-bunting > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.fest-frost::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(235, 245, 255, 0.28), rgba(235, 245, 255, 0) 45%);
+}
+
+.fest-snow {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(2px 2px at 10% 20%, #fff 50%, transparent 51%),
+    radial-gradient(2px 2px at 30% 60%, #fff 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 70% 30%, #fff 50%, transparent 51%),
+    radial-gradient(2px 2px at 85% 75%, #fff 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 50% 90%, #fff 50%, transparent 51%);
+  background-size: 180px 180px;
+  opacity: 0.7;
+  animation: fest-snow 14s linear infinite;
+}
+
+@keyframes fest-snow {
+  from { background-position: 0 0; }
+  to { background-position: 40px 180px; }
+}
+
+/* Fest-Gartenstile (palette) */
+.garden-stage.skin-festFruehling {
+  --g-grass-far: #a8d88c;
+  --g-grass: #97cf7a;
+  --g-grass-near: #82bd65;
+  --g-path: #f6ecd6;
+  --g-path-edge: #e2c9a0;
+  --g-path-speck: #e9a3d3;
+}
+
+.garden-stage.skin-festSommer {
+  --g-grass-far: #9ccd6c;
+  --g-grass: #8bc25a;
+  --g-grass-near: #77ad49;
+  --g-path: #f4e3b8;
+  --g-path-edge: #d8b878;
+  --g-path-speck: #e2453c;
+}
+
+.garden-stage.skin-festErntedank {
+  --g-grass-far: #b6b866;
+  --g-grass: #a3a855;
+  --g-grass-near: #8b9247;
+  --g-path: #ead2a6;
+  --g-path-edge: #c49a5a;
+  --g-path-speck: #d2752c;
+}
+
+.garden-stage.skin-festAdvent {
+  --g-grass-far: #b9cdb8;
+  --g-grass: #a7c0a5;
+  --g-grass-near: #93ad92;
+  --g-path: #eef2f4;
+  --g-path-edge: #c9d3da;
+  --g-path-speck: #b8403a;
+}
+
+.cosmetic-swatch.skin-festFruehling { background: linear-gradient(145deg, #f8d3e4, #97cf7a); }
+.cosmetic-swatch.skin-festSommer { background: linear-gradient(145deg, #ffe08a, #e2453c); }
+.cosmetic-swatch.skin-festErntedank { background: linear-gradient(145deg, #f5c542, #d2752c); }
+.cosmetic-swatch.skin-festAdvent { background: linear-gradient(145deg, #eef2f4, #2f6b3a); }

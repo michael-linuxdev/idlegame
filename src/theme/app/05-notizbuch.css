@@ -1,0 +1,111 @@
+/* Omas Notizbuch — Teil von App.css (Reihenfolge zählt). */
+/* Omas Notizbuch — handwritten note on lined paper */
+.oma-note {
+  margin: 0.4rem 0 0.5rem;
+  padding: 0.45rem 0.65rem 0.5rem;
+  border-radius: 6px;
+  background:
+    repeating-linear-gradient(
+      180deg,
+      transparent 0 1.15rem,
+      color-mix(in srgb, var(--ge-note-line, #9bb7d4) 45%, transparent) 1.15rem 1.2rem
+    ),
+    var(--ge-paper, #fdf8ec);
+  border-left: 3px solid var(--ge-note-margin, #d98c7a);
+  box-shadow: 0 1px 3px rgba(60, 50, 30, 0.12);
+}
+
+.oma-note-label {
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ge-ink-faint);
+}
+
+.oma-note-text {
+  margin: 0.1rem 0 0;
+  font-family: var(--ge-font-hand, var(--ge-font-display));
+  font-size: 0.95rem;
+  line-height: 1.2rem;
+  color: var(--ge-ink-ink, #2b3a55);
+}
+
+.upgrade-hud-close {
+  appearance: none;
+  flex-shrink: 0;
+  width: 1.85rem;
+  height: 1.85rem;
+  margin: 0;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--ge-stroke-strong) 40%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ge-bg-raised) 45%, transparent);
+  backdrop-filter: blur(6px);
+  color: var(--ge-ink-muted);
+  font-size: 1.15rem;
+  line-height: 1;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.upgrade-hud-close:focus-visible {
+  outline: 2px solid var(--ge-focus);
+  outline-offset: 2px;
+}
+
+.upgrade-hud-stats {
+  margin: 0;
+  font-family: var(--ge-font-metric);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+  color: var(--ge-ink);
+}
+
+.upgrade-hud-buy {
+  width: 100%;
+  min-height: 48px;
+  font-family: var(--ge-font-display);
+  font-size: 1.02rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  border-radius: 12px;
+  border-width: 2px;
+  box-shadow:
+    0 3px 0 color-mix(in srgb, var(--ge-gruen-dunkel) 70%, #000),
+    0 8px 16px color-mix(in srgb, var(--ge-gruen) 24%, transparent);
+}
+
+.upgrade-hud-buy:disabled {
+  box-shadow: none;
+  opacity: 0.55;
+}
+
+.upgrade-hud-buy.pulse-ready {
+  animation: sheet-cta-glow 1.6s ease-in-out infinite;
+}
+
+@keyframes sheet-cta-glow {
+  0%,
+  100% {
+    filter: brightness(1);
+    transform: translateY(0);
+  }
+  50% {
+    filter: brightness(1.06);
+    transform: translateY(-1px);
+  }
+}
+
+.upgrade-hud-modules-title {
+  margin: 0 0 0.02rem;
+  font-family: var(--ge-font-display);
+  font-size: 0.64rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ge-ink-muted);
+  font-weight: 700;
+}

@@ -1,0 +1,31 @@
+/* Gemeinsames — Teil von expansion.css (Reihenfolge zählt). */
+/*
+ * Content updates: Gartenhelfer, Mengenkauf & Meilensteine, Festladen and
+ * Fest-Deko, Kapitel 2 (Streuobstwiese), Generationen, update check.
+ * Uses the paper/wood tokens from hud.css.
+ */
+
+/* —— shared —— */
+.link-btn {
+  margin: 0 0 0 0.35rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #3f7a30;
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.shop-placeholder-note {
+  margin: 0.6rem 0 0.2rem;
+  padding: 0.45rem 0.7rem;
+  border: 1.5px dashed #c9b48a;
+  border-radius: 10px;
+  background: #fff8e4;
+  color: #6a5434;
+  font-size: 0.78rem;
+  font-weight: 600;
+}

@@ -276,7 +276,6 @@
     0 5px 12px rgba(40, 32, 12, 0.14);
 }
 
-
 .hud-goal.tone-season {
   border-color: #8fb3d1;
   background: linear-gradient(180deg, #f4f9fd 0%, #e2eef8 100%);
@@ -627,21 +626,6 @@
 }
 
 /* Menü FAB matches the HUD paper */
-.game-chrome.map-home .menu-fab {
-  bottom: calc(var(--safe-bottom) + 0.6rem);
-  right: 0.6rem;
-  border: 1.5px solid var(--ge-stroke-strong);
-  background: #fbf6e8;
-}
-
-.nav-menu-sound {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  padding: 0.35rem 0.55rem;
-  font-weight: 700;
-}
 
 @keyframes hud-dot {
   0%,
@@ -682,15 +666,6 @@
   .hud-garden {
     animation: none !important;
   }
-}
-
-.nav-menu-reminders {
-  width: 100%;
-  border: 0;
-  border-radius: 8px;
-  background: transparent;
-  font: inherit;
-  cursor: pointer;
 }
 
 .nav-toggle-state {
