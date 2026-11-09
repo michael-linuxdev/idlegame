@@ -17,6 +17,7 @@
  * IDs are part of the save format — never rename (see CLAUDE.md).
  */
 import { PLANNED_CHAPTERS, RELEASED_UP_TO, type SlotLayout } from './chapterPlan'
+import { generationGate } from './generations'
 import { milestoneMult } from './generators'
 
 export type ChapterId =
@@ -178,21 +179,28 @@ const ORDER: ChapterId[] = ['weinberg', 'bauernhof', 'imkerei', 'teich', 'kraeut
 
 /**
  * Kapitel 13+: Freischaltung (über den Balance-Simulator eingestellt, Werte
- * und Begründung in docs/kapitel/plan.md „Taktung“ und ROADMAP „Balance“).
- *  - Generation: ab GEN_13, dann eine weitere Generation je GEN_STEP Kapitel
- *  - das vorige Kapitel ist **vollständig angelegt** (alle 10 Bereiche) —
- *    Fortschritt durch Handlung, keine reine Wartezeit
+ * in docs/kapitel/plan.md „Taktung“).
+ *  - Fortschritt = Generation + Anteil der Tiefen Winter bis zur nächsten
+ *    (Tiefe Winter haben 3 Tage Ruhezeit, das gibt einen verlässlichen Takt)
+ *  - Kapitel 13 ab Fortschritt 11, danach je Kapitel +½
+ *  - und das vorige Kapitel ist **vollständig angelegt** (alle 10 Bereiche)
+ * Alles Handlung, keine reine Wartezeit.
  */
-export const LATER_RULE = { gen13: 11, genStep: 2 }
+export const LATER_RULE = { gen13: 11, perChapter: 0.5 }
 
-export function laterGeneration(number: number): number {
-  return LATER_RULE.gen13 + Math.floor((number - 13) / LATER_RULE.genStep)
+export function laterProgressNeeded(number: number): number {
+  return LATER_RULE.gen13 + (number - 13) * LATER_RULE.perChapter
+}
+
+/** Generation + Anteil der Tiefen Winter bis zur nächsten (0 … ∞). */
+export function generationProgress(s: { generation: number; tiefeWinter: number }): number {
+  return s.generation + Math.min(1, s.tiefeWinter / generationGate(s.generation))
 }
 
 function laterUnlock(number: number, prev: ChapterId, prevAreas: readonly string[]) {
   const last = prevAreas[prevAreas.length - 1]!
   return (s: UnlockCtx) =>
-    s.generation >= laterGeneration(number) &&
+    generationProgress(s) >= laterProgressNeeded(number) &&
     (s.chapters[prev]?.openedAt ?? 0) > 0 &&
     (s.chapters[prev]?.owned[last] ?? 0) >= 1
 }
