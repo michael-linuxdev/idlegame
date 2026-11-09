@@ -2584,6 +2584,47 @@ html.idle .decor-slot * {
   line-height: 1.2;
 }
 
+/* Kleine Bewegungen der Bewohner auf der Karte: blinzeln, Kopf drehen */
+.garden-resident .rs-eye {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  animation: rs-blink 4.6s steps(1, end) infinite;
+}
+
+.garden-resident .rs-head {
+  transform-box: fill-box;
+  transform-origin: 25% 85%;
+  animation: rs-look 7s ease-in-out infinite;
+}
+
+@keyframes rs-blink {
+  0%,
+  92%,
+  100% {
+    transform: scaleY(1);
+  }
+  94% {
+    transform: scaleY(0.1);
+  }
+}
+
+@keyframes rs-look {
+  0%,
+  40%,
+  100% {
+    transform: rotate(0);
+  }
+  48%,
+  62% {
+    transform: rotate(-9deg);
+  }
+  70%,
+  82% {
+    transform: rotate(5deg);
+  }
+}
+
+html.idle .garden-resident *,
 html.idle .garden-resident,
 html.idle .resident-hover {
   animation-play-state: paused !important;
@@ -2591,6 +2632,7 @@ html.idle .resident-hover {
 
 @media (prefers-reduced-motion: reduce) {
   .garden-resident,
+  .garden-resident *,
   .resident-hover {
     animation: none !important;
   }
