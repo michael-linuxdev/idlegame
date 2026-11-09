@@ -8,7 +8,7 @@ export function Obstwiese({ t }: { t: number }) {
     <g>
       <Shadow rx={44} />
       {t === 1 ? (
-        <g>
+        <g className="t-new" style={{ ["--i" as string]: 1 }}>
           <rect x="58" y="22" width="2.4" height="50" fill={WOOD} />
           <path d="M50 72 V40" stroke={P.bark} strokeWidth="3.2" />
           <path d="M50 52 L59 46" stroke={P.stoneDark} strokeWidth="1" />
@@ -19,17 +19,17 @@ export function Obstwiese({ t }: { t: number }) {
           <ellipse cx="50" cy="72" rx="16" ry="4" fill={SOIL} />
         </g>
       ) : null}
-      {t === 2 ? <Tree x={50} y={72} r={19} trunk={20} fruit={P.red} /> : null}
+      {t === 2 ? <g className="t-new" style={{ ["--i" as string]: 5 }}><Tree x={50} y={72} r={19} trunk={20} fruit={P.red} /></g> : null}
       {t === 3 ? (
-        <g>
+        <g className="t-new" style={{ ["--i" as string]: 2 }}>
           <Tree x={36} y={72} r={17} trunk={18} fruit={P.red} />
           <Tree x={70} y={72} r={12} trunk={12} fruit={tone('#d6c23a')} />
         </g>
       ) : null}
       {t >= 4 ? (
-        <g>
+        <g className={t === 4 ? 't-new' : undefined} style={{ ["--i" as string]: 3 }}>
           <Tree x={28} y={72} r={17} trunk={20} fruit={P.red} />
-          {t >= 5 ? <Tree x={50} y={66} r={15} trunk={22} fruit={P.plum} /> : null}
+          {t >= 5 ? <g className={t === 5 ? 't-new' : undefined} style={{ ["--i" as string]: 0 }}><Tree x={50} y={66} r={15} trunk={22} fruit={P.plum} /></g> : null}
           <Tree x={74} y={72} r={16} trunk={18} fruit={tone('#d6c23a')} />
           {/* ladder */}
           <path d="M60 74 L66 40 M66 74 L72 40" stroke={WOOD} strokeWidth="1.8" />
@@ -38,7 +38,7 @@ export function Obstwiese({ t }: { t: number }) {
           ))}
           <Crate x={17} y={77} fruit={P.red} />
           {t >= 5 ? (
-            <g>
+            <g className={t === 5 ? 't-new' : undefined} style={{ ["--i" as string]: 4 }}>
               <Crate x={87} y={79} fruit={tone('#d6c23a')} />
               <Crate x={18} y={68} fruit={P.plum} />
             </g>

@@ -9,7 +9,7 @@ export function Beerenhecke({ t }: { t: number }) {
     <g>
       <Shadow rx={42} />
       {t >= 4 ? (
-        <g>
+        <g className={t === 4 ? 't-new' : undefined} style={{ ["--i" as string]: 1 }}>
           {/* raspberry canes */}
           {[22, 34, 46, 58, 70, 82].map((x, i) => (
             <g key={x}>
@@ -22,33 +22,33 @@ export function Beerenhecke({ t }: { t: number }) {
         </g>
       ) : null}
       {t >= 2 ? (
-        <g>
+        <g className={t === 2 ? 't-new' : undefined} style={{ ["--i" as string]: 2 }}>
           <rect x="14" y="40" width="2.6" height="34" fill={WOOD_D} />
           <rect x="84" y="40" width="2.6" height="34" fill={WOOD_D} />
           <path d="M15 46 H86 M15 56 H86" stroke={P.stoneDark} strokeWidth="0.9" />
         </g>
       ) : null}
       {t === 1 ? (
-        <g>
+        <g className="t-new" style={{ ["--i" as string]: 3 }}>
           <Bush x={44} y={75} r={17} berry={berries[0]} />
           <Bush x={68} y={74} r={10} />
         </g>
       ) : null}
       {t === 2 ? (
-        <g>
+        <g className="t-new" style={{ ["--i" as string]: 4 }}>
           <Bush x={33} y={74} r={15} berry={berries[0]} />
           <Bush x={67} y={74} r={15} berry={berries[1]} />
         </g>
       ) : null}
       {t >= 3 ? (
-        <g>
+        <g className={t === 3 ? 't-new' : undefined} style={{ ["--i" as string]: 5 }}>
           <Bush x={26} y={73} r={13} berry={berries[0]} />
           <Bush x={50} y={71} r={14} berry={berries[1]} />
           <Bush x={74} y={73} r={13} berry={berries[2]} />
         </g>
       ) : null}
       {t >= 4 ? (
-        <g>
+        <g className={t === 4 ? 't-new' : undefined} style={{ ["--i" as string]: 0 }}>
           {/* basket */}
           <path d="M84 68 h14 l-2 8 h-10 z" fill={P.woodLight} stroke={OUT} strokeWidth="1" />
           <path d="M85 68 q6 -8 12 0" fill="none" stroke={OUT} strokeWidth="1" />
@@ -58,7 +58,7 @@ export function Beerenhecke({ t }: { t: number }) {
         </g>
       ) : null}
       {t >= 5 ? (
-        <g>
+        <g className={t === 5 ? 't-new' : undefined} style={{ ["--i" as string]: 1 }}>
           {/* jam table */}
           <rect x="0" y="66" width="18" height="3" fill={WOOD} stroke={OUT} strokeWidth="0.9" />
           <path d="M2 69 V77 M16 69 V77" stroke={WOOD_D} strokeWidth="1.6" />

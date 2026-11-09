@@ -60,7 +60,7 @@ export function Gewaechshaus({ t }: { t: number }) {
       {/* door */}
       <rect x="45" y={wallTop + 6} width="10" height={60 - wallTop} fill={P.white} fillOpacity="0.35" stroke={P.white} strokeWidth="1.2" />
       {t >= 4 ? (
-        <g>
+        <g className={t === 4 ? 't-new' : undefined} style={{ ["--i" as string]: 1 }}>
           {/* open roof vent */}
           <path d={`M54 ${wallTop - 16} L66 ${wallTop - 12} L66 ${wallTop - 6} L54 ${wallTop - 10} Z`} fill={P.glass} fillOpacity="0.7" stroke={P.white} strokeWidth="1" />
           <CitrusPot x={8} y={74.4} s={0.6} fruit={P.red} />
@@ -68,7 +68,7 @@ export function Gewaechshaus({ t }: { t: number }) {
         </g>
       ) : null}
       {t >= 5 ? (
-        <g>
+        <g className={t === 5 ? 't-new' : undefined} style={{ ["--i" as string]: 2 }}>
           {/* ornate ridge + finial + hanging baskets */}
           {[38, 44, 50, 56, 62].map((cx) => (
             <circle key={cx} cx={cx} cy={wallTop - 22 + Math.abs(cx - 50) * 0.45} r="1.4" fill={P.cream} />

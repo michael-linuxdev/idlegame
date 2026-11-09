@@ -73,7 +73,8 @@ function renderModule(id: GeneratorId, tier: number, producing: boolean): ReactN
 
 function ModuleArtImpl({ id, level, producing = false, selected = false, season }: Props) {
   const tier = Math.max(1, moduleTier(level))
-  // Stufenwechsel animiert GardenMap über PlotFx onTier + .tier-grow
+  // Stufenwechsel: GardenMap setzt .tier-grow (PlotFx onTier), dann wachsen die
+  // mit dieser Stufe neuen Teile (.t-new) einzeln ein
   const cls =
     `module-art module-${id}` +
     (producing ? ' producing' : '') +
@@ -82,7 +83,11 @@ function ModuleArtImpl({ id, level, producing = false, selected = false, season 
   return (
     <ArtSvg className={cls} viewBox="0 0 100 86" data-tier={tier} data-season={season}>
       <SeasonContext.Provider value={season}>
-        {tier >= 3 ? <GardenLamp x={LAMP[id].x} y={LAMP[id].y} s={0.9} /> : null}
+        {tier >= 3 ? (
+          <g className={tier === 3 ? 't-new' : undefined}>
+            <GardenLamp x={LAMP[id].x} y={LAMP[id].y} s={0.9} />
+          </g>
+        ) : null}
         {renderModule(id, tier, producing)}
       </SeasonContext.Provider>
     </ArtSvg>

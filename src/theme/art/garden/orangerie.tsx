@@ -34,7 +34,7 @@ export function Orangerie({ t }: { t: number }) {
     <g>
       <Shadow rx={w / 2 + 8} />
       {t >= 5 ? (
-        <g>
+        <g className={t === 5 ? 't-new' : undefined} style={{ ["--i" as string]: 1 }}>
           {/* fountain */}
           <ellipse cx="12" cy="66" rx="9" ry="2.8" fill={P.pond} stroke={P.stoneDark} strokeWidth="1.2" />
           <path d="M12 66 V60 M9 62 q3 -5 6 0" stroke={tone('#bfe6f2')} strokeWidth="1.2" fill="none" />
@@ -66,7 +66,7 @@ export function Orangerie({ t }: { t: number }) {
         <Glass warm d={`M${x - 2} 34 L50 18 L${x + w + 2} 34 Z`} />
       )}
       {t >= 5 ? (
-        <g>
+        <g className={t === 5 ? 't-new' : undefined} style={{ ["--i" as string]: 2 }}>
           <CitrusPot x={92} y={75} s={0.75} fruit={P.amber} />
         </g>
       ) : null}

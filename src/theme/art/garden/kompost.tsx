@@ -46,21 +46,21 @@ export function Kompost({ t, producing }: { t: number; producing: boolean }) {
     <g>
       <Shadow rx={42} />
       {t === 1 ? (
-        <g>
+        <g className="t-new" style={{ ["--i" as string]: 1 }}>
           <KompostHeap x={20} w={58} base={70} tall={0.6} />
           <path d="M78 72 L84 44 M81 44 L87 45 M82 41 L86 42" stroke={P.metal} strokeWidth="1.8" strokeLinecap="round" />
         </g>
       ) : null}
       {t === 2 ? (
-        <g>
+        <g className="t-new" style={{ ["--i" as string]: 2 }}>
           <KompostBin x={26} w={34} />
           <KompostHeap x={60} w={26} base={72} tall={0.6} />
         </g>
       ) : null}
       {t >= 3 ? (
-        <g>
+        <g className={t === 3 ? 't-new' : undefined} style={{ ["--i" as string]: 3 }}>
           {t >= 5 ? (
-            <g>
+            <g className={t === 5 ? 't-new' : undefined} style={{ ["--i" as string]: 4 }}>
               <rect x="14" y="30" width="3" height="40" fill={WOOD_D} />
               <rect x="83" y="30" width="3" height="40" fill={WOOD_D} />
               <path d="M8 34 L50 22 L92 34 L92 38 L8 38 Z" fill={tone('#7d9f5a')} stroke={OUT} strokeWidth="1.3" strokeLinejoin="round" />
@@ -69,14 +69,14 @@ export function Kompost({ t, producing }: { t: number; producing: boolean }) {
           ) : null}
           <KompostBin x={t >= 4 ? 18 : 26} w={22} />
           <KompostBin x={t >= 4 ? 40 : 50} w={22} />
-          {t >= 4 ? <KompostBin x={62} w={22} full={t >= 5} /> : null}
+          {t >= 4 ? <g className={t === 4 ? 't-new' : undefined} style={{ ["--i" as string]: 1 }}><KompostBin x={62} w={22} full={t >= 5} /></g> : null}
           {t === 3 ? (
             <path d="M78 70 L86 40 M83 40 L89 41 M84 37 L88 38" stroke={P.metal} strokeWidth="1.8" strokeLinecap="round" />
           ) : null}
         </g>
       ) : null}
       {t >= 4 ? (
-        <g>
+        <g className={t === 4 ? 't-new' : undefined} style={{ ["--i" as string]: 5 }}>
           {/* wheelbarrow */}
           <path d="M4 66 L20 66 L24 58 L2 58 Z" fill={P.roof} stroke={OUT} strokeWidth="1.1" />
           <ellipse cx="13" cy="57" rx="10" ry="2.4" fill={P.compost} />
@@ -85,7 +85,7 @@ export function Kompost({ t, producing }: { t: number; producing: boolean }) {
         </g>
       ) : null}
       {t >= 5 ? (
-        <g>
+        <g className={t === 5 ? 't-new' : undefined} style={{ ["--i" as string]: 0 }}>
           <rect x="86" y="62" width="10" height="10" rx="1.6" fill={P.metal} stroke={OUT} strokeWidth="1" />
           <ellipse cx="91" cy="62" rx="5" ry="1.6" fill={P.compost} />
         </g>

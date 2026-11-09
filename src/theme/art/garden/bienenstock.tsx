@@ -44,7 +44,7 @@ export function Bienenstock({ t, producing }: { t: number; producing: boolean })
     <g>
       <Shadow rx={42} />
       {t >= 5 ? (
-        <g>
+        <g className={t === 5 ? 't-new' : undefined} style={{ ["--i" as string]: 1 }}>
           {/* bee house shelter */}
           <rect x="10" y="34" width="3" height="38" fill={WOOD_D} />
           <rect x="87" y="34" width="3" height="38" fill={WOOD_D} />
@@ -53,7 +53,7 @@ export function Bienenstock({ t, producing }: { t: number; producing: boolean })
         </g>
       ) : null}
       {t >= 2 ? (
-        <g>
+        <g className={t === 2 ? 't-new' : undefined} style={{ ["--i" as string]: 2 }}>
           <ellipse cx="18" cy="70" rx="10" ry="4" fill={LEAF_D} />
           {[12, 18, 24].map((x, i) => (
             <path key={x} d={`M${x} 70 v-${6 + i * 2}`} stroke={P.lavender} strokeWidth="2.6" strokeLinecap="round" />
@@ -66,7 +66,7 @@ export function Bienenstock({ t, producing }: { t: number; producing: boolean })
         </g>
       ) : null}
       {t === 3 ? (
-        <g>
+        <g className="t-new" style={{ ["--i" as string]: 3 }}>
           <g transform="translate(50 66) scale(1.25) translate(-50 -66)">
             <Hive x={28} y={64} stories={2} />
             <Hive x={53} y={66} stories={2} c={tone('#9ec9e2')} />
@@ -74,14 +74,14 @@ export function Bienenstock({ t, producing }: { t: number; producing: boolean })
         </g>
       ) : null}
       {t >= 4 ? (
-        <g>
+        <g className={t === 4 ? 't-new' : undefined} style={{ ["--i" as string]: 4 }}>
           <Hive x={24} y={62} stories={2} />
           <Hive x={46} y={60} stories={3} c={tone('#9ec9e2')} />
           <Hive x={68} y={64} stories={2} c={P.cream} />
         </g>
       ) : null}
       {t >= 4 ? (
-        <g>
+        <g className={t === 4 ? 't-new' : undefined} style={{ ["--i" as string]: 5 }}>
           <Jar x={87} y={73} />
           <Jar x={94} y={74} />
         </g>
@@ -89,8 +89,8 @@ export function Bienenstock({ t, producing }: { t: number; producing: boolean })
       {producing || t >= 3 ? (
         <g>
           <Bee x={36} y={30} />
-          {t >= 3 ? <Bee x={64} y={26} /> : null}
-          {t >= 4 ? <Bee x={50} y={18} /> : null}
+          {t >= 3 ? <g className={t === 3 ? 't-new' : undefined} style={{ ["--i" as string]: 0 }}><Bee x={64} y={26} /></g> : null}
+          {t >= 4 ? <g className={t === 4 ? 't-new' : undefined} style={{ ["--i" as string]: 1 }}><Bee x={50} y={18} /></g> : null}
         </g>
       ) : null}
     </g>

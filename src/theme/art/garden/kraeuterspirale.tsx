@@ -17,7 +17,7 @@ export function Kraeuterspirale({ t }: { t: number }) {
     <g>
       <Shadow rx={42} />
       {t >= 4 ? (
-        <g>
+        <g className={t === 4 ? 't-new' : undefined} style={{ ["--i" as string]: 1 }}>
           <ellipse cx="78" cy="70" rx="12" ry="5.4" fill={P.pond} stroke={P.stoneDark} strokeWidth="1.6" />
           <ellipse cx="74" cy="69" rx="3" ry="1.4" fill={LEAF} />
         </g>
@@ -67,7 +67,7 @@ export function Kraeuterspirale({ t }: { t: number }) {
         </g>
       ) : null}
       {t >= 5 ? (
-        <g>
+        <g className={t === 5 ? 't-new' : undefined} style={{ ["--i" as string]: 2 }}>
           {/* gnome */}
           <path d="M18 72 L22 56 L26 72 Z" fill={P.roof} stroke={OUT} strokeWidth="1" />
           <circle cx="22" cy="63" r="3" fill={P.skinLight} />

@@ -28,7 +28,7 @@ export function Hofladen({ t }: { t: number }) {
     <g>
       <Shadow rx={stallW / 2 + 8} />
       {t >= 4 ? (
-        <g>
+        <g className={t === 4 ? 't-new' : undefined} style={{ ["--i" as string]: 1 }}>
           {/* shop hut behind the stall */}
           <rect x={x + 6} y="22" width={stallW - 12} height="34" fill={t >= 5 ? P.paper : WOOD} stroke={OUT} strokeWidth="1.4" />
           <path d={`M${x} 24 L50 6 L${x + stallW} 24 Z`} fill={P.roof} stroke={OUT} strokeWidth="1.4" strokeLinejoin="round" />
@@ -38,7 +38,7 @@ export function Hofladen({ t }: { t: number }) {
           <rect x="29" y="24.6" width="9" height="5" fill={P.window} stroke={OUT} strokeWidth="1" className="art-window" />
           <rect x="62" y="24.6" width="9" height="5" fill={P.window} stroke={OUT} strokeWidth="1" className="art-window" />
           {t >= 5 ? (
-            <g>
+            <g className={t === 5 ? 't-new' : undefined} style={{ ["--i" as string]: 2 }}>
               <rect x="34" y="12" width="32" height="9" rx="1.5" fill={tone('#3d5a2e')} stroke={OUT} strokeWidth="1" />
               <path d="M38 16.5 H62" stroke={P.canvas} strokeWidth="1.8" strokeDasharray="4 1.5" />
               {/* lanterns */}
@@ -79,7 +79,7 @@ export function Hofladen({ t }: { t: number }) {
         <Crate key={i} x={x + 3 + i * 18 + 9} y={57} fruit={produce[i % produce.length]} />
       ))}
       {t >= 3 ? (
-        <g>
+        <g className={t === 3 ? 't-new' : undefined} style={{ ["--i" as string]: 3 }}>
           {/* chalkboard */}
           <path d="M86 74 L90 52 L98 52 L102 74" fill="none" stroke={WOOD_D} strokeWidth="1.6" />
           <rect x="88" y="52" width="12" height="14" fill={tone('#2f3b2f')} stroke={WOOD_D} strokeWidth="1.2" />
@@ -87,7 +87,7 @@ export function Hofladen({ t }: { t: number }) {
         </g>
       ) : null}
       {t >= 4 ? (
-        <g>
+        <g className={t === 4 ? 't-new' : undefined} style={{ ["--i" as string]: 4 }}>
           {/* flower buckets */}
           <rect x="2" y="64" width="8" height="9" fill={P.metal} stroke={OUT} strokeWidth="0.9" />
           <Flower x={4} y={66.4} c={P.pink} />

@@ -29,7 +29,7 @@ export function Gemuesebeet({ t }: { t: number }) {
     <g>
       <Shadow rx={42} />
       {t >= 4 ? (
-        <g>
+        <g className={t === 4 ? 't-new' : undefined} style={{ ["--i" as string]: 1 }}>
           {/* bean teepee */}
           <path d="M28 46 L40 10 L52 46 M34 46 L40 10 L46 46" stroke={WOOD_D} strokeWidth="1.8" fill="none" />
           <path d="M31 40 Q38 30 34 22 Q42 18 40 12 M49 40 Q42 32 46 24" stroke={LEAF} strokeWidth="2.2" fill="none" />
@@ -44,7 +44,7 @@ export function Gemuesebeet({ t }: { t: number }) {
         </g>
       ) : null}
       {t >= 5 ? (
-        <g>
+        <g className={t === 5 ? 't-new' : undefined} style={{ ["--i" as string]: 2 }}>
           {/* scarecrow (SIZE.vogelscheuche = 30) */}
           <path d="M82 70 V44 M74 49 H90" stroke={WOOD_D} strokeWidth="2" />
           <path d="M75.5 49 H88.5 L87 60 H77 Z" fill={P.denim} stroke={OUT} strokeWidth="1.3" />
@@ -106,7 +106,7 @@ export function Gemuesebeet({ t }: { t: number }) {
         </g>
       ) : null}
       {t >= 3 ? (
-        <g>
+        <g className={t === 3 ? 't-new' : undefined} style={{ ["--i" as string]: 3 }}>
           {/* Pflanzschilder */}
           <path d="M14 46 V36 M68 45 V39" stroke={WOOD_D} strokeWidth="1.2" />
           <rect x="10" y="32" width="8" height="5" rx="1" fill={P.canvas} stroke={OUT} strokeWidth="0.8" />
@@ -114,7 +114,7 @@ export function Gemuesebeet({ t }: { t: number }) {
         </g>
       ) : null}
       {t >= 4 ? (
-        <g>
+        <g className={t === 4 ? 't-new' : undefined} style={{ ["--i" as string]: 4 }}>
           {/* watering can */}
           <path d="M86 62 h9 v8 h-9 z" fill={P.water} stroke={OUT} strokeWidth="1.1" />
           <path d="M95 64 l4 -4" stroke={P.water} strokeWidth="1.8" />
@@ -122,7 +122,7 @@ export function Gemuesebeet({ t }: { t: number }) {
         </g>
       ) : null}
       {t >= 5 ? (
-        <g>
+        <g className={t === 5 ? 't-new' : undefined} style={{ ["--i" as string]: 5 }}>
           <Flower x={6} y={50.4} c={P.pink} />
           <Flower x={12} y={56.4} c={P.yellow} />
           <Flower x={5} y={58.4} c={P.red} />

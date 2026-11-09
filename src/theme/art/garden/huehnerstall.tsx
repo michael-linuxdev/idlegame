@@ -9,7 +9,7 @@ export function Huehnerstall({ t }: { t: number }) {
     <g>
       <Shadow rx={44} />
       {t >= 4 ? (
-        <g>
+        <g className={t === 4 ? 't-new' : undefined} style={{ ["--i" as string]: 1 }}>
           {/* run fence */}
           <path d="M6 76 L6 52 L94 52 L94 76" fill="none" stroke={tone('#c9b48a')} strokeWidth="1.4" />
           {Array.from({ length: 12 }, (_, i) => (
@@ -42,7 +42,7 @@ export function Huehnerstall({ t }: { t: number }) {
           {/* ramp */}
           <path d="M40 58 L30 74 L36 74 L46 58" fill={WOOD} stroke={OUT} strokeWidth="1" />
           {t >= 5 ? (
-            <g>
+            <g className={t === 5 ? 't-new' : undefined} style={{ ["--i" as string]: 2 }}>
               {/* weathervane */}
               <path d="M48 18 V8" stroke={OUT} strokeWidth="1.2" />
               <path d="M44 9 q4 -5 8 0 l-2 2 h-4 z" fill={P.brass} stroke={OUT} strokeWidth="0.8" />
@@ -50,17 +50,17 @@ export function Huehnerstall({ t }: { t: number }) {
           ) : null}
         </g>
       )}
-      {t >= 2 ? <Hen x={16} y={71} /> : null}
-      {t >= 3 ? <Hen x={82} y={73} flip c={tone('#c9763a')} /> : null}
+      {t >= 2 ? <g className={t === 2 ? 't-new' : undefined} style={{ ["--i" as string]: 0 }}><Hen x={16} y={71} /></g> : null}
+      {t >= 3 ? <g className={t === 3 ? 't-new' : undefined} style={{ ["--i" as string]: 1 }}><Hen x={82} y={73} flip c={tone('#c9763a')} /></g> : null}
       {t >= 4 ? (
-        <g>
+        <g className={t === 4 ? 't-new' : undefined} style={{ ["--i" as string]: 3 }}>
           {/* rooster */}
           <Hen x={64} y={71} c={tone('#8a4a2a')} />
           <path d="M57 62 q-6 -6 -4 -12 q2 6 6 6" fill={tone('#2f5e3a')} />
         </g>
       ) : null}
       {t >= 5 ? (
-        <g>
+        <g className={t === 5 ? 't-new' : undefined} style={{ ["--i" as string]: 4 }}>
           <Hen x={10} y={65} c={P.charcoal} flip />
           <path d="M84 56 h12 l-2 7 h-8 z" fill={P.woodLight} stroke={OUT} strokeWidth="1" />
           {[86.5, 90, 93.5].map((x) => (
@@ -69,7 +69,7 @@ export function Huehnerstall({ t }: { t: number }) {
         </g>
       ) : null}
       {t === 3 ? (
-        <g>
+        <g className="t-new" style={{ ["--i" as string]: 5 }}>
           <ellipse cx="86" cy="58" rx="1.8" ry="2.3" fill={tone('#f7efe0')} stroke={OUT} strokeWidth="0.5" />
           <ellipse cx="90" cy="59" rx="1.8" ry="2.3" fill={tone('#f7efe0')} stroke={OUT} strokeWidth="0.5" />
         </g>

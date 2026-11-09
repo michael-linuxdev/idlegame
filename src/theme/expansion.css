@@ -1070,15 +1070,20 @@ html.tab-hidden .fest-snow {
   justify-content: center;
 }
 
-/* Zeitraffer beim Stufen-Sprung */
-.plot-visual.tier-grow {
-  animation: tier-grow 1.2s cubic-bezier(0.3, 1.6, 0.5, 1) both;
+/* Stufen-Sprung: nur die mit dieser Stufe neuen Teile (.t-new, ModuleArt/
+   art/garden) wachsen von unten ein, gestaffelt über --i — nicht das ganze Bild. */
+.plot-visual.tier-grow .t-new {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: t-new-grow 0.75s cubic-bezier(0.3, 1.5, 0.5, 1) both;
+  animation-delay: calc(var(--i, 0) * 90ms);
 }
 
-@keyframes tier-grow {
-  0% { transform: scale(0.6, 0.4); filter: brightness(1.4); }
-  60% { transform: scale(1.12, 1.15); }
-  100% { transform: scale(1); filter: none; }
+@keyframes t-new-grow {
+  0% { transform: scale(0.2, 0); opacity: 0; }
+  35% { opacity: 1; }
+  70% { transform: scale(1.06, 1.12); }
+  100% { transform: scale(1); }
 }
 
 /* Garden critters */
@@ -1195,7 +1200,7 @@ html.tab-hidden .fest-snow {
 @media (prefers-reduced-motion: reduce) {
   .speech-bubble,
   .sky-event,
-  .plot-visual.tier-grow,
+  .plot-visual.tier-grow .t-new,
   .chicken,
   .chicken-head,
   .bee-trail,
