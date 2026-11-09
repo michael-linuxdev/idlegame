@@ -123,6 +123,11 @@ export default function ArtSheet() {
                 <DecorArt id={d.id} />
               </div>
             ))}
+            {DECOR.map((d) => (
+              <div className="as-cell as-small as-night" data-daypart="night" key={`n-${d.id}`} title={`${d.id} (Nacht)`}>
+                <DecorArt id={d.id} />
+              </div>
+            ))}
             {RESIDENTS.map((r) => (
               <div className="as-cell as-small" key={r.id} title={r.id}>
                 <ResidentArt id={r.id} />

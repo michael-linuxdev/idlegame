@@ -302,3 +302,33 @@ html.idle .module-art * {
 [data-daypart='night'] .art-glow {
   opacity: 0.5;
 }
+
+/* Deko-Lichter: tagsüber aus (Papier-/Glasfarbe), abends/nachts flackern sie sanft */
+.decor-light {
+  opacity: 0.85;
+}
+
+[data-daypart='evening'] .decor-light,
+[data-daypart='night'] .decor-light {
+  opacity: 1;
+  animation: decor-flicker 2.6s ease-in-out infinite alternate;
+}
+
+[data-daypart='night'] .garden-decor .art-glow {
+  opacity: 0.6;
+}
+
+@keyframes decor-flicker {
+  from {
+    opacity: 0.82;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .decor-light {
+    animation: none !important;
+  }
+}
