@@ -4,7 +4,7 @@
  */
 import { memo } from 'react'
 type OrchardId = string
-import { moduleTier } from './tiers'
+import { moduleTier, sameTierProps } from './tiers'
 import type { Season } from './ambient'
 
 const FRUIT: Partial<Record<string, { fruit: string; crown: string; crownD: string; r: number }>> = {
@@ -236,7 +236,7 @@ export const OrchardArt = memo(function OrchardArt({
     default:
       return <FruitTree id={id} tier={tier} season={season} />
   }
-})
+}, sameTierProps)
 
 /** Sapling marker for an unlocked but unplanted orchard spot. */
 export function OrchardSapling() {

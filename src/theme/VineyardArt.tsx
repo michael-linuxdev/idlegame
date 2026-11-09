@@ -3,7 +3,7 @@
  * terraced backdrop with the river.
  */
 import { memo } from 'react'
-import { moduleTier } from './tiers'
+import { moduleTier, sameTierProps } from './tiers'
 import type { Season } from './ambient'
 
 const GRAPE: Record<string, string> = {
@@ -185,7 +185,7 @@ export const VineyardArt = memo(function VineyardArt({
     default:
       return <Vines id={id} tier={tier} season={season} />
   }
-})
+}, sameTierProps)
 
 /** Unplanted terrace spot: stakes, waiting for vines. */
 export function VineyardStakes() {

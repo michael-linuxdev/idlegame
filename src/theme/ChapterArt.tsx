@@ -8,7 +8,7 @@ import { ChapterPath } from './ChapterPaths'
 import { memo, type ReactNode } from 'react'
 import type { Animals, ArtSpec, BackdropSpec, Flowers, House, Rows, Stones, Tree, Water } from './chapterArtSpecs'
 import type { Season } from './ambient'
-import { moduleTier } from './tiers'
+import { moduleTier, sameTierProps } from './tiers'
 
 const shadow = (rx: number) => <ellipse cx="40" cy="65" rx={rx} ry="4.5" fill="rgba(40,60,20,0.22)" />
 
@@ -490,7 +490,7 @@ export const ChapterAreaArt = memo(function ChapterAreaArt({
     case 'stones':
       return <StonesArt s={spec} tier={tier} />
   }
-})
+}, sameTierProps)
 
 /** Unplanted spot: tilled earth with a little sign. */
 export function ChapterReady() {
