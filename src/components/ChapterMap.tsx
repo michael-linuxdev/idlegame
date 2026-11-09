@@ -194,10 +194,13 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
                 type="button"
                 className={`garden-plot${isSel ? ' selected' : ''}${!unlocked ? ' wild' : ready ? ' ready' : ' planted producing'}${canBuy ? ' can-buy' : ''}${a.id === target ? ' goal-target' : ''}`}
                 style={{ left: a.slot.left, top: a.slot.top, zIndex: 2 + Math.round(Number.parseFloat(a.slot.top)) }}
-                aria-label={`${ac.name}, ${unlocked ? t.chapterUi.level(level) : t.hud.locked}`}
                 aria-pressed={isSel}
                 onClick={() => setSelected(a.id)}
               >
+                {/* Name = sichtbarer Text (Schild/Plakette, WCAG „label in name“), Stufe/gesperrt als unsichtbarer Zusatz */}
+                {!showSign && !(unlocked && level > 0) ? (
+                  <span className="sr-only">{`${ac.name}, ${unlocked ? t.chapterUi.plant : t.hud.locked}`}</span>
+                ) : null}
                 <span className="plot-visual">
                   {!unlocked ? (
                     <art.wild seed={index} />
@@ -208,10 +211,11 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
                   )}
                 </span>
                 {!showSign && unlocked && level > 0 ? (
-                  <span className="plot-badge" aria-hidden="true">
-                    {canBuy ? <span className="plot-canbuy in-badge" /> : null}
+                  <span className="plot-badge">
+                    {canBuy ? <span className="plot-canbuy in-badge" aria-hidden="true" /> : null}
                     <span className="plot-badge-name">{ac.name}</span>
-                    <span className="plot-badge-level">
+                    <span className="sr-only">{`, ${t.chapterUi.level(level)}`}</span>
+                    <span className="plot-badge-level" aria-hidden="true">
                       {level}
                       {stars > 0 ? <span className="plot-badge-stars"><IconStars n={Math.min(3, stars)} /></span> : null}
                     </span>
@@ -220,13 +224,14 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
                 {showSign ? (
                   <span className="plot-sign">
                     <span className="plot-name">{ac.name}</span>
+                    {!unlocked ? <span className="sr-only">{`, ${t.hud.locked}:`}</span> : null}
                     <span className="plot-meta">
                       {!unlocked
                         ? t.chapterUi.locked(copy.areas[a.requires!.id]!.name)
                         : ready
                           ? t.chapterUi.plant
                           : t.chapterUi.level(level)}
-                      {stars > 0 ? <span className="plot-stars"> <IconStars n={Math.min(3, stars)} /></span> : null}
+                      {stars > 0 ? <span className="plot-stars" aria-hidden="true"> <IconStars n={Math.min(3, stars)} /></span> : null}
                     </span>
                   </span>
                 ) : null}

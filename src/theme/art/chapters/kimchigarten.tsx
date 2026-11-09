@@ -7,8 +7,9 @@
 import type { ReactNode } from 'react'
 import { Svg } from '../../HandParts'
 import { P } from '../palette'
+import { Farmer } from './figures'
 import type { AreaProps } from './partsB'
-import { Farmer, Patch, Rain } from './partsF'
+import { Patch, Rain } from './partsF'
 import { Hanok, Magpie, NapaCabbage, Onggi, Persimmon } from './partsG'
 import { ssn } from './season'
 
@@ -270,11 +271,13 @@ export function Kimchigarten({ id, tier, season }: AreaProps): ReactNode {
           <Floor season={season} />
           <circle cx="62" cy="14" r="8" fill={P.cream} stroke={P.lamp} strokeWidth=".6" />
           <circle cx="59" cy="12" r="1.4" fill={P.paper} />
-          <ellipse cx="40" cy="62" rx="12" ry="3" fill={P.woodMid} stroke={P.outlineWood} strokeWidth=".3" />
-          <ellipse cx="40" cy="61.4" rx="10" ry="2.2" fill={P.leafLight} />
-          {Array.from({ length: cakes }, (_, i) => (
-            <path key={i} d={`M${32 + (i % 8) * 2.2} ${61.6 - Math.floor(i / 8) * 1.2}a1.1 .8 0 0 1 2 0z`} fill={[P.white, P.pink, P.leafPale][i % 3]} stroke={P.stone} strokeWidth=".15" />
-          ))}
+          <g transform="translate(40 62) scale(1.7) translate(-40 -62)">
+            <ellipse cx="40" cy="62" rx="12" ry="3" fill={P.woodMid} stroke={P.outlineWood} strokeWidth=".3" />
+            <ellipse cx="40" cy="61.4" rx="10" ry="2.2" fill={P.leafLight} />
+            {Array.from({ length: cakes }, (_, i) => (
+              <path key={i} d={`M${32 + (i % 8) * 2.2} ${61.6 - Math.floor(i / 8) * 1.2}a1.1 .8 0 0 1 2 0z`} fill={[P.white, P.pink, P.leafPale][i % 3]} stroke={P.stone} strokeWidth=".15" />
+            ))}
+          </g>
           {tier >= 2 ? <Farmer x={22} y={66} c={HANBOK[0]!} s={0.75} hat={P.charcoal} skirt={P.berry} /> : null}
           {tier >= 3 ? <Farmer x={58} y={66} c={HANBOK[3]!} s={0.75} hat={P.charcoal} skirt={P.blue} /> : null}
           {tier >= 4 ? <Farmer x={40} y={72} c={HANBOK[2]!} s={0.75} hat={P.charcoal} skirt={P.pink} /> : null}

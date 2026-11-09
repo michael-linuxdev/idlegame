@@ -7,10 +7,11 @@
 import type { ReactNode } from 'react'
 import { Svg } from '../../HandParts'
 import { P } from '../palette'
+import { Farmer, Kid } from './figures'
 import { StringLights } from './partsC'
 import type { AreaProps } from './partsB'
-import { Farmer, Patch, Rain } from './partsF'
-import { Bee, CafeTable, Can, Cloud, Kid, Lettuce, OmaTin, Packet, Parasol, SeedJar, Snowfall, Sun, WoodBox } from './partsH'
+import { Patch, Rain } from './partsF'
+import { Bee, CafeTable, Can, Cloud, Lettuce, OmaTin, Packet, Parasol, SeedJar, Snowfall, Sun, WoodBox } from './partsH'
 import { ssn } from './season'
 
 /** Dachfläche: Kies mit Fugen der Dachplatten, Winter Schnee. */
@@ -137,7 +138,7 @@ export function Dachgarten({ id, tier, season }: AreaProps): ReactNode {
           {tier >= 3 ? <Can x={68} y={68} c={P.leaf} s={1.4} /> : null}
           {tier >= 5 ? <Kid x={72} y={60} c={P.berry} s={1.1} hair={P.woodDark} /> : null}
           {autumn ? <Rain n={5} y0={4} /> : null}
-          {summer ? <Sun x={68} y={14} r={3} /> : null}
+          {summer ? <g className="art-sky"><Sun x={68} y={14} r={3} /></g> : null}
         </Svg>
       )
     }
@@ -161,7 +162,7 @@ export function Dachgarten({ id, tier, season }: AreaProps): ReactNode {
             </g>
           ) : null}
           {!winter && tier >= 3 ? [[26, 50], [46, 46], [36, 58]].slice(0, tier - 2).map(([x, y], i) => <Bee key={i} x={x!} y={y!} s={2.2} />) : null}
-          {winter ? <Snowfall n={6} /> : null}
+          {winter ? <g className="art-sky"><Snowfall n={6} /></g> : null}
           {tier >= 5 ? <Kid x={72} y={70} c={P.leaf} s={1} /> : null}
         </Svg>
       )
@@ -185,7 +186,7 @@ export function Dachgarten({ id, tier, season }: AreaProps): ReactNode {
           {tier >= 3 ? <rect x="37" y="54" width="6" height="8" fill={P.glassEdge} stroke={P.metal} strokeWidth=".4" /> : null}
           {tier >= 4 ? <circle cx="40" cy={62 - r * 0.7} r="1" fill={P.lamp} /> : null}
           {winter ? <path d={`M${40 - r * 0.8} ${62 - r * 0.55}Q40 ${62 - r * 1.05} ${40 + r * 0.8} ${62 - r * 0.55}`} stroke={P.white} strokeWidth="1.4" fill="none" strokeLinecap="round" /> : null}
-          {winter ? <Snowfall n={6} y1={30} /> : null}
+          {winter ? <g className="art-sky"><Snowfall n={6} y1={30} /></g> : null}
           {tier >= 5 ? <Kid x={70} y={70} c={P.blue} s={0.9} /> : null}
         </Svg>
       )
@@ -240,7 +241,7 @@ export function Dachgarten({ id, tier, season }: AreaProps): ReactNode {
           {tier >= 3 ? <path d="M70 46h4v18" stroke={P.charcoal} strokeWidth=".7" fill="none" /> : null}
           {tier >= 3 ? <rect x="72" y="58" width="5" height="6" fill={P.stone} stroke={P.metal} strokeWidth=".3" /> : null}
           {tier >= 4 ? <path d="M44 66h12M45 66v-3h10v3" stroke={P.woodDark} strokeWidth=".8" fill="none" /> : null}
-          {summer ? <Sun x={66} y={12} r={3.4} /> : null}
+          {summer ? <g className="art-sky"><Sun x={66} y={12} r={3.4} /></g> : null}
           {tier >= 5 ? <Farmer x={50} y={66} c={P.leaf} s={0.75} hat={P.woodLight} /> : null}
         </Svg>
       )
@@ -269,8 +270,8 @@ export function Dachgarten({ id, tier, season }: AreaProps): ReactNode {
             </g>
           )) : null}
           {tier >= 4 ? <Can x={56} y={67} c={P.terracotta} s={1.4} /> : null}
-          {summer ? <Sun x={68} y={12} r={3} /> : null}
-          {winter ? <Snowfall n={6} y1={40} /> : null}
+          {summer ? <g className="art-sky"><Sun x={68} y={12} r={3} /></g> : null}
+          {winter ? <g className="art-sky"><Snowfall n={6} y1={40} /></g> : null}
           {tier >= 5 ? <Kid x={70} y={69} c={P.yellow} s={1.1} /> : null}
         </Svg>
       )
@@ -331,7 +332,7 @@ export function Dachgarten({ id, tier, season }: AreaProps): ReactNode {
           })}
           {winter && tier >= 2 ? <StringLights x0={50} x1={76} y={40} n={6} /> : null}
           {tier >= 5 ? <Farmer x={64} y={70} c={P.white} s={0.6} hat={P.charcoal} /> : null}
-          {autumn ? <Cloud x={20} y={12} s={1.2} c={P.stoneLight} /> : null}
+          {autumn ? <g className="art-sky"><Cloud x={20} y={12} s={1.2} c={P.stoneLight} /></g> : null}
         </Svg>
       )
     }
@@ -369,8 +370,8 @@ export function Dachgarten({ id, tier, season }: AreaProps): ReactNode {
             <Farmer key={i} x={18 + i * 14} y={68 + (i % 2) * 2} c={[P.berry, P.blue, P.leaf, P.yellow][i]!} s={0.7} hat={[P.charcoal, P.woodLight, P.plum, P.woodDark][i]!} />
           ))}
           {tier >= 3 ? <path d="M66 66l4 -6M65 66.4a1.6 1.2 0 1 0 2.4 -1.6z" stroke={P.woodDark} strokeWidth=".6" fill={P.woodMid} /> : null}
-          {winter ? <Snowfall n={6} y1={26} /> : null}
-          {z === 'spring' ? <Cloud x={14} y={14} s={0.9} c={P.pink} /> : null}
+          {winter ? <g className="art-sky"><Snowfall n={6} y1={26} /></g> : null}
+          {z === 'spring' ? <g className="art-sky"><Cloud x={14} y={14} s={0.9} c={P.pink} /></g> : null}
         </Svg>
       )
     }

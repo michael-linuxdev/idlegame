@@ -4,7 +4,8 @@ import { Svg } from '../../HandParts'
 import { Bunting, Snowcap } from './partsA'
 import { Pot, Shadow } from '../parts'
 import { P } from '../palette'
-import { type AreaProps, Person } from './partsB'
+import { Person } from './figures'
+import { type AreaProps } from './partsB'
 import { TomatoPlant } from './partsC'
 
 /** Honigfarbene Kalksteinmauer, trocken geschichtet (Fußpunkt unten links). */
@@ -101,7 +102,7 @@ export function Cottagegarten({ id, tier, season }: AreaProps): ReactNode {
       const n = Math.min(7, 1 + tier + Math.floor(tier / 3))
       return (
         <Svg tier={tier}>
-          <ellipse cx="40" cy="62" rx="36" ry="7" fill={winter ? P.frost : P.leafLight} />
+          <ellipse cx="40" cy="62" rx="36" ry="7" fill={winter ? P.frost : P.leaf} stroke={P.outlineSoft} strokeWidth=".3" />
           <StoneWall x={6} y={60} w={68} h={14} winter={winter} />
           {Array.from({ length: n }, (_, i) => (
             <Hollyhock key={i} x={12 + i * 9.4} y={64 - (i % 2) * 2} h={28 + (i % 3) * 5} c={[P.pink, P.berry, P.cream, P.plum, P.blossom, P.red, P.yellow][i]!} season={season} />
@@ -145,7 +146,7 @@ export function Cottagegarten({ id, tier, season }: AreaProps): ReactNode {
       const beds = Math.min(4, tier)
       return (
         <Svg tier={tier}>
-          <ellipse cx="40" cy="58" rx="37" ry="11" fill={winter ? P.frost : P.leafLight} />
+          <ellipse cx="40" cy="58" rx="37" ry="11" fill={winter ? P.frost : P.leaf} stroke={P.outlineSoft} strokeWidth=".3" />
           {Array.from({ length: beds }, (_, i) => {
             const x = 10 + (i % 2) * 30
             const y = 58 + Math.floor(i / 2) * 8 - 4
@@ -186,7 +187,7 @@ export function Cottagegarten({ id, tier, season }: AreaProps): ReactNode {
       const w = 26 + tier * 9
       return (
         <Svg tier={tier}>
-          <ellipse cx="40" cy="62" rx="36" ry="7" fill={winter ? P.frost : P.leafLight} />
+          <ellipse cx="40" cy="62" rx="36" ry="7" fill={winter ? P.frost : P.leaf} stroke={P.outlineSoft} strokeWidth=".3" />
           <StoneWall x={40 - w / 2} y={62} w={w} h={16} winter={winter} />
           {tier >= 2 && !winter
             ? [0.25, 0.7].map((t) => (
@@ -254,7 +255,7 @@ export function Cottagegarten({ id, tier, season }: AreaProps): ReactNode {
       const chairs = Math.min(4, tier)
       return (
         <Svg tier={tier}>
-          <ellipse cx="40" cy="62" rx="36" ry="7" fill={winter ? P.frost : P.leafLight} />
+          <ellipse cx="40" cy="62" rx="36" ry="7" fill={winter ? P.frost : P.leaf} stroke={P.outlineSoft} strokeWidth=".3" />
           <g transform="translate(24 62) scale(.72) translate(-24 -62)">
             <Oak x={24} y={62} season={season} />
           </g>
@@ -274,7 +275,7 @@ export function Cottagegarten({ id, tier, season }: AreaProps): ReactNode {
       const bloom = Math.min(16, 4 + tier * 3)
       return (
         <Svg tier={tier}>
-          <ellipse cx="40" cy="62" rx="34" ry="7" fill={winter ? P.frost : P.leafLight} />
+          <ellipse cx="40" cy="62" rx="34" ry="7" fill={winter ? P.frost : P.leaf} stroke={P.outlineSoft} strokeWidth=".3" />
           <path d="M22 64V34Q40 14 58 34V64" stroke={P.woodMid} strokeWidth="2.2" fill="none" />
           <path d="M22 44H58M22 54H58" stroke={P.woodLight} strokeWidth=".8" />
           {!winter
@@ -324,7 +325,7 @@ export function Cottagegarten({ id, tier, season }: AreaProps): ReactNode {
       const tables = Math.min(3, Math.ceil(tier / 2))
       return (
         <Svg tier={tier}>
-          <ellipse cx="40" cy="62" rx="37" ry="7" fill={winter ? P.frost : P.leafLight} />
+          <ellipse cx="40" cy="62" rx="37" ry="7" fill={winter ? P.frost : P.leaf} stroke={P.outlineSoft} strokeWidth=".3" />
           <path d="M8 62V36L40 22L72 36V62z" fill={P.white} stroke={P.stoneLight} strokeWidth=".6" />
           <path d="M8 36L40 22L72 36" stroke={P.stoneDark} strokeWidth=".6" fill="none" />
           <path d="M40 22V14" stroke={P.woodDark} strokeWidth=".7" />

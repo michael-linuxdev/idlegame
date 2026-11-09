@@ -11,18 +11,18 @@ import { Svg } from '../../HandParts'
 import type { AreaProps } from './partsB'
 import { Sapling } from './partsC'
 import { BerryShrub } from './partsD'
-import { Farmer } from './partsF'
-import { Bee, Can, Cloud, Kid, LeafTree, OmaTin, Packet, Snowfall, Sun } from './partsH'
+import { Bee, Can, Cloud, LeafTree, OmaTin, Packet, Snowfall, Sun } from './partsH'
 import { Floor, Hen, Lantern, Table, Tuft } from './partsI'
 import { P } from '../palette'
+import { Farmer, Kid } from './figures'
 import { ssn } from './season'
 
 function Sky({ season }: { season?: string }) {
   const z = ssn(season)
-  if (z === 'summer') return <Sun x={70} y={9} r={3} />
-  if (z === 'spring') return <Cloud x={14} y={9} s={1.1} />
-  if (z === 'autumn') return <Cloud x={64} y={9} s={1.2} c={P.stoneLight} />
-  return <Snowfall n={7} y1={32} />
+  if (z === 'summer') return <g className="art-sky"><Sun x={70} y={9} r={3} /></g>
+  if (z === 'spring') return <g className="art-sky"><Cloud x={14} y={9} s={1.1} /></g>
+  if (z === 'autumn') return <g className="art-sky"><Cloud x={64} y={9} s={1.2} c={P.stoneLight} /></g>
+  return <g className="art-sky"><Snowfall n={7} y1={32} /></g>
 }
 
 /** Brombeerranke von früher (Rand der Parzelle). */

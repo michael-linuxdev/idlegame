@@ -4,7 +4,8 @@ import { Svg } from '../../HandParts'
 import { Snowcap } from './partsA'
 import { Crate } from '../parts'
 import { P } from '../palette'
-import { type AreaProps, Person } from './partsB'
+import { Person } from './figures'
+import { type AreaProps } from './partsB'
 import { StringLights } from './partsC'
 import { Punt, WaterBand } from './partsD'
 
@@ -128,7 +129,7 @@ export function Artischocken({ id, tier, season }: AreaProps): ReactNode {
       const posts = Math.min(5, 1 + tier)
       return (
         <Svg tier={tier}>
-          <ellipse cx="40" cy="36" rx="38" ry="7" fill={winter ? P.frost : P.leafLight} />
+          <ellipse cx="40" cy="36" rx="38" ry="7" fill={winter ? P.frost : P.leaf} stroke={P.outlineSoft} strokeWidth=".3" />
           <WaterBand y={56} h={24} />
           <rect x="6" y="38" width="40" height="4" fill={P.wood} stroke={P.outlineWood} strokeWidth=".4" />
           {Array.from({ length: posts }, (_, i) => (
@@ -172,7 +173,7 @@ export function Artischocken({ id, tier, season }: AreaProps): ReactNode {
       const n = Math.min(5, tier)
       return (
         <Svg tier={tier}>
-          <ellipse cx="40" cy="60" rx="36" ry="9" fill={winter ? P.frost : P.leafLight} />
+          <ellipse cx="40" cy="60" rx="36" ry="9" fill={winter ? P.frost : P.leaf} stroke={P.outlineSoft} strokeWidth=".3" />
           {Array.from({ length: n }, (_, i) => {
             const x = 14 + i * 13
             const y = 60 - (i % 2) * 2
@@ -277,7 +278,7 @@ export function Artischocken({ id, tier, season }: AreaProps): ReactNode {
           <rect x="16" y="42" width="40" height="3" fill={P.terracottaLight} opacity=".9" />
           <Campanile x={36} y={43} s={0.7} />
           {tier >= 2 ? [20, 26, 44, 50].map((x, i) => <rect key={x} x={x} y={38 - (i % 2) * 2} width="5" height={4 + (i % 2) * 2} fill={[P.cream, P.terracottaLight, P.paper, P.terracotta][i]} />) : null}
-          <ellipse cx="40" cy="66" rx="34" ry="5" fill={winter ? P.frost : P.leafLight} />
+          <ellipse cx="40" cy="66" rx="34" ry="5" fill={winter ? P.frost : P.leaf} stroke={P.outlineSoft} strokeWidth=".3" />
           {tier >= 4 ? <path d="M58 64h10v-2h-10zM59 64v2M67 64v2" fill={P.woodLight} stroke={P.woodDark} strokeWidth=".5" /> : null}
           {tier >= 4 ? <Person x={63} y={62} c={P.lilac} s={0.6} /> : null}
           {tier >= 5 ? <Punt x={54} y={52} w={14} c={P.charcoal} /> : null}
@@ -287,7 +288,7 @@ export function Artischocken({ id, tier, season }: AreaProps): ReactNode {
       const guests = Math.min(6, tier + 1)
       return (
         <Svg tier={tier}>
-          <ellipse cx="40" cy="60" rx="37" ry="9" fill={winter ? P.frost : P.leafLight} />
+          <ellipse cx="40" cy="60" rx="37" ry="9" fill={winter ? P.frost : P.leaf} stroke={P.outlineSoft} strokeWidth=".3" />
           <rect x="12" y="52" width="56" height="3" fill={P.white} stroke={P.stoneLight} strokeWidth=".4" />
           <path d="M14 55v8M66 55v8" stroke={P.woodDark} strokeWidth=".8" />
           {Array.from({ length: guests }, (_, i) => (

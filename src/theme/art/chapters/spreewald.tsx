@@ -4,7 +4,8 @@ import { Smoke, Svg, Window } from '../../HandParts'
 import { Bunting, Snowcap } from './partsA'
 import { Barrel, Jar, Shadow } from '../parts'
 import { P } from '../palette'
-import { type AreaProps, Person } from './partsB'
+import { Person } from './figures'
+import { type AreaProps } from './partsB'
 import { Punt, WaterBand } from './partsD'
 
 /** Gurkenpflanze am Boden: große Blätter, gelbe Blüten, kleine Gurken. */
@@ -148,7 +149,7 @@ export function Spreewald({ id, tier, season }: AreaProps): ReactNode {
       const flax = Math.min(16, 4 + tier * 3)
       return (
         <Svg tier={tier}>
-          <ellipse cx="40" cy="60" rx="36" ry="9" fill={winter ? P.frost : P.leafLight} />
+          <ellipse cx="40" cy="60" rx="36" ry="9" fill={winter ? P.frost : P.leaf} stroke={P.outlineSoft} strokeWidth=".3" />
           <LogHouse x={30} y={58} w={26} h={16} winter={winter} lit={winter} />
           <circle cx="24" cy="50" r="7" fill={P.stone} stroke={P.outlineStone} strokeWidth=".6" />
           <circle cx="24" cy="50" r="1.4" fill={P.stoneDark} />
@@ -176,7 +177,7 @@ export function Spreewald({ id, tier, season }: AreaProps): ReactNode {
       const punts = Math.min(3, Math.ceil(tier / 2))
       return (
         <Svg tier={tier}>
-          <ellipse cx="40" cy="40" rx="38" ry="8" fill={winter ? P.frost : P.leafLight} />
+          <ellipse cx="40" cy="40" rx="38" ry="8" fill={winter ? P.frost : P.leaf} stroke={P.outlineSoft} strokeWidth=".3" />
           <WaterBand y={56} h={20} frozen={winter} />
           <rect x="6" y="42" width="30" height="4" fill={P.wood} stroke={P.outlineWood} strokeWidth=".4" />
           {[8, 18, 28, 34].map((x) => (
@@ -198,7 +199,7 @@ export function Spreewald({ id, tier, season }: AreaProps): ReactNode {
       const n = Math.min(10, 2 + tier * 2)
       return (
         <Svg tier={tier}>
-          <ellipse cx="40" cy="48" rx="38" ry="12" fill={winter ? P.frost : P.leafLight} />
+          <ellipse cx="40" cy="48" rx="38" ry="12" fill={winter ? P.frost : P.leaf} stroke={P.outlineSoft} strokeWidth=".3" />
           <rect x="10" y="40" width="58" height="14" rx="2" fill={winter ? P.white : P.soil} stroke={P.outlineWood} strokeWidth=".3" />
           {Array.from({ length: n }, (_, i) => {
             const x = 14 + (i % 5) * 12
@@ -262,13 +263,24 @@ export function Spreewald({ id, tier, season }: AreaProps): ReactNode {
         <Svg tier={tier}>
           <Shadow grid="chapter" rx={32} />
           <LogHouse x={10} y={62} w={36} h={20} winter={winter} lit={winter} gable={P.leafMoss} />
-          <g transform="translate(58 64)">
-            <path d="M-4 0l1 -9h6l1 9z" fill={P.berry} stroke={P.outline} strokeWidth=".3" />
-            <rect x="-3" y="-4" width="6" height="2" fill={P.white} />
-            <path d="M-2.4 -9h4.8l-.6 -3h-3.6z" fill={P.ink} />
-            <circle cx="0" cy="-13" r="1.6" fill={P.skin} />
-            {tier >= 2 ? <path d="M-1 -14.6Q-7 -16 -7 -12Q-4 -13 -1 -13zM1 -14.6Q7 -16 7 -12Q4 -13 1 -13z" fill={P.white} stroke={P.stoneLight} strokeWidth=".3" /> : null}
-            {tier >= 3 ? <path d="M-3 -9l-2 7M3 -9l2 7" stroke={P.gold} strokeWidth=".6" /> : null}
+          {/* Bemalte Truhe mit Bändern (Heimatstube) */}
+          <g transform="translate(57 64) scale(1.2)">
+            <rect x="-7" y="-7" width="14" height="7" fill={P.berry} stroke={P.outlineWood} strokeWidth=".3" />
+            <path d="M-7.4 -7h14.8l-1 -2.6h-12.8z" fill={P.woodMid} stroke={P.outlineWood} strokeWidth=".3" />
+            <rect x="-1" y="-6.4" width="2" height="1.6" fill={P.brass} />
+            {tier >= 2 ? (
+              <g>
+                <circle cx="-3.6" cy="-3" r="1.3" fill={P.yellow} />
+                <circle cx="3.6" cy="-3" r="1.3" fill={P.white} />
+                <path d="M-5.6 -1.4h11.2" stroke={P.leafLight} strokeWidth=".6" />
+              </g>
+            ) : null}
+            {tier >= 3 ? (
+              <g>
+                <path d="M3 -9.4q2 3 .6 6.4" stroke={P.blue} strokeWidth=".7" fill="none" />
+                <path d="M5 -9.4q2 3 .8 6" stroke={P.gold} strokeWidth=".7" fill="none" />
+              </g>
+            ) : null}
           </g>
           {tier >= 3 ? <path d="M14 46h28" stroke={P.berry} strokeWidth=".8" strokeDasharray="1.4 .8" /> : null}
           {spring || tier >= 4 ? (
@@ -314,7 +326,7 @@ export function Spreewald({ id, tier, season }: AreaProps): ReactNode {
       const boats = Math.min(3, Math.ceil(tier / 2))
       return (
         <Svg tier={tier}>
-          <ellipse cx="40" cy="38" rx="38" ry="8" fill={winter ? P.frost : P.leafLight} />
+          <ellipse cx="40" cy="38" rx="38" ry="8" fill={winter ? P.frost : P.leaf} stroke={P.outlineSoft} strokeWidth=".3" />
           <WaterBand y={56} h={22} frozen={winter} />
           {Array.from({ length: boats }, (_, i) => (
             <Punt key={i} x={[40, 28, 54][i]!} y={[56, 64, 66][i]!} w={26} cargo={[P.leafDark, P.leafDark, P.leaf, P.leafDark, P.leafDark]} />

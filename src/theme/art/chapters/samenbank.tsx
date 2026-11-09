@@ -7,10 +7,11 @@
 import type { ReactNode } from 'react'
 import { Svg } from '../../HandParts'
 import { P } from '../palette'
+import { Farmer, Kid } from './figures'
 import { Bunting } from './partsA'
 import type { AreaProps } from './partsB'
-import { Farmer, Patch } from './partsF'
-import { Bee, Kid, LeafLitter, OmaTin, Packet, SeedJar, Snowfall, SnowDrifts } from './partsH'
+import { Patch } from './partsF'
+import { Bee, LeafLitter, OmaTin, Packet, SeedJar, Snowfall, SnowDrifts } from './partsH'
 import { ssn } from './season'
 
 /** Boden: gemähter Rasen bzw. Kies, Herbst Laub, Winter Schnee. */

@@ -4,7 +4,8 @@ import { Svg, Window } from '../../HandParts'
 import { Snowcap } from './partsA'
 import { Shadow } from '../parts'
 import { P } from '../palette'
-import { type AreaProps, Person } from './partsB'
+import { Person } from './figures'
+import { type AreaProps } from './partsB'
 import { Tulip, WaterBand } from './partsD'
 
 const STRIPES = [P.red, P.yellow, P.plum, P.white, P.orange, P.pink]
@@ -103,7 +104,7 @@ export function Tulpenfelder({ id, tier, season }: AreaProps): ReactNode {
         <Svg tier={tier}>
           <ellipse cx="40" cy="57" rx="37" ry="12" fill={ground} />
           {Array.from({ length: rows }, (_, r) => (
-            <BulbRow key={r} x0={10 + r} x1={70 - r} y={66 - r * 4.6} c={STRIPES[r % 6]!} season={season} />
+            <BulbRow key={r} x0={10 + r} x1={70 - r} y={60 + (rows - 1) * 2.1 - r * 4.6} c={STRIPES[r % 6]!} season={season} />
           )).reverse()}
           {tier >= 3 && autumn ? <Person x={72} y={66} c={P.denim} s={0.7} /> : null}
           {tier >= 3 && !autumn ? <path d="M70 66l4 -6M72 62l3 1" stroke={P.woodDark} strokeWidth=".6" /> : null}
@@ -118,7 +119,7 @@ export function Tulpenfelder({ id, tier, season }: AreaProps): ReactNode {
         <Svg tier={tier}>
           <ellipse cx="40" cy="58" rx="36" ry="11" fill={ground} />
           {Array.from({ length: rows }, (_, r) => (
-            <BulbRow key={r} kind="hyacinth" x0={12} x1={68} y={66 - r * 4.6} c={[P.blue, P.pink, P.white, P.lilac, P.plum][r]!} season={season} />
+            <BulbRow key={r} kind="hyacinth" x0={12} x1={68} y={61 + (rows - 1) * 2.1 - r * 4.6} c={[P.blue, P.pink, P.white, P.lilac, P.plum][r]!} season={season} />
           )).reverse()}
           {spring && tier >= 2 ? <path d="M14 40q4 -3 8 0M40 36q4 -3 8 0" stroke={P.lilac} strokeWidth=".5" fill="none" opacity=".7" className="ha-swim" /> : null}
           {tier >= 2 ? <path d="M70 64v-8h6v8" stroke={P.woodDark} strokeWidth=".7" fill={P.woodLight} /> : null}
@@ -132,7 +133,7 @@ export function Tulpenfelder({ id, tier, season }: AreaProps): ReactNode {
       const trees = Math.min(3, Math.ceil(tier / 2))
       return (
         <Svg tier={tier}>
-          <ellipse cx="40" cy="58" rx="36" ry="11" fill={winter ? P.frost : P.leafLight} />
+          <ellipse cx="40" cy="58" rx="36" ry="11" fill={winter ? P.frost : P.leaf} stroke={P.outlineSoft} strokeWidth=".3" />
           {Array.from({ length: trees }, (_, i) => {
             const x = [24, 56, 40][i]!
             const crown = winter ? null : autumn ? P.autumn : spring ? P.leafPale : P.leaf
@@ -194,7 +195,7 @@ export function Tulpenfelder({ id, tier, season }: AreaProps): ReactNode {
     case 'windmuehle':
       return (
         <Svg tier={tier}>
-          <ellipse cx="40" cy="62" rx="36" ry="7" fill={winter ? P.frost : P.leafLight} />
+          <ellipse cx="40" cy="62" rx="36" ry="7" fill={winter ? P.frost : P.leaf} stroke={P.outlineSoft} strokeWidth=".3" />
           <WaterBand y={66} h={5} frozen={winter} />
           <Windmill x={40} y={60} s={0.9 + tier * 0.04} winter={winter} />
           {tier >= 2 ? <path d="M58 60h12v-6l-6 -4l-6 4z" fill={P.terracotta} stroke={P.outline} strokeWidth=".4" /> : null}

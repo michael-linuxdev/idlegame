@@ -9,18 +9,19 @@ import { Svg } from '../../HandParts'
 import { Bunting } from './partsA'
 import type { AreaProps } from './partsB'
 import { TomatoPlant } from './partsC'
-import { Farmer, PotatoPlant, Squash } from './partsF'
-import { Cloud, Kid, Lettuce, Snowfall, Sun } from './partsH'
+import { PotatoPlant, Squash } from './partsF'
+import { Cloud, Lettuce, Snowfall, Sun } from './partsH'
 import { Crate, Floor, Goose, Hen, Table } from './partsI'
 import { P } from '../palette'
+import { Farmer, Kid } from './figures'
 import { ssn } from './season'
 
 function Sky({ season }: { season?: string }) {
   const z = ssn(season)
-  if (z === 'summer') return <Sun x={70} y={9} r={3} />
-  if (z === 'spring') return <Cloud x={14} y={9} s={1.1} />
-  if (z === 'autumn') return <Cloud x={64} y={9} s={1.2} c={P.stoneLight} />
-  return <Snowfall n={7} y1={32} />
+  if (z === 'summer') return <g className="art-sky"><Sun x={70} y={9} r={3} /></g>
+  if (z === 'spring') return <g className="art-sky"><Cloud x={14} y={9} s={1.1} /></g>
+  if (z === 'autumn') return <g className="art-sky"><Cloud x={64} y={9} s={1.2} c={P.stoneLight} /></g>
+  return <g className="art-sky"><Snowfall n={7} y1={32} /></g>
 }
 
 /** Ackerboden mit Furchen. */

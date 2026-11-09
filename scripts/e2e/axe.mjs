@@ -53,7 +53,10 @@ try {
       // Kapitel 50 ganz angelegt → die Abschluss-Szene wird am Ende mitgeprüft
       const omas = ['omasbeet', 'omaskompost', 'omasspirale', 'omashecke', 'opasapfel', 'omasbienen', 'omashuehner', 'altglashaus', 'omaslaube', 'omasbank']
       const omasgarten = { cur: 0, curLifetime: 1, owned: Object.fromEntries(omas.map((a) => [a, 10])), openedAt: 1, introSeen: true }
-      localStorage.setItem('gartenerbe-spielstand-v1', JSON.stringify({ owned, ernte: 3e6, ernteSeason: 4e6, saisonenden: 4, erbstuecke: 900, samen: 400, lastSeen: Date.now(), saveVersion: 1, chapters: { omasgarten } }))
+      // Kapitel 13 ausgebaut: Plaketten (Stufe 10), ein frei geräumter Bereich, ein gesperrter
+      const stadt = ['hochbeete', 'palettenbeete', 'regenspeicher', 'wurmkiste', 'kraeuterleiter', 'saatgutbibliothek', 'lastenrad', 'lehmofen']
+      const stadtgarten = { cur: 0, curLifetime: 1, owned: { ...Object.fromEntries(stadt.map((a) => [a, 10])), werkstatt: 0 }, openedAt: 1, introSeen: true }
+      localStorage.setItem('gartenerbe-spielstand-v1', JSON.stringify({ owned, ernte: 3e6, ernteSeason: 4e6, saisonenden: 4, erbstuecke: 900, samen: 400, lastSeen: Date.now(), saveVersion: 1, chapters: { stadtgarten, omasgarten } }))
       localStorage.setItem('gartenerbe-ftue-v1', JSON.stringify({ beat: 'done', dismissed: true, completed: [], startedAt: 1 }))
       localStorage.setItem('gartenerbe-install-v1', JSON.stringify({ dismissed: true, installed: false, shown: true }))
       localStorage.setItem('gartenerbe-hints-v1', JSON.stringify(['season', 'truhe', 'deep', 'visitor', 'order', 'variety', 'weekly']))
@@ -90,7 +93,21 @@ try {
     await p.waitForTimeout(500)
     n += await audit(p, `${lang} notebook`)
     await p.keyboard.press('Escape')
-    // Nur Kapitel 50 ist offen: der Knopf an der Seite führt direkt hin
+    // Kapitel 13 und 50 sind offen: die Knöpfe an der Seite führen direkt hin
+    await p.locator('.map-side .plot-switch').first().click()
+    await p.locator('.chapter-stadtgarten .garden-plot.planted').first().waitFor()
+    n += await audit(p, `${lang} kapitel-karte`)
+    // Mit allen Schildern (Einstellung „Schilder immer zeigen“) statt Plaketten
+    await p.evaluate(() => {
+      localStorage.setItem('gartenerbe-pref-signs', '1')
+      window.dispatchEvent(new Event('gartenerbe-prefs'))
+    })
+    await p.locator('.chapter-stadtgarten .garden-plot.planted .plot-sign').first().waitFor()
+    n += await audit(p, `${lang} kapitel-schilder`)
+    await p.evaluate(() => {
+      localStorage.setItem('gartenerbe-pref-signs', '0')
+      window.dispatchEvent(new Event('gartenerbe-prefs'))
+    })
     await p.locator('.map-side .plot-switch').last().click()
     await p.locator('.abschluss-scene').waitFor()
     // Nur das offene Fenster: die Karte dahinter ist durch aria-modal verdeckt

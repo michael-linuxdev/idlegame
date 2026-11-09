@@ -3,7 +3,8 @@ import type { ReactNode } from 'react'
 import { Svg } from '../../HandParts'
 import { Bee } from '../parts'
 import { P } from '../palette'
-import { type AreaProps, Person } from './partsB'
+import { Person } from './figures'
+import { type AreaProps } from './partsB'
 import { Fire } from './partsD'
 import { RoseBush } from './partsE'
 
@@ -188,7 +189,7 @@ export function Rosental({ id, tier, season }: AreaProps): ReactNode {
     case 'bergquelle':
       return (
         <Svg tier={tier}>
-          <path d="M0 50L16 28L28 38L44 20L60 34L72 26L80 32V50z" fill={P.stone} opacity=".8" />
+          <path d="M6 54Q4 46 8 42L18 28L28 38L44 20L60 34L70 27L76 34Q78 46 74 54z" fill={P.stone} opacity=".8" />
           {winter || tier >= 4 ? <path d="M40 24l4 -4l4 4M68 28l4 -2l3 2" stroke={P.white} strokeWidth="1.2" fill="none" /> : null}
           <ellipse cx="40" cy="62" rx="37" ry="11" fill={meadow} />
           <rect x="28" y="38" width="24" height="20" rx="1" fill={P.stoneLight} stroke={P.outlineStone} strokeWidth=".5" />

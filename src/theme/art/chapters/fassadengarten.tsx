@@ -7,10 +7,10 @@
 import type { ReactNode } from 'react'
 import { Svg } from '../../HandParts'
 import type { AreaProps } from './partsB'
-import { Farmer } from './partsF'
-import { CafeTable, Can, Kid, Lettuce, Parasol, Snowfall, Sun, WoodBox } from './partsH'
+import { CafeTable, Can, Lettuce, Parasol, Snowfall, Sun, WoodBox } from './partsH'
 import { Creeper, Paving, Sparrow, Wall } from './partsI'
 import { P } from '../palette'
+import { Farmer, Kid } from './figures'
 import { ssn } from './season'
 
 /** Fassadenstück (Fußpunkt unten links), Ziegelfugen angedeutet. */
@@ -30,9 +30,9 @@ function Facade({ x = 12, y = 62, w = 56, h = 46, c = P.terracottaLight, snow }:
 /** Wetter: Sommer Sonne, Herbst Blätter im Wind, Winter Schnee, Frühling nichts. */
 function Sky({ season }: { season?: string }) {
   const z = ssn(season)
-  if (z === 'summer') return <Sun x={72} y={8} r={3} />
-  if (z === 'winter') return <Snowfall n={7} y1={30} />
-  if (z === 'autumn') return <path d="M70 12l2 1M74 18l1.4 1.4M66 20l2 -.4" stroke={P.red} strokeWidth="1.1" strokeLinecap="round" />
+  if (z === 'summer') return <g className="art-sky"><Sun x={72} y={8} r={3} /></g>
+  if (z === 'winter') return <g className="art-sky"><Snowfall n={7} y1={30} /></g>
+  if (z === 'autumn') return <g className="art-sky"><path d="M70 12l2 1M74 18l1.4 1.4M66 20l2 -.4" stroke={P.red} strokeWidth="1.1" strokeLinecap="round" /></g>
   return null
 }
 

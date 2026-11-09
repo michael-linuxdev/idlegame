@@ -12,17 +12,18 @@ import type { AreaProps } from './partsB'
 import { Sapling } from './partsC'
 import { Tulip } from './partsD'
 import { RoseBush } from './partsE'
-import { CornPlant, Farmer, PotatoPlant } from './partsF'
+import { CornPlant, PotatoPlant } from './partsF'
 import { NapaCabbage } from './partsG'
-import { Cloud, Kid, OmaTin, SeedJar, Signpost, Snowfall, Sun } from './partsH'
+import { Cloud, OmaTin, SeedJar, Signpost, Snowfall, Sun } from './partsH'
 import { Floor, Lantern, Paving } from './partsI'
 import { P } from '../palette'
+import { Farmer, Kid } from './figures'
 import { ssn } from './season'
 
 function Sky({ season, balloons = 0 }: { season?: string; balloons?: number }) {
   const z = ssn(season)
   return (
-    <g>
+    <g className="art-sky">
       {z === 'summer' ? <Sun x={71} y={9} r={3} /> : z === 'spring' ? <Cloud x={14} y={9} s={1.1} /> : z === 'autumn' ? <Cloud x={64} y={9} s={1.2} c={P.stoneLight} /> : <Snowfall n={7} y1={30} />}
       {Array.from({ length: balloons }, (_, i) => (
         <g key={i}>
@@ -77,14 +78,22 @@ function Gondola({ x, y, c }: { x: number; y: number; c: string }) {
 }
 
 /** Bilderrahmen. */
-function Frame({ x, y, i }: { x: number; y: number; i: number }) {
+function Frame({ x, y, i, s = 1 }: { x: number; y: number; i: number; s?: number }) {
   return (
-    <g>
+    <g transform={`translate(${x} ${y}) scale(${s}) translate(${-x} ${-y})`}>
       <rect x={x - 2.4} y={y - 3} width="4.8" height="3.6" fill={P.paper} stroke={P.woodDark} strokeWidth=".5" />
       <circle cx={x} cy={y - 1.8} r=".7" fill={P.skin} />
       <path d={`M${x - 1.2} ${y + 0.4}q1.2 -1.6 2.4 0`} fill={[P.berry, P.blue, P.leaf, P.yellow, P.plum][i % 5]} />
     </g>
   )
+}
+
+/** Beete der Europa-/Welt-Beete: eins in der Mitte, dann hinten links/rechts, vorne links/rechts. */
+const BED_SPOTS: [number, number][] = [[40, 58], [18, 52], [62, 52], [26, 68], [54, 68]]
+
+/** Beet-Nummern für `n` Beete, von hinten nach vorne gezeichnet. */
+function bedOrder(n: number): number[] {
+  return Array.from({ length: n }, (_, i) => i).sort((a, b) => BED_SPOTS[a]![1] - BED_SPOTS[b]![1])
 }
 
 export function Weltgartenschau({ id, tier, season }: AreaProps): ReactNode {
@@ -95,12 +104,14 @@ export function Weltgartenschau({ id, tier, season }: AreaProps): ReactNode {
   switch (id) {
     case 'europabeete': {
       const beds = Math.min(5, tier)
-      const spots: [number, number][] = [[22, 56], [54, 55], [38, 65], [64, 66], [16, 68]]
+      const spots: [number, number][] = BED_SPOTS
       return (
         <Svg tier={tier}>
           <Paving season={season} fill={P.paper} />
-          {spots.slice(0, beds).map(([x, y], i) => (
-            <g key={i} transform={`translate(${x} ${y}) scale(1.3) translate(${-x} ${-y})`}>
+          {bedOrder(beds).map((i) => {
+            const [x, y] = spots[i]!
+            return (
+            <g key={i} transform={`translate(${x} ${y}) scale(1.45) translate(${-x} ${-y})`}>
               <Bed x={x} y={y} season={season} />
               {i === 0 ? [-6, -3, 0, 3, 6].map((d) => <Hollyhock key={d} x={x + d} y={y} season={season} />) : null}
               {i === 1 ? [-6, -3, 0, 3, 6].map((d, k) => (winter ? <ellipse key={d} cx={x + d} cy={y - 0.4} rx="1" ry=".4" fill={P.soilDark} /> : <Tulip key={d} x={x + d} y={y} c={[P.red, P.yellow, P.white, P.plum, P.pink][k]!} head={z === 'spring' || summer} />)) : null}
@@ -109,7 +120,8 @@ export function Weltgartenschau({ id, tier, season }: AreaProps): ReactNode {
               {i === 4 ? [-4, 0, 4].map((d) => <Hollyhock key={d} x={x + d} y={y} season={season} />) : null}
               <Flag x={x + 8} y={y} a={[P.blue, P.orange, P.leaf, P.red, P.white][i]!} b={[P.white, P.white, P.white, P.leaf, P.red][i]!} />
             </g>
-          ))}
+            )
+          })}
           {tier >= 5 ? <Farmer x={72} y={70} c={P.leafDark} s={1.15} hat={P.woodLight} /> : null}
           <Sky season={season} />
         </Svg>
@@ -117,12 +129,14 @@ export function Weltgartenschau({ id, tier, season }: AreaProps): ReactNode {
     }
     case 'weltbeete': {
       const beds = Math.min(5, tier)
-      const spots: [number, number][] = [[22, 56], [54, 55], [38, 65], [64, 66], [16, 68]]
+      const spots: [number, number][] = BED_SPOTS
       return (
         <Svg tier={tier}>
           <Paving season={season} fill={P.paper} />
-          {spots.slice(0, beds).map(([x, y], i) => (
-            <g key={i} transform={`translate(${x} ${y}) scale(1.3) translate(${-x} ${-y})`}>
+          {bedOrder(beds).map((i) => {
+            const [x, y] = spots[i]!
+            return (
+            <g key={i} transform={`translate(${x} ${y}) scale(1.45) translate(${-x} ${-y})`}>
               <Bed x={x} y={y} season={season} />
               {i === 0 ? [-5, 0, 5].map((d) => <PotatoPlant key={d} x={x + d} y={y} s={0.9} season={season} />) : null}
               {i === 1 ? [-5, 0, 5].map((d) => <CornPlant key={d} x={x + d} y={y} s={0.7} season={season} beans={d === 0} />) : null}
@@ -132,7 +146,8 @@ export function Weltgartenschau({ id, tier, season }: AreaProps): ReactNode {
               {i === 4 ? [-3, 3].map((d) => <PotatoPlant key={d} x={x + d} y={y} s={0.8} season={season} flower={P.white} />) : null}
               <Flag x={x + 7} y={y} a={[P.red, P.leaf, P.blue, P.yellow, P.orange][i]!} b={[P.white, P.white, P.red, P.leaf, P.white][i]!} />
             </g>
-          ))}
+            )
+          })}
           {tier >= 5 ? <Kid x={72} y={70} c={P.yellow} s={1.5} /> : null}
           <Sky season={season} />
         </Svg>
@@ -267,7 +282,7 @@ export function Weltgartenschau({ id, tier, season }: AreaProps): ReactNode {
           <rect x="16" y="30" width="48" height="30" fill={P.cream} stroke={P.outlineWood} strokeWidth=".4" />
           {[16, 64].map((x) => <rect key={x} x={x - 1.4} y="30" width="2.8" height="30" fill={P.woodLight} stroke={P.outlineWood} strokeWidth=".3" />)}
           {Array.from({ length: frames }, (_, i) => (
-            <Frame key={i} x={22 + (i % 5) * 9} y={i < 5 ? 40 : 49} i={i} />
+            <Frame key={i} x={25 + (i % 3) * 15} y={i < 3 ? 42 : 52} i={i} s={2} />
           ))}
           <Lantern x={40} y={34} c={P.lamp} lit={winter || autumn} />
           {tier >= 3 ? <path d="M24 56h32" stroke={P.woodDark} strokeWidth="1.4" /> : null}

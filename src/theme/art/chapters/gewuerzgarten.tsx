@@ -8,9 +8,10 @@
 import type { ReactNode } from 'react'
 import { Svg } from '../../HandParts'
 import { P } from '../palette'
+import { Farmer } from './figures'
 import type { AreaProps } from './partsB'
 import { Fire, WaterBand } from './partsD'
-import { CoconutPalm, Farmer, Patch, PepperVine, Rain, ShadeTree } from './partsF'
+import { CoconutPalm, Patch, PepperVine, Rain, ShadeTree } from './partsF'
 import { ssn } from './season'
 
 const FLOWERS = [P.orange, P.yellow, P.berry, P.white, P.lilac, P.amber]
@@ -256,8 +257,8 @@ export function Gewuerzgarten({ id, tier, season }: AreaProps): ReactNode {
     case 'bootssteg':
       return (
         <Svg tier={tier}>
-          <WaterBand y={54} h={30} x0={0} x1={80} />
-          <rect x="0" y="66" width="80" height="6" fill={summer ? P.soil : P.terracottaLight} />
+          <WaterBand y={52} h={28} x0={3} x1={77} />
+          <path d="M8 66Q40 60 72 66Q40 71 8 66z" fill={summer ? P.soil : P.terracottaLight} />
           <Kettuvallam x={34} y={56} s={1.3 + tier * 0.05} lit={winter} />
           {tier >= 2 ? <path d="M54 66V58M62 66V58M70 66V58M52 59h20" stroke={P.woodDark} strokeWidth="1" /> : null}
           {tier >= 3 ? <CoconutPalm x={74} y={68} s={0.8} lean={-1} season={season} /> : null}

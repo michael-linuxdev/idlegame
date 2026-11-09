@@ -26,6 +26,11 @@
  *  DEEP_POLICY=rate   Tiefer Winter am Rendite-Gipfel: sobald Sprösslinge je
  *                     Tag seit dem letzten Tiefen Winter nicht mehr steigen
  *                     (Standard mit Kapiteln); sonst „Saison > DEEP_AFTER_H“
+ *  PROJECTS=0         Großprojekte nicht bauen (Standard mit Kapiteln: jede
+ *                     Stufe bauen, sobald die Kapitel-Währungen reichen)
+ *  ADS=n              Werbung (Ernte-Wahl, 10 min Ernte) höchstens n-mal je
+ *                     Sitzung, sobald die Abklingzeit um ist · ADS=all: ohne
+ *                     Grenze (Werbefrei: alle 3 min, ganze Sitzung)
  *  Ausgabe: „chapters: K2@d… K13@d…“ und der Garten-Bonus aller Kapitel
  *  Fünf Jahre:  GEN=1 SIM_ALL_CHAPTERS=1 SUMMARY=1 npm run balance -- regular 43800
  */
@@ -70,7 +75,8 @@ import { moduleTier } from '../../src/theme/tiers'
 import { DEEP_SHOP, canDeepNow, sproutPayout } from '../../src/game/longLoop'
 import { LEGACY_SHOP } from '../../src/game/generations'
 import { CHAPTER_BONUS, CHAPTERS, chaptersGardenMult, totalChapterLevels } from '../../src/game/chapters'
-import { bestChapterBuy, buyChapterArea, buyIlse, openChapters } from '../../src/game/state'
+import { bestChapterBuy, buyChapterArea, buyIlse, openChapters, buildProjectStage, claimRewardedAd } from '../../src/game/state'
+import { PROJECTS } from '../../src/game/projects'
 
 const PLAY_CHAPTERS = !!(process.env.CHAPTERS || process.env.SIM_ALL_CHAPTERS)
 // Formel-Vergleich für den Kapitel-Bonus (nur Simulator): product | sum | soft | log
@@ -87,6 +93,8 @@ function playChapters(s: GameState, maxPerChapter = 6): GameState {
     if (n === s) break
     s = n
   }
+  // Großprojekte: jede Stufe, sobald alle Kapitel-Währungen reichen
+  if (process.env.PROJECTS !== '0') for (const p of PROJECTS) s = buildProjectStage(s, p.id)
   if (manual) for (const id of openChapters(s)) {
     for (let k = 0; k < maxPerChapter; k++) {
       const area = bestChapterBuy(s, id)
@@ -267,6 +275,10 @@ export function run(profile: Profile, hours: number) {
     return (minuteOfDay - 8 * 60) % pattern.every < pattern.len
   }
   let wasActive = true
+  // ADS: Werbung je Sitzung (Ernte-Wahl); 'all' = Werbefrei, alle 3 min
+  const adsPerSession = process.env.ADS === 'all' ? Infinity : Number(process.env.ADS ?? 0)
+  let adsThisSession = 0
+  let adClaims = 0
 
   const note = (label: string) => milestones.push({ t: (clock - start) / 1000, label })
 
@@ -275,6 +287,7 @@ export function run(profile: Profile, hours: number) {
     if (active && !wasActive) {
       const { state, gained } = applyOfflineCatchup(s, clock)
       s = claimOfflineReward(state, gained, clock)
+      adsThisSession = 0
     }
     wasActive = active
     if (!active) {
@@ -296,6 +309,14 @@ export function run(profile: Profile, hours: number) {
       }
     }
     if (s.lastTapAt <= 0 || clock - s.lastTapAt >= 5 * 60_000) s = water(s)
+    if (adsThisSession < adsPerSession) {
+      const r = claimRewardedAd(s, 'ernte', clock)
+      if (r.ok) {
+        s = r.state
+        adsThisSession += 1
+        adClaims += 1
+      }
+    }
     // LAZY=1: the player never buys areas himself — Jonas does all of it
     if (!process.env.LAZY || s.helperLevel === 0) s = buyBest(s)
     s = spendErbstuecke(s)
@@ -421,7 +442,7 @@ export function run(profile: Profile, hours: number) {
     }
   }
   const chapters = CHAPTERS.filter((d) => chapterDays[d.id] != null).map((d) => ({ number: d.number, id: d.id, day: chapterDays[d.id]! }))
-  return { s, milestones, runs, hours, stageByDay, deeps, gens, chapters, density: eventDensity(events, profile) }
+  return { s, milestones, runs, hours, stageByDay, deeps, gens, chapters, adClaims, density: eventDensity(events, profile) }
 }
 
 /** Abstände zwischen bedeutsamen Ereignissen in aktiver Spielzeit. */
@@ -449,7 +470,7 @@ export function eventDensity(events: number[], profile: Profile) {
 function report(profile: Profile, hours: number) {
   seed = 12345
   clock = new Date(2026, 10, 9, 8, 0, 0).getTime()
-  const { s, milestones, runs, stageByDay, deeps, gens, chapters, density } = run(profile, hours)
+  const { s, milestones, runs, stageByDay, deeps, gens, chapters, adClaims, density } = run(profile, hours)
   const dn = (sec: number) => (Number.isFinite(sec) ? (sec >= 120 ? `${Math.round(sec / 60)}m` : `${Math.round(sec)}s`) : '-')
   if (process.env.SUMMARY) {
     const act = runs.map((r) => Math.round(r.active / 60))
@@ -471,7 +492,7 @@ function report(profile: Profile, hours: number) {
     if (process.env.GEN) console.log(`  generations: ${gens.map((d, i) => `G${i + 1}@d${d}`).join(' ')}`)
     if (PLAY_CHAPTERS)
       console.log(
-        `  chapters: ${chapters.map((c) => `K${c.number}@d${c.day}`).join(' ')} | chapter levels ${totalChapterLevels(s.chapters)} | garden ×${chaptersGardenMult(s.chapters).toFixed(2)} | ilse ${s.ilseLevel}`,
+        `  chapters: ${chapters.map((c) => `K${c.number}@d${c.day}`).join(' ')} | chapter levels ${totalChapterLevels(s.chapters)} | garden ×${chaptersGardenMult(s.chapters).toFixed(2)} | ilse ${s.ilseLevel} | projects ${JSON.stringify(s.projects)} | ads ${adClaims} | gen ${s.generation} deep ${s.tiefeWinter}`,
       )
     if (deeps.length || process.env.DEEP)
       console.log(
