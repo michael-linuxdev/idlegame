@@ -1,7 +1,7 @@
 /** Kapitel-Grafik (Kräuter, Botanik, Alm): botanik. */
 import type { ReactNode } from 'react'
 import { Smoke, Svg, Window } from '../../HandParts'
-import { Shadow } from '../parts'
+import { Pot, Shadow } from '../parts'
 import { P } from '../palette'
 import { type AreaProps, Butterfly, Conifer, Glasshouse, Rock } from './partsA'
 
@@ -35,7 +35,7 @@ export function Botanik({ id, tier, season }: AreaProps): ReactNode {
     case 'palmenhaus': {
       const palms = Math.min(5, 1 + tier)
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={34} />
           {Array.from({ length: palms }, (_, i) => {
             const x = [40, 30, 50, 16, 64][i]!
@@ -55,7 +55,7 @@ export function Botanik({ id, tier, season }: AreaProps): ReactNode {
       const n = Math.min(6, 1 + tier)
       const bloom = season === 'summer' || spring
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={34} />
           <Glasshouse x={8} w={42} h={18} roofH={10} tint="#f0e4c8" />
           <rect x="26" y="52" width="6" height="12" fill="#e8f4fa" stroke="#9ab0bc" strokeWidth=".5" />
@@ -79,7 +79,7 @@ export function Botanik({ id, tier, season }: AreaProps): ReactNode {
     case 'orchideenhaus': {
       const n = Math.min(8, 2 + tier)
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={34} />
           <Glasshouse x={8} w={64} h={22} roofH={11} tint="#e8dcf4" />
           <path d="M10 44h60" stroke={P.outlineSoft} strokeWidth=".8" />
@@ -106,7 +106,7 @@ export function Botanik({ id, tier, season }: AreaProps): ReactNode {
     case 'victoriahaus': {
       const pads = Math.min(5, 1 + tier)
       return (
-        <Svg>
+        <Svg tier={tier}>
           {tier >= 4 ? <path d="M6 64V40 Q40 6 74 40 V64" fill="#e8f4fa" opacity=".45" stroke="#f5f7f8" strokeWidth="1" /> : null}
           {tier >= 4 ? <path d="M23 64V26M40 64V17M57 64V26" stroke="#f5f7f8" strokeWidth=".7" /> : null}
           <ellipse cx="40" cy="57" rx="34" ry="11" fill="#bdb3a0" />
@@ -137,7 +137,7 @@ export function Botanik({ id, tier, season }: AreaProps): ReactNode {
       const arches = Math.min(3, 1 + Math.floor(tier / 2))
       const rose = season === 'summer' ? P.red : spring ? P.leaf : autumn ? P.roof : undefined
       return (
-        <Svg>
+        <Svg tier={tier}>
           <ellipse cx="40" cy="58" rx="36" ry="12" fill={winter ? '#e8eef0' : P.leafLight} opacity=".8" />
           <path d="M6 62 Q40 54 74 62" stroke="#e2d4ae" strokeWidth="4" fill="none" />
           {Array.from({ length: arches }, (_, i) => {
@@ -170,7 +170,7 @@ export function Botanik({ id, tier, season }: AreaProps): ReactNode {
     case 'steingarten': {
       const rocks = Math.min(5, 1 + tier)
       return (
-        <Svg>
+        <Svg tier={tier}>
           <ellipse cx="40" cy="58" rx="34" ry="11" fill="#c9bfa8" />
           {Array.from({ length: rocks }, (_, i) => (
             <Rock key={i} x={8 + ((i * 23) % 52)} y={64 - (i % 3) * 4} w={12 + (i % 2) * 6} h={7 + (i % 3) * 3} snow={winter} />
@@ -193,7 +193,7 @@ export function Botanik({ id, tier, season }: AreaProps): ReactNode {
     case 'arboretum': {
       const crown = winter ? '#c9d0c4' : autumn ? '#d9a33a' : P.leaf
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={34} />
           <ellipse cx="40" cy="62" rx="34" ry="6" fill={winter ? '#eef2f2' : P.leafLight} />
           <Conifer x={18} y={64} s={0.8 + tier * 0.06} snow={winter} />
@@ -227,7 +227,7 @@ export function Botanik({ id, tier, season }: AreaProps): ReactNode {
       const ferns = Math.min(7, 2 + tier)
       const frond = winter ? '#8a9a7a' : autumn ? '#a5893a' : '#4f9a4a'
       return (
-        <Svg>
+        <Svg tier={tier}>
           <path d="M2 66 L10 36 L22 40 L30 66z" fill="#8a7e6e" />
           <path d="M78 66 L70 34 L58 40 L50 66z" fill="#7a6e5e" />
           <ellipse cx="40" cy="64" rx="16" ry="4" fill={winter ? '#cfe2ee' : '#5f9ec4'} />
@@ -252,7 +252,7 @@ export function Botanik({ id, tier, season }: AreaProps): ReactNode {
     case 'herbarium': {
       const frames = Math.min(4, tier)
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={34} />
           <rect x="10" y="40" width="50" height="24" fill={P.paper} stroke="#8a7a6a" strokeWidth=".7" />
           <path d="M6 40 L35 28 L64 40z" fill={P.outlineWood} />
@@ -277,7 +277,7 @@ export function Botanik({ id, tier, season }: AreaProps): ReactNode {
     case 'glaskuppel': {
       const r = 18 + tier * 2
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={34} />
           <Palm x={40} y={64} s={(r - 5) / 31} />
           {tier >= 3 ? <Palm x={28} y={64} s={0.7} c="#5fae4a" /> : null}
@@ -291,6 +291,7 @@ export function Botanik({ id, tier, season }: AreaProps): ReactNode {
           {tier >= 4 ? <circle cx="40" cy={64 - r - 1.4} r="1.8" fill="#e0a21a" /> : null}
           {tier >= 5 ? <path d={`M40 ${64 - r - 3}v-7l5 2-5 2`} fill={P.tomato} stroke={P.outlineWood} strokeWidth=".5" /> : null}
           {winter ? <path d={`M${40 - r * 0.7} ${64 - r * 0.72} Q40 ${64 - r * 1.2} ${40 + r * 0.7} ${64 - r * 0.72}`} stroke={P.white} strokeWidth="1.6" fill="none" /> : null}
+          {tier >= 2 ? <Pot x={70} y={64} s={0.5} /> : null}
         </Svg>
       )
     }

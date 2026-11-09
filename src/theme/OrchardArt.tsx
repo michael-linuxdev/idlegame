@@ -8,7 +8,7 @@ import { moduleTier, sameTierProps } from './tiers'
 import type { Season } from './ambient'
 import { ArtSvg } from './ArtSvg'
 import { P } from './art/palette'
-import { Shadow, seeded } from './art/parts'
+import { Crate, Jar, Pennant, Shadow, seeded } from './art/parts'
 
 const FRUIT: Partial<Record<string, { fruit: string; crown: string; crownD: string; r: number }>> = {
   apfel: { fruit: '#d9483b', crown: '#6ca848', crownD: '#4f8a34', r: 1.9 },
@@ -184,6 +184,19 @@ function Doerrhaus({ tier }: { tier: number }) {
           ))}
         </g>
       ))}
+      {tier >= 4 ? (
+        <g>
+          {/* Dörrobst in Gläsern */}
+          <Jar x={62} y={64} s={0.6} c={P.amber} />
+          <Jar x={67} y={64} s={0.6} c="#b8433f" />
+        </g>
+      ) : null}
+      {tier >= 5 ? (
+        <g>
+          <rect x="44" y="38" width="7" height="6" fill={P.lamp} stroke={P.outlineWood} strokeWidth=".6" />
+          <Pennant x={40} y={20} s={0.8} />
+        </g>
+      ) : null}
     </ArtSvg>
   )
 }
@@ -207,6 +220,12 @@ function Obstmarkt({ tier }: { tier: number }) {
       ))}
       {tier >= 3 ? <rect x="56" y="56" width="8" height="8" rx="1" fill={P.outlineWood} /> : null}
       {tier >= 4 ? <path d="M36 14h8v8h-8z" fill="#fbf3e0" stroke={P.outlineSoft} strokeWidth=".8" /> : null}
+      {tier >= 5 ? (
+        <g>
+          <Crate x={8} y={64} s={0.5} fruit="#d9483b" />
+          <Pennant x={66} y={24} s={0.8} />
+        </g>
+      ) : null}
     </ArtSvg>
   )
 }

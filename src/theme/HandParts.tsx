@@ -2,13 +2,16 @@
 import type { ReactNode } from 'react'
 import { ArtSvg } from './ArtSvg'
 import { P } from './art/palette'
+import { OmaSign } from './art/parts'
 
 const V = '0 0 80 72'
 
-export function Svg({ children }: { children: ReactNode }) {
+/** Rahmen der Kapitel-Grafik (80×72); ab Stufe 5 steht Omas Schild am Rand. */
+export function Svg({ children, tier = 0 }: { children: ReactNode; tier?: number }) {
   return (
     <ArtSvg viewBox={V}>
       {children}
+      {tier >= 5 ? <OmaSign x={6} y={64} s={0.8} /> : null}
     </ArtSvg>
   )
 }

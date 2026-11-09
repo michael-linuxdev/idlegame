@@ -89,6 +89,14 @@ export function Gemuesebeet({ t }: { t: number }) {
           )}
         </g>
       )}
+      {t >= 3 ? (
+        <g>
+          {/* Pflanzschilder */}
+          <path d="M14 46 V36 M68 45 V39" stroke={WOOD_D} strokeWidth="1.2" />
+          <rect x="10" y="32" width="8" height="5" rx="1" fill={P.canvas} stroke={OUT} strokeWidth="0.8" />
+          <rect x="64" y="35" width="8" height="5" rx="1" fill={P.canvas} stroke={OUT} strokeWidth="0.8" />
+        </g>
+      ) : null}
       {t >= 4 ? (
         <g>
           {/* watering can */}

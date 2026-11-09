@@ -2,7 +2,7 @@
 import type { ReactNode } from 'react'
 import { Pond, Roof, Svg } from '../../HandParts'
 import { Bunting, Butterfly, Snowcap } from './partsA'
-import { Flower, Shadow } from '../parts'
+import { Flower, Pot, Shadow } from '../parts'
 import { P } from '../palette'
 import { type AreaProps, Ground, Person } from './partsB'
 
@@ -25,7 +25,7 @@ export function Gartenschau({ id, tier, season }: AreaProps): ReactNode {
   switch (id) {
     case 'eingangstor':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={34} />
           <path d="M14 64V34M66 64V34" stroke={P.leafDark} strokeWidth="5" />
           <path d="M14 34 Q40 16 66 34" stroke={P.leafDark} strokeWidth="5" fill="none" />
@@ -51,7 +51,7 @@ export function Gartenschau({ id, tier, season }: AreaProps): ReactNode {
     case 'blumenkorso': {
       const rows = Math.min(5, 1 + tier)
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={32} />
           <path d="M10 56h52l6 -10h-6l-4 4h-44z" fill={P.outlineSoft} />
           <path d="M12 56 Q20 30 40 34 Q58 30 62 56z" fill={winter ? '#c9d0c4' : P.leaf} />
@@ -74,7 +74,7 @@ export function Gartenschau({ id, tier, season }: AreaProps): ReactNode {
     case 'rosenbogen': {
       const arches = Math.min(4, 1 + Math.floor(tier / 1.5))
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Ground color={P.leafLight} winter={winter} />
           {Array.from({ length: arches }, (_, i) => {
             const s = 1 - i * 0.16
@@ -94,13 +94,14 @@ export function Gartenschau({ id, tier, season }: AreaProps): ReactNode {
             )
           }).reverse()}
           {tier >= 5 ? <path d="M8 64h12M10 64v3M18 64v3" stroke={P.outlineWood} strokeWidth="1.2" /> : null}
+          {tier >= 4 ? <g>{[66, 70, 74].map((x) => <circle key={x} cx={x} cy={60} r="1.6" fill={P.red} />)}</g> : null}
         </Svg>
       )
     }
     case 'labyrinth': {
       const rings = Math.min(4, 1 + Math.floor(tier / 1.4))
       return (
-        <Svg>
+        <Svg tier={tier}>
           <ellipse cx="40" cy="56" rx="36" ry="13" fill="#d9c79a" />
           {Array.from({ length: rings }, (_, r) => {
             const rx = 32 - r * 7
@@ -116,7 +117,7 @@ export function Gartenschau({ id, tier, season }: AreaProps): ReactNode {
     case 'wasserspiele': {
       const jets = Math.min(5, tier)
       return (
-        <Svg>
+        <Svg tier={tier}>
           <ellipse cx="40" cy="58" rx="32" ry="10" fill="#bdb3a0" />
           <ellipse cx="40" cy="57" rx="29" ry="8.4" fill={winter ? '#cfe2ee' : P.water} />
           <rect x="37" y="44" width="6" height="12" fill="#bdb3a0" />
@@ -139,7 +140,7 @@ export function Gartenschau({ id, tier, season }: AreaProps): ReactNode {
     case 'aussichtsturm': {
       const h = 22 + tier * 6
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={24} />
           <path d={`M30 64 L36 ${64 - h} H44 L50 64`} stroke={P.woodDark} strokeWidth="2" fill="none" />
           {Array.from({ length: Math.floor(h / 8) }, (_, i) => {
@@ -159,7 +160,7 @@ export function Gartenschau({ id, tier, season }: AreaProps): ReactNode {
     case 'festzelt': {
       const w = 40 + tier * 4
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={34} />
           <rect x={40 - w / 2} y="44" width={w} height="20" fill={P.cream} stroke="#bdb3a0" strokeWidth=".6" />
           {Array.from({ length: Math.floor(w / 6) }, (_, i) => (
@@ -178,7 +179,7 @@ export function Gartenschau({ id, tier, season }: AreaProps): ReactNode {
     }
     case 'seebuehne':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Pond cy={56} ry={12} frozen={winter} />
           <path d="M18 54h44v-4h-44z" fill={P.woodMid} stroke={P.outlineWood} strokeWidth=".6" />
           <path d="M20 54v4M40 54v4M60 54v4" stroke={P.outlineWood} strokeWidth="1.2" />
@@ -197,7 +198,7 @@ export function Gartenschau({ id, tier, season }: AreaProps): ReactNode {
       )
     case 'ehrenpavillon':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={30} />
           <ellipse cx="40" cy="62" rx="22" ry="4" fill="#efe6d0" stroke="#bdb3a0" strokeWidth=".6" />
           {[24, 34, 46, 56].map((x) => (
@@ -215,11 +216,12 @@ export function Gartenschau({ id, tier, season }: AreaProps): ReactNode {
           ) : null}
           {tier >= 5 ? Array.from({ length: 6 }, (_, i) => <circle key={i} cx={20 + i * 8} cy={66} r="1.4" fill={bloom ? [P.red, P.yellow, P.cream][i % 3] : '#c9d0c4'} />) : null}
           {winter ? <path d="M22 35 Q40 13 58 35" stroke={P.white} strokeWidth="1.8" fill="none" /> : null}
+          {tier >= 3 ? <Pot x={10} y={64} s={0.5} /> : null}
         </Svg>
       )
     case 'gedenkgarten':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Ground color={P.leafLight} winter={winter} />
           {bloom
             ? Array.from({ length: 6 + tier * 4 }, (_, i) => <Flower s={0.7} key={i} x={8 + ((i * 17) % 64)} y={54 + ((i * 11) % 11) + 3.53} c={spring || summer ? '#6a9ae0' : '#9ab0d0'} r={1.03} center="#f5e08a" />)

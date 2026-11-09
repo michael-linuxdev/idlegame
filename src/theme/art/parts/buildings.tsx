@@ -25,3 +25,48 @@ export function Jar({ x, y, c = P.honey, lid = P.paper, s = 1 }: { x: number; y:
     </Place>
   )
 }
+
+/** Wimpel an einer Stange — Markenzeichen der höchsten Stufe; Fußpunkt = Stangenfuß. */
+export function Pennant({ x, y, h = 12, c = P.roof, s = 1 }: { x: number; y: number; h?: number; c?: string; s?: number }) {
+  return (
+    <Place x={x} y={y} s={s}>
+      <path d={`M0 0 V${-h}`} stroke={P.outlineWood} strokeWidth={STROKE.detail} />
+      <path d={`M0 ${-h} l7 2.2 l-7 2.2 z`} fill={c} />
+      <circle cx="0" cy={-h - 0.8} r="0.9" fill={P.brass} />
+    </Place>
+  )
+}
+
+/** Holzfass (Wein, Most, Regen); Fußpunkt = Bodenmitte. */
+export function Barrel({ x, y, s = 1 }: { x: number; y: number; s?: number }) {
+  return (
+    <Place x={x} y={y} s={s}>
+      <rect x="-4" y="-10" width="8" height="10" rx="2.6" fill={P.woodMid} stroke={P.outlineWood} strokeWidth={STROKE.detail} />
+      <path d="M-4 -7 H4 M-4 -3 H4" stroke={P.outlineWood} strokeWidth={STROKE.hair} />
+    </Place>
+  )
+}
+
+/** Laterne an einem Haken; Fußpunkt = Aufhängung oben. */
+export function Lantern({ x, y, s = 1 }: { x: number; y: number; s?: number }) {
+  return (
+    <Place x={x} y={y} s={s} className="art-lantern">
+      <path d="M0 0 V2" stroke={P.outline} strokeWidth={STROKE.hair} />
+      <rect x="-1.6" y="2" width="3.2" height="4" rx="0.8" fill={P.lamp} stroke={P.outline} strokeWidth={STROKE.hair} />
+    </Place>
+  )
+}
+
+/**
+ * Omas Schild — Markenzeichen jedes Kapitel-Bereichs auf Stufe 5:
+ * kleines Holzschild mit Herz am linken Rand. Fußpunkt = Pfostenfuß.
+ */
+export function OmaSign({ x, y, s = 1 }: { x: number; y: number; s?: number }) {
+  return (
+    <Place x={x} y={y} s={s} className="art-oma-sign">
+      <path d="M0 0 V-9" stroke={P.outlineWood} strokeWidth="1.2" />
+      <rect x="-4.6" y="-13" width="9.2" height="5.6" rx="1" fill={P.canvas} stroke={P.outlineWood} strokeWidth={STROKE.hair * 1.4} />
+      <path d="M0 -8.6 c-2.6 -1.6 -2.2 -3.4 -0.9 -3.4 c0.5 0 0.8 0.3 0.9 0.6 c0.1 -0.3 0.4 -0.6 0.9 -0.6 c1.3 0 1.7 1.8 -0.9 3.4z" fill={P.red} />
+    </Place>
+  )
+}

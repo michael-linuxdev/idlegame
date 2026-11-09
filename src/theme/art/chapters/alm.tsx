@@ -53,7 +53,7 @@ export function Alm({ id, tier, season }: AreaProps): ReactNode {
     case 'almwiese': {
       const n = 8 + tier * 5
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Slope winter={winter} color={grass} />
           {!winter
             ? Array.from({ length: n }, (_, i) => {
@@ -81,7 +81,7 @@ export function Alm({ id, tier, season }: AreaProps): ReactNode {
     }
     case 'kuhherde':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Slope winter={winter} color={grass} />
           {Array.from({ length: 6 }, (_, i) => (
             <path key={i} d={`M${6 + i * 12} 66 l6 -12`} stroke={P.outlineSoft} strokeWidth="1.4" />
@@ -112,7 +112,7 @@ export function Alm({ id, tier, season }: AreaProps): ReactNode {
       )
     case 'sennhuette':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={34} />
           <rect x="14" y="56" width="44" height="8" fill={P.stone} stroke="#7a6e5e" strokeWidth=".6" />
           <rect x="16" y="40" width="40" height="16" fill={P.woodDark} stroke="#5a3a1a" strokeWidth=".7" />
@@ -151,7 +151,7 @@ export function Alm({ id, tier, season }: AreaProps): ReactNode {
     case 'edelweiss': {
       const n = Math.min(9, 2 + tier * 2)
       return (
-        <Svg>
+        <Svg tier={tier}>
           <ellipse cx="40" cy="62" rx="34" ry="6" fill={winter ? '#eef2f4' : '#9ab07a'} />
           <Rock x={6} y={64} w={30} h={18} snow={winter} />
           <Rock x={40} y={64} w={34} h={22} snow={winter} />
@@ -173,7 +173,7 @@ export function Alm({ id, tier, season }: AreaProps): ReactNode {
     case 'enzian': {
       const n = Math.min(16, 4 + tier * 3)
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Slope winter={winter} color={grass} />
           {!winter
             ? Array.from({ length: n }, (_, i) =>
@@ -195,7 +195,7 @@ export function Alm({ id, tier, season }: AreaProps): ReactNode {
     case 'bergbach': {
       const water = winter ? '#cfe2ee' : P.water
       return (
-        <Svg>
+        <Svg tier={tier}>
           <ellipse cx="40" cy="58" rx="36" ry="12" fill={winter ? '#eef2f4' : grass} />
           <path d="M8 22 C24 34 18 46 38 52 S66 56 74 66" stroke={P.stone} strokeWidth="14" fill="none" opacity=".7" />
           <path d="M8 22 C24 34 18 46 38 52 S66 56 74 66" stroke={water} strokeWidth={7 + tier} fill="none" strokeLinecap="round" />
@@ -222,7 +222,7 @@ export function Alm({ id, tier, season }: AreaProps): ReactNode {
     case 'kaesekeller': {
       const wheels = Math.min(6, tier + 1)
       return (
-        <Svg>
+        <Svg tier={tier}>
           <path d="M2 66 Q30 22 78 40 V66z" fill={winter ? '#eef2f4' : grass} />
           <path d="M22 66V48a12 12 0 0 1 24 0v18z" fill={P.stone} stroke="#7a6e5e" strokeWidth=".8" />
           {[0, 1, 2, 3].map((k) => (
@@ -247,7 +247,7 @@ export function Alm({ id, tier, season }: AreaProps): ReactNode {
     case 'seilbahn': {
       const gondolas = Math.min(3, 1 + Math.floor(tier / 2))
       return (
-        <Svg>
+        <Svg tier={tier}>
           <path d="M0 66 V58 Q34 46 58 22 Q68 12 80 12 V66z" fill={winter ? '#eef2f4' : '#9ab07a'} opacity=".45" />
           <path d="M8 58 L72 18" stroke="#4a4a4a" strokeWidth=".8" />
           <path d="M8 61 L72 21" stroke="#4a4a4a" strokeWidth=".5" />
@@ -273,12 +273,13 @@ export function Alm({ id, tier, season }: AreaProps): ReactNode {
             </g>
           ) : null}
           {winter ? <Snowcap d="M0 56 L9 50 L18 56" /> : null}
+          {tier >= 3 ? <Conifer x={8} y={64} s={0.5} /> : null}
         </Svg>
       )
     }
     case 'gipfelhuette':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <path d="M2 66 L30 16 L44 30 L52 22 L78 66z" fill="#9aa8b6" />
           <path d="M30 16 L22 30 L28 28 L32 32 L38 24z M52 22 L48 30 L54 28 L58 32z" fill={P.white} />
           {winter ? <path d="M10 52 L30 16 L52 22 L70 52" stroke={P.white} strokeWidth="3" fill="none" opacity=".8" /> : null}
@@ -300,11 +301,12 @@ export function Alm({ id, tier, season }: AreaProps): ReactNode {
             </g>
           ) : null}
           {winter ? <Snowcap d="M21 48 L37 40 L53 48" /> : null}
+          {tier >= 2 ? <Rock x={60} y={64} w={10} h={5} /> : null}
         </Svg>
       )
     case 'almfest':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <ellipse cx="40" cy="60" rx="36" ry="9" fill={winter ? '#eef2f4' : grass} />
           <rect x="16" y="48" width="36" height="6" fill={P.woodMid} stroke={P.outlineWood} strokeWidth=".6" />
           <path d="M18 48V32M50 48V32" stroke={P.outlineWood} strokeWidth="1.4" />

@@ -40,7 +40,7 @@ export function Japan({ id, tier, season }: AreaProps): ReactNode {
     case 'teestrauch': {
       const rows = Math.min(4, 1 + Math.floor((tier + 1) / 2))
       return (
-        <Svg>
+        <Svg tier={tier}>
           <path d="M2 66 Q30 34 78 40 V66z" fill={winter ? '#e8eef0' : '#8cb06a'} />
           {Array.from({ length: rows }, (_, r) => (
             <path key={r} d={`M${6 + r * 2} ${64 - r * 6} Q40 ${56 - r * 6} ${76 - r} ${60 - r * 6}`} stroke="#2f6a2e" strokeWidth="6.4" fill="none" strokeLinecap="round" />
@@ -55,13 +55,15 @@ export function Japan({ id, tier, season }: AreaProps): ReactNode {
             </g>
           ) : null}
           {tier >= 5 ? <path d="M10 40h6l-1 4h-4z" fill={P.woodLight} stroke={P.outlineWood} strokeWidth=".4" /> : null}
+          {tier >= 2 ? <circle cx="72" cy="60" r="3" fill={P.stone} stroke={P.outlineStone} strokeWidth=".5" /> : null}
+          {tier >= 4 ? <path d="M64 64 h10 l-1.5 -4 h-7 z" fill={P.woodLight} stroke={P.outlineWood} strokeWidth=".5" /> : null}
         </Svg>
       )
     }
     case 'moosgarten': {
       const n = Math.min(7, 2 + tier)
       return (
-        <Svg>
+        <Svg tier={tier}>
           <ellipse cx="40" cy="57" rx="36" ry="12" fill={winter ? '#e8eef0' : P.leaf} />
           {Array.from({ length: n }, (_, i) => (
             <ellipse key={i} cx={10 + ((i * 17) % 60)} cy={52 + ((i * 7) % 12)} rx={5 + (i % 3)} ry={2.6 + (i % 2)} fill={winter ? '#d8e0d8' : i % 2 ? '#6fa04a' : '#4f8a3a'} />
@@ -83,7 +85,7 @@ export function Japan({ id, tier, season }: AreaProps): ReactNode {
     case 'bambushain': {
       const n = Math.min(10, 3 + tier * 2)
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={32} />
           {Array.from({ length: n }, (_, i) => {
             const x = 8 + ((i * 13) % 64)
@@ -106,7 +108,7 @@ export function Japan({ id, tier, season }: AreaProps): ReactNode {
     case 'kirschallee': {
       const color = spring ? '#f7c6d9' : season === 'summer' ? '#6ca848' : '#d2752c'
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={34} />
           <path d="M30 67 L37 58 H43 L50 67z" fill={gravel} opacity=".75" />
           <BlossomTree x={18} y={64} s={0.8 + tier * 0.05} winter={winter} color={color} />
@@ -117,13 +119,14 @@ export function Japan({ id, tier, season }: AreaProps): ReactNode {
             ? Array.from({ length: 4 + tier * 2 }, (_, i) => <ellipse key={i} cx={8 + ((i * 13) % 64)} cy={58 + ((i * 5) % 8)} rx="1" ry=".6" fill="#f7c6d9" />)
             : null}
           {tier >= 5 ? <path d="M58 66h12M60 66v2M68 66v2" stroke="#a83a2a" strokeWidth="1.4" /> : null}
+          {tier >= 3 ? <path d="M6 64 V54 M4 54 h4 M5 56 h2" stroke={P.stone} strokeWidth="1.4" /> : null}
         </Svg>
       )
     }
     case 'koiteich': {
       const koi = Math.min(6, 1 + tier)
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Pond frozen={winter} />
           {Array.from({ length: 5 }, (_, i) => (
             <ellipse key={i} cx={10 + i * 15} cy={66 - (i % 2) * 2} rx="4" ry="2.4" fill="#9a9a8a" stroke="#7a7a6a" strokeWidth=".4" />
@@ -147,7 +150,7 @@ export function Japan({ id, tier, season }: AreaProps): ReactNode {
     case 'zengarten': {
       const lines = 2 + tier
       return (
-        <Svg>
+        <Svg tier={tier}>
           <rect x="6" y="46" width="68" height="20" rx="2" fill={gravel} stroke="#8a7e6e" strokeWidth=".8" />
           {Array.from({ length: lines }, (_, i) => (
             <path key={i} d={`M8 ${48 + i * (17 / lines)} H72`} stroke="#c9c0a8" strokeWidth=".6" />
@@ -173,7 +176,7 @@ export function Japan({ id, tier, season }: AreaProps): ReactNode {
     }
     case 'teehaus':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={34} />
           <rect x="14" y="56" width="50" height="4" fill={P.woodDark} />
           <path d="M18 60v4M60 60v4" stroke={P.outlineWood} strokeWidth="1.4" />
@@ -203,7 +206,7 @@ export function Japan({ id, tier, season }: AreaProps): ReactNode {
     case 'bonsai': {
       const n = Math.min(4, 1 + Math.floor(tier / 2))
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={32} />
           <rect x="6" y="56" width="68" height="3" fill={P.woodDark} />
           <path d="M10 59v7M70 59v7" stroke={P.outlineWood} strokeWidth="1.4" />
@@ -222,12 +225,13 @@ export function Japan({ id, tier, season }: AreaProps): ReactNode {
             )
           })}
           {tier >= 5 ? <path d="M60 40h12v4h-12z" fill={P.cream} stroke="#a83a2a" strokeWidth=".5" /> : null}
+          {tier >= 3 ? <circle cx="8" cy="62" r="2.6" fill={P.stone} stroke={P.outlineStone} strokeWidth=".5" /> : null}
         </Svg>
       )
     }
     case 'rotebruecke':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Pond cy={58} ry={10} frozen={winter} />
           <path d="M8 58 Q40 32 72 58" stroke="#c4302a" strokeWidth="4" fill="none" />
           <path d="M8 52 Q40 26 72 52" stroke="#c4302a" strokeWidth="1.6" fill="none" />
@@ -247,7 +251,7 @@ export function Japan({ id, tier, season }: AreaProps): ReactNode {
     case 'laternenweg': {
       const n = Math.min(5, 1 + tier)
       return (
-        <Svg>
+        <Svg tier={tier}>
           <path d="M6 66 Q30 54 40 50 Q56 44 74 42" stroke={gravel} strokeWidth="9" fill="none" />
           {Array.from({ length: 6 }, (_, i) => (
             <ellipse key={i} cx={12 + i * 12} cy={63 - i * 4} rx="3" ry="1.4" fill="#9a9a8a" />

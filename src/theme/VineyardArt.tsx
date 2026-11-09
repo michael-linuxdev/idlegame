@@ -8,7 +8,7 @@ import { moduleTier, sameTierProps } from './tiers'
 import type { Season } from './ambient'
 import { ArtSvg } from './ArtSvg'
 import { P } from './art/palette'
-import { Shadow } from './art/parts'
+import { Barrel, Crate, Lantern, Pennant, Shadow } from './art/parts'
 
 const GRAPE: Record<string, string> = {
   riesling: '#c9d36a',
@@ -86,6 +86,16 @@ function Trockenmauer({ tier }: { tier: number }) {
           ))}
         </g>
       ) : null}
+      {tier >= 5 ? (
+        <g>
+          {/* Rebe rankt über die Mauer */}
+          <path d="M30 63 q4 -14 12 -22 q6 -4 10 -2" stroke={P.bark} strokeWidth="1.2" fill="none" />
+          {[44, 48, 52].map((x, i) => (
+            <circle key={x} cx={x} cy={38 + (i % 2) * 2} r="1.6" fill={P.plum} />
+          ))}
+          <Pennant x={70} y={58 - layers * 7} s={0.8} />
+        </g>
+      ) : null}
     </ArtSvg>
   )
 }
@@ -136,6 +146,18 @@ function House({ tier, kind }: { tier: number; kind: 'wingerthaus' | 'kelter' | 
         </g>
       ) : null}
       {kind === 'wingerthaus' && tier >= 3 ? <circle cx="62" cy="58" r="5" fill={P.leaf} /> : null}
+      {kind !== 'weinkeller' && tier >= 4 ? <rect x={x + w - 11} y="42" width="7" height="6" fill={P.waterLight} stroke={P.outlineSoft} strokeWidth=".6" /> : null}
+      {kind === 'kelter' && tier >= 3 ? <Crate x={14} y={63} s={0.5} fruit={P.plum} /> : null}
+      {kind === 'kelter' && tier >= 4 ? <Barrel x={24} y={64} s={0.8} /> : null}
+      {kind === 'weinkeller' && tier >= 5 ? <Lantern x={40} y={34} /> : null}
+      {kind === 'strausse' && tier >= 5 ? (
+        <g>
+          <Lantern x={18} y={40} s={0.9} />
+          <Lantern x={62} y={40} s={0.9} />
+        </g>
+      ) : null}
+      {kind === 'wingerthaus' && tier >= 5 ? <rect x="8" y="58" width="12" height="2.6" fill={P.woodMid} /> : null}
+      {tier >= 5 ? <Pennant x={kind === 'weinkeller' ? 40 : 40} y={kind === 'weinkeller' ? 30 : 19} s={0.8} /> : null}
     </ArtSvg>
   )
 }
@@ -162,6 +184,13 @@ function Weinfest({ tier }: { tier: number }) {
             <circle key={x} className="fest-twinkle" cx={x} cy="28" r="1.6" fill="#fff3b0" style={{ animationDelay: `${i * 0.3}s` }} />
           ))
         : null}
+      {tier >= 5 ? (
+        <g>
+          <Barrel x={6} y={64} s={0.8} />
+          <Barrel x={74} y={64} s={0.8} />
+          <Pennant x={40} y={30} s={0.8} />
+        </g>
+      ) : null}
     </ArtSvg>
   )
 }

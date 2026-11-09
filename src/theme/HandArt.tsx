@@ -21,7 +21,7 @@ function Bauernhof({ id, tier, season }: { id: string; tier: number; season?: Se
   switch (id) {
     case 'kuhweide':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Meadow winter={winter} />
           <Fence y={62} />
           {tier >= 4 ? (
@@ -39,7 +39,7 @@ function Bauernhof({ id, tier, season }: { id: string; tier: number; season?: Se
       )
     case 'ziegenstall':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={30} />
           <House x={46} w={22} h={14} wall={P.woodLight} roof={P.outlineWood} steep={9} />
           <path d="M10 64 Q20 34 34 40 Q42 50 40 64z" fill={P.stone} stroke={P.outlineStone} strokeWidth=".8" />
@@ -53,7 +53,7 @@ function Bauernhof({ id, tier, season }: { id: string; tier: number; season?: Se
       )
     case 'schweinekoben':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Meadow winter={winter} />
           <ellipse cx="40" cy="56" rx="24" ry="8" fill={P.bark} />
           <ellipse cx="34" cy="55" rx="10" ry="3" fill={P.outlineSoft} opacity=".6" />
@@ -68,7 +68,7 @@ function Bauernhof({ id, tier, season }: { id: string; tier: number; season?: Se
       )
     case 'gaensewiese':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Meadow winter={winter} />
           <Pond cx={58} cy={50} rx={14} ry={6} frozen={winter} />
           <Bird x={24} y={54} />
@@ -81,7 +81,7 @@ function Bauernhof({ id, tier, season }: { id: string; tier: number; season?: Se
     case 'kartoffelacker': {
       const rows = Math.min(5, 1 + tier)
       return (
-        <Svg>
+        <Svg tier={tier}>
           <ellipse cx="40" cy="56" rx="36" ry="14" fill={P.outlineSoft} opacity=".7" />
           {Array.from({ length: rows }, (_, r) => (
             <g key={r}>
@@ -108,7 +108,7 @@ function Bauernhof({ id, tier, season }: { id: string; tier: number; season?: Se
     }
     case 'heuscheune':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={34} />
           <rect x="14" y="34" width="40" height="30" fill="#b8403a" stroke="#6e2a22" strokeWidth=".8" />
           <path d="M10 34 L34 16 L58 34z" fill="#6e2a22" />
@@ -127,7 +127,7 @@ function Bauernhof({ id, tier, season }: { id: string; tier: number; season?: Se
       )
     case 'melkhaus':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={30} />
           <House x={18} w={30} h={20} wall={P.cream} roof={P.outlineWood} />
           <rect x="29" y="52" width="8" height="12" fill={P.bark} />
@@ -143,7 +143,7 @@ function Bauernhof({ id, tier, season }: { id: string; tier: number; season?: Se
       )
     case 'kaeserei':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={30} />
           <House x={12} w={34} h={22} wall="#f3e6c8" roof="#a5531a" timber />
           <Window x={38} y={48} lit={tier >= 3} />
@@ -157,7 +157,7 @@ function Bauernhof({ id, tier, season }: { id: string; tier: number; season?: Se
       )
     case 'hofbaeckerei':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={30} />
           <House x={10} w={30} h={20} wall={P.paper} roof="#b8403a" />
           <Window x={16} y={50} lit />
@@ -168,11 +168,12 @@ function Bauernhof({ id, tier, season }: { id: string; tier: number; season?: Se
           {Array.from({ length: Math.min(3, tier) }, (_, i) => (
             <ellipse key={i} cx={20 + i * 7} cy={66} rx="3" ry="1.6" fill="#c4783a" stroke="#8a4a20" strokeWidth=".5" />
           ))}
+          {tier >= 4 ? <Crate x={72} y={64} s={0.45} fruit="#c4783a" /> : null}
         </Svg>
       )
     case 'bauernmarkt':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={34} />
           {Array.from({ length: Math.min(3, 1 + Math.floor(tier / 2)) }, (_, i) => {
             const x = 8 + i * 23
@@ -188,6 +189,7 @@ function Bauernhof({ id, tier, season }: { id: string; tier: number; season?: Se
               </g>
             )
           })}
+          {tier >= 3 ? <g><path d="M72 64 L74 52 M78 64 L76 52" stroke={P.outlineWood} strokeWidth="1" /><rect x="70" y="50" width="10" height="7" fill="#2f3b2f" stroke={P.outlineWood} strokeWidth=".6" /></g> : null}
         </Svg>
       )
   }
@@ -202,7 +204,7 @@ function Imkerei({ id, tier, season }: { id: string; tier: number; season?: Seas
   switch (id) {
     case 'bienenhaus':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={30} />
           <rect x="10" y="36" width="60" height="28" fill={P.woodMid} stroke={P.outlineWood} strokeWidth=".8" />
           <path d="M6 36 L40 22 L74 36z" fill={P.outlineWood} />
@@ -217,7 +219,7 @@ function Imkerei({ id, tier, season }: { id: string; tier: number; season?: Seas
       )
     case 'lindenallee':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={34} />
           {Array.from({ length: Math.min(3, 1 + Math.floor(tier / 2)) }, (_, i) => (
             <g key={i} transform={`translate(${18 + i * 22} 64)`}>
@@ -233,7 +235,7 @@ function Imkerei({ id, tier, season }: { id: string; tier: number; season?: Seas
       )
     case 'heide':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <ellipse cx="40" cy="56" rx="36" ry="14" fill="#8a9a5a" opacity=".7" />
           {Array.from({ length: 4 + tier * 2 }, (_, i) => (
             <ellipse key={i} cx={10 + ((i * 13) % 60)} cy={50 + ((i * 7) % 14)} rx="6" ry="3.6" fill={winter ? '#8a7a8a' : flowering || season === 'autumn' ? (i % 2 ? '#a35fb0' : P.lilac) : '#6d7a4a'} />
@@ -245,7 +247,7 @@ function Imkerei({ id, tier, season }: { id: string; tier: number; season?: Seas
       )
     case 'rapsfeld':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <ellipse cx="40" cy="54" rx="36" ry="15" fill={winter ? '#9ab08a' : flowering ? '#e8d23a' : '#8aa04a'} />
           {Array.from({ length: 2 + tier }, (_, r) => (
             <path key={r} d={`M6 ${44 + r * 4} Q40 ${41 + r * 4} 74 ${44 + r * 4}`} stroke={flowering ? '#f5e04a' : '#7a9040'} strokeWidth="2.6" fill="none" />
@@ -255,7 +257,7 @@ function Imkerei({ id, tier, season }: { id: string; tier: number; season?: Seas
       )
     case 'kirschhain':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={34} />
           <BlossomTree x={40} y={64} s={0.9 + tier * 0.04} winter={winter} color={season === 'spring' ? '#f7c6d9' : season === 'summer' ? '#6ca848' : '#d2752c'} />
           {tier >= 3 ? <BlossomTree x={18} y={64} s={0.7} winter={winter} color={season === 'spring' ? '#fbe0ea' : '#6ca848'} /> : null}
@@ -267,11 +269,12 @@ function Imkerei({ id, tier, season }: { id: string; tier: number; season?: Seas
               ))}
             </g>
           ) : null}
+          {tier >= 2 ? <Hive x={66} y={54} color={P.yellow} /> : null}
         </Svg>
       )
     case 'wildblumen':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <ellipse cx="40" cy="56" rx="36" ry="14" fill={winter ? '#c9d0c4' : P.leafLight} />
           {!winter
             ? Array.from({ length: 8 + tier * 5 }, (_, i) => {
@@ -292,7 +295,7 @@ function Imkerei({ id, tier, season }: { id: string; tier: number; season?: Seas
       )
     case 'schleuder':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={30} />
           <House x={14} w={40} h={22} wall={P.paper} roof="#a5531a" />
           <rect x="26" y="46" width="16" height="18" fill="#3a2a1a" />
@@ -306,7 +309,7 @@ function Imkerei({ id, tier, season }: { id: string; tier: number; season?: Seas
       )
     case 'wachszieherei':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={30} />
           <House x={10} w={30} h={20} wall="#f5e6b8" roof="#c49a3a" />
           <Window x={16} y={50} lit={tier >= 2} />
@@ -322,7 +325,7 @@ function Imkerei({ id, tier, season }: { id: string; tier: number; season?: Seas
       )
     case 'metkeller':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <path d="M2 66 Q40 18 78 66z" fill={winter ? '#e8eef0' : P.leafLight} />
           <path d="M28 66V52a12 12 0 0 1 24 0v14z" fill={P.stone} stroke={P.outlineStone} strokeWidth=".8" />
           <path d="M32 66V54a8 8 0 0 1 16 0v12z" fill="#5a3d22" />
@@ -338,7 +341,7 @@ function Imkerei({ id, tier, season }: { id: string; tier: number; season?: Seas
       )
     case 'honigladen':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={30} />
           <House x={14} w={44} h={22} wall="#fbf3e0" roof="#e0a21a" />
           <rect x="20" y="48" width="18" height="10" fill={P.waterLight} stroke={P.outlineWood} strokeWidth=".7" />
@@ -364,7 +367,7 @@ function Teich({ id, tier, season }: { id: string; tier: number; season?: Season
   switch (id) {
     case 'seerosen':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Pond frozen={frozen} />
           {!frozen
             ? Array.from({ length: Math.min(7, 2 + tier) }, (_, i) => (
@@ -382,7 +385,7 @@ function Teich({ id, tier, season }: { id: string; tier: number; season?: Season
       )
     case 'schilf':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Pond cy={56} ry={10} frozen={frozen} />
           {Array.from({ length: 5 + tier * 2 }, (_, i) => (
             <Reed key={i} x={8 + ((i * 9) % 64)} h={18 + ((i * 7) % 14)} />
@@ -401,7 +404,7 @@ function Teich({ id, tier, season }: { id: string; tier: number; season?: Season
       )
     case 'karpfenteich':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Pond frozen={frozen} />
           {!frozen
             ? Array.from({ length: Math.min(6, 1 + tier) }, (_, i) => (
@@ -419,7 +422,7 @@ function Teich({ id, tier, season }: { id: string; tier: number; season?: Season
       )
     case 'forellenbach':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <path d="M6 26 C30 36 18 48 40 54 S70 58 76 66" stroke="#7a8a4c" strokeWidth="16" fill="none" opacity=".5" />
           <path d="M6 26 C30 36 18 48 40 54 S70 58 76 66" stroke={frozen ? '#cfe2ee' : P.water} strokeWidth={9 + tier} fill="none" strokeLinecap="round" />
           <path d="M6 26 C30 36 18 48 40 54 S70 58 76 66" stroke="#d6eef8" strokeWidth="1.6" fill="none" strokeDasharray="4 6" className="orchard-stream" />
@@ -435,7 +438,7 @@ function Teich({ id, tier, season }: { id: string; tier: number; season?: Season
       )
     case 'steg':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Pond frozen={frozen} />
           <rect x="10" y="44" width={24 + tier * 6} height="6" fill={P.woodMid} stroke={P.outlineWood} strokeWidth=".7" />
           {Array.from({ length: 3 + tier }, (_, i) => (
@@ -447,7 +450,7 @@ function Teich({ id, tier, season }: { id: string; tier: number; season?: Season
       )
     case 'fischerhuette':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Pond cy={58} ry={9} frozen={frozen} />
           <path d="M20 58v-6M44 58v-6M32 58v-6" stroke={P.outlineWood} strokeWidth="1.6" />
           <rect x="18" y="36" width="28" height="16" fill={P.woodMid} stroke={P.outlineWood} strokeWidth=".8" />
@@ -463,11 +466,12 @@ function Teich({ id, tier, season }: { id: string; tier: number; season?: Season
             </g>
           ) : null}
           {tier >= 4 ? <Boat x={62} y={58} color={P.waterDeep} /> : null}
+          {tier >= 3 ? <g><path d="M8 46 V62" stroke={P.outlineWood} strokeWidth="1" /><path d="M8 48 q6 4 10 0" stroke={P.stone} strokeWidth=".6" fill="none" /></g> : null}
         </Svg>
       )
     case 'raeucherei':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={30} />
           <House x={20} w={26} h={22} wall={P.outlineSoft} roof="#4a3a2a" steep={11} />
           <rect x="38" y="30" width="5" height="12" fill={P.outlineWood} />
@@ -484,7 +488,7 @@ function Teich({ id, tier, season }: { id: string; tier: number; season?: Season
       )
     case 'bootsverleih':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Pond frozen={frozen} />
           <rect x="6" y="40" width="40" height="5" fill={P.woodMid} stroke={P.outlineWood} strokeWidth=".6" />
           {[10, 20, 30, 40].map((x) => (
@@ -505,7 +509,7 @@ function Teich({ id, tier, season }: { id: string; tier: number; season?: Season
       )
     case 'entenbucht':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Pond frozen={frozen} />
           <Reed x={66} h={20} />
           <Reed x={70} h={16} />
@@ -518,7 +522,7 @@ function Teich({ id, tier, season }: { id: string; tier: number; season?: Season
       )
     case 'seefest':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Pond frozen={frozen} />
           <rect x="24" y="48" width="32" height="6" fill={P.woodMid} stroke={P.outlineWood} strokeWidth=".6" />
           <path d="M26 48V34M54 48V34" stroke={P.outlineWood} strokeWidth="1.4" />

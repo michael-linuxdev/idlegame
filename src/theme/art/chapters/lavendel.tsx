@@ -3,7 +3,7 @@ import type { ReactNode } from 'react'
 import type { Season } from '../../ambient'
 import { Bees, House, Smoke, Svg, Window } from '../../HandParts'
 import { Bunting, Butterfly, Snowcap } from './partsA'
-import { Jar, Shadow } from '../parts'
+import { Crate, Jar, Shadow } from '../parts'
 import { P } from '../palette'
 import { type AreaProps, Ground, Person } from './partsB'
 
@@ -74,7 +74,7 @@ export function Lavendel({ id, tier, season }: AreaProps): ReactNode {
     case 'lavendelreihen': {
       const rows = Math.min(5, 1 + tier)
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Ground color="#b8a46a" winter={winter} />
           {Array.from({ length: rows }, (_, r) =>
             Array.from({ length: 7 }, (_, i) => <Lavender key={`${r}-${i}`} x={12 + i * 9.4 + (r % 2) * 2} y={64 - r * 4.6} season={season} s={0.85} />),
@@ -92,7 +92,7 @@ export function Lavendel({ id, tier, season }: AreaProps): ReactNode {
     case 'sonnenblumen': {
       const n = Math.min(8, 2 + tier)
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Ground color="#a8b060" winter={winter} />
           {Array.from({ length: n }, (_, i) => (
             <Sunflower key={i} x={10 + i * 8.6} h={22 + ((i * 7) % 8) + tier} season={season} />
@@ -107,7 +107,7 @@ export function Lavendel({ id, tier, season }: AreaProps): ReactNode {
     case 'olivenhain': {
       const trees = Math.min(3, 1 + Math.floor(tier / 2))
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Ground color={dry} winter={winter} />
           {Array.from({ length: trees }, (_, i) => (
             <Olive key={i} x={[40, 18, 62][i]!} y={[62, 58, 58][i]!} s={i === 0 ? 1.1 + tier * 0.06 : 0.85} season={season} />
@@ -125,13 +125,14 @@ export function Lavendel({ id, tier, season }: AreaProps): ReactNode {
               <circle cx="57" cy="61.4" r=".9" fill="#4a3a5a" />
             </g>
           ) : null}
+          {tier >= 3 ? <Crate x={72} y={64} s={0.45} fruit={P.leafMoss} /> : null}
         </Svg>
       )
     }
     case 'rosmarin': {
       const n = Math.min(7, 2 + tier)
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={32} />
           <path d="M6 64 Q40 56 74 64 V66 H6z" fill="#c9b48a" />
           <path d="M6 58 H74 V64 H6z" fill="#d9c49a" stroke="#a69a7a" strokeWidth=".6" />
@@ -158,7 +159,7 @@ export function Lavendel({ id, tier, season }: AreaProps): ReactNode {
       const bare = winter
       const r = 12 + tier * 1.6
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={30} />
           <Ground color={dry} winter={winter} />
           <path d="M38 64 Q36 52 40 44 M40 50 Q46 44 52 40 M39 52 Q32 46 26 42" stroke="#8a7a6a" strokeWidth="3" fill="none" strokeLinecap="round" />
@@ -182,7 +183,7 @@ export function Lavendel({ id, tier, season }: AreaProps): ReactNode {
     case 'destillerie': {
       const bottles = Math.min(6, tier + 1)
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={34} />
           <House x={8} w={42} h={22} wall={P.paper} roof={P.roof} steep={10} />
           <rect x="40" y="26" width="6" height="12" fill="#bdb3a0" />
@@ -204,7 +205,7 @@ export function Lavendel({ id, tier, season }: AreaProps): ReactNode {
     case 'seifenmanufaktur': {
       const bars = Math.min(8, 2 + tier)
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={34} />
           <House x={30} w={42} h={22} wall="#f5ecd8" roof={P.roof} steep={10} />
           <rect x="34" y="47" width="10" height="9" fill="#8a9ac0" stroke={P.outlineWood} strokeWidth=".6" />
@@ -231,7 +232,7 @@ export function Lavendel({ id, tier, season }: AreaProps): ReactNode {
     case 'marktstand': {
       const stalls = Math.min(3, 1 + Math.floor(tier / 2))
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={34} />
           {Array.from({ length: stalls }, (_, i) => {
             const x = 6 + i * 24
@@ -250,12 +251,13 @@ export function Lavendel({ id, tier, season }: AreaProps): ReactNode {
           })}
           {tier >= 4 ? <Person x={70} y={64} c={P.blue} /> : null}
           {tier >= 5 ? <Person x={64} y={66} c={P.red} s={0.8} /> : null}
+          {tier >= 3 ? <Crate x={8} y={64} s={0.45} fruit={P.lavender} /> : null}
         </Svg>
       )
     }
     case 'mas':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={34} />
           {tier >= 3 ? <Cypress x={8} y={64} s={1 + tier * 0.06} /> : null}
           {tier >= 5 ? <Cypress x={72} y={64} s={1.1} /> : null}
@@ -285,7 +287,7 @@ export function Lavendel({ id, tier, season }: AreaProps): ReactNode {
       )
     case 'lavendelfest':
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Ground color="#b8a46a" winter={winter} />
           <rect x="18" y="48" width="36" height="6" fill={P.woodMid} stroke={P.outlineWood} strokeWidth=".6" />
           <path d="M20 48V34M52 48V34" stroke={P.outlineWood} strokeWidth="1.4" />

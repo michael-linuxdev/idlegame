@@ -23,7 +23,7 @@ export function Kraeuter({ id, tier, season }: AreaProps): ReactNode {
     case 'kamille': {
       const rows = Math.min(5, 1 + tier)
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Soil winter={winter} />
           {Array.from({ length: rows }, (_, r) => (
             <g key={r}>
@@ -56,7 +56,7 @@ export function Kraeuter({ id, tier, season }: AreaProps): ReactNode {
     case 'pfefferminze': {
       const clumps = Math.min(6, 1 + tier)
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={32} />
           <Bed x={40} y={62} w={107} h={5} front={12} s={0.6} winter={winter} />
           {Array.from({ length: clumps }, (_, i) => {
@@ -86,7 +86,7 @@ export function Kraeuter({ id, tier, season }: AreaProps): ReactNode {
     case 'ringelblume': {
       const n = Math.min(14, 4 + tier * 2)
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Soil cy={57} rx={30} ry={11} winter={winter} />
           {Array.from({ length: 12 }, (_, i) => {
             const a = (i / 12) * Math.PI * 2
@@ -119,7 +119,7 @@ export function Kraeuter({ id, tier, season }: AreaProps): ReactNode {
       const bushes = Math.min(5, tier + 1)
       const bloom = season === 'summer'
       return (
-        <Svg>
+        <Svg tier={tier}>
           <ellipse cx="40" cy="58" rx="34" ry="11" fill={winter ? '#e8eef0' : P.leafLight} opacity=".8" />
           {Array.from({ length: bushes }, (_, i) => {
             const x = 14 + i * 13
@@ -153,7 +153,7 @@ export function Kraeuter({ id, tier, season }: AreaProps): ReactNode {
     case 'salbei': {
       const pots = Math.min(6, tier + 1)
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={32} />
           <rect x="6" y="60" width="68" height="3" rx="1" fill={P.stone} />
           {Array.from({ length: pots }, (_, i) => {
@@ -177,7 +177,7 @@ export function Kraeuter({ id, tier, season }: AreaProps): ReactNode {
     case 'trockenboden': {
       const bundles = Math.min(8, 2 + tier)
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={32} />
           <House x={10} w={52} h={26} wall="#e8d4ac" roof={P.outlineWood} timber steep={14} />
           <rect x="20" y="40" width="32" height="10" fill="#3a2a1a" />
@@ -200,7 +200,7 @@ export function Kraeuter({ id, tier, season }: AreaProps): ReactNode {
     case 'destille': {
       const bottles = Math.min(5, tier)
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={32} />
           <path d="M6 34h40l-4 -8h-32z" fill="#a5531a" stroke="#6e2a12" strokeWidth=".6" />
           <path d="M10 34v30M42 34v30" stroke={P.outlineWood} strokeWidth="1.6" />
@@ -226,7 +226,7 @@ export function Kraeuter({ id, tier, season }: AreaProps): ReactNode {
     case 'salbenkueche': {
       const jars = Math.min(6, tier + 1)
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={32} />
           <House x={8} w={34} h={22} wall={P.cream} roof="#7a5ab8" steep={13} />
           <rect x="32" y="26" width="5" height="10" fill="#8a7a6a" />
@@ -253,7 +253,7 @@ export function Kraeuter({ id, tier, season }: AreaProps): ReactNode {
     case 'teestube': {
       const tables = Math.min(3, 1 + Math.floor(tier / 2))
       return (
-        <Svg>
+        <Svg tier={tier}>
           <Shadow grid="chapter" rx={34} />
           <House x={32} w={40} h={22} wall="#fbf3e0" roof={P.leafDark} steep={12} />
           <Window x={36} y={48} lit={tier >= 2} />
@@ -285,7 +285,7 @@ export function Kraeuter({ id, tier, season }: AreaProps): ReactNode {
       const quads = Math.min(4, tier)
       const cols = [P.lilac, P.yellow, P.cream, P.red]
       return (
-        <Svg>
+        <Svg tier={tier}>
           <ellipse cx="40" cy="56" rx="36" ry="14" fill="#d9c79a" />
           {[
             [10, 46],
