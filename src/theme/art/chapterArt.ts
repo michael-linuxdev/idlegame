@@ -22,6 +22,11 @@ const LOADERS: Record<ChapterId, Loader> = {
   lavendel: () => import('./kapitel/lavendel'),
   japangarten: () => import('./kapitel/japangarten'),
   gartenschau: () => import('./kapitel/gartenschau'),
+  stadtgarten: () => import('./kapitel/stadtgarten'),
+  klostergarten: () => import('./kapitel/klostergarten'),
+  schlossgarten: () => import('./kapitel/schlossgarten'),
+  baumschule: () => import('./kapitel/baumschule'),
+  moorgarten: () => import('./kapitel/moorgarten'),
 }
 
 const loaded = new Map<ChapterId, ChapterArtEntry>()

@@ -1,4 +1,4 @@
-/* Kapitel 4–12: Tierleben und Animationen — Teil von expansion.css (Reihenfolge zählt). */
+/* Kapitel 4–17: Tierleben und Animationen — Teil von expansion.css (Reihenfolge zählt). */
 /* —— Kapitel 4–6: Tierleben & Handgrafik-Animationen —— */
 .ha-graze {
   animation: sheep-bob 3.4s ease-in-out infinite;
@@ -267,7 +267,115 @@
   }
 }
 
-/* Kapitel 4–12: Motive füllen ihren Platz (Zeichnungen sitzen unten im viewBox) */
+/* —— Kapitel 13–17: Tierleben —— */
+.sparrow {
+  width: calc(var(--u) * 2.4);
+  top: 82%;
+  left: 30%;
+  animation: chicken-walk 9s steps(14) infinite alternate;
+}
+
+.sparrow.s1 { left: 58%; top: 86%; animation-delay: -4s; }
+
+.swift {
+  width: calc(var(--u) * 4);
+  top: 14%;
+  left: 44%;
+  animation: eagle-circle 9s linear infinite;
+}
+
+.swift.w1 { left: 54%; top: 20%; animation-delay: -4s; animation-duration: 11s; }
+
+.city-fox {
+  width: calc(var(--u) * 7);
+  top: 88%;
+  left: 4%;
+  animation: hedgehog-walk 36s linear infinite;
+}
+
+.pigeon {
+  width: calc(var(--u) * 3.4);
+  top: 12%;
+  left: 48%;
+  animation: pigeon-flap 7s ease-in-out infinite;
+}
+
+.pigeon.p1 { left: 52%; top: 16%; animation-delay: -3s; }
+
+@keyframes pigeon-flap {
+  0%, 60%, 100% { transform: translate(0, 0); }
+  70% { transform: translate(calc(var(--u) * -10), calc(var(--u) * -4)); }
+  85% { transform: translate(calc(var(--u) * 4), calc(var(--u) * -2)); }
+}
+
+.swan-pair {
+  width: calc(var(--u) * 7);
+  top: 53%;
+  left: 43%;
+  animation: ha-swim 9s ease-in-out infinite alternate;
+}
+
+.squirrel {
+  width: calc(var(--u) * 3.4);
+  top: 54%;
+  left: 20%;
+  animation: marmot-peek 7s ease-in-out infinite;
+  transform-origin: 50% 100%;
+}
+
+.hare {
+  width: calc(var(--u) * 5);
+  top: 70%;
+  left: 6%;
+  animation: hare-hop 20s ease-in-out infinite alternate;
+}
+
+@keyframes hare-hop {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(calc(var(--u) * 12), calc(var(--u) * -1.4)); }
+  25% { transform: translate(calc(var(--u) * 14), 0); }
+  60% { transform: translate(calc(var(--u) * 30), calc(var(--u) * -1.4)); }
+  100% { transform: translate(calc(var(--u) * 40), 0); }
+}
+
+.kestrel {
+  width: calc(var(--u) * 5);
+  top: 18%;
+  left: 62%;
+  animation: sheep-bob 1.6s ease-in-out infinite;
+}
+
+.crane-fly {
+  width: calc(var(--u) * 14);
+  top: 10%;
+  left: -20%;
+  animation: crane-fly 34s linear infinite;
+}
+
+@keyframes crane-fly {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(var(--u) * 130)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sparrow,
+  .swift,
+  .city-fox,
+  .pigeon,
+  .swan-pair,
+  .squirrel,
+  .hare,
+  .kestrel,
+  .crane-fly {
+    animation: none !important;
+  }
+
+  .crane-fly {
+    left: 40%;
+  }
+}
+
+/* Kapitel 4–17: Motive füllen ihren Platz (Zeichnungen sitzen unten im viewBox) */
 .orchard-home:not(.chapter-obstwiese):not(.chapter-weinberg) .garden-plot .plot-visual svg {
   transform: scale(1.35);
   transform-origin: 50% 88%;

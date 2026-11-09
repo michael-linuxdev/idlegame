@@ -17,6 +17,11 @@ import lavendel from './kapitel/lavendel'
 import obstwiese from './kapitel/obstwiese'
 import teich from './kapitel/teich'
 import weinberg from './kapitel/weinberg'
+import stadtgarten from './kapitel/stadtgarten'
+import klostergarten from './kapitel/klostergarten'
+import schlossgarten from './kapitel/schlossgarten'
+import baumschule from './kapitel/baumschule'
+import moorgarten from './kapitel/moorgarten'
 import type { ChapterArtEntry } from './kapitel/types'
 
 export type { AreaArtProps, ChapterArtEntry } from './kapitel/types'
@@ -33,4 +38,9 @@ export const ART_REGISTRY: Record<ChapterId, ChapterArtEntry> = {
   lavendel,
   japangarten,
   gartenschau,
+  stadtgarten,
+  klostergarten,
+  schlossgarten,
+  baumschule,
+  moorgarten,
 }

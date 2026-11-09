@@ -12,7 +12,7 @@ import { describe, expect, it } from 'vitest'
 import v1 from './fixtures/save-v1.json'
 import { SAVE_VERSION, migrateSave, parseSave } from '../game/storage'
 import { createInitialState } from '../game/state'
-import { CHAPTERS } from '../game/chapters'
+import { CHAPTERS, emptyChapter } from '../game/chapters'
 
 /** Felder, die absichtlich nicht gespeichert werden (siehe saveCoverage.test.ts). */
 const TRANSIENT = new Set(['lastSurprise', 'lastVariety', 'helperReport', 'lastChest', 'helperCarryMs', 'ilseCarryMs'])
@@ -24,6 +24,12 @@ const TRANSIENT = new Set(['lastSurprise', 'lastVariety', 'helperReport', 'lastC
 const ADDED_AFTER_V1: Record<string, unknown> = {
   // Ruhezeit nach dem Tiefen Winter (2026-11, docs/kapitel/balance-bericht.md)
   tieferWinterAt: 0,
+}
+
+/** Nur die Kapitel, die im alten Stand schon gespeichert waren (neue füllt parseChapters auf). */
+function savedChapters(loaded: unknown, raw: unknown): unknown {
+  const l = loaded as Record<string, unknown>
+  return Object.fromEntries(Object.keys(raw as object).map((id) => [id, l[id]]))
 }
 
 describe('Spielstand v1 (neues Format ab 2026-11-09)', () => {
@@ -38,8 +44,17 @@ describe('Spielstand v1 (neues Format ab 2026-11-09)', () => {
     const raw = v1 as unknown as Record<string, unknown>
     const changed = Object.keys(createInitialState(0))
       .filter((k) => !TRANSIENT.has(k) && !(k in ADDED_AFTER_V1))
-      .filter((k) => !isDeepStrictEqual(s[k], raw[k]))
+      .filter((k) => !isDeepStrictEqual(k === 'chapters' ? savedChapters(s[k], raw[k]) : s[k], raw[k]))
     expect(changed).toEqual([])
+  })
+
+  it('neue Kapitel kommen leer dazu, gespeicherte bleiben unverändert', () => {
+    const s = parseSave(v1)!
+    const saved = Object.keys(v1.chapters)
+    for (const c of CHAPTERS) {
+      if (saved.includes(c.id)) continue
+      expect(s.chapters[c.id], c.id).toEqual(emptyChapter(c))
+    }
   })
 
   it('gibt später hinzugekommenen Feldern ihren Startwert', () => {

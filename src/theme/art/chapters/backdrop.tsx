@@ -127,6 +127,69 @@ export const ChapterBackdrop = memo(function ChapterBackdrop({ spec, stage }: { 
               </g>
             ))
           : null}
+        {spec.cityYard
+          ? [
+              [5, 44],
+              [95, 42],
+              [6, 74],
+              [94, 72],
+            ].map(([x, y], i) => (
+              <g key={`cy${i}`}>
+                <rect x={x! - 1.8} y={y! - 1} width="3.6" height="2" fill={P.wood} />
+                <ellipse cx={x} cy={y! - 1} rx="1.6" ry=".6" fill={i % 2 ? P.tomato : P.leaf} />
+              </g>
+            ))
+          : null}
+        {spec.monastery
+          ? [
+              [5, 44],
+              [95, 42],
+              [5, 72],
+              [95, 70],
+            ].map(([x, y], i) => (
+              <g key={`mo${i}`}>
+                <rect x={x! - 2.4} y={y! - 1.2} width="4.8" height="2.4" fill={P.leafDark} />
+                <rect x={x! - 1.9} y={y! - 0.8} width="3.8" height="1.6" fill={P.soil} />
+                <ellipse cx={x} cy={y} rx=".8" ry=".4" fill={i % 2 ? P.lavender : P.yellow} />
+              </g>
+            ))
+          : null}
+        {spec.palace ? (
+          <g>
+            {[
+              [6, 46],
+              [94, 46],
+              [6, 74],
+              [94, 74],
+            ].map(([x, y], i) => (
+              <ellipse key={`pa${i}`} cx={x} cy={y} rx="2.4" ry="1.4" fill={P.leafDark} />
+            ))}
+          </g>
+        ) : null}
+        {spec.nursery
+          ? Array.from({ length: 4 }, (_, r) => (
+              <g key={`nu${r}`}>
+                {Array.from({ length: 5 }, (_, k) => (
+                  <ellipse key={k} cx={r % 2 ? 92 + (k % 2) * 3 : 4 + (k % 2) * 3} cy={36 + r * 16 + k * 2.6} rx="1.4" ry=".9" fill={k % 2 ? P.leaf : P.leafDark} />
+                ))}
+              </g>
+            ))
+          : null}
+        {spec.moor ? (
+          <g>
+            {[
+              [10, 46, 6],
+              [90, 44, 7],
+              [8, 78, 5],
+              [92, 76, 6],
+            ].map(([x, y, r], i) => (
+              <g key={`mr${i}`}>
+                <ellipse cx={x} cy={y} rx={r} ry={r! * 0.4} fill={P.waterDeep} opacity=".75" />
+                <ellipse cx={x! + r! * 0.8} cy={y! + 1} rx="2.4" ry="1" fill={P.lavender} opacity=".8" />
+              </g>
+            ))}
+          </g>
+        ) : null}
         {spec.water === 'lake' ? <ellipse cx="50" cy="62" rx="16" ry="7" fill={P.water} opacity="0.9" /> : null}
         {spec.water === 'river' ? (
           <path d="M100 58 C90 64 96 72 86 78 C78 84 84 92 76 100" stroke={P.water} strokeWidth="14" fill="none" vectorEffect="non-scaling-stroke" />
@@ -168,7 +231,98 @@ export const ChapterBackdrop = memo(function ChapterBackdrop({ spec, stage }: { 
               <path d="M216 14 L230 4 Q240 0 250 4 L264 14 L254 12 L246 18 L238 11 L228 17z" fill={P.white} />
             </g>
           ) : null}
+          {spec.monastery ? (
+            <g>
+              {[20, 44, 70, 330, 360, 384].map((x, i) => (
+                <circle key={x} cx={x} cy={30 + (i % 2) * 4} r="13" fill={i % 2 ? P.leafDark : P.leafMoss} />
+              ))}
+            </g>
+          ) : null}
           <path d="M0 60 V30 Q60 8 140 26 T280 18 T400 24 V60z" fill={spec.hills[0]} />
+          {spec.cityYard ? (
+            <g>
+              {[0, 56, 300, 352].map((x, i) => (
+                <g key={x}>
+                  <rect x={x} y={8 + (i % 2) * 6} width="48" height="52" fill={[P.paper, P.terracottaLight, P.canvas, P.stoneLight][i]} />
+                  <path d={`M${x - 2} ${8 + (i % 2) * 6} h52`} stroke={P.stoneDark} strokeWidth="3" />
+                  {Array.from({ length: 6 }, (_, k) => (
+                    <rect key={k} x={x + 6 + (k % 3) * 14} y={16 + (i % 2) * 6 + Math.floor(k / 3) * 14} width="8" height="9" fill={P.window} stroke={P.outlineWood} strokeWidth=".8" />
+                  ))}
+                </g>
+              ))}
+              <rect x="112" y="4" width="180" height="56" fill={P.terracotta} />
+              <circle cx="160" cy="26" r="14" fill={P.yellow} opacity=".85" />
+              <path d="M180 44 q20 -30 40 0 q20 -30 40 0" stroke={P.leaf} strokeWidth="8" fill="none" opacity=".85" />
+              <circle cx="240" cy="22" r="8" fill={P.tomato} opacity=".85" />
+              <path d="M0 6 Q100 22 200 8 T400 10" stroke={P.outlineWood} strokeWidth="1" fill="none" />
+              {Array.from({ length: 16 }, (_, k) => (
+                <circle key={k} cx={12 + k * 25} cy={12 + Math.sin(k) * 3} r="2.2" fill={P.lamp} />
+              ))}
+            </g>
+          ) : null}
+          {spec.monastery ? (
+            <g>
+              <rect x="0" y="36" width="400" height="12" fill={P.stoneLight} />
+              {Array.from({ length: 20 }, (_, i) => (
+                <path key={i} d={`M${i * 20} 36v12`} stroke={P.stone} strokeWidth="1" />
+              ))}
+              <rect x="180" y="4" width="24" height="44" fill={P.stoneLight} stroke={P.stone} strokeWidth="1" />
+              <path d="M176 6 L192 -14 L208 6z" fill={P.leafMoss} />
+              <path d="M188 22v-6a4 4 0 0 1 8 0v6z" fill={P.charcoal} />
+              <rect x="210" y="22" width="70" height="26" fill={P.stoneLight} />
+              <path d="M206 22 L245 6 L284 22z" fill={P.terracotta} />
+              {[220, 236, 252, 268].map((x) => (
+                <path key={x} d={`M${x} 38v-8a3 3 0 0 1 6 0v8z`} fill={P.window} />
+              ))}
+            </g>
+          ) : null}
+          {spec.palace ? (
+            <g>
+              <rect x="110" y="16" width="180" height="32" fill={P.cream} stroke={P.stone} strokeWidth="1" />
+              <rect x="180" y="6" width="40" height="42" fill={P.paper} stroke={P.stone} strokeWidth="1" />
+              <path d="M180 6 Q200 -12 220 6z" fill={P.leafDark} />
+              <path d="M106 16 L200 8 L294 16z" fill={P.stoneDark} opacity=".6" />
+              {Array.from({ length: 14 }, (_, k) => (
+                <rect key={k} x={116 + k * 12.4} y="24" width="6" height="12" fill={P.window} stroke={P.stone} strokeWidth=".6" />
+              ))}
+              <path d="M194 48v-12a6 6 0 0 1 12 0v12z" fill={P.woodDark} />
+              {[40, 72, 328, 360].map((x) => (
+                <rect key={x} x={x - 10} y="22" width="20" height="24" rx="6" fill={P.leafDark} />
+              ))}
+            </g>
+          ) : null}
+          {spec.nursery ? (
+            <g>
+              {Array.from({ length: 18 }, (_, i) => {
+                const x = 8 + i * 22
+                return (
+                  <g key={i}>
+                    <path d={`M${x} 48V34`} stroke={P.bark} strokeWidth="1.4" />
+                    <ellipse cx={x} cy={30} rx="7" ry="9" fill={i % 2 ? P.leaf : P.leafDark} />
+                  </g>
+                )
+              })}
+              <path d="M150 48 V34 Q200 4 250 34 V48z" fill={P.glassEdge} opacity=".9" stroke={P.white} strokeWidth="1.4" />
+              {[170, 200, 230].map((x) => (
+                <path key={x} d={`M${x} 48 V${x === 200 ? 18 : 24}`} stroke={P.white} strokeWidth="1" />
+              ))}
+            </g>
+          ) : null}
+          {spec.moor ? (
+            <g>
+              {Array.from({ length: 12 }, (_, i) => {
+                const x = 14 + i * 34 + (i % 2) * 6
+                return (
+                  <g key={i}>
+                    <path d={`M${x} 48V${22 + (i % 3) * 4}`} stroke={P.cream} strokeWidth="2.4" />
+                    <path d={`M${x - 1} 36h2M${x - 1} 42h2`} stroke={P.charcoal} strokeWidth="1" />
+                    <ellipse cx={x} cy={18 + (i % 3) * 4} rx="7" ry="10" fill={i % 2 ? P.leafLight : P.leafPale} opacity=".9" />
+                  </g>
+                )
+              })}
+              <path d="M300 14 l6 -3 6 3 M318 8 l5 -2.6 5 2.6 M334 16 l5 -2.6 5 2.6" stroke={P.charcoal} strokeWidth="1.2" fill="none" />
+            </g>
+          ) : null}
           {spec.provence ? (
             <g>
               {[40, 60, 76, 340, 360].map((x, i) => (

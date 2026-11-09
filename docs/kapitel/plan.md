@@ -299,7 +299,8 @@ Jede Welle ist für sich spielbar: Hinter dem letzten gebauten Kapitel zeigen
 
 - [x] **Paket 0** — Plan & Geschichte (dieses Dokument)
 - [x] **Paket 1** — Taktung & Technik (Ruhezeit, Kapitel-Boni addiert, Freischaltregel 13+, Simulator mit Kapiteln, Kapitel-Daten in `chapterPlan.ts`, Spielstand-Größe, „Weitere Gärten folgen“)
-- [ ] **Welle 1** — Kapitel 13–17
+- [x] **Welle 1** — Kapitel 13–17 (Texte de + en, Grafik je Bereich in 5 Stufen + Jahreszeiten, Kulissen `cityYard`/`monastery`/`palace`/`nursery`/`moor`, eigene Wege `yard`/`cloister`/`axis`/`nurseryRows`/`boardwalk`, Tierleben, Währungs-Symbole; `RELEASED_UP_TO = 17`)
+  - Offen für Welle 2: Großprojekt für Bogen I (Kapitel 13–19), sobald der Bogen vollständig ist (`src/game/projects.ts`).
 - [ ] Welle 2 — Kapitel 18–23
 - [ ] Welle 3 — Kapitel 24–29
 - [ ] Welle 4 — Kapitel 30–34

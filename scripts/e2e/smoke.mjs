@@ -203,6 +203,21 @@ try {
     assert((await p.locator('.chapter-gartenschau .garden-plot .plot-visual svg *').count()) > 20, 'chapter art loaded')
     await p.locator('.garden-plot').first().click()
     await p.locator('.upgrade-hud-buy').waitFor()
+    // Kapitel 13–17 (Welle 1): Brief, Kulisse, Bereichsgrafik; Bildschirmfotos für einen Blick von Hand
+    await mkdir('e2e-screens/kapitel', { recursive: true })
+    for (const [n, id] of [[13, 'stadtgarten'], [14, 'klostergarten'], [15, 'schlossgarten'], [16, 'baumschule'], [17, 'moorgarten']]) {
+      await p.keyboard.press('Escape')
+      await p.getByRole('button', { name: T.plots.aria }).click()
+      await p.getByRole('button', { name: T.chapterUi.chapter(n) }).click()
+      await p.locator('.orchard-intro').waitFor()
+      await p.waitForTimeout(600)
+      if (LANG === 'de') await p.screenshot({ path: `e2e-screens/kapitel/${id}-brief.png` })
+      await p.locator('.orchard-intro .btn').click()
+      await p.locator(`.chapter-${id} .garden-ground`).waitFor()
+      assert((await p.locator(`.chapter-${id} .garden-plot .plot-visual svg *`).count()) > 20, `${id}: chapter art loaded`)
+      await p.waitForTimeout(300)
+      await p.screenshot({ path: `e2e-screens/kapitel/${id}-${LANG}.png` })
+    }
     await ctx.close()
   }
 

@@ -32,6 +32,12 @@ export type ChapterId =
   | 'lavendel'
   | 'japangarten'
   | 'gartenschau'
+  // Kapitel 13+ (Daten in chapterPlan.ts)
+  | 'stadtgarten'
+  | 'klostergarten'
+  | 'schlossgarten'
+  | 'baumschule'
+  | 'moorgarten'
 
 export interface AreaDef {
   id: string

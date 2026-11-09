@@ -121,12 +121,12 @@ Werkzeug: `npm run balance -- <engaged|regular|casual> <stunden>` — spielt die
 
 - Ein Kapitel trägt ~6–10 Wochen neue Ziele; Feste erneuern sich jährlich.
 - Ziel: **10–12 große Kapitel** in 5 Jahren (≈ alle 4–6 Monate), dazwischen je ein System-/Fest-Update. Ohne Zwischen-Updates wären ~20 Kapitel nötig.
-- Kapitel 2–12 sind gebaut. Die Freischaltung staffelt sie über Generationen; spätere Updates ergänzen Kapitel 13+ (z. B. Wintergarten, Schlossgarten, Gemeinschaftsgarten) als reine Daten.
+- Kapitel 2–17 sind gebaut (Welle 1 von Kapitel 13–50: Gemeinschaftsgarten, Klostergarten, Schlossgarten, Baumschule, Moor- und Heidegarten). Plan, Geschichte und Wellen für 18–50: `docs/kapitel/plan.md`.
 - Freischaltung staffeln über Prestige-Ebenen (Tiefer Winter / Generation N), damit jedes Kapitel ein neues Ziel nach einem Reset ist.
 
 ## Ideen-Backlog (nächste Updates)
 
-- Kapitel 13+ als Daten (Wintergarten, Schlossgarten, Gemeinschaftsgarten in der Stadt).
+- Kapitel 18–50 in Wellen nach `docs/kapitel/plan.md` (nächste: Welle 2, Kapitel 18–23).
 - Echter Online-Wettbewerb für den Kürbis (mit Multiplayer-Backend).
 - Ilse-/Jonas-Geschichten als kurze Briefe im Notizbuch.
 - Gartenstile für Kapitel-Karten.
