@@ -8,11 +8,13 @@
 import { t } from '../i18n'
 
 /**
- * Real-money offers, rewarded ads and the premium pass are placeholders (no
- * IAP / ad SDK yet). They stay visible for testing and are labelled as
- * Platzhalter in the Markt. Set to false to hide them for a launch build.
+ * Real-money offers (Samentüten, Pakete, Stil-Pakete) and the premium pass
+ * are placeholders (no IAP yet) — buying them costs nothing. Off since
+ * 2026-11-09: in the playtest they handed out unlimited free Samen and
+ * distorted the balance. Turn on again only with real store purchases
+ * (Preisvorschlag: docs/store/preise.md). Rewarded ads (with cooldown) stay.
  */
-export const STORE_ENABLED = true
+export const STORE_ENABLED = false
 
 export const DAILY_SKIP_CAP_HOURS = 6
 export const CLAN_BOOST_MULT = 1.1
