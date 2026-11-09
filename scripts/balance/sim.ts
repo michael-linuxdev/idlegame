@@ -18,7 +18,15 @@
  *  HELPER_CAP=n  hire Jonas only up to rank n · NO_HELPER=1 never
  *  HELPER_FREE=1 Jonas ranks cost nothing (what is each rank worth?)
  *  HELPER_DAYS=1 print the day each rank was bought
+ *
+ * Kapitel (docs/kapitel/plan.md „Taktung“):
+ *  CHAPTERS=1         der Spieler baut offene Kapitel aus und stellt Ilse an
+ *  SIM_ALL_CHAPTERS=1 dazu alle 50 Kapitel aus chapterPlan.ts (setzt CHAPTERS)
+ *  COARSE_AFTER_D=n   ab Tag n gröberer Takt (Standard 120 mit Kapiteln)
+ *  Ausgabe: „chapters: K2@d… K13@d…“ und der Garten-Bonus aller Kapitel
+ *  Fünf Jahre:  GEN=1 SIM_ALL_CHAPTERS=1 SUMMARY=1 npm run balance -- regular 43800
  */
+import './simFlags'
 import { computeBestBuy } from '../../src/game/bestBuy'
 import { BALANCE, erbstueckePayout, isProbeYear, payoutAtGate } from '../../src/game/economy'
 import { TRUHE_ITEMS, truheRankUnlocked, saatgutkisteMult, prestigeMultiplier, tapBonusSeconds } from '../../src/game/truhe'
@@ -58,6 +66,33 @@ import {
 import { moduleTier } from '../../src/theme/tiers'
 import { DEEP_SHOP, canDeepReset, sproutPayout } from '../../src/game/longLoop'
 import { LEGACY_SHOP } from '../../src/game/generations'
+import { CHAPTER_BONUS, CHAPTERS, chaptersGardenMult, totalChapterLevels } from '../../src/game/chapters'
+import { bestChapterBuy, buyChapterArea, buyIlse, openChapters } from '../../src/game/state'
+
+const PLAY_CHAPTERS = !!(process.env.CHAPTERS || process.env.SIM_ALL_CHAPTERS)
+// Formel-Vergleich für den Kapitel-Bonus (nur Simulator): product | sum | soft | log
+if (process.env.CHAPTER_BONUS_MODE) CHAPTER_BONUS.mode = process.env.CHAPTER_BONUS_MODE as typeof CHAPTER_BONUS.mode
+if (process.env.CHAPTER_BONUS_CAP) CHAPTER_BONUS.cap = Number(process.env.CHAPTER_BONUS_CAP)
+if (process.env.CHAPTER_BONUS_L0) CHAPTER_BONUS.l0 = Number(process.env.CHAPTER_BONUS_L0)
+
+/** Kapitel: Ilse anstellen/verbessern, dann je offenem Kapitel die besten Käufe. */
+function playChapters(s: GameState, maxPerChapter = 6): GameState {
+  // CHAPTER_MANUAL=0: nur Ilse baut Kapitel aus (der Spieler stellt sie nur an)
+  const manual = process.env.CHAPTER_MANUAL !== '0'
+  for (let i = 0; i < 5; i++) {
+    const n = buyIlse(s)
+    if (n === s) break
+    s = n
+  }
+  if (manual) for (const id of openChapters(s)) {
+    for (let k = 0; k < maxPerChapter; k++) {
+      const area = bestChapterBuy(s, id)
+      if (!area) break
+      s = buyChapterArea(s, id, area, 'manual')
+    }
+  }
+  return s
+}
 
 /* ---------- virtual clock + seeded RNG ---------- */
 const helperDays: number[] = []
@@ -212,7 +247,8 @@ export function run(profile: Profile, hours: number) {
   const stageByDay: number[] = []
   const deeps: { day: number; sprouts: number; total: number }[] = []
   const gens: number[] = []
-  const dt = 5
+  const chapterDays: Record<string, number> = {}
+  const coarseAfterMs = Number(process.env.COARSE_AFTER_D ?? (PLAY_CHAPTERS ? 120 : 1e9)) * 86400000
   const end = start + hours * 3600_000
   let lastDaily = ''
   const inSession = (t: number) => {
@@ -239,6 +275,8 @@ export function run(profile: Profile, hours: number) {
       clock += 60_000
       continue
     }
+    // Langläufe: nach COARSE_AFTER_D Tagen gröberer Takt (Laufzeit < 2 min für 5 Jahre)
+    const dt = clock - start > coarseAfterMs ? 60 : 5
     s = applyTick(s, dt)
     clock += dt * 1000
     activeSec += dt
@@ -255,6 +293,13 @@ export function run(profile: Profile, hours: number) {
     // LAZY=1: the player never buys areas himself — Jonas does all of it
     if (!process.env.LAZY || s.helperLevel === 0) s = buyBest(s)
     s = spendErbstuecke(s)
+    // Kapitel nur alle 60 s Spielzeit (Laufzeit); Ilse läuft ohnehin im Takt mit
+    if (PLAY_CHAPTERS && Math.floor(activeSec / 60) !== Math.floor((activeSec - dt) / 60)) {
+      s = playChapters(s)
+      for (const def of CHAPTERS) {
+        if (chapterDays[def.id] == null && s.chapters[def.id].openedAt > 0) chapterDays[def.id] = Math.floor((clock - start) / 86400000) + 1
+      }
+    }
 
     {
       const d = Math.floor((clock - start) / 86400000)
@@ -357,7 +402,8 @@ export function run(profile: Profile, hours: number) {
       }
     }
   }
-  return { s, milestones, runs, hours, stageByDay, deeps, gens, density: eventDensity(events, profile) }
+  const chapters = CHAPTERS.filter((d) => chapterDays[d.id] != null).map((d) => ({ number: d.number, id: d.id, day: chapterDays[d.id]! }))
+  return { s, milestones, runs, hours, stageByDay, deeps, gens, chapters, density: eventDensity(events, profile) }
 }
 
 /** Abstände zwischen bedeutsamen Ereignissen in aktiver Spielzeit. */
@@ -385,7 +431,7 @@ export function eventDensity(events: number[], profile: Profile) {
 function report(profile: Profile, hours: number) {
   seed = 12345
   clock = new Date(2026, 10, 9, 8, 0, 0).getTime()
-  const { s, milestones, runs, stageByDay, deeps, gens, density } = run(profile, hours)
+  const { s, milestones, runs, stageByDay, deeps, gens, chapters, density } = run(profile, hours)
   const dn = (sec: number) => (Number.isFinite(sec) ? (sec >= 120 ? `${Math.round(sec / 60)}m` : `${Math.round(sec)}s`) : '-')
   if (process.env.SUMMARY) {
     const act = runs.map((r) => Math.round(r.active / 60))
@@ -403,6 +449,10 @@ function report(profile: Profile, hours: number) {
     )
     if (process.env.HELPER_DAYS) console.log(`  jonas ranks bought: ${helperDays.map((d, i) => `R${i + 1}@d${d}`).join(' ')} | year ${s.saisonenden + 1} | deep ${s.tiefeWinter} | gen ${s.generation}`)
     if (process.env.GEN) console.log(`  generations: ${gens.map((d, i) => `G${i + 1}@d${d}`).join(' ')}`)
+    if (PLAY_CHAPTERS)
+      console.log(
+        `  chapters: ${chapters.map((c) => `K${c.number}@d${c.day}`).join(' ')} | chapter levels ${totalChapterLevels(s.chapters)} | garden ×${chaptersGardenMult(s.chapters).toFixed(2)} | ilse ${s.ilseLevel}`,
+      )
     if (deeps.length || process.env.DEEP)
       console.log(
         `  deep winters: ${deeps.map((d) => `d${d.day}(+${d.sprouts})`).join(' ')} | end deep ${JSON.stringify(s.sproesslingLaden)} year ${s.saisonenden + 1}`,
