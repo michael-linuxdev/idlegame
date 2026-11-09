@@ -18,7 +18,7 @@ export type Stones = { k: 'stones'; variant: 'zen' | 'rock' | 'edelweiss' | 'mos
 export type ArtSpec = Tree | Rows | Animals | House | Water | Flowers | Stones
 
 /** Chapters drawn with hand-made art (theme/HandArt.tsx). */
-export const HAND_ART_CHAPTERS: readonly ChapterId[] = ['bauernhof', 'imkerei', 'teich', 'kraeuter', 'botanik', 'alm', 'lavendel', 'japangarten', 'gartenschau', 'stadtgarten', 'klostergarten', 'schlossgarten', 'baumschule', 'moorgarten']
+export const HAND_ART_CHAPTERS: readonly ChapterId[] = ['bauernhof', 'imkerei', 'teich', 'kraeuter', 'botanik', 'alm', 'lavendel', 'japangarten', 'gartenschau', 'stadtgarten', 'klostergarten', 'schlossgarten', 'baumschule', 'moorgarten', 'deichgarten', 'spreewald', 'cottagegarten', 'tulpenfelder', 'artischocken', 'beerenwald']
 
 export interface BackdropSpec {
   /** Patchwork fields behind the plots */
@@ -49,6 +49,18 @@ export interface BackdropSpec {
   nursery?: boolean
   /** Moorgarten: dark water, birches, heather, wide sky */
   moor?: boolean
+  /** Deichgarten: dike with sheep, lighthouse, thatched farm, clouds */
+  dike?: boolean
+  /** Spreewald: alder woods, log houses, stork, reedy pools */
+  spreewald?: boolean
+  /** Cottage-Garten: honey-stone cottages, rolling hills with sheep */
+  cotswolds?: boolean
+  /** Tulpenfelder: striped bulb fields, windmills, bulb barn */
+  bulbFields?: boolean
+  /** Artischocken: lagoon water, Venice skyline, mooring posts */
+  lagoon?: boolean
+  /** Beerenwald: spruce forest, lake, red cabin, mossy rocks */
+  swedishWoods?: boolean
   grass: [string, string, string]
   path: string
   /** Own path shape per chapter (default: shared S-curve) */
@@ -270,5 +282,94 @@ export const CHAPTER_ART: Partial<Record<ChapterId, { backdrop: BackdropSpec; ar
       moorfest: { k: 'flowers', colors: [P.lamp, P.amber, P.orange] },
     },
   },
+  deichgarten: {
+    backdrop: { grass: ['#b4cf86', '#a2c274', '#8fb262'], path: '#d8d4c8', hills: ['#9ec6dc', '#6f9a52'], way: 'dikeTrack', dike: true },
+    areas: {
+      sanddorn: { k: 'rows', color: P.winterLeafLight, flower: P.orange, tall: true },
+      salzwiese: { k: 'water', variant: 'reeds' },
+      koogacker: { k: 'rows', color: P.leaf, flower: P.cream },
+      windschutz: { k: 'rows', color: P.leafDark, tall: true },
+      strandrosen: { k: 'flowers', colors: [P.pink, P.tomato] },
+      kuttersteg: { k: 'water', variant: 'jetty' },
+      reetkate: { k: 'house', roof: P.woodLight, wall: P.cream, prop: 'chimney' },
+      friesenstube: { k: 'house', roof: P.woodLight, wall: P.white },
+      leuchtturm: { k: 'house', roof: P.barn, wall: P.white, prop: 'tower' },
+      biike: { k: 'flowers', colors: [P.orange, P.yellow, P.lamp] },
+    },
+  },
+  spreewald: {
+    backdrop: { grass: ['#a6cc7e', '#92bc6c', '#7eaa5c'], path: '#5aa9c6', hills: ['#5a8644', '#4f7a3a'], way: 'fliess', spreewald: true },
+    areas: {
+      gurkenfeld: { k: 'rows', color: P.leaf, flower: P.yellow },
+      meerrettich: { k: 'rows', color: P.leafDark, tall: true },
+      leinoelmuehle: { k: 'house', roof: P.woodDark, wall: P.woodMid, prop: 'barrels' },
+      kahnanleger: { k: 'water', variant: 'jetty' },
+      fliessgarten: { k: 'flowers', colors: [P.yellow, P.orange, P.leaf] },
+      einlegekueche: { k: 'house', roof: P.woodDark, wall: P.woodMid, prop: 'jars' },
+      holzschuppen: { k: 'house', roof: P.woodMid, wall: P.woodDark },
+      trachtenhaus: { k: 'house', roof: P.leafMoss, wall: P.woodMid },
+      erlenwald: { k: 'tree', crown: P.leafDark },
+      gurkenfest: { k: 'water', variant: 'bridge' },
+    },
+  },
+  cottagegarten: {
+    backdrop: { grass: ['#acd086', '#9ac274', '#86b062'], path: '#e3d3a8', hills: ['#8ab868', '#76a656'], way: 'flagstones', cotswolds: true },
+    areas: {
+      stockrosen: { k: 'flowers', colors: [P.pink, P.berry, P.cream], arch: false },
+      wickenzaun: { k: 'flowers', colors: [P.pink, P.lilac, P.plum] },
+      gemueseparzelle: { k: 'rows', color: P.leaf },
+      steinmauer: { k: 'stones', variant: 'rock' },
+      apfelspalier: { k: 'tree', crown: P.leaf, fruit: P.red },
+      holzgewaechshaus: { k: 'house', roof: P.glass, wall: P.wood, prop: 'glass' },
+      teeplatz: { k: 'tree', crown: P.leafDark },
+      geissblattlaube: { k: 'flowers', colors: [P.cream, P.yellow], arch: true },
+      gartenschuppen: { k: 'house', roof: P.charcoal, wall: P.leafMoss },
+      dorfschau: { k: 'house', roof: P.white, wall: P.white, prop: 'tent' },
+    },
+  },
+  tulpenfelder: {
+    backdrop: { grass: ['#b2d08c', '#a0c47a', '#8cb468'], path: '#d9cfb8', hills: ['#7fb85a', '#6a9a48'], way: 'bulbLanes', bulbFields: true },
+    areas: {
+      tulpenreihen: { k: 'rows', color: P.leafDark, flower: P.red },
+      hyazinthen: { k: 'rows', color: P.leafDark, flower: P.blue },
+      narzissen: { k: 'flowers', colors: [P.yellow, P.cream] },
+      zwiebelscheune: { k: 'house', roof: P.charcoal, wall: P.leafMoss, prop: 'barrels' },
+      windmuehle: { k: 'house', roof: P.woodLight, wall: P.charcoal, prop: 'tower' },
+      gracht: { k: 'water', variant: 'bridge' },
+      fahrradstall: { k: 'house', roof: P.leafDark, wall: P.stoneLight },
+      versteigerung: { k: 'house', roof: P.stoneDark, wall: P.stoneLight, prop: 'flag' },
+      hausboot: { k: 'water', variant: 'jetty' },
+      tulpenmarkt: { k: 'house', roof: P.red, wall: P.white, prop: 'tent' },
+    },
+  },
+  artischocken: {
+    backdrop: { grass: ['#b6c98a', '#a4ba78', '#90a866'], path: '#4f9cc0', hills: ['#9ec6dc', '#8aa86a'], way: 'canals', lagoon: true },
+    areas: {
+      artischockenfeld: { k: 'rows', color: P.winterLeafLight, flower: P.plum },
+      lagunenwiese: { k: 'water', variant: 'reeds' },
+      bootsanleger: { k: 'water', variant: 'jetty' },
+      kanalgarten: { k: 'rows', color: P.leaf },
+      granatapfelhecke: { k: 'tree', crown: P.leafDark, fruit: P.berry },
+      salzgarten: { k: 'rows', color: P.leafMoss },
+      bootsschuppen: { k: 'house', roof: P.terracotta, wall: P.woodMid },
+      gemuesekahn: { k: 'water', variant: 'jetty' },
+      glockenturm: { k: 'house', roof: P.leafMoss, wall: P.terracotta, prop: 'bell' },
+      inselfest: { k: 'flowers', colors: [P.lamp, P.plum, P.white] },
+    },
+  },
+  beerenwald: {
+    backdrop: { grass: ['#94b874', '#82a864', '#6f9654'], path: '#b8956a', hills: ['#3f6a3a', '#2f5a2e'], way: 'forestTrail', swedishWoods: true },
+    areas: {
+      heidelbeerhang: { k: 'rows', color: P.leaf, flower: P.blue },
+      preiselbeeren: { k: 'rows', color: P.leafDark, flower: P.berry },
+      moltebeeren: { k: 'flowers', colors: [P.amber, P.white] },
+      rotehuette: { k: 'house', roof: P.charcoal, wall: P.barn, prop: 'chimney' },
+      saftkueche: { k: 'house', roof: P.charcoal, wall: P.woodMid, prop: 'jars' },
+      pilzlichtung: { k: 'stones', variant: 'moss' },
+      holzstapel: { k: 'house', roof: P.woodMid, wall: P.woodLight, prop: 'barrels' },
+      seesauna: { k: 'water', variant: 'jetty' },
+      mittsommer: { k: 'flowers', colors: [P.yellow, P.white, P.blue] },
+      jedermannspfad: { k: 'tree', crown: P.leafDark, shape: 'cone' },
+    },
+  },
 }
-

@@ -5,6 +5,8 @@ import type { BackdropSpec } from '../../chapterArtSpecs'
 import { ArtSvg } from '../../ArtSvg'
 import { useSvgId } from '../../svgId'
 import { P } from '../palette'
+import { GroundExtrasArc1, HorizonExtrasArc1 } from './backdropArc1'
+import { GroundExtrasArc2, HorizonExtrasArc2 } from './backdropArc2'
 
 export const ChapterBackdrop = memo(function ChapterBackdrop({ spec, stage }: { spec: BackdropSpec; stage: number }) {
   const [far, mid, near] = spec.grass
@@ -190,6 +192,8 @@ export const ChapterBackdrop = memo(function ChapterBackdrop({ spec, stage }: { 
             ))}
           </g>
         ) : null}
+        <GroundExtrasArc1 spec={spec} />
+        <GroundExtrasArc2 spec={spec} />
         {spec.water === 'lake' ? <ellipse cx="50" cy="62" rx="16" ry="7" fill={P.water} opacity="0.9" /> : null}
         {spec.water === 'river' ? (
           <path d="M100 58 C90 64 96 72 86 78 C78 84 84 92 76 100" stroke={P.water} strokeWidth="14" fill="none" vectorEffect="non-scaling-stroke" />
@@ -323,6 +327,8 @@ export const ChapterBackdrop = memo(function ChapterBackdrop({ spec, stage }: { 
               <path d="M300 14 l6 -3 6 3 M318 8 l5 -2.6 5 2.6 M334 16 l5 -2.6 5 2.6" stroke={P.charcoal} strokeWidth="1.2" fill="none" />
             </g>
           ) : null}
+          <HorizonExtrasArc1 spec={spec} />
+          <HorizonExtrasArc2 spec={spec} />
           {spec.provence ? (
             <g>
               {[40, 60, 76, 340, 360].map((x, i) => (

@@ -10,7 +10,7 @@ import { chapterCopy } from './chapterCopy'
 
 type GameApi = ReturnType<typeof useGame>
 
-const ART = { pavillon: 'pavillon', brunnen: 'brunnen', dorffest: 'lampions', rosengarten: 'rosenbogen' } as const
+const ART = { pavillon: 'pavillon', brunnen: 'brunnen', dorffest: 'lampions', rosengarten: 'rosenbogen', gartenroute: 'bank' } as const
 
 /** Großprojekte: build stages with chapter currencies. */
 export function ProjectSheet({ game, onClose }: { game: GameApi; onClose: () => void }) {

@@ -6,7 +6,7 @@
 import type { ReactNode } from 'react'
 import { P } from './art/palette'
 
-export type PathStyle = 'track' | 'loop' | 'shore' | 'cross' | 'rondel' | 'switchback' | 'lane' | 'stones' | 'promenade' | 'yard' | 'cloister' | 'axis' | 'nurseryRows' | 'boardwalk'
+export type PathStyle = 'track' | 'loop' | 'shore' | 'cross' | 'rondel' | 'switchback' | 'lane' | 'stones' | 'promenade' | 'yard' | 'cloister' | 'axis' | 'nurseryRows' | 'boardwalk' | 'dikeTrack' | 'fliess' | 'flagstones' | 'bulbLanes' | 'canals' | 'forestTrail'
 
 const NS = { vectorEffect: 'non-scaling-stroke' as const, fill: 'none', strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const }
 
@@ -202,6 +202,83 @@ export function ChapterPath({ style, color }: { style: PathStyle; color: string 
           <Dots pts={[[60, 96], [60, 30]]} n={10} rx={1.3} color={[P.leaf, P.leafDark]} />
         </g>
       )
+    /* Deichgarten: Betonspurweg (zwei Plattenstreifen mit Grasnarbe) im Zickzack, Viehgitter */
+    case 'dikeTrack': {
+      const pts: [number, number][] = [[50, 100], [47, 90], [54, 78], [45, 64], [55, 50], [46, 37], [50, 22]]
+      const d = 'M' + pts.map((p) => p.join(' ')).join(' L')
+      return (
+        <g>
+          <path d={d} stroke="#9cc06a" strokeWidth="14" {...NS} />
+          <path d={d} stroke={color} strokeWidth="4" {...NS} transform="translate(-2.4 0)" />
+          <path d={d} stroke={color} strokeWidth="4" {...NS} transform="translate(2.4 0)" />
+          <path d="M45 85 H55 M45 86.4 H55 M45 87.8 H55" stroke={P.metal} strokeWidth="1.2" {...NS} />
+        </g>
+      )
+    }
+    /* Spreewald: ein Fließ schlängelt sich durchs Bild, Holzbrücken darüber */
+    case 'fliess': {
+      const d = 'M50 100 C40 92 58 86 50 78 C42 70 60 64 50 56 C40 48 58 42 50 34 C44 28 52 24 50 22'
+      return (
+        <g>
+          <path d={d} stroke="#6a9a48" strokeWidth="15" {...NS} />
+          <path d={d} stroke={color} strokeWidth="11" {...NS} />
+          {[78, 46].map((y) => (
+            <g key={y}>
+              <path d={`M43 ${y} H57`} stroke={P.woodDark} strokeWidth="7" {...NS} strokeLinecap="butt" />
+              <path d={`M43 ${y} H57`} stroke={P.wood} strokeWidth="5" strokeDasharray="1 .4" {...NS} strokeLinecap="butt" />
+            </g>
+          ))}
+        </g>
+      )
+    }
+    /* Cottage-Garten: Trittplatten aus Kalkstein im Zickzack, Lavendel am Rand */
+    case 'flagstones': {
+      const pts: [number, number][] = [[50, 100], [48, 88], [54, 78], [46, 66], [54, 54], [46, 42], [50, 30], [50, 22]]
+      return (
+        <g>
+          <Dots pts={pts} n={18} rx={3.2} color={[color, '#d4c49a', color]} />
+          <Dots pts={pts.map(([x, y]) => [x - 5, y] as [number, number])} n={14} rx={0.9} color={[P.lavender, P.lilac]} />
+          <Dots pts={pts.map(([x, y]) => [x + 5, y] as [number, number])} n={14} rx={0.9} color={[P.lilac, P.lavender]} />
+        </g>
+      )
+    }
+    /* Tulpenfelder: gerade Wege zwischen den Feldern, Graben quer davor */
+    case 'bulbLanes':
+      return (
+        <g>
+          <Way d="M50 100 V22" color={color} w={10} edge="#b8a070" edgeW={2} />
+          <path d="M18 79 H82 M18 64 H82 M22 47 H78" stroke={color} strokeWidth="6" {...NS} opacity=".9" />
+          <path d="M0 31 H100" stroke={P.water} strokeWidth="6" {...NS} />
+          <path d="M44 31 H56" stroke={P.white} strokeWidth="8" {...NS} strokeLinecap="butt" />
+        </g>
+      )
+    /* Artischockeninsel: Kanal im Zickzack mit Ziegelrand und Bogenbrücke */
+    case 'canals': {
+      const pts: [number, number][] = [[50, 100], [50, 90], [56, 80], [44, 64], [56, 50], [46, 36], [50, 22]]
+      const d = 'M' + pts.map((p) => p.join(' ')).join(' L')
+      return (
+        <g>
+          <path d={d} stroke={P.terracottaLight} strokeWidth="14" {...NS} strokeLinejoin="miter" />
+          <path d={d} stroke={color} strokeWidth="11" {...NS} strokeLinejoin="miter" />
+          <path d="M43 57 H57" stroke={P.terracotta} strokeWidth="6" {...NS} strokeLinecap="butt" />
+          <path d="M43 57 H57" stroke={P.stoneLight} strokeWidth="1.4" {...NS} transform="translate(0 -1.4)" />
+          <Dots pts={[[47, 86], [53, 72]]} n={3} rx={0.6} color={P.waterLight} />
+        </g>
+      )
+    }
+    /* Beerenwald: Waldpfad in der Spirale, Wurzeln und orange Wegzeichen */
+    case 'forestTrail': {
+      const d = 'M50 100 L50 86 C80 82 82 62 70 50 C58 38 30 40 24 56 C20 68 40 76 54 66 C62 60 56 52 50 52'
+      return (
+        <g>
+          <path d={d} stroke="#7a6a48" strokeWidth="9" {...NS} />
+          <path d={d} stroke={color} strokeWidth="7" {...NS} />
+          <path d="M52 90 l4 -1 M71 60 l3 2 M36 45 l-2 3 M30 66 l3 1" stroke={P.bark} strokeWidth="1.4" {...NS} />
+          <Dots pts={[[62, 84], [76, 66], [44, 41], [24, 62], [46, 70]]} n={5} rx={0.8} color={P.orange} />
+          <path d="M50 52 L50 22" stroke={color} strokeWidth="5" {...NS} opacity=".8" />
+        </g>
+      )
+    }
     /* Moorgarten: Bohlenweg in einer Schleife übers dunkle Wasser */
     case 'boardwalk': {
       const d = 'M50 100 L50 86 C80 82 82 62 70 50 C58 38 30 40 24 56 C20 68 40 76 54 66 C62 60 56 52 50 52'

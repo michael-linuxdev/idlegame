@@ -5,6 +5,7 @@
  */
 
 import { laterChapterStrings } from './stringsChapters'
+import { arc2ChapterStrings } from './stringsChaptersArc2'
 import { nFestTokens, nHeirlooms, nSeeds } from './count'
 
 function obst(n: string): string {
@@ -187,6 +188,12 @@ export const expansionStrings = {
       schlossgarten: ['Garden art', 'Friends’ society'],
       baumschule: ['Propagation', 'Stock'],
       moorgarten: ['Keep it wet', 'Volunteers'],
+      deichgarten: ['Dike care', 'Neighbors’ help'],
+      spreewald: ['Channel care', 'Recipes'],
+      cottagegarten: ['Neighbors', 'Save seed'],
+      tulpenfelder: ['Bulb breeding', 'Sorting'],
+      artischocken: ['Tides', 'Offshoots'],
+      beerenwald: ['Forest care', 'Stores'],
     } as Record<string, readonly [string, string]>,
     growPer: '+6 % per rank',
     thriftPer: '−4 % cost per rank',
@@ -254,6 +261,7 @@ export const expansionStrings = {
       },
     },
     ...laterChapterStrings,
+    ...arc2ChapterStrings,
   },
 
   ilse: {

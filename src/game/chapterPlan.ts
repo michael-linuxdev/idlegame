@@ -23,7 +23,7 @@ export interface PlannedChapter {
 }
 
 /** Bis zu diesem Kapitel ist alles gebaut (Texte, Grafik) und im Spiel. */
-export const RELEASED_UP_TO = 17
+export const RELEASED_UP_TO = 23
 
 const placeholder = (id: string) => Array.from({ length: 10 }, (_, i) => `${id}_${i + 1}`)
 
@@ -34,13 +34,13 @@ export const PLANNED_CHAPTERS: readonly PlannedChapter[] = [
   { id: 'schlossgarten', number: 15, layout: 'RING', areas: ['parterre', 'spargelbeete', 'kanalallee', 'heckentheater', 'mauergarten', 'kuebelhalle', 'wasserachse', 'bosquet', 'schlossgaertnerei', 'sommerkonzert'] },
   { id: 'baumschule', number: 16, layout: 'ROWS', areas: ['saatbeete', 'veredelung', 'obstgehoelze', 'alleebaeume', 'heckenpflanzen', 'containerplatz', 'giessanlage', 'packschuppen', 'hofverkauf', 'pflanztag'] },
   { id: 'moorgarten', number: 17, layout: 'SPIRAL', areas: ['torfmoos', 'moosbeeren', 'wollgras', 'sonnentau', 'birkenhain', 'bohlenweg', 'beobachtungsturm', 'moorhuette', 'schnuckenstall', 'moorfest'] },
-  { id: 'deichgarten', number: 18, layout: 'ZIGZAG', areas: placeholder('deichgarten') },
-  { id: 'spreewald', number: 19, layout: 'ZIGZAG', areas: placeholder('spreewald') },
+  { id: 'deichgarten', number: 18, layout: 'ZIGZAG', areas: ['sanddorn', 'salzwiese', 'koogacker', 'windschutz', 'strandrosen', 'kuttersteg', 'reetkate', 'friesenstube', 'leuchtturm', 'biike'] },
+  { id: 'spreewald', number: 19, layout: 'ZIGZAG', areas: ['gurkenfeld', 'meerrettich', 'leinoelmuehle', 'kahnanleger', 'fliessgarten', 'einlegekueche', 'holzschuppen', 'trachtenhaus', 'erlenwald', 'gurkenfest'] },
   // Bogen II — Omas Saatgutbriefe
-  { id: 'cottagegarten', number: 20, layout: 'ZIGZAG', areas: placeholder('cottagegarten') },
-  { id: 'tulpenfelder', number: 21, layout: 'ROWS', areas: placeholder('tulpenfelder') },
-  { id: 'artischocken', number: 22, layout: 'ZIGZAG', areas: placeholder('artischocken') },
-  { id: 'beerenwald', number: 23, layout: 'SPIRAL', areas: placeholder('beerenwald') },
+  { id: 'cottagegarten', number: 20, layout: 'ZIGZAG', areas: ['stockrosen', 'wickenzaun', 'gemueseparzelle', 'steinmauer', 'apfelspalier', 'holzgewaechshaus', 'teeplatz', 'geissblattlaube', 'gartenschuppen', 'dorfschau'] },
+  { id: 'tulpenfelder', number: 21, layout: 'ROWS', areas: ['tulpenreihen', 'hyazinthen', 'narzissen', 'zwiebelscheune', 'windmuehle', 'gracht', 'fahrradstall', 'versteigerung', 'hausboot', 'tulpenmarkt'] },
+  { id: 'artischocken', number: 22, layout: 'ZIGZAG', areas: ['artischockenfeld', 'lagunenwiese', 'bootsanleger', 'kanalgarten', 'granatapfelhecke', 'salzgarten', 'bootsschuppen', 'gemuesekahn', 'glockenturm', 'inselfest'] },
+  { id: 'beerenwald', number: 23, layout: 'SPIRAL', areas: ['heidelbeerhang', 'preiselbeeren', 'moltebeeren', 'rotehuette', 'saftkueche', 'pilzlichtung', 'holzstapel', 'seesauna', 'mittsommer', 'jedermannspfad'] },
   { id: 'patio', number: 24, layout: 'RING', areas: placeholder('patio') },
   { id: 'korkeichen', number: 25, layout: 'ZIGZAG', areas: placeholder('korkeichen') },
   { id: 'paprikafelder', number: 26, layout: 'ROWS', areas: placeholder('paprikafelder') },

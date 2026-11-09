@@ -121,7 +121,7 @@ Werkzeug: `npm run balance -- <engaged|regular|casual> <stunden>` — spielt die
 
 - Ein Kapitel trägt ~6–10 Wochen neue Ziele; Feste erneuern sich jährlich.
 - Ziel: **10–12 große Kapitel** in 5 Jahren (≈ alle 4–6 Monate), dazwischen je ein System-/Fest-Update. Ohne Zwischen-Updates wären ~20 Kapitel nötig.
-- Kapitel 2–17 sind gebaut (Welle 1 von Kapitel 13–50: Gemeinschaftsgarten, Klostergarten, Schlossgarten, Baumschule, Moor- und Heidegarten). Plan, Geschichte und Wellen für 18–50: `docs/kapitel/plan.md`.
+- Kapitel 2–23 sind gebaut (Welle 1 von Kapitel 13–50: Gemeinschaftsgarten, Klostergarten, Schlossgarten, Baumschule, Moor- und Heidegarten; Welle 2: Deichgarten, Spreewald, Cottage-Garten, Tulpenfelder, Artischockeninsel, Beerenwald, dazu das Großprojekt „Omas Gartenroute“ für Bogen I). Plan, Geschichte und Wellen für 24–50: `docs/kapitel/plan.md`.
 - Freischaltung staffeln über Prestige-Ebenen (Tiefer Winter / Generation N), damit jedes Kapitel ein neues Ziel nach einem Reset ist.
 
 ## Ideen-Backlog (nächste Updates)

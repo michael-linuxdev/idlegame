@@ -486,6 +486,67 @@ export function IconChapterCurrency({ chapter }: { chapter: string }) {
           ))}
         </Svg>
       )
+    case 'deichgarten': // Sanddorn: Zweig mit orangen Beeren
+      return (
+        <Svg>
+          <path d="M5 20L18 5" stroke="#7a5532" strokeWidth="1.4" strokeLinecap="round" />
+          <path d="M9 15.4l-4 -1.6M12 12l-1 -4.4M15 8.6l4 .6M10 16.6l2.6 2.8" stroke="#9aa88a" strokeWidth="1.4" strokeLinecap="round" />
+          {[[8, 17.6], [10.4, 14.6], [12.8, 11.8], [15.2, 9], [9.6, 18.6], [12, 15.8], [14.4, 12.8], [16.6, 10]].map(([x, y], i) => (
+            <circle key={i} cx={x} cy={y} r="1.7" fill="#f08a2c" stroke="#a5531a" strokeWidth=".6" />
+          ))}
+        </Svg>
+      )
+    case 'spreewald': // Gurke
+      return (
+        <Svg>
+          <path d="M5.4 17.4c3 1.6 9 0 13 -9 .8 -2 -1 -3.4 -2.4 -2C12.4 10 8.6 12.6 5.6 13.4c-1.8.6 -1.8 3.2 -.2 4z" fill="#3f7a30" stroke="#24521c" strokeWidth="1" />
+          {[[8, 15], [11, 13.6], [14, 11], [16, 8]].map(([x, y], i) => (
+            <circle key={i} cx={x} cy={y} r=".7" fill="#9ad16f" />
+          ))}
+          <path d="M17.6 6.4l1.6 -2" stroke="#5f9e45" strokeWidth="1.2" strokeLinecap="round" />
+        </Svg>
+      )
+    case 'cottagegarten': // Duftwicke
+      return (
+        <Svg>
+          <path d="M12 21V12" stroke="#3f7a30" strokeWidth="1.2" />
+          <path d="M12 16c2 -1 3.4 -.6 4.4 .6" stroke="#3f7a30" strokeWidth="1" fill="none" />
+          <path d="M12 12.6C8 13 5.6 9.6 7 6.4c1.6 -.4 3.4.6 5 3.2 1.6 -2.6 3.4 -3.6 5 -3.2 1.4 3.2 -1 6.6 -5 6.2z" fill="#f28ab2" stroke="#b84a78" strokeWidth=".9" />
+          <path d="M12 12.4c-1.6 -1 -2.2 -3 -1.4 -4.6 1 -.6 2 -.6 2.8 0 .8 1.6.2 3.6 -1.4 4.6z" fill="#c77dd1" stroke="#8a4a9a" strokeWidth=".7" />
+        </Svg>
+      )
+    case 'tulpenfelder': // Blumenzwiebel
+      return (
+        <Svg>
+          <path d="M12 4c1.4 2.6 5.6 6 5.6 10.4 0 3.6 -2.6 6.4 -5.6 6.4s-5.6 -2.8 -5.6 -6.4C6.4 10 10.6 6.6 12 4z" fill="#c9a46b" stroke="#8a5a32" strokeWidth="1" />
+          <path d="M12 4.6v16M9 9.4c-1 2.4 -1 6.6.4 10.4M15 9.4c1 2.4 1 6.6 -.4 10.4" stroke="#a5733f" strokeWidth=".7" fill="none" />
+          <path d="M10 21.4l-1.4 1.4M12 21.6v1.6M14 21.4l1.4 1.4" stroke="#8a5a32" strokeWidth=".8" strokeLinecap="round" />
+          <path d="M12 4.4V2" stroke="#5f9e45" strokeWidth="1.4" strokeLinecap="round" />
+        </Svg>
+      )
+    case 'artischocken': // Artischocke
+      return (
+        <Svg>
+          <path d="M12 20v2.4" stroke="#5f7a5a" strokeWidth="1.6" strokeLinecap="round" />
+          <path d="M12 3.6c4 2 6.4 6 6 10-.4 3.6 -3 6.4 -6 6.4s-5.6 -2.8 -6 -6.4c-.4 -4 2 -8 6 -10z" fill="#9aa88a" stroke="#5f7a5a" strokeWidth="1" />
+          <path d="M6.4 11c2 2.4 9.2 2.4 11.2 0M6.6 15c2.4 2.4 8.4 2.4 10.8 0M9 7.4c1.6 1.4 4.4 1.4 6 0" stroke="#6a3d8f" strokeWidth="1.2" fill="none" />
+          <path d="M12 3.8V20" stroke="#5f7a5a" strokeWidth=".7" />
+        </Svg>
+      )
+    case 'beerenwald': // Blaubeeren
+      return (
+        <Svg>
+          <path d="M6 7c2 -3 5 -3 6 -1M12 6c2 -3 5 -2 6 0" stroke="#3f7a30" strokeWidth="1.2" fill="none" strokeLinecap="round" />
+          <path d="M12 6c-.6 1.6 -.6 3 0 4" stroke="#3f7a30" strokeWidth="1" />
+          {[[8, 14, 3.6], [15.6, 13, 3.4], [11.6, 18.4, 3.2]].map(([x, y, r], i) => (
+            <g key={i}>
+              <circle cx={x} cy={y} r={r} fill="#3d4f9a" stroke="#1f2a5a" strokeWidth=".8" />
+              <path d={`M${x! - 0.9} ${y! - r! + 0.6}h1.8`} stroke="#1f2a5a" strokeWidth=".7" />
+              <circle cx={x! - r! * 0.4} cy={y! - r! * 0.1} r={r! * 0.26} fill="#fff" opacity=".35" />
+            </g>
+          ))}
+        </Svg>
+      )
     default: // Gartenschau: Besucher-Medaille
       return (
         <Svg>

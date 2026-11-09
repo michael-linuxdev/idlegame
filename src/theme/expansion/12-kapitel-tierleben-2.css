@@ -1,0 +1,191 @@
+/* Kapitel 18–23: Tierleben — Teil von expansion.css (nach 11-kapitel-tierleben.css). */
+
+/* —— Deichgarten —— */
+.k2-sheep {
+  width: calc(var(--u) * 4.4);
+  top: 19%;
+  left: 38%;
+  animation: k2-graze-walk 26s ease-in-out infinite alternate;
+}
+
+.k2-sheep.k1 { left: 54%; top: 21%; animation-delay: -11s; animation-duration: 31s; }
+
+@keyframes k2-graze-walk {
+  0%, 20% { transform: translate(0, 0) scaleX(1); }
+  45% { transform: translate(calc(var(--u) * 6), calc(var(--u) * -0.4)) scaleX(1); }
+  50% { transform: translate(calc(var(--u) * 6), calc(var(--u) * -0.4)) scaleX(-1); }
+  80%, 100% { transform: translate(calc(var(--u) * -2), 0) scaleX(-1); }
+}
+
+.k2-oyster {
+  width: calc(var(--u) * 2.8);
+  top: 92%;
+  left: 12%;
+  animation: chicken-walk 10s steps(16) infinite alternate;
+}
+
+.k2-gull {
+  width: calc(var(--u) * 4);
+  top: 20%;
+  left: 30%;
+  animation: eagle-circle 14s linear infinite;
+}
+
+.k2-gull.g1 { left: 62%; top: 24%; animation-delay: -6s; animation-duration: 17s; }
+
+.k2-mill {
+  width: calc(var(--u) * 4);
+  top: 19%;
+  left: 4%;
+}
+
+/* —— Spreewald —— */
+.k2-punt {
+  width: calc(var(--u) * 8);
+  top: 84%;
+  left: 44%;
+  animation: k2-glide 44s ease-in-out infinite alternate;
+}
+
+@keyframes k2-glide {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(calc(var(--u) * 3), calc(var(--u) * -12)); }
+  50% { transform: translate(calc(var(--u) * -3), calc(var(--u) * -26)); }
+  75% { transform: translate(calc(var(--u) * 3), calc(var(--u) * -40)); }
+  100% { transform: translate(0, calc(var(--u) * -52)); }
+}
+
+.k2-kingfisher {
+  width: calc(var(--u) * 2.6);
+  top: 60%;
+  left: 54%;
+  animation: k2-dart 9s ease-in-out infinite;
+}
+
+@keyframes k2-dart {
+  0%, 55%, 100% { transform: translate(0, 0); }
+  62% { transform: translate(calc(var(--u) * -12), calc(var(--u) * 3)); }
+  70% { transform: translate(calc(var(--u) * -20), calc(var(--u) * -1)); }
+  85% { transform: translate(calc(var(--u) * -6), calc(var(--u) * 1)); }
+}
+
+.k2-stork {
+  width: calc(var(--u) * 3.4);
+  top: 21%;
+  left: 12%;
+  animation: sheep-bob 4s ease-in-out infinite;
+}
+
+/* —— Cottage-Garten —— */
+.k2-robin {
+  width: calc(var(--u) * 2.4);
+  top: 90%;
+  left: 58%;
+  animation: chicken-walk 8s steps(12) infinite alternate;
+}
+
+.k2-train {
+  width: calc(var(--u) * 12);
+  top: 19%;
+  left: -16%;
+  animation: k2-train-run 40s linear infinite;
+}
+
+@keyframes k2-train-run {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(var(--u) * 130)); }
+}
+
+/* —— Tulpenfelder —— */
+.k2-sails {
+  width: calc(var(--u) * 8);
+  top: 17%;
+  left: 3%;
+}
+
+.k2-duck {
+  width: calc(var(--u) * 2.4);
+  top: 29%;
+  left: 8%;
+  animation: duck-cross 30s ease-in-out infinite alternate;
+}
+
+.k2-duck.d1 { left: 11%; top: 29.6%; animation-delay: -1s; }
+.k2-duck.d2 { left: 14%; top: 29.2%; animation-delay: -2s; }
+
+/* —— Artischockeninsel —— */
+.k2-sandolo {
+  width: calc(var(--u) * 8);
+  top: 86%;
+  left: 45%;
+  animation: k2-glide 50s ease-in-out infinite alternate;
+  animation-delay: -12s;
+}
+
+.k2-egret {
+  width: calc(var(--u) * 3);
+  top: 88%;
+  left: 7%;
+  animation: sheep-bob 5s ease-in-out infinite;
+}
+
+/* —— Beerenwald —— */
+.k2-moose {
+  width: calc(var(--u) * 8);
+  top: 20%;
+  left: 6%;
+  animation: k2-moose-walk 70s ease-in-out infinite alternate;
+}
+
+@keyframes k2-moose-walk {
+  0%, 10% { transform: translateX(0) scaleX(1); }
+  45% { transform: translateX(calc(var(--u) * 22)) scaleX(1); }
+  50% { transform: translateX(calc(var(--u) * 22)) scaleX(-1); }
+  90%, 100% { transform: translateX(0) scaleX(-1); }
+}
+
+.k2-squirrel {
+  width: calc(var(--u) * 3);
+  top: 36%;
+  left: 86%;
+  animation: marmot-peek 8s ease-in-out infinite;
+  transform-origin: 50% 100%;
+}
+
+.k2-aurora {
+  inset: 0 0 auto 0;
+  height: 34%;
+  background: linear-gradient(170deg, transparent 10%, rgba(120, 230, 170, 0.45) 35%, rgba(90, 200, 210, 0.3) 55%, rgba(170, 120, 220, 0.25) 70%, transparent 90%);
+  filter: blur(6px);
+  animation: k2-aurora 12s ease-in-out infinite alternate;
+}
+
+@keyframes k2-aurora {
+  from { opacity: 0.55; transform: translateX(-4%) skewX(-6deg); }
+  to { opacity: 1; transform: translateX(4%) skewX(6deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .k2-sheep,
+  .k2-oyster,
+  .k2-gull,
+  .k2-punt,
+  .k2-kingfisher,
+  .k2-stork,
+  .k2-robin,
+  .k2-train,
+  .k2-duck,
+  .k2-sandolo,
+  .k2-egret,
+  .k2-moose,
+  .k2-squirrel,
+  .k2-aurora,
+  .k2-mill .ha-wheel,
+  .k2-sails .ha-wheel {
+    animation: none !important;
+  }
+
+  .k2-train {
+    left: 60%;
+  }
+}

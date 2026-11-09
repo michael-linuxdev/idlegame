@@ -1,5 +1,5 @@
 /**
- * English copy for chapters 4–17 (data-only chapters, see game/chapters.ts).
+ * English copy for chapters 4–19 (data-only chapters, see game/chapters.ts).
  * Each chapter: title, currency, map chip, intro letter and ten areas.
  * Names follow docs/i18n/glossar.md; first names and local greetings stay.
  */
@@ -434,6 +434,66 @@ export const laterChapterStrings = {
       moorhuette: a('Moor Hut', 'Thatched roof, stove, tea.', '“It’s warm inside, even when the fog sits outside.”'),
       schnuckenstall: a('Heath Sheep Fold', 'Heath sheep keep the heather short.', '“Without the sheep this would soon be forest.”'),
       moorfest: a('Moor Festival', 'Lanterns over the water.', '“Once a year the village celebrates its moor.”'),
+    },
+  },
+  deichgarten: {
+    title: 'The Dike Garden',
+    currency: 'Sea Buckthorn',
+    chip: 'Dike',
+    to: 'To the dike garden',
+    teaser: 'Chapter 18: The dike garden on the North Sea — from halfway through the 13th generation, once the moor festival is on.',
+    intro: {
+      title: 'Behind the dike',
+      body: [
+        'Dear garden family,',
+        'in Grandma’s tin there is a packet of sea buckthorn seeds with my address on it: “Frauke, the dike by the Petersen farm. Send seeds back once the hedge bears fruit.” Grandma gave them to me when I started herding sheep. The hedge has borne fruit for years. I never sent anything back.',
+        'I’m a dike shepherd. My sheep keep the grass on the dike short and tread the soil firm, and that protects us from storm floods better than any machine. Behind the dike lies the koog, land won back from the sea: potatoes, hedges against the wind and roses that don’t mind the salt.',
+        'Up here people don’t say much — a nod is a whole sentence. Whoever comes lends a hand. On February 22 we light the Biike together, a great bonfire that sends the winter on its way. Bring warm jackets. The wind always blows in your face.',
+        'Frauke Petersen',
+      ],
+      cta: 'Over the dike',
+    },
+    areas: {
+      sanddorn: a('Sea Buckthorn Hedge', 'Orange berries on thorny branches.', '“The berries have more vitamin C than any lemon.”'),
+      salzwiese: a('Salt Marsh', 'Glasswort and sea lavender before the dike.', '“The sea comes to visit twice a day.”'),
+      koogacker: a('Koog Potato Field', 'Potatoes on old seabed.', '“Where potatoes grow today, there used to be mudflats.”'),
+      windschutz: a('Windbreak Hedge', 'Hawthorn and willow against the wind.', '“Without a hedge, your lettuce blows away.”'),
+      strandrosen: a('Beach Roses', 'Pink flowers, red hips, lots of salt.', '“Beach roses put up with salt, sand and storms. Much like Frauke.”'),
+      kuttersteg: a('Shrimp Boat Jetty', 'The cutter brings shrimp and news.', '“Shrimp are best peeled in pairs, with patience.”'),
+      reetkate: a('Thatched Cottage', 'White walls, thick reed thatch.', '“A good thatched roof lasts forty years.”'),
+      friesenstube: a('Frisian Parlor', 'Blue tiles, tea with rock sugar.', '“First the rock sugar, then the tea, then the cream. Don’t stir.”'),
+      leuchtturm: a('Lighthouse Garden', 'A garden in the lee of the tower.', '“The lighthouse keeper always had the earliest peas.”'),
+      biike: a('Biike Fire', 'A great bonfire on February 22.', '“The fire once saw off the whalers. Now it sees off the winter.”'),
+    },
+  },
+  spreewald: {
+    title: 'The Spreewald',
+    currency: 'Gherkins',
+    chip: 'Spree',
+    to: 'To the Spreewald',
+    teaser: 'Chapter 19: The Spreewald — from the 14th generation, once the Biike fire burns at the dike garden.',
+    intro: {
+      title: 'From the channels',
+      body: [
+        'Dobry źeń! That’s “good day” in Sorbian — Lower Sorbian, or Wendish, as we say here. My family has spoken it for generations, even if the kids prefer German these days.',
+        'I punt a boat along the channels, the many little arms of the river Spree. Some farms can only be reached by boat; even the post comes by punt. In Grandma’s tin there is a packet of gherkin seeds with our address, from my grandmother. The two of them swapped recipes every year: for salted gherkins and for mustard gherkins.',
+        'The gherkins grow by the water with the horseradish right next to them, and in autumn the whole village smells of dill and vinegar. In winter the channels freeze over, and we skate to the neighbors’ farm.',
+        'Come by, I’ll pick you up at the landing. You won’t have to row. Punt, though, you will.',
+        'Mirko Nowak',
+      ],
+      cta: 'Step into the punt',
+    },
+    areas: {
+      gurkenfeld: a('Gherkin Field', 'Vines, yellow flowers, little gherkins.', '“We pick every morning, or they grow too big.”'),
+      meerrettich: a('Horseradish Bed', 'Fiery roots deep in the sand.', '“Everyone cries when grating it. That’s part of it.”'),
+      leinoelmuehle: a('Linseed Oil Mill', 'Flaxseed turns into golden oil.', '“Boiled potatoes with quark and linseed oil. That’s all you need.”'),
+      kahnanleger: a('Punt Landing', 'Where the punts tie up.', '“A punt is poled, not rowed.”'),
+      fliessgarten: a('Channel-side Garden', 'Vegetables and flowers down to the water.', '“We water with a bucket, straight from the channel.”'),
+      einlegekueche: a('Pickling Kitchen', 'Dill, mustard seeds and big barrels.', '“Every family has its own gherkin recipe. Shared only with good friends.”'),
+      holzschuppen: a('Woodshed', 'Alder logs for the long winter.', '“Today’s wood warms the winter after next.”'),
+      trachtenhaus: a('Sorbian Costume House', 'Bonnets, ribbons and painted eggs.', '“The big bonnet is called a lapa. Tying one takes an hour.”'),
+      erlenwald: a('Alder Woods', 'Alders with wet feet.', '“Alders like to stand with their feet in the water.”'),
+      gurkenfest: a('Gherkin Festival', 'Punts full of gherkins and music.', '“At the end, the Gherkin Queen is crowned.”'),
     },
   },
 } as const

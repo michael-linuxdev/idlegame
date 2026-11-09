@@ -14,7 +14,13 @@ import { P } from '../theme/art/palette'
  * petals in spring; Gartenschau — strolling visitors + balloons;
  * Stadtgarten — sparrows, swifts, a fox at night; Kloster — pigeons at the tower;
  * Schloss — swans + a squirrel; Baumschule — hare + hovering kestrel;
- * Moor — passing cranes (spring/autumn) + dragonflies.
+ * Moor — passing cranes (spring/autumn) + dragonflies;
+ * Deich — sheep grazing, oystercatcher, gulls, a turning windmill;
+ * Spreewald — a punt gliding down the channel, kingfisher, stork on the roof;
+ * Cottage — hopping robin + a steam train far off; Tulpen — windmill sails,
+ * ducks in the canal, gulls; Artischocken — a sandolo on the canal, egret, gulls;
+ * Beerenwald — a moose at the forest edge, squirrel, northern lights on winter nights.
+ * CSS: theme/expansion/12-kapitel-tierleben-2.css
  */
 const BEE = (
   <ArtSvg viewBox="0 0 8 6">
@@ -420,6 +426,239 @@ export const ChapterCritters = memo(function ChapterCritters({ chapter, daypart,
             ))
           : null}
         {night ? Array.from({ length: 6 }, (_, i) => <span key={i} className="firefly" style={{ left: `${12 + i * 14}%`, top: `${44 + ((i * 13) % 30)}%` }} />) : null}
+      </div>
+    )
+  }
+  if (chapter === 'deichgarten') {
+    return (
+      <div className="critters" aria-hidden="true">
+        {[0, 1].map((i) => (
+          <div key={i} className={`critter k2-sheep k${i}`}>
+            <ArtSvg viewBox="0 0 16 11">
+              <path d="M4 8v3M11 8v3" stroke={P.charcoal} strokeWidth="1" />
+              <ellipse cx="7.4" cy="5.6" rx="6" ry="3.6" fill={P.feather} stroke={P.outlineFur} strokeWidth=".5" />
+              <circle cx="5" cy="3.6" r="2" fill={P.white} />
+              <ellipse cx="13.6" cy="5" rx="2" ry="1.6" fill={P.charcoal} />
+            </ArtSvg>
+          </div>
+        ))}
+        {!night ? (
+          <div className="critter k2-oyster">
+            <ArtSvg viewBox="0 0 10 8">
+              <path d="M4 6v2M6 6v2" stroke={P.pink} strokeWidth=".6" />
+              <ellipse cx="4.6" cy="4.6" rx="3.4" ry="2" fill={P.white} />
+              <path d="M1.2 4.4Q4.6 1 8 3.4L7.4 5z" fill={P.ink} />
+              <circle cx="7.6" cy="2.6" r="1.3" fill={P.ink} />
+              <path d="M8.6 2.6l1.4 .4" stroke={P.orange} strokeWidth=".7" />
+            </ArtSvg>
+          </div>
+        ) : null}
+        {!night
+          ? [0, 1].map((i) => (
+              <div key={`g${i}`} className={`critter k2-gull g${i}`}>
+                <ArtSvg viewBox="0 0 16 6">
+                  <path d="M0 4 Q4 0 8 3 Q12 0 16 4" stroke={P.charcoal} strokeWidth="1" fill="none" />
+                  <ellipse cx="8" cy="3.6" rx="1.6" ry=".8" fill={P.white} />
+                </ArtSvg>
+              </div>
+            ))
+          : null}
+        <div className="critter k2-mill">
+          <ArtSvg viewBox="0 0 20 30">
+            <path d="M8 30L9 12h2l1 18z" fill={P.white} stroke={P.stoneDark} strokeWidth=".4" />
+            <g className="ha-wheel">
+              {[0, 120, 240].map((a) => (
+                <path key={a} d="M10 10V1" stroke={P.white} strokeWidth="1.4" strokeLinecap="round" transform={`rotate(${a} 10 10)`} />
+              ))}
+              <path d="M10 10V19" stroke="none" />
+            </g>
+            <circle cx="10" cy="10" r="1" fill={P.stoneDark} />
+          </ArtSvg>
+        </div>
+      </div>
+    )
+  }
+  if (chapter === 'spreewald') {
+    return (
+      <div className="critters" aria-hidden="true">
+        {season !== 'winter' ? (
+          <div className="critter k2-punt">
+            <ArtSvg viewBox="0 0 30 16">
+              <path d="M1 12L29 11L27 14H3z" fill={P.woodDark} stroke={P.outline} strokeWidth=".4" />
+              <circle cx="22" cy="4" r="1.6" fill={P.skin} />
+              <path d="M20 6h4l.6 5h-5.2z" fill={P.denim} />
+              <path d="M26 0L18 15" stroke={P.woodLight} strokeWidth=".7" />
+              {[6, 10, 14].map((x) => (
+                <ellipse key={x} cx={x} cy={10.6} rx="1.8" ry=".9" fill={P.leafDark} />
+              ))}
+            </ArtSvg>
+          </div>
+        ) : null}
+        {!night && season !== 'winter' ? (
+          <div className="critter k2-kingfisher">
+            <ArtSvg viewBox="0 0 12 6">
+              <ellipse cx="5" cy="3.4" rx="3.6" ry="1.6" fill={P.orange} />
+              <ellipse cx="5" cy="2.4" rx="3.6" ry="1.4" fill={P.blue} />
+              <circle cx="8.6" cy="2.6" r="1.2" fill={P.blue} />
+              <path d="M9.6 2.6l2.4 .3" stroke={P.ink} strokeWidth=".6" />
+            </ArtSvg>
+          </div>
+        ) : null}
+        {season !== 'winter' ? (
+          <div className="critter k2-stork">
+            <ArtSvg viewBox="0 0 12 14">
+              <path d="M5 10v4M7 10v4" stroke={P.tomato} strokeWidth=".7" />
+              <ellipse cx="6" cy="8" rx="4" ry="2.6" fill={P.white} stroke={P.stoneLight} strokeWidth=".3" />
+              <path d="M2 8h4l-1.6 2z" fill={P.ink} />
+              <path d="M8.6 7q1.4 -3 .6 -5.6" stroke={P.white} strokeWidth="1.4" fill="none" />
+              <path d="M9.4 1.6l2.6 1.2" stroke={P.tomato} strokeWidth=".8" />
+            </ArtSvg>
+          </div>
+        ) : null}
+        {night ? Array.from({ length: 5 }, (_, i) => <span key={i} className="firefly" style={{ left: `${14 + i * 16}%`, top: `${40 + ((i * 11) % 30)}%` }} />) : null}
+      </div>
+    )
+  }
+  if (chapter === 'cottagegarten') {
+    return (
+      <div className="critters" aria-hidden="true">
+        {!night ? (
+          <div className="critter k2-robin">
+            <ArtSvg viewBox="0 0 10 8">
+              <ellipse cx="4.6" cy="4.6" rx="3.4" ry="2.4" fill={P.woodMid} />
+              <ellipse cx="6" cy="5" rx="1.8" ry="1.6" fill={P.orange} />
+              <circle cx="7.4" cy="3" r="1.6" fill={P.woodMid} />
+              <circle cx="7.8" cy="3.4" r=".9" fill={P.orange} />
+              <path d="M8.8 2.8l1 .4-1 .4z" fill={P.charcoal} />
+              <path d="M4 7v1M5.6 7v1" stroke={P.charcoal} strokeWidth=".4" />
+            </ArtSvg>
+          </div>
+        ) : null}
+        <div className="critter k2-train">
+          <ArtSvg viewBox="0 0 40 12">
+            <path className="smoke" d="M5 3c-2 -2 2 -3 0 -5" stroke={P.white} strokeWidth="1.4" fill="none" />
+            <rect x="2" y="4" width="10" height="5" fill={P.leafDark} />
+            <rect x="9" y="2" width="4" height="7" fill={P.leafDark} />
+            <rect x="4" y="2" width="2" height="2" fill={P.charcoal} />
+            {[14, 26].map((x) => (
+              <rect key={x} x={x} y="4" width="11" height="5" fill={P.barn} />
+            ))}
+            {[4, 9, 17, 22, 29, 34].map((x) => (
+              <circle key={x} cx={x} cy="10" r="1.2" fill={P.charcoal} />
+            ))}
+          </ArtSvg>
+        </div>
+        {night ? Array.from({ length: 5 }, (_, i) => <span key={i} className="firefly" style={{ left: `${14 + i * 16}%`, top: `${40 + ((i * 11) % 30)}%` }} />) : null}
+      </div>
+    )
+  }
+  if (chapter === 'tulpenfelder') {
+    return (
+      <div className="critters" aria-hidden="true">
+        <div className="critter k2-sails">
+          <ArtSvg viewBox="0 0 30 44">
+            <path d="M10 44L12.4 16H17.6L20 44z" fill={P.charcoal} />
+            <path d="M11.6 18Q15 12 18.4 18z" fill={P.woodLight} />
+            <g className="ha-wheel">
+              {[0, 90, 180, 270].map((a) => (
+                <g key={a} transform={`rotate(${a} 15 15)`}>
+                  <path d="M15 15V1" stroke={P.woodDark} strokeWidth=".8" />
+                  <rect x="15.4" y="2" width="3.6" height="10" fill={P.white} stroke={P.woodDark} strokeWidth=".3" />
+                </g>
+              ))}
+            </g>
+            <circle cx="15" cy="15" r="1.4" fill={P.woodDark} />
+          </ArtSvg>
+        </div>
+        {season !== 'winter'
+          ? [0, 1, 2].map((i) => (
+              <div key={i} className={`critter k2-duck d${i}`}>
+                <ArtSvg viewBox="0 0 10 7">
+                  <ellipse cx="4.4" cy="4.6" rx="3.8" ry="2" fill={i ? P.woodMid : P.stoneLight} />
+                  <circle cx="7.6" cy="2.6" r="1.4" fill={i ? P.woodDark : P.leafDark} />
+                  <path d="M8.8 2.6l1.2 .4-1.2 .4z" fill={P.amber} />
+                </ArtSvg>
+              </div>
+            ))
+          : null}
+        {!night
+          ? [0, 1].map((i) => (
+              <div key={`g${i}`} className={`critter k2-gull g${i}`}>
+                <ArtSvg viewBox="0 0 16 6">
+                  <path d="M0 4 Q4 0 8 3 Q12 0 16 4" stroke={P.charcoal} strokeWidth="1" fill="none" />
+                  <ellipse cx="8" cy="3.6" rx="1.6" ry=".8" fill={P.white} />
+                </ArtSvg>
+              </div>
+            ))
+          : null}
+      </div>
+    )
+  }
+  if (chapter === 'artischocken') {
+    return (
+      <div className="critters" aria-hidden="true">
+        <div className="critter k2-sandolo">
+          <ArtSvg viewBox="0 0 30 16">
+            <path d="M1 11Q15 14 29 9L27 13Q15 15 3 13z" fill={P.charcoal} stroke={P.outline} strokeWidth=".4" />
+            <circle cx="20" cy="3.6" r="1.6" fill={P.skin} />
+            <path d="M18 5.6h4l.6 5h-5.2z" fill={P.white} />
+            <path d="M18 6.4h4M18.2 8h4" stroke={P.blue} strokeWidth=".6" />
+            <path d="M23 6L27 15" stroke={P.woodLight} strokeWidth=".7" />
+            {[6, 10].map((x) => (
+              <ellipse key={x} cx={x} cy={10.4} rx="1.6" ry="1.2" fill={P.plum} />
+            ))}
+          </ArtSvg>
+        </div>
+        {!night ? (
+          <div className="critter k2-egret">
+            <ArtSvg viewBox="0 0 10 14">
+              <path d="M4 9v5M6 9v5" stroke={P.charcoal} strokeWidth=".5" />
+              <ellipse cx="5" cy="8" rx="3.4" ry="2" fill={P.white} stroke={P.stoneLight} strokeWidth=".3" />
+              <path d="M7.6 7.4q2 -2.6.4 -5.4q.6 -1 1.8 -.6" stroke={P.white} strokeWidth="1" fill="none" />
+              <path d="M9.6 1.4l.4 .2" stroke={P.ink} strokeWidth=".8" />
+            </ArtSvg>
+          </div>
+        ) : null}
+        {!night
+          ? [0, 1].map((i) => (
+              <div key={`g${i}`} className={`critter k2-gull g${i}`}>
+                <ArtSvg viewBox="0 0 16 6">
+                  <path d="M0 4 Q4 0 8 3 Q12 0 16 4" stroke={P.charcoal} strokeWidth="1" fill="none" />
+                  <ellipse cx="8" cy="3.6" rx="1.6" ry=".8" fill={P.white} />
+                </ArtSvg>
+              </div>
+            ))
+          : Array.from({ length: 5 }, (_, i) => <span key={i} className="star-twinkle" style={{ left: `${10 + i * 18}%`, top: `${8 + ((i * 7) % 14)}%`, animationDelay: `${-i * 0.8}s` }} />)}
+      </div>
+    )
+  }
+  if (chapter === 'beerenwald') {
+    return (
+      <div className="critters" aria-hidden="true">
+        {night && season === 'winter' ? <div className="critter k2-aurora" /> : null}
+        <div className="critter k2-moose">
+          <ArtSvg viewBox="0 0 24 20">
+            <path d="M5 12v8M8 12v8M15 12v8M18 12v8" stroke={P.soilDark} strokeWidth="1.4" />
+            <ellipse cx="11" cy="10" rx="9" ry="4.6" fill={P.soilDark} />
+            <path d="M3 8l2 -2h2z" fill={P.soilDark} />
+            <path d="M18 8l3 -2l3 2l-1 3h-3z" fill={P.soilDark} />
+            <path d="M20 6l-2 -4l1 2l-2 -1M21 6l1 -4l-1 2l2 -1" stroke={P.woodLight} strokeWidth=".8" fill="none" />
+            <path d="M21 11v2" stroke={P.soilDark} strokeWidth="1" />
+          </ArtSvg>
+        </div>
+        {!night ? (
+          <div className="critter k2-squirrel">
+            <ArtSvg viewBox="0 0 10 12">
+              <path d="M2 11q-3 -6 1 -10q3 2 0 6" fill={P.autumn} />
+              <ellipse cx="6" cy="8" rx="2.6" ry="3" fill={P.autumn} />
+              <circle cx="6.6" cy="4.4" r="1.8" fill={P.autumn} />
+              <path d="M6 2.6l.4 -1.4.8 1.4" fill={P.autumn} />
+              <circle cx="7.4" cy="4.2" r=".4" fill={P.ink} />
+            </ArtSvg>
+          </div>
+        ) : (
+          Array.from({ length: 6 }, (_, i) => <span key={i} className="star-twinkle" style={{ left: `${8 + i * 16}%`, top: `${6 + ((i * 7) % 12)}%`, animationDelay: `${-i * 0.7}s` }} />)
+        )}
       </div>
     )
   }
