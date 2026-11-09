@@ -56,4 +56,4 @@ Erste Veröffentlichung: Omas Garten, zehn Gartenbereiche, Omas Notizbuch, Saiso
 | `feature-graphic-1024x500.png` | Google Play Feature-Grafik |
 | `app-icon-1024.png` | App-Store-Icon 1024×1024 ohne Transparenz |
 
-Screenshots neu erzeugen: `npm run build`, `npx vite preview --port 4175`, dann `node scripts/store/screenshots.cjs docs/store/screenshots`.
+Screenshots neu erzeugen: `npm run build`, `npx vite preview --port 4175`, dann `node scripts/store/screenshots.cjs docs/store/screenshots de` (englisch: `… docs/store/screenshots-en en`, siehe `listing.en.md`). Feature-Grafik je Sprache: `node scripts/store/feature-graphic.mjs <de|en> <screenshot> <out>`.

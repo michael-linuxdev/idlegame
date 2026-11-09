@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "balance": "bash scripts/balance/run.sh",
     "test": "vitest run",
-    "e2e": "node scripts/e2e/smoke.mjs && node scripts/e2e/art.mjs && node scripts/e2e/axe.mjs",
+    "e2e": "node scripts/e2e/smoke.mjs && E2E_LANG=en node scripts/e2e/smoke.mjs && node scripts/e2e/art.mjs && node scripts/e2e/axe.mjs && node scripts/e2e/screens.mjs en --strict",
     "art:update": "node scripts/e2e/art.mjs --update",
     "screens": "node scripts/e2e/screens.mjs"
   },

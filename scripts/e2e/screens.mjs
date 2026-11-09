@@ -201,12 +201,21 @@ try {
     await p.goto(URL + q)
     await p.locator('.tabbar .tab-prestige').click()
     await p.waitForTimeout(400)
-    const cta = p.locator('.prestige-panel .btn-primary, .prestige-cta').first()
-    if (await cta.count()) {
-      await cta.click()
-      await p.waitForTimeout(900)
-      await check(p, 'ceremony')
+    await p.locator('.btn.prestige').first().click()
+    await p.locator('.season-ceremony').waitFor()
+    await check(p, 'ceremony-winter')
+    await p.locator('.season-ceremony').click()
+    const letterBtn = p.locator('.season-letter .btn')
+    if (await letterBtn.isVisible().catch(() => false)) {
+      await check(p, 'ceremony-letter')
+      await letterBtn.click()
     }
+    await p.locator('.lucky-wheel').waitFor()
+    await check(p, 'ceremony-wheel')
+    await p.locator('.lucky-wheel .btn').click()
+    // Rad ausdrehen lassen, dann Ergebnis + „Ins neue Gartenjahr“
+    await p.waitForTimeout(4500)
+    await check(p, 'ceremony-spring')
     await ctx.close()
   }
 

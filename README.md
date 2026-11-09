@@ -4,6 +4,10 @@
 
 Produktnotizen & Plan: [`ROADMAP.md`](./ROADMAP.md).
 
+## Sprachen
+
+Deutsch (Ausgangssprache) und Englisch (*Heirloom Garden*). Die Sprache folgt dem Browser (`de*` = Deutsch, sonst Englisch); der Umschalter „Sprache / Language“ unter **Menü → Einstellungen → Anzeige** wechselt live und merkt sich die Wahl auf dem Gerät (nicht im Spielstand). Test-Parameter: `?lang=en` bzw. `?lang=de`. Technik: [`docs/i18n/technik.md`](./docs/i18n/technik.md), Begriffe: [`docs/i18n/glossar.md`](./docs/i18n/glossar.md).
+
 ## Stack
 
 - Vite + React + TypeScript
@@ -18,18 +22,23 @@ npm run dev            # Stimmung testen: ?ambient=night-winter
                        # Fest erzwingen: ?fest=advent (raunaechte, lichtmess, fruehlingsfest, bluetenfest,
                        #   sommerfest, sonnenblumen, erntedank, laternenfest, advent)
                        # Kapitel sofort öffnen: ?kapitel=all · ?kapitel=4,7 · ?kapitel2=1 · ?kapitel3=1
+                       # Sprache erzwingen: ?lang=en · ?lang=de
 npm run build
 npm run preview
 npm run lint
-npm run build && npm run e2e               # Playwright-Durchlauf (Start, Saisonende, Notizbuch, Spielstand, UX-Layout)
-                                           #   + Grafik-Vergleich (?artsheet gegen scripts/e2e/art-baseline/,
-                                           #   höchstens 1.500 SVG-Elemente im Hauptgarten); Screenshots/Diffs in e2e-screens/
+npm run build && npm run e2e               # Playwright-Durchlauf auf Deutsch und Englisch (Start, Saisonende, Notizbuch,
+                                           #   Spielstand, UX-Layout, Sprachumschalter) + Grafik-Vergleich (?artsheet gegen
+                                           #   scripts/e2e/art-baseline/, höchstens 1.500 SVG-Elemente im Hauptgarten)
+                                           #   + axe (WCAG A/AA, beide Sprachen) + englische Fenster-Durchsicht;
+                                           #   Screenshots/Diffs in e2e-screens/
+npm run build && npm run screens -- en     # Jedes Fenster im iPhone-13-Format → e2e-screens/en/ (oder de)
 npm run build && npm run art:update        # Vergleichsbilder nach gewollter Grafik-Änderung erneuern
 node scripts/art/shots.mjs <ordner>        # Spielfeld-Screenshots Tag/Abend/Nacht + 4 Jahreszeiten
 npm test                                   # Vitest (Format, Balance-Formeln, Gartenjahre, Notizbuch)
 SUMMARY=1 npm run balance -- regular 336   # Balance-Simulator (engaged | regular | casual, Stunden)
 npm run build && python3 scripts/generate-pwa-icons.py   # App-Icons aus den echten Bausteinen (?artsheet=icon, Pillow)
-npx vite preview --port 4175 & node scripts/store/screenshots.cjs docs/store/screenshots   # Store-Screenshots
+npx vite preview --port 4175 & node scripts/store/screenshots.cjs docs/store/screenshots de   # Store-Screenshots
+node scripts/store/screenshots.cjs docs/store/screenshots-en en                              #   … englisch
 ```
 
 ## Code-Aufbau
@@ -53,7 +62,7 @@ npx vite preview --port 4175 & node scripts/store/screenshots.cjs docs/store/scr
 
 ## Rechtliches
 
-Datenschutztext und Impressum stehen in `src/theme/legal.ts`. Das Impressum wird erst angezeigt, wenn alle Felder ausgefüllt sind — vor dem Store-Launch eintragen.
+Datenschutztext je Sprache in `src/i18n/{de,en}/legal.ts` (inhaltsgleich halten), Impressum-Angaben in `src/theme/legal.ts`. Das Impressum wird erst angezeigt, wenn alle Felder ausgefüllt sind — vor dem Store-Launch eintragen. Auf Englisch heißt es „Legal notice (Impressum)“; ein englisches Pflicht-Gegenstück gibt es nicht, die Angaben bleiben dieselben.
 
 ## Hosting
 

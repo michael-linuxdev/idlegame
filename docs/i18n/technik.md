@@ -1,6 +1,6 @@
 # Mehrsprachigkeit — Technik
 
-Stand: Paket 1 der englischen Fassung (`docs/prompts/englisch.md`).
+Stand: englische Fassung abgeschlossen (`docs/prompts/englisch.md`, Pakete 1–6).
 
 ## Aufbau
 
@@ -82,10 +82,12 @@ die Browser noch nicht). Daher:
 
 - `src/test/i18n.test.ts` — Schlüsselbäume de/en gleich; keine deutschen Texte
   (Umlaute, „…“, deutsche Funktionswörter) in `src/game` und `src/components`
-  außerhalb der Sprachdateien; (am Ende scharf) keine `TODO(en)` mehr in `en/`.
+  außerhalb der Sprachdateien; keine `TODO(en)` in `en/`; keine Umlaute in
+  englischen Texten außer Eigennamen.
 - E2E Abschnitt 11 (`scripts/e2e/smoke.mjs`): Browser `en-US` startet englisch,
   Umschalter wechselt ohne Neuladen, Wahl übersteht Neuladen, `?lang=` hat Vorrang.
-  Alle übrigen E2E-Abschnitte laufen mit Browser-Sprache `de-DE`.
+  `scripts/e2e/smoke.mjs` liest seine Texte aus `src/i18n` und läuft in `npm run e2e`
+  zweimal: Deutsch und `E2E_LANG=en` (Browser `en-US`).
 
 ## Sprach-Durchsicht (Screenshots)
 

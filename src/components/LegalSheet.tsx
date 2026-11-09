@@ -1,4 +1,4 @@
-import { IMPRESSUM, PRIVACY, impressumComplete } from '../theme/legal'
+import { IMPRESSUM, impressumComplete } from '../theme/legal'
 import { useDismiss } from '../game/overlays'
 import { t } from '../i18n'
 
@@ -26,9 +26,9 @@ export function LegalSheet({ onClose }: Props) {
             ×
           </button>
         </header>
-        <h3>{PRIVACY.title}</h3>
-        <p>{PRIVACY.intro}</p>
-        {PRIVACY.sections.map((s) => (
+        <h3>{t.legal.privacy.title}</h3>
+        <p>{t.legal.privacy.intro}</p>
+        {t.legal.privacy.sections.map((s) => (
           <section key={s.heading}>
             <h4>{s.heading}</h4>
             <p>{s.body}</p>

@@ -10,6 +10,7 @@
 import type { Strings } from '../types'
 import { count, nHeirlooms, nSeedlings, nSeeds } from './count'
 import { careNames } from './careNames'
+import { privacyStrings } from './legal'
 import { manifestStrings } from './manifest'
 import { expansionStrings } from './stringsExpansion'
 import { lifeStrings } from './stringsLife'
@@ -1228,6 +1229,7 @@ export const strings: Strings = {
     title: 'Legal',
     impressum: 'Legal notice (Impressum)',
     close: 'Close',
+    privacy: privacyStrings,
   },
 
   season: {

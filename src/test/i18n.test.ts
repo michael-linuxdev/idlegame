@@ -34,11 +34,30 @@ describe('language files', () => {
     expect(browserLocale([])).toBe('en')
   })
 
-  // TODO(en, Paket 6): scharf schalten, sobald alle Texte übersetzt sind
-  it.skip('English is fully translated (no TODO markers left)', () => {
+  it('English is fully translated (no TODO markers left)', () => {
     const files = import.meta.glob('../i18n/en/*.ts', { query: '?raw', import: 'default', eager: true })
     const open = Object.entries(files).filter(([, src]) => /TODO\(en\)/.test(src as string))
     expect(open.map(([p]) => p)).toEqual([])
+  })
+
+  it('English texts contain no German umlauts outside proper names', () => {
+    // Eigennamen und bewusst deutsche Begriffe (docs/i18n/glossar.md)
+    const KEEP = /Hinnonmäki|Goldparmäne|Frostkönig|Grüß Gott|Straußwirtschaft|Rhön|Grün|Deutsch/g
+    const texts: string[] = []
+    const walk = (v: unknown): void => {
+      if (typeof v === 'string') texts.push(v)
+      else if (typeof v === 'function') {
+        try {
+          walk((v as (...a: unknown[]) => unknown)(1, 'X', 'Y', 'Z'))
+        } catch {
+          /* needs other arguments */
+        }
+      } else if (Array.isArray(v)) v.forEach(walk)
+      else if (v && typeof v === 'object') Object.values(v).forEach(walk)
+    }
+    walk(en)
+    const german = texts.filter((x) => /[äöüÄÖÜß„]/.test(x.replace(KEEP, '')))
+    expect(german).toEqual([])
   })
 })
 
