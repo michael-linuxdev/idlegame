@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { HELPER_RANKS, helperInterval, helperIsPro } from '../game/state'
 import { GENERATORS } from '../game/generators'
 import { IconHelper } from '../theme/icons'
@@ -46,6 +46,16 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
     )
     return () => cancelAnimationFrame(id)
   }, [state.saisonenden, state.tiefeWinter, state.generation, state.helperLevel])
+  // Untere Leiste nur, wenn der Winterruhe-Knopf oben nicht zu sehen ist (sonst doppelt)
+  const mainCta = useRef<HTMLButtonElement>(null)
+  const [mainCtaVisible, setMainCtaVisible] = useState(true)
+  useEffect(() => {
+    const el = mainCta.current
+    if (!el || typeof IntersectionObserver === 'undefined') return
+    const io = new IntersectionObserver(([e]) => setMainCtaVisible(e?.isIntersecting ?? false))
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
   const teaser = prestigeProgress.ratio >= 0.5 && !canPrestige
   const probe = isProbeYear(state)
   const payout = erbstueckePayout(state.ernteSeason, state.saisonenden, probe)
@@ -211,6 +221,7 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
           <p className="panel-empty">{t.prestige.emptyGate}</p>
         ) : null}
         <button
+          ref={mainCta}
           type="button"
           className="btn prestige"
           disabled={!canPrestige}
@@ -502,7 +513,7 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
 
       <GenerationBlock game={game} />
 
-      {canPrestige ? (
+      {canPrestige && !mainCtaVisible ? (
         <div className="prestige-sticky">
           <button type="button" className="btn prestige" onClick={prestige}>
             {claimLabel}
