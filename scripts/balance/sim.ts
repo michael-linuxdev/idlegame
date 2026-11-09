@@ -23,6 +23,9 @@
  *  CHAPTERS=1         der Spieler baut offene Kapitel aus und stellt Ilse an
  *  SIM_ALL_CHAPTERS=1 dazu alle 50 Kapitel aus chapterPlan.ts (setzt CHAPTERS)
  *  COARSE_AFTER_D=n   ab Tag n gröberer Takt (Standard 120 mit Kapiteln)
+ *  DEEP_POLICY=rate   Tiefer Winter am Rendite-Gipfel: sobald Sprösslinge je
+ *                     Tag seit dem letzten Tiefen Winter nicht mehr steigen
+ *                     (Standard mit Kapiteln); sonst „Saison > DEEP_AFTER_H“
  *  Ausgabe: „chapters: K2@d… K13@d…“ und der Garten-Bonus aller Kapitel
  *  Fünf Jahre:  GEN=1 SIM_ALL_CHAPTERS=1 SUMMARY=1 npm run balance -- regular 43800
  */
@@ -236,6 +239,9 @@ export function run(profile: Profile, hours: number) {
   const seenTier = new Set<string>()
   let runStart = clock
   let bestPayoutRate = 0
+  const deepByRate = (process.env.DEEP_POLICY ?? (PLAY_CHAPTERS ? 'rate' : 'duration')) === 'rate'
+  let lastDeepAt = clock
+  let bestSproutRate = 0
   let gateAt = -1
   const runs: { dur: number; active: number; payout: number; levels: number[]; meta: string; day: number; deep?: boolean }[] = []
   // Ereignisdichte: aktive Spielzeit (s) jedes bedeutsamen Ereignisses
@@ -367,7 +373,19 @@ export function run(profile: Profile, hours: number) {
         }
         event()
         for (const g of GENERATORS) lastLevel[g.id] = s.owned[g.id] ?? 0
-        if (canDeepReset(s.saisonenden) && (lastDur > Number(process.env.DEEP_AFTER_H ?? 12) * 3600 || s.saisonenden >= Number(process.env.DEEP_AT_YEAR ?? 99) - 1)) {
+        // Rendite des Tiefen Winters: Sprösslinge je Tag seit dem letzten
+        let deepNow = false
+        if (canDeepReset(s.saisonenden)) {
+          const sproutRate = sproutPayout(s.saisonenden) / Math.max(0.25, (clock - lastDeepAt) / 86400000)
+          bestSproutRate = Math.max(bestSproutRate, sproutRate)
+          deepNow = deepByRate
+            ? sproutRate < bestSproutRate * 0.97 || lastDur > 36 * 3600
+            : lastDur > Number(process.env.DEEP_AFTER_H ?? 12) * 3600
+          if (s.saisonenden >= Number(process.env.DEEP_AT_YEAR ?? 99) - 1) deepNow = true
+        }
+        if (deepNow) {
+          lastDeepAt = clock
+          bestSproutRate = 0
           const sp = sproutPayout(s.saisonenden)
           s = doDeepReset(s)
           runs[runs.length - 1].deep = true
