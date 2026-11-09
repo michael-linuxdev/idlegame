@@ -18,6 +18,7 @@ import { formatAsh, formatDecimal, formatRate } from '../game/format'
 import { playSfx } from '../game/sound'
 import { gatePrestiges, totalGardenMult } from '../game/state'
 import { t } from '../i18n'
+import { cardAreaMult } from '../game/seasonCards'
 import type { useGame } from '../game/useGame'
 
 type GameApi = ReturnType<typeof useGame>
@@ -118,10 +119,11 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
   const branch = game.state.branches[def.id] ?? { efficiency: 0, capacity: 0 }
   const lineMult = totalGardenMult(game.state, game.nowTick)
   const eff = efficiencyMult(branch.efficiency)
-  const lineRate = generatorRate(def, owned) * lineMult * eff
-  const nextRate = generatorRate(def, owned + bulkCount) * lineMult * eff
+  const cardMult = cardAreaMult(game.state.seasonCard, def.id)
+  const lineRate = generatorRate(def, owned) * lineMult * eff * cardMult
+  const nextRate = generatorRate(def, owned + bulkCount) * lineMult * eff * cardMult
   const maxGain =
-    maxInfo.count > 1 ? generatorRate(def, owned + maxInfo.count) * lineMult * eff - lineRate : 0
+    maxInfo.count > 1 ? generatorRate(def, owned + maxInfo.count) * lineMult * eff * cardMult - lineRate : 0
   const careBuyable = owned < 1 ? 0 :
     (['efficiency', 'capacity'] as const).filter((k) => {
       const rank = k === 'efficiency' ? branch.efficiency : branch.capacity

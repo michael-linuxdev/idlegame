@@ -107,6 +107,15 @@ import {
   rollFlashSpawn,
 } from './flashEvent'
 import {
+  cardAreaMult,
+  cardGlobalMult,
+  cardOfflineMult,
+  offerSeasonCards,
+  SEASON_CARDS_FROM_PRESTIGES,
+  type CardOffer,
+  type SeasonCardId,
+} from './seasonCards'
+import {
   prestigeSpikeBit,
   rollOfflineJackpot,
   rollPrestigeSpike,
@@ -271,6 +280,12 @@ export interface GameState {
   waterRefills: number
   /** Echte Sitzungen (neu erst nach ≥ 30 min Pause) — steuert das Freischalten */
   sessions: number
+  /** Saison-Karte dieses Gartenjahres (seasonCards.ts), null = keine */
+  seasonCard: SeasonCardId | null
+  /** Angebot nach dem Saisonende (leer = keine Wahl offen) */
+  seasonCardOffer: CardOffer[]
+  /** Karte des Vorjahres (nie zweimal hintereinander) */
+  lastSeasonCard: string
   /** Personal yield boost expiry; 0 = inactive */
   yieldBoostExpiresAt: number
   /** Battle-pass lite week key */
@@ -606,6 +621,9 @@ export function createInitialState(now = Date.now()): GameState {
     waterRefillDay: '',
     waterRefills: 0,
     sessions: 1,
+    seasonCard: null,
+    seasonCardOffer: [],
+    lastSeasonCard: '',
     yieldBoostExpiresAt: 0,
     bpWeekKey: weekKey(now),
     bpXp: 0,
@@ -688,6 +706,13 @@ export function createPostPrestigeState(prev: GameState, now = Date.now()): Game
     waterRefillDay: prev.waterRefillDay,
     waterRefills: prev.waterRefills,
     sessions: prev.sessions,
+    // Jahres-Thema gilt genau ein Gartenjahr; ab Jahr 4 neue Wahl
+    seasonCard: null,
+    lastSeasonCard: prev.seasonCard ?? prev.lastSeasonCard,
+    seasonCardOffer:
+      prev.prestiges + 1 >= SEASON_CARDS_FROM_PRESTIGES
+        ? offerSeasonCards(prev.owned, prev.seasonCard ?? prev.lastSeasonCard)
+        : [],
     yieldBoostExpiresAt: prev.yieldBoostExpiresAt,
     bpWeekKey: prev.bpWeekKey,
     bpXp: prev.bpXp,
@@ -913,10 +938,11 @@ export function productionPerSecond(state: GameState, now = Date.now()): number 
     const owned = state.owned[def.id] ?? 0
     const branch = state.branches[def.id]
     const mEff = efficiencyMult(branch?.efficiency ?? 0)
-    sum += generatorRate(def, owned) * mEff
+    sum += generatorRate(def, owned) * mEff * cardAreaMult(state.seasonCard, def.id)
   }
   return (
     sum *
+    cardGlobalMult(state.seasonCard) *
     mPrestige *
     mClan *
     mEvent *
@@ -2180,6 +2206,13 @@ export function claimMarketGift(state: GameState, now = Date.now()): GameState {
   return { ...state, samen: state.samen + MARKET_GIFT_SAMEN, marketGiftDay: dayKey(now), lastSeen: now }
 }
 
+/** Saison-Karte wählen (aus dem Angebot) oder `null` = ohne Karte weiter. */
+export function pickSeasonCard(state: GameState, id: SeasonCardId | null): GameState {
+  if (state.seasonCardOffer.length === 0) return state
+  if (id && !state.seasonCardOffer.some((o) => o.id === id)) return state
+  return { ...state, seasonCard: id, seasonCardOffer: [] }
+}
+
 /** Eine neue Sitzung beginnt erst nach dieser Pause (Neuladen zählt nicht). */
 export const SESSION_GAP_MS = 30 * 60_000
 
@@ -2269,12 +2302,9 @@ export function applyOfflineCatchup(
   const rate = productionPerSecond(base, now)
   const emberCaps = offlineCapsHours(base.emberUpgrades)
   const deepCaps = deepOfflineBonusHours(base.deepUpgrades)
-  const gained = offlineCatchupAsh(
-    rate,
-    elapsedSec,
-    emberCaps.soft + deepCaps.soft,
-    emberCaps.hard + deepCaps.hard,
-  )
+  const gained =
+    offlineCatchupAsh(rate, elapsedSec, emberCaps.soft + deepCaps.soft, emberCaps.hard + deepCaps.hard) *
+    cardOfflineMult(base.seasonCard)
   // Chapters grow offline with the same caps; Ilse keeps tending them
   base = syncContest(syncFest(syncChaptersOpen(base, now), now), now)
   base = tickChapters(base, (r) =>
@@ -2726,6 +2756,7 @@ export type MultKey =
   | 'nachbarn'
   | 'regenbogen'
   | 'fruehling'
+  | 'karte'
 
 /**
  * Every factor of productionPerSecond except the per-area ones, in the order
@@ -2748,6 +2779,7 @@ export function multBreakdown(state: GameState, now = Date.now()): { key: MultKe
     ['duenger', effectiveYieldBoostMult(state, now)],
     ['regenbogen', rainbowMult(state, now)],
     ['fruehling', turboMult(state, now)],
+    ['karte', cardGlobalMult(state.seasonCard)],
   ]
   return all.filter(([, m]) => Math.abs(m - 1) > 1e-6).map(([key, mult]) => ({ key, mult }))
 }

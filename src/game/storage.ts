@@ -30,6 +30,7 @@ import { EMPTY_LEGACY, type LegacyUpgrades } from './generations'
 import { VARIETIES, type WheelBuff } from './gardenLife'
 import { freePlaytestSpace } from './playtestLog'
 import { getSaveBlock, setSaveBlock } from './saveGuard'
+import { seasonCardDef, type SeasonCardId } from './seasonCards'
 
 const COSMETIC_IDS = new Set(COSMETICS.map((c) => c.id))
 
@@ -378,6 +379,16 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
     waterRefillDay,
     waterRefills,
     sessions,
+    // Saison-Karten (2026-11-09; ältere Stände: keine Karte, kein Angebot)
+    seasonCard: seasonCardDef(parsed.seasonCard as string)?.id ?? null,
+    seasonCardOffer: Array.isArray(parsed.seasonCardOffer)
+      ? (parsed.seasonCardOffer as unknown[])
+          .filter((o): o is { id: string; preview: number } => isRecord(o) && typeof o.id === 'string')
+          .map((o) => ({ id: seasonCardDef(o.id)?.id, preview: typeof o.preview === 'number' && Number.isFinite(o.preview) ? o.preview : 1 }))
+          .filter((o): o is { id: SeasonCardId; preview: number } => o.id != null)
+          .slice(0, 3)
+      : [],
+    lastSeasonCard: typeof parsed.lastSeasonCard === 'string' ? parsed.lastSeasonCard.slice(0, 32) : '',
     yieldBoostExpiresAt,
     bpWeekKey,
     bpXp,

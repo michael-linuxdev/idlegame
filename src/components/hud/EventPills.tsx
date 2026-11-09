@@ -228,6 +228,17 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
     })
   }
 
+  if (state.seasonCard) {
+    const card = t.seasonCards.cards[state.seasonCard]
+    pills.push({
+      key: 'card',
+      icon: <IconSprout />,
+      label: card.name,
+      aria: `${card.name}: ${card.effect}`,
+      detail: { line: `${card.name} · ${card.effect}`, ratio: 0, aria: card.effect },
+    })
+  }
+
   if (season) {
     pills.push({
       key: 'season',

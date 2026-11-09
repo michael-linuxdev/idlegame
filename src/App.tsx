@@ -19,6 +19,8 @@ import { ProjectSheet } from './components/ProjectSheet'
 import { AlbumSheet } from './components/AlbumSheet'
 import { getFeaturesSeen, markFeatureSeen, MENU_FEATURES, subscribeFeaturesSeen, type FeatureId } from './game/featureUnlocks'
 import { SeasonCeremony } from './components/story/SeasonCeremony'
+import { SeasonCardPicker } from './components/SeasonCardPicker'
+import { CollectionSheet } from './components/CollectionSheet'
 import { LegalSheet } from './components/LegalSheet'
 import { SaveSheet } from './components/SaveSheet'
 import { ComebackLetter, COMEBACK_SEEDS } from './components/story/ComebackLetter'
@@ -147,6 +149,7 @@ export default function App() {
   }, [extras.notify, updateExtras])
   const [projectsOpen, setProjectsOpen] = useState(false)
   const [albumOpen, setAlbumOpen] = useState(false)
+  const [collectionOpen, setCollectionOpen] = useState(false)
   const [mapSheet, setMapSheet] = useState<'decor' | 'cross' | null>(null)
   const [notebookOpen, setNotebookOpen] = useState<{ entry: NotebookEntryId | null } | null>(null)
   const gardenStage = GENERATORS.filter(
@@ -305,6 +308,7 @@ export default function App() {
         albumReady={game.albumReady}
         onOpenProjects={game.features.has('projects') ? () => setProjectsOpen(true) : undefined}
         clanOpen={game.features.has('clan')}
+        onOpenCollection={() => setCollectionOpen(true)}
         newKeys={newMenuKeys}
         upcoming={[
           ...(game.state.crossing && game.state.crossing.endsAt > game.nowTick
@@ -356,6 +360,9 @@ export default function App() {
           }}
         />
       ) : null}
+
+      {!game.seasonEnd ? <SeasonCardPicker game={game} /> : null}
+      {collectionOpen ? <CollectionSheet game={game} onClose={() => setCollectionOpen(false)} /> : null}
 
       {game.seasonEnd ? (
         <SeasonCeremony

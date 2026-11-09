@@ -1257,3 +1257,66 @@ html.pref-calm *::after {
   font-size: 0.9rem;
   line-height: 1.5;
 }
+
+/* Sammlung & Ziele */
+.collection-total {
+  margin: 0.2rem 0 0.6rem;
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+
+.collection-rows,
+.collection-near,
+.collection-chapters {
+  margin: 0 0 0.8rem;
+  padding: 0;
+  list-style: none;
+}
+
+.collection-rows li {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.15rem 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.collection-bar {
+  grid-column: 1 / -1;
+  height: 0.4rem;
+  border-radius: 999px;
+  background: rgba(95, 158, 69, 0.18);
+  overflow: hidden;
+}
+
+.collection-bar span {
+  display: block;
+  height: 100%;
+  background: #5f9e45;
+}
+
+.collection-near li {
+  font-size: 0.88rem;
+  color: #8a5a10;
+  font-weight: 700;
+}
+
+.collection-chapters li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.35rem 0;
+}
+
+.collection-chapters li.locked .collection-chapter-icon {
+  filter: grayscale(1) brightness(0.4);
+  opacity: 0.6;
+}
+
+.collection-chapter-icon svg {
+  width: 1.8rem;
+  height: 1.8rem;
+}
+
+.collection-chapter-text {
+  display: grid;
+}

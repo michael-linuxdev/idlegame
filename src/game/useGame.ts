@@ -48,6 +48,7 @@ import { questLabel } from './quests'
 import {
   applyOfflineCatchup,
   countSession,
+  pickSeasonCard,
   applyTick,
   buyBranch,
   buyClanBoost,
@@ -160,6 +161,7 @@ import { CONTEST_KG } from './extrasCore'
 import type { LegacyId } from './generations'
 import { FEST_EARN } from './fests'
 import { logPlaytest, registerPlaytestSnapshot } from './playtestLog'
+import type { SeasonCardId } from './seasonCards'
 import { ensureFeaturesSeen, loadFeaturesSeen, openFeatures, usedFeatures } from './featureUnlocks'
 import { FEATURE_HINTS, seedHintsSeen, type HintId } from './hints'
 import { loadState, saveState } from './storage'
@@ -516,6 +518,10 @@ export function useGame() {
       if (next !== s) logPlaytest('album', { id })
       return next
     })
+  }, [])
+
+  const chooseSeasonCard = useCallback((id: SeasonCardId | null) => {
+    setState((s) => pickSeasonCard(s, id))
   }, [])
 
   const buildProject = useCallback((id: ProjectId) => {
@@ -1023,6 +1029,7 @@ export function useGame() {
     letResidentIn,
     crossStart,
     buildProject,
+    pickSeasonCard: chooseSeasonCard,
     claimStamp,
     chooseWeather,
     weatherEvent: pendingWeatherEvent(state, nowTick),

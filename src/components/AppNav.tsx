@@ -27,6 +27,7 @@ interface Props {
   onOpenAlbum?: () => void
   onOpenDecor?: () => void
   onOpenCross?: () => void
+  onOpenCollection?: () => void
   crossReady?: boolean
   albumReady?: number
   unreadLetters?: number
@@ -127,6 +128,7 @@ export function AppNav({
   onOpenAlbum,
   onOpenDecor,
   onOpenCross,
+  onOpenCollection,
   crossReady = false,
   albumReady = 0,
   unreadLetters = 0,
@@ -217,6 +219,7 @@ export function AppNav({
           onOpenAlbum={onOpenAlbum}
           onOpenDecor={onOpenDecor}
           onOpenCross={onOpenCross}
+          onOpenCollection={onOpenCollection}
           crossReady={crossReady}
           albumReady={albumReady}
           unreadLetters={unreadLetters}
@@ -244,6 +247,7 @@ function MenuSheet({
   onOpenAlbum,
   onOpenDecor,
   onOpenCross,
+  onOpenCollection,
   crossReady,
   albumReady,
   unreadLetters,
@@ -265,6 +269,7 @@ function MenuSheet({
   onOpenAlbum?: () => void
   onOpenDecor?: () => void
   onOpenCross?: () => void
+  onOpenCollection?: () => void
   crossReady: boolean
   albumReady: number
   unreadLetters: number
@@ -281,6 +286,7 @@ function MenuSheet({
     { key: 'cross', icon: Glyph.cross, label: t.crossing.title, dot: crossReady, on: onOpenCross },
     { key: 'album', icon: Glyph.album, label: t.album.menu, dot: albumReady > 0, on: onOpenAlbum },
     { key: 'projects', icon: Glyph.projects, label: t.projects.menu, on: onOpenProjects },
+    { key: 'collection', icon: Glyph.album, label: t.collections.menu, on: onOpenCollection },
     { key: 'photo', icon: Glyph.photo, label: t.photo.menu, on: onOpenPhoto },
   ]
   const rows: { key: string; icon: ReactNode; label: string; on?: () => void }[] = [
