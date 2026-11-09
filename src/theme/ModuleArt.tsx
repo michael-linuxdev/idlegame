@@ -20,12 +20,44 @@ import { Kompost } from './art/garden/kompost'
 import { Kraeuterspirale } from './art/garden/kraeuterspirale'
 import { Obstwiese } from './art/garden/obstwiese'
 import { Orangerie } from './art/garden/orangerie'
+import { GardenLamp, OmaSign, SeasonContext } from './art/parts'
+import type { Season } from './ambient'
+
+/** Gartenlaterne hinter dem Bereich (ab Stufe 3), leuchtet abends und nachts. */
+const LAMP: Record<GeneratorId, { x: number; y: number }> = {
+  gemuesebeet: { x: 92, y: 46 },
+  kompost: { x: 10, y: 50 },
+  kraeuterspirale: { x: 88, y: 52 },
+  beerenhecke: { x: 8, y: 46 },
+  obstwiese: { x: 92, y: 50 },
+  bienenstock: { x: 92, y: 50 },
+  huehnerstall: { x: 90, y: 46 },
+  gewaechshaus: { x: 10, y: 48 },
+  hofladen: { x: 92, y: 44 },
+  orangerie: { x: 8, y: 50 },
+}
+
+/** Omas Schild: Markenzeichen jedes Bereichs auf Stufe 5 (Level 100). */
+const SIGN: Record<GeneratorId, { x: number; y: number }> = {
+  gemuesebeet: { x: 16, y: 44 },
+  kompost: { x: 92, y: 60 },
+  kraeuterspirale: { x: 90, y: 72 },
+  beerenhecke: { x: 92, y: 50 },
+  obstwiese: { x: 6, y: 70 },
+  bienenstock: { x: 6, y: 64 },
+  huehnerstall: { x: 94, y: 70 },
+  gewaechshaus: { x: 90, y: 62 },
+  hofladen: { x: 10, y: 48 },
+  orangerie: { x: 24, y: 72 },
+}
 
 interface Props {
   id: GeneratorId
   level: number
   producing?: boolean
   selected?: boolean
+  /** Jahreszeit aus useAmbient (Blüte, Herbstlaub, Schnee); ohne = Sommer */
+  season?: Season
 }
 
 function renderModule(id: GeneratorId, tier: number, producing: boolean): ReactNode {
@@ -53,25 +85,39 @@ function renderModule(id: GeneratorId, tier: number, producing: boolean): ReactN
   }
 }
 
-function ModuleArtImpl({ id, level, producing = false, selected = false }: Props) {
+function ModuleArtImpl({ id, level, producing = false, selected = false, season }: Props) {
   const tier = Math.max(1, moduleTier(level))
-  // Stufenwechsel animiert GardenMap über PlotFx onTier + .tier-grow
+  // Stufenwechsel: GardenMap setzt .tier-grow (PlotFx onTier), dann wachsen die
+  // mit dieser Stufe neuen Teile (.t-new) einzeln ein
   const cls =
     `module-art module-${id}` +
     (producing ? ' producing' : '') +
     (selected ? ' selected' : '')
 
   return (
-    <ArtSvg className={cls} viewBox="0 0 100 86" data-tier={tier}>
-      {renderModule(id, tier, producing)}
+    <ArtSvg className={cls} viewBox="0 0 100 86" data-tier={tier} data-season={season}>
+      <SeasonContext.Provider value={season}>
+        {tier >= 3 ? (
+          <g className={tier === 3 ? 't-new' : undefined}>
+            <GardenLamp x={LAMP[id].x} y={LAMP[id].y} s={0.9} />
+          </g>
+        ) : null}
+        {renderModule(id, tier, producing)}
+        {tier >= 5 ? (
+          <g className={tier === 5 ? 't-new' : undefined} style={{ ['--i' as string]: 5 }}>
+            <OmaSign x={SIGN[id].x} y={SIGN[id].y} />
+          </g>
+        ) : null}
+      </SeasonContext.Provider>
     </ArtSvg>
   )
 }
 
-/** Memoized on tier (not raw level) so per-level buys don't redraw the SVG. */
+/** Memoized on tier and season (not raw level) so per-level buys don't redraw the SVG. */
 export const ModuleArt = memo(ModuleArtImpl, (a, b) =>
   a.id === b.id &&
   moduleTier(a.level) === moduleTier(b.level) &&
   a.producing === b.producing &&
-  a.selected === b.selected,
+  a.selected === b.selected &&
+  a.season === b.season,
 )

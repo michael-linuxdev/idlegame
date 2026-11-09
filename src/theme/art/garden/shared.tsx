@@ -15,6 +15,7 @@ export const LEAF_L = P.leafLight
 
 export const LEAF_D = P.leafDark
 
-export function Glass({ d }: { d: string }) {
-  return <path d={d} fill="rgba(214, 240, 246, 0.55)" stroke={P.glassEdge} strokeWidth="1.6" strokeLinejoin="round" />
+/** Glasfläche; `warm` leuchtet abends und nachts (Orangerie). */
+export function Glass({ d, warm = false }: { d: string; warm?: boolean }) {
+  return <path d={d} fill={warm ? P.glassWarm : P.glass} fillOpacity="0.55" stroke={P.glassEdge} strokeWidth="1.6" strokeLinejoin="round" />
 }

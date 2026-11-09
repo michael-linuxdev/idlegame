@@ -6,6 +6,7 @@ import { playSfx } from '../game/sound'
 import type { useGame } from '../game/useGame'
 import { t } from '../i18n'
 import { DecorArt } from '../theme/DecorArt'
+import { IconCheck } from '../theme/icons'
 
 type GameApi = ReturnType<typeof useGame>
 
@@ -48,7 +49,7 @@ export function AlbumSheet({ game, onClose }: { game: GameApi; onClose: () => vo
             return (
               <li key={g.id} className={`album-goal${claimed ? ' claimed' : ''}${ready ? ' ready' : ''}`}>
                 <span className="album-stamp" aria-hidden="true">
-                  {claimed ? '✓' : ''}
+                  {claimed ? <IconCheck /> : null}
                 </span>
                 <span className="album-text">{t.album.goals[g.id]!(g.need)}</span>
                 {ready ? (

@@ -457,3 +457,41 @@ export function IconMap() {
     </Svg>
   )
 }
+
+/** Stern (Meilenstein); Farbe über currentColor */
+export function IconStar({ className }: { className?: string }) {
+  return (
+    <Svg className={`g-icon-mono${className ? ` ${className}` : ''}`}>
+      <path d="M12 2.6l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z" fill="currentColor" />
+    </Svg>
+  )
+}
+
+/** n Sterne nebeneinander (statt '★'.repeat) */
+export function IconStars({ n }: { n: number }) {
+  return (
+    <>
+      {Array.from({ length: n }, (_, i) => (
+        <IconStar key={i} />
+      ))}
+    </>
+  )
+}
+
+/** Haken (erledigt, gewählt); Farbe über currentColor */
+export function IconCheck({ className }: { className?: string }) {
+  return (
+    <Svg className={`g-icon-mono${className ? ` ${className}` : ''}`}>
+      <path d="M4.5 12.5l4.8 4.8L19.5 7" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+    </Svg>
+  )
+}
+
+/** Menü (drei Striche); Farbe über currentColor */
+export function IconMenu({ className }: { className?: string }) {
+  return (
+    <Svg className={`g-icon-mono${className ? ` ${className}` : ''}`}>
+      <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
+    </Svg>
+  )
+}

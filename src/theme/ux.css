@@ -1359,3 +1359,14 @@ html.pref-calm *::after {
   margin: 0;
   flex: 1 1 12rem;
 }
+
+/* Sterne/Haken als SVG-Icons im Fließtext (statt ★ ✓) */
+.g-icon-mono {
+  vertical-align: -0.12em;
+  flex: none;
+}
+
+.plot-badge-stars .g-icon-mono,
+.plot-stars .g-icon-mono {
+  margin-right: -0.08em;
+}

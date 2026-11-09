@@ -9,9 +9,10 @@ interface Props {
   onTier?: (tier: number) => void
 }
 
-type Fx = 'clear' | 'plant' | 'tier' | null
+type Fx = 'clear' | 'plant' | 'tier' | 'crown' | null
 
 const LEAVES = Array.from({ length: 12 }, (_, i) => i)
+const CROWN = Array.from({ length: 18 }, (_, i) => i)
 
 /**
  * One-shot burst on a plot: leaves and twigs fly when a wild corner is
@@ -29,13 +30,14 @@ export function PlotFx({ unlocked, planted, tier = 0, onTier }: Props) {
     if (unlocked && !was.unlocked) kind = 'clear'
     else if (planted && !was.planted) kind = 'plant'
     else if (tier > was.tier && tier >= 2) {
-      kind = 'tier'
+      // Stufe 5 (Level 100) ist der Höhepunkt: einmalig eine größere Feier
+      kind = tier >= 5 && was.tier < 5 ? 'crown' : 'tier'
       onTier?.(tier)
     }
     if (kind) {
       setFx(kind)
-      playSfx(kind === 'clear' ? 'letter' : kind === 'tier' ? 'streak' : 'upgrade')
-      const t = window.setTimeout(() => setFx(null), 1300)
+      playSfx(kind === 'clear' ? 'letter' : kind === 'tier' || kind === 'crown' ? 'streak' : 'upgrade')
+      const t = window.setTimeout(() => setFx(null), kind === 'crown' ? 2200 : 1300)
       return () => window.clearTimeout(t)
     }
   }, [unlocked, planted, tier, onTier])
@@ -43,8 +45,9 @@ export function PlotFx({ unlocked, planted, tier = 0, onTier }: Props) {
   if (!fx) return null
   return (
     <span className={`plot-fx fx-${fx}`} aria-hidden="true">
-      {LEAVES.map((i) => (
-        <span key={i} style={{ ['--a' as string]: `${i * 30}deg`, ['--d' as string]: `${i % 2 ? 1 : 0.7}` }} />
+      {fx === 'crown' ? <i className="fx-crown-ring" /> : null}
+      {(fx === 'crown' ? CROWN : LEAVES).map((i) => (
+        <span key={i} style={{ ['--a' as string]: `${i * (fx === 'crown' ? 20 : 30)}deg`, ['--d' as string]: `${i % 2 ? 1 : 0.7}` }} />
       ))}
     </span>
   )

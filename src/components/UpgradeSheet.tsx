@@ -4,7 +4,12 @@ import { careNamesFor } from '../theme/careNames'
 import { ModuleArt } from '../theme/ModuleArt'
 import { useHints, type HintId } from '../game/hints'
 import { ClearedPlot, WildPlot } from '../theme/PlotArt'
-import { IconBasket, IconFertilizer, IconSprout } from '../theme/icons'
+import {
+  IconBasket,
+  IconFertilizer,
+  IconSprout,
+  IconStar,
+} from '../theme/icons'
 import {
   GENERATORS,
   generatorRate,
@@ -215,7 +220,7 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
                 <div className="gc-stars" aria-label={t.milestones.starsAria(stars)}>
                   {Array.from({ length: 5 }, (_, i) => (
                     <span key={i} className={i < stars ? 'on' : undefined}>
-                      ★
+                      <IconStar />
                     </span>
                   ))}
                   {stars > 5 ? <em>+{stars - 5}</em> : null}
@@ -251,7 +256,7 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
                 />
                 <span className="gc-milestone-label">{t.milestones.short(milestone.at)}</span>
                 <span className="gc-milestone-star" aria-hidden="true">
-                  ★
+                  <IconStar />
                 </span>
               </div>
             ) : null}

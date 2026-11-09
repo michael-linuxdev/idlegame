@@ -1078,8 +1078,8 @@ export const strings = {
   },
 
   milestone: {
-    tier: (name: string, tier: number) => `${name}: Ausbaustufe ${tier} erreicht!`,
-    toStar: (n: number) => `noch ${n} bis ★`,
+    tier: (name: string, tier: number) => (tier >= 5 ? `${name}: höchste Ausbaustufe erreicht – Omas Schild hängt!` : `${name}: Ausbaustufe ${tier} erreicht!`),
+    toStar: (n: number) => `noch ${n} bis`,
     toStarAria: (n: number, at: number) => `Noch ${n} Stufen bis Meilenstein ${at} (doppelte Ernte)`,
     bestBuy: 'Omas Tipp: lohnt sich am meisten',
   },

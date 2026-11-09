@@ -59,6 +59,7 @@ import { RARITY_BONUS, VARIETIES } from '../game/gardenLife'
 import { TIER_LEVELS, moduleTier } from '../theme/tiers'
 import { formatClock, formatDecimal } from '../game/format'
 import { ArtSvg } from '../theme/ArtSvg'
+import { ArtDefs } from '../theme/art/parts'
 import { PlotFx } from './PlotFx'
 import { useHarvestFlight } from './HarvestFlight'
 import { EventPills } from './hud/EventPills'
@@ -70,6 +71,8 @@ import {
   IconSeeds,
   IconSnow,
   IconSprout,
+  IconStar,
+  IconStars,
 } from '../theme/icons'
 import { ProgressSheet } from './ProgressSheet'
 import { MapBackdrop } from '../theme/MapBackdrop'
@@ -223,6 +226,13 @@ export function GardenMap({
   const [decorEdit, setDecorEdit] = useState(false)
   const [wishOpen, setWishOpen] = useState(false)
   const [growing, setGrowing] = useState<string | null>(null)
+  // Bewegung beim Produzieren: reihum immer nur ein Bereich (plus der gewählte),
+  // damit die Karte lebt, ohne jede Sekunde alle SVGs neu zu zeichnen.
+  const [animTick, setAnimTick] = useState(0)
+  useEffect(() => {
+    const id = window.setInterval(() => setAnimTick((n) => n + 1), 3500)
+    return () => window.clearInterval(id)
+  }, [])
   const signsAll = useSignsAlways()
   const ambient = useAmbient()
   const harvest = useHarvestFlight()
@@ -233,6 +243,8 @@ export function GardenMap({
   ).length
   /** Only the next wild corner shows its sign — keeps the map calm. */
   const nextWildId = GENERATORS.find((g) => !game.unlocked(g.id))?.id ?? null
+  const producingIds = GENERATORS.filter((g) => (state.owned[g.id] ?? 0) > 0 && game.unlocked(g.id)).map((g) => g.id)
+  const animId = producingIds.length ? producingIds[animTick % producingIds.length] : null
   const questReady =
     game.questRows.some((q: { ready: boolean }) => q.ready) ||
     WEEKLY_TASKS.some((x) => !extras.weekClaimed.includes(x.id) && extras.week[x.id] >= x.target)
@@ -874,6 +886,7 @@ export function GardenMap({
         data-daypart={ambient.daypart}
         data-season={ambient.season}
       >
+        <ArtDefs />
         <div
           className="garden-map"
           role="application"
@@ -945,6 +958,7 @@ export function GardenMap({
             const cls =
               'garden-plot' +
               (selectedHere ? ' selected' : '') +
+              (animId === def.id ? ' anim' : '') +
               (!unlocked ? ' wild' : ready ? ' ready' : ' planted') +
               (producing ? ' producing' : '') +
               (canBuy ? ' can-buy' : '') +
@@ -976,15 +990,16 @@ export function GardenMap({
               >
                 <span className={`plot-visual${growing === def.id ? ' tier-grow' : ''}`}>
                   {!unlocked ? (
-                    <WildPlot id={def.id} />
+                    <WildPlot id={def.id} season={ambient.season} />
                   ) : ready ? (
-                    <ClearedPlot />
+                    <ClearedPlot season={ambient.season} />
                   ) : (
                     <ModuleArt
                       id={def.id}
                       level={level}
                       producing={producing}
                       selected={selectedHere}
+                      season={ambient.season}
                     />
                   )}
                 </span>
@@ -1004,7 +1019,7 @@ export function GardenMap({
                     <span className="plot-badge-name">{def.name}</span>
                     <span className="plot-badge-level">
                       {level}
-                      {stars > 0 ? <span className="plot-badge-stars">{'★'.repeat(Math.min(3, stars))}</span> : null}
+                      {stars > 0 ? <span className="plot-badge-stars"><IconStars n={Math.min(3, stars)} /></span> : null}
                     </span>
                   </span>
                 ) : null}
@@ -1037,7 +1052,7 @@ export function GardenMap({
                           {milestonesReached(level) > 0 ? (
                             <span className="plot-stars" aria-label={t.milestones.starsAria(milestonesReached(level))}>
                               {' '}
-                              {'★'.repeat(Math.min(3, milestonesReached(level)))}
+                              <IconStars n={Math.min(3, milestonesReached(level))} />
                             </span>
                           ) : null}
                           {producing && selectedHere ? (
@@ -1051,7 +1066,7 @@ export function GardenMap({
                                 style={{ ['--p' as string]: `${Math.round(((level - nextStar.from) / (nextStar.at - nextStar.from)) * 100)}%` }}
                                 aria-hidden="true"
                               />
-                              {t.milestone.toStar(toStar)}
+                              {t.milestone.toStar(toStar)} <IconStar />
                             </span>
                           ) : null}
                         </>

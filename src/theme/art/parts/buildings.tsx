@@ -70,3 +70,35 @@ export function OmaSign({ x, y, s = 1 }: { x: number; y: number; s?: number }) {
     </Place>
   )
 }
+
+/**
+ * Gartenlaterne auf einem Pfahl; der Lichtschein ist tagsüber unsichtbar und
+ * leuchtet abends/nachts (--art-glow aus tokens.css). Fußpunkt = Pfahlfuß.
+ */
+export function GardenLamp({ x, y, s = 1 }: { x: number; y: number; s?: number }) {
+  return (
+    <Place x={x} y={y} s={s} className="art-lamp">
+      <circle cx="0" cy="-15" r="7" fill={P.lamp} className="art-glow" />
+      <path d="M0 0 V-13" stroke={P.outlineWood} strokeWidth="1.3" />
+      <path d="M-2.4 -12 H2.4 L1.8 -17.5 H-1.8 Z" fill={P.lamp} stroke={P.outline} strokeWidth={STROKE.detail} />
+      <path d="M-2.6 -17.5 H2.6 L0 -20 Z" fill={P.outline} />
+    </Place>
+  )
+}
+
+/** Windrad auf einem Stab; die Flügel drehen sich, solange der Bereich arbeitet. Fußpunkt = Stabfuß. */
+export function Pinwheel({ x, y, s = 1 }: { x: number; y: number; s?: number }) {
+  return (
+    <Place x={x} y={y} s={s}>
+      <path d="M0 0 V-16" stroke={P.outlineWood} strokeWidth="1.2" />
+      <g transform="translate(0 -16)">
+        <g className="ma-spin">
+          {[0, 90, 180, 270].map((a, i) => (
+            <path key={a} d="M0 0 L6 -2 L4.5 2 Z" fill={[P.red, P.yellow, P.blue, P.leafLight][i]} stroke={P.outline} strokeWidth={STROKE.hair} transform={`rotate(${a})`} />
+          ))}
+          <circle r="1" fill={P.outline} />
+        </g>
+      </g>
+    </Place>
+  )
+}

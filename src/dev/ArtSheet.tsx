@@ -11,11 +11,14 @@ import { GENERATORS } from '../game/generators'
 import { RESIDENTS } from '../game/residents'
 import type { Daypart, Season } from '../theme/ambient'
 import { ART_REGISTRY } from '../theme/art/registry'
+import { ArtDefs } from '../theme/art/parts'
 import { DecorArt } from '../theme/DecorArt'
 import { ModuleArt } from '../theme/ModuleArt'
 import { ClearedPlot, WildPlot } from '../theme/PlotArt'
 import { ResidentArt } from '../theme/ResidentArt'
 import { TIER_LEVELS } from '../theme/tiers'
+import '../theme/tokens.css'
+import '../theme/polish.css'
 import './artsheet.css'
 
 const SEASONS: Season[] = ['spring', 'summer', 'autumn', 'winter']
@@ -38,14 +41,14 @@ function GardenBlock({ season, daypart }: { season: Season; daypart: Daypart }) 
           <div className="as-row" key={g.id}>
             <span className="as-label">{g.name}</span>
             <div className="as-cell plot-visual">
-              <WildPlot id={g.id} />
+              <WildPlot id={g.id} season={season} />
             </div>
             <div className="as-cell plot-visual">
-              <ClearedPlot />
+              <ClearedPlot season={season} />
             </div>
             {TIER_LEVELS.map((lv) => (
               <div className="as-cell plot-visual" key={lv}>
-                <ModuleArt id={g.id} level={lv} producing />
+                <ModuleArt id={g.id} level={lv} producing season={season} />
               </div>
             ))}
           </div>
@@ -90,6 +93,7 @@ export default function ArtSheet() {
   const chapters = part === 'all' || part === 'kapitel'
   return (
     <main className="artsheet">
+      <ArtDefs />
       <h1>Grafik-Übersicht</h1>
       {garden
         ? SEASONS.flatMap((season) => DAYPARTS.map((d) => <GardenBlock key={`${season}-${d}`} season={season} daypart={d} />))

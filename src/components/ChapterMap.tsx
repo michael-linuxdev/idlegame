@@ -20,7 +20,13 @@ import { useChapterArt } from '../theme/art/chapterArt'
 import { ChapterCritters } from './ChapterCritters'
 import { PlotButtons } from './PlotPicker'
 import { useSignsAlways } from '../game/prefs'
-import { IconGrapes, IconIlse, IconSprout } from '../theme/icons'
+import {
+  IconGrapes,
+  IconIlse,
+  IconSprout,
+  IconStar,
+  IconStars,
+} from '../theme/icons'
 import { chapterCopy } from './chapterCopy'
 import { useAmbient } from '../theme/ambient'
 import { HelperWalker } from './HelperWalker'
@@ -205,7 +211,7 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
                     <span className="plot-badge-name">{ac.name}</span>
                     <span className="plot-badge-level">
                       {level}
-                      {stars > 0 ? <span className="plot-badge-stars">{'★'.repeat(Math.min(3, stars))}</span> : null}
+                      {stars > 0 ? <span className="plot-badge-stars"><IconStars n={Math.min(3, stars)} /></span> : null}
                     </span>
                   </span>
                 ) : null}
@@ -218,7 +224,7 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
                         : ready
                           ? t.chapterUi.plant
                           : t.chapterUi.level(level)}
-                      {stars > 0 ? <span className="plot-stars"> {'★'.repeat(Math.min(3, stars))}</span> : null}
+                      {stars > 0 ? <span className="plot-stars"> <IconStars n={Math.min(3, stars)} /></span> : null}
                     </span>
                   </span>
                 ) : null}
@@ -376,7 +382,7 @@ function ChapterSheet({
                 <div className="gc-stars" aria-label={t.milestones.starsAria(stars)}>
                   {Array.from({ length: 5 }, (_, i) => (
                     <span key={i} className={i < stars ? 'on' : undefined}>
-                      ★
+                      <IconStar />
                     </span>
                   ))}
                   {stars > 5 ? <em>+{stars - 5}</em> : null}
@@ -409,7 +415,7 @@ function ChapterSheet({
                 <span className="gc-milestone-fill" style={{ width: `${Math.round(((level - ms.from) / (ms.at - ms.from)) * 100)}%` }} />
                 <span className="gc-milestone-label">{t.milestones.short(ms.at)}</span>
                 <span className="gc-milestone-star" aria-hidden="true">
-                  ★
+                  <IconStar />
                 </span>
               </div>
             ) : null}

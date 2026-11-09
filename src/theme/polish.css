@@ -285,6 +285,20 @@ html.idle .ha-fish,
 html.idle .ha-jump,
 html.idle .ha-wheel,
 html.idle .morning-mist,
-html.idle .laube-letter {
+html.idle .laube-letter,
+html.idle .module-art * {
   animation-play-state: paused !important;
+}
+
+/* —— Licht an den Bereichen (Laternen, Fenster): Schein nur abends/nachts —— */
+.art-glow {
+  opacity: 0;
+}
+
+[data-daypart='evening'] .art-glow {
+  opacity: 0.32;
+}
+
+[data-daypart='night'] .art-glow {
+  opacity: 0.5;
 }

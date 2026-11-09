@@ -1,5 +1,5 @@
 /** Hauptgarten-Bereich: gemuesebeet. */
-import { Bed, Flower, Lettuce, Shadow, Sprout } from '../parts'
+import { Bed, Flower, Fruit, Lettuce, Shadow, Sprout, useSeason } from '../parts'
 import { P } from '../palette'
 import { LEAF, LEAF_D, LEAF_L, OUT, WOOD_D } from './shared'
 
@@ -16,17 +16,20 @@ function Radish({ x, y }: { x: number; y: number }) {
   return (
     <g>
       <path d={`M${x} ${y - 2} l-2.5 -5 M${x} ${y - 2} l2.5 -5`} stroke={LEAF} strokeWidth="1.6" strokeLinecap="round" />
-      <circle cx={x} cy={y} r="2.6" fill={P.red} stroke="#9c2a3c" strokeWidth="0.8" />
+      <Fruit cx={x} cy={y} r={2.6} c={P.red} />
     </g>
   )
 }
 
 export function Gemuesebeet({ t }: { t: number }) {
+  const season = useSeason()
+  // Beet je Stufe: linke Kante, Breite, Oberkante der Erde, Unterkante der Erde
+  const bed = t <= 1 ? { x: 18, w: 64, top: 48, bottom: 70 } : t === 2 ? { x: 12, w: 76, top: 46, bottom: 66 } : { x: 16, w: 68, top: 44, bottom: 64 }
   return (
     <g>
       <Shadow rx={42} />
       {t >= 4 ? (
-        <g>
+        <g className={t === 4 ? 't-new' : undefined} style={{ ["--i" as string]: 1 }}>
           {/* bean teepee */}
           <path d="M28 46 L40 10 L52 46 M34 46 L40 10 L46 46" stroke={WOOD_D} strokeWidth="1.8" fill="none" />
           <path d="M31 40 Q38 30 34 22 Q42 18 40 12 M49 40 Q42 32 46 24" stroke={LEAF} strokeWidth="2.2" fill="none" />
@@ -41,7 +44,7 @@ export function Gemuesebeet({ t }: { t: number }) {
         </g>
       ) : null}
       {t >= 5 ? (
-        <g>
+        <g className={t === 5 ? 't-new' : undefined} style={{ ["--i" as string]: 2 }}>
           {/* scarecrow (SIZE.vogelscheuche = 30) */}
           <path d="M82 70 V44 M74 49 H90" stroke={WOOD_D} strokeWidth="2" />
           <path d="M75.5 49 H88.5 L87 60 H77 Z" fill={P.denim} stroke={OUT} strokeWidth="1.3" />
@@ -89,8 +92,21 @@ export function Gemuesebeet({ t }: { t: number }) {
           )}
         </g>
       )}
-      {t >= 3 ? (
+      {season === 'winter' ? (
+        <g className="art-snow">
+          {/* Vlies über dem Beet */}
+          <path d={`M${bed.x - 1} ${bed.bottom} V${bed.top - 2} Q${bed.x + bed.w / 2} ${bed.top - 12} ${bed.x + bed.w + 1} ${bed.top - 2} V${bed.bottom} Z`} fill={P.white} fillOpacity="0.78" stroke={P.frost} strokeWidth="0.9" />
+          <path d={`M${bed.x + 8} ${bed.top + 2} q6 -3 12 0 M${bed.x + bed.w - 24} ${bed.top + 1} q6 -3 12 0`} stroke={P.frost} strokeWidth="0.8" fill="none" />
+        </g>
+      ) : null}
+      {season === 'autumn' && t >= 2 && t <= 4 ? (
         <g>
+          <ellipse cx={bed.x - 4} cy={bed.bottom - 4} rx="5.4" ry="4.2" fill={P.orange} stroke={OUT} strokeWidth="1.1" />
+          <path d={`M${bed.x - 4} ${bed.bottom - 8} v-3`} stroke={LEAF_D} strokeWidth="1.4" />
+        </g>
+      ) : null}
+      {t >= 3 ? (
+        <g className={t === 3 ? 't-new' : undefined} style={{ ["--i" as string]: 3 }}>
           {/* Pflanzschilder */}
           <path d="M14 46 V36 M68 45 V39" stroke={WOOD_D} strokeWidth="1.2" />
           <rect x="10" y="32" width="8" height="5" rx="1" fill={P.canvas} stroke={OUT} strokeWidth="0.8" />
@@ -98,7 +114,7 @@ export function Gemuesebeet({ t }: { t: number }) {
         </g>
       ) : null}
       {t >= 4 ? (
-        <g>
+        <g className={t === 4 ? 't-new' : undefined} style={{ ["--i" as string]: 4 }}>
           {/* watering can */}
           <path d="M86 62 h9 v8 h-9 z" fill={P.water} stroke={OUT} strokeWidth="1.1" />
           <path d="M95 64 l4 -4" stroke={P.water} strokeWidth="1.8" />
@@ -106,7 +122,7 @@ export function Gemuesebeet({ t }: { t: number }) {
         </g>
       ) : null}
       {t >= 5 ? (
-        <g>
+        <g className={t === 5 ? 't-new' : undefined} style={{ ["--i" as string]: 5 }}>
           <Flower x={6} y={50.4} c={P.pink} />
           <Flower x={12} y={56.4} c={P.yellow} />
           <Flower x={5} y={58.4} c={P.red} />

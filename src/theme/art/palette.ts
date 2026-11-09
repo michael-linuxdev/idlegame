@@ -8,7 +8,7 @@
  * Licht kommt von oben links: „light“-Töne für die obere/linke Seite,
  * „dark“-Töne für Schatten und Unterseiten.
  */
-export const P = {
+export const HEX = {
   // Umrisse je Material
   outline: '#3d2f1f',
   outlineWood: '#6e4a2b',
@@ -20,6 +20,12 @@ export const P = {
   leafDark: '#3f7a30',
   leafMoss: '#4f7a2e',
   leafPale: '#9ad16f',
+  // Herbst- und Winterlaub
+  autumnDark: '#a5531a',
+  autumn: '#d2752c',
+  winterLeafDark: '#5f7a5a',
+  winterLeaf: '#7a8f72',
+  winterLeafLight: '#9aa88a',
   // Holz
   woodLight: '#c9a46b',
   wood: '#b98450',
@@ -85,9 +91,21 @@ export const P = {
   metal: '#6b6f73',
   charcoal: '#3a3a3a',
   ink: '#1a1a1a',
+  // Fenster, Glas mit Licht (Tag: hell/kühl, Abend/Nacht: warm leuchtend)
+  window: '#f4efe4',
+  glassWarm: '#d6f0f6',
 } as const
 
-export type PaletteName = keyof typeof P
+export type PaletteName = keyof typeof HEX
+
+/**
+ * Die Grafik zeichnet mit `P.name` = `var(--art-name, #hex)`: ohne CSS sieht
+ * alles aus wie der Hex-Wert, und Stimmungen (Abend, Nacht) können die
+ * Farben im Hauptgarten über die Variablen umstimmen (tokens.css).
+ */
+export const P = Object.fromEntries(
+  (Object.keys(HEX) as PaletteName[]).map((k) => [k, `var(${cssVar(k)}, ${HEX[k]})`]),
+) as { readonly [K in PaletteName]: string }
 
 /**
  * Ähnliche Altwerte, die beim Umstellen auf einen Palettenton gezogen
@@ -116,4 +134,13 @@ export const NEAR: Record<string, PaletteName> = {
 /** CSS-Variablen-Name für einen Palettenton (`--art-leaf-dark`). */
 export function cssVar(name: PaletteName): string {
   return `--art-${name.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`)}`
+}
+
+/**
+ * Einzelfarbe außerhalb der Palette, die trotzdem der Stimmung folgt:
+ * `var(--art-t-rrggbb, #rrggbb)`. Die Abend-/Nacht-Werte erzeugt mood.ts
+ * aus allen tone('#…')-Aufrufen im Quelltext.
+ */
+export function tone(hex: string): string {
+  return `var(--art-t-${hex.slice(1).toLowerCase()}, ${hex})`
 }
