@@ -453,6 +453,8 @@ function report(profile: Profile, hours: number) {
   const dn = (sec: number) => (Number.isFinite(sec) ? (sec >= 120 ? `${Math.round(sec / 60)}m` : `${Math.round(sec)}s`) : '-')
   if (process.env.SUMMARY) {
     const act = runs.map((r) => Math.round(r.active / 60))
+    // reduce statt Math.max(...): bei sehr vielen Saisons sprengt der Spread den Stack
+    const longest = act.slice(1).reduce((m, v) => Math.max(m, v), 0)
     const d = runs.map((r) => Math.round(r.dur / 60))
     const plantedAll = milestones.find((m) => m.label.includes('planted orangerie'))
     const perDay = Array.from({ length: Math.ceil(hours / 24) }, (_, d) =>
@@ -463,7 +465,7 @@ function report(profile: Profile, hours: number) {
       `${profile} ${hours}h | seasons/day ${perDay} | planted/day ${garden} | seasons ${runs.length} | first ${d[0] ?? '-'}m | mins ${d.slice(0, 14).join(' ')} | payout ${runs.slice(0, 6).map((r) => r.payout).join(' ')} | last ${d.slice(-3).join(' ')} | orangerie ${plantedAll ? fmtT(plantedAll.t) : 'never(1st run)'} | end lvls ${GENERATORS.map((g) => s.owned[g.id]).join(',')}`,
     )
     console.log(
-      `  density s1 median ${dn(density.s1Median)} max ${dn(density.s1Max)} · later median ${dn(density.laterMedian)} p90 ${dn(density.laterP90)} | active mins ${act.slice(0, 14).join(' ')} | longest active ${Math.max(0, ...act.slice(1))}m (year ${act.indexOf(Math.max(0, ...act.slice(1)), 1) + 1})`,
+      `  density s1 median ${dn(density.s1Median)} max ${dn(density.s1Max)} · later median ${dn(density.laterMedian)} p90 ${dn(density.laterP90)} | active mins ${act.slice(0, 14).join(' ')} | longest active ${longest}m (year ${act.indexOf(longest, 1) + 1})`,
     )
     if (process.env.HELPER_DAYS) console.log(`  jonas ranks bought: ${helperDays.map((d, i) => `R${i + 1}@d${d}`).join(' ')} | year ${s.saisonenden + 1} | deep ${s.tiefeWinter} | gen ${s.generation}`)
     if (process.env.GEN) console.log(`  generations: ${gens.map((d, i) => `G${i + 1}@d${d}`).join(' ')}`)

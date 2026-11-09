@@ -73,3 +73,56 @@ npx rolldown scripts/balance/sim.ts --format esm --platform node -o /tmp/sim.mjs
 GEN=1 CHAPTERS=1 CHAPTER_MANUAL=0 CHAPTER_BONUS_MODE=soft CHAPTER_BONUS_CAP=4 SUMMARY=1 node /tmp/sim.mjs regular 8760
 ```
 Laufzeit je Jahreslauf ~2–4 min (Kapitel-Ausbau wird alle 60 s Spielzeit gerechnet).
+
+## Runde 2 — Sim-Spielweise verbessert (Option 3)
+
+`DEEP_POLICY=rate` (Standard mit Kapiteln): Tiefer Winter, sobald die
+Sprösslinge je Tag seit dem letzten Tiefen Winter nicht mehr steigen
+(Rückfall: Saison > 36 h). Regular, 1 Jahr, nur Ilse baut Kapitel aus:
+
+| Variante | Kapitel 12 | Generationen | Garten-Bonus (Tag 365) |
+|---|---|---|---|
+| Referenz: Kapitel nicht ausgebaut | — | G8 Tag 347 | — |
+| heute (`product`) | (Lauf: >160.000 Saisons, Sim-Auswertung brach ab — behoben) | — | — |
+| `sum` | Tag 48 | G10 Tag 48, G30 Tag 273 | ×152 |
+| `soft` +50 % | Tag 67 | G10 Tag 67, G30 Tag 296 | ×87 |
+| `log` L0 = 100 | Tag 54 | G10 Tag 54, G30 Tag 245 | ×123.394 |
+| `soft` +200 % | Tag 50 | G30 Tag 214 | ×173.812 |
+| `soft` +400 % | Tag 40 | G30 Tag 98 | ×3,5·10⁷ |
+
+**Ergebnis:** Spielt der Sim-Spieler auf Rendite, rasen *alle* Varianten —
+auch bei nur ×87–152 Garten-Bonus erreicht Regular Kapitel 12 nach 7–10
+Wochen statt nach ~8 Monaten. Der Kapitel-Bonus ist also nicht die einzige
+Ursache. Der eigentliche Kreislauf:
+
+1. Kapitel werden bei Generationen **nicht** zurückgesetzt und werden mit
+   jeder Generation stärker (`chapterRateMult`: +10 % je Generation, +5 % je
+   Tiefem Winter, Obstbau-Tradition).
+2. Eine Generation braucht nur **3 + N Tiefe Winter**. Ein Tiefer Winter ist
+   ab Gartenjahr 15 möglich; mit starkem Garten ist Gartenjahr 15 in Stunden
+   wieder erreicht → Tiefe Winter alle paar Stunden.
+3. Damit kostet eine Generation nur noch Tage, und die Kapitel 4–12 (Regel
+   „Generation N−2“) gehen im Wochentakt auf.
+
+Die Sim-Auswertung ist repariert (`Math.max(...)` über zu viele Saisons).
+Spiel-Code und Spielstand sind unverändert; keine Migration nötig.
+
+## Optionen nach Runde 2
+
+A. **Tiefer Winter teurer machen, wenn er schnell wiederholt wird**:
+   Sprösslinge eines Tiefen Winters hängen davon ab, wie viel **Zeit** (oder
+   Garten-Fortschritt) seit dem letzten vergangen ist, z. B. volle Ausbeute erst
+   nach 3 Tagen. Bremst den Kreislauf an Punkt 2, ohne Kapitel-Werte zu ändern.
+B. **Generationen-Hürde verschärfen**: statt `3 + N` Tiefe Winter eine Hürde
+   aus Tiefen Wintern **und** Gartenjahren/Sprösslingen insgesamt — bremst
+   Punkt 3.
+C. **Kapitel-Bonus begrenzen** (Runde 1, z. B. `sum`) — allein reicht es laut
+   Runde 2 nicht.
+D. **Freischaltung ab Kapitel 13 entkoppeln** von Generationen: allein über
+   den Fortschritt im vorigen Kapitel (alle 10 Bereiche auf Stufe X) plus
+   Kapitel-Währung gesamt — unabhängig davon, wie schnell Generationen kommen.
+   Lässt Kapitel 2–12 wie sie sind.
+
+Empfehlung: **A + C** für die bestehende Kurve (sanft, bestehende Spielstände
+verlieren nichts) und **D** für Kapitel 13+, dann alles mit dem Simulator über
+5 Jahre auf die Ziele einstellen.
