@@ -6,6 +6,7 @@
 
 import { laterChapterStrings } from './stringsChapters'
 import { arc2ChapterStrings } from './stringsChaptersArc2'
+import { arc3ChapterStrings } from './stringsChaptersArc3'
 import { nFestTokens, nHeirlooms, nSeeds } from './count'
 
 function obst(n: string): string {
@@ -200,6 +201,11 @@ export const expansionStrings = {
       aranfelder: ['Wall building', 'Making soil'],
       rosental: ['Dawn shift', 'Distilling'],
       pistazien: ['Pollination', 'Catch rain'],
+      andenkartoffeln: ['Terraces', 'Keep varieties'],
+      milpa: ['Intercropping', 'Seed saving'],
+      kaffeewald: ['Shade trees', 'Guests'],
+      reisterrassen: ['Share water', 'Temple council'],
+      gewuerzgarten: ['Support trees', 'Monsoon'],
     } as Record<string, readonly [string, string]>,
     growPer: '+6 % per rank',
     thriftPer: '−4 % cost per rank',
@@ -268,6 +274,7 @@ export const expansionStrings = {
     },
     ...laterChapterStrings,
     ...arc2ChapterStrings,
+    ...arc3ChapterStrings,
   },
 
   ilse: {

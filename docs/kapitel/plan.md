@@ -323,6 +323,18 @@ Abweichungen vom Plan: Kapitel 26 „Strohdachscheune“ → *Scheune mit Schilf
 
 Großprojekt Bogen II: `tauschpost` („Omas Tauschpost“, Kapitel 20–29, Belohnung 400 Samen).
 
+## Welle 4 — Bereichs-IDs
+
+| Kapitel | IDs (Reihenfolge = Leiter) |
+|---|---|
+| 30 andenkartoffeln | andenes, sortenbeet, quinoafeld, chunoplatz, lehmspeicher, alpakaweide, bergkanal, webstube, kartoffelpark, kartoffelfest |
+| 31 milpa | milpafeld, chiligarten, amaranth, comalkueche, maisspeicher, agavenzaun, meliponen, saatgutkruege, markttag, erntefeier |
+| 32 kaffeewald | waldkaffee, pflueckplatz, trockenbetten, ensetegarten, honigbaeume, waschplatz, tukul, roestpfanne, kaffeezeremonie, kaffeemarkt |
+| 33 reisterrassen | sawah, wasserteiler, wassertempel, kokospalmen, entenweide, lumbung, hanggarten, bambusbruecke, flechtwerkstatt, tempelfest |
+| 34 gewuerzgarten | pfefferranken, kardamom, zimtbaeume, ingwerbeet, kurkuma, muskatbaum, trockenmatten, bootssteg, gewuerzlager, pookalam |
+
+Abweichungen vom Plan: Kapitel 30 heißt im Spiel kurz „Kartoffeln der Anden“ (Kopfleiste); „Saatgut-Park“ → *Kartoffelpark* (nach dem Parque de la Papa bei Pisac, ohne Zahlen); Kapitel 31 „Drei-Schwestern-Feld“ → *Milpa-Feld* (der Begriff „Drei Schwestern“ stammt aus Nordamerika), Lage Michoacán (Balsas-Tal = Ursprung des Mais, Monarchfalter überwintern dort); Kapitel 33 „Werkstatt“ → *Flechtwerkstatt* (Canang aus Palmblatt), „Erntedank im Tempel“ hat die ID `tempelfest` (`erntedank` ist schon ein Fest); Kapitel 32: Der Rauch der Röstpfanne steigt in der Bereichsgrafik auf, nicht im Tierleben. Jahreszeiten der tropischen Kapitel: siehe Kopfkommentar der Grafik-Dateien (Regen-/Trockenzeit, Reis-Zyklus, Monsun).
+
 ## Fortschritt
 
 - [x] **Paket 0** — Plan & Geschichte (dieses Dokument)
@@ -331,7 +343,7 @@ Großprojekt Bogen II: `tauschpost` („Omas Tauschpost“, Kapitel 20–29, Bel
   - Großprojekt für Bogen I: erledigt in Welle 2 (`gartenroute`).
 - [x] **Welle 2** — Kapitel 18–23 (Texte de + en, Bogen II in `stringsChaptersArc2.ts`; Grafik je Bereich in 5 Stufen + Jahreszeiten, gesperrte Ecken `wildD`, Kulissen `dike`/`spreewald`/`cotswolds`/`bulbFields`/`lagoon`/`swedishWoods` in `backdropArc1/2.tsx`, Wege `dikeTrack`/`fliess`/`flagstones`/`bulbLanes`/`canals`/`forestTrail`, Tierleben in `12-kapitel-tierleben-2.css`, Währungs-Symbole; Großprojekt `gartenroute` für Bogen I; `RELEASED_UP_TO = 23`)
 - [x] **Welle 3** — Kapitel 24–29 (Texte de + en in `stringsChaptersArc2.ts`: Inés Morales, João Ferreira, Erzsébet Kovács, Siobhán Ní Fhlatharta, Petar Ivanov, Eleni Papadaki; Grafik je Bereich in 5 Stufen + Jahreszeiten, Teile `partsE`, gesperrte Ecken `wildE`, Kulissen `andalusia`/`montado`/`kalocsa`/`aran`/`roseValley`/`aegina` in `backdropArc2.tsx`, Wege `patioTiles`/`montadoTrack`/`pepperLanes`/`limestone`/`roseLanes`/`terraceSteps`, Tierleben `k3-*`, Währungs-Symbole; Großprojekt `tauschpost` für Bogen II; `RELEASED_UP_TO = 29`)
-- [ ] Welle 4 — Kapitel 30–34
+- [x] **Welle 4** — Kapitel 30–34, Beginn Bogen III (Texte de + en in `stringsChaptersArc3.ts`: Rosa Quispe, Teodoro Hernández, Almaz Tesfaye, Made Wirawan, Anjali Menon; Grafik je Bereich in 5 Stufen + Jahreszeiten als Regen-/Trockenzeit bzw. Reis-Zyklus, Teile `partsF`, gesperrte Ecken `wildF`, Kulissen `andes`/`milpaHills`/`coffeeForest`/`bali`/`kerala` in `backdropArc3.tsx`, Wege `andenSteps`/`milpaRing`/`forestZigzag`/`subakSteps`/`spiceTrail`, Tierleben `k4-*`, Währungs-Symbole; kein Großprojekt; `RELEASED_UP_TO = 34`)
 - [ ] Welle 5 — Kapitel 35–39
 - [ ] Welle 6 — Kapitel 40–44
 - [ ] Welle 7 — Kapitel 45–49

@@ -18,7 +18,7 @@ export type Stones = { k: 'stones'; variant: 'zen' | 'rock' | 'edelweiss' | 'mos
 export type ArtSpec = Tree | Rows | Animals | House | Water | Flowers | Stones
 
 /** Chapters drawn with hand-made art (theme/HandArt.tsx). */
-export const HAND_ART_CHAPTERS: readonly ChapterId[] = ['bauernhof', 'imkerei', 'teich', 'kraeuter', 'botanik', 'alm', 'lavendel', 'japangarten', 'gartenschau', 'stadtgarten', 'klostergarten', 'schlossgarten', 'baumschule', 'moorgarten', 'deichgarten', 'spreewald', 'cottagegarten', 'tulpenfelder', 'artischocken', 'beerenwald', 'patio', 'korkeichen', 'paprikafelder', 'aranfelder', 'rosental', 'pistazien']
+export const HAND_ART_CHAPTERS: readonly ChapterId[] = ['bauernhof', 'imkerei', 'teich', 'kraeuter', 'botanik', 'alm', 'lavendel', 'japangarten', 'gartenschau', 'stadtgarten', 'klostergarten', 'schlossgarten', 'baumschule', 'moorgarten', 'deichgarten', 'spreewald', 'cottagegarten', 'tulpenfelder', 'artischocken', 'beerenwald', 'patio', 'korkeichen', 'paprikafelder', 'aranfelder', 'rosental', 'pistazien', 'andenkartoffeln', 'milpa', 'kaffeewald', 'reisterrassen', 'gewuerzgarten']
 
 export interface BackdropSpec {
   /** Patchwork fields behind the plots */
@@ -73,6 +73,16 @@ export interface BackdropSpec {
   roseValley?: boolean
   /** Ägina: Aegean sea, islands, temple on the hill, white harbor village */
   aegina?: boolean
+  /** Anden: snowy peaks, stone terraces up the slope, adobe houses */
+  andes?: boolean
+  /** Milpa: volcanic hills, cornfields, agave rows, white church tower */
+  milpaHills?: boolean
+  /** Kaffeewald: layered forest canopy, tall shade trees, tukul roofs */
+  coffeeForest?: boolean
+  /** Bali: green rice terraces, volcano, palms, temple roofs */
+  bali?: boolean
+  /** Kerala: Western Ghats, palms, backwater, red-tiled roofs */
+  kerala?: boolean
   grass: [string, string, string]
   path: string
   /** Own path shape per chapter (default: shared S-curve) */
@@ -472,6 +482,81 @@ export const CHAPTER_ART: Partial<Record<ChapterId, { backdrop: BackdropSpec; ar
       zisterne: { k: 'water', variant: 'pond' },
       hafenmarkt: { k: 'water', variant: 'jetty' },
       pistazienfest: { k: 'flowers', colors: [P.lamp, P.blue, P.white] },
+    },
+  },
+  andenkartoffeln: {
+    backdrop: { grass: ['#a9b878', '#98a866', '#889856'], path: '#c9b48a', hills: ['#8a9a6a', '#8a8aa0'], way: 'andenSteps', andes: true },
+    areas: {
+      andenes: { k: 'stones', variant: 'rock' },
+      sortenbeet: { k: 'rows', color: P.leafDark, flower: P.lilac },
+      quinoafeld: { k: 'rows', color: P.leaf, flower: P.berry, tall: true },
+      chunoplatz: { k: 'stones', variant: 'moss' },
+      lehmspeicher: { k: 'house', roof: P.woodLight, wall: P.stoneLight, prop: 'jars' },
+      alpakaweide: { k: 'animals', animal: 'goat' },
+      bergkanal: { k: 'water', variant: 'stream' },
+      webstube: { k: 'house', roof: P.woodLight, wall: P.terracottaLight },
+      kartoffelpark: { k: 'rows', color: P.leafDark, flower: P.white },
+      kartoffelfest: { k: 'flowers', colors: [P.berry, P.yellow, P.blue] },
+    },
+  },
+  milpa: {
+    backdrop: { grass: ['#b4bc78', '#a2ac66', '#909c56'], path: '#d9c79a', hills: ['#8aa060', '#6a8a50'], way: 'milpaRing', milpaHills: true },
+    areas: {
+      milpafeld: { k: 'rows', color: P.leaf, flower: P.yellow, tall: true },
+      chiligarten: { k: 'rows', color: P.leafDark, flower: P.tomato },
+      amaranth: { k: 'rows', color: P.leaf, flower: P.berry, tall: true },
+      comalkueche: { k: 'house', roof: P.woodLight, wall: P.terracottaLight, prop: 'chimney' },
+      maisspeicher: { k: 'house', roof: P.woodLight, wall: P.terracottaLight, prop: 'jars' },
+      agavenzaun: { k: 'stones', variant: 'moss' },
+      meliponen: { k: 'animals', animal: 'bee' },
+      saatgutkruege: { k: 'house', roof: P.woodLight, wall: P.paper, prop: 'jars' },
+      markttag: { k: 'house', roof: P.pink, wall: P.white, prop: 'tent' },
+      erntefeier: { k: 'flowers', colors: [P.orange, P.pink, P.yellow] },
+    },
+  },
+  kaffeewald: {
+    backdrop: { grass: ['#7aa860', '#6a9852', '#5a8846'], path: '#b8744a', hills: ['#4f7a3a', '#3f6a2e'], way: 'forestZigzag', coffeeForest: true },
+    areas: {
+      waldkaffee: { k: 'tree', crown: P.leafDark, fruit: P.berry },
+      pflueckplatz: { k: 'tree', crown: P.leafDark, fruit: P.berry },
+      trockenbetten: { k: 'rows', color: P.woodLight, flower: P.berry },
+      ensetegarten: { k: 'tree', crown: P.leaf, shape: 'palm' },
+      honigbaeume: { k: 'animals', animal: 'bee' },
+      waschplatz: { k: 'water', variant: 'stream' },
+      tukul: { k: 'house', roof: P.woodMid, wall: P.woodLight },
+      roestpfanne: { k: 'house', roof: P.woodMid, wall: P.woodLight, prop: 'chimney' },
+      kaffeezeremonie: { k: 'flowers', colors: [P.white, P.leafLight, P.woodDark] },
+      kaffeemarkt: { k: 'house', roof: P.terracottaLight, wall: P.paper, prop: 'tent' },
+    },
+  },
+  reisterrassen: {
+    backdrop: { grass: ['#9acb6a', '#88bb5a', '#76aa4c'], path: '#c9b48a', hills: ['#5f9e45', '#7a8a9e'], way: 'subakSteps', bali: true },
+    areas: {
+      sawah: { k: 'rows', color: P.leaf, flower: P.leafLight },
+      wasserteiler: { k: 'water', variant: 'stream' },
+      wassertempel: { k: 'house', roof: P.charcoal, wall: P.stone, prop: 'pagoda' },
+      kokospalmen: { k: 'tree', crown: P.leafDark, shape: 'palm' },
+      entenweide: { k: 'animals', animal: 'duck', water: true },
+      lumbung: { k: 'house', roof: P.woodLight, wall: P.wood, prop: 'barrels' },
+      hanggarten: { k: 'rows', color: P.leafDark, flower: P.tomato },
+      bambusbruecke: { k: 'water', variant: 'bridge' },
+      flechtwerkstatt: { k: 'house', roof: P.woodLight, wall: P.stoneLight, prop: 'jars' },
+      tempelfest: { k: 'flowers', colors: [P.yellow, P.white, P.orange] },
+    },
+  },
+  gewuerzgarten: {
+    backdrop: { grass: ['#6fa855', '#5f9848', '#50883c'], path: '#c8693e', hills: ['#3f7a30', '#5f7a5a'], way: 'spiceTrail', kerala: true },
+    areas: {
+      pfefferranken: { k: 'tree', crown: P.leafDark, fruit: P.berry },
+      kardamom: { k: 'rows', color: P.leafDark, tall: true },
+      zimtbaeume: { k: 'tree', crown: P.leafDark, fruit: P.terracotta },
+      ingwerbeet: { k: 'rows', color: P.leaf },
+      kurkuma: { k: 'rows', color: P.leaf, flower: P.orange },
+      muskatbaum: { k: 'tree', crown: P.leafDark, fruit: P.yellow, shape: 'cone' },
+      trockenmatten: { k: 'rows', color: P.woodLight, flower: P.charcoal },
+      bootssteg: { k: 'water', variant: 'jetty' },
+      gewuerzlager: { k: 'house', roof: P.terracotta, wall: P.cream, prop: 'barrels' },
+      pookalam: { k: 'flowers', colors: [P.orange, P.yellow, P.berry, P.white] },
     },
   },
 }

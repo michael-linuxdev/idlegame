@@ -50,6 +50,11 @@ export type ChapterId =
   | 'aranfelder'
   | 'rosental'
   | 'pistazien'
+  | 'andenkartoffeln'
+  | 'milpa'
+  | 'kaffeewald'
+  | 'reisterrassen'
+  | 'gewuerzgarten'
 
 export interface AreaDef {
   id: string

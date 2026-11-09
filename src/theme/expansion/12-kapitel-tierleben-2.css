@@ -1,4 +1,4 @@
-/* Kapitel 18–29: Tierleben — Teil von expansion.css (nach 11-kapitel-tierleben.css). */
+/* Kapitel 18–34: Tierleben — Teil von expansion.css (nach 11-kapitel-tierleben.css). */
 
 /* —— Deichgarten —— */
 .k2-sheep {
@@ -362,6 +362,145 @@
 
 .k3-goat.g1 { top: 76%; left: 52%; animation-delay: -10s; animation-duration: 29s; }
 
+/* —— Anden —— */
+.k4-condor {
+  width: calc(var(--u) * 7);
+  top: 19%;
+  left: 30%;
+  animation: k4-soar 34s linear infinite;
+}
+
+@keyframes k4-soar {
+  0% { transform: translate(0, 0) rotate(-4deg); }
+  25% { transform: translate(calc(var(--u) * 16), calc(var(--u) * 2)) rotate(3deg); }
+  50% { transform: translate(calc(var(--u) * 30), 0) rotate(-3deg); }
+  75% { transform: translate(calc(var(--u) * 14), calc(var(--u) * 3)) rotate(4deg); }
+  100% { transform: translate(0, 0) rotate(-4deg); }
+}
+
+.k4-alpaca {
+  width: calc(var(--u) * 3.6);
+  top: 44%;
+  left: 14%;
+  animation: k2-graze-walk 30s ease-in-out infinite alternate;
+}
+
+.k4-alpaca.a1 { top: 70%; left: 72%; animation-delay: -13s; animation-duration: 36s; }
+
+.k4-hummer {
+  width: calc(var(--u) * 2);
+  top: 52%;
+  left: 60%;
+  animation: k4-dart 7s ease-in-out infinite;
+}
+
+.k4-hummer.m { top: 46%; left: 30%; animation-delay: -3s; }
+
+@keyframes k4-dart {
+  0%, 30% { transform: translate(0, 0); }
+  40%, 60% { transform: translate(calc(var(--u) * 6), calc(var(--u) * -2)); }
+  70%, 90% { transform: translate(calc(var(--u) * 2), calc(var(--u) * 2)); }
+  100% { transform: translate(0, 0); }
+}
+
+/* —— Milpa —— */
+.k4-turkey {
+  width: calc(var(--u) * 3.6);
+  top: 72%;
+  left: 18%;
+  animation: chicken-walk 16s steps(20) infinite alternate;
+}
+
+.k4-monarch {
+  width: calc(var(--u) * 1.8);
+  top: 32%;
+  left: -6%;
+  animation: k4-drift 26s linear infinite;
+}
+
+.k4-monarch.m1 { top: 42%; animation-delay: -6s; animation-duration: 30s; }
+.k4-monarch.m2 { top: 54%; animation-delay: -13s; animation-duration: 24s; }
+.k4-monarch.m3 { top: 64%; animation-delay: -19s; animation-duration: 28s; }
+
+@keyframes k4-drift {
+  0% { transform: translate(0, 0) scaleY(1); }
+  25% { transform: translate(calc(var(--u) * 28), calc(var(--u) * -3)) scaleY(.6); }
+  50% { transform: translate(calc(var(--u) * 56), calc(var(--u) * 1)) scaleY(1); }
+  75% { transform: translate(calc(var(--u) * 84), calc(var(--u) * -2)) scaleY(.6); }
+  100% { transform: translate(calc(var(--u) * 112), 0) scaleY(1); }
+}
+
+/* —— Kaffeewald —— */
+.k4-turaco {
+  width: calc(var(--u) * 5);
+  top: 22%;
+  left: -10%;
+  animation: k3-fly-across 30s linear infinite;
+}
+
+/* —— Bali —— */
+.k4-flow {
+  width: calc(var(--u) * 0.8);
+  top: 44%;
+  left: 56%;
+  animation: k4-flow 3s linear infinite;
+}
+
+@keyframes k4-flow {
+  from { transform: translateY(0); opacity: .9; }
+  to { transform: translateY(calc(var(--u) * 6)); opacity: .3; }
+}
+
+.k4-ducks {
+  width: calc(var(--u) * 9);
+  top: 66%;
+  left: 10%;
+  animation: k4-file 32s ease-in-out infinite alternate;
+}
+
+@keyframes k4-file {
+  0%, 8% { transform: translateX(0) scaleX(1); }
+  46% { transform: translateX(calc(var(--u) * 30)) scaleX(1); }
+  54% { transform: translateX(calc(var(--u) * 30)) scaleX(-1); }
+  92%, 100% { transform: translateX(0) scaleX(-1); }
+}
+
+.k4-heron {
+  width: calc(var(--u) * 2.4);
+  top: 48%;
+  left: 72%;
+  animation: sheep-bob 6s ease-in-out infinite;
+}
+
+/* —— Kerala —— */
+.k4-rain {
+  inset: 17% 0 0 0;
+  background: repeating-linear-gradient(105deg, rgba(200, 230, 255, 0) 0, rgba(200, 230, 255, 0) 7px, rgba(200, 230, 255, 0.35) 8px, rgba(200, 230, 255, 0) 9px);
+  animation: k4-rain 0.8s linear infinite;
+}
+
+@keyframes k4-rain {
+  from { background-position: 0 0; }
+  to { background-position: -4px 18px; }
+}
+
+.k4-hornbill {
+  width: calc(var(--u) * 6);
+  top: 23%;
+  left: -12%;
+  animation: k3-fly-across 34s linear infinite;
+}
+
+.k4-butterfly {
+  width: calc(var(--u) * 1.8);
+  top: 40%;
+  left: 24%;
+  animation: k3-buzz 7s ease-in-out infinite;
+}
+
+.k4-butterfly.f1 { top: 58%; left: 64%; animation-delay: -2.4s; }
+.k4-butterfly.f2 { top: 74%; left: 36%; animation-delay: -4.6s; }
+
 @media (prefers-reduced-motion: reduce) {
   .k2-sheep,
   .k2-oyster,
@@ -395,7 +534,19 @@
   .k3-donkey,
   .k3-haze,
   .k3-cicada,
-  .k3-goat {
+  .k3-goat,
+  .k4-condor,
+  .k4-alpaca,
+  .k4-hummer,
+  .k4-turkey,
+  .k4-monarch,
+  .k4-turaco,
+  .k4-flow,
+  .k4-ducks,
+  .k4-heron,
+  .k4-rain,
+  .k4-hornbill,
+  .k4-butterfly {
     animation: none !important;
   }
 
@@ -404,7 +555,10 @@
   }
 
   .k3-stork-fly,
-  .k3-puffin {
+  .k3-puffin,
+  .k4-turaco,
+  .k4-hornbill,
+  .k4-monarch {
     left: 40%;
   }
 }

@@ -4,6 +4,8 @@
 
 Es gibt echte Spielstände. Fortschritt darf durch ein Update nie verloren gehen.
 
+**Seit 2026-11-09 spielen zwei Tester.** Bis zum Store-Start darf kein Spielstand verloren gehen und kein Neustart nötig werden — auch nicht „zur Sicherheit“. Jede Änderung muss alte Stände verlustfrei weiterladen (Migrationstest + `src/test/fixtures/`).
+
 - Speicherformat: `src/game/storage.ts` (`SAVE_VERSION`, `MIGRATIONS`, `migrateSave`).
 - Felder im `GameState` **nie still umbenennen oder entfernen**. Neue Felder bekommen in `parseGameState` (`storage.ts`) bzw. `parseExpansion` (`saveFields.ts`) einen Startwert. Namen gespeicherter Felder folgen `docs/cleanup/namen.md`.
 - Jede inkompatible Format-Änderung: `SAVE_VERSION` erhöhen, einen Schritt in `MIGRATIONS` ergänzen und einen echten Spielstand als `src/test/fixtures/save-v<N>.json` ablegen. `src/test/migration.test.ts` muss alle alten Fixtures verlustfrei laden.
