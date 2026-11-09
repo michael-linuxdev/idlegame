@@ -6,7 +6,6 @@ import { GENERATORS } from '../game/generators'
 import { ChapterReady, ChapterWild } from '../theme/ChapterArt'
 import { HAND_ART_CHAPTERS } from '../theme/chapterArtSpecs'
 import { ART_REGISTRY } from '../theme/art/registry'
-import { CHAPTERS } from '../game/chapters'
 import { ModuleArt } from '../theme/ModuleArt'
 import { OrchardWild } from '../theme/OrchardArt'
 import { ClearedPlot, WildPlot } from '../theme/PlotArt'
@@ -68,25 +67,4 @@ describe('CSS: @keyframes-Namen sind eindeutig', () => {
     expect(files.length).toBeGreaterThan(5)
     expect(dupes).toEqual([])
   })
-})
-
-describe('ART_REGISTRY', () => {
-  const readyHtml = renderToStaticMarkup(<ChapterReady />)
-  it('jedes Kapitel hat einen vollständigen Eintrag', () => {
-    for (const c of CHAPTERS) {
-      const e = ART_REGISTRY[c.id]
-      expect(e, c.id).toBeDefined()
-      const { area: Area, wild: Wild, ready: Ready, backdrop: Backdrop } = e
-      expect(renderToStaticMarkup(<Wild seed={2} />), `${c.id} wild`).toContain('<svg')
-      expect(renderToStaticMarkup(<Ready />), `${c.id} ready`).toContain('<svg')
-      expect(renderToStaticMarkup(<Backdrop stage={3} />), `${c.id} backdrop`).toContain('<svg')
-      for (const a of c.areas) {
-        for (const lv of TIER_LEVELS) {
-          const html = renderToStaticMarkup(<Area id={a.id} level={lv} season="summer" />)
-          expect(html, `${c.id}/${a.id} Stufe ${lv}`).toContain('<svg')
-          expect(html, `${c.id}/${a.id} fällt auf ChapterReady zurück`).not.toBe(readyHtml)
-        }
-      }
-    }
-  }, 60_000) // alle Kapitel-Grafiken, wächst mit jeder Welle
 })

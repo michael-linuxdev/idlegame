@@ -10,6 +10,9 @@ import { initLocale } from './i18n'
 import './theme/fonts'
 import './index.css'
 
+// Start-Bündel geladen (Sicherheitsnetz gegen leere Seite in index.html)
+Object.assign(window, { __gartenerbeStarted: true })
+
 // Entwickler-Ansicht aller Grafiken (eigenes Bündel, berührt keinen Spielstand)
 if (new URLSearchParams(location.search).has('artsheet')) {
   void import('./dev/ArtSheet').then(({ default: ArtSheet }) => {

@@ -1,5 +1,9 @@
-/** Kapitel-Grafik Kapitel 21: Tulpenfelder in Holland. */
-import type { ReactNode } from 'react'
+/**
+ * Kapitel-Grafik Kapitel 21: Tulpenfelder in Holland.
+ * Viele kleine Blüten: Reihen ohne <g>-Hüllen, damit die Karte im Frühling
+ * unter der Leistungsgrenze bleibt (src/test/artSeasons.test.tsx).
+ */
+import { Fragment, type ReactNode } from 'react'
 import { Svg, Window } from '../../HandParts'
 import { Snowcap } from './partsA'
 import { Shadow } from '../parts'
@@ -31,12 +35,12 @@ function BulbRow({ x0, x1, y, c, season, kind = 'tulip' }: { x0: number; x1: num
         const x = x0 + 1.4 + i * 3.2
         if (season === 'summer') return <circle key={i} cx={x} cy={y + 1.6} r=".7" fill={c} opacity=".9" />
         return kind === 'hyacinth' ? (
-          <g key={i}>
+          <Fragment key={i}>
             <path d={`M${x} ${y}v-4`} stroke={P.leafDark} strokeWidth=".5" />
             {[0, 1, 2].map((k) => (
               <circle key={k} cx={x + (k % 2 ? 0.5 : -0.5)} cy={y - 3.4 - k * 1.1} r=".9" fill={c} />
             ))}
-          </g>
+          </Fragment>
         ) : (
           <Tulip key={i} x={x} y={y} c={c} h={3.6} />
         )
@@ -149,15 +153,15 @@ export function Tulpenfelder({ id, tier, season }: AreaProps): ReactNode {
             const y = 52 + ((i * 7) % 14)
             if (winter) return <path key={i} d={`M${x} ${y}v-1.6`} stroke={P.winterLeafDark} strokeWidth=".5" />
             return (
-              <g key={i}>
+              <Fragment key={i}>
                 <path d={`M${x} ${y}v-4`} stroke={P.leafDark} strokeWidth=".5" />
                 {spring ? (
-                  <g>
+                  <>
                     <circle cx={x} cy={y - 4.4} r="1.4" fill={i % 4 ? P.yellow : P.cream} />
                     <circle cx={x + 0.4} cy={y - 4.4} r=".7" fill={P.orange} />
-                  </g>
+                  </>
                 ) : null}
-              </g>
+              </Fragment>
             )
           })}
           {tier >= 3 ? <path d="M64 64h10" stroke={P.woodDark} strokeWidth="1.4" /> : null}

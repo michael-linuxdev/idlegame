@@ -112,11 +112,12 @@ export function BerryShrub({ x, y, r = 5, leaf = P.leaf, berry, n = 5, bare }: {
 
 /** Tulpe/Blume mit Stiel (Fußpunkt unten). */
 export function Tulip({ x, y, c, h = 6, head = true }: { x: number; y: number; c: string; h?: number; head?: boolean }) {
+  // Ohne <g>-Hülle: gleiche Zeichnung, ein Element weniger je Tulpe (Leistungsgrenze Kapitel-Karte)
   return (
-    <g>
+    <>
       <path d={`M${x} ${y}V${y - h}`} stroke={P.leafDark} strokeWidth=".6" />
       <path d={`M${x} ${y}q-2 -2 -1.6 -4.6q1 2 1.6 3`} fill={P.leaf} />
       {head ? <path d={`M${x - 1.3} ${y - h}q0 -2.4 1.3 -2.6q1.3 .2 1.3 2.6q-1.3 .9 -2.6 0z`} fill={c} stroke={P.outline} strokeWidth=".15" /> : null}
-    </g>
+    </>
   )
 }

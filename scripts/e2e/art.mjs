@@ -8,7 +8,8 @@
  * Vergleichsbilder nach gewollten Grafik-Änderungen erneuern:
  *   npm run build && npm run art:update
  * Prüft außerdem die Leistungsgrenze: höchstens MAX_ELEMENTS SVG-Elemente
- * im Hauptgarten, wenn alle Bereiche auf Stufe 5 stehen.
+ * im Hauptgarten, wenn alle Bereiche auf Stufe 5 stehen. Dieselbe Grenze für
+ * jede Kapitel-Karte (alle Jahres-/Tageszeiten) prüft src/test/artSeasons.test.tsx.
  */
 import { spawn } from 'node:child_process'
 import { mkdir, readFile, readdir, writeFile } from 'node:fs/promises'
@@ -25,7 +26,9 @@ const MAX_DIFF = 0.004
 /** Leistungsgrenze Hauptgarten (alle Bereiche Stufe 5) */
 const MAX_ELEMENTS = 1500
 
-const server = spawn('npx', ['vite', 'preview', '--port', String(PORT), '--strictPort'], { stdio: 'ignore' })
+const server = spawn(process.execPath, ['node_modules/vite/bin/vite.js', 'preview', '--port', String(PORT), '--strictPort'], { stdio: 'ignore' })
+// Direkt statt über npx: kill() beendet so wirklich den Server (npx ließ ihn als Waise weiterlaufen)
+server.on('exit', (code) => code && console.log(`Hinweis: Port ${PORT} ist belegt — der Test nutzt den laufenden Vorschau-Server`))
 async function waitForServer() {
   for (let i = 0; i < 60; i++) {
     try {

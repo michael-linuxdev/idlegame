@@ -5,6 +5,7 @@ import { DECOR } from '../game/decor'
 import { GENERATORS } from '../game/generators'
 import { RESIDENTS } from '../game/residents'
 import { ART_REGISTRY } from '../theme/art/registry'
+import { ChapterReady } from '../theme/ChapterArt'
 import { DecorArt } from '../theme/DecorArt'
 import { MapBackdrop } from '../theme/MapBackdrop'
 import { ModuleArt } from '../theme/ModuleArt'
@@ -12,11 +13,14 @@ import { ClearedPlot, WildPlot } from '../theme/PlotArt'
 import { ResidentArt } from '../theme/ResidentArt'
 import { TIER_LEVELS } from '../theme/tiers'
 import { WinterScene } from '../theme/WinterScene'
+import { SEASONS, chapterAreaHtml, checkPaths, parsePath } from './artRender'
 
 const SHAPES = /<(path|circle|ellipse|rect|line|polygon|polyline|use|text)\b/g
 const count = (html: string) => (html.match(SHAPES) ?? []).length
-const SEASONS = ['spring', 'summer', 'autumn', 'winter'] as const
-/** Rendert alle Kapitel-Grafiken: wächst mit jeder Welle, auf CI langsamer (Kapitel 13–50). */
+/**
+ * Rendert alle Kapitel-Grafiken im Sommer: wächst mit jeder Welle, auf CI langsamer.
+ * Frühling/Herbst/Winter prüft artSeasons.test.tsx (eigene Datei, läuft parallel).
+ */
 const HEAVY = 60_000
 
 describe('Grafik: jede Stufe wächst sichtbar', () => {
@@ -33,10 +37,9 @@ describe('Grafik: jede Stufe wächst sichtbar', () => {
 
   it('Kapitel: jede Stufe liefert ein SVG und hat mehr Elemente als die vorige', () => {
     for (const c of CHAPTERS) {
-      const Area = ART_REGISTRY[c.id].area
       for (const a of c.areas) {
         const counts = TIER_LEVELS.map((lv) => {
-          const html = renderToStaticMarkup(<Area id={a.id} level={lv} season="summer" />)
+          const html = chapterAreaHtml(c.id, a.id, lv, 'summer')
           expect(html, `${c.id}/${a.id} Stufe ${lv}`).toContain('<svg')
           return count(html)
         })
@@ -45,34 +48,6 @@ describe('Grafik: jede Stufe wächst sichtbar', () => {
     }
   }, HEAVY)
 })
-
-/**
- * Prüft einen SVG-Pfad streng: nur bekannte Befehle, Zahlen im richtigen
- * Format und je Befehl eine passende Anzahl Argumente (Vielfache erlaubt).
- */
-const ARGS: Record<string, number> = { m: 2, l: 2, h: 1, v: 1, c: 6, s: 4, q: 4, t: 2, a: 7, z: 0 }
-function parsePath(d: string): string | null {
-  const tokens = d.match(/[a-zA-Z]|[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?|[^\s,]/g) ?? []
-  if (!tokens.length) return 'leer'
-  if (!/^[mM]$/.test(tokens[0]!)) return `beginnt nicht mit M: ${tokens[0]}`
-  let i = 0
-  while (i < tokens.length) {
-    const cmd = tokens[i++]!
-    const n = ARGS[cmd.toLowerCase()]
-    if (n === undefined) return `unbekannter Befehl „${cmd}“`
-    const args: string[] = []
-    while (i < tokens.length && !/^[a-zA-Z]$/.test(tokens[i]!)) {
-      const tk = tokens[i++]!
-      if (!/^[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?$/.test(tk)) return `keine Zahl „${tk}“ nach ${cmd}`
-      args.push(tk)
-    }
-    if (n === 0 ? args.length !== 0 : args.length === 0 || args.length % n !== 0) return `${cmd} mit ${args.length} Argumenten`
-    if (cmd.toLowerCase() === 'a') {
-      for (let k = 0; k < args.length; k += 7) if (!/^[01]$/.test(args[k + 3]!) || !/^[01]$/.test(args[k + 4]!)) return 'Bogen-Flags müssen 0/1 sein'
-    }
-  }
-  return null
-}
 
 describe('Grafik: alle d-Attribute lassen sich parsen', () => {
   it('Parser erkennt Fehler', () => {
@@ -84,7 +59,7 @@ describe('Grafik: alle d-Attribute lassen sich parsen', () => {
     expect(parsePath('L0 0')).not.toBeNull()
   })
 
-  it('jede gerenderte Grafik hat gültige Pfade', () => {
+  it('jede gerenderte Grafik hat gültige Pfade (Hauptgarten, Deko, Kapitel im Sommer)', () => {
     const html: string[] = []
     for (const g of GENERATORS) {
       html.push(renderToStaticMarkup(<WildPlot id={g.id} />))
@@ -92,23 +67,37 @@ describe('Grafik: alle d-Attribute lassen sich parsen', () => {
     }
     html.push(renderToStaticMarkup(<ClearedPlot />), renderToStaticMarkup(<WinterScene />))
     for (const c of CHAPTERS) {
-      const { area: Area, wild: Wild, ready: Ready, backdrop: Backdrop } = ART_REGISTRY[c.id]
+      const { wild: Wild, ready: Ready, backdrop: Backdrop } = ART_REGISTRY[c.id]
       html.push(renderToStaticMarkup(<Wild seed={3} />), renderToStaticMarkup(<Ready />), renderToStaticMarkup(<Backdrop stage={5} />))
-      for (const a of c.areas) for (const season of SEASONS) for (const lv of TIER_LEVELS) html.push(renderToStaticMarkup(<Area id={a.id} level={lv} season={season} />))
+      for (const a of c.areas) for (const lv of TIER_LEVELS) html.push(chapterAreaHtml(c.id, a.id, lv, 'summer'))
     }
     for (const d of DECOR) for (const season of SEASONS) html.push(renderToStaticMarkup(<DecorArt id={d.id} season={season} />))
     for (const r of RESIDENTS) html.push(renderToStaticMarkup(<ResidentArt id={r.id} />))
     for (const season of SEASONS) html.push(renderToStaticMarkup(<MapBackdrop stage={10} ambient={{ season, daypart: 'night' }} skin="skin-wiese" />))
-    const bad: string[] = []
-    let n = 0
-    for (const h of html) {
-      for (const m of h.matchAll(/\sd="([^"]*)"/g)) {
-        n++
-        const err = parsePath(m[1]!)
-        if (err) bad.push(`${err}: ${m[1]!.slice(0, 60)}`)
-      }
-    }
+    const { n, bad } = checkPaths(html)
     expect(n).toBeGreaterThan(1000)
     expect(bad).toEqual([])
   }, HEAVY)
+})
+
+// Aus art.test.tsx hierher verlegt: nutzt dieselben Sommer-Zeichnungen (Zwischenspeicher)
+describe('ART_REGISTRY', () => {
+  const readyHtml = renderToStaticMarkup(<ChapterReady />)
+  it('jedes Kapitel hat einen vollständigen Eintrag', () => {
+    for (const c of CHAPTERS) {
+      const e = ART_REGISTRY[c.id]
+      expect(e, c.id).toBeDefined()
+      const { wild: Wild, ready: Ready, backdrop: Backdrop } = e
+      expect(renderToStaticMarkup(<Wild seed={2} />), `${c.id} wild`).toContain('<svg')
+      expect(renderToStaticMarkup(<Ready />), `${c.id} ready`).toContain('<svg')
+      expect(renderToStaticMarkup(<Backdrop stage={3} />), `${c.id} backdrop`).toContain('<svg')
+      for (const a of c.areas) {
+        for (const lv of TIER_LEVELS) {
+          const html = chapterAreaHtml(c.id, a.id, lv, 'summer')
+          expect(html, `${c.id}/${a.id} Stufe ${lv}`).toContain('<svg')
+          expect(html, `${c.id}/${a.id} fällt auf ChapterReady zurück`).not.toBe(readyHtml)
+        }
+      }
+    }
+  }, HEAVY) // alle Kapitel-Grafiken, wächst mit jeder Welle
 })

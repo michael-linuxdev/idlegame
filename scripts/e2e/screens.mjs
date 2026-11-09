@@ -14,7 +14,9 @@ const LANG = process.argv[2] === 'de' ? 'de' : 'en'
 const PORT = 4322
 const URL = `http://localhost:${PORT}/`
 const SHOTS = `e2e-screens/${LANG}`
-const server = spawn('npx', ['vite', 'preview', '--port', String(PORT), '--strictPort'], { stdio: 'ignore' })
+const server = spawn(process.execPath, ['node_modules/vite/bin/vite.js', 'preview', '--port', String(PORT), '--strictPort'], { stdio: 'ignore' })
+// Direkt statt über npx: kill() beendet so wirklich den Server (npx ließ ihn als Waise weiterlaufen)
+server.on('exit', (code) => code && console.log(`Hinweis: Port ${PORT} ist belegt — der Test nutzt den laufenden Vorschau-Server`))
 
 async function waitForServer() {
   for (let i = 0; i < 60; i++) {
@@ -30,6 +32,35 @@ async function waitForServer() {
 
 /** Eigennamen und deutsche Begriffe, die im Englischen bewusst stehen bleiben (Glossar). */
 const KEEP_GERMAN = /Frostkönig|Erntedank|Raunächte|Hinnonmäki|Goldparmäne|Impressum|Deutsch|Grüß Gott|Straußwirtschaft|Café Laube|Mas\b/
+
+/**
+ * Dieselbe Seite neu öffnen, erst wenn die vorige nichts mehr nachlädt: Nach
+ * dem Start lädt die App Fenster und Kapitel-Grafik im Leerlauf vor. Bricht
+ * eine Navigation das ab, bricht Chromium gleiche Anfragen der neuen Seite mit
+ * ab (gemeinsamer Speicher-Cache) — dann fehlten Module, die Seite blieb leer
+ * oder lud sich neu (docs/leistung.md).
+ */
+async function reopen(p, url) {
+  await settle(p)
+  await p.goto(url)
+  // Erst weiter, wenn auch die neue Seite fertig vorgeladen hat (ein Neuladen der App wäre dann schon passiert)
+  await settle(p)
+}
+/** Warten, bis die Seite 300 ms lang keine offene Anfrage hat (höchstens 10 s). */
+async function settle(p) {
+  for (let quiet = 0, t = 0; quiet < 3 && t < 100; t++) {
+    quiet = (inFlight.get(p) ?? 0) === 0 ? quiet + 1 : 0
+    await p.waitForTimeout(100)
+  }
+}
+/** Offene Anfragen je Seite (für reopen) */
+const inFlight = new WeakMap()
+function trackRequests(p) {
+  const add = (d) => inFlight.set(p, Math.max(0, (inFlight.get(p) ?? 0) + d))
+  p.on('request', () => add(1))
+  p.on('requestfinished', () => add(-1))
+  p.on('requestfailed', () => add(-1))
+}
 
 const problems = []
 const errors = []
@@ -100,6 +131,7 @@ try {
     }, JSON.stringify(extra))
     const p = await ctx.newPage()
     p.on('pageerror', (e) => errors.push(e.message))
+    trackRequests(p)
     return { ctx, p }
   }
 
@@ -158,13 +190,8 @@ try {
     const items = await p.locator('.nav-menu-item').count()
     for (let i = 0; i < items; i++) {
       // Jedes Fenster frisch öffnen (manche, z. B. der Foto-Modus, schließen nicht per Escape)
-      await p.goto(URL + q + '&kapitel=all&fest=advent')
-      // Selten bleibt die Seite nach dem Foto-Modus leer (Module abgebrochen, Service Worker aktiv): einmal neu laden
-      if (!(await p.locator('.garden-map').waitFor({ timeout: 15_000 }).then(() => true, () => false))) {
-        console.log(`Hinweis: leere Seite vor Fenster ${i}, lade neu`)
-        await p.reload()
-        await p.locator('.garden-map').waitFor()
-      }
+      await reopen(p, URL + q + '&kapitel=all&fest=advent')
+      await p.locator('.garden-map').waitFor()
       await p.locator('.menu-fab').click()
       await p.locator('.nav-sheet').waitFor()
       const item = p.locator('.nav-menu-item').nth(i)
@@ -175,7 +202,7 @@ try {
       await p.waitForTimeout(500)
       await check(p, `menu-${String(i).padStart(2, '0')}-${label}`)
     }
-    await p.goto(URL + q + '&kapitel=all&fest=advent')
+    await reopen(p, URL + q + '&kapitel=all&fest=advent')
     await p.locator('.garden-map').waitFor()
     await p.locator('.menu-fab').click()
     await p.locator('.nav-sheet').waitFor()
