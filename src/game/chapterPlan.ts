@@ -23,7 +23,7 @@ export interface PlannedChapter {
 }
 
 /** Bis zu diesem Kapitel ist alles gebaut (Texte, Grafik) und im Spiel. */
-export const RELEASED_UP_TO = 39
+export const RELEASED_UP_TO = 44
 
 const placeholder = (id: string) => Array.from({ length: 10 }, (_, i) => `${id}_${i + 1}`)
 
@@ -59,11 +59,11 @@ export const PLANNED_CHAPTERS: readonly PlannedChapter[] = [
   { id: 'farngarten', number: 38, layout: 'SPIRAL', areas: ['baumfarne', 'kauripfad', 'harakeke', 'haengebruecke', 'gluehwurmgrotte', 'kumaragarten', 'wasserfall', 'pflanzschule', 'hanghuette', 'matariki'] },
   { id: 'kimchigarten', number: 39, layout: 'ROWS', areas: ['kohlreihen', 'rettichbeet', 'chilimatten', 'onggi', 'sesamfeld', 'perillabeet', 'hanokhof', 'kimjang', 'kakibaum', 'chuseok'] },
   // Bogen IV — Saatgut für morgen
-  { id: 'dachgarten', number: 40, layout: 'RING', areas: placeholder('dachgarten') },
-  { id: 'schulgarten', number: 41, layout: 'ZIGZAG', areas: placeholder('schulgarten') },
-  { id: 'waldgarten', number: 42, layout: 'SPIRAL', areas: placeholder('waldgarten') },
-  { id: 'samenbank', number: 43, layout: 'RING', areas: placeholder('samenbank') },
-  { id: 'klimagarten', number: 44, layout: 'ZIGZAG', areas: placeholder('klimagarten') },
+  { id: 'dachgarten', number: 40, layout: 'RING', areas: ['dachbeete', 'bienendach', 'dachkuppel', 'dachtank', 'solarpergola', 'kraeuterbalkon', 'lastenaufzug', 'dachcafe', 'saatgutschrank', 'abendrotfest'] },
+  { id: 'schulgarten', number: 41, layout: 'ZIGZAG', areas: ['klassenbeete', 'schulkompost', 'insektenhaus', 'weidentipi', 'barfusspfad', 'kraeuterschnecke', 'schulkueche', 'gartenhuette', 'pausenbeet', 'schulfest'] },
+  { id: 'waldgarten', number: 42, layout: 'SPIRAL', areas: ['kronenschicht', 'haselhecke', 'beerenschicht', 'kraeuterschicht', 'bodendecker', 'kletterpflanzen', 'pilzstaemme', 'weidenteich', 'lehrpfad', 'waldgartenfest'] },
+  { id: 'samenbank', number: 43, layout: 'RING', areas: ['vermehrungsbeete', 'reinigungsraum', 'keimlabor', 'kuehltresor', 'sortengarten', 'samenarchiv', 'bestaeuberzelte', 'versandstelle', 'besucherpfad', 'offenertag'] },
+  { id: 'klimagarten', number: 44, layout: 'ZIGZAG', areas: ['trockenbeet', 'schwammflaeche', 'mulchwege', 'schattenbaum', 'zisternenspiel', 'mischkultur', 'windhecke', 'wetterstation', 'lehrkueche', 'klimatag'] },
   { id: 'wildblumenband', number: 45, layout: 'SPIRAL', areas: placeholder('wildblumenband') },
   { id: 'fassadengarten', number: 46, layout: 'TERRACES', areas: placeholder('fassadengarten') },
   { id: 'solawihof', number: 47, layout: 'ROWS', areas: placeholder('solawihof') },

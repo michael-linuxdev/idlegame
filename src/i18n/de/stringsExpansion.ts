@@ -8,6 +8,7 @@ import { zahl } from './count'
 import { laterChapterStrings } from './stringsChapters'
 import { arc2ChapterStrings } from './stringsChaptersArc2'
 import { arc3ChapterStrings } from './stringsChaptersArc3'
+import { arc4ChapterStrings } from './stringsChaptersArc4'
 
 function obst(n: string): string {
   return `${n} Obst`
@@ -211,6 +212,11 @@ export const expansionStrings = {
       buschgarten: ['Samen sammeln', 'Wissen teilen'],
       farngarten: ['Hüten', 'Neu pflanzen'],
       kimchigarten: ['Einlegen', 'Nachbarn'],
+      dachgarten: ['Gießen', 'Wildbienen'],
+      schulgarten: ['Gießplan', 'Unterricht'],
+      waldgarten: ['Schichten', 'Mulchen'],
+      samenbank: ['Keimtest', 'Vermehren'],
+      klimagarten: ['Wasser halten', 'Schatten'],
     } as Record<string, readonly [string, string]>,
     growPer: '+6 % pro Rang',
     thriftPer: '−4 % Kosten pro Rang',
@@ -237,6 +243,8 @@ export const expansionStrings = {
     goalPlant: (name: string) => `Pflanzen: ${name}`,
     unlockedToast: (n: number, name: string) => `Kapitel ${n} freigeschaltet: ${name}!`,
     moreSoon: 'Weitere Gärten folgen.',
+    /** Ab Bogen IV schreibt Mila in Omas Notizbuch */
+    noteLabelMila: 'Aus Omas Notizbuch · Mila',
   },
 
   chapters: {
@@ -280,6 +288,7 @@ export const expansionStrings = {
     ...laterChapterStrings,
     ...arc2ChapterStrings,
     ...arc3ChapterStrings,
+    ...arc4ChapterStrings,
   },
 
   ilse: {

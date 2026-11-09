@@ -349,6 +349,18 @@ Abweichungen vom Plan: Kapitel 35 „Lehmspeicher (Ksar)“ → *Ksar*, „Teppi
 
 Großprojekt Bogen III: `herkunftsbeet` („Omas Herkunftsbeet“, Kapitel 30–39, Belohnung 450 Samen).
 
+## Welle 6 — Bereichs-IDs
+
+| Kapitel | IDs (Reihenfolge = Leiter) |
+|---|---|
+| 40 dachgarten | dachbeete, bienendach, dachkuppel, dachtank, solarpergola, kraeuterbalkon, lastenaufzug, dachcafe, saatgutschrank, abendrotfest |
+| 41 schulgarten | klassenbeete, schulkompost, insektenhaus, weidentipi, barfusspfad, kraeuterschnecke, schulkueche, gartenhuette, pausenbeet, schulfest |
+| 42 waldgarten | kronenschicht, haselhecke, beerenschicht, kraeuterschicht, bodendecker, kletterpflanzen, pilzstaemme, weidenteich, lehrpfad, waldgartenfest |
+| 43 samenbank | vermehrungsbeete, reinigungsraum, keimlabor, kuehltresor, sortengarten, samenarchiv, bestaeuberzelte, versandstelle, besucherpfad, offenertag |
+| 44 klimagarten | trockenbeet, schwammflaeche, mulchwege, schattenbaum, zisternenspiel, mischkultur, windhecke, wetterstation, lehrkueche, klimatag |
+
+Abweichungen vom Plan: Kapitel 40 „Wildbienen-Dach“ hat die ID `bienendach` (`wildbienen` gibt es schon), „Gewächshaus-Kuppel“ → *Glaskuppel* (ID `dachkuppel`), „Regenwassertank“ hat die ID `dachtank` (`regentank` gibt es in Kapitel 37), „Aufzug-Lieferung“ → *Lastenaufzug*, „Sonnenuntergangs-Fest“ → *Abendrot-Fest*; der Dachgarten liegt auf dem alten Parkhaus neben Jonas’ Hinterhof (Kapitel 13). Kapitel 41: Frau Yilmaz (Derya Yilmaz) gehört zur „Familie Yilmaz“, die im Spiel Bestellungen aufgibt (Kunden-Liste `orders.customers`), und ist Lehrerin für Sachunterricht an einer Grundschule; „Insektenhotel“ hat die ID `insektenhaus` (`insektenhotel` ist eine Deko), „Erntefest der Schule“ → *Schul-Erntefest* (ID `schulfest`). Kapitel 42: Die siebte Schicht (Wurzeln/Knollen) steckt im Lehrpfad (das letzte Schild zeigt nach unten); „Teich mit Weiden“ → *Weidenteich*. Kapitel 43: Spitzbergen nur als Vergleich im Brief, die Samenbank steht am Stadtrand; „Keimtest-Labor“ hat die ID `keimlabor`, „Archiv“ die ID `samenarchiv`, „Tag der offenen Tür“ die ID `offenertag`. Kapitel 44: „Zisternenspiel“ hat die ID `zisternenspiel` (`zisterne` gibt es in Kapitel 29), „Windschutz“ → *Windhecke* (`windschutz` gibt es in Kapitel 18), „Mischkultur-Beete“ → *Mischkultur*. Ab Kapitel 40 heißt die Notiz-Überschrift im Bereichsblatt „Aus Omas Notizbuch · Mila“ (`chapterUi.noteLabelMila`). Kein Großprojekt in dieser Welle (Bogen IV endet mit Kapitel 49).
+
 ## Fortschritt
 
 - [x] **Paket 0** — Plan & Geschichte (dieses Dokument)
@@ -359,6 +371,6 @@ Großprojekt Bogen III: `herkunftsbeet` („Omas Herkunftsbeet“, Kapitel 30–
 - [x] **Welle 3** — Kapitel 24–29 (Texte de + en in `stringsChaptersArc2.ts`: Inés Morales, João Ferreira, Erzsébet Kovács, Siobhán Ní Fhlatharta, Petar Ivanov, Eleni Papadaki; Grafik je Bereich in 5 Stufen + Jahreszeiten, Teile `partsE`, gesperrte Ecken `wildE`, Kulissen `andalusia`/`montado`/`kalocsa`/`aran`/`roseValley`/`aegina` in `backdropArc2.tsx`, Wege `patioTiles`/`montadoTrack`/`pepperLanes`/`limestone`/`roseLanes`/`terraceSteps`, Tierleben `k3-*`, Währungs-Symbole; Großprojekt `tauschpost` für Bogen II; `RELEASED_UP_TO = 29`)
 - [x] **Welle 4** — Kapitel 30–34, Beginn Bogen III (Texte de + en in `stringsChaptersArc3.ts`: Rosa Quispe, Teodoro Hernández, Almaz Tesfaye, Made Wirawan, Anjali Menon; Grafik je Bereich in 5 Stufen + Jahreszeiten als Regen-/Trockenzeit bzw. Reis-Zyklus, Teile `partsF`, gesperrte Ecken `wildF`, Kulissen `andes`/`milpaHills`/`coffeeForest`/`bali`/`kerala` in `backdropArc3.tsx`, Wege `andenSteps`/`milpaRing`/`forestZigzag`/`subakSteps`/`spiceTrail`, Tierleben `k4-*`, Währungs-Symbole; kein Großprojekt; `RELEASED_UP_TO = 34`)
 - [x] **Welle 5** — Kapitel 35–39, Abschluss Bogen III (Texte de + en in `stringsChaptersArc3.ts`: Youssef Amrani, Ama Owusu, Kirra Walker, Aroha Ngata, Kim Soo-ah; Grafik je Bereich in 5 Stufen + Jahreszeiten (Südhalbkugel bzw. Erntejahr), Teile `partsG`, gesperrte Ecken `wildG`, Kulissen `oasis`/`cocoaFarm`/`bush`/`fernForest`/`korea` in `backdropArc3.tsx`, Wege `oasisRing`/`cocoaTrail`/`bushSpiral`/`fernBoardwalk`/`kimchiRows`, Tierleben `k5-*`, Währungs-Symbole; Großprojekt `herkunftsbeet` für Bogen III; `RELEASED_UP_TO = 39`)
-- [ ] Welle 6 — Kapitel 40–44
+- [x] **Welle 6** — Kapitel 40–44, Beginn Bogen IV (Texte de + en in `stringsChaptersArc4.ts`: Mila, Derya Yilmaz, Lena, Dr. Amara Okafor, Jonas; Bereichs-Notizen von Mila; Grafik je Bereich in 5 Stufen + Jahreszeiten, Teile `partsH`, gesperrte Ecken `wildH`, Kulissen `rooftop`/`schoolyard`/`forestGarden`/`seedBank`/`climateGarden` in `backdropArc4.tsx`, Wege `roofRing`/`schoolZigzag`/`chipSpiral`/`seedRing`/`mulchZigzag`, Tierleben `k6-*`, Währungs-Symbole; kein Großprojekt; `RELEASED_UP_TO = 44`)
 - [ ] Welle 7 — Kapitel 45–49
 - [ ] Welle 8 — Kapitel 50, Finale & Abschluss

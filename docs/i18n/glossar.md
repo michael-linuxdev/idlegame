@@ -128,6 +128,9 @@ Vornamen bleiben deutsch (Flair). Verwandtschaft wird übersetzt.
 | Kirra Walker (Bushfood-Gärtnerin, First Nations, Norden von New South Wales) | **Kirra Walker** | Kapitel 37; kein Gruß in einer Sprache der First Nations (bewusst); Akaziensamen → *wattleseed*, Silberakazie → *silver wattle*, Salzbusch → *saltbush*, Eukalyptushain → *Gum Trees* |
 | Aroha Ngata (Māori, Rangerin in Northland) | **Aroha Ngata** | Kapitel 38; „Kia ora!“ und „Mā te wā“ (Te Reo Māori) bleiben + Erklärung; *kaitiaki*, *kuia*, *waka*, *rua*, *ponga*, *harakeke*, *kūmara* klein, Matariki und Aotearoa groß; Hängebrücke → *swing bridge* |
 | Kim Soo-ah (Gemüsebäuerin in Jeolla) | **Kim Soo-ah** | Kapitel 39; „Annyeonghaseyo!“ (Koreanisch, umschrieben) bleibt + Erklärung; Familienname zuerst; *kimjang*, *onggi*, *ondol*, *hanok*, *kkakdugi*, *gochugaru*, *songpyeon*, *kkachi-bap* klein, Chuseok groß; Chinakohl → *napa cabbage* |
+| Mila (Jonas’ Tochter) | **Mila** | Ab Kapitel 40 (Bogen IV); schreibt die Bereichs-Notizen in Omas Notizbuch weiter („Aus Omas Notizbuch · Mila“ → *From Grandma’s notebook · Mila*); nennt Jonas „Papa“ → *Dad*; Kapitel 40 Absenderin |
+| Derya Yilmaz (Lehrerin, „Familie Yilmaz“ aus den Bestellungen) | **Derya Yilmaz** | Kapitel 41; siezt die Familie → neutral-höflich; Sachunterricht → *science and social studies*, Grundschule → *elementary school*, Sommerferien → *summer vacation*, Gießplan → *watering schedule*; Unterschrift *Warm regards, Derya Yilmaz* |
+| Dr. Amara Okafor (leitet eine Samenbank am Stadtrand) | **Dr. Amara Okafor** | Kapitel 43; siezt die Familie; Kühltresor → *cold vault*, Keimtest → *germination test*, minus 18 Grad → *minus 18 degrees Celsius*, Spitzbergen → *Svalbard* (nur als Vergleich), Tag der offenen Tür → *open house* |
 | Enkelkind (Anrede) | **my dear grandchild** | „Mein liebes Enkelkind,“ → *My dear grandchild,* |
 
 ## Kapitel und Währungen
@@ -173,6 +176,11 @@ Vornamen bleiben deutsch (Flair). Verwandtschaft wird übersetzt.
 | 37 | Buschgarten in Australien | **The Australian Bush Garden** | Akaziensamen → **Wattleseed** | Australia |
 | 38 | Farnwald in Neuseeland | **The New Zealand Fern Forest** | Farnwedel → **Fern Fronds** | New Zealand |
 | 39 | Kimchi-Garten in Korea | **The Korean Kimchi Garden** | Chinakohl → **Napa Cabbage** | Korea |
+| 40 | Dachgarten | **The Rooftop Garden** | Salat → **Lettuce** | Rooftop |
+| 41 | Schulgarten | **The School Garden** | Radieschen → **Radishes** | School |
+| 42 | Waldgarten | **The Forest Garden** | Haselnüsse → **Hazelnuts** | Forest |
+| 43 | Samenbank | **The Seed Bank** | Saatgutproben → **Seed Samples** | Seed Bank |
+| 44 | Klimagarten | **The Climate Garden** | Regenwasser → **Rainwater** | Climate |
 
 Ab Kapitel 13 (Bogen I „Nach der Schau“ → *After the Show*): Omas Saatgutdose
 → **Grandma’s seed tin**, Samentütchen → **seed packet**. Großprojekt Bogen I:
@@ -192,6 +200,13 @@ Herkunftsbeet → **Grandma’s Origins Bed**. Māori-Wörter mit Makron
 *te reo Māori* klein, im Deutschen „Te Reo Māori“. Australien: *First Nations*,
 *bush food*, *wattle*/*wattleseed*, *gum trees* (dt. Eukalyptus); kein
 erfundener Gruß in einer Sprache der First Nations.
+
+Ab Kapitel 40 (Bogen IV „Saatgut für morgen“ → *Seeds for Tomorrow*): Die
+Bereichs-Notizen stammen von Mila, nicht mehr von Oma. Waldgarten → *forest
+garden*, Schichten → *layers* (Kronenschicht → *Canopy Layer*), Schwammstadt →
+*sponge city*, Schwammfläche → *Sponge Hollow*, Mischkultur → *mixed planting*,
+Mauerpfeffer → *stonecrop*, Kiwibeere → *hardy kiwi*, Weidentipi → *willow
+tipi*, Kräuterschnecke → *herb snail*, Insektenhotel → *bug hotel* (wie die Deko).
 
 „Streuobstwiese“ beim ersten Auftreten kurz erklären: *a meadow orchard — old,
 tall fruit trees scattered over grassland*.

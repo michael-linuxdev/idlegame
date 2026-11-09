@@ -18,7 +18,7 @@ export type Stones = { k: 'stones'; variant: 'zen' | 'rock' | 'edelweiss' | 'mos
 export type ArtSpec = Tree | Rows | Animals | House | Water | Flowers | Stones
 
 /** Chapters drawn with hand-made art (theme/HandArt.tsx). */
-export const HAND_ART_CHAPTERS: readonly ChapterId[] = ['bauernhof', 'imkerei', 'teich', 'kraeuter', 'botanik', 'alm', 'lavendel', 'japangarten', 'gartenschau', 'stadtgarten', 'klostergarten', 'schlossgarten', 'baumschule', 'moorgarten', 'deichgarten', 'spreewald', 'cottagegarten', 'tulpenfelder', 'artischocken', 'beerenwald', 'patio', 'korkeichen', 'paprikafelder', 'aranfelder', 'rosental', 'pistazien', 'andenkartoffeln', 'milpa', 'kaffeewald', 'reisterrassen', 'gewuerzgarten', 'oase', 'kakaogarten', 'buschgarten', 'farngarten', 'kimchigarten']
+export const HAND_ART_CHAPTERS: readonly ChapterId[] = ['bauernhof', 'imkerei', 'teich', 'kraeuter', 'botanik', 'alm', 'lavendel', 'japangarten', 'gartenschau', 'stadtgarten', 'klostergarten', 'schlossgarten', 'baumschule', 'moorgarten', 'deichgarten', 'spreewald', 'cottagegarten', 'tulpenfelder', 'artischocken', 'beerenwald', 'patio', 'korkeichen', 'paprikafelder', 'aranfelder', 'rosental', 'pistazien', 'andenkartoffeln', 'milpa', 'kaffeewald', 'reisterrassen', 'gewuerzgarten', 'oase', 'kakaogarten', 'buschgarten', 'farngarten', 'kimchigarten', 'dachgarten', 'schulgarten', 'waldgarten', 'samenbank', 'klimagarten']
 
 export interface BackdropSpec {
   /** Patchwork fields behind the plots */
@@ -93,6 +93,16 @@ export interface BackdropSpec {
   fernForest?: boolean
   /** Korea: layered blue mountains, hanok roofs, persimmon trees */
   korea?: boolean
+  /** Dachgarten: city skyline, tower cranes, parapet of the parking garage */
+  rooftop?: boolean
+  /** Schulgarten: school building with clock, swing set, fence */
+  schoolyard?: boolean
+  /** Waldgarten: mixed forest edge, rows of the tree nursery */
+  forestGarden?: boolean
+  /** Samenbank: low glass building with green roof, trial strips, mesh tents */
+  seedBank?: boolean
+  /** Klimagarten: river, city across the water, sponge hollows */
+  climateGarden?: boolean
   grass: [string, string, string]
   path: string
   /** Own path shape per chapter (default: shared S-curve) */
@@ -642,6 +652,81 @@ export const CHAPTER_ART: Partial<Record<ChapterId, { backdrop: BackdropSpec; ar
       kimjang: { k: 'house', roof: P.blue, wall: P.cream, prop: 'jars' },
       kakibaum: { k: 'tree', crown: P.gold, fruit: P.orange },
       chuseok: { k: 'flowers', colors: [P.cream, P.pink, P.leafPale] },
+    },
+  },
+  dachgarten: {
+    backdrop: { grass: ['#a9b48a', '#9aa67c', '#8b986e'], path: '#d9d2c2', hills: ['#a69a8a', '#8f8676'], way: 'roofRing', rooftop: true },
+    areas: {
+      dachbeete: { k: 'rows', color: P.leaf, flower: P.leafPale },
+      bienendach: { k: 'flowers', colors: [P.yellow, P.leafLight, P.berry] },
+      dachkuppel: { k: 'house', roof: P.glass, wall: P.glassEdge, prop: 'dome' },
+      dachtank: { k: 'house', roof: P.leafDark, wall: P.leafMoss, prop: 'barrels' },
+      solarpergola: { k: 'house', roof: P.blue, wall: P.metal, prop: 'glass' },
+      kraeuterbalkon: { k: 'rows', color: P.winterLeaf, flower: P.lilac },
+      lastenaufzug: { k: 'house', roof: P.charcoal, wall: P.stoneLight, prop: 'tower' },
+      dachcafe: { k: 'house', roof: P.leafDark, wall: P.woodLight, prop: 'tent' },
+      saatgutschrank: { k: 'house', roof: P.woodDark, wall: P.woodMid, prop: 'jars' },
+      abendrotfest: { k: 'flowers', colors: [P.orange, P.lamp, P.plum] },
+    },
+  },
+  schulgarten: {
+    backdrop: { grass: ['#9cc46e', '#8ab45e', '#78a250'], path: '#a69a8a', hills: ['#6a9a48', '#5a8a3e'], way: 'schoolZigzag', schoolyard: true },
+    areas: {
+      klassenbeete: { k: 'rows', color: P.leaf, flower: P.red },
+      schulkompost: { k: 'house', roof: P.woodLight, wall: P.wood, prop: 'barrels' },
+      insektenhaus: { k: 'house', roof: P.roof, wall: P.woodMid, prop: 'hives' },
+      weidentipi: { k: 'tree', crown: P.leafLight, shape: 'cone' },
+      barfusspfad: { k: 'stones', variant: 'moss' },
+      kraeuterschnecke: { k: 'stones', variant: 'maze' },
+      schulkueche: { k: 'house', roof: P.terracotta, wall: P.cream, prop: 'chimney' },
+      gartenhuette: { k: 'house', roof: P.leafDark, wall: P.wood, prop: 'barrels' },
+      pausenbeet: { k: 'rows', color: P.leaf, flower: P.red },
+      schulfest: { k: 'flowers', colors: [P.red, P.yellow, P.blue] },
+    },
+  },
+  waldgarten: {
+    backdrop: { grass: ['#7aa860', '#6a9852', '#5a8846'], path: '#a5733f', hills: ['#4f7a3a', '#3f6a2e'], way: 'chipSpiral', forestGarden: true },
+    areas: {
+      kronenschicht: { k: 'tree', crown: P.leafDark, fruit: P.woodMid },
+      haselhecke: { k: 'tree', crown: P.leaf, fruit: P.woodLight },
+      beerenschicht: { k: 'tree', crown: P.leaf, fruit: P.red },
+      kraeuterschicht: { k: 'rows', color: P.leafDark, flower: P.white },
+      bodendecker: { k: 'rows', color: P.leaf, flower: P.red },
+      kletterpflanzen: { k: 'rows', color: P.leafMoss, tall: true },
+      pilzstaemme: { k: 'stones', variant: 'moss' },
+      weidenteich: { k: 'water', variant: 'reeds' },
+      lehrpfad: { k: 'stones', variant: 'rock' },
+      waldgartenfest: { k: 'flowers', colors: [P.lamp, P.orange, P.leaf] },
+    },
+  },
+  samenbank: {
+    backdrop: { grass: ['#a2c47a', '#92b46a', '#82a45c'], path: '#d9d2c2', hills: ['#6a9a48', '#5a8a3e'], way: 'seedRing', seedBank: true },
+    areas: {
+      vermehrungsbeete: { k: 'rows', color: P.leaf, flower: P.yellow, tall: true },
+      reinigungsraum: { k: 'house', roof: P.leafLight, wall: P.paper, prop: 'barrels' },
+      keimlabor: { k: 'house', roof: P.leafLight, wall: P.cream, prop: 'glass' },
+      kuehltresor: { k: 'house', roof: P.leaf, wall: P.stoneLight, prop: 'gate' },
+      sortengarten: { k: 'rows', color: P.leafDark, flower: P.tomato },
+      samenarchiv: { k: 'house', roof: P.woodDark, wall: P.woodLight, prop: 'jars' },
+      bestaeuberzelte: { k: 'house', roof: P.white, wall: P.cream, prop: 'tent' },
+      versandstelle: { k: 'house', roof: P.woodMid, wall: P.woodLight, prop: 'barrels' },
+      besucherpfad: { k: 'stones', variant: 'rock' },
+      offenertag: { k: 'flowers', colors: [P.paper, P.leaf, P.yellow] },
+    },
+  },
+  klimagarten: {
+    backdrop: { grass: ['#b4bc7a', '#a4ac6a', '#949c5c'], path: '#8a5a32', hills: ['#7a8f72', '#5f7a5a'], way: 'mulchZigzag', climateGarden: true },
+    areas: {
+      trockenbeet: { k: 'flowers', colors: [P.lavender, P.blue, P.pink] },
+      schwammflaeche: { k: 'water', variant: 'reeds' },
+      mulchwege: { k: 'rows', color: P.woodMid, flower: P.leaf },
+      schattenbaum: { k: 'tree', crown: P.leafDark, shape: 'linden' },
+      zisternenspiel: { k: 'water', variant: 'fountain' },
+      mischkultur: { k: 'rows', color: P.leaf, flower: P.orange },
+      windhecke: { k: 'tree', crown: P.leafDark, fruit: P.berry },
+      wetterstation: { k: 'house', roof: P.metal, wall: P.white, prop: 'tower' },
+      lehrkueche: { k: 'house', roof: P.leafDark, wall: P.wood, prop: 'chimney' },
+      klimatag: { k: 'flowers', colors: [P.water, P.leaf, P.yellow] },
     },
   },
 }

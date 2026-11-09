@@ -703,6 +703,53 @@ export function IconChapterCurrency({ chapter }: { chapter: string }) {
           <path d="M5.4 20.4c-1 -4 .4 -7 2.4 -9c.2 4 1.2 7 2.2 9zM18.6 20.4c1 -4 -.4 -7 -2.4 -9c-.2 4 -1.2 7 -2.2 9z" fill="#5f9e45" stroke="#3f7a30" strokeWidth=".8" />
         </Svg>
       )
+    case 'dachgarten': // Salatkopf
+      return (
+        <Svg>
+          <ellipse cx="12" cy="15" rx="9" ry="6" fill="#5f9e45" stroke="#3f7a30" strokeWidth="1" />
+          <path d="M5 13c2 -5 5 -7 7 -7s5 2 7 7" fill="#7fbf5a" stroke="#3f7a30" strokeWidth=".9" />
+          <ellipse cx="12" cy="13" rx="4.4" ry="3.6" fill="#9ad16f" stroke="#5f9e45" strokeWidth=".8" />
+          <path d="M12 9.6v7M9 12c1.4 .6 2.4 1.6 3 3M15 12c-1.4 .6 -2.4 1.6 -3 3" stroke="#5f9e45" strokeWidth=".7" fill="none" />
+        </Svg>
+      )
+    case 'schulgarten': // Radieschen-Bund
+      return (
+        <Svg>
+          {[[8, 15.4], [12, 17], [16, 15.4]].map(([x, y], i) => (
+            <g key={i}>
+              <path d={`M${x} ${y! - 3}c-1 -4 -3 -6 -4 -8M${x} ${y! - 3}c1 -4 3 -6 4 -8`} stroke="#3f7a30" strokeWidth="1.2" fill="none" strokeLinecap="round" />
+              <circle cx={x} cy={y} r="3.4" fill="#e0485e" stroke="#d7263d" strokeWidth=".9" />
+              <path d={`M${x} ${y! + 3.4}v2`} stroke="#fbf6e8" strokeWidth=".8" />
+            </g>
+          ))}
+        </Svg>
+      )
+    case 'waldgarten': // Haselnuss in der Hülle
+      return (
+        <Svg>
+          <ellipse cx="12" cy="14.6" rx="6" ry="6.4" fill="#a5733f" stroke="#6e4a2b" strokeWidth="1" />
+          <ellipse cx="10.4" cy="12.6" rx="1.6" ry="2.4" fill="#c9a46b" />
+          <path d="M5 9.4c1 -4 4 -6 7 -6s6 2 7 6c-2 -1 -4 -1 -7 -1s-5 0 -7 1z" fill="#7fbf5a" stroke="#3f7a30" strokeWidth=".9" />
+          <path d="M8 8c1 -1 2 -2 4 -2s3 1 4 2" stroke="#3f7a30" strokeWidth=".6" fill="none" />
+        </Svg>
+      )
+    case 'samenbank': // Saatgut-Glas mit Etikett
+      return (
+        <Svg>
+          <rect x="6.4" y="6.4" width="11.2" height="14.6" rx="2" fill="#d6f0f6" stroke="#6b6f73" strokeWidth="1" />
+          <rect x="7.6" y="13" width="8.8" height="6.8" rx="1" fill="#7a4a1a" />
+          {[9.4, 12, 14.6].map((x) => <ellipse key={x} cx={x} cy="14.6" rx=".8" ry=".6" fill="#c9a46b" />)}
+          <rect x="6" y="3.4" width="12" height="3.4" rx=".8" fill="#6b6f73" stroke="#3a3a3a" strokeWidth=".6" />
+          <rect x="8.6" y="8.4" width="6.8" height="3.4" fill="#fff6dc" stroke="#8a6a40" strokeWidth=".5" />
+        </Svg>
+      )
+    case 'klimagarten': // Regentropfen
+      return (
+        <Svg>
+          <path d="M12 2.6c3 4.6 6.4 8.4 6.4 12.2a6.4 6.4 0 0 1 -12.8 0c0 -3.8 3.4 -7.6 6.4 -12.2z" fill="#6aa6c9" stroke="#3d8db8" strokeWidth="1" />
+          <path d="M9 14.4c0 2 1 3.4 2.6 4" stroke="#d6f0f6" strokeWidth="1.2" fill="none" strokeLinecap="round" />
+        </Svg>
+      )
     default: // Gartenschau: Besucher-Medaille
       return (
         <Svg>
