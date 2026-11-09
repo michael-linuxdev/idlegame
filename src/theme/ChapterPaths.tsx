@@ -6,7 +6,7 @@
 import type { ReactNode } from 'react'
 import { P } from './art/palette'
 
-export type PathStyle = 'track' | 'loop' | 'shore' | 'cross' | 'rondel' | 'switchback' | 'lane' | 'stones' | 'promenade' | 'yard' | 'cloister' | 'axis' | 'nurseryRows' | 'boardwalk' | 'dikeTrack' | 'fliess' | 'flagstones' | 'bulbLanes' | 'canals' | 'forestTrail' | 'patioTiles' | 'montadoTrack' | 'pepperLanes' | 'limestone' | 'roseLanes' | 'terraceSteps' | 'andenSteps' | 'milpaRing' | 'forestZigzag' | 'subakSteps' | 'spiceTrail'
+export type PathStyle = 'track' | 'loop' | 'shore' | 'cross' | 'rondel' | 'switchback' | 'lane' | 'stones' | 'promenade' | 'yard' | 'cloister' | 'axis' | 'nurseryRows' | 'boardwalk' | 'dikeTrack' | 'fliess' | 'flagstones' | 'bulbLanes' | 'canals' | 'forestTrail' | 'patioTiles' | 'montadoTrack' | 'pepperLanes' | 'limestone' | 'roseLanes' | 'terraceSteps' | 'andenSteps' | 'milpaRing' | 'forestZigzag' | 'subakSteps' | 'spiceTrail' | 'oasisRing' | 'cocoaTrail' | 'bushSpiral' | 'fernBoardwalk' | 'kimchiRows'
 
 const NS = { vectorEffect: 'non-scaling-stroke' as const, fill: 'none', strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const }
 
@@ -419,6 +419,67 @@ export function ChapterPath({ style, color }: { style: PathStyle; color: string 
         </g>
       )
     }
+    /* Oase: Sandweg im Ring um das Wasserbecken, die Khettara läuft von oben hinein */
+    case 'oasisRing':
+      return (
+        <g>
+          <Way d="M50 100 V72" color={color} w={12} edge="#c9a46b" edgeW={2} />
+          <ellipse cx="50" cy="58" rx="18" ry="14" stroke="#c9a46b" strokeWidth="13" {...NS} />
+          <ellipse cx="50" cy="58" rx="18" ry="14" stroke={color} strokeWidth="11" {...NS} />
+          <path d="M50 44 V22" stroke={color} strokeWidth="9" {...NS} />
+          <path d="M44 22 Q42 34 46 46" stroke={P.water} strokeWidth="2.4" {...NS} />
+          <ellipse cx="50" cy="58" rx="6" ry="3.6" fill={P.terracottaLight} />
+          <ellipse cx="50" cy="58" rx="4.8" ry="2.7" fill={P.water} />
+          <Dots pts={[[30, 60], [32, 70], [42, 75]]} n={5} rx={0.9} color={[P.leafDark, P.leaf]} />
+          <Dots pts={[[70, 60], [68, 70], [58, 75]]} n={5} rx={0.9} color={[P.leaf, P.leafDark]} />
+        </g>
+      )
+    /* Ghana: roter Lateritpfad im Zickzack, Kakaoschoten am Rand */
+    case 'cocoaTrail': {
+      const pts: [number, number][] = [[50, 100], [46, 88], [56, 76], [44, 62], [56, 48], [46, 34], [50, 22]]
+      const d = 'M' + pts.map((p) => p.join(' ')).join(' L')
+      return (
+        <g>
+          <Way d={d} color={color} w={11} edge="#8a5a32" edgeW={2} />
+          <Dots pts={pts.map(([x, y]) => [x - 7, y] as [number, number])} n={10} rx={0.9} color={[P.gold, P.leafDark, P.orange]} />
+          <Dots pts={pts.map(([x, y]) => [x + 7, y] as [number, number])} n={10} rx={0.9} color={[P.leafDark, P.berry, P.gold]} />
+        </g>
+      )
+    }
+    /* Australien: roter Sandweg als Spirale, Grasbüschel am Rand */
+    case 'bushSpiral': {
+      const d = 'M50 100 L50 86 C80 82 82 62 70 50 C58 38 30 40 24 56 C20 68 40 76 54 66 C62 60 56 52 50 52'
+      return (
+        <g>
+          <path d={d} stroke="#a5531a" strokeWidth="10" {...NS} />
+          <path d={d} stroke={color} strokeWidth="8" {...NS} />
+          <Dots pts={[[62, 84], [78, 66], [60, 40], [30, 44], [22, 64], [40, 74]]} n={8} rx={1} color={[P.gold, P.winterLeaf]} />
+          <path d="M50 52 L50 22" stroke={color} strokeWidth="6" {...NS} opacity=".85" />
+        </g>
+      )
+    }
+    /* Neuseeland: Holzsteg als Spirale durch den Farnwald */
+    case 'fernBoardwalk': {
+      const d = 'M50 100 L50 86 C80 82 82 62 70 50 C58 38 30 40 24 56 C20 68 40 76 54 66 C62 60 56 52 50 52'
+      return (
+        <g>
+          <path d={d} stroke={P.woodDark} strokeWidth="9" {...NS} />
+          <path d={d} stroke={color} strokeWidth="7" strokeDasharray="1.4 .5" {...NS} strokeLinecap="butt" />
+          <Dots pts={[[64, 86], [80, 64], [58, 38], [26, 44], [18, 66], [42, 78]]} n={9} rx={1.1} color={[P.leafDark, P.leafMoss]} />
+          <path d="M50 52 L50 22" stroke={color} strokeWidth="6" {...NS} opacity=".8" />
+        </g>
+      )
+    }
+    /* Korea: gerader Feldweg, Querwege, Kohl- und Chilireihen am Rand */
+    case 'kimchiRows':
+      return (
+        <g>
+          <Way d="M50 100 V22" color={color} w={11} edge="#b8a070" edgeW={2} />
+          <path d="M14 79 H86 M14 64 H86 M22 47 H78" stroke={color} strokeWidth="5" {...NS} opacity=".9" />
+          <Dots pts={[[43.6, 98], [43.6, 26]]} n={16} rx={1} color={[P.leafPale, P.leaf]} />
+          <Dots pts={[[56.4, 98], [56.4, 26]]} n={16} rx={1} color={[P.berry, P.leafPale]} />
+        </g>
+      )
     /* Moorgarten: Bohlenweg in einer Schleife übers dunkle Wasser */
     case 'boardwalk': {
       const d = 'M50 100 L50 86 C80 82 82 62 70 50 C58 38 30 40 24 56 C20 68 40 76 54 66 C62 60 56 52 50 52'

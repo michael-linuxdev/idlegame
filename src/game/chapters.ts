@@ -55,6 +55,11 @@ export type ChapterId =
   | 'kaffeewald'
   | 'reisterrassen'
   | 'gewuerzgarten'
+  | 'oase'
+  | 'kakaogarten'
+  | 'buschgarten'
+  | 'farngarten'
+  | 'kimchigarten'
 
 export interface AreaDef {
   id: string

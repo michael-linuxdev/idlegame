@@ -654,6 +654,55 @@ export function IconChapterCurrency({ chapter }: { chapter: string }) {
           ))}
         </Svg>
       )
+    case 'oase': // drei Datteln an der Rispe
+      return (
+        <Svg>
+          <path d="M12 2.6c0 3 -2 5 -4.4 6.6M12 2.6c0 3 2 5 4.4 6.6M12 2.6V9" stroke="#e8b422" strokeWidth="1" fill="none" strokeLinecap="round" />
+          {[[7.4, 13.4, -15], [12, 15.4, 0], [16.6, 13.4, 15]].map(([x, y, r], i) => (
+            <ellipse key={i} cx={x} cy={y} rx="2.8" ry="4.6" fill={i === 1 ? '#a5531a' : '#8a5a32'} stroke="#3d2f1f" strokeWidth=".9" transform={`rotate(${r} ${x} ${y})`} />
+          ))}
+          <path d="M11 13c.4 -1.4 .4 -2.6 0 -3.6" stroke="#d2752c" strokeWidth=".8" fill="none" strokeLinecap="round" />
+        </Svg>
+      )
+    case 'kakaogarten': // Kakaoschote, aufgeschnitten mit Bohnen
+      return (
+        <Svg>
+          <path d="M6 18.6C3 14 5 6 12 3.4c7 2.6 9 10.6 6 15.2c-3 3 -9 3 -12 0z" fill="#e8b422" stroke="#a5531a" strokeWidth="1" />
+          <path d="M9 5.6c-1.4 4 -1.4 8.6 0 13M15 5.6c1.4 4 1.4 8.6 0 13M12 3.4v17.4" stroke="#d2752c" strokeWidth=".8" fill="none" />
+          <ellipse cx="12" cy="13" rx="3.2" ry="4.6" fill="#fbf6e8" stroke="#8a6a40" strokeWidth=".6" />
+          {[10.8, 13.2].map((x) => [11, 13.6].map((y) => <ellipse key={`${x}${y}`} cx={x} cy={y} rx="1" ry="1.2" fill="#7a4d30" />))}
+        </Svg>
+      )
+    case 'buschgarten': // Akazienzweig mit gelben Blütenkugeln und Samenhülse
+      return (
+        <Svg>
+          <path d="M4 20c4 -4 8 -9 15 -15" stroke="#7a5532" strokeWidth="1.1" fill="none" strokeLinecap="round" />
+          {[[8, 13], [12, 9.4], [16, 6.4]].map(([x, y], i) => (
+            <circle key={i} cx={x} cy={y} r="2.4" fill="#f5c542" stroke="#e8b422" strokeWidth=".8" />
+          ))}
+          <path d="M9 19c3 1 7 0 10 -3" stroke="#8a5a32" strokeWidth="2.6" fill="none" strokeLinecap="round" />
+          {[11, 14, 17].map((x, i) => (
+            <circle key={x} cx={x} cy={19.4 - i * 1.2} r=".8" fill="#3a3a3a" />
+          ))}
+        </Svg>
+      )
+    case 'farngarten': // Koru: sich entrollender Farnwedel
+      return (
+        <Svg>
+          <path d="M12 21.4V13c0 -4 2.6 -7.4 5.6 -7.4c2.2 0 3.4 1.6 3.4 3.4c0 1.6 -1.2 2.8 -2.8 2.8c-1.4 0 -2.2 -1 -2.2 -2.2c0 -1 .7 -1.6 1.4 -1.6" stroke="#3f7a30" strokeWidth="2" fill="none" strokeLinecap="round" />
+          {[[12, 18, -1], [12, 15, -1], [12, 18, 1], [12, 15, 1]].map(([x, y, d], i) => (
+            <path key={i} d={`M${x} ${y}q${d! * 3} -1 ${d! * 5} -3.4`} stroke="#5f9e45" strokeWidth="1.4" fill="none" strokeLinecap="round" />
+          ))}
+        </Svg>
+      )
+    case 'kimchigarten': // Chinakohl
+      return (
+        <Svg>
+          <path d="M7 20.4C5 15 6 7 12 3c6 4 7 12 5 17.4z" fill="#9ad16f" stroke="#3f7a30" strokeWidth="1" />
+          <path d="M12 3.4V20.4M9 8c1.4 2 2.4 4 3 7M15 8c-1.4 2 -2.4 4 -3 7" stroke="#fbf6e8" strokeWidth=".9" fill="none" />
+          <path d="M5.4 20.4c-1 -4 .4 -7 2.4 -9c.2 4 1.2 7 2.2 9zM18.6 20.4c1 -4 -.4 -7 -2.4 -9c-.2 4 -1.2 7 -2.2 9z" fill="#5f9e45" stroke="#3f7a30" strokeWidth=".8" />
+        </Svg>
+      )
     default: // Gartenschau: Besucher-Medaille
       return (
         <Svg>

@@ -18,7 +18,7 @@ export type Stones = { k: 'stones'; variant: 'zen' | 'rock' | 'edelweiss' | 'mos
 export type ArtSpec = Tree | Rows | Animals | House | Water | Flowers | Stones
 
 /** Chapters drawn with hand-made art (theme/HandArt.tsx). */
-export const HAND_ART_CHAPTERS: readonly ChapterId[] = ['bauernhof', 'imkerei', 'teich', 'kraeuter', 'botanik', 'alm', 'lavendel', 'japangarten', 'gartenschau', 'stadtgarten', 'klostergarten', 'schlossgarten', 'baumschule', 'moorgarten', 'deichgarten', 'spreewald', 'cottagegarten', 'tulpenfelder', 'artischocken', 'beerenwald', 'patio', 'korkeichen', 'paprikafelder', 'aranfelder', 'rosental', 'pistazien', 'andenkartoffeln', 'milpa', 'kaffeewald', 'reisterrassen', 'gewuerzgarten']
+export const HAND_ART_CHAPTERS: readonly ChapterId[] = ['bauernhof', 'imkerei', 'teich', 'kraeuter', 'botanik', 'alm', 'lavendel', 'japangarten', 'gartenschau', 'stadtgarten', 'klostergarten', 'schlossgarten', 'baumschule', 'moorgarten', 'deichgarten', 'spreewald', 'cottagegarten', 'tulpenfelder', 'artischocken', 'beerenwald', 'patio', 'korkeichen', 'paprikafelder', 'aranfelder', 'rosental', 'pistazien', 'andenkartoffeln', 'milpa', 'kaffeewald', 'reisterrassen', 'gewuerzgarten', 'oase', 'kakaogarten', 'buschgarten', 'farngarten', 'kimchigarten']
 
 export interface BackdropSpec {
   /** Patchwork fields behind the plots */
@@ -83,6 +83,16 @@ export interface BackdropSpec {
   bali?: boolean
   /** Kerala: Western Ghats, palms, backwater, red-tiled roofs */
   kerala?: boolean
+  /** Oase: dunes, Atlas mountains with snow, clay ksar, palm grove */
+  oasis?: boolean
+  /** Ghana: layered rainforest canopy, tall silk-cotton trees, tin roofs */
+  cocoaFarm?: boolean
+  /** Australien: red escarpment, gum trees, shed with water tank */
+  bush?: boolean
+  /** Neuseeland: dark forested ridges, tree ferns, kauri, mist */
+  fernForest?: boolean
+  /** Korea: layered blue mountains, hanok roofs, persimmon trees */
+  korea?: boolean
   grass: [string, string, string]
   path: string
   /** Own path shape per chapter (default: shared S-curve) */
@@ -557,6 +567,81 @@ export const CHAPTER_ART: Partial<Record<ChapterId, { backdrop: BackdropSpec; ar
       bootssteg: { k: 'water', variant: 'jetty' },
       gewuerzlager: { k: 'house', roof: P.terracotta, wall: P.cream, prop: 'barrels' },
       pookalam: { k: 'flowers', colors: [P.orange, P.yellow, P.berry, P.white] },
+    },
+  },
+  oase: {
+    backdrop: { grass: ['#c9b47a', '#b9a46a', '#a8945c'], path: '#e0c890', hills: ['#d4b078', '#a89a9e'], way: 'oasisRing', oasis: true },
+    areas: {
+      dattelpalmen: { k: 'tree', crown: P.leafDark, fruit: P.autumnDark, shape: 'palm' },
+      stockwerkgarten: { k: 'tree', crown: P.leafDark, fruit: P.berry, shape: 'palm' },
+      khettara: { k: 'water', variant: 'stream' },
+      ksar: { k: 'house', roof: P.terracotta, wall: P.terracottaLight, prop: 'tower' },
+      granataepfel: { k: 'tree', crown: P.leaf, fruit: P.berry },
+      minzbeet: { k: 'rows', color: P.leaf },
+      brunnenhof: { k: 'water', variant: 'fountain' },
+      teppichstube: { k: 'house', roof: P.terracotta, wall: P.terracottaLight, prop: 'flag' },
+      dattelernte: { k: 'tree', crown: P.leafDark, fruit: P.autumnDark, shape: 'palm' },
+      sternenabend: { k: 'flowers', colors: [P.lamp, P.berry, P.white] },
+    },
+  },
+  kakaogarten: {
+    backdrop: { grass: ['#7aa860', '#6a9852', '#5a8846'], path: '#b8744a', hills: ['#4f7a3a', '#3f6a2e'], way: 'cocoaTrail', cocoaFarm: true },
+    areas: {
+      kakaobaeume: { k: 'tree', crown: P.leafDark, fruit: P.gold },
+      bananenschatten: { k: 'tree', crown: P.leafLight, shape: 'palm' },
+      fermentation: { k: 'rows', color: P.leaf, flower: P.cream },
+      trockengestelle: { k: 'rows', color: P.woodLight, flower: P.woodDark },
+      kochbananen: { k: 'tree', crown: P.leaf, shape: 'palm' },
+      yamsfeld: { k: 'rows', color: P.leafDark, tall: true },
+      dorfplatz: { k: 'tree', crown: P.leafDark },
+      genossenschaft: { k: 'house', roof: P.stoneLight, wall: P.cream, prop: 'barrels' },
+      schokowerkstatt: { k: 'house', roof: P.roof, wall: P.paper, prop: 'chimney' },
+      kakaofest: { k: 'flowers', colors: [P.gold, P.leafDark, P.berry] },
+    },
+  },
+  buschgarten: {
+    backdrop: { grass: ['#a8b06a', '#98a05c', '#88904e'], path: '#c8693e', hills: ['#c8693e', '#7a8f72'], way: 'bushSpiral', bush: true },
+    areas: {
+      wattlehain: { k: 'tree', crown: P.winterLeaf, fruit: P.yellow },
+      fingerlimetten: { k: 'tree', crown: P.leafDark, fruit: P.berry },
+      zitronenmyrte: { k: 'tree', crown: P.leafDark, fruit: P.cream },
+      saltbush: { k: 'rows', color: P.winterLeafLight },
+      wasserloch: { k: 'water', variant: 'pond' },
+      eukalyptus: { k: 'tree', crown: P.winterLeaf },
+      mahlstein: { k: 'stones', variant: 'rock' },
+      saatguthuette: { k: 'house', roof: P.stoneLight, wall: P.woodLight, prop: 'jars' },
+      regentank: { k: 'house', roof: P.stone, wall: P.cream, prop: 'barrels' },
+      feuerabend: { k: 'flowers', colors: [P.orange, P.yellow, P.berry] },
+    },
+  },
+  farngarten: {
+    backdrop: { grass: ['#6a9e52', '#5a8e46', '#4a7e3a'], path: '#a5733f', hills: ['#3f6a2e', '#2f5a26'], way: 'fernBoardwalk', fernForest: true },
+    areas: {
+      baumfarne: { k: 'tree', crown: P.leafDark, shape: 'palm' },
+      kauripfad: { k: 'tree', crown: P.leafDark, shape: 'cone' },
+      harakeke: { k: 'rows', color: P.leafMoss, tall: true },
+      haengebruecke: { k: 'water', variant: 'bridge' },
+      gluehwurmgrotte: { k: 'stones', variant: 'rock' },
+      kumaragarten: { k: 'rows', color: P.leaf, flower: P.plum },
+      wasserfall: { k: 'water', variant: 'stream' },
+      pflanzschule: { k: 'rows', color: P.leafLight },
+      hanghuette: { k: 'house', roof: P.berry, wall: P.woodLight, prop: 'chimney' },
+      matariki: { k: 'flowers', colors: [P.white, P.lamp, P.orange] },
+    },
+  },
+  kimchigarten: {
+    backdrop: { grass: ['#a8c47a', '#98b46a', '#88a45c'], path: '#d9c79a', hills: ['#5f8a6a', '#6a7a9a'], way: 'kimchiRows', korea: true },
+    areas: {
+      kohlreihen: { k: 'rows', color: P.leafPale, flower: P.leaf },
+      rettichbeet: { k: 'rows', color: P.leafDark, flower: P.white },
+      chilimatten: { k: 'rows', color: P.woodLight, flower: P.berry },
+      onggi: { k: 'house', roof: P.soilDark, wall: P.stoneLight, prop: 'jars' },
+      sesamfeld: { k: 'rows', color: P.leaf, flower: P.white, tall: true },
+      perillabeet: { k: 'rows', color: P.leafMoss, flower: P.plum },
+      hanokhof: { k: 'house', roof: P.charcoal, wall: P.cream, prop: 'gate' },
+      kimjang: { k: 'house', roof: P.blue, wall: P.cream, prop: 'jars' },
+      kakibaum: { k: 'tree', crown: P.gold, fruit: P.orange },
+      chuseok: { k: 'flowers', colors: [P.cream, P.pink, P.leafPale] },
     },
   },
 }

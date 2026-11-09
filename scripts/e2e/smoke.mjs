@@ -203,9 +203,9 @@ try {
     assert((await p.locator('.chapter-gartenschau .garden-plot .plot-visual svg *').count()) > 20, 'chapter art loaded')
     await p.locator('.garden-plot').first().click()
     await p.locator('.upgrade-hud-buy').waitFor()
-    // Kapitel 13–34 (Welle 1–4): Brief, Kulisse, Bereichsgrafik; Bildschirmfotos für einen Blick von Hand
+    // Kapitel 13–39 (Welle 1–5): Brief, Kulisse, Bereichsgrafik; Bildschirmfotos für einen Blick von Hand
     await mkdir('e2e-screens/kapitel', { recursive: true })
-    for (const [n, id] of [[13, 'stadtgarten'], [14, 'klostergarten'], [15, 'schlossgarten'], [16, 'baumschule'], [17, 'moorgarten'], [18, 'deichgarten'], [19, 'spreewald'], [20, 'cottagegarten'], [21, 'tulpenfelder'], [22, 'artischocken'], [23, 'beerenwald'], [24, 'patio'], [25, 'korkeichen'], [26, 'paprikafelder'], [27, 'aranfelder'], [28, 'rosental'], [29, 'pistazien'], [30, 'andenkartoffeln'], [31, 'milpa'], [32, 'kaffeewald'], [33, 'reisterrassen'], [34, 'gewuerzgarten']]) {
+    for (const [n, id] of [[13, 'stadtgarten'], [14, 'klostergarten'], [15, 'schlossgarten'], [16, 'baumschule'], [17, 'moorgarten'], [18, 'deichgarten'], [19, 'spreewald'], [20, 'cottagegarten'], [21, 'tulpenfelder'], [22, 'artischocken'], [23, 'beerenwald'], [24, 'patio'], [25, 'korkeichen'], [26, 'paprikafelder'], [27, 'aranfelder'], [28, 'rosental'], [29, 'pistazien'], [30, 'andenkartoffeln'], [31, 'milpa'], [32, 'kaffeewald'], [33, 'reisterrassen'], [34, 'gewuerzgarten'], [35, 'oase'], [36, 'kakaogarten'], [37, 'buschgarten'], [38, 'farngarten'], [39, 'kimchigarten']]) {
       await p.keyboard.press('Escape')
       await p.getByRole('button', { name: T.plots.aria }).click()
       await p.getByRole('button', { name: T.chapterUi.chapter(n) }).click()
