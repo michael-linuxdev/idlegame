@@ -214,6 +214,18 @@ export const strings = {
     goalDetail: (n: number) => `noch ${n} ${n === 1 ? 'Sorte' : 'Sorten'}`,
   },
 
+  mastery: {
+    title: 'Kapitel-Meisterschaft',
+    summary: (have: number, total: number) => `${have} von ${total} Meister-Sternen`,
+    explain: (level: number, care: number, careMax: number, pct: number) =>
+      `Erster Stern, wenn jeder Bereich eines Kapitels Stufe ${level} hat. Zweiter Stern, wenn jeder Bereich in beiden Pflege-Arten mindestens Rang ${care} hat, dritter bei Rang ${careMax}. Jeder Stern: +${pct} % Ertrag in diesem Kapitel.`,
+    starsAria: (n: number, max: number) => `Kapitel-Meisterschaft: ${n} von ${max} Sternen`,
+    nextLevel: (have: number, total: number, level: number) => `${have} von ${total} Bereichen auf Stufe ${level}`,
+    nextCare: (have: number, total: number, rank: number) => `${have} von ${total} Bereichen gepflegt bis Rang ${rank}`,
+    done: 'Meisterschaft vollständig',
+    toast: (n: number, pct: number) => `Kapitel-Meisterschaft: ${n}. Stern! Jetzt +${pct} % Ertrag in diesem Kapitel`,
+  },
+
   seasonCards: {
     title: 'Ein Thema für dieses Gartenjahr',
     intro: 'Oma hat jedes Jahr etwas anders gemacht. Such dir ein Thema aus — es gilt bis zum nächsten Saisonende.',

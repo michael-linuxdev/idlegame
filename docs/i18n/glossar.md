@@ -79,6 +79,7 @@ Offen: Markenrecherche (siehe oben). Ausweichtitel, falls belegt:
 | Weinlese (Minispiel) | **Grape Picking** | Vintage | — |
 | Größter Kürbis | **Giant Pumpkin Contest** | — | — |
 | Meilenstein-Truhe | **Milestone Chest** | — | — |
+| Kapitel-Meisterschaft / Meister-Stern | **Chapter Mastery** / **mastery star** | — | Alle Bereiche eines Kapitels auf Stufe 100, dann gepflegt (`src/game/mastery.ts`). |
 | Schrebergarten | **allotment** | — | Für Erzähltexte. |
 
 ## Figuren

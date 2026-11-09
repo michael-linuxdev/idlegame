@@ -10,6 +10,7 @@ import {
   areaCost,
   areaUnlocked, chapterDef, chapterLevels, chapterStage, type ChapterId } from '../game/chapters'
 import { milestonesReached, nextMilestone } from '../game/generators'
+import { MASTERY_BONUS, masteryMult, masteryProgress, masteryStars } from '../game/mastery'
 import { formatErnte, formatClock, formatDecimal } from '../game/format'
 import { playSfx } from '../game/sound'
 import { abschlussDue, bestChapterBuy } from '../game/state'
@@ -30,6 +31,7 @@ import {
   IconStars,
 } from '../theme/icons'
 import { chapterCopy } from './chapterCopy'
+import { MasteryStars } from './MasteryStars'
 import { useAmbient } from '../theme/ambient'
 import { HelperWalker } from './HelperWalker'
 import { SpeechBubble } from './SpeechBubble'
@@ -55,12 +57,20 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
   const art = useChapterArt(chapter)
   const [selected, setSelected] = useState<string | null>(null)
   const [toast, setToast] = useState<string | null>(null)
+  const toastTimer = useRef<number | undefined>(undefined)
+  function showToast(text: string, ms: number) {
+    window.clearTimeout(toastTimer.current)
+    setToast(text)
+    toastTimer.current = window.setTimeout(() => setToast(null), ms)
+  }
   const [weinleseOpen, setWeinleseOpen] = useState(false)
   const signsAll = useSignsAlways()
   const stage = chapterStage(def, c)
   const bonusPct = formatDecimal(def.gardenBonusPerLevel * chapterLevels(c) * 100, 1)
   const nextId = def.areas.find((a) => !areaUnlocked(a, c.owned))?.id ?? null
   const rate = game.chapterRate(chapter)
+  const mastery = masteryProgress(def, c)
+
 
   const prevStars = useRef<Record<string, number> | null>(null)
   useEffect(() => {
@@ -72,12 +82,22 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
     for (const a of def.areas) {
       if ((now[a.id] ?? 0) > (before[a.id] ?? 0)) {
         playSfx('level')
-        setToast(t.milestones.reached(copy.areas[a.id]!.name, `×${2 ** (now[a.id] ?? 0)}`))
-        window.setTimeout(() => setToast(null), 1800)
+        showToast(t.milestones.reached(copy.areas[a.id]!.name, `×${2 ** (now[a.id] ?? 0)}`), 1800)
         break
       }
     }
   }, [c.owned, def.areas, copy.areas])
+
+  // Neuer Meister-Stern, während die Karte offen ist → kurzer Hinweis (nach dem Meilenstein, ersetzt ihn)
+  const prevMastery = useRef<{ chapter: ChapterId; stars: number } | null>(null)
+  useEffect(() => {
+    const before = prevMastery.current
+    prevMastery.current = { chapter, stars: mastery.stars }
+    if (!before || before.chapter !== chapter || mastery.stars <= before.stars) return
+    playSfx('level')
+    showToast(t.mastery.toast(mastery.stars, Math.round(MASTERY_BONUS.perStar * mastery.stars * 100)), 2600)
+  }, [chapter, mastery.stars])
+  useEffect(() => () => window.clearTimeout(toastTimer.current), [])
 
 
   const best = bestChapterBuy(state, chapter)
@@ -110,7 +130,10 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
         <div className="hud-row">
           <div className="hud-card hud-garden orchard-card">
             <span className="hud-stage">{copy.title}</span>
-            <span className="orchard-bonus">{t.chapterUi.bonus(bonusPct)}</span>
+            <span className="orchard-bonus-row">
+              <span className="orchard-bonus">{t.chapterUi.bonus(bonusPct)}</span>
+              {stage === def.areas.length ? <MasteryStars stars={mastery.stars} /> : null}
+            </span>
           </div>
           <div
             className="hud-card hud-wallet"
@@ -284,7 +307,7 @@ function ChapterSheet({
   const unlocked = areaUnlocked(a, c.owned)
   const nextCost = game.chapterCostOf(chapter, area)
   const costMult = nextCost / Math.max(1, areaCost(a, level))
-  const mult = game.chapterRateMult
+  const mult = game.chapterRateMult * masteryMult(masteryStars(chapterDef(chapter), c))
   const ms = nextMilestone(level)
   const stars = milestonesReached(level)
   const ambient = useAmbient()

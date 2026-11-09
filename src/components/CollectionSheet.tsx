@@ -1,10 +1,12 @@
 import { CHAPTERS, laterProgressNeeded } from '../game/chapters'
 import { collectionPercent, collectionRows, nearSets } from '../game/collections'
+import { MASTERY_BONUS, MASTERY_STEPS, masteryProgress, totalMasteryStars, type MasteryProgress } from '../game/mastery'
 import { GENERATORS } from '../game/generators'
 import { useDismiss } from '../game/overlays'
 import type { useGame } from '../game/useGame'
 import { t } from '../i18n'
 import { chapterCopy } from './chapterCopy'
+import { MasteryStars } from './MasteryStars'
 
 type GameApi = ReturnType<typeof useGame>
 
@@ -17,6 +19,12 @@ function chapterCondition(number: number): string {
   return t.collections.chapterLater13(Math.floor(need), need % 1 !== 0, number - 1)
 }
 
+/** Weg zum nächsten Meister-Stern in einem Satz. */
+function masteryNextText(m: MasteryProgress): string {
+  if (!m.next) return t.mastery.done
+  return m.next.kind === 'level' ? t.mastery.nextLevel(m.have, m.total, m.next.need) : t.mastery.nextCare(m.have, m.total, m.next.need)
+}
+
 /** Sammlung & Ziele: alles Gesammelte und alle Kapitel auf einer Seite. */
 export function CollectionSheet({ game, onClose }: { game: GameApi; onClose: () => void }) {
   useDismiss(onClose)
@@ -24,6 +32,7 @@ export function CollectionSheet({ game, onClose }: { game: GameApi; onClose: () 
   const rows = collectionRows(state)
   const pct = collectionPercent(rows)
   const near = nearSets(state.collection)
+  const masteryAll = totalMasteryStars(state.chapters)
   return (
     <div className="upgrade-hud-layer project-layer" onClick={onClose}>
       <div className="upgrade-hud project-sheet collection-sheet" role="dialog" aria-labelledby="collection-title" onClick={(e) => e.stopPropagation()}>
@@ -56,10 +65,21 @@ export function CollectionSheet({ game, onClose }: { game: GameApi; onClose: () 
         ) : null}
 
         <h3 className="subhead">{t.collections.chaptersTitle}</h3>
+        {game.openChapters.length > 0 ? (
+          <div className="mastery-summary" data-testid="mastery-summary">
+            <p>
+              <strong>{t.mastery.title}</strong> · {t.mastery.summary(masteryAll.have, masteryAll.total)}
+            </p>
+            <p className="mastery-explain">
+              {t.mastery.explain(MASTERY_STEPS[0]!.need, MASTERY_STEPS[1]!.need, MASTERY_STEPS[2]!.need, Math.round(MASTERY_BONUS.perStar * 100))}
+            </p>
+          </div>
+        ) : null}
         <ul className="collection-chapters">
           {CHAPTERS.map((c) => {
             const open = game.openChapters.includes(c.id)
             const copy = chapterCopy(c.id)
+            const m = open ? masteryProgress(c, state.chapters[c.id]) : null
             return (
               <li key={c.id} className={open ? 'open' : 'locked'}>
                 <span className="collection-chapter-icon" aria-hidden="true">
@@ -69,7 +89,14 @@ export function CollectionSheet({ game, onClose }: { game: GameApi; onClose: () 
                   <strong>
                     {t.chapterUi.chapter(c.number)} · {open ? copy.title : t.collections.unknown}
                   </strong>
-                  <small>{open ? t.collections.chapterOpen : chapterCondition(c.number)}</small>
+                  {m ? (
+                    <small className="mastery-line">
+                      <MasteryStars stars={m.stars} />
+                      <span>{masteryNextText(m)}</span>
+                    </small>
+                  ) : (
+                    <small>{chapterCondition(c.number)}</small>
+                  )}
                 </span>
               </li>
             )
@@ -84,3 +111,4 @@ export function CollectionSheet({ game, onClose }: { game: GameApi; onClose: () 
     </div>
   )
 }
+
