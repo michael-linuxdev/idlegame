@@ -107,6 +107,12 @@ import {
   rollFlashSpawn,
 } from './flashEvent'
 import {
+  challengeAllowsBuy,
+  challengesMult,
+  CHALLENGES_FROM_PRESTIGES,
+  type ChallengeId,
+} from './challenges'
+import {
   cardAreaMult,
   cardGlobalMult,
   cardOfflineMult,
@@ -286,6 +292,12 @@ export interface GameState {
   seasonCardOffer: CardOffer[]
   /** Karte des Vorjahres (nie zweimal hintereinander) */
   lastSeasonCard: string
+  /** Omas Herausforderung dieser Saison (challenges.ts), null = keine */
+  challenge: ChallengeId | null
+  /** Gewählt für die nächste Saison (startet beim Saisonende) */
+  challengeNext: ChallengeId | null
+  /** Geschaffte Herausforderungen (dauerhafter Bonus) */
+  challengesDone: ChallengeId[]
   /** Personal yield boost expiry; 0 = inactive */
   yieldBoostExpiresAt: number
   /** Battle-pass lite week key */
@@ -624,6 +636,9 @@ export function createInitialState(now = Date.now()): GameState {
     seasonCard: null,
     seasonCardOffer: [],
     lastSeasonCard: '',
+    challenge: null,
+    challengeNext: null,
+    challengesDone: [],
     yieldBoostExpiresAt: 0,
     bpWeekKey: weekKey(now),
     bpXp: 0,
@@ -713,6 +728,13 @@ export function createPostPrestigeState(prev: GameState, now = Date.now()): Game
       prev.prestiges + 1 >= SEASON_CARDS_FROM_PRESTIGES
         ? offerSeasonCards(prev.owned, prev.seasonCard ?? prev.lastSeasonCard)
         : [],
+    // Herausforderung bis zum Saisonende durchgehalten → geschafft
+    challengesDone:
+      prev.challenge && !prev.challengesDone.includes(prev.challenge)
+        ? [...prev.challengesDone, prev.challenge]
+        : prev.challengesDone,
+    challenge: prev.challengeNext,
+    challengeNext: null,
     yieldBoostExpiresAt: prev.yieldBoostExpiresAt,
     bpWeekKey: prev.bpWeekKey,
     bpXp: prev.bpXp,
@@ -943,6 +965,7 @@ export function productionPerSecond(state: GameState, now = Date.now()): number 
   return (
     sum *
     cardGlobalMult(state.seasonCard) *
+    challengesMult(state.challengesDone) *
     mPrestige *
     mClan *
     mEvent *
@@ -2206,6 +2229,21 @@ export function claimMarketGift(state: GameState, now = Date.now()): GameState {
   return { ...state, samen: state.samen + MARKET_GIFT_SAMEN, marketGiftDay: dayKey(now), lastSeen: now }
 }
 
+export function challengesOpen(state: GameState): boolean {
+  return state.prestiges >= CHALLENGES_FROM_PRESTIGES || state.deepPrestiges > 0 || state.generation > 0
+}
+
+/** Herausforderung für die nächste Saison wählen (null = keine). */
+export function chooseNextChallenge(state: GameState, id: ChallengeId | null): GameState {
+  if (id && !challengesOpen(state)) return state
+  return { ...state, challengeNext: id }
+}
+
+/** Laufende Herausforderung abbrechen — die Saison läuft normal weiter. */
+export function abortChallenge(state: GameState): GameState {
+  return state.challenge ? { ...state, challenge: null } : state
+}
+
 /** Saison-Karte wählen (aus dem Angebot) oder `null` = ohne Karte weiter. */
 export function pickSeasonCard(state: GameState, id: SeasonCardId | null): GameState {
   if (state.seasonCardOffer.length === 0) return state
@@ -2230,6 +2268,7 @@ export function waterRefillsLeft(state: GameState, now = Date.now()): number {
 /** Fill the Gießkanne right away for a few Samen (only while it is refilling, max 3 per day). */
 export function refillWateringCan(state: GameState, now = Date.now()): GameState {
   const waiting = state.lastTapAt > 0 && now - state.lastTapAt < TAP_COOLDOWN_MS
+  if (state.challenge === 'ohneGiessen') return state
   if (!waiting || state.samen < WATER_REFILL_COST || waterRefillsLeft(state, now) <= 0) return state
   const today = dayKey(now)
   const used = state.waterRefillDay === today ? state.waterRefills : 0
@@ -2391,6 +2430,7 @@ export function buyGenerator(state: GameState, id: GeneratorId, mode: BuyMode | 
   const fromHelper = buyMode === 'helper'
   const def = GENERATORS.find((g) => g.id === id)
   if (!def) return state
+  if (!challengeAllowsBuy(state.challenge, id, state.owned)) return state
   const now = Date.now()
   const level = playerLevelOf(state)
   if (
@@ -2757,6 +2797,7 @@ export type MultKey =
   | 'regenbogen'
   | 'fruehling'
   | 'karte'
+  | 'herausforderungen'
 
 /**
  * Every factor of productionPerSecond except the per-area ones, in the order
@@ -2780,6 +2821,7 @@ export function multBreakdown(state: GameState, now = Date.now()): { key: MultKe
     ['regenbogen', rainbowMult(state, now)],
     ['fruehling', turboMult(state, now)],
     ['karte', cardGlobalMult(state.seasonCard)],
+    ['herausforderungen', challengesMult(state.challengesDone)],
   ]
   return all.filter(([, m]) => Math.abs(m - 1) > 1e-6).map(([key, mult]) => ({ key, mult }))
 }

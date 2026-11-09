@@ -41,6 +41,7 @@ export const uxStrings = {
       regenbogen: 'Regenbogen',
       fruehling: 'Frühlingsschub',
       karte: 'Jahres-Thema',
+      herausforderungen: 'Omas Herausforderungen',
     } as Record<string, string>,
   },
   pills: {

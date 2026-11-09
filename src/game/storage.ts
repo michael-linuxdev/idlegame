@@ -31,6 +31,7 @@ import { VARIETIES, type WheelBuff } from './gardenLife'
 import { freePlaytestSpace } from './playtestLog'
 import { getSaveBlock, setSaveBlock } from './saveGuard'
 import { seasonCardDef, type SeasonCardId } from './seasonCards'
+import { isChallengeId } from './challenges'
 
 const COSMETIC_IDS = new Set(COSMETICS.map((c) => c.id))
 
@@ -389,6 +390,12 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
           .slice(0, 3)
       : [],
     lastSeasonCard: typeof parsed.lastSeasonCard === 'string' ? parsed.lastSeasonCard.slice(0, 32) : '',
+    // Omas Herausforderungen (2026-11-09; ältere Stände: keine)
+    challenge: isChallengeId(parsed.challenge) ? parsed.challenge : null,
+    challengeNext: isChallengeId(parsed.challengeNext) ? parsed.challengeNext : null,
+    challengesDone: Array.isArray(parsed.challengesDone)
+      ? [...new Set((parsed.challengesDone as unknown[]).filter(isChallengeId))]
+      : [],
     yieldBoostExpiresAt,
     bpWeekKey,
     bpXp,

@@ -72,6 +72,24 @@ export const strings = {
     unmuteAria: 'Soundeffekte einschalten',
   },
 
+  challenges: {
+    title: 'Omas Herausforderungen',
+    intro: 'Eine Saison mit einer Regel, so wie Oma es manchmal gemacht hat. Gilt ab dem nächsten Saisonende, abbrechen geht jederzeit ohne Verlust.',
+    names: { ohneKompost: 'Ohne Kompost', fuenfBeete: 'Nur fünf Beete', ohneGiessen: 'Ohne Gießkanne' },
+    rules: {
+      ohneKompost: 'Der Kompost bleibt diese Saison zu.',
+      fuenfBeete: 'Höchstens fünf Bereiche anlegen.',
+      ohneGiessen: 'Kein Gießen und kein Auffüllen.',
+    },
+    active: (name: string) => `Läuft gerade: ${name}`,
+    abort: 'Abbrechen',
+    choose: 'Nächste Saison',
+    chosen: 'Gewählt ✓',
+    done: 'geschafft',
+    reward: 'Jede geschaffte Herausforderung: +3 % Garten-Ernte für immer.',
+    blocked: 'Gilt gerade nicht — Omas Herausforderung läuft.',
+  },
+
   collections: {
     menu: 'Sammlung',
     title: 'Sammlung & Ziele',
@@ -82,6 +100,7 @@ export const strings = {
       album: 'Jahreszeiten-Album (diese Saison)',
       erfolge: 'Erfolge',
       kreuzungen: 'Kreuzungen',
+      herausforderungen: 'Omas Herausforderungen',
     },
     nearSet: (n: number, area: string) => `Noch ${n} ${n === 1 ? 'Sorte' : 'Sorten'} bis zum Set ${area} (+2 % Ernte)`,
     chaptersTitle: 'Omas Grundstücke',

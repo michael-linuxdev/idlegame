@@ -228,6 +228,17 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
     })
   }
 
+  if (state.challenge) {
+    const name = t.challenges.names[state.challenge]
+    pills.push({
+      key: 'challenge',
+      icon: <IconSprout />,
+      label: name,
+      aria: `${t.challenges.active(name)}: ${t.challenges.rules[state.challenge]}`,
+      detail: { line: `${t.challenges.active(name)} · ${t.challenges.rules[state.challenge]}`, ratio: 0, aria: t.challenges.rules[state.challenge] },
+    })
+  }
+
   if (state.seasonCard) {
     const card = t.seasonCards.cards[state.seasonCard]
     pills.push({

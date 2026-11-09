@@ -96,6 +96,13 @@ Werkzeug: `npm run balance -- <engaged|regular|casual> <stunden>` — spielt die
     - **Große Bildschirme (≥ 900 px):** Karte links, Panel rechts; Tablets dürfen quer; Tastatur G/M/1–9/Esc.
     - **Einstellungen:** Große Schrift, Animationen reduzieren, Vibration (Geräte-Einstellungen, kein Spielstand-Feld).
     - **Tests:** E2E prüft Layout-Regeln (Tutorial/Ziel, Notiz/Fenster, Escape/Zurück, Breitbild) und legt Screenshots in `e2e-screens/` ab (CI-Artefakt).
+15e. ✅ **Update-Runde „Bindung“ (Nacht 2026-11-09, Plan `docs/plan-nacht.md`, PRs #94–#102):**
+    - **Sicherheit:** Playtest-Log über Monate (Tages-Zusammenfassungen, Roh-Rest 48 h), Export über das Teilen-Menü (iOS), Schutz vor Downgrade und zweitem Fenster, Fehlerbildschirm, `storage.persist()`, Deploy erst nach allen Checks, Gießkanne 3×/Tag.
+    - **Erste Minuten:** Systeme nach und nach (`featureUnlocks.ts`, Sitzungszähler), Truhe erst nach dem 1. Saisonende, Probe-Winter (erstes Saisonende Dauerspieler 14 statt 60 min).
+    - **Kernschleife:** Krümel-Drossel ab „Max“, „noch N bis ★“, Omas Tipp leuchtet.
+    - **Rückkehr:** Willkommen-Karte mit fertigen Dingen und bezahlbaren Beeten, „Bald fertig“, Erinnerungen max. 2/Tag und nie nachts.
+    - **Abwechslung & Ziele:** Saison-Karten ab Jahr 4, „Sammlung & Ziele“ mit allen Kapiteln, Omas Herausforderungen ab Jahr 8 (+3 % je geschaffter).
+    - **Messen:** Ereignisdichte + aktive Saisondauer im Simulator, Tempo-Korridor-Test.
 16. Multiplayer-Architektur (Kleingartenverein mit echtem Backend; Kürbis-Runde umstellen).
 17. Store-IAP, Impressum-Daten, Namensprüfung „Gartenerbe“, Store-Assets, Soft-Launch. Vor Launch: `STORE_ENABLED` prüfen (Platzhalter).
 

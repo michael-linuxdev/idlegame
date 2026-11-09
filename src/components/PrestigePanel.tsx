@@ -24,6 +24,7 @@ import {
   prestigeBlockReason, isProbeYear } from '../game/economy'
 import { formatEta, formatAsh, formatDecimal, formatMult } from '../game/format'
 import { t } from '../i18n'
+import { CHALLENGE_IDS } from '../game/challenges'
 import { WinterScene } from '../theme/WinterScene'
 import type { useGame } from '../game/useGame'
 
@@ -468,6 +469,51 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
           )
         })}
       </div>
+
+      {game.challengesOpen ? (
+        <section className="long-loop-block challenge-block" aria-labelledby="challenge-heading">
+          <h3 id="challenge-heading" className="subhead">
+            {t.challenges.title}
+          </h3>
+          <p className="muted">{t.challenges.intro}</p>
+          {state.challenge ? (
+            <div className="challenge-active">
+              <p>
+                <strong>{t.challenges.active(t.challenges.names[state.challenge])}</strong> · {t.challenges.rules[state.challenge]}
+              </p>
+              <button type="button" className="btn ghost" onClick={game.stopChallenge}>
+                {t.challenges.abort}
+              </button>
+            </div>
+          ) : null}
+          <ul className="challenge-list">
+            {CHALLENGE_IDS.map((id) => {
+              const done = state.challengesDone.includes(id)
+              const next = state.challengeNext === id
+              return (
+                <li key={id} className={`challenge-row${done ? ' done' : ''}`}>
+                  <span className="challenge-text">
+                    <strong>
+                      {t.challenges.names[id]}
+                      {done ? ` · ${t.challenges.done}` : ''}
+                    </strong>
+                    <small>{t.challenges.rules[id]}</small>
+                  </span>
+                  <button
+                    type="button"
+                    className={`btn ${next ? 'buy' : 'ghost'}`}
+                    aria-pressed={next}
+                    onClick={() => game.chooseChallenge(next ? null : id)}
+                  >
+                    {next ? t.challenges.chosen : t.challenges.choose}
+                  </button>
+                </li>
+              )
+            })}
+          </ul>
+          <p className="muted">{t.challenges.reward}</p>
+        </section>
+      ) : null}
 
       <section className="long-loop-block deep-winter" id="jump-deep" aria-labelledby="deep-winter">
         <h3 id="deep-winter" className="subhead">
