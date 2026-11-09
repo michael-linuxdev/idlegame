@@ -161,6 +161,7 @@ export const expansionStrings = {
     growTotal: (pct: number) => `+${pct} % Ertrag`,
     thriftTotal: (pct: number) => `−${pct} % Kosten`,
     maxed: 'Voll',
+    fallback: ['Pflege', 'Sparen'] as readonly [string, string],
   },
 
   chapterUi: {
@@ -268,6 +269,7 @@ export const expansionStrings = {
     unripe: 'Zu früh!',
     overripe: 'Zu spät!',
     ripe: 'Reif!',
+    grapeAria: (n: number) => `Traube ${n}`,
   },
 
   chest: {

@@ -68,3 +68,10 @@ die Browser noch nicht). Daher:
 - E2E Abschnitt 11 (`scripts/e2e/smoke.mjs`): Browser `en-US` startet englisch,
   Umschalter wechselt ohne Neuladen, Wahl übersteht Neuladen, `?lang=` hat Vorrang.
   Alle übrigen E2E-Abschnitte laufen mit Browser-Sprache `de-DE`.
+
+## Sprach-Durchsicht (Screenshots)
+
+`npm run build && npm run screens -- en` (oder `de`) öffnet jedes Fenster im
+iPhone-13-Format, speichert Screenshots in `e2e-screens/<sprache>/` und meldet
+abgeschnittene Texte, Knöpfe breiter als der Bildschirm und (bei `en`) deutsche
+Reste. `--strict` lässt den Lauf bei Auffälligkeiten fehlschlagen.

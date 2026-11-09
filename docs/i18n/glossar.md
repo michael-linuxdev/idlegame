@@ -205,18 +205,19 @@ Gartenpavillon → Garden Pavilion
 
 ## Feste
 
-Übersetzen **und** in einem Satz erklären (Fest-Fenster / erste Anzeige).
+Übersetzen **und** in einem Satz erklären. Die Erklärung steht in `fest.blurbs`
+(Unterzeile im Fest-Fenster, **einzeilig — höchstens ~55 Zeichen**).
 Nicht durch anglo-amerikanische Feste ersetzen.
 
 | Deutsch | Englisch | Kurze Erklärung (für den Text) |
 |---|---|---|
-| Raunächte | **The Twelve Nights (Raunächte)** | the quiet nights between Christmas and Epiphany, when old tales say the year rests |
+| Raunächte | **The Twelve Nights** | the quiet nights between Christmas and Epiphany, when old tales say the year rests |
 | Schneeglöckchenfest | **Snowdrop Festival** | early February, when the first snowdrops break through |
 | Frühlingsfest | **Spring Festival** | Easter time — painted eggs, tulips, pussy willows |
 | Blütenfest | **Blossom Festival** | when the fruit trees flower in May |
 | Sommerfest | **Summer Fair** | the allotment club's summer party with bunting |
 | Sonnenblumentage | **Sunflower Days** | late summer, sunflowers taller than you |
-| Erntedank | **Erntedank (Harvest Thanks)** | the German harvest thanksgiving in early October, with harvest crowns |
+| Erntedank | **Erntedank** (Name bleibt, Unterzeile erklärt) | the German harvest thanksgiving in early October, with harvest crowns |
 | Laternenfest | **Lantern Festival (St. Martin's)** | November: children walk with paper lanterns and sing |
 | Advent im Garten | **Advent in the Garden** | the four candles before Christmas |
 

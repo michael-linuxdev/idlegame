@@ -1143,6 +1143,7 @@ export const strings = {
 
   wheel: {
     title: 'Glücksrad',
+    glyphVariety: 'Sorte',
     spin: 'Drehen',
     spinning: 'Dreht…',
     results: {

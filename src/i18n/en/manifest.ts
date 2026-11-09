@@ -1,8 +1,7 @@
-// TODO(en): Übersetzung ausstehend — vorerst eine typgleiche Kopie der deutschen Datei.
 /**
- * Web-Manifest-Texte. Ohne Imports, damit auch `vite.config.ts` (Node) sie lesen kann.
+ * Web manifest texts. No imports, so `vite.config.ts` (Node) can read them too.
  */
 export const manifestStrings = {
-  name: 'Gartenerbe',
-  description: 'Vom Schrebergarten zum Gartenpark. Dein Garten wächst auch offline.',
+  name: 'Heirloom Garden',
+  description: 'From overgrown plot to garden park. Your garden keeps growing, even offline.',
 } as const
