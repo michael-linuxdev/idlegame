@@ -72,6 +72,84 @@ export const strings = {
     unmuteAria: 'Soundeffekte einschalten',
   },
 
+  // Hinweis zur Testphase beim ersten Start der installierten App (game/distribution.ts TEST_PHASE)
+  testPhase: {
+    title: 'Willkommen in der Testphase',
+    intro: 'Gartenerbe wird gerade getestet. Damit wir das Spiel verbessern können, zeichnet die App auf, wie gespielt wird:',
+    points: [
+      'welche Spielaktionen du wann machst (z. B. Ausbauen, Saisonende, Menü),',
+      'wie lange und wie oft du spielst, dazu ein Fortschritts-Stand pro Tag.',
+      'Alles bleibt auf deinem Gerät. Nichts wird automatisch gesendet — du kannst das Log selbst exportieren und weitergeben.',
+    ],
+    checkbox: 'Aufzeichnung erlauben',
+    later: 'Du kannst das jederzeit ändern: Menü → Einstellungen → Playtest-Log.',
+    confirm: 'Verstanden',
+  },
+
+  // Installations-Hinweis beim Start im Browser (nur Web-Fassung, siehe game/distribution.ts)
+  installGate: {
+    title: 'Zuerst die App installieren',
+    howTo: 'So geht’s',
+    detected: (device: string, browser: string) => `Erkannt: ${device} · ${browser}`,
+    nativeInstall: 'Jetzt installieren',
+    why: [
+      ['Immer auf dem Startbildschirm', ' – wie eine richtige App.'],
+      ['Wächst auch offline', ' – dein Garten läuft ohne Internet weiter.'],
+      ['Dein Garten ist sicherer', ' – der Browser löscht den Spielstand nicht so leicht.'],
+    ] as [string, string][],
+    iosWarning:
+      'Wichtig auf iPhone und iPad: Was du hier im Browser gärtnerst, wird nicht in die installierte App übernommen. Installiere deshalb jetzt zuerst.',
+    carryTitle: 'Schon im Browser gegärtnert?',
+    carryBody: 'Kopier deinen Spielstand-Code und spiel ihn nach der Installation in der App ein (Menü → Spielstand sichern).',
+    carryCopy: 'Spielstand-Code kopieren',
+    carryCopied: 'Kopiert ✓',
+    copyUrl: 'Adresse kopieren',
+    urlCopied: 'Adresse kopiert – im Browser einfügen',
+    skip: 'Ohne Installation im Browser weiter',
+    skipNote: 'Der Hinweis kommt in ein paar Stunden wieder.',
+    os: { ios: 'iPhone / iPad', android: 'Android', desktop: 'Computer' } as Record<string, string>,
+    browser: {
+      safari: 'Safari',
+      chrome: 'Chrome',
+      firefox: 'Firefox',
+      edge: 'Edge',
+      samsung: 'Samsung Internet',
+      opera: 'Opera',
+      inapp: 'In-App-Browser',
+      other: 'Browser',
+    } as Record<string, string>,
+    /** {S} = Teilen-Symbol */
+    steps: {
+      'ios-safari': [
+        'Unten (iPhone) bzw. oben (iPad) auf das Teilen-Symbol {S} tippen.',
+        'Nach unten scrollen und „Zum Home-Bildschirm“ wählen.',
+        'Oben rechts auf „Hinzufügen“ tippen.',
+      ],
+      'ios-chrome': [
+        'Oben rechts in der Adresszeile auf das Teilen-Symbol {S} tippen.',
+        '„Zum Home-Bildschirm“ wählen (eventuell erst „Mehr“ antippen).',
+        'Auf „Hinzufügen“ tippen.',
+      ],
+      'ios-firefox': ['Unten rechts auf das Menü ☰ tippen.', '„Teilen“ wählen, dann „Zum Home-Bildschirm“.', 'Auf „Hinzufügen“ tippen.'],
+      'ios-edge': ['Unten auf das Menü ⋯ tippen, dann auf „Teilen“ {S}.', '„Zum Home-Bildschirm“ wählen.', 'Auf „Hinzufügen“ tippen.'],
+      'ios-other': [
+        'Öffne diese Seite in Safari (Adresse kopieren und in Safari einfügen).',
+        'Dann Teilen {S} → „Zum Home-Bildschirm“ → „Hinzufügen“.',
+      ],
+      'android-chrome': ['Oben rechts auf das Menü ⋮ tippen.', '„App installieren“ oder „Zum Startbildschirm hinzufügen“ wählen.', 'Mit „Installieren“ bestätigen.'],
+      'android-samsung': ['Unten rechts auf das Menü ☰ tippen.', '„Seite hinzufügen zu“ wählen, dann „Startbildschirm“.', 'Mit „Hinzufügen“ bestätigen.'],
+      'android-firefox': ['Auf das Menü ⋮ tippen.', '„Installieren“ bzw. „Zum Startbildschirm hinzufügen“ wählen.', 'Mit „Hinzufügen“ bestätigen.'],
+      'android-edge': ['Unten auf das Menü ⋯ tippen.', '„Zum Telefon hinzufügen“ bzw. „App installieren“ wählen.', 'Bestätigen.'],
+      'android-opera': ['Auf das Menü ⋮ tippen.', '„Zum Startbildschirm hinzufügen“ wählen.', 'Bestätigen.'],
+      'android-other': ['Öffne diese Seite am besten in Chrome.', 'Menü ⋮ → „App installieren“.'],
+      inapp: [
+        'Du hast die Seite aus einer App (z. B. WhatsApp oder Telegram) geöffnet. Von dort kann man nichts installieren.',
+        'Tippe oben rechts auf ⋯ bzw. ⋮ und wähle „Im Browser öffnen“.',
+        'Dann erscheint die passende Anleitung.',
+      ],
+    } as Record<string, string[]>,
+  },
+
   challenges: {
     title: 'Omas Herausforderungen',
     intro: 'Eine Saison mit einer Regel, so wie Oma es manchmal gemacht hat. Gilt ab dem nächsten Saisonende, abbrechen geht jederzeit ohne Verlust.',

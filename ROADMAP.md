@@ -104,7 +104,7 @@ Werkzeug: `npm run balance -- <engaged|regular|casual> <stunden>` — spielt die
     - **Abwechslung & Ziele:** Saison-Karten ab Jahr 4, „Sammlung & Ziele“ mit allen Kapiteln, Omas Herausforderungen ab Jahr 8 (+3 % je geschaffter).
     - **Messen:** Ereignisdichte + aktive Saisondauer im Simulator, Tempo-Korridor-Test.
 16. Multiplayer-Architektur (Kleingartenverein mit echtem Backend; Kürbis-Runde umstellen).
-17. Store-IAP, Impressum-Daten, Namensprüfung „Gartenerbe“, Store-Assets, Soft-Launch. Vor Launch: `STORE_ENABLED` prüfen (Platzhalter).
+17. Store-IAP, Impressum-Daten, Namensprüfung „Gartenerbe“, Store-Assets, Soft-Launch. Vor Launch: `STORE_ENABLED` prüfen (Platzhalter) **und `DISTRIBUTION = 'store'`** in `src/game/distribution.ts` (schaltet den Installations-Hinweis der Web-Fassung ab; ein Test erzwingt das, sobald eine Store-Hülle im Repo liegt).
 
 ## 5-Jahres-Plan (Inhalt)
 

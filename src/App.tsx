@@ -7,6 +7,8 @@ import { CHAPTERS, type ChapterId } from './game/chapters'
 import type { CosmeticId } from './game/monetization'
 import { FtueCoach } from './components/FtueCoach'
 import { InstallPrompt } from './components/InstallPrompt'
+import { InstallGate } from './components/InstallGate'
+import { TestPhaseNotice } from './components/TestPhaseNotice'
 import { PrestigePanel } from './components/PrestigePanel'
 import { ShopPanel } from './components/ShopPanel'
 import { bootPlaytestLog, logPlaytest } from './game/playtestLog'
@@ -287,6 +289,11 @@ export default function App() {
         onFtueActiveChange={onFtueActiveChange}
         onCoachVisible={setCoachVisible}
       />
+
+      {/* Testphase: Hinweis zur Aufzeichnung beim ersten Start der installierten App (game/distribution.ts) */}
+      <TestPhaseNotice />
+      {/* Web-Fassung: Vollbild-Hinweis „Zuerst installieren“ (Store-Fassung: aus, siehe game/distribution.ts) */}
+      <InstallGate hasProgress={game.state.totalUpgrades > 1 || game.state.prestiges > 0 || game.state.deepPrestiges > 0} />
 
       {/* Install cue waits for the first Saisonende — never in the first session */}
       <InstallPrompt

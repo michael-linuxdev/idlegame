@@ -1370,3 +1370,204 @@ html.pref-calm *::after {
 .plot-stars .g-icon-mono {
   margin-right: -0.08em;
 }
+
+/* ——— Installations-Hinweis (nur Web-Fassung, siehe game/distribution.ts) ——— */
+.web-install {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--bg, #dce8d6);
+  color: var(--oc-ink, #162414);
+}
+
+.web-install-in {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: calc(16px + env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom))
+    max(18px, env(safe-area-inset-left));
+}
+
+.web-install-top {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1.2rem;
+  font-size: 1.1rem;
+}
+
+.web-install-top img {
+  border-radius: 9px;
+}
+
+.web-install h1 {
+  margin: 0 0 1rem;
+  font-size: 1.6rem;
+}
+
+.web-install-card {
+  padding: 1rem 1.1rem;
+  border-radius: 16px;
+  background: #fffaf0;
+  border: 2px solid #c9a86a;
+}
+
+.web-install-card h2 {
+  margin: 0 0 0.2rem;
+  font-size: 1.1rem;
+}
+
+.web-install-detected {
+  margin: 0 0 0.6rem;
+  font-size: 0.82rem;
+  color: var(--oc-ink-faint, #4a6340);
+}
+
+.web-install-native {
+  width: 100%;
+  margin-bottom: 0.7rem;
+}
+
+.web-install-steps {
+  margin: 0 0 0.6rem;
+  padding-left: 1.3rem;
+  line-height: 1.5;
+}
+
+.web-install-steps li {
+  margin-bottom: 0.35rem;
+}
+
+.web-install-share {
+  width: 1.1em;
+  height: 1.1em;
+  margin: 0 0.15em;
+  vertical-align: -0.2em;
+}
+
+.web-install-why {
+  margin: 1rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.web-install-why li {
+  position: relative;
+  padding: 0 0 0.6rem 1.8rem;
+}
+
+.web-install-why li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1.3rem;
+  height: 1.3rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(95, 158, 69, 0.2);
+  color: #2f7a2a;
+  font-weight: 800;
+  font-size: 0.8rem;
+}
+
+.web-install-warn,
+.web-install-carry {
+  margin: 0 0 1rem;
+  padding: 0.8rem 0.9rem;
+  border-radius: 12px;
+  background: rgba(224, 165, 38, 0.18);
+}
+
+.web-install-carry p {
+  margin: 0.3rem 0 0.6rem;
+}
+
+.web-install-note {
+  font-weight: 700;
+}
+
+.web-install-skip {
+  display: block;
+  width: 100%;
+  min-height: 2.75rem;
+  margin-top: 0.5rem;
+  border: 0;
+  background: none;
+  color: var(--oc-ink-muted, #2f4529);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.web-install-skipnote {
+  margin: 0;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--oc-ink-faint, #4a6340);
+}
+
+/* ——— Testphasen-Hinweis (game/distribution.ts TEST_PHASE) ——— */
+.test-phase-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 95;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+  background: rgba(22, 36, 20, 0.55);
+}
+
+.test-phase {
+  width: 100%;
+  max-width: 440px;
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 1.2rem 1.2rem 1rem;
+  border-radius: 18px;
+  background: #fffaf0;
+  color: var(--oc-ink, #162414);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+}
+
+.test-phase h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.3rem;
+}
+
+.test-phase ul {
+  margin: 0.4rem 0 0.8rem;
+  padding-left: 1.2rem;
+  line-height: 1.45;
+}
+
+.test-phase-check {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2.75rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 12px;
+  background: rgba(95, 158, 69, 0.14);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.test-phase-check input {
+  width: 1.4rem;
+  height: 1.4rem;
+  accent-color: #3f9a3a;
+}
+
+.test-phase-later {
+  margin: 0.6rem 0;
+  font-size: 0.82rem;
+  color: var(--oc-ink-faint, #4a6340);
+}
+
+.test-phase-ok {
+  width: 100%;
+}

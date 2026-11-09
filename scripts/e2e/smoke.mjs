@@ -9,6 +9,8 @@
  *  6. UX-Layout: Tutorial verdeckt sein Ziel nicht, Omas Notiz nie über Fenstern,
  *     Escape/Zurück schließen Fenster, Breitbild mit Seitenpanel; Screenshots in e2e-screens/
  *  7. Spielstand-Schutz: zweites Fenster speichert nicht, neuerer Stand bleibt unberührt
+ *  8. Installations-Hinweis: Handy-Browser ja (mit ?installGate=1), Computer nein
+ *  9. Testphase: Aufzeichnungs-Hinweis bestätigen, Häkchen an/aus, nur einmal
  * Fails on any uncaught page error. Run: npm run build && npm run e2e
  */
 import { spawn } from 'node:child_process'
@@ -306,6 +308,53 @@ try {
     const kept = await p.evaluate(() => JSON.parse(localStorage.getItem('gartenerbe-save-v1') || '{}'))
     assert(kept.saveVersion === 99 && kept.samen === 777 && kept.zukunft?.x === 1, 'newer save stays untouched')
     await ctx2.close()
+  }
+
+  // 8 — Installations-Hinweis (Web-Fassung): Handy-Browser ja, Computer nein, „weiter“ merkt sich das
+  {
+    const ctx = await browser.newContext({ ...devices['iPhone 13'], reducedMotion: 'reduce' })
+    const p = await ctx.newPage()
+    p.on('pageerror', (e) => errors.push(e.message))
+    await p.goto(URL + '?installGate=1')
+    await p.locator('.web-install').waitFor()
+    assert(await p.getByText('Zum Home-Bildschirm').first().isVisible(), 'iPhone steps shown')
+    assert((await p.locator('.web-install-warn').count()) === 1, 'iOS warning shown')
+    await p.getByRole('button', { name: 'Ohne Installation im Browser weiter' }).click()
+    assert((await p.locator('.web-install').count()) === 0, 'skip closes the gate')
+    const skip = await p.evaluate(() => localStorage.getItem('gartenerbe-install-gate-skip'))
+    assert(Number(skip) > 0, 'skip time stored')
+    await ctx.close()
+
+    const desk = await browser.newContext({ viewport: { width: 1280, height: 800 } })
+    const d = await desk.newPage()
+    d.on('pageerror', (e) => errors.push(e.message))
+    await d.goto(URL + '?installGate=1')
+    await d.waitForTimeout(800)
+    assert((await d.locator('.web-install').count()) === 0, 'no install gate on a computer')
+    await desk.close()
+  }
+
+  // 9 — Testphase: Hinweis zur Aufzeichnung muss bestätigt werden, Häkchen schaltet das Log
+  {
+    for (const keep of [true, false]) {
+      const ctx = await browser.newContext({ ...devices['iPhone 13'], reducedMotion: 'reduce' })
+      const p = await ctx.newPage()
+      p.on('pageerror', (e) => errors.push(e.message))
+      await p.goto(URL + '?testPhase=1')
+      await p.locator('.test-phase').waitFor()
+      const box = p.getByRole('checkbox', { name: 'Aufzeichnung erlauben' })
+      assert(await box.isChecked(), 'recording is preselected')
+      if (!keep) await box.uncheck()
+      await p.getByRole('button', { name: 'Verstanden' }).click()
+      assert((await p.locator('.test-phase').count()) === 0, 'notice closes after confirm')
+      const st = await p.evaluate(() => [localStorage.getItem('gartenerbe-playtest-log-on'), localStorage.getItem('gartenerbe-testphase-v1')])
+      assert(st[0] === (keep ? '1' : '0') || (!keep && st[0] === null), `log ${keep ? 'on' : 'off'} after confirm`)
+      assert(JSON.parse(st[1] || '{}').logging === keep, 'consent stored')
+      await p.goto(URL + '?testPhase=1')
+      await p.waitForTimeout(600)
+      assert((await p.locator('.test-phase').count()) === 0, 'asked only once')
+      await ctx.close()
+    }
   }
 
   assert(errors.length === 0, 'page errors: ' + errors.join(' | '))

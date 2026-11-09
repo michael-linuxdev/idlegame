@@ -1,6 +1,6 @@
 # Gartenerbe — Store-Eintrag (Entwurf)
 
-> Vor dem Einreichen prüfen: Markenrecherche „Gartenerbe“, Impressum/Datenschutz-URL, Altersfreigabe.
+> Vor dem Einreichen prüfen: Markenrecherche „Gartenerbe“, Impressum/Datenschutz-URL, Altersfreigabe, **`DISTRIBUTION = 'store'` und `TEST_PHASE = false` in `src/game/distribution.ts`** (sonst erscheinen in der Store-App der Web-Hinweis „Zuerst die App installieren“ und der Testphasen-Hinweis).
 
 ## Name
 **Gartenerbe**
