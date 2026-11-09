@@ -6,11 +6,12 @@
 import { ACHIEVEMENT_IDS } from './achievements'
 import { ALBUM_GOALS } from './album'
 import { HYBRID_IDS } from './crossing'
+import { CHALLENGE_IDS } from './challenges'
 import { GARDEN_VARIETIES } from './gardenLife'
 import type { GeneratorId } from './generators'
 import { RESIDENT_IDS } from './residents'
 
-export type CollectionKey = 'pflanzenbuch' | 'bewohner' | 'album' | 'erfolge' | 'kreuzungen'
+export type CollectionKey = 'pflanzenbuch' | 'bewohner' | 'album' | 'erfolge' | 'kreuzungen' | 'herausforderungen'
 
 export interface CollectionRow {
   key: CollectionKey
@@ -24,6 +25,7 @@ interface CollectionInput {
   album: { claimed: readonly string[] }
   claimedAchievements: readonly string[]
   hybrids: readonly string[]
+  challengesDone?: readonly string[]
 }
 
 export function collectionRows(s: CollectionInput): CollectionRow[] {
@@ -35,6 +37,11 @@ export function collectionRows(s: CollectionInput): CollectionRow[] {
     { key: 'album', have: Math.min(ALBUM_GOALS.length, s.album.claimed.length), total: ALBUM_GOALS.length },
     { key: 'erfolge', have: ACHIEVEMENT_IDS.filter((id) => s.claimedAchievements.includes(id)).length, total: ACHIEVEMENT_IDS.length },
     { key: 'kreuzungen', have: HYBRID_IDS.filter((id) => s.hybrids.includes(id)).length, total: HYBRID_IDS.length },
+    {
+      key: 'herausforderungen',
+      have: CHALLENGE_IDS.filter((id) => s.challengesDone?.includes(id)).length,
+      total: CHALLENGE_IDS.length,
+    },
   ]
 }
 

@@ -48,6 +48,9 @@ import { questLabel } from './quests'
 import {
   applyOfflineCatchup,
   countSession,
+  abortChallenge,
+  chooseNextChallenge,
+  challengesOpen,
   pickSeasonCard,
   applyTick,
   buyBranch,
@@ -162,6 +165,7 @@ import type { LegacyId } from './generations'
 import { FEST_EARN } from './fests'
 import { logPlaytest, registerPlaytestSnapshot } from './playtestLog'
 import type { SeasonCardId } from './seasonCards'
+import { challengeAllowsWater, type ChallengeId } from './challenges'
 import { ensureFeaturesSeen, loadFeaturesSeen, openFeatures, usedFeatures } from './featureUnlocks'
 import { FEATURE_HINTS, seedHintsSeen, type HintId } from './hints'
 import { loadState, saveState } from './storage'
@@ -333,11 +337,12 @@ export function useGame() {
   }, [])
 
   const tapReady =
-    state.lastTapAt <= 0 || nowTick - state.lastTapAt >= TAP_COOLDOWN_MS
+    challengeAllowsWater(state.challenge) && (state.lastTapAt <= 0 || nowTick - state.lastTapAt >= TAP_COOLDOWN_MS)
 
   const rake = useCallback(() => {
     setState((s) => {
       const now = Date.now()
+      if (!challengeAllowsWater(s.challenge)) return s
       if (s.lastTapAt > 0 && now - s.lastTapAt < TAP_COOLDOWN_MS) return s
       const rate = productionPerSecond(s, now)
       const fromRate = rate * tapBonusSeconds(s.emberUpgrades) * waterMult(s, now)
@@ -516,6 +521,22 @@ export function useGame() {
     setState((s) => {
       const next = claimAlbumStamp(s, id)
       if (next !== s) logPlaytest('album', { id })
+      return next
+    })
+  }, [])
+
+  const chooseChallenge = useCallback((id: ChallengeId | null) => {
+    setState((s) => {
+      const next = chooseNextChallenge(s, id)
+      if (next !== s) logPlaytest('challenge', { action: 'choose', id: id ?? 'keine' })
+      return next
+    })
+  }, [])
+
+  const stopChallenge = useCallback(() => {
+    setState((s) => {
+      const next = abortChallenge(s)
+      if (next !== s) logPlaytest('challenge', { action: 'abort', id: s.challenge ?? '' })
       return next
     })
   }, [])
@@ -1030,6 +1051,9 @@ export function useGame() {
     crossStart,
     buildProject,
     pickSeasonCard: chooseSeasonCard,
+    chooseChallenge,
+    stopChallenge,
+    challengesOpen: challengesOpen(state),
     claimStamp,
     chooseWeather,
     weatherEvent: pendingWeatherEvent(state, nowTick),

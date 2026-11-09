@@ -1320,3 +1320,42 @@ html.pref-calm *::after {
 .collection-chapter-text {
   display: grid;
 }
+
+/* Omas Herausforderungen */
+.challenge-list {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.challenge-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.challenge-text {
+  display: grid;
+}
+
+.challenge-row.done strong {
+  color: #2f7a2a;
+}
+
+.challenge-active {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.7rem;
+  border-radius: 12px;
+  background: rgba(224, 165, 38, 0.15);
+}
+
+.challenge-active p {
+  margin: 0;
+  flex: 1 1 12rem;
+}
