@@ -18,7 +18,7 @@ export type Stones = { k: 'stones'; variant: 'zen' | 'rock' | 'edelweiss' | 'mos
 export type ArtSpec = Tree | Rows | Animals | House | Water | Flowers | Stones
 
 /** Chapters drawn with hand-made art (theme/HandArt.tsx). */
-export const HAND_ART_CHAPTERS: readonly ChapterId[] = ['bauernhof', 'imkerei', 'teich', 'kraeuter', 'botanik', 'alm', 'lavendel', 'japangarten', 'gartenschau', 'stadtgarten', 'klostergarten', 'schlossgarten', 'baumschule', 'moorgarten', 'deichgarten', 'spreewald', 'cottagegarten', 'tulpenfelder', 'artischocken', 'beerenwald']
+export const HAND_ART_CHAPTERS: readonly ChapterId[] = ['bauernhof', 'imkerei', 'teich', 'kraeuter', 'botanik', 'alm', 'lavendel', 'japangarten', 'gartenschau', 'stadtgarten', 'klostergarten', 'schlossgarten', 'baumschule', 'moorgarten', 'deichgarten', 'spreewald', 'cottagegarten', 'tulpenfelder', 'artischocken', 'beerenwald', 'patio', 'korkeichen', 'paprikafelder', 'aranfelder', 'rosental', 'pistazien']
 
 export interface BackdropSpec {
   /** Patchwork fields behind the plots */
@@ -61,6 +61,18 @@ export interface BackdropSpec {
   lagoon?: boolean
   /** Beerenwald: spruce forest, lake, red cabin, mossy rocks */
   swedishWoods?: boolean
+  /** Patio: white arcades, azulejo dado, Córdoba roofs and bell tower */
+  andalusia?: boolean
+  /** Korkeichen: rolling montado with round oaks, white farmhouse, pylons with storks */
+  montado?: boolean
+  /** Paprikafelder: flat plain, sweep well, Kalocsa towers, red pepper strips */
+  kalocsa?: boolean
+  /** Aran: Atlantic, cliffs, stone-walled fields, thatched cottage */
+  aran?: boolean
+  /** Rosental: Balkan mountains, pink rose rows, red-roofed village */
+  roseValley?: boolean
+  /** Ägina: Aegean sea, islands, temple on the hill, white harbor village */
+  aegina?: boolean
   grass: [string, string, string]
   path: string
   /** Own path shape per chapter (default: shared S-curve) */
@@ -370,6 +382,96 @@ export const CHAPTER_ART: Partial<Record<ChapterId, { backdrop: BackdropSpec; ar
       seesauna: { k: 'water', variant: 'jetty' },
       mittsommer: { k: 'flowers', colors: [P.yellow, P.white, P.blue] },
       jedermannspfad: { k: 'tree', crown: P.leafDark, shape: 'cone' },
+    },
+  },
+  patio: {
+    backdrop: { grass: ['#e8dcc0', '#dccfae', '#cfc09c'], path: '#c8693e', hills: ['#f4ead2', '#e6d6b2'], way: 'patioTiles', andalusia: true },
+    areas: {
+      orangenhof: { k: 'tree', crown: P.leafDark, fruit: P.orange },
+      azulejobrunnen: { k: 'water', variant: 'fountain' },
+      geranienwand: { k: 'flowers', colors: [P.red, P.pink, P.berry] },
+      acequia: { k: 'water', variant: 'stream' },
+      jasminbogen: { k: 'flowers', colors: [P.white, P.cream], arch: true },
+      granatapfelbaum: { k: 'tree', crown: P.leaf, fruit: P.berry },
+      galerie: { k: 'house', roof: P.terracotta, wall: P.white, prop: 'gate' },
+      marmeladenkueche: { k: 'house', roof: P.terracotta, wall: P.white, prop: 'jars' },
+      gitterfenster: { k: 'house', roof: P.terracotta, wall: P.white },
+      patiofest: { k: 'flowers', colors: [P.red, P.lamp, P.white] },
+    },
+  },
+  korkeichen: {
+    backdrop: { grass: ['#d6c98c', '#c8ba78', '#b8a866'], path: '#c98a5a', hills: ['#b8b070', '#8a9a58'], way: 'montadoTrack', montado: true },
+    areas: {
+      korkhain: { k: 'tree', crown: P.leafDark, shape: 'olive' },
+      schaelplatz: { k: 'tree', crown: P.leafDark },
+      eichelweide: { k: 'animals', animal: 'pig' },
+      storchenmast: { k: 'house', roof: P.metal, wall: P.stoneLight, prop: 'tower' },
+      schoepfrad: { k: 'water', variant: 'fountain' },
+      korkstapel: { k: 'house', roof: P.woodMid, wall: P.woodLight, prop: 'barrels' },
+      lehmhaus: { k: 'house', roof: P.terracotta, wall: P.white, prop: 'chimney' },
+      honighaus: { k: 'house', roof: P.woodMid, wall: P.woodLight, prop: 'hives' },
+      korkwerkstatt: { k: 'house', roof: P.terracotta, wall: P.white, prop: 'barrels' },
+      korkfest: { k: 'flowers', colors: [P.lamp, P.blue, P.white] },
+    },
+  },
+  paprikafelder: {
+    backdrop: { grass: ['#b8cc84', '#a6bc72', '#94aa62'], path: '#d9c79a', hills: ['#a8c47a', '#8aa860'], way: 'pepperLanes', kalocsa: true },
+    areas: {
+      paprikareihen: { k: 'rows', color: P.leafDark, flower: P.tomato },
+      paprikaschnuere: { k: 'house', roof: P.woodLight, wall: P.white, prop: 'jars' },
+      paprikamuehle: { k: 'house', roof: P.woodLight, wall: P.white, prop: 'still' },
+      kalocsastube: { k: 'flowers', colors: [P.tomato, P.blue, P.leaf] },
+      schwengelbrunnen: { k: 'water', variant: 'fountain' },
+      tomatenfeld: { k: 'rows', color: P.leaf, flower: P.tomato, tall: true },
+      akazienhain: { k: 'tree', crown: P.leaf, shape: 'linden' },
+      schilfscheune: { k: 'house', roof: P.woodLight, wall: P.white, prop: 'barrels' },
+      paprikamarkt: { k: 'house', roof: P.tomato, wall: P.white, prop: 'tent' },
+      paprikafest: { k: 'flowers', colors: [P.tomato, P.lamp, P.white] },
+    },
+  },
+  aranfelder: {
+    backdrop: { grass: ['#9cc07e', '#8ab06c', '#78a05c'], path: '#c9c3b6', hills: ['#7a9a8a', '#5a7a6a'], way: 'limestone', aran: true },
+    areas: {
+      feldmauern: { k: 'stones', variant: 'rock' },
+      tangbeete: { k: 'rows', color: P.leafMoss },
+      kartoffelfurchen: { k: 'rows', color: P.leaf, flower: P.white },
+      burrenblumen: { k: 'stones', variant: 'edelweiss' },
+      aranweide: { k: 'animals', animal: 'goat' },
+      strickstube: { k: 'house', roof: P.woodLight, wall: P.cream, prop: 'chimney' },
+      strohcottage: { k: 'house', roof: P.woodLight, wall: P.white, prop: 'chimney' },
+      klippenpfad: { k: 'stones', variant: 'rock' },
+      hafenmauer: { k: 'water', variant: 'jetty' },
+      ceili: { k: 'house', roof: P.woodLight, wall: P.cream, prop: 'stage' },
+    },
+  },
+  rosental: {
+    backdrop: { grass: ['#acc886', '#9aba74', '#88aa64'], path: '#d9c79a', hills: ['#7a8ea8', '#5f7690'], way: 'roseLanes', roseValley: true },
+    areas: {
+      rosenreihen: { k: 'rows', color: P.leafDark, flower: P.pink },
+      pflueckkoerbe: { k: 'flowers', colors: [P.pink, P.blossom] },
+      destillierkessel: { k: 'house', roof: P.terracotta, wall: P.white, prop: 'still' },
+      walnussallee: { k: 'tree', crown: P.leaf },
+      imkerwagen: { k: 'animals', animal: 'bee' },
+      rosenwasser: { k: 'house', roof: P.terracotta, wall: P.white, prop: 'jars' },
+      bergquelle: { k: 'water', variant: 'fountain' },
+      veranda: { k: 'house', roof: P.terracotta, wall: P.woodMid },
+      rosenboden: { k: 'house', roof: P.woodLight, wall: P.white },
+      rosenfest: { k: 'flowers', colors: [P.pink, P.tomato, P.white] },
+    },
+  },
+  pistazien: {
+    backdrop: { grass: ['#d8cc98', '#cabc86', '#b8aa74'], path: '#efe1c2', hills: ['#6aa6c9', '#b8aa74'], way: 'terraceSteps', aegina: true },
+    areas: {
+      pistazienhain: { k: 'tree', crown: P.winterLeafDark, fruit: P.red, shape: 'olive' },
+      steinterrassen: { k: 'stones', variant: 'rock' },
+      kapellchen: { k: 'house', roof: P.white, wall: P.white, prop: 'bell' },
+      mandelbaeume: { k: 'tree', crown: P.blossom, shape: 'blossom' },
+      kapernhang: { k: 'stones', variant: 'moss' },
+      roestplatz: { k: 'house', roof: P.white, wall: P.white, prop: 'chimney' },
+      inselhaus: { k: 'house', roof: P.white, wall: P.white },
+      zisterne: { k: 'water', variant: 'pond' },
+      hafenmarkt: { k: 'water', variant: 'jetty' },
+      pistazienfest: { k: 'flowers', colors: [P.lamp, P.blue, P.white] },
     },
   },
 }

@@ -65,6 +65,17 @@ describe('Spielstand v1 (neues Format ab 2026-11-09)', () => {
     expect(parseSave(v1)!.projects).toEqual({})
   })
 
+  it('Großprojekt Tauschpost (Welle 3) startet bei 0, alte Bauabschnitte und Kapitel bleiben', () => {
+    const raw = { ...(v1 as unknown as Record<string, unknown>), projects: { rosengarten: 3, gartenroute: 2 } }
+    const s = parseSave(raw)!
+    expect(s.projects).toEqual({ rosengarten: 3, gartenroute: 2 })
+    expect(s.projects.tauschpost ?? 0).toBe(0)
+    const before = parseSave(v1)!
+    for (const id of ['patio', 'korkeichen', 'paprikafelder', 'aranfelder', 'rosental', 'pistazien'] as const) {
+      expect(before.chapters[id], id).toEqual(emptyChapter(CHAPTERS.find((c) => c.id === id)!))
+    }
+  })
+
   it('gibt später hinzugekommenen Feldern ihren Startwert', () => {
     const s = parseSave(v1)! as unknown as Record<string, unknown>
     for (const [k, v] of Object.entries(ADDED_AFTER_V1)) expect(s[k]).toEqual(v)

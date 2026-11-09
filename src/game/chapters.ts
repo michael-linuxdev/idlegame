@@ -44,6 +44,12 @@ export type ChapterId =
   | 'tulpenfelder'
   | 'artischocken'
   | 'beerenwald'
+  | 'patio'
+  | 'korkeichen'
+  | 'paprikafelder'
+  | 'aranfelder'
+  | 'rosental'
+  | 'pistazien'
 
 export interface AreaDef {
   id: string

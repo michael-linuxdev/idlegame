@@ -28,6 +28,12 @@ import cottagegarten from './kapitel/cottagegarten'
 import tulpenfelder from './kapitel/tulpenfelder'
 import artischocken from './kapitel/artischocken'
 import beerenwald from './kapitel/beerenwald'
+import patio from './kapitel/patio'
+import korkeichen from './kapitel/korkeichen'
+import paprikafelder from './kapitel/paprikafelder'
+import aranfelder from './kapitel/aranfelder'
+import rosental from './kapitel/rosental'
+import pistazien from './kapitel/pistazien'
 import type { ChapterArtEntry } from './kapitel/types'
 
 export type { AreaArtProps, ChapterArtEntry } from './kapitel/types'
@@ -55,4 +61,10 @@ export const ART_REGISTRY: Record<ChapterId, ChapterArtEntry> = {
   tulpenfelder,
   artischocken,
   beerenwald,
+  patio,
+  korkeichen,
+  paprikafelder,
+  aranfelder,
+  rosental,
+  pistazien,
 }

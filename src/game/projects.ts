@@ -6,7 +6,7 @@
 import { chapterDef, type ChapterId } from './chapters'
 import type { DecorId } from './decor'
 
-export type ProjectId = 'pavillon' | 'brunnen' | 'dorffest' | 'rosengarten' | 'gartenroute'
+export type ProjectId = 'pavillon' | 'brunnen' | 'dorffest' | 'rosengarten' | 'gartenroute' | 'tauschpost'
 
 export interface ProjectDef {
   id: ProjectId
@@ -24,6 +24,12 @@ export const PROJECTS: ProjectDef[] = [
     id: 'gartenroute',
     chapters: ['stadtgarten', 'klostergarten', 'schlossgarten', 'baumschule', 'moorgarten', 'deichgarten', 'spreewald'],
     reward: { samen: 300 },
+  },
+  // Bogen II „Omas Saatgutbriefe“ (Kapitel 20–29)
+  {
+    id: 'tauschpost',
+    chapters: ['cottagegarten', 'tulpenfelder', 'artischocken', 'beerenwald', 'patio', 'korkeichen', 'paprikafelder', 'aranfelder', 'rosental', 'pistazien'],
+    reward: { samen: 400 },
   },
 ]
 

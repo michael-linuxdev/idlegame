@@ -33,6 +33,12 @@ const LOADERS: Record<ChapterId, Loader> = {
   tulpenfelder: () => import('./kapitel/tulpenfelder'),
   artischocken: () => import('./kapitel/artischocken'),
   beerenwald: () => import('./kapitel/beerenwald'),
+  patio: () => import('./kapitel/patio'),
+  korkeichen: () => import('./kapitel/korkeichen'),
+  paprikafelder: () => import('./kapitel/paprikafelder'),
+  aranfelder: () => import('./kapitel/aranfelder'),
+  rosental: () => import('./kapitel/rosental'),
+  pistazien: () => import('./kapitel/pistazien'),
 }
 
 const loaded = new Map<ChapterId, ChapterArtEntry>()

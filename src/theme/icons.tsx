@@ -547,6 +547,63 @@ export function IconChapterCurrency({ chapter }: { chapter: string }) {
           ))}
         </Svg>
       )
+    case 'patio': // Bitterorange mit Blatt
+      return (
+        <Svg>
+          <path d="M12 6c1 -2.6 3.6 -3.6 6 -3c-1 2.4 -3.4 3.6 -6 3z" fill="#3f7a30" />
+          <circle cx="12" cy="14" r="7" fill="#f08a2c" stroke="#a5531a" strokeWidth="1" />
+          <circle cx="12" cy="7.6" r=".9" fill="#5f9e45" />
+          <circle cx="9.4" cy="11.6" r="1.6" fill="#fff" opacity=".35" />
+          {[[14, 16], [10, 17], [15, 12]].map(([x, y], i) => (
+            <circle key={i} cx={x} cy={y} r=".35" fill="#a5531a" />
+          ))}
+        </Svg>
+      )
+    case 'korkeichen': // Korken
+      return (
+        <Svg>
+          <path d="M7 6.4h10l-1.4 14h-7.2z" fill="#c9a46b" stroke="#8a5a32" strokeWidth="1.1" />
+          <ellipse cx="12" cy="6.4" rx="5" ry="1.8" fill="#d9b78a" stroke="#8a5a32" strokeWidth="1" />
+          {[[10, 11], [13.4, 13], [11, 16], [14, 17.6], [9.6, 18.4]].map(([x, y], i) => (
+            <circle key={i} cx={x} cy={y} r=".6" fill="#8a5a32" />
+          ))}
+        </Svg>
+      )
+    case 'paprikafelder': // Paprikaschote
+      return (
+        <Svg>
+          <path d="M12 6c0 -2 1 -3 3 -3.4" stroke="#3f7a30" strokeWidth="1.6" fill="none" strokeLinecap="round" />
+          <path d="M8 7.6c2.4 -1.4 5.6 -1.4 8 0c.8 4 -.4 9 -3.4 13.4c-.4 .6 -1 .6 -1.4 0c-3 -4.4 -4 -9.4 -3.2 -13.4z" fill="#e2453c" stroke="#a52a24" strokeWidth="1" />
+          <path d="M10 9c-.4 3 0 6 1.4 9" stroke="#fff" strokeWidth=".9" opacity=".4" fill="none" />
+        </Svg>
+      )
+    case 'aranfelder': // Wollknäuel
+      return (
+        <Svg>
+          <circle cx="12" cy="12.6" r="8" fill="#fbf6e8" stroke="#8a7a6a" strokeWidth="1.1" />
+          <path d="M5.6 9.6c4 1 8.6 4.6 10.6 9.4M5 13.4c3.4 .4 7.4 3 8.8 6.8M8.6 5.4c3 2.4 7.6 3.2 11 3" stroke="#a69a8a" strokeWidth=".9" fill="none" />
+          <path d="M19.4 16c1.6 1.6 2.6 3.4 2.4 5.4" stroke="#8a7a6a" strokeWidth="1" fill="none" />
+        </Svg>
+      )
+    case 'rosental': // Rosenöl-Flakon mit Rose
+      return (
+        <Svg>
+          <path d="M9.6 9h4.8v2.4l2.6 3v6.6h-10v-6.6l2.6 -3z" fill="#f7c6d9" stroke="#a5531a" strokeWidth="1" />
+          <rect x="10.2" y="6" width="3.6" height="3" fill="#c9a24a" stroke="#8a5a32" strokeWidth=".8" />
+          <path d="M8 17h8" stroke="#fff" strokeWidth=".8" opacity=".6" />
+          <circle cx="17.6" cy="6" r="3" fill="#f28ab2" stroke="#d7263d" strokeWidth=".8" />
+          <path d="M16.4 5.6c.8 -1 2 -1 2.4 .2" stroke="#d7263d" strokeWidth=".6" fill="none" />
+        </Svg>
+      )
+    case 'pistazien': // Pistazie, Schale offen
+      return (
+        <Svg>
+          <path d="M5.4 13c0 -4.4 3 -8 6.6 -8s6.6 3.6 6.6 8c0 1.4 -.4 2.6 -1 3.6l-5.6 -2.6l-5.6 2.6c-.6 -1 -1 -2.2 -1 -3.6z" fill="#efe1c2" stroke="#8a6a40" strokeWidth="1" />
+          <ellipse cx="12" cy="15.4" rx="4.4" ry="3.6" fill="#7fbf5a" stroke="#4f7a2e" strokeWidth="1" />
+          <path d="M9.4 14.4c1.4 -1 3.6 -1.4 5 -.4" stroke="#9a6bc9" strokeWidth=".8" fill="none" />
+          <path d="M6.4 16.6l5.6 4.2l5.6 -4.2" fill="#efe1c2" stroke="#8a6a40" strokeWidth="1" />
+        </Svg>
+      )
     default: // Gartenschau: Besucher-Medaille
       return (
         <Svg>

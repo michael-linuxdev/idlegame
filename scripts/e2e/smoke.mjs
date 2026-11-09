@@ -203,9 +203,9 @@ try {
     assert((await p.locator('.chapter-gartenschau .garden-plot .plot-visual svg *').count()) > 20, 'chapter art loaded')
     await p.locator('.garden-plot').first().click()
     await p.locator('.upgrade-hud-buy').waitFor()
-    // Kapitel 13–23 (Welle 1 + 2): Brief, Kulisse, Bereichsgrafik; Bildschirmfotos für einen Blick von Hand
+    // Kapitel 13–29 (Welle 1–3): Brief, Kulisse, Bereichsgrafik; Bildschirmfotos für einen Blick von Hand
     await mkdir('e2e-screens/kapitel', { recursive: true })
-    for (const [n, id] of [[13, 'stadtgarten'], [14, 'klostergarten'], [15, 'schlossgarten'], [16, 'baumschule'], [17, 'moorgarten'], [18, 'deichgarten'], [19, 'spreewald'], [20, 'cottagegarten'], [21, 'tulpenfelder'], [22, 'artischocken'], [23, 'beerenwald']]) {
+    for (const [n, id] of [[13, 'stadtgarten'], [14, 'klostergarten'], [15, 'schlossgarten'], [16, 'baumschule'], [17, 'moorgarten'], [18, 'deichgarten'], [19, 'spreewald'], [20, 'cottagegarten'], [21, 'tulpenfelder'], [22, 'artischocken'], [23, 'beerenwald'], [24, 'patio'], [25, 'korkeichen'], [26, 'paprikafelder'], [27, 'aranfelder'], [28, 'rosental'], [29, 'pistazien']]) {
       await p.keyboard.press('Escape')
       await p.getByRole('button', { name: T.plots.aria }).click()
       await p.getByRole('button', { name: T.chapterUi.chapter(n) }).click()
