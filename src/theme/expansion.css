@@ -1099,8 +1099,9 @@ html.tab-hidden .fest-snow {
   height: auto;
 }
 
+/* Größen nach der Maßtabelle (art/parts/style.ts SIZE): Huhn 9, Igel 7 Einheiten */
 .chicken {
-  width: calc(var(--u) * 4.4);
+  width: calc(var(--u) * 3);
   top: 52%;
   animation: chicken-walk 14s ease-in-out infinite alternate;
 }
@@ -1164,7 +1165,7 @@ html.tab-hidden .fest-snow {
 }
 
 .hedgehog {
-  width: calc(var(--u) * 6);
+  width: calc(var(--u) * 4.5);
   top: 90%;
   left: 10%;
   animation: hedgehog-walk 40s linear infinite;

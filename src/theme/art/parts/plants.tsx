@@ -42,8 +42,8 @@ export function Bush({ x, y, r = 9, berry }: { x: number; y: number; r?: number;
   return (
     <Place x={x} y={y}>
       <circle cx="0" cy={-r} r={r} fill={P.leafDark} stroke={P.outline} strokeWidth={STROKE.contour} />
-      <circle cx={-r * 0.35} cy={-r * 1.3} r={r * 0.6} fill={P.leaf} />
-      <circle cx={r * 0.4} cy={-r * 1.15} r={r * 0.45} fill={P.leafLight} />
+      <circle cx={r * 0.3} cy={-r * 1.1} r={r * 0.6} fill={P.leaf} />
+      <circle cx={-r * 0.38} cy={-r * 1.35} r={r * 0.45} fill={P.leafLight} />
       {berry
         ? [
             [-0.4, 0.2],
@@ -66,8 +66,8 @@ export function Tree({ x, y, r = 14, fruit, trunk = 12, crown = P.leafDark, ligh
     <Place x={x} y={y}>
       <rect x="-2.5" y={top} width="5" height={trunk} rx="2" fill={P.bark} stroke={P.outline} strokeWidth={STROKE.detail} />
       <circle cx="0" cy={top - r * 0.4} r={r} fill={crown} stroke={P.outline} strokeWidth={STROKE.contour} />
-      <circle cx={-r * 0.45} cy={top - r * 0.2} r={r * 0.62} fill={mid} />
-      <circle cx={r * 0.3} cy={top - r * 0.75} r={r * 0.58} fill={light} />
+      <circle cx={r * 0.4} cy={top - r * 0.2} r={r * 0.62} fill={mid} />
+      <circle cx={-r * 0.3} cy={top - r * 0.75} r={r * 0.58} fill={light} />
       {fruit
         ? [
             [-0.5, -0.1],

@@ -109,13 +109,13 @@ function Gemuesebeet({ t }: { t: number }) {
       ) : null}
       {t >= 5 ? (
         <g>
-          {/* scarecrow */}
-          <path d="M80 70 V22 M70 32 H90" stroke={WOOD_D} strokeWidth="2.4" />
-          <path d="M72 32 H88 L86 50 H74 Z" fill={P.denim} stroke={OUT} strokeWidth="1.2" />
-          <circle cx="80" cy="22" r="6" fill={P.skinLight} stroke={OUT} strokeWidth="1.2" />
-          <path d="M71 19 H89 L84 12 H76 Z" fill={P.brass} stroke={OUT} strokeWidth="1.2" />
-          <circle cx="78" cy="22" r="0.9" fill={OUT} />
-          <circle cx="82" cy="22" r="0.9" fill={OUT} />
+          {/* scarecrow (SIZE.vogelscheuche = 30) */}
+          <path d="M82 70 V44 M74 49 H90" stroke={WOOD_D} strokeWidth="2" />
+          <path d="M75.5 49 H88.5 L87 60 H77 Z" fill={P.denim} stroke={OUT} strokeWidth="1.3" />
+          <circle cx="82" cy="44" r="4.2" fill={P.skinLight} stroke={OUT} strokeWidth="1.3" />
+          <path d="M75.5 42 H88.5 L85 37 H79 Z" fill={P.brass} stroke={OUT} strokeWidth="1.3" />
+          <circle cx="80.6" cy="44.4" r="0.7" fill={OUT} />
+          <circle cx="83.4" cy="44.4" r="0.7" fill={OUT} />
           {/* pumpkins */}
           <ellipse cx="9" cy="64" rx="7" ry="5.4" fill={P.orange} stroke={OUT} strokeWidth="1.2" />
           <path d="M9 59 V56" stroke={LEAF_D} strokeWidth="1.6" />

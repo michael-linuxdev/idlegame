@@ -1,9 +1,15 @@
 import { P } from '../palette'
 import { Place } from './Place'
-import { STROKE } from './style'
+import { SIZE, STROKE } from './style'
+
+/** Gezeichnete Höhe bei s=1 (für die Maßtabelle). */
+const HEN_H = 14.4
+const BEE_H = 5
+export const HEN_SCALE = SIZE.huhn / HEN_H
+export const BEE_SCALE = SIZE.biene / BEE_H
 
 /** Huhn (Seitenansicht, schaut nach rechts); Fußpunkt = zwischen den Füßen. */
-export function Hen({ x, y, flip = false, c = P.feather, s = 1 }: { x: number; y: number; flip?: boolean; c?: string; s?: number }) {
+export function Hen({ x, y, flip = false, c = P.feather, s = HEN_SCALE }: { x: number; y: number; flip?: boolean; c?: string; s?: number }) {
   return (
     <Place x={x} y={y} s={s} flip={flip}>
       <g transform="translate(0 -7)">
@@ -35,7 +41,7 @@ export function Bird({ x, y, color = P.cream, neck = P.cream, flip = false, swim
 }
 
 /** Biene; Mittelpunkt (fliegt, hat keinen Fußpunkt). */
-export function Bee({ x, y, s = 1 }: { x: number; y: number; s?: number }) {
+export function Bee({ x, y, s = BEE_SCALE }: { x: number; y: number; s?: number }) {
   return (
     <Place x={x} y={y} s={s} className="ma-bee">
       <ellipse cx="-1.4" cy="-2" rx="1.8" ry="1.2" fill={P.white} opacity="0.85" />
