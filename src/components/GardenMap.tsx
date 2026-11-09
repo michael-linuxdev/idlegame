@@ -3,6 +3,7 @@ import { WeatherDecision } from './WeatherDecision'
 import { CrossSheet } from './CrossSheet'
 import { Residents } from './Residents'
 import { DecorLayer } from './DecorLayer'
+import { WeatherLayer } from './WeatherLayer'
 import { DecorSheet } from './DecorSheet'
 import { computeBestBuy } from '../game/bestBuy'
 import {
@@ -55,7 +56,7 @@ import {
   type ExtrasState,
   type WeeklyTaskId,
 } from '../game/extras'
-import { RARITY_BONUS, VARIETIES } from '../game/gardenLife'
+import { RARITY_BONUS, VARIETIES, weatherAt } from '../game/gardenLife'
 import { TIER_LEVELS, moduleTier } from '../theme/tiers'
 import { formatClock, formatDecimal } from '../game/format'
 import { ArtSvg } from '../theme/ArtSvg'
@@ -76,7 +77,7 @@ import {
 } from '../theme/icons'
 import { ProgressSheet } from './ProgressSheet'
 import { MapBackdrop } from '../theme/MapBackdrop'
-import { useAmbient } from '../theme/ambient'
+import { useAmbient, weatherOverride } from '../theme/ambient'
 import { UpgradeSheet } from './UpgradeSheet'
 import { FestSheet } from './FestSheet'
 import { HelperWalker } from './HelperWalker'
@@ -899,6 +900,9 @@ export function GardenMap({
             skin={skinClass}
             fest={festAt(game.nowTick).id}
           />
+          {game.features.has('weather') || weatherOverride() ? (
+            <WeatherLayer weather={weatherOverride() ?? weatherAt(game.nowTick)} season={ambient.season} />
+          ) : null}
           <DecorLayer game={game} season={ambient.season} editing={decorEdit} onDone={() => setDecorEdit(false)} />
           {state.helperLevel > 0 && state.helperOn ? (
             <>
