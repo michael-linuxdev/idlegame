@@ -1,36 +1,15 @@
-import { gateSeasons, type DeepMetaId } from './longLoop'
-import type { WheelKind } from './gardenLife'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { isIdle, onIdleChange, startIdleWatch } from './idle'
-import type { DecorId } from './decor'
-import type { ResidentId } from './residents'
-import type { ProjectId } from './projects'
-import { ALBUM_GOALS, albumProgress, type AlbumStat } from './album'
-import type { WeatherChoice } from './weatherEvents'
-import {
-  erbstueckePayout,
-  saatgutkisteMult,
-  MIN_OFFLINE_CLAIM_AWAY_MS,
-  TAP_COOLDOWN_MS,
-  tapBonusSeconds,
-  type TruheItemId, isProbeYear } from './economy'
+import { gateSeasons } from './longLoop'
+import { useCallback } from 'react'
+import { ALBUM_GOALS, albumProgress } from './album'
+import { erbstueckePayout, TAP_COOLDOWN_MS, isProbeYear } from './economy'
+import { saatgutkisteMult } from './truhe'
 import {
   GENERATORS,
   generatorCost,
   isGeneratorUnlocked,
   type GeneratorId,
 } from './generators'
-import {
-  REWARDED_AD_DELAY_MS,
-  cosmeticById,
-  dayKey,
-  rewardedAdCooldownMsLeft,
-  rewardedAdReady,
-  type AdChoice,
-  type CosmeticId,
-  type ShopOfferDef,
-  type TimeSkipId,
-} from './monetization'
+import { cosmeticById, dayKey, rewardedAdCooldownMsLeft, rewardedAdReady } from './monetization'
 import { canClaimDaily, previewDailyReward } from './dailyOps'
 import {
   erntefestStatus,
@@ -46,49 +25,16 @@ import {
 } from './branches'
 import { questLabel } from './quests'
 import {
-  applyOfflineCatchup,
-  countSession,
-  abortChallenge,
-  chooseNextChallenge,
   challengesOpen,
-  pickSeasonCard,
-  applyTick,
-  buyBranch,
-  buyClanBoost,
-  buyCosmetic,
-  buyTruheItem,
-  buyGenerator,
-  buyTimeSkip,
   canPrestigeNow,
-  buyYieldBoost,
-  claimErntefestGoal,
-  claimBattlePassDailyXp,
-  claimBattlePassTier,
-  claimDailyOps,
-  claimFlashEventGoal,
-  claimQuestReward,
-  claimRewardedAd,
-  claimMarketGift,
   marketGiftReady,
-  refillWateringCan,
-  clearLastSurprise,
-  collectReadyAchievements,
-  dismissErntefest,
-  dismissFlashEvent,
-  doPrestige,
   effectiveClanMult,
   effectiveYieldBoostMult,
-  equipCosmetic,
   eventProductionMult,
   flashProductionMult,
-  claimOfflineReward,
-  creditOfflinePending,
-  grantTapErnte,
   levelProductionMult,
   levelProgress,
   lineCostMult,
-  maybeStartFlashEvent,
-  mockBuyOffer,
   playerLevelOf,
   prestigeMinErnte,
   prestigeMultiplier,
@@ -97,27 +43,10 @@ import {
   skipHoursRemaining,
   type GameState,
   type QuestProgress,
-  buyDeepUpgrade,
-  doDeepReset,
-  waterMult,
-  grantReward,
-  applyWheel,
-  clearLastVariety,
-  type Reward,
   affordableLevels,
-  buyAllBest,
-  buyFestItem,
-  buyGeneratorMany,
-  buyHelper,
-  buyLegacy,
-  buyChapterArea,
-  buyChapterMany,
-  buyChapterCare,
   canHandDownNow,
   costForLevels,
   deepSproutPayout,
-  doGeneration,
-  earnFest,
   generationPayout,
   helperUnlocked,
   bulkUnlocks,
@@ -125,57 +54,23 @@ import {
   openChapters,
   chapterPerSecond,
   chapterRateMult,
-  syncChaptersOpen,
-  buyIlse,
-  toggleIlse,
   ilseUnlocked,
-  finishWeinlese,
   weinleseReady,
-  clearLastChest,
-  claimRecipe,
   recipeReady,
   shieldReady,
-  catchRainbow,
-  makeWish,
-  claimContest,
-  growPumpkin,
-  type Wish,
-  toggleHelper,
-  toggleHelperArea,
-  buyDecor,
-  placeDecor,
-  spawnResident,
-  startCrossing,
-  buildProjectStage,
-  claimAlbumStamp,
-  decideWeather,
   pendingWeatherEvent,
   albumStats,
   syncAlbum,
-  skipCrossing,
-  harvestCrossing,
-  residentGone,
-  greetResident,
   turboMult,
   expansionGardenMult,
 } from './state'
-import type { CareKind, ChapterId } from './chapters'
-import { CONTEST_KG } from './extrasCore'
-import type { LegacyId } from './generations'
-import { FEST_EARN } from './fests'
-import { logPlaytest, registerPlaytestSnapshot } from './playtestLog'
-import type { SeasonCardId } from './seasonCards'
-import { challengeAllowsWater, type ChallengeId } from './challenges'
-import { ensureFeaturesSeen, loadFeaturesSeen, openFeatures, usedFeatures } from './featureUnlocks'
-import { FEATURE_HINTS, seedHintsSeen, type HintId } from './hints'
-import { loadState, saveState } from './storage'
-
-/** Economy + React UI cadence. 100ms was overheating iPhone Safari PWAs. */
-const TICK_MS = 250
-/** Ruhemodus (no touch for a while, see idle.ts): one tick per second */
-const IDLE_TICK_MS = 1000
-/** Persist less often than the tick — localStorage stringify is expensive. */
-const SAVE_MS = 4000
+import type { ChapterId } from './chapters'
+import { challengeAllowsWater } from './challenges'
+import { openFeatures, usedFeatures } from './featureUnlocks'
+import { useGameLoop } from './hooks/useGameLoop'
+import { useGardenActions } from './hooks/useGardenActions'
+import { useChapterActions } from './hooks/useChapterActions'
+import { useShopActions } from './hooks/useShopActions'
 
 /** Album goals finished but not yet stamped (menu dot). */
 function albumReadyCount(state: GameState, now: number): number {
@@ -185,704 +80,102 @@ function albumReadyCount(state: GameState, now: number): number {
 }
 
 export function useGame() {
-  // One catch-up on start: the basket (offlinePending) waits for the „Ernten“
-  // tap; short absences go straight into the wallet.
-  const [boot] = useState(() => {
-    const loaded = loadState()
-    const awayMs = Math.max(0, Date.now() - loaded.lastSeen)
-    let next = applyOfflineCatchup(countSession(loaded, awayMs)).state
-    const banner = awayMs >= MIN_OFFLINE_CLAIM_AWAY_MS && next.offlinePending > 0.01
-    if (!banner) next = creditOfflinePending(next)
-    return { state: maybeStartFlashEvent(next), awayMs: banner ? awayMs : 0, pending: banner ? next.offlinePending : null }
-  })
-  const [state, setState] = useState<GameState>(boot.state)
-  // „Neu“-Abzeichen: bestehende Spieler kennen schon, was offen ist
-  useState(() => {
-    const s = boot.state
-    const ctx = {
-      saisonenden: s.saisonenden,
-      tiefeWinter: s.tiefeWinter,
-      generation: s.generation,
-      sessions: s.sessions,
-      owned: s.owned,
-      collection: s.collection,
-      openChapters: openChapters(s).length,
-      used: usedFeatures(s),
-    }
-    const fresh = loadFeaturesSeen() === null
-    const seen = ensureFeaturesSeen(ctx)
-    if (fresh) seedHintsSeen(seen.map((id) => FEATURE_HINTS[id]).filter((h): h is HintId => h != null))
-    return true
-  })
-  const [offlineGained, setOfflineGained] = useState<number | null>(boot.pending)
-  const [offlineAwayMs, setOfflineAwayMs] = useState<number>(boot.awayMs)
-
-  const stateRef = useRef(state)
-  const dirtySaveRef = useRef(false)
-  useEffect(() => {
-    stateRef.current = state
-    dirtySaveRef.current = true
-  }, [state])
-
-  // Playtest-Log: Fortschritts-Stand des Tages (nur wenn das Log an ist)
-  useEffect(() => {
-    registerPlaytestSnapshot(() => {
-      const s = stateRef.current
-      return {
-        saisons: s.saisonenden,
-        tieferWinter: s.tiefeWinter,
-        generation: s.generation,
-        stufe: playerLevelOf(s),
-        erntePerS: Math.round(productionPerSecond(s)),
-        erbstuecke: s.erbstuecke,
-        samen: s.samen,
-        jonas: s.helperLevel,
-        kapitel: Object.values(s.chapters).filter((c) => c.openedAt > 0).length,
-        bereiche: Object.values(s.owned).filter((n) => n > 0).length,
-      }
-    })
-    return () => registerPlaytestSnapshot(null)
-  }, [])
-
-  const [nowTick, setNowTick] = useState(() => Date.now())
-
-  useEffect(() => {
-    const flush = () => {
-      dirtySaveRef.current = false
-      const next = { ...stateRef.current, lastSeen: Date.now() }
-      stateRef.current = next
-      saveState(next)
-    }
-
-    const saveTimer = window.setInterval(() => {
-      if (!dirtySaveRef.current) return
-      if (document.visibilityState === 'hidden') return
-      dirtySaveRef.current = false
-      saveState(stateRef.current)
-    }, SAVE_MS)
-
-    let tickTimer: number | null = null
-    let lastTickAt = Date.now()
-
-    const stopTick = () => {
-      if (tickTimer != null) {
-        window.clearInterval(tickTimer)
-        tickTimer = null
-      }
-    }
-
-    const startTick = () => {
-      if (tickTimer != null) return
-      lastTickAt = Date.now()
-      const every = isIdle() ? IDLE_TICK_MS : TICK_MS
-      tickTimer = window.setInterval(() => {
-        const now = Date.now()
-        const dt = Math.min(Math.max((now - lastTickAt) / 1000, every / 1000), 2)
-        lastTickAt = now
-        setNowTick(now)
-        setState((s) => applyTick(s, dt))
-      }, every)
-    }
-    // Ruhemodus: restart the tick at the new pace
-    startIdleWatch()
-    const offIdle = onIdleChange(() => {
-      if (tickTimer == null) return
-      stopTick()
-      startTick()
-    })
-
-    const onVis = () => {
-      if (document.visibilityState === 'hidden') {
-        document.documentElement.classList.add('tab-hidden')
-        stopTick()
-        flush()
-        return
-      }
-      document.documentElement.classList.remove('tab-hidden')
-      setState((s) => {
-        const awayMs = Math.max(0, Date.now() - s.lastSeen)
-        let next = applyOfflineCatchup(countSession(s, awayMs)).state
-        if (next.offlinePending > 0.01 && awayMs >= MIN_OFFLINE_CLAIM_AWAY_MS) {
-          setOfflineGained(next.offlinePending)
-          setOfflineAwayMs(awayMs)
-        } else if (next.offlinePending > 0) {
-          // short switch: a waiting banner grows, otherwise straight into the wallet
-          if (s.offlinePending > 0) setOfflineGained(next.offlinePending)
-          else next = creditOfflinePending(next)
-        }
-        return collectReadyAchievements(next)
-      })
-      lastTickAt = Date.now()
-      startTick()
-    }
-
-    if (document.visibilityState === 'hidden') {
-      document.documentElement.classList.add('tab-hidden')
-    } else {
-      document.documentElement.classList.remove('tab-hidden')
-      startTick()
-    }
-
-    window.addEventListener('pagehide', flush)
-    document.addEventListener('visibilitychange', onVis)
-    return () => {
-      offIdle()
-      stopTick()
-      window.clearInterval(saveTimer)
-      window.removeEventListener('pagehide', flush)
-      document.removeEventListener('visibilitychange', onVis)
-      document.documentElement.classList.remove('tab-hidden')
-      if (dirtySaveRef.current) flush()
-    }
-  }, [])
+  const {
+    state,
+    setState,
+    offlineGained,
+    setOfflineGained,
+    offlineAwayMs,
+    setOfflineAwayMs,
+    stateRef,
+    nowTick,
+  } = useGameLoop()
+  const {
+    rake,
+    buy,
+    buyModuleBranch,
+    buyMeta,
+    postPrestigeFocus,
+    seasonEnd,
+    prestige,
+    ackSeasonEnd,
+    grant,
+    spinWheel,
+    refillWater,
+    ackVariety,
+    deepReset,
+    handDown,
+    buyLegacyRank,
+    buyMany,
+    buyAll,
+    hireHelper,
+    chooseWeather,
+    claimStamp,
+    chooseChallenge,
+    stopChallenge,
+    chooseSeasonCard,
+    buildProject,
+    crossStart,
+    crossSkip,
+    crossHarvest,
+    letResidentIn,
+    residentLeft,
+    greetVisitorAnimal,
+    purchaseDecor,
+    setDecor,
+    switchHelperArea,
+    switchHelper,
+    ackHelperReport,
+    buyDeep,
+    clearPostPrestigeFocus,
+  } = useGardenActions({ setState, stateRef })
+  const {
+    buyChapter,
+    buyChapterBulk,
+    buyChapterCareRank,
+    seeChapterIntro,
+    forceChapter,
+    hireIlse,
+    switchIlse,
+    weinlese,
+    ackChest,
+    cookRecipe,
+    tapRainbow,
+    wish,
+    claimPumpkin,
+    buyFest,
+  } = useChapterActions({ setState, stateRef })
+  const {
+    purchaseTimeSkip,
+    purchaseCosmetic,
+    setEquippedCosmetic,
+    purchaseClanBoost,
+    purchasePack,
+    purchaseOffer,
+    purchaseYieldBoost,
+    adWatching,
+    adResult,
+    watchRewardedAd,
+    claimGift,
+    buyWaterRefill,
+    claimBpDailyXp,
+    claimBpTier,
+    claimDaily,
+    dismissEvent,
+    claimEventGoal,
+    dismissFlash,
+    claimFlashGoal,
+    ackSurprise,
+    claimQuest,
+    dismissOffline,
+  } = useShopActions({ setState, offlineGained, setOfflineGained, offlineAwayMs, setOfflineAwayMs })
 
   const tapReady =
     challengeAllowsWater(state.challenge) && (state.lastTapAt <= 0 || nowTick - state.lastTapAt >= TAP_COOLDOWN_MS)
 
-  const rake = useCallback(() => {
-    setState((s) => {
-      const now = Date.now()
-      if (!challengeAllowsWater(s.challenge)) return s
-      if (s.lastTapAt > 0 && now - s.lastTapAt < TAP_COOLDOWN_MS) return s
-      const rate = productionPerSecond(s, now)
-      const fromRate = rate * tapBonusSeconds(s.truhe) * waterMult(s, now)
-      // Cold post-prestige: one Schub must cover the next G1 Ausbauen if the
-      // wallet is still short (rate alone can be ~1/s → 60 Ernte).
-      const g1 = GENERATORS.find((g) => g.id === 'gemuesebeet')
-      const g1Owned = s.owned.gemuesebeet ?? 0
-      const g1Cost = g1
-        ? generatorCost(g1, g1Owned, lineCostMult(s, 'gemuesebeet'))
-        : 23
-      const shortfall = Math.max(0, g1Cost - s.ernte)
-      const gained = Math.max(fromRate, shortfall, 1)
-      return growPumpkin(earnFest(grantTapErnte(s, gained, now), FEST_EARN.water, now), CONTEST_KG.water, now)
-    })
-  }, [])
 
-  const buy = useCallback((id: GeneratorId) => {
-    setState((s) => {
-      const next = buyGenerator(s, id)
-      if (next !== s) {
-        logPlaytest('upgrade', {
-          id,
-          level: next.owned[id] ?? 0,
-          kind: 'module',
-        })
-      }
-      return next
-    })
-  }, [])
 
-  const buyModuleBranch = useCallback((id: GeneratorId, kind: BranchKind) => {
-    setState((s) => {
-      const next = buyBranch(s, id, kind)
-      if (next !== s) {
-        logPlaytest('upgrade', { id, branch: kind, kind: 'branch' })
-      }
-      return next
-    })
-  }, [])
 
-  const buyMeta = useCallback((id: TruheItemId) => {
-    setState((s) => {
-      const next = buyTruheItem(s, id)
-      if (next !== s) {
-        logPlaytest('upgrade', { id, kind: 'erbstueck' })
-      }
-      return next
-    })
-  }, [])
-
-  const [postPrestigeFocus, setPostPrestigeFocus] = useState(false)
-  const [seasonEnd, setSeasonEnd] = useState<{
-    year: number
-    gained: number
-    deep?: boolean
-    generation?: number
-  } | null>(null)
-
-  const prestige = useCallback(() => {
-    setState((s) => {
-      const gain = erbstueckePayout(s.ernteSeason, s.saisonenden, isProbeYear(s))
-      const next = doPrestige(s)
-      if (next !== s) {
-        logPlaytest('prestige', {
-          run: next.saisonenden,
-          erbstuecke: gain,
-          wallet: next.erbstuecke,
-        })
-        setPostPrestigeFocus(true)
-        setSeasonEnd({ year: next.saisonenden + 1, gained: gain })
-      }
-      return next
-    })
-  }, [])
-
-  const ackSeasonEnd = useCallback(() => setSeasonEnd(null), [])
-
-  const grant = useCallback((reward: Reward) => {
-    setState((s) => grantReward(s, reward))
-  }, [])
-
-  const spinWheel = useCallback((kind: WheelKind) => {
-    setState((s) => {
-      const next = applyWheel(s, kind)
-      if (next !== s) logPlaytest('wheel', { kind })
-      return next
-    })
-  }, [])
-
-  const refillWater = useCallback(() => {
-    logPlaytest('water_refill', { source: 'free' })
-    setState((s) => ({ ...s, lastTapAt: 0 }))
-  }, [])
-
-  const ackVariety = useCallback(() => {
-    setState((s) => clearLastVariety(s))
-  }, [])
-
-  const deepReset = useCallback(() => {
-    setState((s) => {
-      const gain = deepSproutPayout(s)
-      const next = doDeepReset(s)
-      if (next !== s) {
-        logPlaytest('deep_reset', { deep: next.tiefeWinter, sprouts: gain })
-        setPostPrestigeFocus(true)
-        setSeasonEnd({ year: 1, gained: gain, deep: true })
-      }
-      return next
-    })
-  }, [])
-
-  const handDown = useCallback(() => {
-    setState((s) => {
-      const gain = generationPayout(s)
-      const next = doGeneration(s)
-      if (next !== s) {
-        logPlaytest('generation', { generation: next.generation, vermaechtnis: gain })
-        setPostPrestigeFocus(true)
-        setSeasonEnd({ year: 1, gained: gain, deep: true, generation: next.generation + 1 })
-      }
-      return next
-    })
-  }, [])
-
-  const buyLegacyRank = useCallback((id: LegacyId) => {
-    setState((s) => {
-      const next = buyLegacy(s, id)
-      if (next !== s) logPlaytest('upgrade', { id, kind: 'legacy' })
-      return next
-    })
-  }, [])
-
-  /** Buy `n` levels (Infinity = as many as affordable). Returns levels bought. */
-  const buyMany = useCallback((id: GeneratorId, n: number) => {
-    const s = stateRef.current
-    const count = Number.isFinite(n) ? n : affordableLevels(s, id).count
-    if (count <= 0) return 0
-    const result = buyGeneratorMany(s, id, count)
-    if (result.bought > 0) {
-      stateRef.current = result.state
-      setState(result.state)
-      logPlaytest('upgrade', { id, level: result.state.owned[id] ?? 0, kind: 'module', n: result.bought })
-    }
-    return result.bought
-  }, [])
-
-  const buyAll = useCallback(() => {
-    const result = buyAllBest(stateRef.current)
-    if (result.bought > 0) {
-      stateRef.current = result.state
-      setState(result.state)
-      logPlaytest('buy_all', { n: result.bought })
-    }
-    return result.bought
-  }, [])
-
-  const hireHelper = useCallback(() => {
-    setState((s) => {
-      const next = buyHelper(s)
-      if (next !== s) logPlaytest('upgrade', { id: 'helper', level: next.helperLevel, kind: 'helper' })
-      return next
-    })
-  }, [])
-
-  /** Answer today's weather question; returns whether it went well. */
-  const chooseWeather = useCallback((choice: WeatherChoice): boolean => {
-    const roll = Math.random()
-    const r = decideWeather(stateRef.current, choice, Date.now(), roll)
-    if (r.state === stateRef.current) return true
-    logPlaytest('weather_choice', { choice, good: r.good })
-    setState((s) => decideWeather(s, choice, Date.now(), roll).state)
-    return r.good
-  }, [])
-
-  const claimStamp = useCallback((id: AlbumStat) => {
-    setState((s) => {
-      const next = claimAlbumStamp(s, id)
-      if (next !== s) logPlaytest('album', { id })
-      return next
-    })
-  }, [])
-
-  const chooseChallenge = useCallback((id: ChallengeId | null) => {
-    setState((s) => {
-      const next = chooseNextChallenge(s, id)
-      if (next !== s) logPlaytest('challenge', { action: 'choose', id: id ?? 'keine' })
-      return next
-    })
-  }, [])
-
-  const stopChallenge = useCallback(() => {
-    setState((s) => {
-      const next = abortChallenge(s)
-      if (next !== s) logPlaytest('challenge', { action: 'abort', id: s.challenge ?? '' })
-      return next
-    })
-  }, [])
-
-  const chooseSeasonCard = useCallback((id: SeasonCardId | null) => {
-    setState((s) => pickSeasonCard(s, id))
-  }, [])
-
-  const buildProject = useCallback((id: ProjectId) => {
-    setState((s) => {
-      const next = buildProjectStage(s, id)
-      if (next !== s) logPlaytest('project', { id })
-      return next
-    })
-  }, [])
-
-  const crossStart = useCallback((a: string, b: string) => {
-    setState((s) => {
-      const next = startCrossing(s, a, b)
-      if (next !== s) logPlaytest('crossing', { action: 'start', a, b })
-      return next
-    })
-  }, [])
-
-  const crossSkip = useCallback(() => {
-    setState((s) => {
-      const next = skipCrossing(s)
-      if (next !== s) logPlaytest('crossing', { action: 'skip' })
-      return next
-    })
-  }, [])
-
-  /** Harvest the crossing; returns the result for the reveal. */
-  const crossHarvest = useCallback((): { hybrid: string | null; samen: number } | null => {
-    const r = harvestCrossing(stateRef.current)
-    if (r.state === stateRef.current) return null
-    logPlaytest('crossing', { action: 'harvest', id: r.hybrid, samen: r.samen })
-    setState((s) => harvestCrossing(s).state)
-    return { hybrid: r.hybrid, samen: r.samen }
-  }, [])
-
-  const letResidentIn = useCallback((id: ResidentId) => {
-    setState((s) => {
-      const next = spawnResident(s, id)
-      if (next !== s) logPlaytest('resident', { action: 'arrive', id })
-      return next
-    })
-  }, [])
-
-  const residentLeft = useCallback(() => {
-    setState((s) => residentGone(s))
-  }, [])
-
-  /** Tap a Gartenbewohner; returns what happened for the toast. */
-  const greetVisitorAnimal = useCallback((): { first: boolean; ernte: number } | null => {
-    const r = greetResident(stateRef.current)
-    if (r.state === stateRef.current) return null
-    logPlaytest('resident', { action: 'greet', first: r.first })
-    setState((s) => greetResident(s).state)
-    return { first: r.first, ernte: r.ernte }
-  }, [])
-
-  const purchaseDecor = useCallback((id: DecorId) => {
-    setState((s) => {
-      const next = buyDecor(s, id)
-      if (next !== s) logPlaytest('decor', { action: 'buy', id })
-      return next
-    })
-  }, [])
-
-  const setDecor = useCallback((slot: number, id: DecorId | null) => {
-    setState((s) => {
-      const next = placeDecor(s, slot, id)
-      if (next !== s) logPlaytest('decor', { action: id ? 'place' : 'remove', id: id ?? undefined, slot })
-      return next
-    })
-  }, [])
-
-  const switchHelperArea = useCallback((id: GeneratorId) => {
-    setState((s) => toggleHelperArea(s, id))
-  }, [])
-
-  const switchHelper = useCallback(() => {
-    setState((s) => toggleHelper(s))
-  }, [])
-
-  const ackHelperReport = useCallback(() => {
-    setState((s) => (s.helperReport ? { ...s, helperReport: 0 } : s))
-  }, [])
-
-  const buyChapter = useCallback((id: ChapterId, area: string) => {
-    setState((s) => {
-      const next = buyChapterArea(s, id, area)
-      if (next !== s) logPlaytest('upgrade', { id: area, level: next.chapters[id].owned[area] ?? 0, kind: id })
-      return next
-    })
-  }, [])
-
-  const buyChapterBulk = useCallback((id: ChapterId, area: string, n: number) => {
-    const result = buyChapterMany(stateRef.current, id, area, Number.isFinite(n) ? n : 1000)
-    if (result.bought > 0) {
-      stateRef.current = result.state
-      setState(result.state)
-      logPlaytest('upgrade', { id: area, level: result.state.chapters[id].owned[area] ?? 0, kind: id, n: result.bought })
-    }
-    return result.bought
-  }, [])
-
-  const buyChapterCareRank = useCallback((id: ChapterId, area: string, kind: CareKind) => {
-    setState((s) => {
-      const next = buyChapterCare(s, id, area, kind)
-      if (next !== s) logPlaytest('upgrade', { id: area, kind: `${id}-care-${kind}` })
-      return next
-    })
-  }, [])
-
-  const seeChapterIntro = useCallback((id: ChapterId) => {
-    setState((s) => ({ ...s, chapters: { ...s.chapters, [id]: { ...s.chapters[id], introSeen: true } } }))
-  }, [])
-
-  /** Test hook (?kapitel2=1 / ?kapitel3=1): open a chapter right away. */
-  const forceChapter = useCallback((id: ChapterId) => {
-    setState((s) => syncChaptersOpen(s, Date.now(), id))
-  }, [])
-
-  const hireIlse = useCallback(() => {
-    setState((s) => {
-      const next = buyIlse(s)
-      if (next !== s) logPlaytest('upgrade', { id: 'ilse', level: next.ilseLevel, kind: 'helper' })
-      return next
-    })
-  }, [])
-
-  const switchIlse = useCallback(() => setState((s) => toggleIlse(s)), [])
-
-  const weinlese = useCallback((hits: number) => {
-    setState((s) => {
-      const next = finishWeinlese(s, hits)
-      if (next !== s) logPlaytest('weinlese', { hits })
-      return next
-    })
-  }, [])
-
-  const ackChest = useCallback(() => setState((s) => clearLastChest(s)), [])
-  const cookRecipe = useCallback(() => {
-    setState((s) => {
-      const next = claimRecipe(s)
-      if (next !== s) logPlaytest('recipe', { day: s.recipe.day })
-      return next
-    })
-  }, [])
-  const tapRainbow = useCallback(() => setState((s) => catchRainbow(s)), [])
-  const wish = useCallback((w: Wish) => setState((s) => makeWish(s, w)), [])
-  const claimPumpkin = useCallback(() => setState((s) => claimContest(s)), [])
-
-  const buyFest = useCallback((itemId: string) => {
-    setState((s) => {
-      const next = buyFestItem(s, itemId)
-      if (next !== s) logPlaytest('fest_buy', { id: itemId, key: next.festKey })
-      return next
-    })
-  }, [])
-
-  const buyDeep = useCallback((id: DeepMetaId) => {
-    setState((s) => buyDeepUpgrade(s, id))
-  }, [])
-
-  const clearPostPrestigeFocus = useCallback(() => {
-    setPostPrestigeFocus(false)
-  }, [])
-
-  const purchaseTimeSkip = useCallback((id: TimeSkipId) => {
-    setState((s) => {
-      const next = buyTimeSkip(s, id)
-      if (next !== s) logPlaytest('shop_tap', { action: 'time_skip', id })
-      return next
-    })
-  }, [])
-
-  const purchaseCosmetic = useCallback((id: CosmeticId) => {
-    setState((s) => {
-      const next = buyCosmetic(s, id)
-      if (next !== s) logPlaytest('shop_tap', { action: 'cosmetic', id })
-      return next
-    })
-  }, [])
-
-  const setEquippedCosmetic = useCallback((id: CosmeticId) => {
-    setState((s) => {
-      const next = equipCosmetic(s, id)
-      if (next !== s) logPlaytest('shop_tap', { action: 'equip', id })
-      return next
-    })
-  }, [])
-
-  const purchaseClanBoost = useCallback(() => {
-    setState((s) => {
-      const next = buyClanBoost(s)
-      if (next !== s) logPlaytest('shop_tap', { action: 'clan_boost' })
-      return next
-    })
-  }, [])
-
-  const purchasePack = useCallback((pack: ShopOfferDef) => {
-    setState((s) => {
-      const next = mockBuyOffer(s, pack)
-      if (next !== s) logPlaytest('shop_tap', { action: 'pack', id: pack.id })
-      return next
-    })
-  }, [])
-
-  const purchaseOffer = useCallback((offer: ShopOfferDef) => {
-    setState((s) => {
-      const next = mockBuyOffer(s, offer)
-      if (next !== s) {
-        logPlaytest('shop_tap', { action: 'offer', id: offer.id })
-      }
-      return next
-    })
-  }, [])
-
-  const purchaseYieldBoost = useCallback(() => {
-    setState((s) => {
-      const next = buyYieldBoost(s)
-      if (next !== s) logPlaytest('shop_tap', { action: 'yield_boost' })
-      return next
-    })
-  }, [])
-
-  // Optional ad: runs here (not in the Markt panel) so closing the panel
-  // mid-ad can't swallow the reward; the result is shown afterwards.
-  const [adWatching, setAdWatching] = useState(false)
-  const [adResult, setAdResult] = useState<{ choice: AdChoice; ernte: number; samen: number; at: number } | null>(null)
-  const adTimer = useRef<number | null>(null)
-  useEffect(() => () => {
-    if (adTimer.current != null) window.clearTimeout(adTimer.current)
-  }, [])
-  const watchRewardedAd = useCallback((choice: AdChoice) => {
-    if (adTimer.current != null) return
-    setAdWatching(true)
-    setAdResult(null)
-    adTimer.current = window.setTimeout(() => {
-      adTimer.current = null
-      setAdWatching(false)
-      setState((s) => {
-        const result = claimRewardedAd(s, choice)
-        if (!result.ok) return s
-        logPlaytest('shop_tap', { action: 'rewarded_ad', choice })
-        setAdResult({ choice, ernte: result.ernteGained, samen: result.samenGained, at: Date.now() })
-        return result.state
-      })
-    }, REWARDED_AD_DELAY_MS)
-  }, [])
-
-  const claimGift = useCallback(() => {
-    setState((s) => claimMarketGift(s))
-  }, [])
-
-  const buyWaterRefill = useCallback(() => {
-    setState((s) => {
-      const next = refillWateringCan(s)
-      if (next !== s) logPlaytest('water_refill', { source: 'samen', samen: next.samen })
-      return next
-    })
-  }, [])
-
-  const claimBpDailyXp = useCallback(() => {
-    setState((s) => claimBattlePassDailyXp(s))
-  }, [])
-
-  const claimBpTier = useCallback((tier: number, track: 'free' | 'premium') => {
-    setState((s) => claimBattlePassTier(s, tier, track))
-  }, [])
-
-  const claimDaily = useCallback(() => {
-    setState((s) => {
-      const claimed = claimDailyOps(s)
-      const next = claimed === s ? s : earnFest(claimed, FEST_EARN.daily)
-      if (next !== s) {
-        logPlaytest('daily_claim', {
-          streak: next.dailyStreak,
-          comeback: next.dailyStreak === s.dailyStreak,
-        })
-      }
-      return next
-    })
-  }, [])
-
-  const dismissEvent = useCallback(() => {
-    setState((s) => dismissErntefest(s))
-  }, [])
-
-  const claimEventGoal = useCallback(() => {
-    setState((s) => claimErntefestGoal(s))
-  }, [])
-
-  const dismissFlash = useCallback(() => {
-    setState((s) => {
-      const next = dismissFlashEvent(s)
-      if (next !== s) logPlaytest('flash_event', { action: 'dismiss' })
-      return next
-    })
-  }, [])
-
-  const claimFlashGoal = useCallback(() => {
-    setState((s) => {
-      const next = claimFlashEventGoal(s)
-      if (next !== s) logPlaytest('flash_event', { action: 'claim' })
-      return next
-    })
-  }, [])
-
-  const ackSurprise = useCallback(() => {
-    setState((s) => clearLastSurprise(s))
-  }, [])
-
-  const claimQuest = useCallback((questId: string) => {
-    setState((s) => claimQuestReward(s, questId))
-  }, [])
-
-  const dismissOffline = useCallback(() => {
-    const amount = offlineGained ?? 0
-    const awayMs = offlineAwayMs
-    setOfflineGained(null)
-    setOfflineAwayMs(0)
-    // Skip logging false claims (awayMs≈0 / sub-threshold) so they don't dilute the offline hook.
-    if (amount > 0.01 && awayMs >= MIN_OFFLINE_CLAIM_AWAY_MS) {
-      logPlaytest('offline_claim', {
-        amount: Math.round(amount * 100) / 100,
-        awayMs,
-      })
-    }
-    // Always empty the basket into the wallet; XP only for real absences
-    setState((s) => (amount > 0.01 && awayMs >= MIN_OFFLINE_CLAIM_AWAY_MS ? claimOfflineReward(s, amount) : creditOfflinePending(s)))
-  }, [offlineGained, offlineAwayMs])
-
-  // Short flash event — try spawn when returning to the tab
-  useEffect(() => {
-    const onVis = () => {
-      if (document.visibilityState === 'visible') {
-        setState((s) => maybeStartFlashEvent(s))
-      }
-    }
-    document.addEventListener('visibilitychange', onVis)
-    return () => document.removeEventListener('visibilitychange', onVis)
-  }, [])
 
   const mult = prestigeMultiplier(state.truhe)
   const levelMult = levelProductionMult(playerLevelOf(state))

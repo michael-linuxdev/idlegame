@@ -20,17 +20,8 @@
  *  HELPER_DAYS=1 print the day each rank was bought
  */
 import { computeBestBuy } from '../../src/game/bestBuy'
-import {
-  BALANCE,
-  TRUHE_ITEMS,
-  erbstueckePayout,
-  isProbeYear,
-  truheRankUnlocked,
-  saatgutkisteMult,
-  payoutAtGate,
-  prestigeMultiplier,
-  tapBonusSeconds,
-} from '../../src/game/economy'
+import { BALANCE, erbstueckePayout, isProbeYear, payoutAtGate } from '../../src/game/economy'
+import { TRUHE_ITEMS, truheRankUnlocked, saatgutkisteMult, prestigeMultiplier, tapBonusSeconds } from '../../src/game/truhe'
 import {
   GENERATORS,
   generatorCost as generatorCostFor,

@@ -7,21 +7,8 @@ import { IconFamily, IconHelper, IconIlse } from '../theme/icons'
 import { CHAPTERS, type ChapterId } from '../game/chapters'
 import { ILSE_RANKS } from '../game/extrasCore'
 import { chapterCopy } from './chapterCopy'
-import {
-  TRUHE_ITEMS,
-  PRESTIGE_BRANCHES,
-  PRESTIGE_MIN_MODULES_ONLINE,
-  countAffordableTruheBuys,
-  countAffordableTruheBuysAfterPrestige,
-  erbstueckePayout,
-  truheRankUnlocked,
-  truheRankUnlockNeed,
-  truheUnlockProgress,
-  modulesOnlineCount,
-  modulesToNextTruheUnlock,
-  nextLockedTruheUnlock,
-  postPrestigeStartOwned,
-  prestigeBlockReason, isProbeYear } from '../game/economy'
+import { PRESTIGE_MIN_MODULES_ONLINE, erbstueckePayout, modulesOnlineCount, prestigeBlockReason, isProbeYear } from '../game/economy'
+import { TRUHE_ITEMS, PRESTIGE_BRANCHES, countAffordableTruheBuys, countAffordableTruheBuysAfterPrestige, truheRankUnlocked, truheRankUnlockNeed, truheUnlockProgress, modulesToNextTruheUnlock, nextLockedTruheUnlock, postPrestigeStartOwned } from '../game/truhe'
 import { formatEta, formatErnte, formatDecimal, formatMult } from '../game/format'
 import { t } from '../i18n'
 import { CHALLENGE_IDS } from '../game/challenges'

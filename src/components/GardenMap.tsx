@@ -6,12 +6,8 @@ import { DecorLayer } from './DecorLayer'
 import { WeatherLayer } from './WeatherLayer'
 import { DecorSheet } from './DecorSheet'
 import { computeBestBuy } from '../game/bestBuy'
-import {
-  countAffordableTruheBuys,
-  countAffordableTruheBuysAfterPrestige,
-  erbstueckePayout,
-  modulesToNextTruheUnlock,
-  postPrestigeStartOwned, isProbeYear } from '../game/economy'
+import { erbstueckePayout, isProbeYear } from '../game/economy'
+import { countAffordableTruheBuys, countAffordableTruheBuysAfterPrestige, modulesToNextTruheUnlock, postPrestigeStartOwned } from '../game/truhe'
 import {
   GENERATORS,
   generatorRate,
