@@ -1,4 +1,3 @@
-// TODO(en): Briefe (Paket 4) noch deutsch — siehe Marker unten.
 /**
  * English player-facing copy — Heirloom Garden.
  *
@@ -367,7 +366,7 @@ export const strings: Strings = {
     huehnerstall: {
       name: 'Chicken Coop',
       blurb: 'Fresh eggs and busy slug hunters.',
-      note: '“Hens eat slugs and lay eggs. You won’t find better neighbours.”',
+      note: '“Hens eat slugs and lay eggs. You won’t find better neighbors.”',
     },
     gewaechshaus: {
       name: 'Greenhouse',
@@ -377,7 +376,7 @@ export const strings: Strings = {
     hofladen: {
       name: 'Farm Shop',
       blurb: 'Crates, jars, customers — your harvest finds buyers.',
-      note: '“When the neighbours ask if they may buy some, you’ve made it.”',
+      note: '“When the neighbors ask if they may buy some, you’ve made it.”',
     },
     orangerie: {
       name: 'Orangery',
@@ -962,87 +961,86 @@ export const strings: Strings = {
     read: 'Read',
     signature: 'Love, Grandma',
     laubeAria: 'Grandma’s arbour — open the notebook',
-    // TODO(en, Paket 4): Briefe übersetzen
     entries: {
       welcome: {
-        title: 'Mein liebes Enkelkind,',
-        body: 'der Garten gehört jetzt dir. Er ist ziemlich verwildert — aber unter den Brombeeren steckt gute Erde. Fang beim Gemüsebeet an, der Rest kommt mit der Zeit. Ich habe dir Notizen in die Laube gelegt.',
+        title: 'My dear grandchild,',
+        body: 'the garden is yours now. It’s rather overgrown — but under the brambles there’s good soil. Start with the vegetable patch; the rest will come in time. I’ve left you some notes in the arbour.',
       },
       stage2: {
-        title: 'Es riecht nach Erde',
-        body: 'Zwei Ecken gerodet, und schon summt es wieder. Opa hat immer gesagt: Ein Garten merkt, wenn jemand zurückkommt. Er hat sich gemerkt, dass du da bist.',
+        title: 'It smells of soil',
+        body: 'Two corners cleared, and already it’s humming again. Grandpa always said a garden notices when someone comes back. It has noticed you’re here.',
       },
       stage4: {
-        title: 'Ein richtiger Nutzgarten',
-        body: 'Kräuter, Beeren, Kompost — so sah es aus, als deine Mutter klein war. Sie hat die Johannisbeeren immer direkt vom Strauch genascht. Lass ruhig ein paar hängen.',
+        title: 'A proper kitchen garden',
+        body: 'Herbs, berries, compost — this is how it looked when your mother was little. She always ate the currants straight off the bush. Leave a few hanging.',
       },
       stage5: {
-        title: 'Fast schon eine Gärtnerei',
-        body: 'Die Nachbarn bleiben am Zaun stehen und schauen. Lass sie schauen! Und wenn jemand fragt, ob er ein paar Äpfel haben darf: Teilen macht die Ernte nicht kleiner.',
+        title: 'Almost a market garden',
+        body: 'The neighbors stop at the fence and look. Let them look! And if someone asks for a few apples: sharing never made a harvest smaller.',
       },
       stage7: {
-        title: 'Der Hof wird lebendig',
-        body: 'Hühner gackern, Bienen summen, und abends brennt Licht in der Laube. Genau so habe ich mir das immer vorgestellt. Ich bin sehr stolz auf dich.',
+        title: 'The yard comes alive',
+        body: 'Hens clucking, bees humming, and a light in the arbour in the evening. That’s exactly how I always imagined it. I’m so proud of you.',
       },
       stage9: {
-        title: 'Ein Schaugarten',
-        body: 'Im Verein reden sie von nichts anderem mehr. Lass dir nichts einreden: Die schönsten Gärten sind nicht die ordentlichsten, sondern die, in denen gelebt wird.',
+        title: 'A show garden',
+        body: 'They talk of nothing else at the club. Don’t let anyone tell you otherwise: the loveliest gardens aren’t the tidiest ones, but the ones that are lived in.',
       },
       stage10: {
-        title: 'Der Gartenpark',
-        body: 'Jetzt ist er fertig — oder besser: Jetzt fängt er erst richtig an. Ein Garten ist nie fertig, und das ist das Schöne daran. Er gehört jetzt ganz dir. Pass gut auf ihn auf, und auf dich.',
+        title: 'The garden park',
+        body: 'Now it’s finished — or rather, now it’s only just beginning. A garden is never finished, and that’s the beauty of it. It’s all yours now. Take good care of it, and of yourself.',
       },
       year2: {
-        title: 'Der erste Winter',
-        body: 'Keine Sorge, im Winter schläft der Garten nur. Was du gelernt hast, nimmt dir keiner. Im Frühling roden wir die Wiese hinter dem Kompost — dort standen früher Obstbäume.',
+        title: 'The first winter',
+        body: 'Don’t worry, in winter the garden is only sleeping. What you’ve learned, no one can take from you. In spring we’ll clear the meadow behind the compost — there used to be fruit trees there.',
       },
       year3: {
-        title: 'Platz für die Bienen',
-        body: 'In der alten Kiste im Schuppen liegt Opas Imkerhut. Neben der Hecke ist es windstill — das mögen Bienen. Ohne sie kein Obst, vergiss das nie.',
+        title: 'Room for the bees',
+        body: 'Grandpa’s beekeeper hat is in the old box in the shed. Beside the hedge it’s sheltered from the wind — bees like that. No bees, no fruit; never forget that.',
       },
       year5: {
-        title: 'Hühner!',
-        body: 'Der alte Stall hinter der Laube muss nur ausgebessert werden. Hühner fressen Schnecken und geben Eier — bessere Nachbarn gibt es nicht. Nenn eins nach mir, wenn du magst.',
+        title: 'Hens!',
+        body: 'The old coop behind the arbour only needs patching up. Hens eat slugs and lay eggs — you won’t find better neighbors. Name one after me, if you like.',
       },
       year7: {
-        title: 'Glas für den Sommer',
-        body: 'Unter dem Efeu an der Mauer liegen noch die Scheiben vom alten Gewächshaus. Damit wird der Sommer länger. Lüften nicht vergessen, sonst kochen die Tomaten!',
+        title: 'Glass for the summer',
+        body: 'Under the ivy by the wall, the panes from the old greenhouse are still lying there. They’ll make the summer last longer. Don’t forget to air it, or the tomatoes will cook!',
       },
       year10: {
-        title: 'Ein eigener Hofladen',
-        body: 'Du erntest mehr, als du essen kannst — das ist ein gutes Zeichen. Stell ein paar Kisten an den Zaun und eine Kasse des Vertrauens. Die Leute sind ehrlicher, als man denkt.',
+        title: 'A farm shop of your own',
+        body: 'You’re harvesting more than you can eat — that’s a good sign. Put a few crates by the fence and an honesty box. People are more honest than you’d think.',
       },
       jonas1: {
-        title: 'Hallo von nebenan!',
-        body: 'Ich bin Jonas, ich wohne zwei Gärten weiter. Ihre Oma hat mir früher immer Erdbeeren geschenkt, wenn ich beim Unkrautzupfen geholfen hab. Jetzt helfe ich Ihnen — ich bin noch langsam, aber ich lerne schnell. Versprochen!',
+        title: 'Hello from next door!',
+        body: 'I’m Jonas, I live two gardens down. Your grandma always gave me strawberries when I helped with the weeding. Now I’m helping you — I’m still slow, but I learn fast. Promise!',
       },
       jonas3: {
-        title: 'Ich hab was gelernt',
-        body: 'Ich weiß jetzt, welche Beete sich lohnen und welche warten können. Gestern hat mir Frau Ilse gezeigt, wie man Kompost richtig umsetzt. Meine Mama sagt, ich rieche nach Garten. Ich finde, das ist ein Kompliment.',
+        title: 'I learned something',
+        body: 'I know now which beds are worth it and which can wait. Yesterday Mrs. Ilse showed me how to turn compost properly. My mom says I smell like a garden. I think that’s a compliment.',
       },
       jonas5: {
-        title: 'Jetzt mach ich das richtig',
-        body: 'Ich plane jetzt den ganzen Garten selbst, so wie Ihre Oma es gemacht hätte: erst das Neue anlegen, dann auf die großen Sprünge sparen. Sie können sich zurücklehnen. Ich pass auf alles auf — auch wenn Sie nicht da sind.',
+        title: 'Now I’m doing it properly',
+        body: 'I plan the whole garden myself now, the way your grandma would have: plant the new things first, then save up for the big jumps. You can sit back. I’ll look after everything — even when you’re not here.',
       },
       ilse1: {
-        title: 'Von einer alten Freundin',
-        body: 'Deine Oma und ich haben fünfzig Jahre lang über den Zaun geredet. Über Äpfel, über Männer, über das Wetter. Jetzt pflege ich ihre Wiesen ein bisschen mit — das bin ich ihr schuldig. Und du bringst mir dafür ab und zu Obst, ja?',
+        title: 'From an old friend',
+        body: 'Your grandma and I talked over the fence for fifty years. About apples, about men, about the weather. Now I help look after her meadows a little — I owe her that. And in return you bring me some fruit now and then, all right?',
       },
       ilse3: {
-        title: 'Was sie dir nie gesagt hat',
-        body: 'Sie war so stolz auf dich. Jedes Mal, wenn du zu Besuch warst, hat sie danach eine neue Sorte gepflanzt — „für später, wenn das Kind mal soweit ist“. Schau dich um. Das hier ist dieses Später.',
+        title: 'What she never told you',
+        body: 'She was so proud of you. Every time you came to visit, she planted a new variety afterwards — “for later, when the child is ready.” Look around you. This is that later.',
       },
       gen1: {
-        title: 'Weitergeben',
-        body: 'So hat sie es auch gemacht: Irgendwann gibt man den Garten weiter, mit allem, was man weiß. Die Beete fangen wieder klein an, aber die Familie wird jedes Mal ein bisschen reicher. Ich bleibe übrigens. Unkraut wächst schließlich auch weiter.',
+        title: 'Passing it on',
+        body: 'That’s how she did it, too: one day you pass the garden on, with everything you know. The beds start small again, but the family grows a little richer each time. I’m staying, by the way. The weeds keep growing, after all.',
       },
       deep1: {
-        title: 'Ein neues Kapitel',
-        body: 'Manchmal muss ein Garten ganz zur Ruhe kommen, damit er neu wachsen kann. Was du gelernt hast, steckt jetzt tief in der Erde — in jedem Spross, der kommt. Fang ruhig wieder klein an. Diesmal weißt du, wie es geht.',
+        title: 'A new chapter',
+        body: 'Sometimes a garden has to come to a complete rest so it can grow anew. What you’ve learned is deep in the soil now — in every seedling that comes up. Go ahead and start small again. This time you know how.',
       },
       year14: {
-        title: 'Meine Orangerie',
-        body: 'Davon habe ich mein Leben lang geträumt: Zitronen und Feigen unter Glas, mitten im Kleingarten. Ich habe es nie geschafft. Jetzt hast du den Platz dafür. Mach es für uns beide.',
+        title: 'My orangery',
+        body: 'I dreamed of this all my life: lemons and figs under glass, right in the middle of an allotment. I never managed it. Now you have the room for it. Do it for both of us.',
       },
     },
   },
@@ -1163,12 +1161,11 @@ export const strings: Strings = {
     activePill: { yield: 'Lucky Wheel: +25 % harvest', water: 'Lucky Wheel: watering ×2' },
   },
 
-  // TODO(en, Paket 4): Comeback-Brief übersetzen
   comeback: {
-    title: 'Da bist du ja wieder!',
-    body: 'Ich hab schon gedacht, die Schnecken hätten dich geholt. Der Garten hat auf dich gewartet — und ein kleines Willkommensgeschenk liegt auf der Bank.',
-    gift: (seeds: number) => `Geschenk: +${seeds} Samen und 30 Minuten Ernte`,
-    cta: 'Danke, Oma',
+    title: 'There you are again!',
+    body: 'I was starting to think the slugs had got you. The garden has been waiting for you — and there’s a little welcome present on the bench.',
+    gift: (seeds: number) => `Present: +${seeds} seeds and 30 minutes of harvest`,
+    cta: 'Thank you, Grandma',
   },
 
   reminders: {
