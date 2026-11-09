@@ -282,7 +282,7 @@ function ChapterSheet({
   const stars = milestonesReached(level)
   const ambient = useAmbient()
   const art = useChapterArt(chapter)
-  const [bulk, setBulk] = useState<ChapterBulk>(1)
+  const bulk = 1 as ChapterBulk
   const [flash, setFlash] = useState(false)
   const hold = useRef<number | null>(null)
 
@@ -420,22 +420,7 @@ function ChapterSheet({
                 </span>
               </div>
             ) : null}
-            <div className="gc-controls">
-              <div className="gc-segment" role="radiogroup" aria-label={t.bulk.groupAria}>
-                {([1, 5, 'max'] as ChapterBulk[]).map((m) => (
-                  <button
-                    key={String(m)}
-                    type="button"
-                    role="radio"
-                    aria-checked={bulk === m}
-                    className={bulk === m ? 'on' : undefined}
-                    onClick={() => setBulk(m)}
-                  >
-                    {m === 1 ? t.bulk.one : m === 5 ? t.bulk.five : t.bulk.max}
-                  </button>
-                ))}
-              </div>
-            </div>
+            {/* „×5“ und „Max“ sind raus (Wunsch 2026-11-09): nur Einzelkauf, Gedrückthalten baut schnell weiter */}
             <button
               type="button"
               className={`btn buy upgrade-hud-buy gc-buy${affordable ? ' pulse-ready' : ''}`}
