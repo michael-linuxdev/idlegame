@@ -1,6 +1,13 @@
 # Gartenerbe — Arbeitsregeln
 
-## Spielstand-Migration ist AKTIV (seit 2026-11-08)
+## Spielstand-Migration — Ausnahme bis zum Testbeginn
+
+**Stand 2026-11-09: Noch spielt niemand außer dem Entwickler, und der beginnt erst nach der Aufräum-Runde zu testen.**
+Deshalb gilt **einmalig für die Aufräum-Runde** (`docs/prompts/aufraeumen.md`): Felder dürfen ohne Migration umbenannt werden, und das Speicherformat beginnt neu (neuer Speicherschlüssel, `SAVE_VERSION = 1`, neue Fixture `save-v1.json`). Alte Stände werden nicht übernommen; sie bleiben unangetastet unter dem alten Schlüssel liegen.
+
+**Sobald die Aufräum-Runde gemergt ist, gilt wieder uneingeschränkt** (dann diesen Ausnahme-Absatz löschen):
+
+### Spielstand-Migration ist AKTIV
 
 Es gibt echte Spielstände. Fortschritt darf durch ein Update nie verloren gehen.
 
