@@ -101,6 +101,11 @@ Vornamen bleiben deutsch (Flair). Verwandtschaft wird übersetzt.
 | Madeleine | **Madeleine** | Brief beginnt französisch wie im Original |
 | Hanako | **Hanako** | |
 | Die Gartenschau-Kommission | **The Garden Show Committee** | |
+| Jonas (erwachsen, Stadtplaner) | **Jonas** | Kapitel 13; Unterschrift nur *Jonas* |
+| Schwester Benedikta | **Sister Benedikta** | Kapitel 14; siezt die Familie → neutral-höflich |
+| Obergärtner Paul Weidner | **Paul Weidner, Head Gardener** | Kapitel 15 |
+| Lena (Onkel Fritz’ Enkelin) | **Lena** | Kapitel 16; „Mein Opa, für euch Onkel Fritz“ → *My grandpa, Uncle Fritz to you* (nie *Grandpa Fritz*: *Grandpa* ist Omas Mann) |
+| Greta Hansen (Ilses Nichte, Naturschutzwartin) | **Greta Hansen** | Kapitel 17; „Moin!“ mit Erklärung wie bei Jan |
 | Enkelkind (Anrede) | **my dear grandchild** | „Mein liebes Enkelkind,“ → *My dear grandchild,* |
 
 ## Kapitel und Währungen
@@ -119,6 +124,14 @@ Vornamen bleiben deutsch (Flair). Verwandtschaft wird übersetzt.
 | 10 | Lavendelfeld | **The Lavender Field** | Lavendel → **Lavender** | Provence |
 | 11 | Japanischer Garten | **The Japanese Garden** | Tee → **Tea** | Japan |
 | 12 | Gartenschau | **The Garden Show** | Besucher → **Visitors** | Show |
+| 13 | Gemeinschaftsgarten | **The Community Garden** | Tomaten → **Tomatoes** | City |
+| 14 | Klostergarten | **The Monastery Garden** | Quitten → **Quinces** | Cloister |
+| 15 | Schlossgarten | **The Palace Garden** | Spargel → **Asparagus** | Palace |
+| 16 | Baumschule | **The Tree Nursery** | Setzlinge → **Saplings** | Nursery |
+| 17 | Moor- und Heidegarten | **The Moorland Garden** | Moosbeeren → **Cranberries** | Moor |
+
+Ab Kapitel 13 (Bogen I „Nach der Schau“ → *After the Show*): Omas Saatgutdose
+→ **Grandma’s seed tin**, Samentütchen → **seed packet**.
 
 „Streuobstwiese“ beim ersten Auftreten kurz erklären: *a meadow orchard — old,
 tall fruit trees scattered over grassland*.

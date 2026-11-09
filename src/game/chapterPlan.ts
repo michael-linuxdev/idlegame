@@ -23,7 +23,7 @@ export interface PlannedChapter {
 }
 
 /** Bis zu diesem Kapitel ist alles gebaut (Texte, Grafik) und im Spiel. */
-export const RELEASED_UP_TO = 12
+export const RELEASED_UP_TO = 17
 
 const placeholder = (id: string) => Array.from({ length: 10 }, (_, i) => `${id}_${i + 1}`)
 

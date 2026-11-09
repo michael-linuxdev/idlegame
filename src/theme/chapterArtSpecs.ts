@@ -18,7 +18,7 @@ export type Stones = { k: 'stones'; variant: 'zen' | 'rock' | 'edelweiss' | 'mos
 export type ArtSpec = Tree | Rows | Animals | House | Water | Flowers | Stones
 
 /** Chapters drawn with hand-made art (theme/HandArt.tsx). */
-export const HAND_ART_CHAPTERS: readonly ChapterId[] = ['bauernhof', 'imkerei', 'teich', 'kraeuter', 'botanik', 'alm', 'lavendel', 'japangarten', 'gartenschau']
+export const HAND_ART_CHAPTERS: readonly ChapterId[] = ['bauernhof', 'imkerei', 'teich', 'kraeuter', 'botanik', 'alm', 'lavendel', 'japangarten', 'gartenschau', 'stadtgarten', 'klostergarten', 'schlossgarten', 'baumschule', 'moorgarten']
 
 export interface BackdropSpec {
   /** Patchwork fields behind the plots */
@@ -39,6 +39,16 @@ export interface BackdropSpec {
   japan?: boolean
   /** Gartenschau: flags, ferris wheel, flower rondels */
   showground?: boolean
+  /** Stadtgarten: old town houses, firewall with mural, string lights */
+  cityYard?: boolean
+  /** Klostergarten: monastery wall, church tower, wooded hill */
+  monastery?: boolean
+  /** Schlossgarten: palace front, canal, box edging */
+  palace?: boolean
+  /** Baumschule: long rows of young trees, polytunnel, field edge */
+  nursery?: boolean
+  /** Moorgarten: dark water, birches, heather, wide sky */
+  moor?: boolean
   grass: [string, string, string]
   path: string
   /** Own path shape per chapter (default: shared S-curve) */
@@ -183,6 +193,81 @@ export const CHAPTER_ART: Partial<Record<ChapterId, { backdrop: BackdropSpec; ar
       seebuehne: { k: 'house', roof: '#3d5a8a', wall: P.cream, prop: 'stage' },
       ehrenpavillon: { k: 'house', roof: '#e0a21a', wall: '#fbf3e0', prop: 'dome' },
       gedenkgarten: { k: 'flowers', colors: [P.blue, P.cream, P.pink] },
+    },
+  },
+  stadtgarten: {
+    backdrop: { grass: ['#b9c4a0', '#a9b98e', '#98aa7c'], path: '#c9c3b6', hills: ['#c8a68a', '#b08d74'], way: 'yard', cityYard: true },
+    areas: {
+      hochbeete: { k: 'rows', color: P.leaf, flower: P.tomato },
+      palettenbeete: { k: 'rows', color: P.leafPale },
+      regenspeicher: { k: 'water', variant: 'pond' },
+      wurmkiste: { k: 'house', roof: P.woodDark, wall: P.wood, prop: 'barrels' },
+      kraeuterleiter: { k: 'rows', color: P.leafMoss, tall: true },
+      saatgutbibliothek: { k: 'house', roof: P.leafDark, wall: P.wood, prop: 'jars' },
+      lastenrad: { k: 'house', roof: P.denim, wall: P.woodLight },
+      lehmofen: { k: 'house', roof: P.woodLight, wall: P.stone, prop: 'chimney' },
+      werkstatt: { k: 'house', roof: P.denim, wall: P.denim },
+      hoffest: { k: 'flowers', colors: [P.lamp, P.tomato, P.yellow] },
+    },
+  },
+  klostergarten: {
+    backdrop: { grass: ['#a8cc84', '#96bd72', '#82ab62'], path: '#d9cfb8', hills: ['#6f9a52', '#5a8644'], way: 'cloister', monastery: true },
+    areas: {
+      kreuzgang: { k: 'flowers', colors: [P.lavender, P.yellow, P.pink] },
+      quittenhain: { k: 'tree', crown: P.leaf, fruit: P.gold },
+      heilpflanzen: { k: 'rows', color: P.leafMoss, flower: P.orange },
+      brunnenhaus: { k: 'water', variant: 'fountain' },
+      bienenmauer: { k: 'stones', variant: 'rock' },
+      schwesterngarten: { k: 'rows', color: P.leafPale },
+      kraeuterboden: { k: 'house', roof: P.terracotta, wall: P.paper },
+      klosterkueche: { k: 'house', roof: P.terracotta, wall: P.stoneLight, prop: 'chimney' },
+      saatgutregister: { k: 'house', roof: P.woodDark, wall: P.paper, prop: 'jars' },
+      glockenhof: { k: 'house', roof: P.leafMoss, wall: P.stoneLight, prop: 'bell' },
+    },
+  },
+  schlossgarten: {
+    backdrop: { grass: ['#9fcf7f', '#8cc06e', '#78ad5c'], path: '#e6dcc4', hills: ['#5f9a48', '#4f8a3a'], way: 'axis', palace: true },
+    areas: {
+      parterre: { k: 'stones', variant: 'maze' },
+      spargelbeete: { k: 'rows', color: P.cream },
+      kanalallee: { k: 'tree', crown: P.leaf, shape: 'linden' },
+      heckentheater: { k: 'house', roof: P.leafDark, wall: P.leafMoss, prop: 'stage' },
+      mauergarten: { k: 'rows', color: P.leaf, flower: P.leafPale },
+      kuebelhalle: { k: 'house', roof: P.stone, wall: P.cream, prop: 'glass' },
+      wasserachse: { k: 'water', variant: 'fountain' },
+      bosquet: { k: 'house', roof: P.leafDark, wall: P.cream, prop: 'dome' },
+      schlossgaertnerei: { k: 'house', roof: P.glass, wall: P.glass, prop: 'glass' },
+      sommerkonzert: { k: 'house', roof: P.cream, wall: P.cream, prop: 'stage' },
+    },
+  },
+  baumschule: {
+    backdrop: { grass: ['#b4d08a', '#a0c278', '#8cb066'], path: '#cdb88e', hills: ['#8ab060', '#76a050'], way: 'nurseryRows', nursery: true },
+    areas: {
+      saatbeete: { k: 'rows', color: P.leaf },
+      veredelung: { k: 'house', roof: P.wood, wall: P.woodLight },
+      obstgehoelze: { k: 'tree', crown: P.leaf, fruit: P.red },
+      alleebaeume: { k: 'tree', crown: P.leafDark, shape: 'linden' },
+      heckenpflanzen: { k: 'rows', color: P.leafDark, tall: true },
+      containerplatz: { k: 'rows', color: P.leafMoss },
+      giessanlage: { k: 'water', variant: 'stream' },
+      packschuppen: { k: 'house', roof: P.metal, wall: P.woodMid },
+      hofverkauf: { k: 'house', roof: P.roof, wall: P.wood, prop: 'flag' },
+      pflanztag: { k: 'tree', crown: P.leaf },
+    },
+  },
+  moorgarten: {
+    backdrop: { grass: ['#a3ad7a', '#8f9c68', '#7a8a58'], path: '#a5733f', hills: ['#9a7ab0', '#7a6a8a'], way: 'boardwalk', moor: true },
+    areas: {
+      torfmoos: { k: 'stones', variant: 'moss' },
+      moosbeeren: { k: 'rows', color: P.leafMoss, flower: P.berry },
+      wollgras: { k: 'flowers', colors: [P.white, P.cream] },
+      sonnentau: { k: 'flowers', colors: [P.red, P.glassEdge] },
+      birkenhain: { k: 'tree', crown: P.leafLight },
+      bohlenweg: { k: 'water', variant: 'jetty' },
+      beobachtungsturm: { k: 'house', roof: P.woodDark, wall: P.wood, prop: 'tower' },
+      moorhuette: { k: 'house', roof: P.woodLight, wall: P.woodMid, prop: 'chimney' },
+      schnuckenstall: { k: 'animals', animal: 'goat' },
+      moorfest: { k: 'flowers', colors: [P.lamp, P.amber, P.orange] },
     },
   },
 }

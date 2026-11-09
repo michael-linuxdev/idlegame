@@ -6,7 +6,7 @@
 import type { ReactNode } from 'react'
 import { P } from './art/palette'
 
-export type PathStyle = 'track' | 'loop' | 'shore' | 'cross' | 'rondel' | 'switchback' | 'lane' | 'stones' | 'promenade'
+export type PathStyle = 'track' | 'loop' | 'shore' | 'cross' | 'rondel' | 'switchback' | 'lane' | 'stones' | 'promenade' | 'yard' | 'cloister' | 'axis' | 'nurseryRows' | 'boardwalk'
 
 const NS = { vectorEffect: 'non-scaling-stroke' as const, fill: 'none', strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const }
 
@@ -152,5 +152,66 @@ export function ChapterPath({ style, color }: { style: PathStyle; color: string 
           <Dots pts={[[52.6, 50], [52.6, 24]]} n={7} rx={0.8} color={[P.cream, P.pink]} />
         </g>
       )
+    /* Gemeinschaftsgarten: gepflasterter Hof, Pflasterfugen, Gully in der Mitte */
+    case 'yard':
+      return (
+        <g>
+          <Way d="M50 100 L50 22" color={color} w={16} edge={P.stoneDark} edgeW={2} />
+          <ellipse cx="50" cy="58" rx="24" ry="11" fill={color} />
+          {Array.from({ length: 9 }, (_, i) => (
+            <path key={i} d={`M${30 + i * 5} ${50 + (i % 2)} v16`} stroke={P.stoneDark} strokeWidth="1" {...NS} opacity=".35" />
+          ))}
+          <path d="M28 54 H72 M28 62 H72" stroke={P.stoneDark} strokeWidth="1" {...NS} opacity=".35" />
+          <ellipse cx="50" cy="58" rx="2.4" ry="1.1" fill={P.metal} />
+        </g>
+      )
+    /* Klostergarten: Treppenweg die Terrassen hinauf, Querwege an jeder Stufe */
+    case 'cloister': {
+      const pts: [number, number][] = [[50, 100], [50, 86], [42, 80], [42, 66], [58, 60], [58, 46], [46, 40], [50, 22]]
+      const d = 'M' + pts.map((p) => p.join(' ')).join(' L')
+      return (
+        <g>
+          <Way d={d} color={color} w={10} edge={P.stoneDark} edgeW={2} />
+          {[84, 72, 58, 44].map((y) => (
+            <path key={y} d={`M38 ${y} H62`} stroke={P.stoneDark} strokeWidth="2" {...NS} opacity=".4" />
+          ))}
+        </g>
+      )
+    }
+    /* Schlossgarten: breite Kiesachse mit rundem Becken, Buchskanten links und rechts */
+    case 'axis':
+      return (
+        <g>
+          <Way d="M50 100 V22" color={color} w={18} edge={P.leafDark} edgeW={3} />
+          <Way d="M30 70 H70" color={color} w={9} edge={P.leafDark} edgeW={3} />
+          <ellipse cx="50" cy="56" rx="10" ry="4.6" fill={P.stone} />
+          <ellipse cx="50" cy="56" rx="8.6" ry="3.8" fill={P.water} />
+          <ellipse cx="50" cy="55.2" rx="1" ry="1.6" fill={P.glassEdge} />
+        </g>
+      )
+    /* Baumschule: gerade Fahrgassen zwischen den Reihen */
+    case 'nurseryRows':
+      return (
+        <g>
+          <Way d="M50 100 V22" color={color} w={12} edge="#b8a070" edgeW={2} />
+          {[30, 70].map((x) => (
+            <path key={x} d={`M${x} 96 V30`} stroke={color} strokeWidth="5" {...NS} opacity=".8" />
+          ))}
+          <path d="M30 80 H70 M30 50 H70" stroke={color} strokeWidth="6" {...NS} opacity=".85" />
+          <Dots pts={[[40, 96], [40, 30]]} n={10} rx={1.3} color={[P.leafDark, P.leaf]} />
+          <Dots pts={[[60, 96], [60, 30]]} n={10} rx={1.3} color={[P.leaf, P.leafDark]} />
+        </g>
+      )
+    /* Moorgarten: Bohlenweg in einer Schleife übers dunkle Wasser */
+    case 'boardwalk': {
+      const d = 'M50 100 L50 86 C80 82 82 62 70 50 C58 38 30 40 24 56 C20 68 40 76 54 66 C62 60 56 52 50 52'
+      return (
+        <g>
+          <path d={d} stroke={P.woodDark} strokeWidth="9" {...NS} />
+          <path d={d} stroke={color} strokeWidth="7" strokeDasharray="1.4 .5" {...NS} strokeLinecap="butt" />
+          <path d="M50 52 L50 22" stroke={color} strokeWidth="6" {...NS} opacity=".8" />
+        </g>
+      )
+    }
   }
 }

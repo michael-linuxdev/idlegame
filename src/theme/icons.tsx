@@ -435,6 +435,57 @@ export function IconChapterCurrency({ chapter }: { chapter: string }) {
           <path d="M8 7c0-2 2-2 2-4M12 7c0-2 2-2 2-4" stroke="#9fb7c9" strokeWidth="1" fill="none" />
         </Svg>
       )
+    case 'stadtgarten': // Tomate
+      return (
+        <Svg>
+          <circle cx="12" cy="14" r="7" fill="#e2453c" stroke="#9a2a24" strokeWidth="1" />
+          <path d="M12 7.4l-3-2 2 2.6-3.4.4 3.4 1 .4 2 .6-2 3.4-1-3.4-.4 2-2.6z" fill="#3f7a30" />
+          <ellipse cx="9.4" cy="12" rx="1.6" ry="1" fill="#fff" opacity=".35" />
+        </Svg>
+      )
+    case 'klostergarten': // Quitte
+      return (
+        <Svg>
+          <path d="M12 5c3 0 4 2.4 4 4 2 1.6 3 3.6 3 6 0 3.6-3 6-7 6s-7-2.4-7-6c0-2.4 1-4.4 3-6 0-1.6 1-4 4-4z" fill="#e8b422" stroke="#a5781a" strokeWidth="1" />
+          <path d="M12 5V2.6" stroke="#6e4a2b" strokeWidth="1.2" strokeLinecap="round" />
+          <path d="M12.4 3.6c1.6-1.2 3.6-1 4.4.2-1.4 1-3 1-4.4-.2z" fill="#5f9e45" />
+          <ellipse cx="9.6" cy="12" rx="1.4" ry="2" fill="#fff" opacity=".35" />
+        </Svg>
+      )
+    case 'schlossgarten': // Spargel
+      return (
+        <Svg>
+          {[8, 12, 16].map((x, i) => (
+            <g key={x}>
+              <path d={`M${x} 21V${6 + (i % 2) * 2}`} stroke="#efe6d0" strokeWidth="3" strokeLinecap="round" />
+              <path d={`M${x - 1.4} ${7 + (i % 2) * 2}q1.4-3 2.8 0`} fill="#c9b8d8" />
+              <path d={`M${x - 1.2} 12.6h2.4M${x - 1.2} 16.4h2.4`} stroke="#c9bfa8" strokeWidth=".6" />
+            </g>
+          ))}
+          <path d="M5 17.6h14" stroke="#5f9e45" strokeWidth="2" strokeLinecap="round" />
+        </Svg>
+      )
+    case 'baumschule': // Setzling
+      return (
+        <Svg>
+          <path d="M7 15h10l-1.4 6.4h-7.2z" fill="#c8693e" stroke="#8a4a32" strokeWidth="1" />
+          <path d="M6.4 15h11.2" stroke="#8a4a32" strokeWidth="1.4" strokeLinecap="round" />
+          <path d="M12 15V8" stroke="#3f7a30" strokeWidth="1.4" />
+          <path d="M12 10c-1-3-4-4-6-3 0 2.6 3 4 6 3zM12 8.4c1-3 4-4 6-3 0 2.6-3 4-6 3z" fill="#5f9e45" stroke="#3f7a30" strokeWidth=".6" />
+        </Svg>
+      )
+    case 'moorgarten': // Moosbeeren
+      return (
+        <Svg>
+          <path d="M4 18c4-3 8-3 16 0" stroke="#4f7a2e" strokeWidth="1.4" fill="none" strokeLinecap="round" />
+          {[[8, 13, 3.4], [15, 12, 3.6], [11.6, 17.4, 3]].map(([x, y, r], i) => (
+            <g key={i}>
+              <circle cx={x} cy={y} r={r} fill="#d7263d" stroke="#8a1a28" strokeWidth=".8" />
+              <circle cx={x! - r! * 0.35} cy={y! - r! * 0.35} r={r! * 0.28} fill="#fff" opacity=".4" />
+            </g>
+          ))}
+        </Svg>
+      )
     default: // Gartenschau: Besucher-Medaille
       return (
         <Svg>
