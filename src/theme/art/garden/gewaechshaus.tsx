@@ -1,5 +1,5 @@
 /** Hauptgarten-Bereich: gewaechshaus. */
-import { CitrusPot, Flower, Lettuce, Shadow, SnowCap, Sprout, useSeason } from '../parts'
+import { CitrusPot, Flower, Lettuce, Pinwheel, Shadow, SnowCap, Sprout, useSeason } from '../parts'
 import { P } from '../palette'
 import { Glass, LEAF, LEAF_D, LEAF_L, OUT, WOOD } from './shared'
 
@@ -55,6 +55,8 @@ export function Gewaechshaus({ t }: { t: number }) {
       ))}
       <path d={`M${x - 3} ${wallTop + 1} L50 ${wallTop - 22} L${x + w + 3} ${wallTop + 1}`} fill="none" stroke={t >= 5 ? P.cream : P.glassEdge} strokeWidth="2.2" strokeLinejoin="round" />
       {winter ? <SnowCap d={`M${x} ${wallTop - 1} L50 ${wallTop - 22.5} L${x + w} ${wallTop - 1}`} w={3} /> : null}
+      {/* Windrad auf dem Dach dreht sich beim Arbeiten */}
+      <Pinwheel x={x + w - 4} y={wallTop + 2} s={0.8} />
       {/* door */}
       <rect x="45" y={wallTop + 6} width="10" height={60 - wallTop} fill={P.white} fillOpacity="0.35" stroke={P.white} strokeWidth="1.2" />
       {t >= 4 ? (

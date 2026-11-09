@@ -11,7 +11,7 @@ export const BEE_SCALE = SIZE.biene / BEE_H
 /** Huhn (Seitenansicht, schaut nach rechts); Fußpunkt = zwischen den Füßen. */
 export function Hen({ x, y, flip = false, c = P.feather, s = HEN_SCALE }: { x: number; y: number; flip?: boolean; c?: string; s?: number }) {
   return (
-    <Place x={x} y={y} s={s} flip={flip}>
+    <Place x={x} y={y} s={s} flip={flip} className="ma-peck">
       <g transform="translate(0 -7)">
         <ellipse cx="0" cy="0" rx="6" ry="4.6" fill={c} stroke={P.outline} strokeWidth={STROKE.detail} />
         <path d="M-5 -1 L-8 -4 L-6 1 Z" fill={c} stroke={P.outline} strokeWidth={STROKE.hair * 1.6} />

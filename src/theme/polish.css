@@ -285,7 +285,8 @@ html.idle .ha-fish,
 html.idle .ha-jump,
 html.idle .ha-wheel,
 html.idle .morning-mist,
-html.idle .laube-letter {
+html.idle .laube-letter,
+html.idle .module-art * {
   animation-play-state: paused !important;
 }
 

@@ -85,3 +85,20 @@ export function GardenLamp({ x, y, s = 1 }: { x: number; y: number; s?: number }
     </Place>
   )
 }
+
+/** Windrad auf einem Stab; die Flügel drehen sich, solange der Bereich arbeitet. Fußpunkt = Stabfuß. */
+export function Pinwheel({ x, y, s = 1 }: { x: number; y: number; s?: number }) {
+  return (
+    <Place x={x} y={y} s={s}>
+      <path d="M0 0 V-16" stroke={P.outlineWood} strokeWidth="1.2" />
+      <g transform="translate(0 -16)">
+        <g className="ma-spin">
+          {[0, 90, 180, 270].map((a, i) => (
+            <path key={a} d="M0 0 L6 -2 L4.5 2 Z" fill={[P.red, P.yellow, P.blue, P.leafLight][i]} stroke={P.outline} strokeWidth={STROKE.hair} transform={`rotate(${a})`} />
+          ))}
+          <circle r="1" fill={P.outline} />
+        </g>
+      </g>
+    </Place>
+  )
+}

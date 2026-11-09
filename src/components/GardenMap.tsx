@@ -223,6 +223,13 @@ export function GardenMap({
   const [decorEdit, setDecorEdit] = useState(false)
   const [wishOpen, setWishOpen] = useState(false)
   const [growing, setGrowing] = useState<string | null>(null)
+  // Bewegung beim Produzieren: reihum immer nur ein Bereich (plus der gewählte),
+  // damit die Karte lebt, ohne jede Sekunde alle SVGs neu zu zeichnen.
+  const [animTick, setAnimTick] = useState(0)
+  useEffect(() => {
+    const id = window.setInterval(() => setAnimTick((n) => n + 1), 3500)
+    return () => window.clearInterval(id)
+  }, [])
   const signsAll = useSignsAlways()
   const ambient = useAmbient()
   const harvest = useHarvestFlight()
@@ -233,6 +240,8 @@ export function GardenMap({
   ).length
   /** Only the next wild corner shows its sign — keeps the map calm. */
   const nextWildId = GENERATORS.find((g) => !game.unlocked(g.id))?.id ?? null
+  const producingIds = GENERATORS.filter((g) => (state.owned[g.id] ?? 0) > 0 && game.unlocked(g.id)).map((g) => g.id)
+  const animId = producingIds.length ? producingIds[animTick % producingIds.length] : null
   const questReady =
     game.questRows.some((q: { ready: boolean }) => q.ready) ||
     WEEKLY_TASKS.some((x) => !extras.weekClaimed.includes(x.id) && extras.week[x.id] >= x.target)
@@ -945,6 +954,7 @@ export function GardenMap({
             const cls =
               'garden-plot' +
               (selectedHere ? ' selected' : '') +
+              (animId === def.id ? ' anim' : '') +
               (!unlocked ? ' wild' : ready ? ' ready' : ' planted') +
               (producing ? ' producing' : '') +
               (canBuy ? ' can-buy' : '') +

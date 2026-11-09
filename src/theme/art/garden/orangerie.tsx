@@ -51,6 +51,8 @@ export function Orangerie({ t }: { t: number }) {
       {Array.from({ length: Math.floor(w / 9) }, (_, i) => (
         <path key={i} d={`M${x + (i + 1) * (w / (Math.floor(w / 9) + 1))} 64 V36`} stroke={P.white} strokeWidth="1.3" />
       ))}
+      {/* Lichtreflex wandert über das Glas */}
+      <path d={`M${x + 5} 40 l5 9 M${x + 9} 40 l3 5`} stroke={P.white} strokeWidth="1.6" strokeLinecap="round" className="ma-glint" />
       <rect x={x - 2} y="33" width={w + 4} height="4" rx="1" fill={P.cream} stroke={OUT} strokeWidth="1" />
       {winter ? <SnowCap d={`M${x - 1} 32.6 H${x + w + 1}`} w={2.4} /> : null}
       {dome ? (

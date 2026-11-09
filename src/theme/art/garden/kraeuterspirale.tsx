@@ -30,6 +30,7 @@ export function Kraeuterspirale({ t }: { t: number }) {
         <ellipse key={i} cx={p.x} cy={p.y - (t >= 3 ? (24 - i) * 0.55 : 0)} rx="3.6" ry="2.6" fill={P.stoneLight} stroke={P.stoneDark} strokeWidth="0.9" />
       ))}
       {/* herbs */}
+      <g className="ma-sway">
       {Array.from({ length: t <= 1 ? 5 : t === 2 ? 7 : 10 }, (_, i) => {
         const a = (i / (t <= 1 ? 5 : 10)) * Math.PI * 2 + 0.4
         const r = t <= 1 ? 11 : 6 + (i % 4) * 4
@@ -44,6 +45,7 @@ export function Kraeuterspirale({ t }: { t: number }) {
           </g>
         )
       })}
+      </g>
       {season === 'winter' ? (
         <g className="art-snow" fill={P.white}>
           {/* Schnee auf der Spirale */}

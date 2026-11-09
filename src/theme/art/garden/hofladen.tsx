@@ -67,9 +67,11 @@ export function Hofladen({ t }: { t: number }) {
           fill={P.barn}
         />
       ))}
-      {Array.from({ length: Math.floor(stallW / 8) + 1 }, (_, i) => (
-        <path key={i} d={`M${x - 3 + i * 8.4} 40 q2.1 3 4.2 0`} fill={P.barn} stroke={OUT} strokeWidth="0.8" />
-      ))}
+      <g className="ma-flutter">
+        {Array.from({ length: Math.floor(stallW / 8) + 1 }, (_, i) => (
+          <path key={i} d={`M${x - 3 + i * 8.4} 40 q2.1 3 4.2 0`} fill={P.barn} stroke={OUT} strokeWidth="0.8" />
+        ))}
+      </g>
       {/* counter with produce */}
       <rect x={x} y="56" width={stallW} height="16" rx="1.5" fill={WOOD} stroke={OUT} strokeWidth="1.3" />
       <path d={`M${x} 64 H${x + stallW}`} stroke={WOOD_D} strokeWidth="1" />

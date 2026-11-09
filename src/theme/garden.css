@@ -319,8 +319,149 @@
 
 /* —— Module art life —— */
 
-/* Bees and compost steam stay static: animating SVG children runs on the
-   main thread every frame (measured ~9 % of a throttled CPU). */
+/* Bewegung beim Produzieren: jeder Bereich hat eine kleine Schleife
+   (wiegen, picken, Windrad, Dampf, Markise, Glanz, Bienen). Nur transform/
+   opacity, langsame Perioden; aus bei reduzierter Bewegung, im Ruhemodus
+   angehalten (polish.css). Auf der Karte bewegt sich reihum immer nur ein
+   produzierender Bereich (.garden-plot.anim, GardenMap) plus der gewählte. */
+/* Eigene Ebene für den gerade bewegten Bereich: sonst zeichnet jeder Frame
+   die ganze Karte neu (gemessen: +16 Punkte Main-Thread bei 4× Drossel). */
+.garden-plot:is(.anim, .selected) .module-art.producing {
+  will-change: transform;
+}
+
+.module-art .ma-sway,
+.module-art .ma-peck,
+.module-art .ma-flutter {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+
+.module-art .ma-spin {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+}
+
+.garden-plot:is(.anim, .selected) .module-art.producing .ma-sway {
+  animation: ma-sway 3.6s steps(4, jump-none) infinite alternate;
+}
+
+.garden-plot:is(.anim, .selected) .module-art.producing .ma-sway.ma-slow {
+  animation-duration: 5.2s;
+}
+
+.garden-plot:is(.anim, .selected) .module-art.producing .ma-sway:nth-of-type(2n) {
+  animation-delay: -1.7s;
+}
+
+.garden-plot:is(.anim, .selected) .module-art.producing .ma-peck {
+  animation: ma-peck 2.8s steps(1, end) infinite;
+}
+
+.garden-plot:is(.anim, .selected) .module-art.producing .ma-spin {
+  animation: ma-spin 2s steps(8) infinite;
+}
+
+.garden-plot:is(.anim, .selected) .module-art.producing .ma-steam {
+  animation: ma-steam 3s steps(5) infinite;
+}
+
+.garden-plot:is(.anim, .selected) .module-art.producing .ma-flutter {
+  animation: ma-flutter 2.4s steps(2, jump-none) infinite alternate;
+}
+
+.garden-plot:is(.anim, .selected) .module-art.producing .ma-glint {
+  animation: ma-glint 4.8s steps(1, end) infinite;
+}
+
+.garden-plot:is(.anim, .selected) .module-art.producing .ma-bee {
+  animation: ma-bee 1.2s steps(2, jump-none) infinite alternate;
+}
+
+@keyframes ma-sway {
+  from {
+    transform: rotate(-2.5deg);
+  }
+  to {
+    transform: rotate(2.5deg);
+  }
+}
+
+@keyframes ma-peck {
+  0%,
+  55%,
+  100% {
+    transform: rotate(0);
+  }
+  65% {
+    transform: rotate(18deg);
+  }
+  75% {
+    transform: rotate(0);
+  }
+  85% {
+    transform: rotate(14deg);
+  }
+}
+
+@keyframes ma-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ma-steam {
+  from {
+    transform: translateY(2px);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.75;
+  }
+  to {
+    transform: translateY(-6px);
+    opacity: 0;
+  }
+}
+
+@keyframes ma-flutter {
+  from {
+    transform: scaleY(1);
+  }
+  to {
+    transform: scaleY(0.82);
+  }
+}
+
+@keyframes ma-glint {
+  0%,
+  60%,
+  100% {
+    opacity: 0;
+  }
+  75% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes ma-bee {
+  from {
+    transform: translate(-1.5px, 0.5px);
+  }
+  to {
+    transform: translate(1.5px, -1px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .module-art.producing :is(.ma-sway, .ma-peck, .ma-spin, .ma-steam, .ma-flutter, .ma-glint, .ma-bee) {
+    animation: none !important;
+  }
+}
+
+html.tab-hidden .module-art * {
+  animation-play-state: paused !important;
+}
 
 /* —— Plot bursts —— */
 .plot-fx {

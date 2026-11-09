@@ -30,7 +30,7 @@ export function Sprout({ x, y }: { x: number; y: number }) {
 /** Salatkopf; Fußpunkt = Bodenmitte. */
 export function Lettuce({ x, y, s = 1 }: { x: number; y: number; s?: number }) {
   return (
-    <Place x={x} y={y} s={s}>
+    <Place x={x} y={y} s={s} className="ma-sway">
       <circle cx="0" cy="-3" r="5" fill={P.leaf} stroke={P.leafDark} strokeWidth={STROKE.detail} />
       <circle cx="-2" cy="-4" r="3" fill={P.leafLight} />
       <circle cx="1.6" cy="-2.4" r="2.4" fill={P.leafPale} />
@@ -46,7 +46,7 @@ export function Bush({ x, y, r = 9, berry: ripe }: { x: number; y: number; r?: n
   // Frühling: weiße Blüten statt Beeren · Winter: kahl mit Schnee
   const berry = season === 'spring' ? (ripe ? P.white : undefined) : season === 'winter' ? undefined : ripe
   return (
-    <Place x={x} y={y}>
+    <Place x={x} y={y} className="ma-sway">
       <circle cx="0" cy={-r} r={r} fill={f.crown} stroke={P.outline} strokeWidth={STROKE.contour} />
       <circle cx={r * 0.3} cy={-r * 1.1} r={r * 0.6} fill={f.mid} />
       <circle cx={-r * 0.38} cy={-r * 1.35} r={r * 0.45} fill={f.light} />
@@ -77,7 +77,7 @@ export function Tree({ x, y, r = 14, fruit, trunk = 12, ...colors }: { x: number
   const dots = season === 'spring' ? (fruit ? P.blossom : undefined) : season === 'winter' ? undefined : fruit
   const top = -trunk
   return (
-    <Place x={x} y={y}>
+    <Place x={x} y={y} className="ma-sway ma-slow">
       <rect x="-2.5" y={top} width="5" height={trunk} rx="2" fill={P.bark} stroke={P.outline} strokeWidth={STROKE.detail} />
       <circle cx="0" cy={top - r * 0.4} r={r} fill={crown} stroke={P.outline} strokeWidth={STROKE.contour} />
       <circle cx={r * 0.4} cy={top - r * 0.2} r={r * 0.62} fill={mid} />
@@ -134,7 +134,7 @@ export function Pot({ x, y, s = 1 }: { x: number; y: number; s?: number }) {
 /** Zitrusbäumchen im Topf (Orangerie); Fußpunkt = Topfboden-Mitte. */
 export function CitrusPot({ x, y, s = 1, fruit = P.yellow }: { x: number; y: number; s?: number; fruit?: string }) {
   return (
-    <Place x={x} y={y} s={s}>
+    <Place x={x} y={y} s={s} className="ma-sway ma-slow">
       <rect x="-1.2" y="-16" width="2.4" height="9" fill={P.bark} />
       <circle cx="0" cy="-20" r="7" fill={P.leafDark} stroke={P.outline} strokeWidth={STROKE.detail} />
       <circle cx="-2.4" cy="-21.5" r="4" fill={P.leaf} />
