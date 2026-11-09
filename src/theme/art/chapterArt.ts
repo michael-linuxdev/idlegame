@@ -59,6 +59,7 @@ const LOADERS: Record<ChapterId, Loader> = {
   solawihof: () => import('./kapitel/solawihof'),
   saatguttausch: () => import('./kapitel/saatguttausch'),
   weltgartenschau: () => import('./kapitel/weltgartenschau'),
+  omasgarten: () => import('./kapitel/omasgarten'),
 }
 
 const loaded = new Map<ChapterId, ChapterArtEntry>()

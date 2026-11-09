@@ -53,7 +53,7 @@ export function DeepWinterBlock({ game, onOpenChapter }: { game: GameApi; onOpen
           </p>
         )
       })}
-      {CHAPTERS.every((c) => game.openChapters.includes(c.id)) ? <p className="orchard-teaser">{t.chapterUi.moreSoon}</p> : null}
+      {CHAPTERS.every((c) => game.openChapters.includes(c.id)) ? <p className="orchard-teaser">{t.chapterUi.allFound}</p> : null}
       <IlseBlock game={game} />
       <div className="prestige-preview">
         <div className="prestige-preview-card keep">

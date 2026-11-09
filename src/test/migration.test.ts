@@ -24,6 +24,8 @@ const TRANSIENT = new Set(['lastSurprise', 'lastVariety', 'helperReport', 'lastC
 const ADDED_AFTER_V1: Record<string, unknown> = {
   // Ruhezeit nach dem Tiefen Winter (2026-11, docs/kapitel/balance-bericht.md)
   tieferWinterAt: 0,
+  // Abschluss-Szene Kapitel 50 (Welle 8): alte Stände haben sie noch nicht gesehen
+  abschlussSeen: false,
 }
 
 /** Nur die Kapitel, die im alten Stand schon gespeichert waren (neue füllt parseChapters auf). */
@@ -117,6 +119,26 @@ describe('Spielstand v1 (neues Format ab 2026-11-09)', () => {
     expect(s.projects).toEqual({ rosengarten: 3, tauschpost: 2, herkunftsbeet: 1 })
     expect(s.projects.morgengarten ?? 0).toBe(0)
     expect(s.chapters.weltgartenschau).toEqual(emptyChapter(CHAPTERS.find((c) => c.id === 'weltgartenschau')!))
+    for (const id of Object.keys(v1.chapters)) expect(s.chapters[id as keyof typeof s.chapters], id).toEqual(before.chapters[id as keyof typeof before.chapters])
+  })
+
+  it('Kapitel 50 und die Abschluss-Szene (Welle 8) kommen leer dazu, alte Stände laden verlustfrei', () => {
+    const before = parseSave(v1)!
+    expect(before.chapters.omasgarten).toEqual(emptyChapter(CHAPTERS.find((c) => c.id === 'omasgarten')!))
+    expect(before.abschlussSeen).toBe(false)
+    // Stand nach Welle 7: Weltgartenschau ganz angelegt und gepflegt, Großprojekt im Bau
+    const welt = { ...emptyChapter(CHAPTERS.find((c) => c.id === 'weltgartenschau')!), cur: 99, curLifetime: 12345, openedAt: 88, introSeen: true }
+    welt.owned = { ...welt.owned, europabeete: 30, weltbeete: 12, eroeffnung: 2 }
+    welt.care = { europabeete: { grow: 3, thrift: 1 } }
+    const raw = { ...(v1 as unknown as Record<string, unknown>), chapters: { ...v1.chapters, weltgartenschau: welt }, projects: { morgengarten: 2 } }
+    const s = parseSave(raw)!
+    expect(s.chapters.weltgartenschau).toEqual(welt)
+    expect(s.projects).toEqual({ morgengarten: 2 })
+    expect(s.chapters.omasgarten).toEqual(emptyChapter(CHAPTERS.find((c) => c.id === 'omasgarten')!))
+    expect(s.abschlussSeen).toBe(false)
+    // „Gesehen“ bleibt gespeichert; kaputte Werte zählen als nicht gesehen
+    expect(parseSave({ ...raw, abschlussSeen: true })!.abschlussSeen).toBe(true)
+    expect(parseSave({ ...raw, abschlussSeen: 'ja' })!.abschlussSeen).toBe(false)
     for (const id of Object.keys(v1.chapters)) expect(s.chapters[id as keyof typeof s.chapters], id).toEqual(before.chapters[id as keyof typeof before.chapters])
   })
 

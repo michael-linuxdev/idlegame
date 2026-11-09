@@ -87,7 +87,7 @@ Vornamen bleiben deutsch (Flair). Verwandtschaft wird übersetzt.
 
 | Deutsch | Englisch | Hinweis |
 |---|---|---|
-| Oma | **Grandma** | Unterschrift: *Love, Grandma* |
+| Oma | **Grandma** | Unterschrift: *Love, Grandma*; schreibt auch den letzten Brief (Kapitel 50, „Das letzte Tütchen“ → *The last packet*) und die Notizen dort |
 | Opa | **Grandpa** | |
 | Nachbarsjunge Jonas | **Jonas, the boy next door** (kurz: *Jonas*) | Unterschrift: *— Jonas* |
 | Oma Ilse / Nachbarin Ilse, 81 | **Granny Ilse** / *Ilse from next door, 81* | „Granny“ trennt sie von *Grandma* |
@@ -189,6 +189,7 @@ Vornamen bleiben deutsch (Flair). Verwandtschaft wird übersetzt.
 | 47 | Solawi-Hof | **The Community Farm** | Ernteanteile → **Harvest Shares** | Farm |
 | 48 | Großer Saatguttausch | **The Great Seed Swap** | Tauschbriefe → **Swap Letters** | Seed Swap |
 | 49 | Weltgartenschau | **The World Garden Expo** | Gäste → **Guests** | Expo |
+| 50 | Omas Schrebergarten | **Grandma’s Allotment** | Erinnerungen → **Memories** | Beginning (dt. Anfang) |
 
 Ab Kapitel 13 (Bogen I „Nach der Schau“ → *After the Show*): Omas Saatgutdose
 → **Grandma’s seed tin**, Samentütchen → **seed packet**. Großprojekt Bogen I:
@@ -216,6 +217,17 @@ garden*, Schichten → *layers* (Kronenschicht → *Canopy Layer*), Schwammstadt
 Mauerpfeffer → *stonecrop*, Kiwibeere → *hardy kiwi*, Weidentipi → *willow
 tipi*, Kräuterschnecke → *herb snail*, Insektenhotel → *bug hotel* (wie die Deko).
 Wildblumenband → *wildflower corridor*, Blühstreifen → *flower strip*, Feldrain → *field margin*, Grünbrücke → *green bridge*, Wilder Wein → *Virginia creeper*, Hopfenranken → *hop bines*, Großprojekt Bogen IV: Der Garten für morgen → **The Garden for Tomorrow**.
+
+Finale (Kapitel 50 „Zurück zum Anfang“ → *Back to the beginning*): Brief und
+Notizen wieder von Oma („Aus Omas Notizbuch“ → *From Grandma’s notebook*).
+Erstes Beet → *First Bed*, Opas Apfelbaum → *Grandpa’s Apple Tree*,
+Bienenkasten → *Bee Box* (nicht *Beehive*, so heißt der Bereich im Garten),
+Altes Gewächshaus → *Old Greenhouse*, Omas Bank → *Grandma’s Bench*.
+Abschluss-Szene: „Alle auf Omas Bank“ → *Everyone on Grandma’s bench*, das
+Tütchen „Für dich“ → *For you* (das Spiel kennt keinen Spielernamen),
+„Weiter gärtnern“ → *Keep gardening*. Statt „Weitere Gärten folgen“: „Alle
+Tütchen haben ihren Garten gefunden …“ → *Every packet has found its garden …*,
+„Mit Kapitel 50 schließt sich der Kreis.“ → *Chapter 50 closes the circle.*
 
 „Streuobstwiese“ beim ersten Auftreten kurz erklären: *a meadow orchard — old,
 tall fruit trees scattered over grassland*.

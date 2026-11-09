@@ -534,4 +534,15 @@ export const careNames: Record<string, readonly [string, string]> = {
   familienpavillon: ['Furnishing', 'Telling'],
   aussichtssteg: ['Sweeping', 'Guiding'],
   eroeffnung: ['Inviting', 'Celebrating'],
+  // Chapter 50 Grandma’s Allotment
+  omasbeet: ['Sowing', 'Weeding'],
+  omaskompost: ['Turning', 'Sifting'],
+  omasspirale: ['Stacking', 'Trimming'],
+  omashecke: ['Picking', 'Pruning'],
+  opasapfel: ['Grafting', 'Harvesting'],
+  omasbienen: ['Feeding', 'Extracting'],
+  omashuehner: ['Feeding', 'Mucking out'],
+  altglashaus: ['Airing', 'Glazing'],
+  omaslaube: ['Painting', 'Writing down'],
+  omasbank: ['Making room', 'Telling'],
 }

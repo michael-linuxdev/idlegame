@@ -12,13 +12,14 @@ import {
 import { milestonesReached, nextMilestone } from '../game/generators'
 import { formatErnte, formatClock, formatDecimal } from '../game/format'
 import { playSfx } from '../game/sound'
-import { bestChapterBuy } from '../game/state'
+import { abschlussDue, bestChapterBuy } from '../game/state'
 import { WEINLESE } from '../game/extrasCore'
 import type { useGame } from '../game/useGame'
 import { t } from '../i18n'
 import { useChapterArt } from '../theme/art/chapterArt'
 import { chapterArc } from '../game/chapterPlan'
 import { ChapterCritters } from './ChapterCritters'
+import { AbschlussScene } from './AbschlussScene'
 import { PlotButtons } from './PlotPicker'
 import { useSignsAlways } from '../game/prefs'
 import {
@@ -250,6 +251,7 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
       ) : null}
 
       {!c.introSeen ? <ChapterIntro chapter={chapter} onDone={() => game.seeChapterIntro(chapter)} /> : null}
+      {chapter === 'omasgarten' && abschlussDue(state) && !selected ? <AbschlussScene onDone={game.seeAbschluss} /> : null}
     </section>
   )
 }
@@ -404,6 +406,7 @@ function ChapterSheet({
 
         {level === 0 && unlocked ? (
           <figure className="oma-note">
+            {/* Bogen IV: Mila schreibt; Kapitel 50 (Bogen 5) wieder Oma */}
             <figcaption className="oma-note-label">{chapterArc(def.number) === 4 ? t.chapterUi.noteLabelMila : t.upgrade.noteLabel}</figcaption>
             <blockquote className="oma-note-text">{ac.note}</blockquote>
           </figure>

@@ -34,7 +34,7 @@ Tiere, Jahreszeit): `docs/kapitel/plan.md`. Regeln: `CLAUDE.md`.
      schreibt jemand, der es selbst trägt, oder es wird ausdrücklich als ihr
      Wissen benannt. Echte Pflanzen, echte Bauweisen.
    - Ab Bogen IV stammen die Bereichs-Notizen von **Mila** (Jonas’ Tochter),
-     nicht von Oma.
+     nicht von Oma. Im Finale (Kapitel 50) schreibt wieder Oma.
    - Englisch: Ton und Begriffe nach `docs/i18n/glossar.md`; keine Umlaute
      im Englischen (Test), Anführungszeichen “ ” und ’. Figuren ins Glossar
      (Tabelle „Figuren“ und „Kapitel und Währungen“) eintragen.

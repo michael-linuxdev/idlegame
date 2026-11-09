@@ -1,4 +1,4 @@
-/** Kapitel-Grafik (Kapitel 45–49): gesperrte Ecken. */
+/** Kapitel-Grafik (Kapitel 45–50): gesperrte Ecken. */
 import { Svg } from '../../HandParts'
 import { P } from '../palette'
 
@@ -6,7 +6,8 @@ import { P } from '../palette'
  * Locked corners: a mown-bare verge with a thistle (Wildblumenband), a grey wall
  * foot with a crack and a dandelion (Fassade), a fallow strip with stones and
  * couch grass (Solawi), trampled grass with a lost packet (Saatguttausch), a
- * construction patch with a cone and a fence foot (Weltgartenschau).
+ * construction patch with a cone and a fence foot (Weltgartenschau), brambles
+ * and nettles over good soil, as on Omas plot at the very start (Omas Schrebergarten).
  */
 export function WildI({ chapter, seed = 0 }: { chapter: string; seed?: number }) {
   if (chapter === 'wildblumenband') {
@@ -58,6 +59,21 @@ export function WildI({ chapter, seed = 0 }: { chapter: string; seed?: number })
         ))}
         <path d="M38 61v-3.6l.4 -.4h2l.4 .4v3.6z" fill={P.paper} stroke={P.outlineSoft} strokeWidth=".2" transform="rotate(-20 39 59)" />
         <ellipse cx="46" cy="61.4" rx="2" ry=".8" fill={P.soilDark} opacity=".5" />
+      </Svg>
+    )
+  }
+  if (chapter === 'omasgarten') {
+    return (
+      <Svg>
+        <ellipse cx="40" cy="60" rx="28" ry="7" fill={P.soil} opacity=".8" />
+        {[22, 38, 54].map((x, i) => (
+          <g key={x}>
+            <path d={`M${x} 61q3 -${8 + ((i + seed) % 3)} 9 -7q3 1 3 5`} stroke={P.plum} strokeWidth=".8" fill="none" />
+            <ellipse cx={x + 5} cy={54.4 - ((i + seed) % 2)} rx="2.6" ry="1.6" fill={P.leafDark} />
+            <circle cx={x + 8} cy="56" r=".8" fill={P.ink} />
+          </g>
+        ))}
+        <path d="M30 62v-6M28.6 58.4l1.4 -1M31.4 58.4l-1.4 -1" stroke={P.leafMoss} strokeWidth=".7" />
       </Svg>
     )
   }

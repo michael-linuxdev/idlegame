@@ -222,6 +222,7 @@ export const expansionStrings = {
       solawihof: ['Anteile', 'Fruchtfolge'],
       saatguttausch: ['Tauschen', 'Erzählen'],
       weltgartenschau: ['Gäste', 'Beete'],
+      omasgarten: ['Erinnern', 'Weitergeben'],
     } as Record<string, readonly [string, string]>,
     growPer: '+6 % pro Rang',
     thriftPer: '−4 % Kosten pro Rang',
@@ -247,9 +248,25 @@ export const expansionStrings = {
     goal: (name: string) => `Pflegen: ${name}`,
     goalPlant: (name: string) => `Pflanzen: ${name}`,
     unlockedToast: (n: number, name: string) => `Kapitel ${n} freigeschaltet: ${name}!`,
-    moreSoon: 'Weitere Gärten folgen.',
+    /** Alle 50 Kapitel offen (Grundstücke, Sammlung, Tiefer Winter) */
+    allFound: 'Alle Tütchen haben ihren Garten gefunden. Omas Dose ist leer, der Garten wächst weiter.',
+    /** Sammlung, solange noch Kapitel fehlen */
+    lastChapter: 'Mit Kapitel 50 schließt sich der Kreis.',
     /** Ab Bogen IV schreibt Mila in Omas Notizbuch */
     noteLabelMila: 'Aus Omas Notizbuch · Mila',
+    /** Abschluss-Szene, wenn Kapitel 50 ganz angelegt ist (einmalig) */
+    finale: {
+      eyebrow: 'Kapitel 50 · Zurück zum Anfang',
+      title: 'Alle auf Omas Bank',
+      body: [
+        'Die Bank ist lang genug geworden. Jonas und Mila, Lena und Till, Ilse und alle, die einen Brief geschrieben haben, rücken zusammen.',
+        'Die Dose ist leer. Nur ein Tütchen liegt noch auf der Bank. Darauf steht keine Adresse, sondern: Für dich.',
+        'Ein Garten ist nie fertig, hat Oma immer gesagt.',
+      ],
+      packet: 'Für dich',
+      sceneAria: 'Die Familie aller Generationen auf Omas Bank vor der Laube: Oma, Ilse, Jonas, Mila, Lena und Till. Davor die leere Dose und ein Tütchen mit der Aufschrift „Für dich“.',
+      cta: 'Weiter gärtnern',
+    },
   },
 
   chapters: {

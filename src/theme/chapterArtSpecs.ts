@@ -18,7 +18,7 @@ export type Stones = { k: 'stones'; variant: 'zen' | 'rock' | 'edelweiss' | 'mos
 export type ArtSpec = Tree | Rows | Animals | House | Water | Flowers | Stones
 
 /** Chapters drawn with hand-made art (theme/HandArt.tsx). */
-export const HAND_ART_CHAPTERS: readonly ChapterId[] = ['bauernhof', 'imkerei', 'teich', 'kraeuter', 'botanik', 'alm', 'lavendel', 'japangarten', 'gartenschau', 'stadtgarten', 'klostergarten', 'schlossgarten', 'baumschule', 'moorgarten', 'deichgarten', 'spreewald', 'cottagegarten', 'tulpenfelder', 'artischocken', 'beerenwald', 'patio', 'korkeichen', 'paprikafelder', 'aranfelder', 'rosental', 'pistazien', 'andenkartoffeln', 'milpa', 'kaffeewald', 'reisterrassen', 'gewuerzgarten', 'oase', 'kakaogarten', 'buschgarten', 'farngarten', 'kimchigarten', 'dachgarten', 'schulgarten', 'waldgarten', 'samenbank', 'klimagarten', 'wildblumenband', 'fassadengarten', 'solawihof', 'saatguttausch', 'weltgartenschau']
+export const HAND_ART_CHAPTERS: readonly ChapterId[] = ['bauernhof', 'imkerei', 'teich', 'kraeuter', 'botanik', 'alm', 'lavendel', 'japangarten', 'gartenschau', 'stadtgarten', 'klostergarten', 'schlossgarten', 'baumschule', 'moorgarten', 'deichgarten', 'spreewald', 'cottagegarten', 'tulpenfelder', 'artischocken', 'beerenwald', 'patio', 'korkeichen', 'paprikafelder', 'aranfelder', 'rosental', 'pistazien', 'andenkartoffeln', 'milpa', 'kaffeewald', 'reisterrassen', 'gewuerzgarten', 'oase', 'kakaogarten', 'buschgarten', 'farngarten', 'kimchigarten', 'dachgarten', 'schulgarten', 'waldgarten', 'samenbank', 'klimagarten', 'wildblumenband', 'fassadengarten', 'solawihof', 'saatguttausch', 'weltgartenschau', 'omasgarten']
 
 export interface BackdropSpec {
   /** Patchwork fields behind the plots */
@@ -113,6 +113,8 @@ export interface BackdropSpec {
   seedSwap?: boolean
   /** Weltgartenschau: expo skyline, glass hall, cable car pylons, flags */
   worldExpo?: boolean
+  /** Omas Schrebergarten: allotment colony; brambles at stage 0 give way to today's garden by stage 10 */
+  omaGarden?: boolean
   grass: [string, string, string]
   path: string
   /** Own path shape per chapter (default: shared S-curve) */
@@ -812,6 +814,21 @@ export const CHAPTER_ART: Partial<Record<ChapterId, { backdrop: BackdropSpec; ar
       familienpavillon: { k: 'house', roof: P.leafDark, wall: P.cream, prop: 'flag' },
       aussichtssteg: { k: 'house', roof: P.woodMid, wall: P.metal, prop: 'tower' },
       eroeffnung: { k: 'flowers', colors: [P.red, P.yellow, P.blue] },
+    },
+  },
+  omasgarten: {
+    backdrop: { grass: ['#a6cc76', '#94bc66', '#82aa56'], path: '#d9c79a', hills: ['#6a9a48', '#4f7a3a'], way: 'omaZigzag', omaGarden: true },
+    areas: {
+      omasbeet: { k: 'rows', color: P.leaf, flower: P.red },
+      omaskompost: { k: 'stones', variant: 'rock' },
+      omasspirale: { k: 'stones', variant: 'rock' },
+      omashecke: { k: 'tree', crown: P.leaf, fruit: P.red },
+      opasapfel: { k: 'tree', crown: P.leaf, fruit: P.red, shape: 'blossom' },
+      omasbienen: { k: 'animals', animal: 'bee' },
+      omashuehner: { k: 'animals', animal: 'goose' },
+      altglashaus: { k: 'house', roof: P.glass, wall: P.glassEdge, prop: 'glass' },
+      omaslaube: { k: 'house', roof: P.roof, wall: P.wood, prop: 'chimney' },
+      omasbank: { k: 'flowers', colors: [P.lavender, P.yellow, P.pink] },
     },
   },
 }

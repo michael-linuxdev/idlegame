@@ -4,9 +4,9 @@ import { createInitialState, syncChaptersOpen, type GameState } from '../game/st
 import { CHAPTER_ART } from '../theme/chapterArtSpecs'
 import { strings } from '../i18n/de/strings'
 
-describe('Kapitel 2–49', () => {
-  it('are numbered 2…49 with ten unique areas each', () => {
-    expect(CHAPTERS.map((c) => c.number)).toEqual([2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49])
+describe('Kapitel 2–50', () => {
+  it('are numbered 2…50 with ten unique areas each', () => {
+    expect(CHAPTERS.map((c) => c.number)).toEqual([2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50])
     for (const c of CHAPTERS) {
       expect(c.areas).toHaveLength(10)
       expect(new Set(c.areas.map((a) => a.id)).size).toBe(10)
@@ -68,5 +68,34 @@ describe('Kapitel-Pflege', () => {
     expect(s.chapters.bauernhof.care.kuhweide!.grow).toBe(10)
     // unplanted area cannot be cared for
     expect(buyChapterCare(s, 'bauernhof', 'ziegenstall', 'grow')).toBe(s)
+  })
+})
+
+describe('Kapitel 50: Abschluss-Szene', () => {
+  it('erscheint erst, wenn der letzte Bereich gepflanzt und der Brief gelesen ist, und nur einmal', async () => {
+    const { abschlussDue, createPostPrestigeState } = await import('../game/state')
+    const def = chapterDef('omasgarten')
+    expect(def.number).toBe(50)
+    expect(def.areas.at(-1)!.id).toBe('omasbank')
+    const base = createInitialState(0)
+    const open = { ...base.chapters.omasgarten, openedAt: 1, introSeen: true }
+    const with50 = (owned: Record<string, number>, extra: Partial<GameState> = {}): GameState => ({
+      ...base,
+      ...extra,
+      chapters: { ...base.chapters, omasgarten: { ...open, owned: { ...open.owned, ...owned } } },
+    })
+    expect(abschlussDue(base)).toBe(false)
+    expect(abschlussDue(with50({ omasbeet: 10, omaslaube: 10 }))).toBe(false)
+    const done = with50(Object.fromEntries(def.areas.map((a) => [a.id, 10])))
+    expect(abschlussDue(done)).toBe(true)
+    expect(abschlussDue({ ...done, chapters: { ...done.chapters, omasgarten: { ...done.chapters.omasgarten, introSeen: false } } })).toBe(false)
+    expect(abschlussDue({ ...done, abschlussSeen: true })).toBe(false)
+    // „Gesehen“ übersteht Saisonende/Tiefen Winter (Erweiterungsfelder werden übernommen)
+    expect(createPostPrestigeState({ ...done, abschlussSeen: true }).abschlussSeen).toBe(true)
+  })
+
+  it('Notizen in Kapitel 50 sind wieder von Oma (nicht Mila)', () => {
+    expect(strings.chapters.omasgarten.intro.body.at(-1)).toMatch(/Oma$/)
+    for (const a of chapterDef('omasgarten').areas) expect(strings.chapters.omasgarten.areas[a.id as keyof typeof strings.chapters.omasgarten.areas]).toBeTruthy()
   })
 })

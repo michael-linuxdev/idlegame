@@ -4,7 +4,8 @@
  *  1. Fresh start: Omas letter → Gemüsebeet ausbauen → Gießen
  *  2. Near the gate: Saisonende → ceremony → Glücksrad → back in the garden
  *  3. Notebook + Spielstand-sichern sheets open
- *  5. Alle Kapitel (?kapitel=all), Grundstücke-Auswahl, Gartenschau-Karte
+ *  5. Alle Kapitel (?kapitel=all), Grundstücke-Auswahl, Gartenschau-Karte;
+ *     5b Abschluss-Szene von Kapitel 50 (einmalig, gespeichert, Fokus, Escape)
  *  4. Festladen, Kapitel 2/3 via ?kapitel2=1&kapitel3=1, Weinlese, Gartenhelfer, Update-Check
  *  6. UX-Layout: Tutorial verdeckt sein Ziel nicht, Omas Notiz nie über Fenstern,
  *     Escape/Zurück schließen Fenster, Breitbild mit Seitenpanel; Screenshots in e2e-screens/
@@ -203,9 +204,9 @@ try {
     assert((await p.locator('.chapter-gartenschau .garden-plot .plot-visual svg *').count()) > 20, 'chapter art loaded')
     await p.locator('.garden-plot').first().click()
     await p.locator('.upgrade-hud-buy').waitFor()
-    // Kapitel 13–49 (Welle 1–7): Brief, Kulisse, Bereichsgrafik; Bildschirmfotos für einen Blick von Hand
+    // Kapitel 13–50 (Welle 1–8): Brief, Kulisse, Bereichsgrafik; Bildschirmfotos für einen Blick von Hand
     await mkdir('e2e-screens/kapitel', { recursive: true })
-    for (const [n, id] of [[13, 'stadtgarten'], [14, 'klostergarten'], [15, 'schlossgarten'], [16, 'baumschule'], [17, 'moorgarten'], [18, 'deichgarten'], [19, 'spreewald'], [20, 'cottagegarten'], [21, 'tulpenfelder'], [22, 'artischocken'], [23, 'beerenwald'], [24, 'patio'], [25, 'korkeichen'], [26, 'paprikafelder'], [27, 'aranfelder'], [28, 'rosental'], [29, 'pistazien'], [30, 'andenkartoffeln'], [31, 'milpa'], [32, 'kaffeewald'], [33, 'reisterrassen'], [34, 'gewuerzgarten'], [35, 'oase'], [36, 'kakaogarten'], [37, 'buschgarten'], [38, 'farngarten'], [39, 'kimchigarten'], [40, 'dachgarten'], [41, 'schulgarten'], [42, 'waldgarten'], [43, 'samenbank'], [44, 'klimagarten'], [45, 'wildblumenband'], [46, 'fassadengarten'], [47, 'solawihof'], [48, 'saatguttausch'], [49, 'weltgartenschau']]) {
+    for (const [n, id] of [[13, 'stadtgarten'], [14, 'klostergarten'], [15, 'schlossgarten'], [16, 'baumschule'], [17, 'moorgarten'], [18, 'deichgarten'], [19, 'spreewald'], [20, 'cottagegarten'], [21, 'tulpenfelder'], [22, 'artischocken'], [23, 'beerenwald'], [24, 'patio'], [25, 'korkeichen'], [26, 'paprikafelder'], [27, 'aranfelder'], [28, 'rosental'], [29, 'pistazien'], [30, 'andenkartoffeln'], [31, 'milpa'], [32, 'kaffeewald'], [33, 'reisterrassen'], [34, 'gewuerzgarten'], [35, 'oase'], [36, 'kakaogarten'], [37, 'buschgarten'], [38, 'farngarten'], [39, 'kimchigarten'], [40, 'dachgarten'], [41, 'schulgarten'], [42, 'waldgarten'], [43, 'samenbank'], [44, 'klimagarten'], [45, 'wildblumenband'], [46, 'fassadengarten'], [47, 'solawihof'], [48, 'saatguttausch'], [49, 'weltgartenschau'], [50, 'omasgarten']]) {
       await p.keyboard.press('Escape')
       await p.getByRole('button', { name: T.plots.aria }).click()
       await p.getByRole('button', { name: T.chapterUi.chapter(n) }).click()
@@ -218,6 +219,53 @@ try {
       await p.waitForTimeout(300)
       await p.screenshot({ path: `e2e-screens/kapitel/${id}-${LANG}.png` })
     }
+    await ctx.close()
+  }
+
+  // 5b — Abschluss-Szene: Kapitel 50 ganz angelegt → einmal die Familie auf Omas Bank, danach normal weiter
+  {
+    const ctx = await browser.newContext({ ...devices['iPhone 13'], reducedMotion: 'reduce' })
+    await ctx.addInitScript(() => {
+      if (sessionStorage.getItem('seed')) return
+      const areas = ['omasbeet', 'omaskompost', 'omasspirale', 'omashecke', 'opasapfel', 'omasbienen', 'omashuehner', 'altglashaus', 'omaslaube', 'omasbank']
+      const owned = Object.fromEntries(areas.map((a, i) => [a, 10 + (9 - i) * 3]))
+      const omasgarten = { cur: 50, curLifetime: 1e6, owned, openedAt: 1, introSeen: true }
+      localStorage.setItem('gartenerbe-spielstand-v1', JSON.stringify({ owned: { gemuesebeet: 20 }, ernte: 1e4, lastSeen: Date.now(), saveVersion: 1, chapters: { omasgarten } }))
+      localStorage.setItem('gartenerbe-ftue-v1', JSON.stringify({ beat: 'done', dismissed: true, completed: [], startedAt: 1 }))
+      localStorage.setItem('gartenerbe-install-v1', JSON.stringify({ dismissed: true, installed: false, shown: true }))
+      localStorage.setItem('gartenerbe-hints-v1', JSON.stringify(['season', 'truhe', 'deep', 'visitor', 'order', 'variety', 'weekly']))
+      sessionStorage.setItem('seed', '1')
+    })
+    const p = await ctx.newPage()
+    p.on('pageerror', (e) => errors.push(e.message))
+    // Nur Kapitel 50 ist offen: der Knopf an der Seite führt direkt hin
+    const openChapter50 = async () => {
+      if (!(await p.locator('.chapter-omasgarten').count())) await p.getByRole('button', { name: T.chapters.omasgarten.to }).click()
+      await p.locator('.chapter-omasgarten .garden-ground').waitFor()
+    }
+    await p.goto(URL)
+    await openChapter50()
+    const scene = p.getByRole('dialog', { name: T.chapterUi.finale.title })
+    await scene.waitFor({ timeout: 10_000 })
+    assert(await scene.getByRole('img', { name: T.chapterUi.finale.sceneAria }).isVisible(), 'finale: scene picture has a label')
+    assert((await scene.locator('text').innerHTML()).includes(T.chapterUi.finale.packet), 'finale: packet says „Für dich“')
+    const cta = scene.getByRole('button', { name: T.chapterUi.finale.cta })
+    assert(await cta.evaluate((b) => b === document.activeElement), 'finale: focus on the button')
+    await p.keyboard.press('Tab')
+    assert(await cta.evaluate((b) => b === document.activeElement), 'finale: Tab stays in the dialog')
+    await p.waitForTimeout(400)
+    await p.screenshot({ path: `e2e-screens/kapitel/abschluss-${LANG}.png` })
+    await p.keyboard.press('Escape')
+    await scene.waitFor({ state: 'detached' })
+    await p.waitForTimeout(300)
+    await p.screenshot({ path: `e2e-screens/kapitel/omasgarten-voll-${LANG}.png` })
+    // gespeichert: nach dem Neuladen kommt die Szene nicht wieder
+    await p.waitForTimeout(4500)
+    await p.reload()
+    await openChapter50()
+    await p.waitForTimeout(800)
+    assert((await p.locator('.abschluss-scene').count()) === 0, 'finale: shown only once')
+    assert(await p.evaluate(() => JSON.parse(localStorage.getItem('gartenerbe-spielstand-v1')).abschlussSeen === true), 'finale: seen is saved')
     await ctx.close()
   }
 

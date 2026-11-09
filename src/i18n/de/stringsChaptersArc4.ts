@@ -3,6 +3,8 @@
  * Generation übernimmt. Omas Dose ist fast leer, und Mila (Jonas’ Tochter)
  * füllt sie wieder — mit Samen aus Gärten der Zukunft. Ab hier stammen die
  * Bereichs-Notizen von Mila, die in Omas Notizbuch weiterschreibt.
+ * Dazu das Finale (Kapitel 50, Omas Schrebergarten): Brief und Notizen
+ * wieder von Oma selbst — das letzte Tütchen aus der Dose.
  * Aufbau wie stringsChapters.ts; wird in stringsExpansion.ts eingespreizt.
  */
 
@@ -318,6 +320,37 @@ export const arc4ChapterStrings = {
       familienpavillon: a('Unser Pavillon', 'Briefe, Notizbuch, Bilder.', '„In unserem Pavillon hängen Bilder von fünf Generationen. Ganz vorn eins von Oma, mit Spaten und Strohhut.“'),
       aussichtssteg: a('Aussichtssteg', 'Ein Steg hoch über der Schau.', '„Von oben sieht man das Moor, die Kräne am Dachgarten und Tills Felder. Fast alles, was wir zusammen gepflanzt haben.“'),
       eroeffnung: a('Eröffnungsfeier', 'Alle Gärten feiern zusammen.', '„Zur Eröffnung hat Frau Grün eine sehr kurze Rede gehalten. Dann hat sie die Gartenschere genommen und das Band durchgeschnitten.“'),
+    },
+  },
+  /* —— Finale: Zurück zum Anfang (Kapitel 50) —— */
+  omasgarten: {
+    title: 'Omas Schrebergarten',
+    currency: 'Erinnerungen',
+    chip: 'Anfang',
+    to: 'Zurück zum Anfang',
+    teaser: 'Kapitel 50: Omas Schrebergarten — ab der Mitte der 29. Generation, wenn auf der Weltgartenschau die Eröffnungsfeier beginnt.',
+    intro: {
+      title: 'Das letzte Tütchen',
+      body: [
+        'Mein liebes Enkelkind,',
+        'wenn du diesen Brief liest, ist die Dose leer. Jedes Tütchen hat seinen Weg gefunden: zu Jonas in den Hinterhof, zu Frauke an den Deich, quer durch Europa und bis ans andere Ende der Welt. Und von dort kamen die Samen zurück, mit neuen Namen darauf. So war es gedacht.',
+        'Auf diesem letzten Tütchen steht keine Adresse. Es ist für dich. Darin sind Radieschen von meinem allerersten Beet. Ich war damals sehr jung, die Parzelle war ein einziges Brombeergestrüpp, und eine Nachbarin hat mir die Samen über den Zaun gereicht. Seitdem habe ich jedes Jahr ein paar Radieschen blühen lassen und die Samen wieder eingetütet.',
+        'Säe sie dort, wo alles angefangen hat. Leg das Beet wieder an, den Kompost, Opas Apfelbaum und die Bank vor der Laube. Saatgut gehört nie einem allein. Man hebt es eine Weile auf, und dann gibt man es weiter.',
+        'Ich bin sehr stolz auf dich. Deine Oma',
+      ],
+      cta: 'Das Tütchen öffnen',
+    },
+    areas: {
+      omasbeet: a('Erstes Beet', 'Radieschen, wie damals.', '„Mein erstes Beet war krumm und viel zu klein. Die Radieschen hat das nicht gestört.“'),
+      omaskompost: a('Komposthaufen', 'Drei Bretter und viel Geduld.', '„Den ersten Kompost hat Opa aus alten Brettern gezimmert. Er hat dreißig Jahre gehalten, der Kompost länger als die Bretter.“'),
+      omasspirale: a('Kräuterspirale', 'Steine vom Feldrand.', '„Die Steine habe ich im Kinderwagen vom Acker geholt. Deine Mutter saß obendrauf und hat gesungen.“'),
+      omashecke: a('Beerenhecke', 'Johannisbeeren zum Naschen.', '„Die ersten Johannisbeeren hat ein Amselpaar geerntet. Im Jahr darauf habe ich mehr gepflanzt, für die Amseln und für uns.“'),
+      opasapfel: a('Opas Apfelbaum', 'Ein Bäumchen, kaum hüfthoch.', '„Opa hat den Apfelbaum zu unserer Hochzeit gepflanzt. Im ersten Jahr trug er genau einen Apfel. Wir haben ihn geteilt.“'),
+      omasbienen: a('Bienenkasten', 'Opas erste Bienen.', '„Vor den Bienen hatte Opa mehr Respekt als vor allem anderen. Den Imkerhut hat er trotzdem jeden Sommer aufgesetzt.“'),
+      omashuehner: a('Hühnerstall', 'Drei Hühner und ein Hahn.', '„Unsere ersten Hühner hießen wie meine Tanten. Die Tanten fanden das weniger lustig als wir.“'),
+      altglashaus: a('Altes Gewächshaus', 'Aus alten Fenstern gebaut.', '„Das Gewächshaus haben wir aus Fenstern gebaut, die der Nachbar loswerden wollte. Jedes hatte einen anderen Rahmen.“'),
+      omaslaube: a('Laube', 'Hier liegt das Notizbuch.', '„In der Laube habe ich das erste Tütchen beschriftet. Die Dose stand damals noch leer im Regal.“'),
+      omasbank: a('Omas Bank', 'Platz für alle.', '„Eine Gartenbank ist für die, die nach der Arbeit sitzen wollen, und für die, die zuhören. Mach sie lang genug.“'),
     },
   },
 } as const

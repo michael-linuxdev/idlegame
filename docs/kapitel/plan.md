@@ -46,7 +46,7 @@ Das trägt vier Abschnitte und ein Finale, das den Kreis schließt:
 
 Spalten: **ID** (stabil, Teil des Speicherformats) · Titel de / en · Währung de / en · Absender · Weg (`ZIGZAG`, `RING`, `TERRACES`, `ROWS`, `SPIRAL`). Darunter: 10 Bereiche (de), Landschaft, Tierleben/Bewegung, Jahreszeit.
 
-Bereichs-**IDs** sind über alle Kapitel und den Garten eindeutig (Pflege-Namen hängen daran); sie werden erst festgelegt, wenn eine Welle gebaut wird (Welle 1 unten mit IDs).
+Bereichs-**IDs** sind über alle Kapitel und den Garten eindeutig (Pflege-Namen hängen daran); sie wurden je Welle festgelegt (Tabellen „Welle N — Bereichs-IDs“ unten) und gehören zum Speicherformat.
 
 ### Bogen I — Nach der Schau (13–19)
 
@@ -282,8 +282,9 @@ Alle Ziele erfüllt: Regular K13 im Monat 9–12 ✓, alle 4–6 Wochen ✓, K50
 | 7 | 45–49 | Wildblumenband, Fassade, Solawi, Saatguttausch, Weltgartenschau |
 | 8 | 50 + Abschluss | Omas Schrebergarten, Abschluss-Szene, ROADMAP, Store-Texte, Bericht |
 
-Jede Welle ist für sich spielbar: Hinter dem letzten gebauten Kapitel zeigen
-„Sammlung & Ziele“ und die Grundstücke-Auswahl nur „Weitere Gärten folgen“.
+Jede Welle war für sich spielbar: Hinter dem letzten gebauten Kapitel zeigten
+„Sammlung & Ziele“ und die Grundstücke-Auswahl „Weitere Gärten folgen“. Seit
+Welle 8 sind alle 50 Kapitel gebaut; dort stehen jetzt Abschluss-Sätze.
 
 ## Welle 1 — Bereichs-IDs
 
@@ -375,6 +376,16 @@ Abweichungen vom Plan: Kapitel 45 „Hecke“ → *Feldhecke*, „Kleingewässer
 
 Großprojekt Bogen IV: `morgengarten` („Der Garten für morgen“, Kapitel 40–49, Belohnung 500 Samen).
 
+## Welle 8 — Bereichs-IDs
+
+| Kapitel | IDs (Reihenfolge = Leiter) |
+|---|---|
+| 50 omasgarten | omasbeet, omaskompost, omasspirale, omashecke, opasapfel, omasbienen, omashuehner, altglashaus, omaslaube, omasbank |
+
+Die IDs tragen bewusst das Präfix `omas…`/`opas…`/`alt…`: Die Bereiche spiegeln Kapitel 1 (`gemuesebeet`, `kompost`, `kraeuterspirale` …), dürfen aber nicht dieselben IDs haben. Abweichungen vom Plan: „Erstes Beet“ hat die ID `omasbeet`, „Apfelbaum von Opa“ heißt im Spiel *Opas Apfelbaum* (ID `opasapfel`), „Altes Gewächshaus“ die ID `altglashaus`, „Bienenkiste“ heißt im Spiel *Bienenkasten*. Brief und Notizen stammen wieder von **Oma** (Überschrift „Aus Omas Notizbuch“; die Mila-Überschrift gilt nur für Bogen IV, `chapterArc(50) = 5`). Omas Brief „Das letzte Tütchen“: Radieschen von ihrem allerersten Beet, über den Zaun von einer Nachbarin geschenkt und jedes Jahr nachgezogen; das Tütchen trägt keine Adresse, nur „Für dich“. Kurz-Chip „Anfang“ (Knopf „Zurück zum Anfang“), Währung Erinnerungen. Kulisse `omaGarden` in `backdropFinale.tsx`: wächst mit der Kapitel-Stufe (angelegte Bereiche) von Brombeeren zu Blumen, Nachbarlauben, Vereinsfahne (ab 5), Apfelbäumen (ab 8) und Lichterkette (10). Weg `omaZigzag`. Tierleben `k8-*`: Rotkehlchen (ganzjährig), Igel in der Dämmerung (nicht im Winter, Winterschlaf), Glühwürmchen in Sommernächten.
+
+**Abschluss-Szene** (nur Darstellung, `components/AbschlussScene.tsx`): Sobald der letzte Bereich (Omas Bank) gepflanzt und Omas Brief gelesen ist, erscheint beim Öffnen der Karte einmalig die Familie auf Omas Bank (Oma, Ilse, Jonas, Mila, Lena, Till), davor die leere Dose und ein Tütchen „Für dich“ (das Spiel kennt keinen Spielernamen). Knopf „Weiter gärtnern“, Escape/Zurück schließen ebenso. „Gesehen“ steht im Spielstand als neues Feld `abschlussSeen` (Startwert `false`, übersteht Saisonende, Tiefen Winter und Generation; keine neue `SAVE_VERSION`, alte Stände laden verlustfrei, Migrationstest). Statt „Weitere Gärten folgen“ stehen in Grundstücke, Sammlung und Tiefem Winter jetzt Abschluss-Sätze (`chapterUi.allFound`, `chapterUi.lastChapter`).
+
 ## Fortschritt
 
 - [x] **Paket 0** — Plan & Geschichte (dieses Dokument)
@@ -387,4 +398,4 @@ Großprojekt Bogen IV: `morgengarten` („Der Garten für morgen“, Kapitel 40�
 - [x] **Welle 5** — Kapitel 35–39, Abschluss Bogen III (Texte de + en in `stringsChaptersArc3.ts`: Youssef Amrani, Ama Owusu, Kirra Walker, Aroha Ngata, Kim Soo-ah; Grafik je Bereich in 5 Stufen + Jahreszeiten (Südhalbkugel bzw. Erntejahr), Teile `partsG`, gesperrte Ecken `wildG`, Kulissen `oasis`/`cocoaFarm`/`bush`/`fernForest`/`korea` in `backdropArc3.tsx`, Wege `oasisRing`/`cocoaTrail`/`bushSpiral`/`fernBoardwalk`/`kimchiRows`, Tierleben `k5-*`, Währungs-Symbole; Großprojekt `herkunftsbeet` für Bogen III; `RELEASED_UP_TO = 39`)
 - [x] **Welle 6** — Kapitel 40–44, Beginn Bogen IV (Texte de + en in `stringsChaptersArc4.ts`: Mila, Derya Yilmaz, Lena, Dr. Amara Okafor, Jonas; Bereichs-Notizen von Mila; Grafik je Bereich in 5 Stufen + Jahreszeiten, Teile `partsH`, gesperrte Ecken `wildH`, Kulissen `rooftop`/`schoolyard`/`forestGarden`/`seedBank`/`climateGarden` in `backdropArc4.tsx`, Wege `roofRing`/`schoolZigzag`/`chipSpiral`/`seedRing`/`mulchZigzag`, Tierleben `k6-*`, Währungs-Symbole; kein Großprojekt; `RELEASED_UP_TO = 44`)
 - [x] **Welle 7** — Kapitel 45–49, Abschluss Bogen IV (Texte de + en in `stringsChaptersArc4.ts`: Greta Hansen, Mila, Till, Sammelbrief aller Briefpartner, Dr. Elisabeth Grün; Bereichs-Notizen von Mila; Grafik je Bereich in 5 Stufen + Jahreszeiten, Teile `partsI`, gesperrte Ecken `wildI`, Kulissen `wildflowerBand`/`livingWall`/`communityFarm`/`seedSwap`/`worldExpo` in `backdropArc4.tsx`, Wege `meadowSpiral`/`courtSteps`/`farmRows`/`swapRing`/`expoRing`, Tierleben `k7-*`, Währungs-Symbole; Großprojekt `morgengarten` für Bogen IV; `RELEASED_UP_TO = 49`)
-- [ ] Welle 8 — Kapitel 50, Finale & Abschluss
+- [x] **Welle 8** — Kapitel 50, Finale & Abschluss (Brief und Notizen von Oma in `stringsChaptersArc4.ts`; Grafik je Bereich in 5 Stufen + Jahreszeiten von „damals“ zu „heute“, gesperrte Ecken (Brombeeren) in `wildI`, Kulisse `omaGarden` in `backdropFinale.tsx` mit Stufen, Weg `omaZigzag`, Tierleben `k8-*`, Währungs-Symbol (Dose mit Tütchen); Abschluss-Szene mit gespeichertem Feld `abschlussSeen`; Abschluss-Sätze statt „Weitere Gärten folgen“; `RELEASED_UP_TO = 50`, Platzhalter-Funktion entfernt; ROADMAP, Store-Texte `docs/store/texte.md`, Bericht `abschluss-bericht.md`)
