@@ -2,9 +2,10 @@
 import type { ReactNode } from 'react'
 import { Svg } from '../../HandParts'
 import { P } from '../palette'
-import { type AreaProps, Person } from './partsB'
+import { Person } from './figures'
+import { type AreaProps } from './partsB'
 import { StringLights } from './partsC'
-import { Fire, WaterBand } from './partsD'
+import { Fire } from './partsD'
 import { Chapel, DryWall, PistachioTree, SmallGoat, WhiteHouse } from './partsE'
 
 /** Trockener Inselboden: Winter grün (Regenzeit), Frühling Mohn, Sommer staubig, Herbst Ocker. */
@@ -220,11 +221,11 @@ export function Pistazien({ id, tier, season }: AreaProps): ReactNode {
       const sacks = tier
       return (
         <Svg tier={tier}>
-          <WaterBand y={36} h={20} x0={0} x1={80} />
-          <rect x="0" y="46" width="80" height="26" fill={P.stoneLight} />
-          <path d="M0 46h80" stroke={P.stone} strokeWidth="1.4" />
+          <ellipse cx="40" cy="42" rx="34" ry="11" fill={P.water} stroke={P.waterDeep} strokeWidth=".4" />
+          <path d="M16 38h8M44 46h10" stroke={P.waterLight} strokeWidth=".6" />
+          <ellipse cx="40" cy="60" rx="37" ry="11" fill={P.stoneLight} stroke={P.stone} strokeWidth="1.2" />
           {Array.from({ length: boats }, (_, i) => (
-            <Caique key={i} x={[18, 46, 66][i]!} y={[40, 36, 42][i]!} s={0.8} c={[P.blue, P.tomato, P.leafDark][i]} />
+            <Caique key={i} x={[20, 44, 62][i]!} y={[42, 38, 44][i]!} s={0.8} c={[P.blue, P.tomato, P.leafDark][i]} />
           ))}
           <path d="M20 66V54M60 66V54M16 54h48l-3 -4h-42z" stroke={P.woodDark} strokeWidth=".8" fill={P.white} />
           {Array.from({ length: sacks }, (_, i) => (
@@ -242,8 +243,9 @@ export function Pistazien({ id, tier, season }: AreaProps): ReactNode {
       const guests = Math.min(5, tier)
       return (
         <Svg tier={tier}>
-          <WaterBand y={30} h={14} x0={0} x1={80} />
-          <rect x="0" y="37" width="80" height="35" fill={winter ? P.stoneLight : P.canvas} />
+          <ellipse cx="40" cy="38" rx="32" ry="8" fill={P.water} stroke={P.waterDeep} strokeWidth=".4" />
+          <path d="M20 37h8M48 40h9" stroke={P.waterLight} strokeWidth=".6" />
+          <ellipse cx="40" cy="58" rx="37" ry="13" fill={winter ? P.stoneLight : P.canvas} stroke={P.stoneLight} strokeWidth=".6" />
           <rect x="16" y="52" width="48" height="3" fill={P.white} stroke={P.stoneLight} strokeWidth=".4" />
           <path d="M18 55v8M62 55v8" stroke={P.woodDark} strokeWidth=".8" />
           {Array.from({ length: guests }, (_, i) => (

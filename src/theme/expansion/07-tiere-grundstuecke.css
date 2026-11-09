@@ -135,6 +135,21 @@ html.tab-hidden .sky-event {
   max-width: calc(var(--u) * 26);
 }
 
+/* Kapitel-Karte: Schild und Plakette liegen über der eigenen Bereichsgrafik
+   (die Grafik bekommt mit Leuchten/Filter eine eigene Ebene). Das Wetter der
+   Grafik (Sonne, Wolke, Regen, Schnee: `.art-sky`) zeigt nur das Bereichsblatt;
+   auf der Karte läge es über den Schildern darüber, und die Karte zeigt die
+   Jahreszeit selbst. */
+.orchard-home .plot-sign,
+.orchard-home .plot-badge {
+  position: relative;
+  z-index: 1;
+}
+
+.garden-map .art-sky {
+  display: none;
+}
+
 .orchard-home .plot-meta {
   white-space: normal;
   text-align: center;

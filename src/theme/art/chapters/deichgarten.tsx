@@ -4,7 +4,8 @@ import { Smoke, Svg } from '../../HandParts'
 import { Snowcap } from './partsA'
 import { Lantern, Shadow } from '../parts'
 import { P } from '../palette'
-import { type AreaProps, Person } from './partsB'
+import { Person } from './figures'
+import { type AreaProps } from './partsB'
 import { Fire, Sheep, ThatchHouse, WaterBand } from './partsD'
 
 /** Sandiger Dünenboden. */
@@ -204,7 +205,7 @@ export function Deichgarten({ id, tier, season }: AreaProps): ReactNode {
       const crown = winter ? P.winterLeafDark : autumn ? P.autumn : P.leafDark
       return (
         <Svg tier={tier}>
-          <ellipse cx="40" cy="60" rx="36" ry="9" fill={winter ? P.frost : P.leafLight} />
+          <ellipse cx="40" cy="60" rx="36" ry="9" fill={winter ? P.frost : P.leaf} stroke={P.outlineSoft} strokeWidth=".3" />
           {Array.from({ length: n + 1 }, (_, i) => (
             <path key={`t${i}`} d={`M${x0 + 2 + i * seg * 0.95} 62v-6`} stroke={P.bark} strokeWidth="1.2" />
           ))}
@@ -311,7 +312,7 @@ export function Deichgarten({ id, tier, season }: AreaProps): ReactNode {
       const bedFill = winter ? P.white : spring ? P.leafPale : autumn ? P.woodLight : P.leaf
       return (
         <Svg tier={tier}>
-          <ellipse cx="40" cy="60" rx="36" ry="9" fill={winter ? P.frost : P.leafLight} />
+          <ellipse cx="40" cy="60" rx="36" ry="9" fill={winter ? P.frost : P.leaf} stroke={P.outlineSoft} strokeWidth=".3" />
           <path d="M52 62L54 14H62L64 62z" fill={P.white} stroke={P.outline} strokeWidth=".5" />
           {[0, 1, 2].map((i) => (
             <path key={i} d={`M${52.4 + i * 0.4} ${54 - i * 15}L${53 + i * 0.4} ${46 - i * 15}H${63 - i * 0.4}L${63.6 - i * 0.4} ${54 - i * 15}z`} fill={P.barn} />

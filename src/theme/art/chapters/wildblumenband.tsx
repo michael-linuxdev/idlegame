@@ -8,20 +8,21 @@ import type { ReactNode } from 'react'
 import { Svg } from '../../HandParts'
 import { Bunting } from './partsA'
 import type { AreaProps } from './partsB'
-import { Farmer, Patch } from './partsF'
-import { Bee, Cloud, Kid, Packet, Signpost, Snowfall, Sun } from './partsH'
+import { Patch } from './partsF'
+import { Bee, Cloud, Packet, Signpost, Snowfall, Sun } from './partsH'
 import { Floor, Partridge, Shrub, Table, Tuft, WildFlower } from './partsI'
 import { Butterfly } from './partsA'
 import { P } from '../palette'
+import { Farmer, Kid } from './figures'
 import { ssn } from './season'
 
 /** Himmel: Sommer Sonne, Frühling Wolke, Herbst Wolke grau, Winter Schnee. */
 function Sky({ season }: { season?: string }) {
   const z = ssn(season)
-  if (z === 'summer') return <Sun x={70} y={10} r={3.2} />
-  if (z === 'spring') return <Cloud x={16} y={10} s={1.1} />
-  if (z === 'autumn') return <Cloud x={62} y={10} s={1.2} c={P.stoneLight} />
-  return <Snowfall n={7} y1={34} />
+  if (z === 'summer') return <g className="art-sky"><Sun x={70} y={10} r={3.2} /></g>
+  if (z === 'spring') return <g className="art-sky"><Cloud x={16} y={10} s={1.1} /></g>
+  if (z === 'autumn') return <g className="art-sky"><Cloud x={62} y={10} s={1.2} c={P.stoneLight} /></g>
+  return <g className="art-sky"><Snowfall n={7} y1={34} /></g>
 }
 
 /** Hummeln und Falter nur im Frühling/Sommer. */

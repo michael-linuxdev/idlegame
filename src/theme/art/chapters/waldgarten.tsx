@@ -7,9 +7,10 @@
 import type { ReactNode } from 'react'
 import { Svg } from '../../HandParts'
 import { P } from '../palette'
+import { Farmer, Kid } from './figures'
 import type { AreaProps } from './partsB'
-import { Farmer, Patch } from './partsF'
-import { Kid, LeafLitter, LeafTree, Mushroom, Signpost, Snowfall, SnowDrifts } from './partsH'
+import { Patch } from './partsF'
+import { LeafLitter, LeafTree, Mushroom, Signpost, Snowfall, SnowDrifts } from './partsH'
 import { ssn } from './season'
 
 /** Waldboden: Frühling Moos, Sommer Laubstreu, Herbst buntes Laub, Winter Schnee. */

@@ -8,10 +8,11 @@
 import type { ReactNode } from 'react'
 import { Svg } from '../../HandParts'
 import { P } from '../palette'
+import { Farmer } from './figures'
 import type { AreaProps } from './partsB'
 import { StringLights } from './partsC'
 import { Fire } from './partsD'
-import { AdobeHouse, Alpaca, Farmer, Frost, Patch, PotatoPlant, Tukul } from './partsF'
+import { AdobeHouse, Alpaca, Frost, Patch, PotatoPlant, Tukul } from './partsF'
 import { ssn } from './season'
 
 const TUBERS = [P.plum, P.berry, P.yellow, P.terracottaLight, P.lilac, P.cream, P.woodMid]

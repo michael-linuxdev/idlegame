@@ -7,10 +7,11 @@
 import type { ReactNode } from 'react'
 import { Svg } from '../../HandParts'
 import { P } from '../palette'
+import { Farmer, Kid } from './figures'
 import { Bunting } from './partsA'
 import type { AreaProps } from './partsB'
-import { Farmer, Patch, Rain } from './partsF'
-import { Can, Cloud, Kid, LeafLitter, LeafTree, Snowfall, SnowDrifts, Sun } from './partsH'
+import { Patch, Rain } from './partsF'
+import { Can, Cloud, LeafLitter, LeafTree, Snowfall, SnowDrifts, Sun } from './partsH'
 import { ssn } from './season'
 
 /** Boden: Frühling feucht dunkel, Sommer trocken hell mit Rissen, Herbst Laub, Winter Frost. */
@@ -30,10 +31,10 @@ function Floor({ season, cy = 61, rx = 36, ry = 9 }: { season?: string; cy?: num
 /** Wetter über dem Motiv: Frühling Schauer, Sommer Sonne, Herbst Starkregen, Winter Schnee. */
 function Weather({ season }: { season?: string }) {
   const z = ssn(season)
-  if (z === 'summer') return <Sun x={68} y={12} r={3.4} />
-  if (z === 'spring') return <g><Cloud x={18} y={10} s={1.1} c={P.stoneLight} /><Rain n={4} x0={10} x1={28} y0={14} h={6} /></g>
-  if (z === 'autumn') return <g><Cloud x={58} y={10} s={1.3} c={P.stone} /><Rain n={6} x0={46} x1={72} y0={14} h={8} /></g>
-  return <Snowfall n={6} y1={34} />
+  if (z === 'summer') return <g className="art-sky"><Sun x={68} y={12} r={3.4} /></g>
+  if (z === 'spring') return <g className="art-sky"><Cloud x={18} y={10} s={1.1} c={P.stoneLight} /><Rain n={4} x0={10} x1={28} y0={14} h={6} /></g>
+  if (z === 'autumn') return <g className="art-sky"><Cloud x={58} y={10} s={1.3} c={P.stone} /><Rain n={6} x0={46} x1={72} y0={14} h={8} /></g>
+  return <g className="art-sky"><Snowfall n={6} y1={34} /></g>
 }
 
 /** Trockenheitsliebende Staude: 0 Lavendel, 1 Salbei, 2 Fetthenne. */
@@ -259,8 +260,8 @@ export function Klimagarten({ id, tier, season }: AreaProps): ReactNode {
           ))}
           {tier >= 4 ? <path d="M72 66V52M72 52l4 1.6l-4 1.6" stroke={P.charcoal} strokeWidth=".6" fill={P.red} /> : null}
           {tier >= 5 ? <Farmer x={60} y={72} c={P.leafDark} s={0.75} hat={P.woodLight} /> : null}
-          {winter ? <Snowfall n={6} y1={30} /> : null}
-          {summer ? <Sun x={68} y={12} r={3} /> : null}
+          {winter ? <g className="art-sky"><Snowfall n={6} y1={30} /></g> : null}
+          {summer ? <g className="art-sky"><Sun x={68} y={12} r={3} /></g> : null}
         </Svg>
       )
     }

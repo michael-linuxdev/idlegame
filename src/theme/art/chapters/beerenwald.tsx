@@ -4,7 +4,8 @@ import { Smoke, Svg } from '../../HandParts'
 import { Conifer, Snowcap } from './partsA'
 import { Jar, Shadow } from '../parts'
 import { P } from '../palette'
-import { type AreaProps, Person } from './partsB'
+import { Person } from './figures'
+import { type AreaProps } from './partsB'
 import { Birch } from './partsC'
 import { BerryShrub, Fire, WaterBand } from './partsD'
 
@@ -240,7 +241,7 @@ export function Beerenwald({ id, tier, season }: AreaProps): ReactNode {
       const wreath = winter ? P.winterLeafDark : P.leaf
       return (
         <Svg tier={tier}>
-          <ellipse cx="40" cy="60" rx="36" ry="10" fill={winter ? P.frost : P.leafLight} />
+          <ellipse cx="40" cy="60" rx="36" ry="10" fill={winter ? P.frost : P.leaf} stroke={P.outlineSoft} strokeWidth=".3" />
           <path d="M40 64V14" stroke={P.woodMid} strokeWidth="1.8" />
           <path d="M28 26H52" stroke={P.woodMid} strokeWidth="1.4" />
           {!winter ? <path d="M40 60V14M28 26H52" stroke={wreath} strokeWidth="3" strokeDasharray="1.6 .8" opacity=".9" /> : null}

@@ -17,13 +17,21 @@ export function Sheep({ x, y, s = 1, flip = false, wool = P.feather }: { x: numb
   )
 }
 
-/** Wasserband quer durchs Bild (Fließ, Gracht, Kanal, Priel). */
+/**
+ * Wasserband quer durchs Bild (Fließ, Gracht, Kanal, Priel). Breite Wasserflächen
+ * (ab 10 hoch) bleiben vom Bildrand weg und haben weich gerundete Ufer statt Ecken.
+ */
 export function WaterBand({ y, h = 7, x0 = 2, x1 = 78, frozen }: { y: number; h?: number; x0?: number; x1?: number; frozen?: boolean }) {
+  const wide = h >= 10
+  if (wide) {
+    x0 = Math.max(x0, 3)
+    x1 = Math.min(x1, 77)
+  }
   const mid = (x0 + x1) / 2
-  const r = Math.min(h / 2, 6)
+  const r = wide ? Math.min((x1 - x0) / 4, 20) : Math.min(h / 2, 6)
   return (
     <g>
-      <rect x={x0} y={y - h / 2} width={x1 - x0} height={h} rx={r} fill={frozen ? P.glass : P.water} stroke={P.waterDeep} strokeWidth=".4" />
+      <rect x={x0} y={y - h / 2} width={x1 - x0} height={h} rx={r} ry={wide ? h / 2 : r} fill={frozen ? P.glass : P.water} stroke={P.waterDeep} strokeWidth=".4" />
       {frozen ? (
         <path d={`M${x0 + 8} ${y - 1}l6 1.4M${mid} ${y + 1}l8 -1M${x1 - 14} ${y}l5 1`} stroke={P.white} strokeWidth=".6" />
       ) : (

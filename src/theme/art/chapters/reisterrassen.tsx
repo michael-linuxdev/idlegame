@@ -1,5 +1,6 @@
 /**
- * Kapitel-Grafik Kapitel 33: Reisterrassen auf Bali (Subak, Jatiluwih).
+ * Kapitel-Grafik Kapitel 33: Reisterrassen auf Bali. Quellhaus und Erntetag
+ * als schlichte Hof-Motive (kein Schrein, keine Opfergaben).
  * Jahreszeiten als Reis-Zyklus: Frühling = geflutete Felder als Wasserspiegel
  * mit Setzlingen, Sommer = sattgrün, Herbst = goldene Rispen, Winter =
  * abgeerntet (Stoppeln, Schlamm, Enten auf dem Feld).
@@ -7,8 +8,10 @@
 import type { ReactNode } from 'react'
 import { Svg } from '../../HandParts'
 import { P } from '../palette'
+import { Farmer } from './figures'
+import { Bunting } from './partsA'
 import type { AreaProps } from './partsB'
-import { CoconutPalm, Farmer, Lumbung, Patch, RunnerDuck, Shrine } from './partsF'
+import { CoconutPalm, Lumbung, Patch, RunnerDuck } from './partsF'
 import { ssn } from './season'
 
 /** Farbe eines Reisfelds je Jahreszeit (Fläche, Muster). */
@@ -40,55 +43,52 @@ function PaddyPlot({ x, y, w, h, z }: { x: number; y: number; w: number; h: numb
   )
 }
 
-/** Penjor: hoher gebogener Bambus mit Schmuck. */
-function Penjor({ x, y, s = 1 }: { x: number; y: number; s?: number }) {
+/** Quellhaus: Steinsockel mit Wasserbecken, Pfosten und schlichtes Strohdach, Bambusrohr zum Teich (Fußpunkt Mitte unten). */
+function SpringHouse({ x, y, s = 1, winter }: { x: number; y: number; s?: number; winter?: boolean }) {
   return (
     <g transform={`translate(${x} ${y}) scale(${s})`}>
-      <path d="M0 0V-22Q0 -30 7 -30" stroke={P.woodLight} strokeWidth="1" fill="none" />
-      <path d="M7 -30v4" stroke={P.paper} strokeWidth="1.4" />
-      {[-8, -13, -18].map((dy) => (
-        <path key={dy} d={`M0 ${dy}l-1.6 2M0 ${dy}l1.6 2`} stroke={P.yellow} strokeWidth=".6" />
+      <rect x="-8" y="-4" width="16" height="4" fill={P.stone} stroke={P.outlineStone} strokeWidth=".3" />
+      <path d="M-5 -4v-2.6h10V-4" fill={P.waterLight} stroke={P.outlineStone} strokeWidth=".3" />
+      <path d="M-6.4 -4V-12M6.4 -4V-12" stroke={P.woodDark} strokeWidth=".9" />
+      <path d="M-10 -11.4L0 -17L10 -11.4z" fill={winter ? P.woodMid : P.woodLight} stroke={P.outlineWood} strokeWidth=".3" />
+      <path d="M-6.6 -12.4L0 -16M6.6 -12.4L0 -16" stroke={P.woodMid} strokeWidth=".3" />
+      <path d="M7 -5.4h7" stroke={P.leafPale} strokeWidth="1.1" strokeLinecap="round" />
+      <path d="M14 -5.2q1 1.6 .8 4.6" stroke={P.water} strokeWidth=".8" fill="none" />
+    </g>
+  )
+}
+
+/** Reisgarben: gebündelte Halme, zum Trocknen aufgestellt (Fußpunkt Mitte unten). */
+function Sheaves({ x, y, s = 1, z }: { x: number; y: number; s?: number; z: string }) {
+  const c = z === 'spring' || z === 'summer' ? P.gold : P.yellow
+  return (
+    <g transform={`translate(${x} ${y}) scale(${s})`}>
+      {[-4, 0, 4].map((dx) => (
+        <path key={dx} d={`M${dx - 2.4} 0l${2.4} -9l${2.4} 9z`} fill={c} stroke={P.woodMid} strokeWidth=".3" />
       ))}
+      <path d="M-5.6 -3.4h11.2" stroke={P.woodDark} strokeWidth=".5" />
     </g>
   )
 }
 
-/** Gebogan: Opferturm aus Früchten auf einem Sockel (Fußpunkt Mitte unten). */
-function Gebogan({ x, y, s = 1 }: { x: number; y: number; s?: number }) {
-  return (
-    <g transform={`translate(${x} ${y}) scale(${s})`}>
-      <path d="M-2 0h4l-1 -2h-2z" fill={P.brass} />
-      {[0, 1, 2, 3].map((k) => (
-        <g key={k}>
-          {[-1.6 + k * 0.4, 0, 1.6 - k * 0.4].map((dx, i) => (
-            <circle key={i} cx={dx} cy={-3 - k * 1.8} r=".9" fill={[P.orange, P.berry, P.yellow, P.leaf][(k + i) % 4]} />
-          ))}
-        </g>
-      ))}
-      <path d="M0 -10v-2" stroke={P.lamp} strokeWidth=".8" />
-    </g>
-  )
-}
-
-/** Candi bentar: gespaltenes Tor (Fußpunkt Mitte unten). */
-function SplitGate({ x, y, s = 1 }: { x: number; y: number; s?: number }) {
-  return (
-    <g transform={`translate(${x} ${y}) scale(${s})`}>
-      <path d="M-9 0V-6L-7 -8V-12L-5 -14V-18L-2 -20V0z" fill={P.terracottaLight} stroke={P.outlineWood} strokeWidth=".3" />
-      <path d="M9 0V-6L7 -8V-12L5 -14V-18L2 -20V0z" fill={P.terracottaLight} stroke={P.outlineWood} strokeWidth=".3" />
-      <path d="M-9 -6h7M-7 -12h5M2 -6h7M2 -12h5" stroke={P.stone} strokeWidth=".6" />
-    </g>
-  )
-}
-
-/** Canang: Schälchen aus Palmblatt mit Blüten. */
-function Canang({ x, y }: { x: number; y: number }) {
+/** Flacher Korb mit Obst (Fußpunkt Mitte unten). */
+function FruitBasket({ x, y, i = 0 }: { x: number; y: number; i?: number }) {
   return (
     <g>
-      <rect x={x - 1.6} y={y - 1} width="3.2" height="1.4" fill={P.leafPale} stroke={P.leafDark} strokeWidth=".2" />
-      <circle cx={x - 0.8} cy={y - 1.2} r=".5" fill={P.red} />
-      <circle cx={x + 0.4} cy={y - 1.3} r=".5" fill={P.yellow} />
-      <circle cx={x + 1} cy={y - 0.9} r=".4" fill={P.white} />
+      <path d={`M${x - 3} ${y - 2.2}h6l-1 2.2h-4z`} fill={P.woodLight} stroke={P.outlineWood} strokeWidth=".25" />
+      {[-1.6, 0, 1.6].map((dx, k) => (
+        <circle key={k} cx={x + dx} cy={y - 2.8} r=".9" fill={[P.orange, P.berry, P.yellow, P.leafLight][(i + k) % 4]} />
+      ))}
+    </g>
+  )
+}
+
+/** Geflochtenes Tablett (Ware der Flechtwerkstatt). */
+function Tray({ x, y }: { x: number; y: number }) {
+  return (
+    <g>
+      <ellipse cx={x} cy={y - 0.6} rx="2" ry=".8" fill={P.woodLight} stroke={P.outlineWood} strokeWidth=".2" />
+      <path d={`M${x - 1.3} ${y - 0.6}h2.6`} stroke={P.woodMid} strokeWidth=".25" />
     </g>
   )
 }
@@ -127,7 +127,7 @@ export function Reisterrassen({ id, tier, season }: AreaProps): ReactNode {
           <rect x="35" y="46" width="5" height="3" fill={P.water} />
           <rect x="42" y="46" width="2.4" height="3" fill={P.water} />
           <path d="M37.4 52v4q0 3 -8 4M43.2 52v4q0 3 6 4" stroke={P.water} strokeWidth="1.6" fill="none" />
-          {tier >= 3 ? <Canang x={40} y={44} /> : null}
+          {tier >= 3 ? <path d="M48 46q2 -4 5 -4M48 46q1 -3 0 -6M48 46q-2 -3 -5 -3" stroke={winter ? P.winterLeaf : P.leaf} strokeWidth=".8" fill="none" /> : null}
           {tier >= 5 ? <Farmer x={70} y={50} c={P.white} s={0.6} hat={P.woodLight} /> : null}
         </Svg>
       )
@@ -137,9 +137,14 @@ export function Reisterrassen({ id, tier, season }: AreaProps): ReactNode {
         <Svg tier={tier}>
           <Hill season={season} cy={56} ry={14} />
           <PaddyPlot x={10} y={42} w={60} h={6} z={z} />
-          <ellipse cx="54" cy="64" rx="14" ry="4" fill={P.water} stroke={P.stone} strokeWidth=".8" />
-          <Shrine x={32} y={62} s={1.3} tiers={Math.min(5, tier + 1)} />
-          {tier >= 2 ? <Canang x={22} y={64} /> : null}
+          <ellipse cx="56" cy="64" rx="13" ry="4" fill={winter ? P.waterLight : P.water} stroke={P.stone} strokeWidth=".8" />
+          <SpringHouse x={28} y={64} s={1.5} winter={winter} />
+          {tier >= 2 ? (
+            <g>
+              <path d="M10 66h4l-.6 -3.4h-2.8z" fill={P.metal} stroke={P.outlineStone} strokeWidth=".25" />
+              <path d="M10.4 62.6q1.6 -2 3.2 0" stroke={P.charcoal} strokeWidth=".3" fill="none" />
+            </g>
+          ) : null}
           {tier >= 3 ? (
             <g>
               <path d="M66 62V40" stroke={P.bark} strokeWidth="1.2" />
@@ -149,13 +154,10 @@ export function Reisterrassen({ id, tier, season }: AreaProps): ReactNode {
               ))}
             </g>
           ) : null}
-          {tier >= 4 ? (
-            <g>
-              <path d="M18 64V48" stroke={P.woodDark} strokeWidth=".6" />
-              <path d="M13 49Q18 44 23 49z" fill={P.yellow} stroke={P.gold} strokeWidth=".3" />
-            </g>
-          ) : null}
-          {tier >= 5 ? <Farmer x={50} y={72} c={P.white} s={0.6} hat={P.white} /> : null}
+          {tier >= 4
+            ? [44, 49].map((x) => <path key={x} d={`M${x - 2} 70q-.6 -3 .6 -4.4h2.8q1.2 1.4 .6 4.4z`} fill={P.terracotta} stroke={P.outlineWood} strokeWidth=".25" />)
+            : null}
+          {tier >= 5 ? <Farmer x={70} y={72} c={P.white} s={0.6} hat={P.woodLight} /> : null}
         </Svg>
       )
     case 'kokospalmen': {
@@ -280,7 +282,7 @@ export function Reisterrassen({ id, tier, season }: AreaProps): ReactNode {
           <path d="M8 40L39 26L70 40Q39 37 8 40z" fill={P.woodLight} stroke={P.outlineWood} strokeWidth=".4" />
           <path d="M16 39.4L39 27.6M62 39.4L39 27.6" stroke={P.woodMid} strokeWidth=".35" />
           {Array.from({ length: trays }, (_, i) => (
-            <Canang key={i} x={22 + (i % 6) * 7} y={54} />
+            <Tray key={i} x={22 + (i % 6) * 7} y={54} />
           ))}
           {tier >= 3
             ? [16, 66].map((x) => (
@@ -296,20 +298,31 @@ export function Reisterrassen({ id, tier, season }: AreaProps): ReactNode {
       )
     }
     case 'tempelfest': {
-      const offerings = Math.min(4, tier)
+      const baskets = Math.min(4, tier)
       return (
         <Svg tier={tier}>
           <Hill season={season} cy={52} ry={21} />
           <PaddyPlot x={8} y={32} w={64} h={6} z={z} />
-          <rect x="10" y="56" width="60" height="6" fill={P.stoneLight} />
-          <SplitGate x={40} y={56} s={1.3} />
-          {Array.from({ length: offerings }, (_, i) => (
-            <Gebogan key={i} x={[22, 58, 14, 66][i]!} y={56} s={1.1} />
+          <ellipse cx="40" cy="60" rx="30" ry="5" fill={P.stoneLight} stroke={P.outlineStone} strokeWidth=".3" />
+          <Sheaves x={40} y={58} s={1.4} z={z} />
+          {Array.from({ length: baskets }, (_, i) => (
+            <FruitBasket key={i} x={[24, 56, 16, 64][i]!} y={60} i={i} />
           ))}
-          {tier >= 2 ? <Penjor x={8} y={66} s={1.1} /> : null}
-          {tier >= 3 ? <Penjor x={72} y={66} s={1.1} /> : null}
+          {tier >= 2 ? (
+            <g>
+              <path d="M8 62V42M72 62V42" stroke={P.woodMid} strokeWidth=".8" />
+              <Bunting y={42} n={7} x0={8} x1={72} />
+            </g>
+          ) : null}
+          {tier >= 3 ? (
+            <g>
+              <rect x="50" y="64" width="18" height="2" fill={P.woodLight} stroke={P.outlineWood} strokeWidth=".25" />
+              <path d="M52 66v3M66 66v3" stroke={P.woodDark} strokeWidth=".6" />
+              {[54, 59, 64].map((x) => <ellipse key={x} cx={x} cy={63.6} rx="1.6" ry=".7" fill={P.white} />)}
+            </g>
+          ) : null}
           {tier >= 4
-            ? [30, 38, 46].map((x, i) => (
+            ? [24, 32, 42].map((x, i) => (
                 <g key={x}>
                   <Farmer x={x} y={72} c={[P.white, P.yellow, P.white][i]!} s={0.7} hat={P.white} skirt={i % 2 ? P.berry : P.yellow} />
                 </g>
@@ -317,9 +330,9 @@ export function Reisterrassen({ id, tier, season }: AreaProps): ReactNode {
             : null}
           {tier >= 5 ? (
             <g>
-              <circle cx="56" cy="66" r="2.6" fill={P.brass} stroke={P.outlineWood} strokeWidth=".3" />
-              <circle cx="56" cy="66" r=".9" fill={P.gold} />
-              <path d="M52 69h8" stroke={P.woodDark} strokeWidth=".8" />
+              <rect x="8" y="64" width="7" height="5" rx="2.4" fill={P.woodMid} stroke={P.outlineWood} strokeWidth=".3" />
+              <ellipse cx="8" cy="66.5" rx="1" ry="2.4" fill={P.cream} stroke={P.outlineWood} strokeWidth=".25" />
+              <path d="M17 62l-2 3" stroke={P.woodDark} strokeWidth=".6" />
             </g>
           ) : null}
         </Svg>

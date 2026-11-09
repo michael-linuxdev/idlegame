@@ -7,10 +7,11 @@
 import type { ReactNode } from 'react'
 import { Svg } from '../../HandParts'
 import { P } from '../palette'
+import { Farmer, Kid } from './figures'
 import { Bunting } from './partsA'
 import type { AreaProps } from './partsB'
-import { Farmer, Patch } from './partsF'
-import { Bee, Can, Kid, LeafLitter, Snowfall, SnowDrifts, Sun, WoodBox } from './partsH'
+import { Patch } from './partsF'
+import { Bee, Can, LeafLitter, Snowfall, SnowDrifts, Sun, WoodBox } from './partsH'
 import { ssn } from './season'
 
 /** Schulgarten-Boden: Frühling Erde, Sommer Rasen, Herbst Laub, Winter Schnee. */

@@ -49,7 +49,7 @@ export function PlotButtons({ game, current, onGo }: { game: GameApi; current: P
         {others.map((p) => {
           if (p === 'garden') {
             return (
-              <button key="garden" type="button" className="map-side-btn plot-switch back" onClick={() => onGo('garden')} aria-label={t.chapterUi.toGarden}>
+              <button key="garden" type="button" className="map-side-btn plot-switch back" onClick={() => onGo('garden')} aria-label={labelWithChip(t.chapterUi.chipGarden, t.chapterUi.toGarden)}>
                 <IconSprout />
                 <span className="map-side-label">{t.chapterUi.chipGarden}</span>
               </button>
@@ -57,7 +57,7 @@ export function PlotButtons({ game, current, onGo }: { game: GameApi; current: P
           }
           const c = chapterCopy(p)
           return (
-            <button key={p} type="button" className="map-side-btn plot-switch" onClick={() => onGo(p)} aria-label={c.to}>
+            <button key={p} type="button" className="map-side-btn plot-switch" onClick={() => onGo(p)} aria-label={labelWithChip(c.chip, c.to)}>
               {c.icon}
               <span className="map-side-label">{c.chip}</span>
             </button>
@@ -68,13 +68,18 @@ export function PlotButtons({ game, current, onGo }: { game: GameApi; current: P
   }
   return (
     <>
-      <button type="button" className="map-side-btn plot-switch" onClick={() => setOpen(true)} aria-label={t.plots.aria}>
+      <button type="button" className="map-side-btn plot-switch" onClick={() => setOpen(true)} aria-label={labelWithChip(t.plots.button, t.plots.aria)}>
         <IconMap />
         <span className="map-side-label">{t.plots.button}</span>
       </button>
       {sheet}
     </>
   )
+}
+
+/** Sichtbares Kürzel muss im Namen stehen (WCAG „label in name“): „Stadt, Zum Gemeinschaftsgarten“. */
+function labelWithChip(chip: string, label: string): string {
+  return label.toLocaleLowerCase().includes(chip.toLocaleLowerCase()) ? label : `${chip}, ${label}`
 }
 
 function PlotSheet({ game, current, onGo, onClose }: { game: GameApi; current: Plot; onGo: (p: Plot) => void; onClose: () => void }) {

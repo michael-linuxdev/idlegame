@@ -7,9 +7,10 @@
 import type { ReactNode } from 'react'
 import { Svg } from '../../HandParts'
 import { P } from '../palette'
+import { Farmer } from './figures'
 import type { AreaProps } from './partsB'
 import { Fire, WaterBand } from './partsD'
-import { CoffeeShrub, Ensete, Farmer, Patch, Rain, ShadeTree, Tukul } from './partsF'
+import { CoffeeShrub, Ensete, Patch, Rain, ShadeTree, Tukul } from './partsF'
 import { ssn } from './season'
 
 /** Waldboden: Frühling rotbraun, Sommer nass und moosig, Herbst Laub, Winter trocken. */
@@ -170,7 +171,7 @@ export function Kaffeewald({ id, tier, season }: AreaProps): ReactNode {
       return (
         <Svg tier={tier}>
           <Floor season={season} cy={58} ry={15} />
-          <WaterBand y={46} h={winter ? 6 : 10} x0={0} x1={80} />
+          <WaterBand y={46} h={winter ? 6 : 10} x0={8} x1={72} />
           <rect x="20" y="52" width="26" height="8" rx="1" fill={P.stoneLight} stroke={P.outlineStone} strokeWidth=".4" />
           <rect x="22" y="53.4" width="22" height="5" fill={P.water} />
           {Array.from({ length: tier + 2 }, (_, i) => (
@@ -232,8 +233,9 @@ export function Kaffeewald({ id, tier, season }: AreaProps): ReactNode {
             <path key={i} d={`M${31 + (i % 6) * 3.2} ${55.6 - Math.floor(i / 6) * 1.6}h2l-.3 -1.6h-1.4z`} fill={P.white} stroke={P.stone} strokeWidth=".2" />
           ))}
           <Jebena x={56} y={64} s={1.2} />
-          {tier >= 2 ? <path className="smoke" d="M24 58c-1.4 -2 1.4 -3.4 0 -6" stroke={P.stoneLight} strokeWidth=".8" fill="none" /> : null}
-          {tier >= 2 ? <path d="M22 60h4l-.6 -2h-2.8z" fill={P.terracotta} /> : null}
+          {/* Kleiner Kohleofen für die Kanne (kein Räucherwerk) */}
+          {tier >= 2 ? <path d="M21.6 60.4h4.8l-.8 -2.4h-3.2z" fill={P.charcoal} /> : null}
+          {tier >= 2 ? <path d="M22.8 58h2.4" stroke={P.orange} strokeWidth=".8" strokeLinecap="round" /> : null}
           </g>
           {tier >= 3 ? <Farmer x={70} y={64} c={P.white} s={0.8} hat={P.white} skirt={P.leafDark} /> : null}
           {tier >= 4 ? (

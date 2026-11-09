@@ -60,6 +60,12 @@ function GardenBlock({ season, daypart }: { season: Season; daypart: Daypart }) 
   )
 }
 
+/** Jahreszeit der Kapitel-Blöcke: Sommer (Vergleichsbilder), sonst `&season=winter` usw. */
+function sheetSeason(): Season {
+  const s = new URLSearchParams(location.search).get('season')
+  return SEASONS.includes(s as Season) ? (s as Season) : 'summer'
+}
+
 function ChapterBlock({ chapter }: { chapter: (typeof CHAPTERS)[number] }) {
   const art = ART_REGISTRY[chapter.id]
   return (
@@ -79,7 +85,7 @@ function ChapterBlock({ chapter }: { chapter: (typeof CHAPTERS)[number] }) {
             </div>
             {TIER_LEVELS.map((lv) => (
               <div className="as-cell" key={lv}>
-                <art.area id={a.id} level={lv} season="summer" />
+                <art.area id={a.id} level={lv} season={sheetSeason()} />
               </div>
             ))}
           </div>

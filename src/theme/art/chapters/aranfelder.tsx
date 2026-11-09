@@ -2,7 +2,8 @@
 import type { ReactNode } from 'react'
 import { Svg } from '../../HandParts'
 import { P } from '../palette'
-import { type AreaProps, Person } from './partsB'
+import { Person } from './figures'
+import { type AreaProps } from './partsB'
 import { StringLights } from './partsC'
 import { ThatchHouse, WaterBand } from './partsD'
 import { DryWall, WoollySheep } from './partsE'
@@ -97,8 +98,8 @@ export function Aranfelder({ id, tier, season }: AreaProps): ReactNode {
       const piles = tier + 1
       return (
         <Svg tier={tier}>
-          <WaterBand y={26} h={10} x0={0} x1={80} />
-          <path d="M0 32Q40 28 80 32V36H0z" fill={P.paper} />
+          <WaterBand y={30} h={12} x0={6} x1={74} />
+          <path d="M8 36Q40 31 72 36Q40 40 8 36z" fill={P.paper} />
           <Limestone cy={58} ry={12} wet={winter} />
           {Array.from({ length: piles }, (_, i) => (
             <Kelp key={i} x={[22, 44, 60, 30, 52, 14][i]!} y={[56, 54, 60, 64, 66, 62][i]!} s={1.1} />
@@ -231,16 +232,16 @@ export function Aranfelder({ id, tier, season }: AreaProps): ReactNode {
       const marks = Math.min(5, tier)
       return (
         <Svg tier={tier}>
-          <rect x="0" y="40" width="80" height="32" fill={P.waterDeep} />
-          <path d="M8 42h10M30 50h12M56 64h8" stroke={P.waterLight} strokeWidth=".6" />
-          <path d="M0 72V30L30 32L44 40L46 72z" fill={P.stone} stroke={P.outlineStone} strokeWidth=".4" />
-          <path d="M0 30L30 32L44 40" stroke={g} strokeWidth="3" fill="none" />
-          <path d="M44 40L46 72" stroke={P.stoneDark} strokeWidth="1" />
-          <path d="M46 70q6 -3 12 0q6 -3 12 0" stroke={P.white} strokeWidth="1" fill="none" className="ha-swim" />
+          <ellipse cx="50" cy="60" rx="27" ry="11" fill={P.waterDeep} stroke={P.outlineStone} strokeWidth=".3" />
+          <path d="M56 54h8M62 62h8M50 66h6" stroke={P.waterLight} strokeWidth=".6" />
+          <path d="M6 64Q3 48 7 31L30 32L44 40Q49 52 47 64Q26 69 6 64z" fill={P.stone} stroke={P.outlineStone} strokeWidth=".4" />
+          <path d="M7 31L30 32L44 40" stroke={g} strokeWidth="3" fill="none" strokeLinecap="round" />
+          <path d="M44 40Q48 52 47 64" stroke={P.stoneDark} strokeWidth="1" fill="none" />
+          <path d="M47 64q5 -3 10 0q5 -3 10 0" stroke={P.white} strokeWidth="1" fill="none" className="ha-swim" />
           {Array.from({ length: marks }, (_, i) => (
             <g key={i}>
-              <path d={`M${6 + i * 8} ${31 + i * 0.6}v-4`} stroke={P.woodDark} strokeWidth=".6" />
-              <rect x={5 + i * 8} y={26.6 + i * 0.6} width="2" height="1.4" fill={P.yellow} />
+              <path d={`M${10 + i * 7} ${31 + i * 0.6}v-4`} stroke={P.woodDark} strokeWidth=".6" />
+              <rect x={9 + i * 7} y={26.6 + i * 0.6} width="2" height="1.4" fill={P.yellow} />
             </g>
           ))}
           {tier >= 3 ? <Puffin x={38} y={46} s={0.9} /> : null}
@@ -254,20 +255,21 @@ export function Aranfelder({ id, tier, season }: AreaProps): ReactNode {
       const boats = Math.min(3, tier)
       return (
         <Svg tier={tier}>
-          <WaterBand y={56} h={26} x0={0} x1={80} />
-          <path d="M0 42H52V48H0z" fill={P.stone} stroke={P.outlineStone} strokeWidth=".4" />
-          <path d="M52 42h4v28h-4z" fill={P.stoneDark} />
-          <DryWall x={0} y={42} w={52} h={3} c={P.stone} />
+          <ellipse cx="40" cy="57" rx="37" ry="13" fill={P.water} stroke={P.waterDeep} strokeWidth=".4" />
+          <path d="M14 62h8M44 68h10M60 52h7" stroke={P.waterLight} strokeWidth=".6" />
+          <path d="M6 48Q4 42 10 42H52V48z" fill={P.stone} stroke={P.outlineStone} strokeWidth=".4" />
+          <path d="M52 42h4v20q-2 1.4 -4 0z" fill={P.stoneDark} />
+          <DryWall x={8} y={42} w={44} h={3} c={P.stone} />
           {Array.from({ length: boats }, (_, i) => (
-            <Currach key={i} x={[20, 36, 66][i]!} y={[58, 64, 60][i]!} s={0.9} />
+            <Currach key={i} x={[20, 36, 64][i]!} y={[58, 64, 62][i]!} s={0.9} />
           ))}
-          {tier >= 2 ? <Currach x={10} y={42} s={0.8} upturned /> : null}
+          {tier >= 2 ? <Currach x={14} y={42} s={0.8} upturned /> : null}
           {tier >= 3 ? <path d="M36 42v-3M44 42v-3" stroke={P.charcoal} strokeWidth="1.4" /> : null}
           {tier >= 4 ? (
             <g>
-              <path d="M58 40H78L76 48H60z" fill={P.white} stroke={P.charcoal} strokeWidth=".4" />
-              <rect x="64" y="34" width="8" height="6" fill={P.white} stroke={P.charcoal} strokeWidth=".3" />
-              <rect x="66" y="31" width="2" height="3" fill={P.tomato} />
+              <path d="M58 46H76L74 54H60z" fill={P.white} stroke={P.charcoal} strokeWidth=".4" />
+              <rect x="63" y="40" width="8" height="6" fill={P.white} stroke={P.charcoal} strokeWidth=".3" />
+              <rect x="65" y="37" width="2" height="3" fill={P.tomato} />
             </g>
           ) : null}
           {tier >= 5 ? <Person x={28} y={42} c={P.yellow} s={0.6} /> : null}

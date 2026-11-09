@@ -28,7 +28,7 @@ export function Frost({ cx = 40, cy = 60, n = 9, w = 60 }: { cx?: number; cy?: n
 /** Regenschnüre (Regenzeit, Monsun). */
 export function Rain({ n = 8, x0 = 6, x1 = 74, y0 = 6, h = 9 }: { n?: number; x0?: number; x1?: number; y0?: number; h?: number }) {
   return (
-    <g>
+    <g className="art-sky">
       {Array.from({ length: n }, (_, i) => {
         const x = x0 + ((x1 - x0) / Math.max(1, n - 1)) * i
         const y = y0 + ((i * 11) % 14)
@@ -254,22 +254,6 @@ export function RunnerDuck({ x, y, s = 1, flip = false, c = P.white }: { x: numb
       <circle cx=".6" cy="-8.2" r="1" fill={c} stroke={P.outlineFur} strokeWidth=".25" />
       <path d="M1.4 -8.2l1.4 .3l-1.4 .4z" fill={P.amber} />
       <circle cx=".8" cy="-8.4" r=".2" fill={P.ink} />
-    </g>
-  )
-}
-
-/** Balinesischer Schrein: Steinsockel, Pfosten, schwarzes Palmfaserdach in Stufen. */
-export function Shrine({ x, y, s = 1, tiers = 1, cloth = true }: { x: number; y: number; s?: number; tiers?: number; cloth?: boolean }) {
-  return (
-    <g transform={`translate(${x} ${y}) scale(${s})`}>
-      <rect x="-4" y="-4" width="8" height="4" fill={P.stone} stroke={P.outlineStone} strokeWidth=".3" />
-      <rect x="-3" y="-6" width="6" height="2" fill={P.stoneLight} stroke={P.outlineStone} strokeWidth=".25" />
-      <path d="M-2.4 -6v-5M2.4 -6v-5" stroke={P.woodDark} strokeWidth=".7" />
-      <rect x="-2" y="-10" width="4" height="3.2" fill={P.woodLight} stroke={P.outlineWood} strokeWidth=".25" />
-      {cloth ? <path d="M-3 -6.4h6" stroke={P.yellow} strokeWidth=".9" /> : null}
-      {Array.from({ length: tiers }, (_, i) => (
-        <path key={i} d={`M${-5 + i * 1.2} ${-11 - i * 2.6}L0 ${-14 - i * 2.6}L${5 - i * 1.2} ${-11 - i * 2.6}z`} fill={P.charcoal} stroke={P.ink} strokeWidth=".2" />
-      ))}
     </g>
   )
 }

@@ -8,9 +8,10 @@
 import type { ReactNode } from 'react'
 import { Svg } from '../../HandParts'
 import { P } from '../palette'
+import { Farmer } from './figures'
 import type { AreaProps } from './partsB'
 import { Fire, WaterBand } from './partsD'
-import { Farmer, Patch, Rain } from './partsF'
+import { Patch, Rain } from './partsF'
 import { Harakeke, Kauri, Stars, TreeFern } from './partsG'
 import { ssn } from './season'
 

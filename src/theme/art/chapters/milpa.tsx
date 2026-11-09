@@ -8,9 +8,10 @@
 import type { ReactNode } from 'react'
 import { Svg } from '../../HandParts'
 import { P } from '../palette'
+import { Farmer } from './figures'
 import type { AreaProps } from './partsB'
 import { Fire } from './partsD'
-import { CornPlant, Farmer, Monarch, Patch, Squash } from './partsF'
+import { CornPlant, Monarch, Patch, Squash } from './partsF'
 import { ssn } from './season'
 
 const KERNELS = [P.blue, P.berry, P.yellow, P.cream, P.plum, P.orange]

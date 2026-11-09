@@ -40,19 +40,24 @@
 }
 
 /* —— Spreewald —— */
+/* Kahn folgt dem Fließ (Weg „fliess“ in ChapterPaths.tsx, Koordinaten = % der Karte);
+   Mitte des Kahns auf der Wasserlinie: −4u links, −3.4u oben */
 .k2-punt {
   width: calc(var(--u) * 8);
-  top: 84%;
-  left: 44%;
-  animation: k2-glide 44s ease-in-out infinite alternate;
+  top: calc(94.3% - var(--u) * 3.4);
+  left: calc(46.9% - var(--u) * 4);
+  animation: k2-fliess 44s ease-in-out infinite alternate;
 }
 
-@keyframes k2-glide {
-  0% { transform: translate(0, 0); }
-  25% { transform: translate(calc(var(--u) * 3), calc(var(--u) * -12)); }
-  50% { transform: translate(calc(var(--u) * -3), calc(var(--u) * -26)); }
-  75% { transform: translate(calc(var(--u) * 3), calc(var(--u) * -40)); }
-  100% { transform: translate(0, calc(var(--u) * -52)); }
+@keyframes k2-fliess {
+  0% { top: calc(94.3% - var(--u) * 3.4); left: calc(46.9% - var(--u) * 4); }
+  14% { top: calc(89% - var(--u) * 3.4); left: calc(49.2% - var(--u) * 4); }
+  28% { top: calc(83.7% - var(--u) * 3.4); left: calc(52% - var(--u) * 4); }
+  42% { top: calc(78% - var(--u) * 3.4); left: calc(50% - var(--u) * 4); }
+  56% { top: calc(72.3% - var(--u) * 3.4); left: calc(48% - var(--u) * 4); }
+  70% { top: calc(67% - var(--u) * 3.4); left: calc(50.8% - var(--u) * 4); }
+  85% { top: calc(61.7% - var(--u) * 3.4); left: calc(53.1% - var(--u) * 4); }
+  100% { top: calc(58.9% - var(--u) * 3.4); left: calc(52.5% - var(--u) * 4); }
 }
 
 .k2-kingfisher {
@@ -114,12 +119,20 @@
 .k2-duck.d2 { left: 14%; top: 29.2%; animation-delay: -2s; }
 
 /* —— Artischockeninsel —— */
+/* Sandolo folgt dem Kanal (Weg „canals“: Knicke bei 90, 80 und 64 % Höhe) */
 .k2-sandolo {
   width: calc(var(--u) * 8);
-  top: 86%;
-  left: 45%;
-  animation: k2-glide 50s ease-in-out infinite alternate;
+  top: calc(96% - var(--u) * 3.4);
+  left: calc(50% - var(--u) * 4);
+  animation: k2-kanal 50s ease-in-out infinite alternate;
   animation-delay: -12s;
+}
+
+@keyframes k2-kanal {
+  0% { top: calc(96% - var(--u) * 3.4); left: calc(50% - var(--u) * 4); }
+  16% { top: calc(90% - var(--u) * 3.4); left: calc(50% - var(--u) * 4); }
+  47% { top: calc(80% - var(--u) * 3.4); left: calc(56% - var(--u) * 4); }
+  100% { top: calc(64% - var(--u) * 3.4); left: calc(44% - var(--u) * 4); }
 }
 
 .k2-egret {
@@ -990,11 +1003,12 @@
 .k7-balloon.l1 { left: 58%; animation-delay: -5s; }
 .k7-balloon.l2 { left: 80%; animation-delay: -9s; }
 
+/* Ballons steigen nur ein Stück und verblassen weit unter der Kopfleiste */
 @keyframes k7-rise {
   from { transform: translate(0, 0); opacity: 0; }
   10% { opacity: 1; }
-  80% { opacity: 1; }
-  to { transform: translate(calc(var(--u) * 3), calc(var(--u) * -40)); opacity: 0; }
+  60% { opacity: 1; }
+  to { transform: translate(calc(var(--u) * 3), calc(var(--u) * -22)); opacity: 0; }
 }
 
 .k7-fountain {

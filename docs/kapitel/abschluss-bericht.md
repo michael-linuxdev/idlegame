@@ -128,7 +128,7 @@ Kapitel-Grafik und rund 1 500 Zeilen Kapitel-Texte je Sprache.
 - `npm run build`: grün.
 - `npm run e2e`: Smoke de + en (inkl. Abschluss-Szene: Fokus, Tab, Escape,
   gespeichert, nicht noch einmal), Grafik-Vergleich, axe (0 Verstöße de + en,
-  auch auf der Abschluss-Szene), Text-Durchsicht en `--strict`.
+  auch auf der Abschluss-Szene und einer ausgebauten Kapitel-Karte), Text-Durchsicht en `--strict`.
 
 ## Bekannte Schwächen
 
@@ -138,18 +138,21 @@ Kapitel-Grafik und rund 1 500 Zeilen Kapitel-Texte je Sprache.
   Garten-Bonus aller Kapitel (×300 nach 5 Jahren) kann späte Saisons
   verkürzen.
 - **Kleine Grafik:** Die Bereichsgrafiken sind 80×72 und auf der Karte klein;
-  Details (Figuren, Tiere, Beschriftungen) sind auf dem Handy kaum zu sehen.
-  Die Jahreszeit-Wolke jeder Bereichsgrafik liegt bei manchen Karten neben
-  dem Schild. Der Horizont liegt teils hinter der Kopfleiste.
+  Details (Tiere, Beschriftungen) sind auf dem Handy kaum zu sehen. Figuren
+  der Kapitel 18–50 sind seit dem Feinschliff einheitlich etwas größer
+  (`art/chapters/figures.tsx`), bleiben aber klein. Der Horizont liegt teils
+  hinter der Kopfleiste.
 - **Gleichförmigkeit:** Viele Kapitel teilen Motive (Feste mit Wimpeln,
   Figuren mit Hut, Tische); zehn Bereiche je Kapitel sind manchmal dünn.
 - **Abschluss-Szene:** erscheint erst beim nächsten Öffnen von Kapitel 50,
   wenn Ilse oder ein Gedrückthalten den letzten Bereich anlegt, während der
   Spieler woanders ist; einen Spielernamen kennt das Spiel nicht („Für
   dich“).
-- **Entschärft:** Alles, was Gegenlesen gebraucht hätte (Fremdwörter, Grüße in Landessprache, Bräuche und Wissen anderer Völker, prüfbare Zahlen und Jahreszahlen, unsichere Orts-Angaben zu Pflanzen und Tieren), ist durch einfache, sicher wahre Texte ersetzt; Liste in `docs/kapitel/entschaerft.md`. Die Bereichsgrafiken (ohne Text) sind unverändert und zeigen teils noch die alten Motive (z. B. einen kleinen Schrein am Quellhaus auf Bali).
+- **Entschärft:** Alles, was Gegenlesen gebraucht hätte (Fremdwörter, Grüße in Landessprache, Bräuche und Wissen anderer Völker, prüfbare Zahlen und Jahreszahlen, unsichere Orts-Angaben zu Pflanzen und Tieren), ist durch einfache, sicher wahre Texte ersetzt; Liste in `docs/kapitel/entschaerft.md`. Die Grafik folgt den neuen Namen: Quellhaus und Erntetag auf Bali ohne Schrein, Opfergaben und Tempeltor, Heimatstube im Spreewald mit bemalter Truhe statt Tracht, Kaffeetisch mit Kohleofen statt Räucherwerk.
 - **Englisch:** von einem Modell übersetzt, im Ton nicht von Muttersprachlern
   gelesen.
-- **Barrierefreiheit Kapitel-Karten:** axe prüft Kapitel-Karten bisher nicht mit angelegten Bereichen. Beim Prüfen der Abschluss-Szene fiel auf, dass die Bereichs-Knöpfe einer ausgebauten Kapitel-Karte `label-content-name-mismatch` melden (Name „Komposthaufen, Stufe 10“, sichtbar Name + Zahl). Die Szene wird deshalb allein geprüft; die Karten-Knöpfe sind ein offener Punkt (betrifft alle Kapitel).
+- **Grafik-Feinschliff (Kapitel 18–50):** Wasser und Plätze, die rechteckig bis an den Bildrand reichten (Klippenpfad, Hafenmauer, Hafenmarkt, Pistazienfest, Bootssteg, Seetangbeete, Bergquelle, Waschplatz, breite `WaterBand`-Flächen), sind jetzt gerundete Flächen im Bild; unsichtbare Wiesen (Farbe = Kartengrün) haben eine sichtbare Fläche; Europa-/Welt-Beete und Bilderrahmen im Familienpavillon sind größer. Offen bleiben bewusst Wände und Deiche, die als Motiv bis zum Rand gehen (Friesenstube, Gitterfenster, Deich beim Koogacker und Winterfeuer), sowie die Bergkulisse beim Glockenturm.
+- **Kapitel-Karte:** Schilder und Plaketten liegen über der eigenen Bereichsgrafik; das Wetter der Bereichsgrafik (Sonne, Wolke, Regen, Schnee, Klasse `art-sky`) zeigt nur das Bereichsblatt, auf der Karte ist es aus (es lag über den Schildern darüber). Der Kahn im Spreewald und der Sandolo auf der Artischockeninsel folgen dem Kanal (Prozent der Karte wie in `ChapterPaths.tsx`); die Ballons der Weltgartenschau steigen nur noch ein Stück.
+- **Barrierefreiheit Kapitel-Karten:** behoben. Die Bereichs-Knöpfe hatten ein `aria-label` („Komposthaufen, Stufe 10“), das den sichtbaren Text (Plakette „Komposthaufen 10“ mit Sternen, Schild mit Sternen, „Pflanzen“, „Ab … Stufe 10“) nicht enthielt. Jetzt kommt der Name aus dem sichtbaren Text, Stufe bzw. „gesperrt“ steht als unsichtbarer Zusatz daneben, Zahl und Sterne der Plakette sind für Screenreader ausgeblendet (wie im Hauptgarten). Ebenso nennen die runden Grundstücks-Knöpfe ihr sichtbares Kürzel mit („Stadt, Zum Gemeinschaftsgarten“). `axe.mjs` prüft eine ausgebaute Kapitel-Karte (Kapitel 13, acht Bereiche auf Stufe 10, ein geräumter, ein gesperrter) mit Plaketten und mit allen Schildern, de + en.
 - **Leistung:** 50 Kapitel-Bündel werden nachgeladen; auf älteren Geräten
   nicht gemessen.
