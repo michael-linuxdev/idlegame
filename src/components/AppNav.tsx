@@ -38,6 +38,8 @@ interface Props {
   newKeys?: ReadonlySet<string>
   /** Called when a menu tile is opened (to clear its „Neu“-Abzeichen) */
   onTileOpen?: (key: string) => void
+  /** „Bald fertig“: laufende Timer als kurze Zeilen */
+  upcoming?: string[]
   /** Red dots on the tab bar */
   seasonReady?: boolean
   shopReady?: boolean
@@ -135,6 +137,7 @@ export function AppNav({
   clanOpen = true,
   newKeys,
   onTileOpen,
+  upcoming,
 }: Props) {
   const [menuOpen, setMenuOpen] = useState(false)
   const menuNew = unreadLetters > 0 || crossReady || albumReady > 0 || (newKeys?.size ?? 0) > 0
@@ -204,6 +207,7 @@ export function AppNav({
           tabClan={clanOpen ? () => onTabChange('clan') : undefined}
           newKeys={newKeys}
           onTileOpen={onTileOpen}
+          upcoming={upcoming}
           clanFtue={ftueHighlight === 'clan'}
           onOpenNotebook={onOpenNotebook}
           onOpenLegal={onOpenLegal}
@@ -231,6 +235,7 @@ function MenuSheet({
   clanFtue,
   newKeys,
   onTileOpen,
+  upcoming,
   onOpenNotebook,
   onOpenLegal,
   onOpenBackup,
@@ -251,6 +256,7 @@ function MenuSheet({
   clanFtue: boolean
   newKeys?: ReadonlySet<string>
   onTileOpen?: (key: string) => void
+  upcoming?: string[]
   onOpenNotebook?: () => void
   onOpenLegal?: () => void
   onOpenBackup?: () => void
@@ -306,6 +312,16 @@ function MenuSheet({
 
         {page === 'main' ? (
           <>
+            {upcoming && upcoming.length > 0 ? (
+              <section className="nav-upcoming" aria-label={t.ux.upcoming.title}>
+                <h3 className="nav-group-title">{t.ux.upcoming.title}</h3>
+                <ul>
+                  {upcoming.map((u) => (
+                    <li key={u}>{u}</li>
+                  ))}
+                </ul>
+              </section>
+            ) : null}
             <ul className="nav-tiles" role="menu" aria-label={t.ux.nav.groups.garden}>
               {tiles
                 .filter((x) => x.on)

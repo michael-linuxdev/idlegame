@@ -8,13 +8,22 @@ export function WelcomeBack({
   amount,
   awayMs,
   helped,
+  beds = [],
+  ready = [],
   onClaim,
+  onBed,
   onLater,
 }: {
   amount: number
   awayMs: number
   helped: boolean
+  /** Bis zu 3 Beete, die nach dem Einsammeln bezahlbar sind */
+  beds?: { id: string; name: string }[]
+  /** Was inzwischen fertig ist (fertige Texte) */
+  ready?: string[]
   onClaim: () => void
+  /** Einsammeln und gleich dieses Beet öffnen */
+  onBed?: (id: string) => void
   onLater: () => void
 }) {
   useDismiss(onLater)
@@ -27,6 +36,25 @@ export function WelcomeBack({
           <IconBasket /> {t.ux.welcomeBack.harvest(formatAsh(amount))}
         </p>
         {helped ? <p className="welcome-helper">{t.ux.welcomeBack.helper}</p> : null}
+        {ready.length > 0 ? (
+          <p className="welcome-ready">
+            {t.ux.welcomeBack.readyTitle} {ready.join(', ')}
+          </p>
+        ) : null}
+        {beds.length > 0 && onBed ? (
+          <>
+            <p className="welcome-beds-title">{t.ux.welcomeBack.bedsTitle}</p>
+            <ul className="welcome-beds">
+              {beds.map((b) => (
+                <li key={b.id}>
+                  <button type="button" className="btn ghost welcome-bed" onClick={() => onBed(b.id)}>
+                    {b.name}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </>
+        ) : null}
         <button type="button" className="btn buy welcome-claim" onClick={onClaim} autoFocus>
           {t.ux.welcomeBack.claim}
         </button>

@@ -22,12 +22,14 @@ import { SeasonCeremony } from './components/story/SeasonCeremony'
 import { LegalSheet } from './components/LegalSheet'
 import { SaveSheet } from './components/SaveSheet'
 import { ComebackLetter, COMEBACK_SEEDS } from './components/story/ComebackLetter'
-import { useExtras, waterReminderDelay } from './game/extras'
+import { useExtras } from './game/extras'
+import { deliver, planReminder, pruneSent, type ReminderCandidate } from './game/notify'
 import { armAmbienceOnFirstGesture } from './game/ambience'
 import { t } from './i18n'
+import { formatClock } from './game/format'
 import { applyPrefClasses } from './game/prefs'
 import { useDismiss } from './game/overlays'
-import { countAffordableEmberBuys } from './game/economy'
+import { countAffordableEmberBuys, offlineCapsHours } from './game/economy'
 import { chapterCopy } from './components/chapterCopy'
 import './App.css'
 import './theme/garden.css'
@@ -93,13 +95,17 @@ export default function App() {
     }
   }, [updateExtras])
 
-  // Reminder: Gießkanne full while the app sits in the background —
-  // at most every 4 h and never on a quick app switch (waterReminderDelay)
-  const waterLeftRef = useRef(game.tapCooldownLeftMs)
-  const lastWaterNotifyRef = useRef(extras.lastWaterNotify)
+  // Erinnerungen, solange die App im Hintergrund läuft (notify.ts):
+  // Gießkanne voll, Kreuzung fertig, Korb voll — max. 2/Tag, nie 22–8 Uhr
+  const reminderRef = useRef({ water: game.tapCooldownLeftMs, cross: 0, basketHours: 8, sent: extras.notifySent ?? [] })
   useEffect(() => {
-    waterLeftRef.current = game.tapCooldownLeftMs
-    lastWaterNotifyRef.current = extras.lastWaterNotify
+    const s = game.state
+    reminderRef.current = {
+      water: game.tapCooldownLeftMs,
+      cross: s.crossing ? s.crossing.endsAt : 0,
+      basketHours: offlineCapsHours(s.emberUpgrades).hard,
+      sent: extras.notifySent ?? [],
+    }
   })
   useEffect(() => {
     if (!extras.notify || typeof Notification === 'undefined') return
@@ -107,15 +113,21 @@ export default function App() {
     const onVis = () => {
       window.clearTimeout(timer)
       if (!document.hidden || Notification.permission !== 'granted') return
-      const delay = waterReminderDelay(Date.now(), lastWaterNotifyRef.current, waterLeftRef.current)
+      const now = Date.now()
+      const r = reminderRef.current
+      const candidates: ReminderCandidate[] = [
+        { kind: 'water', inMs: r.water },
+        { kind: 'basket', inMs: r.basketHours * 3600_000 },
+      ]
+      if (r.cross > now) candidates.push({ kind: 'cross', inMs: r.cross - now })
+      const plan = planReminder(now, candidates, r.sent)
+      if (!plan) return
       timer = window.setTimeout(() => {
         if (!document.hidden) return
-        updateExtras((s) => ({ ...s, lastWaterNotify: Date.now() }))
-        const body = t.reminders.water
-        navigator.serviceWorker?.ready
-          .then((reg) => reg.showNotification(t.brand, { body, icon: './pwa-192.png', tag: 'water' }))
-          .catch(() => new Notification(t.brand, { body }))
-      }, delay)
+        const at = Date.now()
+        updateExtras((s) => ({ ...s, lastWaterNotify: at, notifySent: pruneSent([...(s.notifySent ?? []), at], at) }))
+        deliver(t.brand, t.reminders[plan.kind], plan.kind)
+      }, plan.delay)
     }
     document.addEventListener('visibilitychange', onVis)
     return () => {
@@ -294,6 +306,14 @@ export default function App() {
         onOpenProjects={game.features.has('projects') ? () => setProjectsOpen(true) : undefined}
         clanOpen={game.features.has('clan')}
         newKeys={newMenuKeys}
+        upcoming={[
+          ...(game.state.crossing && game.state.crossing.endsAt > game.nowTick
+            ? [t.ux.upcoming.cross(formatClock(game.state.crossing.endsAt - game.nowTick))]
+            : []),
+          ...(game.tapCooldownLeftMs > 0 ? [t.ux.upcoming.water(formatClock(game.tapCooldownLeftMs))] : []),
+          ...(!game.dailyReady ? [t.ux.upcoming.daily] : []),
+          ...(!game.giftReady ? [t.ux.upcoming.gift] : []),
+        ]}
         onTileOpen={(key) => {
           if ((MENU_FEATURES as string[]).includes(key)) markFeatureSeen(key as FeatureId)
         }}
@@ -303,7 +323,12 @@ export default function App() {
           setPhotoMode(true)
         }}
         reminders={extras.notify}
-        onToggleReminders={toggleReminders}
+        // Erinnerungen erst nach dem ersten Saisonende anbieten (wer sie schon an hat, behält den Schalter)
+        onToggleReminders={
+          extras.notify || game.state.prestiges > 0 || game.state.deepPrestiges > 0 || game.state.generation > 0
+            ? toggleReminders
+            : undefined
+        }
         unreadLetters={unread.length}
       />
 

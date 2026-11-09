@@ -1228,3 +1228,32 @@ html.pref-calm *::after {
   border-radius: 50%;
   background: conic-gradient(#e0a526 var(--p, 0%), rgba(138, 90, 16, 0.2) 0);
 }
+
+/* Willkommen zurück: fertige Dinge und bezahlbare Beete */
+.welcome-ready,
+.welcome-beds-title {
+  margin: 0.5rem 0 0.25rem;
+  font-size: 0.9rem;
+}
+
+.welcome-beds {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0 0 0.7rem;
+  padding: 0;
+  list-style: none;
+}
+
+.welcome-bed {
+  min-height: 2.5rem;
+  padding: 0.35rem 0.8rem;
+}
+
+/* Menü: „Bald fertig“ */
+.nav-upcoming ul {
+  margin: 0 0 0.6rem;
+  padding: 0 0 0 1.1rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}

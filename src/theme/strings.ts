@@ -1005,8 +1005,10 @@ export const strings = {
     label: 'Erinnerungen',
     on: 'An',
     off: 'Aus',
-    hint: 'Benachrichtigt dich höchstens alle 4 Stunden, wenn die Gießkanne voll ist (solange die App im Hintergrund geöffnet ist).',
+    hint: 'Höchstens zweimal am Tag und nie nachts: wenn die Gießkanne voll ist, eine Kreuzung reif ist oder der Erntekorb überläuft (solange die App im Hintergrund geöffnet ist).',
     water: 'Die Gießkanne ist wieder voll — Zeit zum Gießen!',
+    cross: 'Deine Kreuzung ist reif — schau nach, was gewachsen ist.',
+    basket: 'Dein Erntekorb ist voll. Jetzt abholen, sonst wächst nichts mehr dazu.',
     denied: 'Benachrichtigungen sind im Browser blockiert.',
   },
 
@@ -1033,6 +1035,7 @@ export const strings = {
     recipeNew: 'Neu: Omas Tagesrezept. Oben in der Leiste steht, welche Beete heute etwas fürs Rezept liefern — fertig gekocht gibt es einen Bonus.',
     festNew: 'Neu: Gartenfeste. Zu jeder Jahreszeit gibt es ein Fest mit Festmarken und einem eigenen Laden — tipp oben auf die Fest-Pille.',
     weatherNew: 'Neu: das Wetter. Es ändert die Ernte ein wenig, und manchmal fragt der Himmel, was du tun willst — oben siehst du auch morgen.',
+    crossNew: 'Neu: Saatgut kreuzen (Menü → Kreuzen). Zwei Sorten aus dem Pflanzenbuch ergeben in 4 Stunden etwas Neues — leg gleich eine an, dann wartet bei deiner Rückkehr eine Überraschung.',
     clanNew: 'Neu: der Kleingartenverein. Im Menü unter „Verein“ wiegst du jede Woche deinen größten Kürbis gegen die Nachbarn.',
     helperAreas: 'Jonas hilft jetzt mit. Du bestimmst, was er ausbauen darf: Unter „Saison“ → Gartenhelfer → „Was Jonas ausbauen darf“ kannst du einzelne Bereiche sperren und wieder freigeben.',
   },
@@ -1082,7 +1085,7 @@ export const strings = {
   daily: {
     kicker: 'Tägliche Gartenrunde',
     short: 'Gartenrunde',
-    dayOf: (n: number) => `Tag ${n}/7`,
+    dayOf: (n: number) => (n >= 7 ? 'Tag 7/7 · Wochenkorb!' : `Tag ${n}/7 · Korb an Tag 7`),
     firstShift: 'Tag 1/7 · Los geht’s',
     streakNext: (n: number) => {
       const day = (Math.max(0, n) % 7) + 1

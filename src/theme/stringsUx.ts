@@ -65,12 +65,27 @@ export const uxStrings = {
     canBuy: 'Ausbau möglich',
     wildIn: (pct: number) => `noch ${100 - pct} %`,
   },
+  upcoming: {
+    title: 'Bald fertig',
+    cross: (left: string) => `Kreuzung reif in ${left}`,
+    water: (left: string) => `Gießkanne voll in ${left}`,
+    daily: 'Nächste Gartenrunde: morgen',
+    gift: 'Nächstes Tagesgeschenk: morgen',
+  },
   welcomeBack: {
     title: 'Willkommen zurück!',
     away: (time: string) => `Du warst ${time} weg. Der Garten ist weitergewachsen:`,
     harvest: (amount: string) => `+${amount} Ernte`,
     helper: 'Jonas hat in der Zeit weiter ausgebaut.',
     claim: 'Einsammeln',
+    bedsTitle: 'Danach kannst du gleich ausbauen:',
+    readyTitle: 'Inzwischen fertig:',
+    ready: {
+      cross: 'deine Kreuzung',
+      album: 'ein Album-Stempel',
+      gift: 'das Tagesgeschenk im Markt',
+      daily: 'die Gartenrunde',
+    },
   },
   season: {
     jump: 'Springen zu',

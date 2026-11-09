@@ -23,6 +23,7 @@ export type HintId =
   | 'festNew'
   | 'weatherNew'
   | 'clanNew'
+  | 'crossNew'
 
 /** Priority order when several are pending. */
 export const HINT_ORDER: HintId[] = [
@@ -37,6 +38,7 @@ export const HINT_ORDER: HintId[] = [
   'festNew',
   'weatherNew',
   'clanNew',
+  'crossNew',
   'bulkMax',
   'bulk5',
   'buyAll',
@@ -49,6 +51,7 @@ export const FEATURE_HINTS: Partial<Record<FeatureId, HintId>> = {
   fest: 'festNew',
   weather: 'weatherNew',
   clan: 'clanNew',
+  cross: 'crossNew',
 }
 
 /** Mark hints as already seen (veterans on the first start with a new version). */

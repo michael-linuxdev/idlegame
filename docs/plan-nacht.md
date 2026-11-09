@@ -118,7 +118,7 @@ Tempo-Messung (9.1/9.2) kommt **vor** die Balance-Pakete 3 und 6, damit deren Wi
 - [x] D Tempo messen — Hänger Jahr 13/14 toleriert (aktiv 138 min, Rest Nacht); Ziel Sitzung-1-Dichte ≤ 90 s noch offen (Basis 2 min) → Pakete E/F.
 - [x] E Kernschleife — Krümel-Drossel 5 s erst ab „Max“ (15 s verschob das erste Saisonende: Regular 132 → 240 min; ab Max ist Sim identisch). „Gedrückt halten“ gab es schon. Kauf-Kombo (4.4) bewusst weggelassen: Playtest zeigt Einzeltipp-Grind, eine Kombo würde genau das belohnen.
 - [x] F Probe-Winter — 5 Mio / 70 Erbstücke, nur erstes Gartenjahr überhaupt (`isProbeYear`); Saison-Vorschau „in ~10 Minuten wären es …“. Tempo-Test fand zwei Fehler im ersten Entwurf (Probe nach Tiefem Winter → 5-min-Saisons; Auszahlung 45 → Hänger Jahr 12), beide behoben. Korridor jetzt: erste Saison ≤ 30 min, Folgesaisons ≤ 300 min außer vor Tiefem Winter, Dichte S1 ≤ 90 s.
-- [ ] G Rückkehr
+- [x] G Rückkehr — Willkommen-Karte ab 5 min (Schwelle aus #92 behalten) mit fertigen Dingen + 3 bezahlbaren Beeten; „Bald fertig“ im Menü; Kreuzung als Termin über Omas Hinweis statt FTUE-Schritt (Kreuzen braucht 2 Sorten, die es in Sitzung 1 meist noch nicht gibt); Serie friert schon seit jeher ein, neu: „Korb an Tag 7“ sichtbar; Erinnerungen über notify.ts (max. 2/Tag, nie 22–8 Uhr, +Kreuzung/Korb, Erlaubnis erst nach dem 1. Saisonende). Fix nebenbei: Wetter-Frage lag über offenen Fenstern. Sicherungs-Erinnerung für iOS-Browser weiter offen.
 - [ ] H Saison-Karten
 - [ ] I Lange Ziele & Sammlungen
 - [ ] J Omas Herausforderungen

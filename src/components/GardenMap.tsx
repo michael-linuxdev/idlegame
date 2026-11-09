@@ -675,6 +675,8 @@ export function GardenMap({
           festNew: !earlyGame && game.features.has('fest'),
           weatherNew: !earlyGame && game.features.has('weather'),
           clanNew: game.features.has('clan'),
+          // Termin für die Rückkehr: erste Kreuzung anlegen (4 h)
+          crossNew: game.features.has('cross') && !state.crossing && state.hybrids.length === 0,
         },
         seenHints,
       )
@@ -769,6 +771,23 @@ export function GardenMap({
           amount={game.offlineGained}
           awayMs={game.offlineAwayMs}
           helped={state.helperReport > 0}
+          beds={GENERATORS.filter(
+            (g) => game.unlocked(g.id) && game.costOf(g.id) <= state.ernte + (game.offlineGained ?? 0),
+          )
+            .sort((a, b) => (a.id === bestBuy?.id ? -1 : b.id === bestBuy?.id ? 1 : game.costOf(b.id) - game.costOf(a.id)))
+            .slice(0, 3)
+            .map((g) => ({ id: g.id, name: g.name }))}
+          ready={[
+            ...(state.crossing && state.crossing.endsAt <= game.nowTick ? [t.ux.welcomeBack.ready.cross] : []),
+            ...(game.albumReady > 0 && game.features.has('album') ? [t.ux.welcomeBack.ready.album] : []),
+            ...(game.giftReady ? [t.ux.welcomeBack.ready.gift] : []),
+            ...(game.dailyReady ? [t.ux.welcomeBack.ready.daily] : []),
+          ]}
+          onBed={(id) => {
+            setWelcomeDone(true)
+            claimOffline()
+            setSelected(id as GeneratorId)
+          }}
           onClaim={() => {
             setWelcomeDone(true)
             claimOffline()
@@ -823,7 +842,7 @@ export function GardenMap({
         </div>
       ) : null}
 
-      {!photoMode && game.features.has('weather') ? <WeatherDecision game={game} onToast={showToast} /> : null}
+      {!photoMode && game.features.has('weather') && !overlayOpen ? <WeatherDecision game={game} onToast={showToast} /> : null}
 
       <BottomBar
         game={game}
