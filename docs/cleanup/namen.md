@@ -56,6 +56,9 @@ Der alte Schlüssel wird nicht gelöscht und nicht gelesen. Andere Schlüssel (N
 | `bpDailyXpDay` | `gartenwocheXpDay` | |
 | `ownedOfferIds`: `obsidian50/150/500` | `samen50/150/500` | Samen-Päckchen |
 | Fenster-ID `bw-JJJJ-MM-TT` (Wert) | `ef-JJJJ-MM-TT` | Erntefest |
+| `quests[].kind`: `earnAsh` (Wert) | `earnErnte` | Tagesaufgabe „Ernte sammeln“ |
+| `quests[].rewardAsh` | `quests[].rewardErnte` | |
+| `quests[].rewardObsidian` | `quests[].rewardSamen` | |
 
 Unverändert (schon passend): `ernte`, `ernteSeason`, `ernteLifetime`, `erbstuecke`, `samen`, `sproesslinge`, `vermaechtnis`, `legacy` (Vermächtnis-Laden, Schlüssel schon deutsch), alle neueren Felder.
 
@@ -82,7 +85,9 @@ Unverändert (schon passend): `ernte`, `ernteSeason`, `ernteLifetime`, `erbstuec
 | `t.emberShop` | `t.truhe` |
 | `t.packs.obsidian*` | `t.packs.samen*` |
 | `t.prestige.branchUptime*`, Zweig-ID `uptime` | `t.prestige.branchPflege*`, `pflege` |
-| `legacyStorage.ts` (`purgeLegacyStorage`) | entfernt (siehe Paket 3) |
+| `t.nav.station` | `t.nav.garten` |
+| `t.resources.compute`, `t.resources.credits`, `t.prestige.credits*` | `t.resources.ernte`, `t.resources.erbstuecke`, `t.prestige.erbstuecke*` |
+| `legacyStorage.ts` (`purgeLegacyStorage`) | entfernt: räumte nur Schlüssel der Prototypen (`turmfarm-*`, `orbit-rack-*`, `ash-dominion-*`) weg; die einzigen Geräte mit solchen Schlüsseln (Entwickler) sind längst bereinigt, und liegengebliebene Schlüssel schaden nicht. |
 
 Kommentare mit „Compute“, „Credits“, „Münzen“, „Phyto“, „Rack“, „Tokens“, „Obsidian“, „economy.md“ werden auf die Spielbegriffe umgeschrieben.
 

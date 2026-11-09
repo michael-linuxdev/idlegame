@@ -25,9 +25,9 @@ html {
 }
 
 body {
-  font-family: var(--oc-font-ui);
-  background: var(--oc-bg-deep);
-  color: var(--oc-ink);
+  font-family: var(--ge-font-ui);
+  background: var(--ge-bg-deep);
+  color: var(--ge-ink);
   -webkit-font-smoothing: antialiased;
   line-height: 1.45;
   /* Game chrome: no long-press callout / selection on interactive art */
@@ -50,7 +50,7 @@ button,
 a,
 .map-building,
 .building-sil,
-.fortress-map,
+.garten-map,
 .app-shell {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -67,7 +67,7 @@ button:disabled {
   opacity: 0.45;
 }
 
-/* Accessible label without visual brand chrome on the Farm map */
+/* Accessible label without visual brand chrome on the garden map */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -83,7 +83,7 @@ button:disabled {
 button:focus-visible,
 a:focus-visible,
 [tabindex]:focus-visible {
-  outline: 2px solid var(--oc-focus);
+  outline: 2px solid var(--ge-focus);
   outline-offset: 2px;
 }
 
@@ -93,7 +93,7 @@ a:focus-visible,
 
 strong {
   font-weight: 600;
-  color: var(--oc-ink);
+  color: var(--ge-ink);
 }
 
 /* Pinch-zoom stays available (WCAG 1.4.4); double-tap zoom is disabled so

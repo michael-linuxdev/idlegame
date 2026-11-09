@@ -1,16 +1,16 @@
 /**
  * Economy knobs — core formulas (R(n), C(n), offline) unchanged.
  * Player-facing names come from src/theme/strings.ts.
- * Internal save fields keep legacy names (ernte / erbstuecke / samen).
+ * Interne Namen folgen den Spielbegriffen (docs/cleanup/namen.md).
  *
  * Balance pass IG-31 (overnight): prestige was ~5 min for engaged play vs
  * design 45–90 min. Raised P_min base + slowed generator ladder (see generators.ts).
  *
  * Soft-Prestige depth (IG-53 / playtest 2026-11-07 + b + 2026-11-08 + d):
- * Münzen soft-gate every prestige; interleaved rank unlocks during rebuild;
+ * Erbstücke soft-gate every prestige; interleaved rank unlocks during rebuild;
  * steeper cost curve; √ payout soft-capped so runaway ernte cannot dump the
  * unlocked band in ~40s. Tip band scales with lifetime saisonenden so P2+ never
- * lands on an empty Münzen shop after tips are already owned.
+ * lands on an empty Truhe after tips are already owned.
  */
 
 import { t } from '../i18n'
@@ -25,7 +25,7 @@ export const OFFLINE_DECAY_RATE = 0.5
  * IG-31: 50_000 → 2_000_000 so first Soft-Reset lands ~45–75 min engaged
  * (was ~5–10 min after content-depth rate snowball).
  */
-export const PRESTIGE_BASE_ASH = 2_000_000
+export const PRESTIGE_BASE_ERNTE = 2_000_000
 export const PRESTIGE_GROWTH = 1.8
 
 /**
@@ -60,28 +60,28 @@ export const BALANCE = {
 export const PRESTIGE_MIN_MODULES_ONLINE = 3
 
 /**
- * Module levels are the primary Münzen-unlock clock (resets each Soft-Prestige).
+ * Module levels are the primary Truhe-unlock clock (resets each Soft-Prestige).
  * Kept modest so ~8–12 levels/min rebuild opens ranks over minutes, not seconds.
  */
-export const EMBER_UNLOCK_PER_MODULE_LEVEL = 800
+export const TRUHE_UNLOCK_PER_MODULE_LEVEL = 800
 
 /**
  * Soft ernte contribution toward unlocks — √ so late-run snowball cannot open
- * the entire tree the moment Phyto explodes. Capped so ernte alone never
+ * the entire tree the moment Ernte explodes. Capped so ernte alone never
  * replaces rebuild.
  */
-export const EMBER_UNLOCK_ASH_SQRT_DIV = 100
-export const EMBER_UNLOCK_ASH_CAP = 30_000
+export const TRUHE_UNLOCK_ERNTE_SQRT_DIV = 100
+export const TRUHE_UNLOCK_ERNTE_CAP = 30_000
 
-/** @deprecated Use EMBER_UNLOCK_PER_MODULE_LEVEL — kept for older docs/imports. */
-export const EMBER_UNLOCK_ASH_PER_MODULE_LEVEL = EMBER_UNLOCK_PER_MODULE_LEVEL
+/** @deprecated Use TRUHE_UNLOCK_PER_MODULE_LEVEL — kept for older docs/imports. */
+export const TRUHE_UNLOCK_ERNTE_PER_MODULE_LEVEL = TRUHE_UNLOCK_PER_MODULE_LEVEL
 
 /**
- * Soft-cap on √ Münzen payout (L2 agency without 39k runaway wallets).
+ * Soft-cap on √ Erbstücke payout (L2 agency without 39k runaway wallets).
  * Raw √ stays linear up to SOFT; overflow diminishes toward CEIL.
  */
-export const EMBER_PAYOUT_SOFT = 500
-export const EMBER_PAYOUT_CEIL = 1_600
+export const ERBSTUECKE_PAYOUT_SOFT = 500
+export const ERBSTUECKE_PAYOUT_CEIL = 1_600
 
 /** Base Erbstücke paid exactly at the gate for this season. */
 /** Probe-Winter gilt nur im allerersten Gartenjahr (nicht nach Tiefem Winter / Generation). */
@@ -95,12 +95,12 @@ export function payoutAtGate(saisonenden: number, probe = false): number {
 }
 
 /** Min payout before Saisonende — the gate payout (kept for UI copy). */
-export function prestigeMinEmbersForRun(saisonenden: number): number {
+export function prestigeMinErbstueckeForRun(saisonenden: number): number {
   return payoutAtGate(saisonenden)
 }
 
 /** Saisonende gate: Ernte this season ≥ prestigeBase · prestigeGrowth^p */
-export function prestigeMinAsh(saisonenden: number, probe = false): number {
+export function prestigeMinErnte(saisonenden: number, probe = false): number {
   if (probe) return BALANCE.firstSeasonGate
   return Math.floor(
     BALANCE.prestigeBase *
@@ -120,43 +120,43 @@ function payoutCurve(r: number): number {
  * Erbstücke for ending the season now. Relative to this season's gate, so a
  * stronger garden doesn't turn Saisonende into a 2-minute loop.
  */
-export function emberPayout(ernteSeason: number, saisonenden = 0, probe = false): number {
+export function erbstueckePayout(ernteSeason: number, saisonenden = 0, probe = false): number {
   if (ernteSeason <= 0) return 0
-  const r = ernteSeason / Math.max(1, prestigeMinAsh(saisonenden, probe))
+  const r = ernteSeason / Math.max(1, prestigeMinErnte(saisonenden, probe))
   return Math.floor(payoutAtGate(saisonenden, probe) * payoutCurve(r))
 }
 
 /** Ernte needed this season to be paid `erbstuecke` (inverse of the √ band). */
-export function ashForEmberPayout(erbstuecke: number, saisonenden = 0, probe = false): number {
+export function ernteForErbstueckePayout(erbstuecke: number, saisonenden = 0, probe = false): number {
   if (erbstuecke <= 0) return 0
   const ratio = erbstuecke / Math.max(1, payoutAtGate(saisonenden, probe))
-  return Math.ceil(prestigeMinAsh(saisonenden, probe) * ratio * ratio)
+  return Math.ceil(prestigeMinErnte(saisonenden, probe) * ratio * ratio)
 }
 
-export interface EmberUpgrades {
-  /** Rack Yield — +5% global soft/sec per rank */
+export interface TruheUpgrades {
+  /** Omas Gartenschere — +5% global Ernte/s per rank */
   gartenschere: number
-  /** Long Uptime — +1h soft / +2h hard offline per rank */
+  /** Alte Gießkanne — +1h soft / +2h hard offline per rank */
   alteGiesskanne: number
-  /** BOM Discount — 0.98^rank cost mult */
+  /** Saatgutkiste — 0.98^rank cost mult */
   saatgutkiste: number
-  /** Hot Spare — start each run with Cooling Array unlocked (max 1) */
+  /** Kompost vom Vorjahr — start each Saison with Kompost planted (max 1) */
   kompostVomVorjahr: number
-  /** Tap Mastery — +15s tap bonus duration per rank */
+  /** Messing-Brause — +15s Gießen bonus duration per rank */
   messingBrause: number
-  /** Seed Purse — start each prestige run with bonus soft currency */
+  /** Notgroschen — start each Saison with bonus Ernte */
   notgroschen: number
-  /** Canopy — +2% global soft/sec per rank (mid-tier Münzen sink) */
+  /** Strohhut — +2% global Ernte/s per rank (mid-tier Erbstücke sink) */
   strohhut: number
-  /** Night soil — +30 min soft offline per rank (uptime mid-tier) */
+  /** Laterne — +30 min soft offline per rank (Pflege mid-tier) */
   laterne: number
-  /** Sapling surge — start run with G1 (gemuesebeet) at this level */
+  /** Gute Erde — start each Saison with G1 (gemuesebeet) at this level */
   guteErde: number
-  /** Green lattice — +1.5% global soft/sec per rank (late Münzen sink) */
+  /** Rosenbogen — +1.5% global Ernte/s per rank (late Erbstücke sink) */
   rosenbogen: number
 }
 
-export const EMPTY_EMBER_UPGRADES: EmberUpgrades = {
+export const EMPTY_TRUHE: TruheUpgrades = {
   gartenschere: 0,
   alteGiesskanne: 0,
   saatgutkiste: 0,
@@ -169,31 +169,31 @@ export const EMPTY_EMBER_UPGRADES: EmberUpgrades = {
   rosenbogen: 0,
 }
 
-export type EmberUpgradeId = keyof EmberUpgrades
+export type TruheItemId = keyof TruheUpgrades
 
-export type PrestigeBranchId = 'yield' | 'uptime' | 'start'
+export type PrestigeBranchId = 'yield' | 'pflege' | 'start'
 
-export interface EmberShopItem {
-  id: EmberUpgradeId
+export interface TruheItem {
+  id: TruheItemId
   branch: PrestigeBranchId
   name: string
   blurb: string
   maxRank: number
-  /** Cost in Credits at current rank (before purchase) */
+  /** Cost in Erbstücke at current rank (before purchase) */
   cost: (rank: number) => number
   effectLabel: (rank: number) => string
   /**
    * This-run soft earned required before purchasing `rank` (0-based).
-   * Progressive unlock — keeps post-prestige Münzen spending stretched
+   * Progressive unlock — keeps post-prestige Erbstücke spending stretched
    * across rebuild (~15–45 min), not a 50s dump.
    */
-  rankUnlockAsh?: (rank: number) => number
+  rankUnlockErnte?: (rank: number) => number
   /** Modules online (owned ≥ 1) required before any rank of this item. */
   unlockModulesOnline?: number
 }
 
-/** Geometric Münzen cost — one unlocked band must not clear a mid payout in <1 min. */
-function emberGeoCost(base: number, growth: number, rank: number): number {
+/** Geometric Erbstücke cost — one unlocked band must not clear a mid payout in <1 min. */
+function truheGeoCost(base: number, growth: number, rank: number): number {
   return Math.ceil(base * Math.pow(growth, Math.max(0, rank)))
 }
 
@@ -201,7 +201,7 @@ function emberGeoCost(base: number, growth: number, rank: number): number {
  * Staggered unlock offsets so branches reopen one-by-one during rebuild,
  * not as a single mid-band dump.
  */
-const EMBER_UNLOCK_OFFSET: Record<EmberUpgradeId, number> = {
+const TRUHE_UNLOCK_OFFSET: Record<TruheItemId, number> = {
   gartenschere: 0,
   saatgutkiste: 5_000,
   strohhut: 20_000,
@@ -219,7 +219,7 @@ const EMBER_UNLOCK_OFFSET: Record<EmberUpgradeId, number> = {
  * Each completed prestige opens one additional tip rank on these ids so P2+
  * never greets an already-owned empty shop (playtest-d).
  */
-const EMBER_IMMEDIATE_IDS: ReadonlySet<EmberUpgradeId> = new Set([
+const TRUHE_IMMEDIATE_IDS: ReadonlySet<TruheItemId> = new Set([
   'gartenschere',
   'saatgutkiste',
   'alteGiesskanne',
@@ -231,13 +231,13 @@ const EMBER_IMMEDIATE_IDS: ReadonlySet<EmberUpgradeId> = new Set([
  * Wave-2 tip ids: join the prestige tip band from Soft-Prestige count ≥ 2
  * (rank depth = saisonenden − 1) so mid-branch tips arrive without a full rebuild.
  */
-const EMBER_WAVE2_TIP_IDS: ReadonlySet<EmberUpgradeId> = new Set([
+const TRUHE_WAVE2_TIP_IDS: ReadonlySet<TruheItemId> = new Set([
   'messingBrause',
   'strohhut',
 ])
 
 /** Lifetime prestige credit toward rebuild-gated ranks (not a full dump). */
-export const EMBER_UNLOCK_PER_PRESTIGE = 8_000
+export const TRUHE_UNLOCK_PER_PRESTIGE = 8_000
 
 /** Tip ranks opened immediately after `saisonenden` Soft-Resets (min 1). */
 export function tipBandDepth(saisonenden: number): number {
@@ -245,16 +245,16 @@ export function tipBandDepth(saisonenden: number): number {
 }
 
 /** Whether this rank is in the free post-prestige tip band. */
-export function isEmberTipRank(
-  id: EmberUpgradeId,
+export function isTruheTipRank(
+  id: TruheItemId,
   rank: number,
   saisonenden: number,
 ): boolean {
   if (rank < 0) return false
   if (id === 'kompostVomVorjahr') return rank === 0
   const depth = tipBandDepth(saisonenden)
-  if (EMBER_IMMEDIATE_IDS.has(id) && rank < depth) return true
-  if (EMBER_WAVE2_TIP_IDS.has(id) && saisonenden >= 2 && rank < depth - 1) {
+  if (TRUHE_IMMEDIATE_IDS.has(id) && rank < depth) return true
+  if (TRUHE_WAVE2_TIP_IDS.has(id) && saisonenden >= 2 && rank < depth - 1) {
     return true
   }
   return false
@@ -264,22 +264,22 @@ export function isEmberTipRank(
  * Progress needed before purchasing `rank` (0-based) of this item.
  * `saisonenden` = Soft-Resets completed (post-prestige state.saisonenden).
  */
-export function emberRankUnlockNeed(
-  id: EmberUpgradeId,
+export function truheRankUnlockNeed(
+  id: TruheItemId,
   rank: number,
   saisonenden = 0,
 ): number {
   if (id === 'kompostVomVorjahr') return 0
-  if (isEmberTipRank(id, rank, saisonenden)) return 0
+  if (isTruheTipRank(id, rank, saisonenden)) return 0
 
-  const credit = Math.max(0, saisonenden) * EMBER_UNLOCK_PER_PRESTIGE
+  const credit = Math.max(0, saisonenden) * TRUHE_UNLOCK_PER_PRESTIGE
 
   if (id === 'rosenbogen') {
     // Reachable mid post-P2 session (~23 module levels + soft ernte, or ~60 levels alone).
     return Math.max(0, 48_000 + rank * 32_000 - credit)
   }
 
-  const offset = EMBER_UNLOCK_OFFSET[id]
+  const offset = TRUHE_UNLOCK_OFFSET[id]
   const raw =
     rank === 0
       ? 12_000 + Math.floor(offset / 2)
@@ -287,106 +287,106 @@ export function emberRankUnlockNeed(
   return Math.max(0, raw - credit)
 }
 
-export const EMBER_SHOP: EmberShopItem[] = [
+export const TRUHE_ITEMS: TruheItem[] = [
   {
     id: 'gartenschere',
     branch: 'yield',
-    name: t.emberShop.gartenschere.name,
-    blurb: t.emberShop.gartenschere.blurb,
+    name: t.truhe.gartenschere.name,
+    blurb: t.truhe.gartenschere.blurb,
     maxRank: 40,
-    cost: (rank) => emberGeoCost(25, 1.3, rank),
-    effectLabel: (rank) => t.emberShop.gartenschere.effect(rank),
-    rankUnlockAsh: (rank) => emberRankUnlockNeed('gartenschere', rank),
+    cost: (rank) => truheGeoCost(25, 1.3, rank),
+    effectLabel: (rank) => t.truhe.gartenschere.effect(rank),
+    rankUnlockErnte: (rank) => truheRankUnlockNeed('gartenschere', rank),
   },
   {
     id: 'saatgutkiste',
     branch: 'yield',
-    name: t.emberShop.saatgutkiste.name,
-    blurb: t.emberShop.saatgutkiste.blurb,
+    name: t.truhe.saatgutkiste.name,
+    blurb: t.truhe.saatgutkiste.blurb,
     maxRank: 20,
-    cost: (rank) => emberGeoCost(18, 1.28, rank),
-    effectLabel: (rank) => t.emberShop.saatgutkiste.effect(rank),
-    rankUnlockAsh: (rank) => emberRankUnlockNeed('saatgutkiste', rank),
+    cost: (rank) => truheGeoCost(18, 1.28, rank),
+    effectLabel: (rank) => t.truhe.saatgutkiste.effect(rank),
+    rankUnlockErnte: (rank) => truheRankUnlockNeed('saatgutkiste', rank),
   },
   {
     id: 'strohhut',
     branch: 'yield',
-    name: t.emberShop.strohhut.name,
-    blurb: t.emberShop.strohhut.blurb,
+    name: t.truhe.strohhut.name,
+    blurb: t.truhe.strohhut.blurb,
     maxRank: 25,
-    cost: (rank) => emberGeoCost(36, 1.32, rank),
-    effectLabel: (rank) => t.emberShop.strohhut.effect(rank),
-    rankUnlockAsh: (rank) => emberRankUnlockNeed('strohhut', rank),
+    cost: (rank) => truheGeoCost(36, 1.32, rank),
+    effectLabel: (rank) => t.truhe.strohhut.effect(rank),
+    rankUnlockErnte: (rank) => truheRankUnlockNeed('strohhut', rank),
   },
   {
     id: 'rosenbogen',
     branch: 'yield',
-    name: t.emberShop.rosenbogen.name,
-    blurb: t.emberShop.rosenbogen.blurb,
+    name: t.truhe.rosenbogen.name,
+    blurb: t.truhe.rosenbogen.blurb,
     maxRank: 20,
-    cost: (rank) => emberGeoCost(60, 1.34, rank),
-    effectLabel: (rank) => t.emberShop.rosenbogen.effect(rank),
-    rankUnlockAsh: (rank) => emberRankUnlockNeed('rosenbogen', rank),
+    cost: (rank) => truheGeoCost(60, 1.34, rank),
+    effectLabel: (rank) => t.truhe.rosenbogen.effect(rank),
+    rankUnlockErnte: (rank) => truheRankUnlockNeed('rosenbogen', rank),
   },
   {
     id: 'alteGiesskanne',
-    branch: 'uptime',
-    name: t.emberShop.alteGiesskanne.name,
-    blurb: t.emberShop.alteGiesskanne.blurb,
+    branch: 'pflege',
+    name: t.truhe.alteGiesskanne.name,
+    blurb: t.truhe.alteGiesskanne.blurb,
     maxRank: 8,
-    cost: (rank) => emberGeoCost(30, 1.4, rank),
-    effectLabel: (rank) => t.emberShop.alteGiesskanne.effect(rank),
-    rankUnlockAsh: (rank) => emberRankUnlockNeed('alteGiesskanne', rank),
+    cost: (rank) => truheGeoCost(30, 1.4, rank),
+    effectLabel: (rank) => t.truhe.alteGiesskanne.effect(rank),
+    rankUnlockErnte: (rank) => truheRankUnlockNeed('alteGiesskanne', rank),
   },
   {
     id: 'messingBrause',
-    branch: 'uptime',
-    name: t.emberShop.messingBrause.name,
-    blurb: t.emberShop.messingBrause.blurb,
+    branch: 'pflege',
+    name: t.truhe.messingBrause.name,
+    blurb: t.truhe.messingBrause.blurb,
     maxRank: 12,
-    cost: (rank) => emberGeoCost(20, 1.32, rank),
-    effectLabel: (rank) => t.emberShop.messingBrause.effect(rank),
-    rankUnlockAsh: (rank) => emberRankUnlockNeed('messingBrause', rank),
+    cost: (rank) => truheGeoCost(20, 1.32, rank),
+    effectLabel: (rank) => t.truhe.messingBrause.effect(rank),
+    rankUnlockErnte: (rank) => truheRankUnlockNeed('messingBrause', rank),
   },
   {
     id: 'laterne',
-    branch: 'uptime',
-    name: t.emberShop.laterne.name,
-    blurb: t.emberShop.laterne.blurb,
+    branch: 'pflege',
+    name: t.truhe.laterne.name,
+    blurb: t.truhe.laterne.blurb,
     maxRank: 15,
-    cost: (rank) => emberGeoCost(34, 1.34, rank),
-    effectLabel: (rank) => t.emberShop.laterne.effect(rank),
-    rankUnlockAsh: (rank) => emberRankUnlockNeed('laterne', rank),
+    cost: (rank) => truheGeoCost(34, 1.34, rank),
+    effectLabel: (rank) => t.truhe.laterne.effect(rank),
+    rankUnlockErnte: (rank) => truheRankUnlockNeed('laterne', rank),
   },
   {
     id: 'kompostVomVorjahr',
     branch: 'start',
-    name: t.emberShop.kompostVomVorjahr.name,
-    blurb: t.emberShop.kompostVomVorjahr.blurb,
+    name: t.truhe.kompostVomVorjahr.name,
+    blurb: t.truhe.kompostVomVorjahr.blurb,
     maxRank: 1,
     cost: () => 60,
-    effectLabel: (rank) => t.emberShop.kompostVomVorjahr.effect(rank),
+    effectLabel: (rank) => t.truhe.kompostVomVorjahr.effect(rank),
   },
   {
     id: 'notgroschen',
     branch: 'start',
-    name: t.emberShop.notgroschen.name,
-    blurb: t.emberShop.notgroschen.blurb,
+    name: t.truhe.notgroschen.name,
+    blurb: t.truhe.notgroschen.blurb,
     maxRank: 12,
-    cost: (rank) => emberGeoCost(20, 1.36, rank),
-    effectLabel: (rank) => t.emberShop.notgroschen.effect(rank),
-    rankUnlockAsh: (rank) => emberRankUnlockNeed('notgroschen', rank),
+    cost: (rank) => truheGeoCost(20, 1.36, rank),
+    effectLabel: (rank) => t.truhe.notgroschen.effect(rank),
+    rankUnlockErnte: (rank) => truheRankUnlockNeed('notgroschen', rank),
   },
   {
     id: 'guteErde',
     branch: 'start',
-    name: t.emberShop.guteErde.name,
-    blurb: t.emberShop.guteErde.blurb,
+    name: t.truhe.guteErde.name,
+    blurb: t.truhe.guteErde.blurb,
     maxRank: 10,
-    cost: (rank) => emberGeoCost(45, 1.38, rank),
-    effectLabel: (rank) => t.emberShop.guteErde.effect(rank),
+    cost: (rank) => truheGeoCost(45, 1.38, rank),
+    effectLabel: (rank) => t.truhe.guteErde.effect(rank),
     unlockModulesOnline: 1,
-    rankUnlockAsh: (rank) => emberRankUnlockNeed('guteErde', rank),
+    rankUnlockErnte: (rank) => truheRankUnlockNeed('guteErde', rank),
   },
 ]
 
@@ -401,9 +401,9 @@ export const PRESTIGE_BRANCHES: {
     blurb: t.prestige.branchYieldBlurb,
   },
   {
-    id: 'uptime',
-    title: t.prestige.branchUptimeTitle,
-    blurb: t.prestige.branchUptimeBlurb,
+    id: 'pflege',
+    title: t.prestige.branchPflegeTitle,
+    blurb: t.prestige.branchPflegeBlurb,
   },
   {
     id: 'start',
@@ -412,7 +412,7 @@ export const PRESTIGE_BRANCHES: {
   },
 ]
 
-export function prestigeMultiplier(upgrades: EmberUpgrades): number {
+export function prestigeMultiplier(upgrades: TruheUpgrades): number {
   return (
     1 +
     upgrades.gartenschere * 0.05 +
@@ -421,11 +421,11 @@ export function prestigeMultiplier(upgrades: EmberUpgrades): number {
   )
 }
 
-export function foundryDiscountMult(upgrades: EmberUpgrades): number {
+export function saatgutkisteMult(upgrades: TruheUpgrades): number {
   return Math.pow(0.98, upgrades.saatgutkiste)
 }
 
-export function offlineCapsHours(upgrades: EmberUpgrades): {
+export function offlineCapsHours(upgrades: TruheUpgrades): {
   soft: number
   hard: number
 } {
@@ -436,32 +436,32 @@ export function offlineCapsHours(upgrades: EmberUpgrades): {
 }
 
 /** Tap bonus seconds including Tap Mastery ranks. */
-export function tapBonusSeconds(upgrades: EmberUpgrades): number {
+export function tapBonusSeconds(upgrades: TruheUpgrades): number {
   return TAP_BONUS_SECONDS + upgrades.messingBrause * 15
 }
 
 /**
  * Soft wallet granted at the start of a prestige run (Seed-Purse meta).
  * Callers must still floor against the next G1 Ausbauen cost — see
- * `prestigeStartAshFloor` / `createPostPrestigeState`.
+ * `prestigeStartErnteFloor` / `createPostPrestigeState`.
  */
-export function prestigeStartAsh(upgrades: EmberUpgrades): number {
-  // Slightly juicier start crumbs so post-prestige Phyto doesn't feel flat.
+export function prestigeStartErnte(upgrades: TruheUpgrades): number {
+  // Slightly juicier start crumbs so post-prestige Ernte doesn't feel flat.
   return upgrades.notgroschen * 80
 }
 
 /**
- * Minimum spendable Phyto after Soft-Prestige so the primary Ausbauen CTA is
+ * Minimum spendable Ernte after Soft-Prestige so the primary Ausbauen CTA is
  * never disabled at run start (mirrors Day-1 ernte:28 vs G1 cost ~23).
  */
-export function prestigeStartAshFloor(nextG1Cost: number): number {
+export function prestigeStartErnteFloor(nextG1Cost: number): number {
   const cost = Math.max(1, Math.floor(nextG1Cost))
-  // +5 matches createInitialState float; also covers tiny foundry rounding.
+  // +5 matches createInitialState float; also covers tiny Saatgutkiste rounding.
   return cost + 5
 }
 
 /** Starting G1 module level after Soft-Prestige (guteErde). */
-export function prestigeStartModuleLevel(upgrades: EmberUpgrades): number {
+export function prestigeStartModuleLevel(upgrades: TruheUpgrades): number {
   return Math.max(0, upgrades.guteErde)
 }
 
@@ -488,29 +488,29 @@ export function moduleLevelsTotal(
 
 /**
  * Effective unlock progress: rebuild (module levels) primary + soft √ ernte.
- * Raw ernte must not open the whole tree mid-run; leftover Münzen should feel
+ * Raw ernte must not open the whole tree mid-run; leftover Erbstücke should feel
  * like “waiting on next unlock”, not “shop empty”.
  */
-export function emberUnlockProgress(
-  ashEarnedThisRun: number,
+export function truheUnlockProgress(
+  ernteThisRun: number,
   owned: Partial<Record<GeneratorId, number>>,
 ): number {
   const modules =
-    moduleLevelsTotal(owned) * EMBER_UNLOCK_PER_MODULE_LEVEL
-  const ashPart = Math.min(
-    EMBER_UNLOCK_ASH_CAP,
+    moduleLevelsTotal(owned) * TRUHE_UNLOCK_PER_MODULE_LEVEL
+  const erntePart = Math.min(
+    TRUHE_UNLOCK_ERNTE_CAP,
     Math.floor(
-      Math.sqrt(Math.max(0, ashEarnedThisRun) / EMBER_UNLOCK_ASH_SQRT_DIV),
+      Math.sqrt(Math.max(0, ernteThisRun) / TRUHE_UNLOCK_ERNTE_SQRT_DIV),
     ),
   )
-  return modules + ashPart
+  return modules + erntePart
 }
 
-/** Whether the next rank of a Münzen-shop item is unlocked this run. */
-export function emberRankUnlocked(
-  item: EmberShopItem,
+/** Whether the next rank of a Truhe item is unlocked this run. */
+export function truheRankUnlocked(
+  item: TruheItem,
   rank: number,
-  ashEarnedThisRun: number,
+  ernteThisRun: number,
   owned: Partial<Record<GeneratorId, number>>,
   saisonenden = 0,
 ): boolean {
@@ -522,23 +522,23 @@ export function emberRankUnlocked(
   ) {
     return false
   }
-  const needAsh = emberRankUnlockNeed(item.id, rank, saisonenden)
-  return emberUnlockProgress(ashEarnedThisRun, owned) >= needAsh
+  const needErnte = truheRankUnlockNeed(item.id, rank, saisonenden)
+  return truheUnlockProgress(ernteThisRun, owned) >= needErnte
 }
 
-/** How many Münzen-shop ranks are affordable + unlocked right now. */
-export function countAffordableEmberBuys(
-  upgrades: EmberUpgrades,
+/** How many Truhe ranks are affordable + unlocked right now. */
+export function countAffordableTruheBuys(
+  upgrades: TruheUpgrades,
   erbstuecke: number,
-  ashEarnedThisRun: number,
+  ernteThisRun: number,
   owned: Partial<Record<GeneratorId, number>>,
   saisonenden = 0,
 ): number {
   let n = 0
-  for (const item of EMBER_SHOP) {
+  for (const item of TRUHE_ITEMS) {
     const rank = upgrades[item.id]
     if (rank >= item.maxRank) continue
-    if (!emberRankUnlocked(item, rank, ashEarnedThisRun, owned, saisonenden)) {
+    if (!truheRankUnlocked(item, rank, ernteThisRun, owned, saisonenden)) {
       continue
     }
     if (erbstuecke >= item.cost(rank)) n += 1
@@ -548,7 +548,7 @@ export function countAffordableEmberBuys(
 
 /** Starting owned modules right after Soft-Prestige (guteErde only). */
 export function postPrestigeStartOwned(
-  upgrades: EmberUpgrades,
+  upgrades: TruheUpgrades,
 ): Partial<Record<GeneratorId, number>> {
   const owned: Partial<Record<GeneratorId, number>> = {}
   const startLevel = prestigeStartModuleLevel(upgrades)
@@ -557,19 +557,19 @@ export function postPrestigeStartOwned(
 }
 
 /**
- * Affordable Münzen buys immediately after Soft-Prestige with current wallet
+ * Affordable Truhe buys immediately after Soft-Prestige with current wallet
  * + pending payout. Used so “lohnt sich” never fires into an empty tip band.
  */
-export function countAffordableEmberBuysAfterPrestige(args: {
-  upgrades: EmberUpgrades
+export function countAffordableTruheBuysAfterPrestige(args: {
+  upgrades: TruheUpgrades
   erbstuecke: number
   ernteSeason: number
   saisonenden: number
   probe?: boolean
 }): number {
   const postPrestiges = args.saisonenden + 1
-  const wallet = args.erbstuecke + emberPayout(args.ernteSeason, args.saisonenden, args.probe)
-  return countAffordableEmberBuys(
+  const wallet = args.erbstuecke + erbstueckePayout(args.ernteSeason, args.saisonenden, args.probe)
+  return countAffordableTruheBuys(
     args.upgrades,
     wallet,
     0,
@@ -578,27 +578,27 @@ export function countAffordableEmberBuysAfterPrestige(args: {
   )
 }
 
-/** Approx. module levels still needed for the nearest locked Münzen rank. */
-export function modulesToNextEmberUnlock(
-  upgrades: EmberUpgrades,
-  ashEarnedThisRun: number,
+/** Approx. module levels still needed for the nearest locked Truhe rank. */
+export function modulesToNextTruheUnlock(
+  upgrades: TruheUpgrades,
+  ernteThisRun: number,
   owned: Partial<Record<GeneratorId, number>>,
   saisonenden = 0,
 ): number | null {
-  const next = nextLockedEmberUnlock(
+  const next = nextLockedTruheUnlock(
     upgrades,
-    ashEarnedThisRun,
+    ernteThisRun,
     owned,
     saisonenden,
   )
   if (!next) return null
   const deficit = Math.max(0, next.need - next.have)
   if (deficit <= 0) return 0
-  return Math.ceil(deficit / EMBER_UNLOCK_PER_MODULE_LEVEL)
+  return Math.ceil(deficit / TRUHE_UNLOCK_PER_MODULE_LEVEL)
 }
 
-export interface NextEmberUnlock {
-  item: EmberShopItem
+export interface NextTruheUnlock {
+  item: TruheItem
   rank: number
   need: number
   have: number
@@ -607,27 +607,27 @@ export interface NextEmberUnlock {
 }
 
 /**
- * Nearest locked Münzen rank (lowest need). Used for shop “waiting” banner
+ * Nearest locked Truhe rank (lowest need). Used for shop “waiting” banner
  * and per-row progress when the wallet is full but the band is gated.
  */
-export function nextLockedEmberUnlock(
-  upgrades: EmberUpgrades,
-  ashEarnedThisRun: number,
+export function nextLockedTruheUnlock(
+  upgrades: TruheUpgrades,
+  ernteThisRun: number,
   owned: Partial<Record<GeneratorId, number>>,
   saisonenden = 0,
-): NextEmberUnlock | null {
-  const have = emberUnlockProgress(ashEarnedThisRun, owned)
+): NextTruheUnlock | null {
+  const have = truheUnlockProgress(ernteThisRun, owned)
   const online = modulesOnlineCount(owned)
-  let best: NextEmberUnlock | null = null
-  for (const item of EMBER_SHOP) {
+  let best: NextTruheUnlock | null = null
+  for (const item of TRUHE_ITEMS) {
     const rank = upgrades[item.id]
     if (rank >= item.maxRank) continue
     if (
       item.unlockModulesOnline != null &&
       online < item.unlockModulesOnline
     ) {
-      const need = emberRankUnlockNeed(item.id, rank, saisonenden)
-      const candidate: NextEmberUnlock = {
+      const need = truheRankUnlockNeed(item.id, rank, saisonenden)
+      const candidate: NextTruheUnlock = {
         item,
         rank,
         need: Math.max(need, 1),
@@ -637,9 +637,9 @@ export function nextLockedEmberUnlock(
       if (!best || candidate.need < best.need) best = candidate
       continue
     }
-    const need = emberRankUnlockNeed(item.id, rank, saisonenden)
+    const need = truheRankUnlockNeed(item.id, rank, saisonenden)
     if (have >= need) continue
-    const candidate: NextEmberUnlock = {
+    const candidate: NextTruheUnlock = {
       item,
       rank,
       need,
@@ -651,12 +651,12 @@ export function nextLockedEmberUnlock(
   return best
 }
 
-/** Immediate tip-band Münzen sink at a given prestige count — balance probe. */
-export function immediateEmberSinkCost(saisonenden = 1): number {
+/** Immediate tip-band Truhe sink at a given prestige count — balance probe. */
+export function immediateTruheSinkCost(saisonenden = 1): number {
   let total = 0
-  for (const item of EMBER_SHOP) {
+  for (const item of TRUHE_ITEMS) {
     for (let rank = 0; rank < item.maxRank; rank++) {
-      if (emberRankUnlockNeed(item.id, rank, saisonenden) > 0) break
+      if (truheRankUnlockNeed(item.id, rank, saisonenden) > 0) break
       total += item.cost(rank)
     }
   }
@@ -669,16 +669,16 @@ export type PrestigeBlockReason =
   | 'modules'
   | null
 
-/** Soft-gate diagnostics for UI (Münzen floor every run + rebuild on Run 2+). */
+/** Soft-gate diagnostics for UI (Erbstücke floor every run + rebuild on Run 2+). */
 export function prestigeBlockReason(args: {
   saisonenden: number
   ernteSeason: number
   owned: Partial<Record<GeneratorId, number>>
   probe?: boolean
 }): PrestigeBlockReason {
-  const min = prestigeMinAsh(args.saisonenden, args.probe)
+  const min = prestigeMinErnte(args.saisonenden, args.probe)
   if (args.ernteSeason < min) return 'ernte'
-  const payout = emberPayout(args.ernteSeason, args.saisonenden, args.probe)
+  const payout = erbstueckePayout(args.ernteSeason, args.saisonenden, args.probe)
   if (payout <= 0) return 'ernte'
   if (
     args.saisonenden >= 1 &&
@@ -690,10 +690,10 @@ export function prestigeBlockReason(args: {
 }
 
 /**
- * Offline catchup Compute for elapsed seconds at snapshot rate R (Compute/sec).
+ * Offline catchup Ernte for elapsed seconds at snapshot rate R (Ernte/s).
  * Soft full rate, then 50% until hard cap; nothing beyond hard.
  */
-export function offlineCatchupAsh(
+export function offlineCatchupErnte(
   ratePerSec: number,
   elapsedSec: number,
   softHours: number,

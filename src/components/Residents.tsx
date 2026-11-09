@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { DECOR_SLOTS, placedDecor } from '../game/decor'
-import { formatAsh } from '../game/format'
+import { formatErnte } from '../game/format'
 import { GENERATORS } from '../game/generators'
 import { RESIDENT_FIRST_SAMEN, pickResident, residentDef } from '../game/residents'
 import { playSfx } from '../game/sound'
@@ -61,7 +61,7 @@ export function Residents({ game, ambient, onToast }: { game: GameApi; ambient: 
     const r = game.greetVisitorAnimal()
     if (!r) return
     playSfx(r.first ? 'level' : 'claim')
-    onToast(r.first ? t.residents.firstToast(name, RESIDENT_FIRST_SAMEN) : t.residents.repeatToast(name, formatAsh(r.ernte)))
+    onToast(r.first ? t.residents.firstToast(name, RESIDENT_FIRST_SAMEN) : t.residents.repeatToast(name, formatErnte(r.ernte)))
   }
   return (
     <button

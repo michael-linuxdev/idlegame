@@ -53,7 +53,7 @@ export const uxStrings = {
       fest: 'Fest',
       weather: 'Wetter',
       wheel: 'Glücksrad',
-      surge: 'Erntefest',
+      erntefest: 'Erntefest',
       flash: 'Sonne',
       boost: 'Dünger',
       clan: 'Verein',

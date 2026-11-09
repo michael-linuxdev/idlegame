@@ -59,7 +59,7 @@
   background: linear-gradient(180deg, #fbf6e8, #f3e9d2);
   box-shadow: 0 2px 0 var(--hud-edge, #c9b48a), 0 4px 10px rgba(40, 32, 12, 0.16);
   color: #33261a;
-  font-family: var(--oc-font-metric);
+  font-family: var(--ge-font-metric);
   font-weight: 700;
   font-size: 0.5rem;
   line-height: 1;
@@ -89,7 +89,7 @@
 }
 
 .map-side-btn:focus-visible {
-  outline: 3px solid var(--oc-focus);
+  outline: 3px solid var(--ge-focus);
   outline-offset: 2px;
 }
 
@@ -316,7 +316,7 @@
   border-radius: 999px;
   background: #fbf6e8;
   color: #33261a;
-  font-family: var(--oc-font-metric);
+  font-family: var(--ge-font-metric);
   font-weight: 700;
   font-size: 0.78rem;
   cursor: pointer;
@@ -372,7 +372,7 @@
   z-index: 2;
   margin: -0.55rem -0.7rem 0;
   padding: 0.55rem 0.7rem 0.4rem;
-  background: var(--oc-bg-raised, #fffcf4);
+  background: var(--ge-bg-raised, #fffcf4);
   border-bottom: 1px solid rgba(138, 106, 64, 0.15);
 }
 
@@ -385,7 +385,7 @@
   align-items: center;
   gap: 0.5rem;
   margin: 0.2rem 0 0.1rem;
-  font-family: var(--oc-font-metric);
+  font-family: var(--ge-font-metric);
   font-size: 1.05rem;
 }
 
@@ -627,7 +627,7 @@
 }
 
 .orchard-bonus {
-  font-family: var(--oc-font-metric);
+  font-family: var(--ge-font-metric);
   font-size: 0.66rem;
   font-weight: 700;
   color: #3f7a30;
@@ -786,7 +786,7 @@
   margin: 0 0.75rem;
   font-size: 0.72rem;
   font-weight: 600;
-  color: var(--oc-ink-soft, #6a5434);
+  color: var(--ge-ink-soft, #6a5434);
 }
 
 .nav-version {
@@ -849,7 +849,7 @@ html.tab-hidden .fest-snow {
   background: #fffcf4;
   box-shadow: 0 3px 8px rgba(40, 32, 12, 0.18);
   color: #33261a;
-  font-family: var(--oc-font-hand, inherit);
+  font-family: var(--ge-font-hand, inherit);
   font-size: 0.82rem;
   line-height: 1.15;
   text-align: center;
@@ -945,7 +945,7 @@ html.tab-hidden .fest-snow {
   border: 0;
   background: none;
   cursor: pointer;
-  font-family: var(--oc-font-display);
+  font-family: var(--ge-font-display);
   font-weight: 700;
   font-size: 0.72rem;
   color: #33261a;
@@ -1102,11 +1102,11 @@ html.tab-hidden .fest-snow {
 }
 
 /* Foto-Modus */
-.fortress-home.photo-mode .hud,
-.fortress-home.photo-mode .hud-bottom,
-.fortress-home.photo-mode .map-side,
-.fortress-home.photo-mode .plot-sign,
-.fortress-home.photo-mode .hud-toast {
+.garten-home.photo-mode .hud,
+.garten-home.photo-mode .hud-bottom,
+.garten-home.photo-mode .map-side,
+.garten-home.photo-mode .plot-sign,
+.garten-home.photo-mode .hud-toast {
   display: none !important;
 }
 
@@ -1130,7 +1130,7 @@ html.tab-hidden .fest-snow {
 
 .photo-caption {
   margin: 0 0 0.4rem;
-  font-family: var(--oc-font-hand, inherit);
+  font-family: var(--ge-font-hand, inherit);
   font-size: 1.1rem;
 }
 
@@ -1353,7 +1353,7 @@ html.tab-hidden .sky-event {
 }
 
 .plot-row-meta {
-  font-family: var(--oc-font-metric);
+  font-family: var(--ge-font-metric);
   font-size: 0.74rem;
   font-weight: 700;
   color: #6a5434;
@@ -1383,7 +1383,7 @@ html.tab-hidden .sky-event {
   border-radius: 999px;
   background: #fbf3e0;
   box-shadow: 0 1px 0 #8a6a40;
-  font-family: var(--oc-font-metric);
+  font-family: var(--ge-font-metric);
   font-weight: 700;
   font-size: 0.58rem;
   line-height: 1;
@@ -1397,7 +1397,7 @@ html.tab-hidden .sky-event {
   letter-spacing: -0.08em;
 }
 
-.fortress-home.photo-mode .plot-badge {
+.garten-home.photo-mode .plot-badge {
   display: none;
 }
 
@@ -1432,8 +1432,8 @@ html.tab-hidden .sky-event {
   border: none;
   border-radius: 8px;
   background: transparent;
-  color: var(--oc-ink);
-  font-family: var(--oc-font-ui, inherit);
+  color: var(--ge-ink);
+  font-family: var(--ge-font-ui, inherit);
   font-size: 0.8rem;
   text-align: left;
   cursor: pointer;
@@ -1442,7 +1442,7 @@ html.tab-hidden .sky-event {
 .nav-menu .nav-menu-sound {
   min-height: 2.4rem;
   font-size: 0.8rem;
-  color: var(--oc-ink);
+  color: var(--ge-ink);
 }
 
 .nav-menu .nav-toggle-state {
@@ -1453,13 +1453,13 @@ html.tab-hidden .sky-event {
 .nav-menu-settings {
   justify-content: space-between;
   margin-top: 0.2rem;
-  border-top: 1px solid var(--oc-stroke) !important;
+  border-top: 1px solid var(--ge-stroke) !important;
   border-radius: 0 0 8px 8px;
 }
 
 .nav-chevron {
   font-size: 0.8rem;
-  color: var(--oc-ink-muted, #6a5434);
+  color: var(--ge-ink-muted, #6a5434);
 }
 
 .nav-menu-group {
@@ -1467,7 +1467,7 @@ html.tab-hidden .sky-event {
   flex-direction: column;
   gap: 0.1rem;
   padding-left: 0.3rem;
-  border-left: 2px solid color-mix(in srgb, var(--oc-ember) 30%, transparent);
+  border-left: 2px solid color-mix(in srgb, var(--ge-gruen) 30%, transparent);
 }
 
 /* —— Ausbau-Fenster kompakt —— */
@@ -1565,7 +1565,7 @@ html.tab-hidden .sky-event {
   background: radial-gradient(circle at 35% 30%, #ffe08a, #e0a21a);
   box-shadow: 0 2px 0 #9a6a10, 0 3px 6px rgba(60, 40, 0, 0.3);
   color: #4a3208;
-  font-family: var(--oc-font-metric);
+  font-family: var(--ge-font-metric);
   font-weight: 800;
   font-size: 0.82rem;
 }
@@ -1577,7 +1577,7 @@ html.tab-hidden .sky-event {
 
 .gc-name {
   margin: 0;
-  font-family: var(--oc-font-display);
+  font-family: var(--ge-font-display);
   font-size: 1.25rem;
   line-height: 1.1;
   color: #33261a;
@@ -1611,7 +1611,7 @@ html.tab-hidden .sky-event {
   align-items: center;
   gap: 0.25rem;
   margin: 0;
-  font-family: var(--oc-font-metric);
+  font-family: var(--ge-font-metric);
   font-weight: 800;
   font-size: 0.86rem;
   color: #33261a;
@@ -1649,7 +1649,7 @@ html.tab-hidden .sky-event {
   position: relative;
   display: block;
   padding-left: 0.6rem;
-  font-family: var(--oc-font-metric);
+  font-family: var(--ge-font-metric);
   font-weight: 800;
   font-size: 0.72rem;
   line-height: 1.15rem;
@@ -1690,7 +1690,7 @@ html.tab-hidden .sky-event {
   border-radius: 999px;
   background: transparent;
   color: #6a5434;
-  font-family: var(--oc-font-metric);
+  font-family: var(--ge-font-metric);
   font-weight: 800;
   font-size: 0.8rem;
   cursor: pointer;
@@ -1712,7 +1712,7 @@ html.tab-hidden .sky-event {
   background: linear-gradient(180deg, #ffe08a, #f5c542);
   box-shadow: 0 3px 0 #9a6a10;
   color: #4a3208;
-  font-family: var(--oc-font-display);
+  font-family: var(--ge-font-display);
   font-weight: 700;
   font-size: 0.82rem;
   cursor: pointer;
@@ -1750,7 +1750,7 @@ html.tab-hidden .sky-event {
 
 .gc-buy-label {
   position: relative;
-  font-family: var(--oc-font-display);
+  font-family: var(--ge-font-display);
   font-size: 1.2rem;
 }
 
@@ -1762,7 +1762,7 @@ html.tab-hidden .sky-event {
   padding: 0.2rem 0.6rem;
   border-radius: 999px;
   background: rgba(0, 0, 0, 0.18);
-  font-family: var(--oc-font-metric);
+  font-family: var(--ge-font-metric);
   font-weight: 800;
   font-size: 1rem;
 }
@@ -1811,7 +1811,7 @@ html.tab-hidden .sky-event {
 }
 
 .gc-care-name {
-  font-family: var(--oc-font-display);
+  font-family: var(--ge-font-display);
   font-weight: 700;
   font-size: 0.9rem;
 }
@@ -1855,7 +1855,7 @@ html.tab-hidden .sky-event {
   background: linear-gradient(180deg, #8fcf5f, #5f9e45);
   box-shadow: 0 2px 0 #2f6a22;
   color: #fff;
-  font-family: var(--oc-font-metric);
+  font-family: var(--ge-font-metric);
   font-weight: 800;
   font-size: 0.82rem;
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
@@ -1924,7 +1924,7 @@ html.tab-hidden .sky-event {
     padding: 1.5rem;
     background: linear-gradient(180deg, #e8f0e4, #dce8d6);
     color: #33261a;
-    font-family: var(--oc-font-display);
+    font-family: var(--ge-font-display);
     font-size: 1.1rem;
     text-align: center;
   }

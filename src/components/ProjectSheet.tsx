@@ -1,4 +1,4 @@
-import { formatAsh, formatDecimal } from '../game/format'
+import { formatErnte, formatDecimal } from '../game/format'
 import { useDismiss } from '../game/overlays'
 import { PROJECTS, PROJECT_STAGES, projectsMult, stageCost } from '../game/projects'
 import { projectOpen } from '../game/state'
@@ -66,7 +66,7 @@ export function ProjectSheet({ game, onClose }: { game: GameApi; onClose: () => 
                           return (
                             <li key={chapter} className={have >= cost ? 'ok' : ''}>
                               <span className="project-cur">{chapterCopy(chapter).icon}</span>
-                              {formatAsh(Math.min(have, cost))}/{formatAsh(cost)} {chapterCopy(chapter).currency}
+                              {formatErnte(Math.min(have, cost))}/{formatErnte(cost)} {chapterCopy(chapter).currency}
                             </li>
                           )
                         })}

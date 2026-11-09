@@ -7,7 +7,7 @@ import { describe, expect, it } from 'vitest'
  * dürfen nicht zurückkommen. Wörterbuch: docs/cleanup/namen.md.
  */
 const LEGACY = [
-  /[Ee]mber|EMBER/,
+  /\bember|\bEmber|[a-z]Ember|EMBER/,
   /[Oo]bsidian|OBSIDIAN/,
   /\bash[A-Z]|[a-z]Ash\b|[a-z]Ash[A-Z]|\bAsh\b|_ASH\b|_ASH_|\bash-/,
   /[Ff]ortress/,
@@ -20,7 +20,7 @@ const LEGACY = [
   /\bcompute(Sec|Mult|Flat|Gain|Earned)\b|rewardCompute|gateCompute|\bCompute\b/,
   /\bCredits\b|[a-z]Credits\b|\bcredits\b/,
   /Münzen/,
-  /--oc-|--ad-/,
+  /--oc-|--ad-|var\(--(ember|ash)/,
   /economy\.md/,
 ]
 
@@ -43,7 +43,7 @@ function walk(dir: string, out: string[] = []): string[] {
   return out
 }
 
-describe.skip('keine Altnamen im Quelltext', () => {
+describe('keine Altnamen im Quelltext', () => {
   it('src/ und scripts/ ohne Namen aus früheren Spielen', () => {
     const hits: string[] = []
     for (const file of [...walk(join(ROOT, 'src')), ...walk(join(ROOT, 'scripts'))]) {
@@ -51,6 +51,8 @@ describe.skip('keine Altnamen im Quelltext', () => {
       if (ALLOW.has(rel)) continue
       const lines = readFileSync(file, 'utf8').split('\n')
       lines.forEach((line, i) => {
+        // bewusst alte Namen (z. B. Test „alter Stand wird nicht gelesen“)
+        if (line.includes('altname-ok') || (lines[i - 1] ?? '').includes('altname-ok')) return
         for (const re of LEGACY) {
           if (re.test(line)) {
             hits.push(`${rel}:${i + 1}: ${line.trim().slice(0, 100)}`)

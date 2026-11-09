@@ -2,7 +2,6 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { registerSW } from 'virtual:pwa-register'
 import App from './App'
-import { purgeLegacyStorage } from './game/legacyStorage'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { logPlaytest } from './game/playtestLog'
 import { startSaveLock } from './game/saveGuard'
@@ -19,7 +18,6 @@ if (new URLSearchParams(location.search).has('artsheet')) {
 }
 
 function startGame() {
-  purgeLegacyStorage()
   // Nur ein Fenster speichert (vor dem ersten Laden des Spielstands)
   startSaveLock()
   // Browser bitten, den Speicher nicht von sich aus zu löschen (iOS/Safari)

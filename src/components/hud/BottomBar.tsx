@@ -1,4 +1,4 @@
-import { formatAsh, formatClock } from '../../game/format'
+import { formatErnte, formatClock } from '../../game/format'
 import type { useGame } from '../../game/useGame'
 import { t } from '../../i18n'
 import { IconBasket, IconNotebook, IconWateringCan } from '../../theme/icons'
@@ -32,14 +32,14 @@ export function BottomBar({ game, highlightOffline, onClaimOffline, onClaimDaily
             type="button"
             className={`hud-claim offline${highlightOffline ? ' ftue-target' : ''}`}
             onClick={onClaimOffline}
-            aria-label={t.hud.claimAria(`${formatAsh(offlineGained)} ${t.resources.compute}`)}
+            aria-label={t.hud.claimAria(`${formatErnte(offlineGained)} ${t.resources.ernte}`)}
           >
             <span className="hud-claim-icon">
               <IconBasket />
             </span>
             <span className="hud-claim-text">
               <span className="hud-claim-title">{t.hud.claim}</span>
-              <span className="hud-claim-sub">+{formatAsh(offlineGained)}</span>
+              <span className="hud-claim-sub">+{formatErnte(offlineGained)}</span>
             </span>
           </button>
         ) : dailyReady ? (

@@ -10,7 +10,7 @@ import { useDismiss } from '../game/overlays'
 import { IconBasket, IconFlag, IconNotebook, IconSnow, IconSprout } from '../theme/icons'
 import { ArtSvg } from '../theme/ArtSvg'
 
-export type Tab = 'fortress' | 'prestige' | 'clan' | 'shop'
+export type Tab = 'garten' | 'prestige' | 'clan' | 'shop'
 
 interface Props {
   tab: Tab
@@ -166,7 +166,7 @@ export function AppNav({
         className={`tabbar-btn tab-${id}${active ? ' active' : ''}${ftue ? ' ftue-tab' : ''}`}
         aria-current={active ? 'page' : undefined}
         onClick={() => {
-          if (id === 'fortress' && active) onGardenAgain?.()
+          if (id === 'garten' && active) onGardenAgain?.()
           else onTabChange(id)
         }}
       >
@@ -182,7 +182,7 @@ export function AppNav({
   return (
     <>
       <nav className="tabbar" aria-label={t.nav.ariaLabel}>
-        {tabButton('fortress', <IconSprout />, plotLabel ?? t.nav.station)}
+        {tabButton('garten', <IconSprout />, plotLabel ?? t.nav.garten)}
         {tabButton('prestige', <IconSnow />, t.nav.prestige, seasonReady, ftueHighlight === 'prestige')}
         {tabButton('shop', <IconBasket />, t.nav.shop, shopReady)}
         <button

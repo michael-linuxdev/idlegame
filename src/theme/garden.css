@@ -126,7 +126,7 @@
   padding: 0;
   border: 0;
   background: none;
-  color: var(--oc-ink);
+  color: var(--ge-ink);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -142,7 +142,7 @@
 }
 
 .garden-plot:focus-visible .plot-visual {
-  outline: 3px solid var(--oc-focus);
+  outline: 3px solid var(--ge-focus);
   outline-offset: 2px;
   border-radius: 12px;
 }
@@ -200,14 +200,14 @@
 }
 
 .plot-name {
-  font-family: var(--oc-font-display);
+  font-family: var(--ge-font-display);
   font-weight: 700;
   font-size: 0.66rem;
   color: #3b2c18;
 }
 
 .plot-meta {
-  font-family: var(--oc-font-metric);
+  font-family: var(--ge-font-metric);
   font-weight: 700;
   font-size: 0.6rem;
   color: #6a5434;
@@ -220,10 +220,10 @@
 }
 
 .garden-plot.ready .plot-sign {
-  border-color: var(--oc-ember-dim);
-  background: linear-gradient(180deg, var(--oc-ember-hot), var(--oc-ember));
+  border-color: var(--ge-gruen-dunkel);
+  background: linear-gradient(180deg, var(--ge-gruen-hell), var(--ge-gruen));
   box-shadow:
-    0 2px 0 var(--oc-ember-dim),
+    0 2px 0 var(--ge-gruen-dunkel),
     0 3px 8px rgba(30, 90, 40, 0.3);
 }
 
@@ -676,7 +676,7 @@ html.tab-hidden .module-art * {
 }
 
 .garden-visitor:focus-visible {
-  outline: 3px solid var(--oc-focus);
+  outline: 3px solid var(--ge-focus);
   outline-offset: 2px;
 }
 

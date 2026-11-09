@@ -8,21 +8,21 @@ import { CHAPTERS, type ChapterId } from '../game/chapters'
 import { ILSE_RANKS } from '../game/extrasCore'
 import { chapterCopy } from './chapterCopy'
 import {
-  EMBER_SHOP,
+  TRUHE_ITEMS,
   PRESTIGE_BRANCHES,
   PRESTIGE_MIN_MODULES_ONLINE,
-  countAffordableEmberBuys,
-  countAffordableEmberBuysAfterPrestige,
-  emberPayout,
-  emberRankUnlocked,
-  emberRankUnlockNeed,
-  emberUnlockProgress,
+  countAffordableTruheBuys,
+  countAffordableTruheBuysAfterPrestige,
+  erbstueckePayout,
+  truheRankUnlocked,
+  truheRankUnlockNeed,
+  truheUnlockProgress,
   modulesOnlineCount,
-  modulesToNextEmberUnlock,
-  nextLockedEmberUnlock,
+  modulesToNextTruheUnlock,
+  nextLockedTruheUnlock,
   postPrestigeStartOwned,
   prestigeBlockReason, isProbeYear } from '../game/economy'
-import { formatEta, formatAsh, formatDecimal, formatMult } from '../game/format'
+import { formatEta, formatErnte, formatDecimal, formatMult } from '../game/format'
 import { t } from '../i18n'
 import { CHALLENGE_IDS } from '../game/challenges'
 import { WinterScene } from '../theme/WinterScene'
@@ -63,7 +63,7 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
   }, [state.saisonenden, state.tiefeWinter, state.generation, state.helperLevel])
   const teaser = prestigeProgress.ratio >= 0.5 && !canPrestige
   const probe = isProbeYear(state)
-  const payout = emberPayout(state.ernteSeason, state.saisonenden, probe)
+  const payout = erbstueckePayout(state.ernteSeason, state.saisonenden, probe)
   const online = modulesOnlineCount(state.owned)
   const block = prestigeBlockReason({
     saisonenden: state.saisonenden,
@@ -71,21 +71,21 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
     owned: state.owned,
     probe,
   })
-  const unlockProgress = emberUnlockProgress(state.ernteSeason, state.owned)
-  const readyBuys = countAffordableEmberBuys(
+  const unlockProgress = truheUnlockProgress(state.ernteSeason, state.owned)
+  const readyBuys = countAffordableTruheBuys(
     state.truhe,
     state.erbstuecke,
     state.ernteSeason,
     state.owned,
     state.saisonenden,
   )
-  const nextUnlock = nextLockedEmberUnlock(
+  const nextUnlock = nextLockedTruheUnlock(
     state.truhe,
     state.ernteSeason,
     state.owned,
     state.saisonenden,
   )
-  const postBuys = countAffordableEmberBuysAfterPrestige({
+  const postBuys = countAffordableTruheBuysAfterPrestige({
     upgrades: state.truhe,
     erbstuecke: state.erbstuecke,
     ernteSeason: state.ernteSeason,
@@ -100,7 +100,7 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
   const helperRank = HELPER_RANKS[state.helperLevel]
 
   const postUnlockMods =
-    modulesToNextEmberUnlock(
+    modulesToNextTruheUnlock(
       state.truhe,
       0,
       postPrestigeStartOwned(state.truhe),
@@ -117,7 +117,7 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
     claimLabel = t.prestige.needModules(online, PRESTIGE_MIN_MODULES_ONLINE)
   } else {
     claimLabel = t.prestige.needMore(
-      formatAsh(Math.max(0, prestigeMin - state.ernteSeason)),
+      formatErnte(Math.max(0, prestigeMin - state.ernteSeason)),
     )
   }
 
@@ -130,7 +130,7 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
         <p className="eyebrow">{t.season.springTitle(state.saisonenden + 1)}</p>
         <h2 id="prestige-heading">{t.prestige.title}</h2>
         <p className="muted">
-          {t.prestige.introBefore} <strong>{t.resources.credits}</strong>{' '}
+          {t.prestige.introBefore} <strong>{t.resources.erbstuecke}</strong>{' '}
           {t.prestige.introAfter}
         </p>
       </header>
@@ -157,7 +157,7 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
       <div className="prestige-block" id="jump-season">
         <dl className="season-stats">
           <div>
-            <dt>{t.prestige.credits.replace(':', '')}</dt>
+            <dt>{t.prestige.erbstuecke.replace(':', '')}</dt>
             <dd>{state.erbstuecke}</dd>
           </div>
           <div>
@@ -171,8 +171,8 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
           </div>
         </dl>
         <p className="prestige-stats">
-          {t.prestige.thisRun} <strong>{formatAsh(state.ernteSeason)}</strong> /{' '}
-          {formatAsh(prestigeMin)} {t.resources.compute}
+          {t.prestige.thisRun} <strong>{formatErnte(state.ernteSeason)}</strong> /{' '}
+          {formatErnte(prestigeMin)} {t.resources.ernte}
         </p>
         <div className="prestige-bar" aria-hidden="true">
           <div
@@ -190,11 +190,11 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
         ) : null}
 
         <p className="prestige-stats">
-          {t.prestige.nextPayout} <strong>{t.prestige.creditsAmount(payout)}</strong>
+          {t.prestige.nextPayout} <strong>{t.prestige.erbstueckeAmount(payout)}</strong>
           {canPrestige ? (
             (() => {
               // Vorschau: was 10 Minuten weiter gärtnern bringen würde
-              const later = emberPayout(state.ernteSeason + game.rate * 600, state.saisonenden, probe)
+              const later = erbstueckePayout(state.ernteSeason + game.rate * 600, state.saisonenden, probe)
               return later > payout ? (
                 <span className="prestige-teaser"> · {t.prestige.laterPayout(later)}</span>
               ) : (
@@ -202,7 +202,7 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
               )
             })()
           ) : null}
-          {teaser ? <span className="prestige-teaser"> · {t.prestige.creditsPreview(nextPrestige)}</span> : null}
+          {teaser ? <span className="prestige-teaser"> · {t.prestige.erbstueckePreview(nextPrestige)}</span> : null}
         </p>
 
         <div className="prestige-preview" aria-label={t.prestige.title}>
@@ -334,7 +334,7 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
             )}
           </p>
           <div
-            className="ember-unlock-bar"
+            className="truhe-unlock-bar"
             role="progressbar"
             aria-valuemin={0}
             aria-valuemax={100}
@@ -342,7 +342,7 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
             aria-label={t.prestige.shopUnlockAria(nextUnlock.item.name)}
           >
             <div
-              className="ember-unlock-bar-fill"
+              className="truhe-unlock-bar-fill"
               style={{ width: `${Math.round(nextUnlock.ratio * 100)}%` }}
             />
           </div>
@@ -351,12 +351,12 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
 
       <div className="prestige-tree">
         {PRESTIGE_BRANCHES.map((branch) => {
-          const items = EMBER_SHOP.filter((item) => item.branch === branch.id)
+          const items = TRUHE_ITEMS.filter((item) => item.branch === branch.id)
             .map((item) => {
               const rank = state.truhe[item.id]
               const maxed = rank >= item.maxRank
               const cost = item.cost(rank)
-              const unlocked = emberRankUnlocked(
+              const unlocked = truheRankUnlocked(
                 item,
                 rank,
                 state.ernteSeason,
@@ -389,9 +389,9 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
                 {branch.title}
               </h4>
               <p className="prestige-branch-blurb">{branch.blurb}</p>
-              <ul className="ember-shop">
+              <ul className="laden">
                 {items.map(({ item, rank, maxed, cost, unlocked, affordable, isNext }) => {
-                  const needAsh = emberRankUnlockNeed(
+                  const needErnte = truheRankUnlockNeed(
                     item.id,
                     rank,
                     state.saisonenden,
@@ -402,46 +402,46 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
                   if (!maxed && !unlocked) {
                     if (needMods != null && online < needMods) {
                       lockHint = t.prestige.shopModulesLocked(needMods)
-                    } else if (needAsh > 0) {
-                      unlockRatio = Math.min(1, unlockProgress / needAsh)
+                    } else if (needErnte > 0) {
+                      unlockRatio = Math.min(1, unlockProgress / needErnte)
                       lockHint = t.prestige.shopRankLockedProgress(
                         Math.round(unlockRatio * 100),
-                        formatAsh(Math.max(0, needAsh - unlockProgress)),
+                        formatErnte(Math.max(0, needErnte - unlockProgress)),
                       )
                     }
                   }
                   return (
                     <li
                       key={item.id}
-                      className={`ember-shop-row${affordable ? ' ember-shop-row--ready' : ''}${!unlocked && !maxed ? ' ember-shop-row--locked' : ''}${isNext ? ' ember-shop-row--next' : ''}`}
+                      className={`laden-row${affordable ? ' laden-row--ready' : ''}${!unlocked && !maxed ? ' laden-row--locked' : ''}${isNext ? ' laden-row--next' : ''}`}
                     >
-                      <div className="ember-shop-info">
-                        <div className="ember-shop-name">
+                      <div className="laden-info">
+                        <div className="laden-name">
                           {item.name}{' '}
-                          <span className="ember-shop-rank">
+                          <span className="laden-rank">
                             {rank}/{item.maxRank}
                           </span>
                           {isNext ? (
-                            <span className="ember-shop-next-tag">
+                            <span className="laden-next-tag">
                               {t.prestige.shopNextTag}
                             </span>
                           ) : null}
                         </div>
-                        <p className="ember-shop-blurb">{item.blurb}</p>
-                        <p className="ember-shop-effect">{item.effectLabel(rank)}</p>
+                        <p className="laden-blurb">{item.blurb}</p>
+                        <p className="laden-effect">{item.effectLabel(rank)}</p>
                         {lockHint ? (
-                          <p className="ember-shop-lock muted">{lockHint}</p>
+                          <p className="laden-lock muted">{lockHint}</p>
                         ) : null}
-                        {!maxed && !unlocked && needAsh > 0 ? (
+                        {!maxed && !unlocked && needErnte > 0 ? (
                           <div
-                            className="ember-unlock-bar ember-unlock-bar--row"
+                            className="truhe-unlock-bar truhe-unlock-bar--row"
                             role="progressbar"
                             aria-valuemin={0}
                             aria-valuemax={100}
                             aria-valuenow={Math.round(unlockRatio * 100)}
                           >
                             <div
-                              className="ember-unlock-bar-fill"
+                              className="truhe-unlock-bar-fill"
                               style={{
                                 width: `${Math.round(unlockRatio * 100)}%`,
                               }}
@@ -459,7 +459,7 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
                           ? t.prestige.max
                           : !unlocked
                             ? t.upgrade.locked
-                            : t.prestige.costCredits(cost)}
+                            : t.prestige.costErbstuecke(cost)}
                       </button>
                     </li>
                   )
@@ -589,7 +589,7 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
         </button>
 
         <h4 className="prestige-branch-title">{t.longLoop.shopTitle}</h4>
-        <ul className="ember-shop long-loop-shop">
+        <ul className="laden long-loop-shop">
           {DEEP_SHOP.map((item) => {
             const rank = state.sproesslingLaden[item.id]
             const copy = t.longLoop.items[item.id]
@@ -599,17 +599,17 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
             return (
               <li
                 key={item.id}
-                className={`ember-shop-row${affordable ? ' ember-shop-row--ready' : ''}`}
+                className={`laden-row${affordable ? ' laden-row--ready' : ''}`}
               >
-                <div className="ember-shop-info">
-                  <div className="ember-shop-name">
+                <div className="laden-info">
+                  <div className="laden-name">
                     {copy.name}{' '}
-                    <span className="ember-shop-rank">
+                    <span className="laden-rank">
                       {t.longLoop.rank(rank, item.maxRank)}
                     </span>
                   </div>
-                  <p className="ember-shop-blurb">{copy.blurb}</p>
-                  <p className="ember-shop-effect">{copy.effect(rank)}</p>
+                  <p className="laden-blurb">{copy.blurb}</p>
+                  <p className="laden-effect">{copy.effect(rank)}</p>
                 </div>
                 <button
                   type="button"
@@ -686,20 +686,20 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
 
         <h4 className="prestige-branch-title">{t.generation.shopTitle}</h4>
         <p className="muted">{t.generation.shopIntro}</p>
-        <ul className="ember-shop long-loop-shop">
+        <ul className="laden long-loop-shop">
           {LEGACY_SHOP.map((item) => {
             const rank = state.legacy[item.id]
             const copy = t.generation.items[item.id]
             const cost = item.cost(rank)
             const affordable = state.vermaechtnis >= cost
             return (
-              <li key={item.id} className={`ember-shop-row${affordable ? ' ember-shop-row--ready' : ''}`}>
-                <div className="ember-shop-info">
-                  <div className="ember-shop-name">
-                    {copy.name} <span className="ember-shop-rank">{t.generation.rank(rank)}</span>
+              <li key={item.id} className={`laden-row${affordable ? ' laden-row--ready' : ''}`}>
+                <div className="laden-info">
+                  <div className="laden-name">
+                    {copy.name} <span className="laden-rank">{t.generation.rank(rank)}</span>
                   </div>
-                  <p className="ember-shop-blurb">{copy.blurb}</p>
-                  <p className="ember-shop-effect">{copy.effect(rank)}</p>
+                  <p className="laden-blurb">{copy.blurb}</p>
+                  <p className="laden-effect">{copy.effect(rank)}</p>
                 </div>
                 <button
                   type="button"
@@ -791,8 +791,8 @@ function IlseBlock({ game }: { game: GameApi }) {
           {!rank
             ? t.ilse.maxed
             : state.ilseLevel === 0
-              ? t.ilse.hire(formatAsh(rank.cost))
-              : t.ilse.upgrade(formatAsh(rank.cost))}
+              ? t.ilse.hire(formatErnte(rank.cost))
+              : t.ilse.upgrade(formatErnte(rank.cost))}
         </button>
       ) : null}
     </section>

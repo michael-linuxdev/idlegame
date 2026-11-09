@@ -1,5 +1,5 @@
 /**
- * Daily Ops — claimable login reward (Compute / Credits / Obsidian crumb).
+ * Tägliche Gartenrunde — claimable login reward (Ernte / Erbstücke / Samen-Krümel).
  * Optional streak; miss freezes (does not reset). Never energy/lives walls.
  * Player-facing copy: German via i18n (src/theme/strings.ts).
  */
@@ -8,11 +8,11 @@ import { t } from '../i18n'
 import { dayKey } from './monetization'
 
 export interface DailyReward {
-  /** Soft Compute grant (floor) */
-  compute: number
-  /** Meta Credits grant */
-  credits: number
-  /** Hard Obsidian cosmetic crumb */
+  /** Ernte grant (floor) */
+  ernte: number
+  /** Erbstücke grant */
+  erbstuecke: number
+  /** Samen crumb */
   samen: number
   label: string
   /** True when returning after a missed day (streak frozen, small gift) */
@@ -46,45 +46,45 @@ export function isComebackClaim(lastClaimDay: string, now = Date.now()): boolean
  * Gap 2 → mild; 3–4 → strong; 5+ → warm welcome. Never punishes / resets streak.
  */
 export function comebackScale(gapDays: number): {
-  computeMult: number
-  computeFlat: number
+  ernteMult: number
+  ernteFlat: number
   samen: number
-  credits: number
+  erbstuecke: number
 } {
   if (gapDays >= 5) {
-    return { computeMult: 2.0, computeFlat: 80, samen: 40, credits: 1 }
+    return { ernteMult: 2.0, ernteFlat: 80, samen: 40, erbstuecke: 1 }
   }
   if (gapDays >= 3) {
-    return { computeMult: 1.75, computeFlat: 60, samen: 30, credits: 0 }
+    return { ernteMult: 1.75, ernteFlat: 60, samen: 30, erbstuecke: 0 }
   }
-  return { computeMult: 1.5, computeFlat: 40, samen: 20, credits: 0 }
+  return { ernteMult: 1.5, ernteFlat: 40, samen: 20, erbstuecke: 0 }
 }
 
 interface StreakRow {
-  computeSec: number
-  credits: number
+  ernteSec: number
+  erbstuecke: number
   samen: number
   label: string
 }
 
 /** Streak day 1…7 cycles; day N uses index (N-1) % 7 */
 const ROWS: StreakRow[] = [
-  { computeSec: 120, credits: 0, samen: 0, label: t.daily.rows.float2 },
-  { computeSec: 180, credits: 0, samen: 0, label: t.daily.rows.shift3 },
-  { computeSec: 60, credits: 0, samen: 20, label: t.daily.rows.crumb20 },
-  { computeSec: 240, credits: 0, samen: 0, label: t.daily.rows.long4 },
-  { computeSec: 90, credits: 1, samen: 0, label: t.daily.rows.credit1 },
-  { computeSec: 300, credits: 0, samen: 0, label: t.daily.rows.ot5 },
+  { ernteSec: 120, erbstuecke: 0, samen: 0, label: t.daily.rows.float2 },
+  { ernteSec: 180, erbstuecke: 0, samen: 0, label: t.daily.rows.shift3 },
+  { ernteSec: 60, erbstuecke: 0, samen: 20, label: t.daily.rows.crumb20 },
+  { ernteSec: 240, erbstuecke: 0, samen: 0, label: t.daily.rows.long4 },
+  { ernteSec: 90, erbstuecke: 1, samen: 0, label: t.daily.rows.credit1 },
+  { ernteSec: 300, erbstuecke: 0, samen: 0, label: t.daily.rows.ot5 },
   {
-    computeSec: 120,
-    credits: 1,
+    ernteSec: 120,
+    erbstuecke: 1,
     samen: 40,
     label: t.daily.rows.weekSeal,
   },
 ]
 
-/** Minimum Compute floor so early Day-1 claims still feel like a gift. */
-const MIN_COMPUTE = 50
+/** Minimum Ernte floor so early Day-1 claims still feel like a gift. */
+const MIN_ERNTE = 50
 
 export function rewardForStreak(
   streakBeforeClaim: number,
@@ -93,24 +93,24 @@ export function rewardForStreak(
 ): DailyReward {
   const dayIndex = Math.max(0, streakBeforeClaim) % ROWS.length
   const row = ROWS[dayIndex]!
-  let compute = Math.max(MIN_COMPUTE, Math.floor(ratePerSec * row.computeSec))
-  let credits = row.credits
+  let ernte = Math.max(MIN_ERNTE, Math.floor(ratePerSec * row.ernteSec))
+  let erbstuecke = row.erbstuecke
   let samen = row.samen
   let label = row.label
   // Streak day-7 seal already rich; mild bump on day 3 / 5 for visible rhythm
   if (dayIndex === 2) samen += 5
-  if (dayIndex === 4) compute = Math.floor(compute * 1.1)
+  if (dayIndex === 4) ernte = Math.floor(ernte * 1.1)
   if (opts.comeback) {
     const gap = Math.max(2, opts.gapDays ?? 2)
     const scale = comebackScale(gap)
-    compute = Math.floor(compute * scale.computeMult) + scale.computeFlat
+    ernte = Math.floor(ernte * scale.ernteMult) + scale.ernteFlat
     samen += scale.samen
-    credits += scale.credits
+    erbstuecke += scale.erbstuecke
     label = t.daily.comebackLabel
   }
   return {
-    compute,
-    credits,
+    ernte,
+    erbstuecke,
     samen,
     label,
     comeback: opts.comeback === true,

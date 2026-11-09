@@ -55,7 +55,7 @@ export function deepOfflineBonusHours(d: DeepMetaUpgrades): { soft: number; hard
   return { soft: d.winterschutz, hard: d.winterschutz * 2 }
 }
 
-export function deepStartEmbers(d: DeepMetaUpgrades): number {
+export function deepStartErbstuecke(d: DeepMetaUpgrades): number {
   return d.saatgutvorrat * 60
 }
 

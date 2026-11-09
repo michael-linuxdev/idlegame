@@ -10,7 +10,7 @@ describe('Markt', () => {
 
   it('ad pays exactly what was picked', () => {
     const e = claimRewardedAd(base, 'ernte', now)
-    expect(e.ok && e.ashGained > 0 && e.state.ernte > base.ernte).toBe(true)
+    expect(e.ok && e.ernteGained > 0 && e.state.ernte > base.ernte).toBe(true)
     const s = claimRewardedAd(base, 'samen', now)
     expect(s.ok && s.state.samen).toBe(10 + AD_SAMEN)
     expect(s.ok && s.state.ernte).toBe(base.ernte)

@@ -22,11 +22,11 @@
 import { computeBestBuy } from '../../src/game/bestBuy'
 import {
   BALANCE,
-  EMBER_SHOP,
-  emberPayout,
+  TRUHE_ITEMS,
+  erbstueckePayout,
   isProbeYear,
-  emberRankUnlocked,
-  foundryDiscountMult,
+  truheRankUnlocked,
+  saatgutkisteMult,
   payoutAtGate,
   prestigeMultiplier,
   tapBonusSeconds,
@@ -41,7 +41,7 @@ import {
 import {
   applyOfflineCatchup,
   applyTick,
-  buyEmberUpgrade,
+  buyTruheItem,
   buyGenerator,
   canPrestigeNow,
   pickSeasonCard,
@@ -49,7 +49,7 @@ import {
   claimOfflineReward,
   createInitialState,
   doPrestige,
-  grantTapAsh,
+  grantTapErnte,
   lineCostMult,
   playerLevelOf,
   productionPerSecond,
@@ -114,7 +114,7 @@ function water(s: GameState): GameState {
   const g1 = GENERATORS[0]
   const cost = generatorCostFor(g1, s.owned.gemuesebeet ?? 0, lineCostMult(s, 'gemuesebeet'))
   const gained = Math.max(rate * tapBonusSeconds(s.truhe), Math.max(0, cost - s.ernte), 1)
-  return grantTapAsh(s, gained, now)
+  return grantTapErnte(s, gained, now)
 }
 
 function buyBest(s: GameState, maxBuys = 40): GameState {
@@ -179,21 +179,21 @@ function hireJonas(s: GameState): GameState {
   return s
 }
 
-function spendEmbers(s: GameState): GameState {
+function spendErbstuecke(s: GameState): GameState {
   // Jonas first (players hire him as soon as they can; NO_HELPER=1 to skip)
   s = hireJonas(s)
 
   for (let guard = 0; guard < 200; guard++) {
-    let best: { id: (typeof EMBER_SHOP)[number]['id']; cost: number } | null = null
-    for (const item of EMBER_SHOP) {
+    let best: { id: (typeof TRUHE_ITEMS)[number]['id']; cost: number } | null = null
+    for (const item of TRUHE_ITEMS) {
       const rank = s.truhe[item.id]
       if (rank >= item.maxRank) continue
-      if (!emberRankUnlocked(item, rank, s.ernteSeason, s.owned, s.saisonenden)) continue
+      if (!truheRankUnlocked(item, rank, s.ernteSeason, s.owned, s.saisonenden)) continue
       const cost = item.cost(rank)
       if (cost <= s.erbstuecke && (!best || cost < best.cost)) best = { id: item.id, cost }
     }
     if (!best) break
-    const next = buyEmberUpgrade(s, best.id)
+    const next = buyTruheItem(s, best.id)
     if (next === s) break
     s = next
   }
@@ -263,7 +263,7 @@ export function run(profile: Profile, hours: number) {
     if (s.lastTapAt <= 0 || clock - s.lastTapAt >= 5 * 60_000) s = water(s)
     // LAZY=1: the player never buys areas himself — Jonas does all of it
     if (!process.env.LAZY || s.helperLevel === 0) s = buyBest(s)
-    s = spendEmbers(s)
+    s = spendErbstuecke(s)
 
     {
       const d = Math.floor((clock - start) / 86400000)
@@ -301,7 +301,7 @@ export function run(profile: Profile, hours: number) {
     if (canPrestigeNow(s)) {
       const runMin = (clock - runStart) / 60_000
       const probe = isProbeYear(s)
-      const payout = emberPayout(s.ernteSeason, s.saisonenden, probe)
+      const payout = erbstueckePayout(s.ernteSeason, s.saisonenden, probe)
       const rate = payout / Math.max(1, runMin)
       bestPayoutRate = Math.max(bestPayoutRate, rate)
       const ready = profile === 'engaged' ? rate < bestPayoutRate * 0.92 : payout >= 1.6 * payoutAtGate(s.saisonenden, probe) || runMin > 60 * 30
@@ -312,7 +312,7 @@ export function run(profile: Profile, hours: number) {
           payout,
           day: Math.floor((clock - start) / 86400000) + 1,
           levels: GENERATORS.map((g) => s.owned[g.id] ?? 0),
-          meta: `@d${Math.floor((clock - start) / 86400000) + 1} ${new Date(runStart).getHours()}h→${new Date(clock).getHours()}h x${prestigeMultiplier(s.truhe).toFixed(2)} disc${foundryDiscountMult(s.truhe).toFixed(2)} lvl${playerLevelOf(s)} ${Object.entries(s.truhe).filter(([, v]) => v > 0).map(([k, v]) => k.slice(0, 5) + v).join(' ')}`,
+          meta: `@d${Math.floor((clock - start) / 86400000) + 1} ${new Date(runStart).getHours()}h→${new Date(clock).getHours()}h x${prestigeMultiplier(s.truhe).toFixed(2)} disc${saatgutkisteMult(s.truhe).toFixed(2)} lvl${playerLevelOf(s)} ${Object.entries(s.truhe).filter(([, v]) => v > 0).map(([k, v]) => k.slice(0, 5) + v).join(' ')}`,
         })
         note(`PRESTIGE #${s.saisonenden + 1} payout ${payout} (run ${fmtT((clock - runStart) / 1000)})`)
         const lastDur = (clock - runStart) / 1000
@@ -357,7 +357,7 @@ export function run(profile: Profile, hours: number) {
             note(`GENERATION #${s.generation}`)
           }
         }
-        s = spendEmbers(s)
+        s = spendErbstuecke(s)
         for (const g of GENERATORS) lastLevel[g.id] = s.owned[g.id] ?? 0
         runStart = clock
         runActiveStart = activeSec

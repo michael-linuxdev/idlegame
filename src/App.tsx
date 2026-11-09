@@ -33,7 +33,7 @@ import { t } from './i18n'
 import { formatClock } from './game/format'
 import { applyPrefClasses } from './game/prefs'
 import { useDismiss } from './game/overlays'
-import { countAffordableEmberBuys, offlineCapsHours } from './game/economy'
+import { countAffordableTruheBuys, offlineCapsHours } from './game/economy'
 import { chapterCopy } from './components/chapterCopy'
 import './App.css'
 import './theme/garden.css'
@@ -49,7 +49,7 @@ export default function App() {
   const game = useGame()
   const featuresSeen = useSyncExternalStore(subscribeFeaturesSeen, getFeaturesSeen)
   const newMenuKeys = new Set<string>(MENU_FEATURES.filter((id) => game.features.has(id) && !featuresSeen.includes(id)))
-  const [tab, setTab] = useState<Tab>('fortress')
+  const [tab, setTab] = useState<Tab>('garten')
   const [plot, setPlot] = useState<'garden' | ChapterId>('garden')
   const [previewSkin, setPreviewSkin] = useState<CosmeticId | null>(null)
   const [photoMode, setPhotoMode] = useState(false)
@@ -186,7 +186,7 @@ export default function App() {
   }, [])
 
   // Panels (Saison, Markt, Verein): Escape / Zurück returns to the garden
-  useDismiss(() => onTabChange('fortress'), tab !== 'fortress')
+  useDismiss(() => onTabChange('garten'), tab !== 'garten')
 
   // ≥ 900 px: map on the left, the open panel as a column on the right
   const wide = useWide()
@@ -199,7 +199,7 @@ export default function App() {
   const seasonReady =
     game.canPrestige ||
     (game.state.erbstuecke > 0 &&
-      countAffordableEmberBuys(
+      countAffordableTruheBuys(
         game.state.truhe,
         game.state.erbstuecke,
         game.state.ernteSeason,
@@ -216,7 +216,7 @@ export default function App() {
             highlight={ftueHighlight === 'prestige'}
             onOpenChapter={(id) => {
               goPlot(id)
-              onTabChange('fortress')
+              onTabChange('garten')
             }}
           />
         ) : null}
@@ -227,7 +227,7 @@ export default function App() {
             onPreview={(id) => {
               setPreviewSkin(id)
               setPlot('garden')
-              onTabChange('fortress')
+              onTabChange('garten')
             }}
           />
         ) : null}
@@ -235,7 +235,7 @@ export default function App() {
   )
 
   return (
-    <div className={`app-shell${wide ? ' wide' : ''}${wide && tab !== 'fortress' ? ' with-side' : ''}`}>
+    <div className={`app-shell${wide ? ' wide' : ''}${wide && tab !== 'garten' ? ' with-side' : ''}`}>
       <div className="rotate-lock" role="alert">
         <svg viewBox="0 0 64 64" width="64" height="64" aria-hidden="true">
           <rect x="20" y="8" width="24" height="44" rx="5" fill="#fbf6e8" stroke="#6e4a2b" strokeWidth="3" />
@@ -247,11 +247,11 @@ export default function App() {
       </div>
       <SaveGuardBanner />
       <main
-        className={`app-main${tab === 'fortress' || wide ? ' map-mode' : ''}`}
-        tabIndex={tab === 'fortress' || wide ? undefined : 0}
+        className={`app-main${tab === 'garten' || wide ? ' map-mode' : ''}`}
+        tabIndex={tab === 'garten' || wide ? undefined : 0}
       >
-        {(tab === 'fortress' || wide) && chapterShown ? <ChapterMap key={chapterShown} game={game} chapter={chapterShown} onGo={goPlot} /> : null}
-        {(tab === 'fortress' || wide) && !chapterShown ? (
+        {(tab === 'garten' || wide) && chapterShown ? <ChapterMap key={chapterShown} game={game} chapter={chapterShown} onGo={goPlot} /> : null}
+        {(tab === 'garten' || wide) && !chapterShown ? (
           <GardenMap
             game={game}
             highlightId={ftueHighlight}
@@ -276,7 +276,7 @@ export default function App() {
         ) : null}
         {!wide ? panelView : null}
       </main>
-      {wide && tab !== 'fortress' ? (
+      {wide && tab !== 'garten' ? (
         <aside className="app-side" aria-label={t.nav.ariaLabel} tabIndex={0}>
           {panelView}
         </aside>
@@ -336,7 +336,7 @@ export default function App() {
         }}
         onOpenPhoto={() => {
           setPlot('garden')
-          onTabChange('fortress')
+          onTabChange('garten')
           setPhotoMode(true)
         }}
         reminders={extras.notify}
@@ -386,7 +386,7 @@ export default function App() {
             if (letter) markRead(letter)
             game.ackSeasonEnd()
             track('seasons')
-            onTabChange('fortress')
+            onTabChange('garten')
           }}
         />
       ) : null}

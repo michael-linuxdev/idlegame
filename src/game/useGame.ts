@@ -8,12 +8,12 @@ import type { ProjectId } from './projects'
 import { ALBUM_GOALS, albumProgress, type AlbumStat } from './album'
 import type { WeatherChoice } from './weatherEvents'
 import {
-  emberPayout,
-  foundryDiscountMult,
+  erbstueckePayout,
+  saatgutkisteMult,
   MIN_OFFLINE_CLAIM_AWAY_MS,
   TAP_COOLDOWN_MS,
   tapBonusSeconds,
-  type EmberUpgradeId, isProbeYear } from './economy'
+  type TruheItemId, isProbeYear } from './economy'
 import {
   GENERATORS,
   generatorCost,
@@ -33,9 +33,9 @@ import {
 } from './monetization'
 import { canClaimDaily, previewDailyReward } from './dailyOps'
 import {
-  bandwidthSurgeStatus,
-  bandwidthSurgeWindowKey,
-  isBandwidthSurgeActive,
+  erntefestStatus,
+  erntefestWindowKey,
+  isErntefestActive,
 } from './events'
 import { flashEventStatus } from './flashEvent'
 import { ACHIEVEMENTS, isAchievementComplete } from './achievements'
@@ -56,12 +56,12 @@ import {
   buyBranch,
   buyClanBoost,
   buyCosmetic,
-  buyEmberUpgrade,
+  buyTruheItem,
   buyGenerator,
   buyTimeSkip,
   canPrestigeNow,
   buyYieldBoost,
-  claimBandwidthSurgeGoal,
+  claimErntefestGoal,
   claimBattlePassDailyXp,
   claimBattlePassTier,
   claimDailyOps,
@@ -73,7 +73,7 @@ import {
   refillWateringCan,
   clearLastSurprise,
   collectReadyAchievements,
-  dismissBandwidthSurge,
+  dismissErntefest,
   dismissFlashEvent,
   doPrestige,
   effectiveClanMult,
@@ -83,14 +83,14 @@ import {
   flashProductionMult,
   claimOfflineReward,
   creditOfflinePending,
-  grantTapAsh,
+  grantTapErnte,
   levelProductionMult,
   levelProgress,
   lineCostMult,
   maybeStartFlashEvent,
   mockBuyOffer,
   playerLevelOf,
-  prestigeMinAsh,
+  prestigeMinErnte,
   prestigeMultiplier,
   prestigeProgress,
   productionPerSecond,
@@ -347,7 +347,7 @@ export function useGame() {
       const rate = productionPerSecond(s, now)
       const fromRate = rate * tapBonusSeconds(s.truhe) * waterMult(s, now)
       // Cold post-prestige: one Schub must cover the next G1 Ausbauen if the
-      // wallet is still short (rate alone can be ~1/s → 60 Phyto).
+      // wallet is still short (rate alone can be ~1/s → 60 Ernte).
       const g1 = GENERATORS.find((g) => g.id === 'gemuesebeet')
       const g1Owned = s.owned.gemuesebeet ?? 0
       const g1Cost = g1
@@ -355,7 +355,7 @@ export function useGame() {
         : 23
       const shortfall = Math.max(0, g1Cost - s.ernte)
       const gained = Math.max(fromRate, shortfall, 1)
-      return growPumpkin(earnFest(grantTapAsh(s, gained, now), FEST_EARN.water, now), CONTEST_KG.water, now)
+      return growPumpkin(earnFest(grantTapErnte(s, gained, now), FEST_EARN.water, now), CONTEST_KG.water, now)
     })
   }, [])
 
@@ -383,11 +383,11 @@ export function useGame() {
     })
   }, [])
 
-  const buyMeta = useCallback((id: EmberUpgradeId) => {
+  const buyMeta = useCallback((id: TruheItemId) => {
     setState((s) => {
-      const next = buyEmberUpgrade(s, id)
+      const next = buyTruheItem(s, id)
       if (next !== s) {
-        logPlaytest('upgrade', { id, kind: 'ember' })
+        logPlaytest('upgrade', { id, kind: 'erbstueck' })
       }
       return next
     })
@@ -403,7 +403,7 @@ export function useGame() {
 
   const prestige = useCallback(() => {
     setState((s) => {
-      const gain = emberPayout(s.ernteSeason, s.saisonenden, isProbeYear(s))
+      const gain = erbstueckePayout(s.ernteSeason, s.saisonenden, isProbeYear(s))
       const next = doPrestige(s)
       if (next !== s) {
         logPlaytest('prestige', {
@@ -785,7 +785,7 @@ export function useGame() {
         const result = claimRewardedAd(s, choice)
         if (!result.ok) return s
         logPlaytest('shop_tap', { action: 'rewarded_ad', choice })
-        setAdResult({ choice, ernte: result.ashGained, samen: result.obsidianGained, at: Date.now() })
+        setAdResult({ choice, ernte: result.ernteGained, samen: result.samenGained, at: Date.now() })
         return result.state
       })
     }, REWARDED_AD_DELAY_MS)
@@ -826,11 +826,11 @@ export function useGame() {
   }, [])
 
   const dismissEvent = useCallback(() => {
-    setState((s) => dismissBandwidthSurge(s))
+    setState((s) => dismissErntefest(s))
   }, [])
 
   const claimEventGoal = useCallback(() => {
-    setState((s) => claimBandwidthSurgeGoal(s))
+    setState((s) => claimErntefestGoal(s))
   }, [])
 
   const dismissFlash = useCallback(() => {
@@ -890,7 +890,7 @@ export function useGame() {
   const eventMult =
     eventProductionMult(nowTick) * flashProductionMult(state, nowTick)
   const progress = prestigeProgress(state)
-  const discount = foundryDiscountMult(state.truhe)
+  const discount = saatgutkisteMult(state.truhe)
   const equipped = cosmeticById(state.equippedCosmetic)
   const skipLeft = skipHoursRemaining(state, nowTick)
   const clanBoostActive =
@@ -918,12 +918,12 @@ export function useGame() {
     nowTick,
   )
 
-  const surge = bandwidthSurgeStatus(nowTick)
-  const surgeWindow = bandwidthSurgeWindowKey(nowTick)
-  const surgeVisible =
-    isBandwidthSurgeActive(nowTick) && state.erntefestDismissedKey !== surgeWindow
-  const surgeGoalDone = state.erntefestErnte >= surge.goal
-  const surgeGoalClaimed = state.erntefestGoalClaimedKey === surgeWindow
+  const erntefest = erntefestStatus(nowTick)
+  const erntefestWindow = erntefestWindowKey(nowTick)
+  const erntefestVisible =
+    isErntefestActive(nowTick) && state.erntefestDismissedKey !== erntefestWindow
+  const erntefestGoalDone = state.erntefestErnte >= erntefest.goal
+  const erntefestGoalClaimed = state.erntefestGoalClaimedKey === erntefestWindow
 
   const flash = flashEventStatus(
     {
@@ -1091,8 +1091,8 @@ export function useGame() {
     bpDailyXpReady,
     skipHoursRemaining: skipLeft,
     equippedCosmetic: equipped,
-    nextPrestige: emberPayout(state.ernteSeason, state.saisonenden, isProbeYear(state)),
-    prestigeMin: prestigeMinAsh(state.saisonenden, isProbeYear(state)),
+    nextPrestige: erbstueckePayout(state.ernteSeason, state.saisonenden, isProbeYear(state)),
+    prestigeMin: prestigeMinErnte(state.saisonenden, isProbeYear(state)),
     prestigeProgress: progress,
     canPrestige: canPrestigeNow(state),
     tapReady,
@@ -1142,10 +1142,10 @@ export function useGame() {
     claimQuest,
     dailyReady,
     dailyPreview,
-    surge,
-    surgeVisible,
-    surgeGoalDone,
-    surgeGoalClaimed,
+    erntefest,
+    erntefestVisible,
+    erntefestGoalDone,
+    erntefestGoalClaimed,
     flash,
     costOf,
     branchCostOf,

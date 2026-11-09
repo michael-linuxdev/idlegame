@@ -227,7 +227,7 @@ try {
       await p.goto(URL + '?kapitel=all')
       await p.locator('.garden-map').waitFor()
       await p.screenshot({ path: `${SHOTS}/map.png` })
-      await p.locator('.tabbar .tab-fortress').click() // Garten again → Grundstücke
+      await p.locator('.tabbar .tab-garten').click() // Garten again → Grundstücke
       await p.locator('.plot-sheet').waitFor()
       await p.waitForTimeout(400)
       assert((await p.locator('.oma-hint').count()) === 0, 'Omas note shows over the Grundstücke window')
@@ -311,6 +311,7 @@ try {
 
     // Neues Speicherformat (2026-11-09): frischer Start unter neuem Schlüssel, alter Stand bleibt liegen
     const ctx3 = await browser.newContext({ ...devices['iPhone 13'], reducedMotion: 'reduce' })
+    // altname-ok: alter Stand unter altem Schlüssel
     const OLD = JSON.stringify({ saveVersion: 2, ash: 1, emberUpgrades: { dominionYield: 3 }, ernte: 4242, samen: 555, lastSeen: 1 })
     await ctx3.addInitScript((old) => {
       if (sessionStorage.getItem('seed')) return
@@ -323,6 +324,7 @@ try {
     await q.waitForFunction(() => localStorage.getItem('gartenerbe-spielstand-v1') !== null, null, { timeout: 15000 })
     const fresh = await q.evaluate(() => JSON.parse(localStorage.getItem('gartenerbe-spielstand-v1') || '{}'))
     assert(fresh.saveVersion === 1, 'new save key with saveVersion 1')
+    // altname-ok
     assert(fresh.samen !== 555 && fresh.truhe && fresh.emberUpgrades === undefined, 'old save is not read')
     assert((await q.evaluate(() => localStorage.getItem('gartenerbe-save-v1'))) === OLD, 'old save key stays untouched')
     await ctx3.close()

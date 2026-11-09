@@ -1,6 +1,6 @@
 /**
  * Branch upgrades (Effizienz / Kapazität) on existing modules.
- * Paid in soft currency (Phyto / Tokens); reset on prestige so runs stay fair.
+ * Paid in Ernte; reset on prestige so runs stay fair.
  * Main Upgrade CTA stays primary — branches are secondary sinks.
  */
 

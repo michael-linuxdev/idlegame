@@ -1,4 +1,4 @@
-import { formatAsh, formatAway } from '../../game/format'
+import { formatErnte, formatAway } from '../../game/format'
 import { useDismiss } from '../../game/overlays'
 import { IconBasket } from '../../theme/icons'
 import { t } from '../../i18n'
@@ -33,7 +33,7 @@ export function WelcomeBack({
         <h2 id="welcome-title">{t.ux.welcomeBack.title}</h2>
         <p>{t.ux.welcomeBack.away(formatAway(awayMs))}</p>
         <p className="welcome-amount">
-          <IconBasket /> {t.ux.welcomeBack.harvest(formatAsh(amount))}
+          <IconBasket /> {t.ux.welcomeBack.harvest(formatErnte(amount))}
         </p>
         {helped ? <p className="welcome-helper">{t.ux.welcomeBack.helper}</p> : null}
         {ready.length > 0 ? (

@@ -14,10 +14,10 @@
   height: 2.75rem;
   margin: -0.35rem -0.35rem 0 0;
   padding: 0;
-  border: 1px solid color-mix(in srgb, var(--oc-stroke-strong) 50%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ge-stroke-strong) 50%, transparent);
   border-radius: 999px;
-  background: var(--oc-bg-raised);
-  color: var(--oc-ink-muted);
+  background: var(--ge-bg-raised);
+  color: var(--ge-ink-muted);
   font-size: 1.35rem;
   line-height: 1;
   font-weight: 600;
@@ -25,11 +25,11 @@
 }
 
 .sheet-x:hover {
-  color: var(--oc-ink);
+  color: var(--ge-ink);
 }
 
 .sheet-x:focus-visible {
-  outline: 2px solid var(--oc-focus);
+  outline: 2px solid var(--ge-focus);
   outline-offset: 2px;
 }
 
@@ -43,9 +43,9 @@
   height: 3.1rem;
   border-radius: 50%;
   background:
-    radial-gradient(closest-side, var(--oc-bg-raised) 76%, transparent 78%),
-    conic-gradient(var(--oc-ember, #5f9e45) calc(var(--p) * 1%), color-mix(in srgb, var(--oc-stroke) 70%, transparent) 0);
-  color: var(--oc-ink-muted);
+    radial-gradient(closest-side, var(--ge-bg-raised) 76%, transparent 78%),
+    conic-gradient(var(--ge-gruen, #5f9e45) calc(var(--p) * 1%), color-mix(in srgb, var(--ge-stroke) 70%, transparent) 0);
+  color: var(--ge-ink-muted);
   font-size: 0.72rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
@@ -71,7 +71,7 @@
 }
 
 .notebook-tab-count {
-  font-family: var(--oc-font-ui);
+  font-family: var(--ge-font-ui);
   font-size: 0.68rem;
   font-weight: 700;
   line-height: 1;
@@ -94,7 +94,7 @@
   border-radius: 10px;
   background: #eef7e6;
   color: #2f4a22;
-  font-family: var(--oc-font-ui);
+  font-family: var(--ge-font-ui);
   font-weight: 700;
   font-size: 0.92rem;
   text-align: left;
@@ -134,7 +134,7 @@ button.hud-wallet {
   right: max(0.7rem, calc((100vw - 480px) / 2 + 0.7rem));
   width: min(19rem, calc(100vw - 1.4rem));
   padding: 0.85rem 0.95rem 0.9rem;
-  background: var(--oc-bg-raised);
+  background: var(--ge-bg-raised);
   border: 1.5px solid #c9b48a;
   border-radius: 14px;
   box-shadow: 0 12px 28px rgba(30, 50, 30, 0.22);
@@ -150,16 +150,16 @@ button.hud-wallet {
 
 .mult-head h2 {
   margin: 0.2rem 0 0;
-  font-family: var(--oc-font-display);
+  font-family: var(--ge-font-display);
   font-size: 1.08rem;
-  color: var(--oc-ink);
+  color: var(--ge-ink);
 }
 
 .mult-intro,
 .mult-none {
   margin: 0.2rem 0 0.55rem;
   font-size: 0.85rem;
-  color: var(--oc-ink-muted);
+  color: var(--ge-ink-muted);
 }
 
 .mult-list {
@@ -175,13 +175,13 @@ button.hud-wallet {
   justify-content: space-between;
   gap: 0.6rem;
   padding: 0.32rem 0;
-  border-bottom: 1px dashed color-mix(in srgb, var(--oc-stroke) 80%, transparent);
+  border-bottom: 1px dashed color-mix(in srgb, var(--ge-stroke) 80%, transparent);
   font-size: 0.9rem;
-  color: var(--oc-ink);
+  color: var(--ge-ink);
 }
 
 .mult-list li strong {
-  font-family: var(--oc-font-metric);
+  font-family: var(--ge-font-metric);
   color: #2f7a2a;
   font-variant-numeric: tabular-nums;
 }
@@ -224,7 +224,7 @@ button.hud-wallet {
 }
 
 .plot-badge-name {
-  font-family: var(--oc-font-ui);
+  font-family: var(--ge-font-ui);
   font-weight: 700;
   font-size: 0.56rem;
   color: #5a4126;
@@ -257,7 +257,7 @@ button.hud-wallet {
 }
 
 .garden-plot.selected .plot-canbuy,
-.fortress-home.photo-mode .plot-canbuy {
+.garten-home.photo-mode .plot-canbuy {
   display: none;
 }
 
@@ -313,11 +313,11 @@ html.idle .plot-canbuy {
   min-height: 2.6rem;
   margin-top: 0.2rem;
   padding: 0.3rem 0.75rem;
-  border: 1px dashed color-mix(in srgb, var(--oc-stroke-strong) 60%, transparent);
+  border: 1px dashed color-mix(in srgb, var(--ge-stroke-strong) 60%, transparent);
   border-radius: 10px;
   background: transparent;
-  color: var(--oc-ink);
-  font-family: var(--oc-font-display);
+  color: var(--ge-ink);
+  font-family: var(--ge-font-display);
   font-weight: 700;
   font-size: 0.95rem;
   cursor: pointer;
@@ -337,7 +337,7 @@ html.idle .plot-canbuy {
   border-radius: 999px;
   background: #3f9a3a;
   color: #fff;
-  font-family: var(--oc-font-metric);
+  font-family: var(--ge-font-metric);
   font-size: 0.72rem;
 }
 
@@ -384,7 +384,7 @@ html.idle .plot-canbuy {
 .welcome-card {
   width: min(22rem, 100%);
   padding: 1.15rem 1.2rem 1.1rem;
-  background: var(--oc-bg-raised);
+  background: var(--ge-bg-raised);
   border: 1.5px solid #c9b48a;
   border-radius: 16px;
   box-shadow: 0 14px 34px rgba(30, 50, 30, 0.3);
@@ -394,14 +394,14 @@ html.idle .plot-canbuy {
 
 .welcome-card h2 {
   margin: 0 0 0.35rem;
-  font-family: var(--oc-font-display);
+  font-family: var(--ge-font-display);
   font-size: 1.3rem;
-  color: var(--oc-ink);
+  color: var(--ge-ink);
 }
 
 .welcome-card p {
   margin: 0.2rem 0;
-  color: var(--oc-ink-muted);
+  color: var(--ge-ink-muted);
 }
 
 .welcome-amount {
@@ -410,7 +410,7 @@ html.idle .plot-canbuy {
   align-items: center;
   gap: 0.35rem;
   margin: 0.6rem 0 !important;
-  font-family: var(--oc-font-metric);
+  font-family: var(--ge-font-metric);
   font-size: 1.6rem;
   font-weight: 800;
   color: #2f7a2a !important;
@@ -459,7 +459,7 @@ html.idle .plot-canbuy {
   border-radius: 999px;
   background: color-mix(in srgb, #fbf6e8 92%, transparent);
   border: 1px solid #c9b48a;
-  font-family: var(--oc-font-ui);
+  font-family: var(--ge-font-ui);
   font-size: 0.56rem;
   font-weight: 800;
   line-height: 1.25;
@@ -476,7 +476,7 @@ html.idle .plot-canbuy {
   opacity: 0.55;
 }
 
-.fortress-home.photo-mode .map-side-label {
+.garten-home.photo-mode .map-side-label {
   display: none;
 }
 
@@ -586,7 +586,7 @@ html.idle .plot-canbuy {
   border-radius: 12px;
   background: transparent;
   color: #6a5434;
-  font-family: var(--oc-font-ui);
+  font-family: var(--ge-font-ui);
   font-size: 0.72rem;
   font-weight: 800;
   cursor: pointer;
@@ -609,7 +609,7 @@ html.idle .plot-canbuy {
 }
 
 .tabbar-btn:focus-visible {
-  outline: 2px solid var(--oc-focus);
+  outline: 2px solid var(--ge-focus);
   outline-offset: -2px;
 }
 
@@ -681,7 +681,7 @@ html.idle .plot-canbuy {
   border: 1.5px solid #c9b48a;
   border-bottom: none;
   border-radius: 18px 18px 0 0;
-  background: var(--oc-bg-raised);
+  background: var(--ge-bg-raised);
   box-shadow: 0 -10px 30px rgba(30, 50, 30, 0.25);
   animation: sheet-up 0.2s ease-out;
   display: block;
@@ -698,9 +698,9 @@ html.idle .plot-canbuy {
 .nav-sheet-head h2 {
   flex: 1;
   margin: 0;
-  font-family: var(--oc-font-display);
+  font-family: var(--ge-font-display);
   font-size: 1.3rem;
-  color: var(--oc-ink);
+  color: var(--ge-ink);
 }
 
 .nav-sheet-back {
@@ -730,8 +730,8 @@ html.idle .plot-canbuy {
   border: 1.5px solid color-mix(in srgb, #c9b48a 80%, transparent);
   border-radius: 14px;
   background: #fffaf0;
-  color: var(--oc-ink);
-  font-family: var(--oc-font-ui);
+  color: var(--ge-ink);
+  font-family: var(--ge-font-ui);
   font-size: 0.8rem;
   font-weight: 800;
   text-align: center;
@@ -779,8 +779,8 @@ html.idle .plot-canbuy {
   border-bottom: 1px solid color-mix(in srgb, #c9b48a 50%, transparent);
   border-radius: 0;
   background: transparent;
-  color: var(--oc-ink);
-  font-family: var(--oc-font-ui);
+  color: var(--ge-ink);
+  font-family: var(--ge-font-ui);
   font-size: 0.95rem;
   font-weight: 700;
   letter-spacing: 0;
@@ -800,12 +800,12 @@ html.idle .plot-canbuy {
 /* ———————— Einstellungen ———————— */
 .nav-group-title {
   margin: 0.9rem 0 0.3rem;
-  font-family: var(--oc-font-ui);
+  font-family: var(--ge-font-ui);
   font-size: 0.72rem;
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--oc-ink-muted);
+  color: var(--ge-ink-muted);
 }
 
 .nav-group-title:first-child {
@@ -823,8 +823,8 @@ html.idle .plot-canbuy {
   border: none;
   border-bottom: 1px solid color-mix(in srgb, #c9b48a 50%, transparent);
   background: transparent;
-  color: var(--oc-ink);
-  font-family: var(--oc-font-ui);
+  color: var(--ge-ink);
+  font-family: var(--ge-font-ui);
   font-size: 0.95rem;
   font-weight: 700;
   text-align: left;
@@ -881,7 +881,7 @@ html.idle .plot-canbuy {
 .nav-shortcuts {
   margin: 0.9rem 0 0;
   font-size: 0.75rem;
-  color: var(--oc-ink-muted);
+  color: var(--ge-ink-muted);
 }
 
 @media (hover: none) {
@@ -1040,7 +1040,7 @@ html.pref-calm *::after {
   border-radius: 999px;
   background: #fffaf0;
   color: #4a3a22;
-  font-family: var(--oc-font-ui);
+  font-family: var(--ge-font-ui);
   font-size: 0.8rem;
   font-weight: 800;
   cursor: pointer;
@@ -1055,7 +1055,7 @@ html.pref-calm *::after {
   margin-top: 0.15rem;
   font-size: 0.62rem;
   line-height: 1.2;
-  color: var(--oc-ink-muted);
+  color: var(--ge-ink-muted);
 }
 
 .prestige-sticky {
@@ -1074,7 +1074,7 @@ html.pref-calm *::after {
 }
 
 /* ———————— Markt: missing seeds, wallet stays in view ———————— */
-.ember-shop-action {
+.laden-action {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -1156,14 +1156,14 @@ html.pref-calm *::after {
 }
 
 .contest-mine-kg {
-  font-family: var(--oc-font-metric);
+  font-family: var(--ge-font-metric);
   font-size: 1.4rem;
   font-weight: 800;
   color: #4a3208;
 }
 
 .contest-mine-rank {
-  font-family: var(--oc-font-display);
+  font-family: var(--ge-font-display);
   font-size: 1.6rem;
   font-weight: 800;
   color: #b8862a;
@@ -1383,7 +1383,7 @@ html.pref-calm *::after {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   background: var(--bg, #dce8d6);
-  color: var(--oc-ink, #162414);
+  color: var(--ge-ink, #162414);
 }
 
 .web-install-in {
@@ -1425,7 +1425,7 @@ html.pref-calm *::after {
 .web-install-detected {
   margin: 0 0 0.6rem;
   font-size: 0.82rem;
-  color: var(--oc-ink-faint, #4a6340);
+  color: var(--ge-ink-faint, #4a6340);
 }
 
 .web-install-native {
@@ -1500,7 +1500,7 @@ html.pref-calm *::after {
   margin-top: 0.5rem;
   border: 0;
   background: none;
-  color: var(--oc-ink-muted, #2f4529);
+  color: var(--ge-ink-muted, #2f4529);
   font: inherit;
   text-decoration: underline;
   cursor: pointer;
@@ -1510,7 +1510,7 @@ html.pref-calm *::after {
   margin: 0;
   text-align: center;
   font-size: 0.8rem;
-  color: var(--oc-ink-faint, #4a6340);
+  color: var(--ge-ink-faint, #4a6340);
 }
 
 /* ——— Testphasen-Hinweis (game/distribution.ts TEST_PHASE) ——— */
@@ -1533,7 +1533,7 @@ html.pref-calm *::after {
   padding: 1.2rem 1.2rem 1rem;
   border-radius: 18px;
   background: #fffaf0;
-  color: var(--oc-ink, #162414);
+  color: var(--ge-ink, #162414);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
 }
 
@@ -1569,7 +1569,7 @@ html.pref-calm *::after {
 .test-phase-later {
   margin: 0.6rem 0;
   font-size: 0.82rem;
-  color: var(--oc-ink-faint, #4a6340);
+  color: var(--ge-ink-faint, #4a6340);
 }
 
 .test-phase-ok {

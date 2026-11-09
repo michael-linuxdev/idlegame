@@ -13,7 +13,7 @@
  * RNG: Math.random() — session-local, not seed-gamed.
  */
 
-import { prestigeMinAsh } from './economy'
+import { prestigeMinErnte } from './economy'
 
 export type SurpriseKind =
   | 'milestone'
@@ -89,7 +89,7 @@ export function rollPrestigeSpike(
   ratePerSec: number,
   probe = false,
 ): SurpriseJump | null {
-  const min = prestigeMinAsh(saisonenden, probe)
+  const min = prestigeMinErnte(saisonenden, probe)
   if (min <= 0) return null
   const ratio = ernteSeason / min
   for (let i = 0; i < PRESTIGE_SPIKE_RATIOS.length; i++) {

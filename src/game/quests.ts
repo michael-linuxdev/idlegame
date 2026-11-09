@@ -6,16 +6,16 @@
 import { t } from '../i18n'
 import { dayKey } from './monetization'
 
-export type QuestKind = 'upgrades' | 'earnAsh' | 'claimDaily'
+export type QuestKind = 'upgrades' | 'earnErnte' | 'claimDaily'
 
 export interface QuestDef {
   id: string
   kind: QuestKind
-  /** Target count (upgrades) or Ertrag amount (earnAsh); claimDaily uses 1 */
+  /** Target count (upgrades) or Ertrag amount (earnErnte); claimDaily uses 1 */
   target: number
   /** Soft reward on claim */
-  rewardAsh: number
-  rewardObsidian: number
+  rewardErnte: number
+  rewardSamen: number
   label: (target: number) => string
 }
 
@@ -24,8 +24,8 @@ export interface QuestProgress {
   kind: QuestKind
   target: number
   progress: number
-  rewardAsh: number
-  rewardObsidian: number
+  rewardErnte: number
+  rewardSamen: number
   claimed: boolean
 }
 
@@ -34,43 +34,43 @@ const QUEST_POOL: Omit<QuestDef, 'id'>[] = [
   {
     kind: 'upgrades',
     target: 5,
-    rewardAsh: 40,
-    rewardObsidian: 0,
+    rewardErnte: 40,
+    rewardSamen: 0,
     label: (n) => t.quests.upgradeTimes(n),
   },
   {
     kind: 'upgrades',
     target: 12,
-    rewardAsh: 90,
-    rewardObsidian: 3,
+    rewardErnte: 90,
+    rewardSamen: 3,
     label: (n) => t.quests.upgradeTimes(n),
   },
   {
-    kind: 'earnAsh',
+    kind: 'earnErnte',
     target: 500,
-    rewardAsh: 50,
-    rewardObsidian: 0,
-    label: (n) => t.quests.earnAsh(n.toLocaleString('de-DE')),
+    rewardErnte: 50,
+    rewardSamen: 0,
+    label: (n) => t.quests.earnErnte(n.toLocaleString('de-DE')),
   },
   {
-    kind: 'earnAsh',
+    kind: 'earnErnte',
     target: 5_000,
-    rewardAsh: 200,
-    rewardObsidian: 5,
-    label: (n) => t.quests.earnAsh(n.toLocaleString('de-DE')),
+    rewardErnte: 200,
+    rewardSamen: 5,
+    label: (n) => t.quests.earnErnte(n.toLocaleString('de-DE')),
   },
   {
-    kind: 'earnAsh',
+    kind: 'earnErnte',
     target: 25_000,
-    rewardAsh: 500,
-    rewardObsidian: 8,
-    label: (n) => t.quests.earnAsh(n.toLocaleString('de-DE')),
+    rewardErnte: 500,
+    rewardSamen: 8,
+    label: (n) => t.quests.earnErnte(n.toLocaleString('de-DE')),
   },
   {
     kind: 'claimDaily',
     target: 1,
-    rewardAsh: 35,
-    rewardObsidian: 2,
+    rewardErnte: 35,
+    rewardSamen: 2,
     label: () => t.quests.claimDaily,
   },
 ]
@@ -121,8 +121,8 @@ export function questsForDay(now = Date.now()): QuestDef[] {
       id: `${key}-${order}-${row.kind}-${row.target}`,
       kind: row.kind,
       target: row.target,
-      rewardAsh: row.rewardAsh,
-      rewardObsidian: row.rewardObsidian,
+      rewardErnte: row.rewardErnte,
+      rewardSamen: row.rewardSamen,
       label: row.label,
     }
   })
@@ -141,8 +141,8 @@ export function emptyQuestProgress(now = Date.now()): {
       kind: d.kind,
       target: d.target,
       progress: 0,
-      rewardAsh: d.rewardAsh,
-      rewardObsidian: d.rewardObsidian,
+      rewardErnte: d.rewardErnte,
+      rewardSamen: d.rewardSamen,
       claimed: false,
     })),
   }
@@ -166,8 +166,8 @@ export function questLabel(q: QuestProgress): string {
   )
   if (def) return def.label(q.target)
   if (q.kind === 'upgrades') return t.quests.upgradeTimes(q.target)
-  if (q.kind === 'earnAsh') {
-    return t.quests.earnAsh(q.target.toLocaleString('de-DE'))
+  if (q.kind === 'earnErnte') {
+    return t.quests.earnErnte(q.target.toLocaleString('de-DE'))
   }
   return t.quests.claimDaily
 }

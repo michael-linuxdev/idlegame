@@ -1,6 +1,6 @@
 import { ALBUM_GOALS, ALBUM_REWARD_AT, SEASON_DECOR, albumProgress, seasonKey, seasonOfKey } from '../game/album'
 import { useDismiss } from '../game/overlays'
-import { formatAsh } from '../game/format'
+import { formatErnte } from '../game/format'
 import { albumStats, syncAlbum } from '../game/state'
 import { playSfx } from '../game/sound'
 import type { useGame } from '../game/useGame'
@@ -64,7 +64,7 @@ export function AlbumSheet({ game, onClose }: { game: GameApi; onClose: () => vo
                     {t.album.claim}
                   </button>
                 ) : (
-                  <small className="album-progress">{claimed ? '' : `${formatAsh(p)}/${formatAsh(g.need)}`}</small>
+                  <small className="album-progress">{claimed ? '' : `${formatErnte(p)}/${formatErnte(g.need)}`}</small>
                 )}
               </li>
             )

@@ -7,10 +7,10 @@ import { WeatherLayer } from './WeatherLayer'
 import { DecorSheet } from './DecorSheet'
 import { computeBestBuy } from '../game/bestBuy'
 import {
-  countAffordableEmberBuys,
-  countAffordableEmberBuysAfterPrestige,
-  emberPayout,
-  modulesToNextEmberUnlock,
+  countAffordableTruheBuys,
+  countAffordableTruheBuysAfterPrestige,
+  erbstueckePayout,
+  modulesToNextTruheUnlock,
   postPrestigeStartOwned, isProbeYear } from '../game/economy'
 import {
   GENERATORS,
@@ -23,7 +23,7 @@ import {
   unlockHint,
   type GeneratorId,
 } from '../game/generators'
-import { formatAsh, formatEta, formatMult, formatRate } from '../game/format'
+import { formatErnte, formatEta, formatMult, formatRate } from '../game/format'
 import { computeNextGoal } from '../game/nextGoal'
 import { xpFromOfflineClaim } from '../game/progression'
 import { logPlaytest } from '../game/playtestLog'
@@ -176,7 +176,7 @@ export function GardenMap({
   const [claimFlash, setClaimFlash] = useState<string | null>(null)
   const [pops, setPops] = useState<FloatPopItem[]>([])
   const [levelPulse, setLevelPulse] = useState(false)
-  const prevAsh = useRef(state.ernte)
+  const prevErnte = useRef(state.ernte)
   const prevLevel = useRef(playerLevel.level)
   const multRows = multBreakdown(state, game.nowTick)
   const totalMult = multRows.reduce((p, r) => p * r.mult, 1)
@@ -294,10 +294,10 @@ export function GardenMap({
     if (postPrestigeFocus) clearPostPrestigeFocus()
   }, [postPrestigeFocus, clearPostPrestigeFocus])
 
-  /** Map CTA: spend leftover Münzen, or honest prestige preview (never false „lohnt sich“). */
+  /** Map CTA: spend leftover Erbstücke, or honest prestige preview (never false „lohnt sich“). */
   const probe = isProbeYear(state)
   const prestigeCta = useMemo(() => {
-    const readyBuys = countAffordableEmberBuys(
+    const readyBuys = countAffordableTruheBuys(
       state.truhe,
       state.erbstuecke,
       state.ernteSeason,
@@ -316,10 +316,10 @@ export function GardenMap({
     }
     const nearTier = PRESTIGE_SPIKE_RATIOS.findIndex((r) => prestigeProgress.ratio >= r)
     if (nearTier < 0 && !canPrestige) return null
-    const erbstuecke = Math.max(nextPrestige, emberPayout(state.ernteSeason, state.saisonenden, probe))
+    const erbstuecke = Math.max(nextPrestige, erbstueckePayout(state.ernteSeason, state.saisonenden, probe))
     if (erbstuecke <= 0) return null
     const ready = canPrestige || prestigeProgress.ratio >= 1
-    const postBuys = countAffordableEmberBuysAfterPrestige({
+    const postBuys = countAffordableTruheBuysAfterPrestige({
       upgrades: state.truhe,
       erbstuecke: state.erbstuecke,
       ernteSeason: state.ernteSeason,
@@ -338,7 +338,7 @@ export function GardenMap({
       }
     }
     const mods =
-      modulesToNextEmberUnlock(
+      modulesToNextTruheUnlock(
         state.truhe,
         0,
         postPrestigeStartOwned(state.truhe),
@@ -382,7 +382,7 @@ export function GardenMap({
         title: prestigeCta.spend ? t.prestige.shopTitle : t.goal.prestigeReady,
         detail: prestigeCta.spend
           ? prestigeCta.label.replace(`${t.prestige.shopTitle} · `, '')
-          : t.prestige.creditsAmount(prestigeCta.erbstuecke),
+          : t.prestige.erbstueckeAmount(prestigeCta.erbstuecke),
         ratio: 1,
         tone: 'season',
         icon: prestigeCta.spend ? <IconChest /> : <IconSnow />,
@@ -397,7 +397,7 @@ export function GardenMap({
       return {
         key: `tip-${bestBuy.id}`,
         title: t.goal.upgradeTitle(action, bestBuy.name),
-        detail: t.goal.upgradeDetail(formatAsh(cost)),
+        detail: t.goal.upgradeDetail(formatErnte(cost)),
         ratio: cost > 0 ? Math.min(1, state.ernte / cost) : 1,
         tone: bestBuy.affordable ? 'tip' : 'goal',
         icon: <IconSprout />,
@@ -451,15 +451,15 @@ export function GardenMap({
 
   useEffect(() => {
     // Ignore passive economy ticks — flashing every 250ms forces layout/paint on iPhone.
-    const jump = state.ernte - prevAsh.current
+    const jump = state.ernte - prevErnte.current
     const meaningful = Math.max(rate * 1.25, 1)
     if (jump > meaningful) {
       setTickFlash(true)
       const timer = window.setTimeout(() => setTickFlash(false), 280)
-      prevAsh.current = state.ernte
+      prevErnte.current = state.ernte
       return () => window.clearTimeout(timer)
     }
-    prevAsh.current = state.ernte
+    prevErnte.current = state.ernte
   }, [state.ernte, rate])
 
   // Surprise pops: add the pop during render (guarded by identity) …
@@ -471,7 +471,7 @@ export function GardenMap({
       ...list.slice(-4),
       {
         id: (list.at(-1)?.id ?? 0) + 1,
-        text: surpriseLabel(surprise.kind, formatAsh(surprise.amount)),
+        text: surpriseLabel(surprise.kind, formatErnte(surprise.amount)),
         kind: 'claim',
       },
     ])
@@ -508,11 +508,11 @@ export function GardenMap({
     const xp = xpFromOfflineClaim(amount)
     game.dismissOffline()
     playSfx('claim')
-    pushPop(`+${formatAsh(amount)}`, 'claim')
+    pushPop(`+${formatErnte(amount)}`, 'claim')
     const toast =
       xp > 0
-        ? t.hud.claimCelebrate(formatAsh(amount), xp)
-        : t.hud.claimCelebrateShort(formatAsh(amount))
+        ? t.hud.claimCelebrate(formatErnte(amount), xp)
+        : t.hud.claimCelebrateShort(formatErnte(amount))
     const helped = state.helperReport
     showToast(helped > 0 ? `${toast} · ${t.helper.report(helped)}` : toast)
     if (helped > 0) game.ackHelperReport()
@@ -533,7 +533,7 @@ export function GardenMap({
     rake()
     // Burst grant lands on next state tick; optimistic pop from ~45s rate
     const estimate = Math.max(rate * 45, 1)
-    pushPop(`+${formatAsh(estimate)}`, 'gain')
+    pushPop(`+${formatErnte(estimate)}`, 'gain')
     void before
   }  useEffect(() => {
     onRakeRef.current = onRake
@@ -544,9 +544,9 @@ export function GardenMap({
     harvest.launch(document.querySelector('.hud-claim'))
     const preview = game.dailyPreview
     const bits: string[] = []
-    if (preview.compute > 0) bits.push(t.daily.rewardCompute(formatAsh(preview.compute)))
-    if (preview.credits > 0) bits.push(t.daily.rewardCredits(preview.credits))
-    if (preview.samen > 0) bits.push(t.daily.rewardObsidian(preview.samen))
+    if (preview.ernte > 0) bits.push(t.daily.rewardErnte(formatErnte(preview.ernte)))
+    if (preview.erbstuecke > 0) bits.push(t.daily.rewardErbstuecke(preview.erbstuecke))
+    if (preview.samen > 0) bits.push(t.daily.rewardSamen(preview.samen))
     game.claimDaily()
     track('daily')
     playSfx('streak')
@@ -575,7 +575,7 @@ export function GardenMap({
   function onUpgradeBought(deltaCost: number) {
     track('upgrades')
     playSfx('upgrade')
-    pushPop(`−${formatAsh(deltaCost)}`, 'upgrade')
+    pushPop(`−${formatErnte(deltaCost)}`, 'upgrade')
   }
 
   // —— Hofladen-Bestellungen ——
@@ -624,11 +624,11 @@ export function GardenMap({
           label: orderDone
             ? t.orders.claim(name)
             : t.orders.progress(
-                formatAsh(Math.min(orderHave, order.need)),
-                formatAsh(order.need),
+                formatErnte(Math.min(orderHave, order.need)),
+                formatErnte(order.need),
                 formatClock(order.expiresAt - game.nowTick),
               ),
-          detail: `${t.orders.label(name)} — ${t.orders.detail(formatAsh(order.need))} ${t.orders.reward(order.seeds)}`,
+          detail: `${t.orders.label(name)} — ${t.orders.detail(formatErnte(order.need))} ${t.orders.reward(order.seeds)}`,
           ratio: Math.min(1, orderHave / order.need),
           claim: orderDone,
           onClaim: claimOrder,
@@ -715,7 +715,7 @@ export function GardenMap({
   const hint = candidate !== null && candidate === shownHint ? candidate : null
 
   return (
-    <section className={`fortress-home${photoMode ? ' photo-mode' : ''}`} aria-labelledby="ernte-heading">
+    <section className={`garten-home${photoMode ? ' photo-mode' : ''}`} aria-labelledby="ernte-heading">
       <h1 id="ernte-heading" className="sr-only">
         {t.brand}
       </h1>
@@ -746,13 +746,13 @@ export function GardenMap({
             type="button"
             className="hud-card hud-wallet"
             onClick={() => setMultOpen(true)}
-            aria-label={`${t.hud.walletAria(formatAsh(state.ernte), formatRate(rate))} — ${t.ux.mults.walletHint}`}
+            aria-label={`${t.hud.walletAria(formatErnte(state.ernte), formatRate(rate))} — ${t.ux.mults.walletHint}`}
           >
             <span className={`hud-amount${tickFlash ? ' tick' : ''}`}>
               <span className="hud-amount-icon">
                 <IconBasket />
               </span>
-              {formatAsh(state.ernte)}
+              {formatErnte(state.ernte)}
             </span>
             <span className="hud-rate">
               {formatRate(rate)}
@@ -760,7 +760,7 @@ export function GardenMap({
             </span>
             <span className="hud-sub">
               {state.erbstuecke > 0 ? (
-                <span className="hud-sub-item" title={t.resources.credits}>
+                <span className="hud-sub-item" title={t.resources.erbstuecke}>
                   <IconChest /> {state.erbstuecke}
                 </span>
               ) : null}

@@ -122,26 +122,26 @@
       "kind": "upgrades",
       "target": 5,
       "progress": 5,
-      "rewardAsh": 40,
-      "rewardObsidian": 0,
+      "rewardErnte": 40,
+      "rewardSamen": 0,
       "claimed": false
     },
     {
-      "id": "2026-11-09-1-earnAsh-5000",
-      "kind": "earnAsh",
+      "id": "2026-11-09-1-earnErnte-5000",
+      "kind": "earnErnte",
       "target": 5000,
       "progress": 5000,
-      "rewardAsh": 200,
-      "rewardObsidian": 5,
+      "rewardErnte": 200,
+      "rewardSamen": 5,
       "claimed": false
     },
     {
-      "id": "2026-11-09-2-earnAsh-500",
-      "kind": "earnAsh",
+      "id": "2026-11-09-2-earnErnte-500",
+      "kind": "earnErnte",
       "target": 500,
       "progress": 500,
-      "rewardAsh": 50,
-      "rewardObsidian": 0,
+      "rewardErnte": 50,
+      "rewardSamen": 0,
       "claimed": false
     }
   ],

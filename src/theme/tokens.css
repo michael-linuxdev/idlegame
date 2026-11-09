@@ -22,91 +22,64 @@
   --z-lock: 9999;
 
   /* Surfaces — airy greenhouse / rooftop light */
-  --oc-bg-deep: #dce8d6;
-  --oc-bg-field: #e8f0e4;
-  --oc-bg-raised: #f5f9f2;
-  --oc-bg-inset: #c5d9b8;
-  --oc-stroke: #a8c09a;
-  --oc-stroke-strong: #6b8f5e;
+  --ge-bg-deep: #dce8d6;
+  --ge-bg-field: #e8f0e4;
+  --ge-bg-raised: #f5f9f2;
+  --ge-bg-inset: #c5d9b8;
+  --ge-stroke: #a8c09a;
+  --ge-stroke-strong: #6b8f5e;
 
   /* Type — deep leaf on pale green (WCAG-friendly muted) */
-  --oc-ink: #162414;
-  --oc-ink-muted: #2f4529;
-  --oc-ink-faint: #4a6340;
+  --ge-ink: #162414;
+  --ge-ink-muted: #2f4529;
+  --ge-ink-faint: #4a6340;
 
   /* Primary CTA — leaf green (not amber panel, not purple) */
-  --oc-ember: #2f9a48;
-  --oc-ember-hot: #48b85e;
-  --oc-ember-dim: #1f6e32;
+  --ge-gruen: #2f9a48;
+  --ge-gruen-hell: #48b85e;
+  --ge-gruen-dunkel: #1f6e32;
 
   /* Secondary status — soft mint */
-  --oc-ice: #5a9e6e;
-  --oc-ice-pale: #8ec99a;
-  --oc-ice-wash: color-mix(in srgb, var(--oc-ice) 14%, transparent);
+  --ge-ice: #5a9e6e;
+  --ge-ice-pale: #8ec99a;
+  --ge-ice-wash: color-mix(in srgb, var(--ge-ice) 14%, transparent);
 
   /* Prestige / meta — soft earth */
-  --oc-bronze: #6f5a33;
-  --oc-bronze-pale: #b89a5c;
+  --ge-bronze: #6f5a33;
+  --ge-bronze-pale: #b89a5c;
 
   /* Semantic */
-  --oc-gain: #2f7a42;
-  --oc-warn: #b08940;
-  --oc-danger: #a3483c;
-  --oc-clan: #5a8f6a;
-  --oc-focus: #2d6a3a;
-  --oc-target-min: 44px;
+  --ge-gain: #2f7a42;
+  --ge-warn: #b08940;
+  --ge-danger: #a3483c;
+  --ge-clan: #5a8f6a;
+  --ge-focus: #2d6a3a;
+  --ge-target-min: 44px;
 
-  --oc-font-display: 'Fraunces', 'Georgia', serif;
-  --oc-font-ui: 'Nunito Sans', 'Helvetica Neue', sans-serif;
-  --oc-font-metric: 'DM Sans', 'Helvetica Neue', sans-serif;
-  --oc-font-hand: 'Caveat', 'Segoe Print', 'Bradley Hand', cursive;
-  --oc-radius: 8px;
-  --oc-space-xs: 0.35rem;
-  --oc-space-sm: 0.55rem;
-  --oc-space-md: 0.85rem;
-  --oc-space-lg: 1.25rem;
-  --oc-motion-tick: 260ms;
-  --oc-motion-sheet: 240ms;
+  --ge-font-display: 'Fraunces', 'Georgia', serif;
+  --ge-font-ui: 'Nunito Sans', 'Helvetica Neue', sans-serif;
+  --ge-font-metric: 'DM Sans', 'Helvetica Neue', sans-serif;
+  --ge-font-hand: 'Caveat', 'Segoe Print', 'Bradley Hand', cursive;
+  --ge-radius: 8px;
+  --ge-space-xs: 0.35rem;
+  --ge-space-sm: 0.55rem;
+  --ge-space-md: 0.85rem;
+  --ge-space-lg: 1.25rem;
+  --ge-motion-tick: 260ms;
+  --ge-motion-sheet: 240ms;
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-top: env(safe-area-inset-top, 0px);
 
   /* Legacy aliases */
-  --ad-bg-deep: var(--oc-bg-deep);
-  --ad-bg-field: var(--oc-bg-field);
-  --ad-bg-raised: var(--oc-bg-raised);
-  --ad-bg-inset: var(--oc-bg-inset);
-  --ad-stroke: var(--oc-stroke);
-  --ad-stroke-strong: var(--oc-stroke-strong);
-  --ad-ink: var(--oc-ink);
-  --ad-ink-muted: var(--oc-ink-muted);
-  --ad-ink-faint: var(--oc-ink-faint);
-  --ad-ember: var(--oc-ember);
-  --ad-ember-hot: var(--oc-ember-hot);
-  --ad-ember-dim: var(--oc-ember-dim);
-  --ad-bronze: var(--oc-bronze);
-  --ad-bronze-pale: var(--oc-bronze-pale);
-  --ad-gain: var(--oc-gain);
-  --ad-clan: var(--oc-clan);
-  --ad-focus: var(--oc-focus);
-  --ad-target-min: var(--oc-target-min);
-  --ad-font-display: var(--oc-font-display);
-  --ad-font-ui: var(--oc-font-ui);
-  --ad-font-metric: var(--oc-font-metric);
-  --ad-radius: var(--oc-radius);
-  --ad-warn: var(--oc-warn);
 
-  --bg-deep: var(--oc-bg-deep);
-  --bg: var(--oc-bg-field);
-  --bg-raised: var(--oc-bg-raised);
-  --bg-line: var(--oc-stroke);
-  --ember: var(--oc-ember);
-  --ember-hot: var(--oc-ember-hot);
-  --ash: var(--oc-ink-muted);
-  --ash-dim: var(--oc-ink-faint);
-  --ink: var(--oc-ink);
-  --font-display: var(--oc-font-display);
-  --font-body: var(--oc-font-ui);
-  --radius: var(--oc-radius);
+  --bg-deep: var(--ge-bg-deep);
+  --bg: var(--ge-bg-field);
+  --bg-raised: var(--ge-bg-raised);
+  --bg-line: var(--ge-stroke);
+  --ink: var(--ge-ink);
+  --font-display: var(--ge-font-display);
+  --font-body: var(--ge-font-ui);
+  --radius: var(--ge-radius);
   color-scheme: light;
 }
 

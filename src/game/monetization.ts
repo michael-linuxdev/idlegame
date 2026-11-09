@@ -43,7 +43,7 @@ export interface CosmeticDef {
   id: CosmeticId
   name: string
   blurb: string
-  /** Obsidian cost; 0 = free starter */
+  /** Samen cost; 0 = free starter */
   cost: number
   /** CSS accent class applied to the garden map */
   accentClass: string
@@ -162,7 +162,7 @@ export const CLAN_BOOST: ClanBoostDef = {
 
 /** Mock IAP / shop offer kinds */
 export type ShopOfferKind =
-  | 'grantObsidian'
+  | 'grantSamen'
   | 'removeAds'
   | 'cosmeticPack'
   | 'battlePassPremium'
@@ -175,7 +175,7 @@ export interface ShopOfferDef {
   blurb: string
   /** Mock purchase label */
   label: string
-  /** Obsidian granted (IAP stub credit) */
+  /** Samen granted (IAP stub credit) */
   samen?: number
   /** Cosmetics unlocked on mock buy */
   cosmeticIds?: CosmeticId[]
@@ -208,7 +208,7 @@ export const SHOP_OFFERS: ShopOfferDef[] = [
   },
   {
     id: 'samen50',
-    kind: 'grantObsidian',
+    kind: 'grantSamen',
     name: t.packs.samen50.name,
     blurb: t.packs.samen50.blurb,
     label: t.packs.samen50.label,
@@ -217,7 +217,7 @@ export const SHOP_OFFERS: ShopOfferDef[] = [
   },
   {
     id: 'samen150',
-    kind: 'grantObsidian',
+    kind: 'grantSamen',
     name: t.packs.samen150.name,
     blurb: t.packs.samen150.blurb,
     label: t.packs.samen150.label,
@@ -226,7 +226,7 @@ export const SHOP_OFFERS: ShopOfferDef[] = [
   },
   {
     id: 'samen500',
-    kind: 'grantObsidian',
+    kind: 'grantSamen',
     name: t.packs.samen500.name,
     blurb: t.packs.samen500.blurb,
     label: t.packs.samen500.label,
@@ -255,12 +255,12 @@ export const SHOP_OFFERS: ShopOfferDef[] = [
 ]
 
 /** @deprecated Prefer SHOP_OFFERS — kept for older call sites */
-export type ObsidianPackDef = ShopOfferDef
-export const OBSIDIAN_PACKS: ShopOfferDef[] = SHOP_OFFERS.filter(
+export type SamenPackDef = ShopOfferDef
+export const SAMEN_PACKS: ShopOfferDef[] = SHOP_OFFERS.filter(
   (o) => o.section === 'bundles' || o.section === 'currency',
 )
 
-export type RewardedAdRewardKind = 'skipCrumb' | 'obsidianCrumb' | 'yieldCrumb'
+export type RewardedAdRewardKind = 'skipCrumb' | 'samenCrumb' | 'yieldCrumb'
 
 export interface RewardedAdRewardDef {
   kind: RewardedAdRewardKind
@@ -287,11 +287,11 @@ export const WATER_REFILL_PER_DAY = 3
 /** @deprecated old rotating ad rewards (kept for reference; ads now use AdChoice) */
 export const REWARDED_AD_REWARDS: RewardedAdRewardDef[] = [
   { kind: 'skipCrumb', minutes: 5 },
-  { kind: 'obsidianCrumb', samen: 8 },
+  { kind: 'samenCrumb', samen: 8 },
   { kind: 'yieldCrumb', minutes: 2 },
 ]
 
-export type BattlePassRewardKind = 'samen' | 'computeSec'
+export type BattlePassRewardKind = 'samen' | 'ernteSec'
 
 export interface BattlePassTierDef {
   tier: number
@@ -312,8 +312,8 @@ export const BATTLE_PASS_TIERS: BattlePassTierDef[] = [
   {
     tier: 2,
     xp: 25,
-    free: { kind: 'computeSec', amount: 90 },
-    premium: { kind: 'computeSec', amount: 300 },
+    free: { kind: 'ernteSec', amount: 90 },
+    premium: { kind: 'ernteSec', amount: 300 },
   },
   {
     tier: 3,
@@ -324,8 +324,8 @@ export const BATTLE_PASS_TIERS: BattlePassTierDef[] = [
   {
     tier: 4,
     xp: 75,
-    free: { kind: 'computeSec', amount: 180 },
-    premium: { kind: 'computeSec', amount: 600 },
+    free: { kind: 'ernteSec', amount: 180 },
+    premium: { kind: 'ernteSec', amount: 600 },
   },
   {
     tier: 5,

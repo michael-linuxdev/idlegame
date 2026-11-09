@@ -6,6 +6,7 @@ describe('save parsing', () => {
     expect(parseSave('nope')).toBeNull()
   })
   it('liest keine Felder aus dem alten Format (Neustart 2026-11-09)', () => {
+    // altname-ok: Stand im alten Format
     const s = parseSave({ ash: 123, embers: 7, obsidian: 42, emberUpgrades: { dominionYield: 3 } })!
     expect(s.ernte).not.toBe(123)
     expect(s.erbstuecke).toBe(0)

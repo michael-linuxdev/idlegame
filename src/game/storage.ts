@@ -1,4 +1,4 @@
-import { EMPTY_EMBER_UPGRADES, type EmberUpgrades } from './economy'
+import { EMPTY_TRUHE, type TruheUpgrades } from './economy'
 import { GENERATOR_IDS, type GeneratorId } from './generators'
 import { parseDecorOwned, parseDecorSlots } from './decor'
 import { parseResidentVisit, parseResidentsSeen } from './residents'
@@ -51,10 +51,10 @@ function parseOwned(raw: unknown): GameState['owned'] {
   return base
 }
 
-function parseUpgrades(raw: unknown): EmberUpgrades {
-  const base = { ...EMPTY_EMBER_UPGRADES }
+function parseUpgrades(raw: unknown): TruheUpgrades {
+  const base = { ...EMPTY_TRUHE }
   if (!isRecord(raw)) return base
-  for (const key of Object.keys(base) as (keyof EmberUpgrades)[]) {
+  for (const key of Object.keys(base) as (keyof TruheUpgrades)[]) {
     const n = raw[key]
     if (typeof n === 'number' && Number.isFinite(n) && n >= 0) {
       base[key] = Math.floor(n)
@@ -596,7 +596,7 @@ function parseQuests(
     if (typeof item.id !== 'string') continue
     if (
       item.kind !== 'upgrades' &&
-      item.kind !== 'earnAsh' &&
+      item.kind !== 'earnErnte' &&
       item.kind !== 'claimDaily'
     ) {
       continue
@@ -609,22 +609,22 @@ function parseQuests(
       typeof item.progress === 'number' && Number.isFinite(item.progress)
         ? Math.max(0, item.progress)
         : 0
-    const rewardAsh =
-      typeof item.rewardAsh === 'number' && Number.isFinite(item.rewardAsh)
-        ? Math.max(0, Math.floor(item.rewardAsh))
+    const rewardErnte =
+      typeof item.rewardErnte === 'number' && Number.isFinite(item.rewardErnte)
+        ? Math.max(0, Math.floor(item.rewardErnte))
         : 0
-    const rewardObsidian =
-      typeof item.rewardObsidian === 'number' &&
-      Number.isFinite(item.rewardObsidian)
-        ? Math.max(0, Math.floor(item.rewardObsidian))
+    const rewardSamen =
+      typeof item.rewardSamen === 'number' &&
+      Number.isFinite(item.rewardSamen)
+        ? Math.max(0, Math.floor(item.rewardSamen))
         : 0
     quests.push({
       id: item.id,
       kind: item.kind,
       target,
       progress: Math.min(target, progress),
-      rewardAsh,
-      rewardObsidian,
+      rewardErnte,
+      rewardSamen,
       claimed: item.claimed === true,
     })
   }

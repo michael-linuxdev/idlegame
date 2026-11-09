@@ -105,7 +105,7 @@ export function SeasonCeremony({ event, onDone, onSpin }: Props) {
                 ? t.generation.gained(event.gained)
                 : event.deep
                   ? t.season.sprouts(event.gained)
-                  : t.prestige.creditsAmount(event.gained),
+                  : t.prestige.erbstueckeAmount(event.gained),
             )}
           </p>
           {corner ? <p className="season-corner">{t.season.newCorner(corner.name)}</p> : null}

@@ -4,7 +4,7 @@
  * Rules:
  * - Window: 18 minutes live
  * - Cooldown: ≥ 2.5 h between starts (also gated on session ticks)
- * - Mult: ×1.15 soft/s while live (stacks with weekend surge)
+ * - Mult: ×1.15 soft/s while live (stacks with weekend erntefest)
  * - Goal: earn ~6 minutes of current rate (floor 400), reward 12 Samen
  * - On expire: soft currency / modules never wiped. Unclaimed goal stays
  *   claimable for 10 min after end if progress ≥ goal; else progress just ends.
@@ -20,7 +20,7 @@ export const FLASH_COOLDOWN_MS = 2.5 * 60 * 60 * 1000
 /** After end, claim window if goal was met */
 export const FLASH_CLAIM_GRACE_MS = 10 * 60 * 1000
 export const FLASH_MULT = 1.15
-export const FLASH_GOAL_REWARD_OBSIDIAN = 12
+export const FLASH_GOAL_REWARD_SAMEN = 12
 /** Chance to spawn when eligible (checked ~every visibility / minute) */
 export const FLASH_SPAWN_CHANCE = 0.55
 

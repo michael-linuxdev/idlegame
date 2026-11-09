@@ -7,7 +7,7 @@
  */
 
 import { t } from '../i18n'
-import { formatAsh } from './format'
+import { formatErnte } from './format'
 import { LEVEL_MODULE_GATES } from './progression'
 
 export type GeneratorId =
@@ -41,7 +41,7 @@ export interface UnlockGate {
    * Omas garden can be cleared at all. Paces content across seasons.
    */
   seasons?: number
-  /** Lifetime Compute earned this run (economy Ash) */
+  /** Ernte earned this run */
   ernteSeason?: number
   /** Prior module at least this level (OR with ernteSeason) */
   requires?: { id: GeneratorId; level: number }
@@ -56,7 +56,7 @@ export interface GeneratorDef {
   note: string
   /** Plot centre on the garden map (percent of map box) */
   slot: { left: string; top: string }
-  /** Base Compute/sec at level 1 (`r0`) */
+  /** Base Ernte/s at level 1 (`r0`) */
   baseRate: number
   /** Cost C0 for level 0 → 1 */
   baseCost: number
@@ -264,8 +264,8 @@ export function isGeneratorUnlocked(
   if (!def.unlock) return true
   if ((def.unlock.seasons ?? 0) > saisonenden) return false
   if (firstBeacon && def.id === 'kompost') return true
-  const { ernteSeason: needAsh, requires } = def.unlock
-  if (needAsh != null && ernteSeason >= needAsh) return true
+  const { ernteSeason: needErnte, requires } = def.unlock
+  if (needErnte != null && ernteSeason >= needErnte) return true
   if (requires && (owned[requires.id] ?? 0) >= requires.level) return true
   const levelGate = LEVEL_MODULE_GATES[def.id]
   if (levelGate != null && playerLevel >= levelGate) {
@@ -303,7 +303,7 @@ export function unlockHint(def: GeneratorDef, saisonenden = 0): string {
   const parts: string[] = []
   if (def.unlock.ernteSeason != null) {
     parts.push(
-      t.unlock.computeEarned(def.unlock.ernteSeason.toLocaleString('de-DE')),
+      t.unlock.ernteEarned(def.unlock.ernteSeason.toLocaleString('de-DE')),
     )
   }
   if (def.unlock.requires) {
@@ -327,7 +327,7 @@ export function shortUnlockGate(def: GeneratorDef, saisonenden = 0): string {
   if (!def.unlock) return t.hud.locked
   if (seasonsMissing(def, saisonenden) > 0) return t.unlock.seasonShort(def.unlock.seasons! + 1)
   if (def.unlock.ernteSeason != null) {
-    return t.hud.gateCompute(formatAsh(def.unlock.ernteSeason).replace(/,0+(?=\D|$)/, ''))
+    return t.hud.gateErnte(formatErnte(def.unlock.ernteSeason).replace(/,0+(?=\D|$)/, ''))
   }
   if (def.unlock.requires) {
     const prior = GENERATORS.find((g) => g.id === def.unlock!.requires!.id)

@@ -4,14 +4,14 @@
  * No energy walls.
  */
 
-import { formatAsh } from './format'
+import { formatErnte } from './format'
 import {
   GENERATORS,
   isGeneratorUnlocked,
   type GeneratorId,
 } from './generators'
 import { LEVEL_MODULE_GATES, xpForLevel } from './progression'
-import { prestigeMinAsh, isProbeYear } from './economy'
+import { prestigeMinErnte, isProbeYear } from './economy'
 import { gateSeasons } from './longLoop'
 import type { GameState } from './state'
 import { t } from '../i18n'
@@ -73,7 +73,7 @@ function unlockProgress(
       detail =
         r >= 1
           ? t.goal.ready
-          : t.goal.unlockAshLeft(formatAsh(left))
+          : t.goal.unlockErnteLeft(formatErnte(left))
     }
   }
 
@@ -143,7 +143,7 @@ export function computeNextGoal(
     const goal: NextGoal = withNearMiss({
       kind: 'upgrade',
       title: t.goal.upgradeTitle(action, def.name),
-      detail: t.goal.upgradeDetail(formatAsh(cost)),
+      detail: t.goal.upgradeDetail(formatErnte(cost)),
       ratio,
       focusId: def.id,
       urgency,
@@ -195,7 +195,7 @@ export function computeNextGoal(
   }
 
   // Prestige gate — strong Zeigarnik when “almost ready”
-  const prestigeMin = prestigeMinAsh(state.saisonenden, isProbeYear(state))
+  const prestigeMin = prestigeMinErnte(state.saisonenden, isProbeYear(state))
   const prestigeRatio =
     prestigeMin > 0 ? Math.min(1, state.ernteSeason / prestigeMin) : 1
   const prestigeUrgency =
@@ -216,7 +216,7 @@ export function computeNextGoal(
         prestigeRatio >= 1
           ? t.goal.prestigeReadyDetail
           : t.goal.prestigeDetail(
-              formatAsh(Math.max(0, prestigeMin - state.ernteSeason)),
+              formatErnte(Math.max(0, prestigeMin - state.ernteSeason)),
             ),
       ratio: prestigeRatio,
       urgency: prestigeUrgency,

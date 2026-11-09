@@ -52,7 +52,7 @@ export const strings = {
   nav: {
     settings: 'Einstellungen',
     ariaLabel: 'Hauptnavigation',
-    station: 'Garten',
+    garten: 'Garten',
     prestige: 'Saison',
     clan: 'Verein',
     shop: 'Markt',
@@ -252,7 +252,7 @@ export const strings = {
     upgradeTitle: (action: string, name: string) => `${action}: ${name}`,
     upgradeDetail: (cost: string) => `${cost} ${SOFT}`,
     unlockTitle: (name: string) => `Roden: ${name}`,
-    unlockAshLeft: (n: string) => `noch ${n} ${SOFT}`,
+    unlockErnteLeft: (n: string) => `noch ${n} ${SOFT}`,
     unlockLevel: (name: string, have: number, need: number) =>
       `${name} ${have}/${need}`,
     unlockPlayerLevel: (have: number, need: number) =>
@@ -300,8 +300,8 @@ export const strings = {
   },
 
   resources: {
-    compute: SOFT,
-    credits: 'Erbstücke',
+    ernte: SOFT,
+    erbstuecke: 'Erbstücke',
     samen: SEEDS,
   },
 
@@ -365,7 +365,7 @@ export const strings = {
   unlock: {
     prefix: 'Roden ab:',
     or: ' oder ',
-    computeEarned: (n: string) => `${n} ${SOFT} geerntet`,
+    ernteEarned: (n: string) => `${n} ${SOFT} geerntet`,
     levelOf: (name: string, level: number) => `${name} Stufe ${level}`,
     playerLevel: (level: number) => `Gärtnerstufe ${level}`,
     seasonGate: (year: number) =>
@@ -389,7 +389,7 @@ export const strings = {
     mapHint: 'Beet antippen → anlegen oder ausbauen.',
     locked: 'Wildnis',
     levelShort: (level: number) => `Stufe ${level}`,
-    gateCompute: (n: string) => `${n} ${SOFT}`,
+    gateErnte: (n: string) => `${n} ${SOFT}`,
     buildingAriaUnlocked: (name: string, level: number, rate: string) =>
       `${name}, Stufe ${level}, ${rate}. Tippen zum Ausbauen.`,
     buildingAriaLocked: (name: string, hint: string) =>
@@ -440,9 +440,9 @@ export const strings = {
     title: 'Meilensteine',
     intro: 'Einmalig — Oma hakt sie im Notizbuch ab.',
     done: 'Abgehakt',
-    rewardAsh: (n: number) => `+${n} ${SOFT}`,
-    rewardEmbers: (n: number) => `+${erb(n)}`,
-    rewardObsidian: (n: number) => `+${n} ${SEEDS}`,
+    rewardErnte: (n: number) => `+${n} ${SOFT}`,
+    rewardErbstuecke: (n: number) => `+${erb(n)}`,
+    rewardSamen: (n: number) => `+${n} ${SEEDS}`,
     rewardCosmetic: (name: string) => `Gartenstil: ${name}`,
     firstUpgrade: {
       name: 'Erster Spatenstich',
@@ -493,7 +493,7 @@ export const strings = {
     claimed: 'Erledigt',
     progress: (cur: string, target: string) => `${cur} / ${target}`,
     upgradeTimes: (n: number) => `${n}× ausbauen`,
-    earnAsh: (n: string) => `${n} ${SOFT} einfahren`,
+    earnErnte: (n: string) => `${n} ${SOFT} einfahren`,
     claimDaily: 'Gartenrunde abholen',
     rewardLine: (ernte: number, seeds: number) =>
       seeds > 0 ? `+${ernte} ${SOFT} · +${seeds} ${SEEDS}` : `+${ernte} ${SOFT}`,
@@ -523,23 +523,23 @@ export const strings = {
     introBefore: 'Der Garten geht in die Winterruhe. Du behältst',
     introAfter:
       'für das nächste Gartenjahr. Beete und Ernte dieser Saison ruhen bis zum Frühling.',
-    credits: 'Erbstücke:',
+    erbstuecke: 'Erbstücke:',
     multiplier: 'Erbe-Bonus:',
     runs: 'Jahre geschafft:',
     thisRun: 'Diese Saison:',
     gate: 'Ab:',
-    creditsPreview: (n: number) => `Vorschau +${erb(n)}`,
+    erbstueckePreview: (n: number) => `Vorschau +${erb(n)}`,
     nextPayout: 'Jetzt einlagern:',
     longerHint: 'länger gärtnern bringt bis zu doppelt so viel',
     laterPayout: (n: number) => `in ~10 Minuten wären es ${n}`,
-    creditsAmount: (n: number) => `+${erb(n)}`,
+    erbstueckeAmount: (n: number) => `+${erb(n)}`,
     claimReset: (n: number) => `Winterruhe · +${erb(n)}`,
     claimResetRebuild: (n: number, mods: number) =>
       mods > 0
         ? `Winterruhe · +${erb(n)} — Truhe öffnet nach ~${mods} Ausbauten`
         : `Winterruhe · +${erb(n)} — Truhe öffnet beim Neuanlegen`,
     needMore: (amount: string) => `Noch ${amount} ${SOFT} bis zum Saisonende`,
-    needEmbers: (have: number, need: number) =>
+    needErbstuecke: (have: number, need: number) =>
       `Noch ${need - have} Erbstück-Wert (min. ${need}) — die Saison lohnt sich noch`,
     needModules: (have: number, need: number) =>
       `Erst ${need} Bereiche anlegen (jetzt ${have})`,
@@ -563,7 +563,7 @@ export const strings = {
     shopModulesLocked: (need: number) =>
       `Erst ${need} Bereiche in dieser Saison anlegen`,
     max: 'Max',
-    costCredits: (n: number) => erb(n),
+    costErbstuecke: (n: number) => erb(n),
     spendCta: (n: number) =>
       n === 1 ? 'Omas Truhe · 1 Schatz bereit' : `Omas Truhe · ${n} Schätze bereit`,
     spendAria: 'Omas Truhe öffnen — Schätze bereit',
@@ -573,8 +573,8 @@ export const strings = {
     loseItems: ['Ernte dieser Saison', 'Ausbaustufen', 'Fortschritt zum Saisonende'],
     branchYieldTitle: 'Ertrag',
     branchYieldBlurb: 'Mehr Ernte, günstigere Ausbauten.',
-    branchUptimeTitle: 'Pflege',
-    branchUptimeBlurb: 'Länger offline wachsen, kräftiger gießen.',
+    branchPflegeTitle: 'Pflege',
+    branchPflegeBlurb: 'Länger offline wachsen, kräftiger gießen.',
     branchStartTitle: 'Frühstart',
     branchStartBlurb: 'Schneller ins neue Gartenjahr.',
     worthItCta: (n: number) => `Saisonende lohnt sich · +${erb(n)}`,
@@ -634,7 +634,7 @@ export const strings = {
     },
   },
 
-  emberShop: {
+  truhe: {
     gartenschere: {
       name: 'Omas Gartenschere',
       blurb: '+5 % Ernte/s pro Rang. Höhere Ränge beim Neuanlegen.',
@@ -722,8 +722,8 @@ export const strings = {
     skipsIntro: (rate: string, cap: number) =>
       `Aktuelle Ernte ${rate}/s · max. ${cap} h pro Tag.`,
     dailyCapReached: 'Für heute genug',
-    computeGain: (amount: string) => `+${amount} ${SOFT}`,
-    costObsidian: (n: number) => `${n} ${SEEDS}`,
+    ernteGain: (amount: string) => `+${amount} ${SOFT}`,
+    costSamen: (n: number) => `${n} ${SEEDS}`,
     skinsTitle: 'Gartenstile',
     skinsIntro: 'Nur fürs Auge — kein Vorteil.',
     equipped: 'Aktiv',
@@ -759,7 +759,7 @@ export const strings = {
     adsRemovedBadge: 'Werbefrei',
     adsRewardSkip: (mins: number, amount: string) =>
       `+${mins} Min Zeitsprung (${amount})`,
-    adsRewardObsidian: (n: number) => `+${n} ${SEEDS}`,
+    adsRewardSamen: (n: number) => `+${n} ${SEEDS}`,
     adsRewardYield: (mins: number, amount: string) =>
       `+${mins} Min ${SOFT} (${amount})`,
     removeAdsTitle: 'Werbefrei',
@@ -785,8 +785,8 @@ export const strings = {
     battlePassLocked: 'Gesperrt',
     battlePassNeedXp: (xp: number) => `Ab ${xp} EP`,
     battlePassNeedPremium: 'Premium nötig',
-    rewardObsidian: (n: number) => `+${n} ${SEEDS}`,
-    rewardComputeSec: (sec: number) => `+${sec} s ${SOFT}`,
+    rewardSamen: (n: number) => `+${n} ${SEEDS}`,
+    rewardErnteSec: (sec: number) => `+${sec} s ${SOFT}`,
   },
 
   packs: {
@@ -1240,9 +1240,9 @@ export const strings = {
     comebackMeta: 'Serie hält · der Garten hat auf dich gewartet',
     claim: 'Abholen',
     claimToast: 'Gartenrunde erledigt',
-    rewardCompute: (amount: string) => `${amount} ${SOFT}`,
-    rewardCredits: (n: number) => erb(n),
-    rewardObsidian: (n: number) => `${n} ${SEEDS}`,
+    rewardErnte: (amount: string) => `${amount} ${SOFT}`,
+    rewardErbstuecke: (n: number) => erb(n),
+    rewardSamen: (n: number) => `${n} ${SEEDS}`,
     rows: {
       float2: `2 Min ${SOFT}`,
       shift3: `3 Min ${SOFT}`,

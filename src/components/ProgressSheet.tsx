@@ -1,4 +1,4 @@
-import { formatAsh, formatDecimal } from '../game/format'
+import { formatErnte, formatDecimal } from '../game/format'
 import { t } from '../i18n'
 import { WEEKLY_BONUS, WEEKLY_TASKS, type ExtrasState, type WeeklyTaskId } from '../game/extras'
 import { playSfx } from '../game/sound'
@@ -103,12 +103,12 @@ export function ProgressSheet({ game, onClose, extras, updateExtras }: Props) {
                 <strong>{q.label}</strong>
                 <span className="quest-progress">
                   {t.quests.progress(
-                    formatAsh(q.progress),
-                    formatAsh(q.target),
+                    formatErnte(q.progress),
+                    formatErnte(q.target),
                   )}
                 </span>
                 <span className="quest-reward">
-                  {t.quests.rewardLine(q.rewardAsh, q.rewardObsidian)}
+                  {t.quests.rewardLine(q.rewardErnte, q.rewardSamen)}
                 </span>
               </div>
               {q.claimed ? (
