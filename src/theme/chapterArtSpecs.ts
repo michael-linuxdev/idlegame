@@ -18,7 +18,7 @@ export type Stones = { k: 'stones'; variant: 'zen' | 'rock' | 'edelweiss' | 'mos
 export type ArtSpec = Tree | Rows | Animals | House | Water | Flowers | Stones
 
 /** Chapters drawn with hand-made art (theme/HandArt.tsx). */
-export const HAND_ART_CHAPTERS: readonly ChapterId[] = ['bauernhof', 'imkerei', 'teich', 'kraeuter', 'botanik', 'alm', 'lavendel', 'japangarten', 'gartenschau', 'stadtgarten', 'klostergarten', 'schlossgarten', 'baumschule', 'moorgarten', 'deichgarten', 'spreewald', 'cottagegarten', 'tulpenfelder', 'artischocken', 'beerenwald', 'patio', 'korkeichen', 'paprikafelder', 'aranfelder', 'rosental', 'pistazien', 'andenkartoffeln', 'milpa', 'kaffeewald', 'reisterrassen', 'gewuerzgarten', 'oase', 'kakaogarten', 'buschgarten', 'farngarten', 'kimchigarten', 'dachgarten', 'schulgarten', 'waldgarten', 'samenbank', 'klimagarten']
+export const HAND_ART_CHAPTERS: readonly ChapterId[] = ['bauernhof', 'imkerei', 'teich', 'kraeuter', 'botanik', 'alm', 'lavendel', 'japangarten', 'gartenschau', 'stadtgarten', 'klostergarten', 'schlossgarten', 'baumschule', 'moorgarten', 'deichgarten', 'spreewald', 'cottagegarten', 'tulpenfelder', 'artischocken', 'beerenwald', 'patio', 'korkeichen', 'paprikafelder', 'aranfelder', 'rosental', 'pistazien', 'andenkartoffeln', 'milpa', 'kaffeewald', 'reisterrassen', 'gewuerzgarten', 'oase', 'kakaogarten', 'buschgarten', 'farngarten', 'kimchigarten', 'dachgarten', 'schulgarten', 'waldgarten', 'samenbank', 'klimagarten', 'wildblumenband', 'fassadengarten', 'solawihof', 'saatguttausch', 'weltgartenschau']
 
 export interface BackdropSpec {
   /** Patchwork fields behind the plots */
@@ -103,6 +103,16 @@ export interface BackdropSpec {
   seedBank?: boolean
   /** Klimagarten: river, city across the water, sponge hollows */
   climateGarden?: boolean
+  /** Wildblumenband: moor edge with birches, grain fields, a green bridge over the road */
+  wildflowerBand?: boolean
+  /** Fassadengarten: six-storey houses, one wall overgrown with creeper, courtyard */
+  livingWall?: boolean
+  /** Solawi-Hof: Onkel Fritz’ farm (barn, farmhouse), polytunnels, field strips */
+  communityFarm?: boolean
+  /** Saatguttausch: festival meadow with tents, pennant lines, old show gate */
+  seedSwap?: boolean
+  /** Weltgartenschau: expo skyline, glass hall, cable car pylons, flags */
+  worldExpo?: boolean
   grass: [string, string, string]
   path: string
   /** Own path shape per chapter (default: shared S-curve) */
@@ -727,6 +737,81 @@ export const CHAPTER_ART: Partial<Record<ChapterId, { backdrop: BackdropSpec; ar
       wetterstation: { k: 'house', roof: P.metal, wall: P.white, prop: 'tower' },
       lehrkueche: { k: 'house', roof: P.leafDark, wall: P.wood, prop: 'chimney' },
       klimatag: { k: 'flowers', colors: [P.water, P.leaf, P.yellow] },
+    },
+  },
+  wildblumenband: {
+    backdrop: { grass: ['#c2c87e', '#b2b86e', '#a2a860'], path: '#a5733f', hills: ['#6a8a4a', '#5a7a3e'], way: 'meadowSpiral', wildflowerBand: true },
+    areas: {
+      bluehstreifen: { k: 'flowers', colors: [P.red, P.blue, P.white] },
+      totholz: { k: 'stones', variant: 'moss' },
+      sandarium: { k: 'stones', variant: 'rock' },
+      feldrain: { k: 'rows', color: P.gold, flower: P.blue },
+      feldhecke: { k: 'tree', crown: P.leafDark, fruit: P.berry },
+      tuempel: { k: 'water', variant: 'reeds' },
+      steinriegel: { k: 'stones', variant: 'rock' },
+      wildsaatgut: { k: 'rows', color: P.gold, flower: P.red },
+      gruenbruecke: { k: 'water', variant: 'bridge' },
+      bestaeuberfest: { k: 'flowers', colors: [P.yellow, P.red, P.blue] },
+    },
+  },
+  fassadengarten: {
+    backdrop: { grass: ['#a9b48a', '#9aa67c', '#8b986e'], path: '#c9c3b6', hills: ['#a69a8a', '#8f8676'], way: 'courtSteps', livingWall: true },
+    areas: {
+      moosfassade: { k: 'house', roof: P.leaf, wall: P.stoneLight, prop: 'glass' },
+      kletterhortensie: { k: 'house', roof: P.leafDark, wall: P.stoneLight, prop: 'flag' },
+      hopfenranken: { k: 'rows', color: P.leafDark, flower: P.leafPale, tall: true },
+      tropfschlauch: { k: 'rows', color: P.leaf, flower: P.water },
+      balkonbeete: { k: 'house', roof: P.terracotta, wall: P.cream, prop: 'barrels' },
+      nistwand: { k: 'house', roof: P.woodDark, wall: P.terracottaLight, prop: 'hives' },
+      sensorgarten: { k: 'rows', color: P.leaf, flower: P.red },
+      fensterbank: { k: 'house', roof: P.roof, wall: P.terracottaLight, prop: 'jars' },
+      hofcafe: { k: 'house', roof: P.leafDark, wall: P.terracottaLight, prop: 'tent' },
+      lichterfassade: { k: 'flowers', colors: [P.lamp, P.red, P.leaf] },
+    },
+  },
+  solawihof: {
+    backdrop: { grass: ['#a8c47a', '#98b46a', '#88a45c'], path: '#c9a46b', hills: ['#6a9a48', '#5a8a3e'], way: 'farmRows', communityFarm: true },
+    areas: {
+      gemueseschlaege: { k: 'rows', color: P.leaf, flower: P.winterLeaf },
+      folientunnel: { k: 'house', roof: P.glass, wall: P.glassEdge, prop: 'glass' },
+      abholraum: { k: 'house', roof: P.roof, wall: P.woodLight, prop: 'barrels' },
+      kartoffelkeller: { k: 'house', roof: P.leaf, wall: P.stoneLight, prop: 'gate' },
+      huehnermobil: { k: 'animals', animal: 'goose' },
+      hofsaatgut: { k: 'rows', color: P.leafDark, flower: P.white, tall: true },
+      versammlung: { k: 'house', roof: P.roof, wall: P.woodMid, prop: 'stage' },
+      werkzeugscheune: { k: 'house', roof: P.terracotta, wall: P.barn, prop: 'barrels' },
+      kinderacker: { k: 'rows', color: P.leaf, flower: P.orange },
+      solawifest: { k: 'flowers', colors: [P.tomato, P.yellow, P.blue] },
+    },
+  },
+  saatguttausch: {
+    backdrop: { grass: ['#a6cf7e', '#96bf6e', '#86af60'], path: '#d9c79a', hills: ['#6a9a48', '#5a8a3e'], way: 'swapRing', seedSwap: true },
+    areas: {
+      tauschtische: { k: 'house', roof: P.paper, wall: P.woodLight, prop: 'jars' },
+      sortenschau: { k: 'house', roof: P.cream, wall: P.woodLight, prop: 'jars' },
+      erzaehlzelt: { k: 'house', roof: P.terracotta, wall: P.cream, prop: 'tent' },
+      briefstation: { k: 'house', roof: P.yellow, wall: P.paper, prop: 'flag' },
+      samenwerkstatt: { k: 'house', roof: P.woodLight, wall: P.paper, prop: 'jars' },
+      pflanzenboerse: { k: 'rows', color: P.leaf, flower: P.white },
+      weltkueche: { k: 'house', roof: P.leafDark, wall: P.wood, prop: 'chimney' },
+      musikbuehne: { k: 'house', roof: P.woodDark, wall: P.woodMid, prop: 'stage' },
+      archivwagen: { k: 'house', roof: P.leafMoss, wall: P.leafDark, prop: 'jars' },
+      abschlussrunde: { k: 'flowers', colors: [P.paper, P.yellow, P.blossom] },
+    },
+  },
+  weltgartenschau: {
+    backdrop: { grass: ['#a2cc78', '#92bc68', '#82ac5a'], path: '#efe1c2', hills: ['#6a9a48', '#5a8a3e'], way: 'expoRing', worldExpo: true },
+    areas: {
+      europabeete: { k: 'flowers', colors: [P.pink, P.red, P.yellow] },
+      weltbeete: { k: 'rows', color: P.leaf, flower: P.lilac },
+      zukunftshalle: { k: 'house', roof: P.glass, wall: P.glassEdge, prop: 'dome' },
+      gondelbahn: { k: 'house', roof: P.red, wall: P.metal, prop: 'cable' },
+      wasserlichter: { k: 'water', variant: 'fountain' },
+      saatguttempel: { k: 'house', roof: P.leafLight, wall: P.white, prop: 'dome' },
+      kinderwald: { k: 'tree', crown: P.leaf, shape: 'round' },
+      familienpavillon: { k: 'house', roof: P.leafDark, wall: P.cream, prop: 'flag' },
+      aussichtssteg: { k: 'house', roof: P.woodMid, wall: P.metal, prop: 'tower' },
+      eroeffnung: { k: 'flowers', colors: [P.red, P.yellow, P.blue] },
     },
   },
 }

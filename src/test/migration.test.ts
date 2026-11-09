@@ -103,6 +103,23 @@ describe('Spielstand v1 (neues Format ab 2026-11-09)', () => {
     for (const id of Object.keys(v1.chapters)) expect(s.chapters[id as keyof typeof s.chapters], id).toEqual(before.chapters[id as keyof typeof before.chapters])
   })
 
+  it('Kapitel 45–49 und Großprojekt „Garten für morgen“ (Welle 7) kommen leer dazu, alte Stände laden verlustfrei', () => {
+    const before = parseSave(v1)!
+    for (const id of ['wildblumenband', 'fassadengarten', 'solawihof', 'saatguttausch', 'weltgartenschau'] as const) {
+      expect(before.chapters[id], id).toEqual(emptyChapter(CHAPTERS.find((c) => c.id === id)!))
+    }
+    // Stand nach Welle 6: Klimagarten angelegt und gepflegt, drei Großprojekte im Bau
+    const klima = { ...emptyChapter(CHAPTERS.find((c) => c.id === 'klimagarten')!), cur: 4321, curLifetime: 8765, openedAt: 77, introSeen: true }
+    klima.owned = { ...klima.owned, trockenbeet: 9, schwammflaeche: 4, klimatag: 1 }
+    const raw = { ...(v1 as unknown as Record<string, unknown>), chapters: { ...v1.chapters, klimagarten: klima }, projects: { rosengarten: 3, tauschpost: 2, herkunftsbeet: 1 } }
+    const s = parseSave(raw)!
+    expect(s.chapters.klimagarten).toEqual(klima)
+    expect(s.projects).toEqual({ rosengarten: 3, tauschpost: 2, herkunftsbeet: 1 })
+    expect(s.projects.morgengarten ?? 0).toBe(0)
+    expect(s.chapters.weltgartenschau).toEqual(emptyChapter(CHAPTERS.find((c) => c.id === 'weltgartenschau')!))
+    for (const id of Object.keys(v1.chapters)) expect(s.chapters[id as keyof typeof s.chapters], id).toEqual(before.chapters[id as keyof typeof before.chapters])
+  })
+
   it('gibt später hinzugekommenen Feldern ihren Startwert', () => {
     const s = parseSave(v1)! as unknown as Record<string, unknown>
     for (const [k, v] of Object.entries(ADDED_AFTER_V1)) expect(s[k]).toEqual(v)

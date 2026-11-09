@@ -67,17 +67,11 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
   const holding = useRef(false)
   const [bulkPref, setBulk] = useState<BulkMode>(loadBulk)
   const [careOpen, setCareOpen] = useState<boolean>(loadCareOpen)
-  const unlocks = game.bulkUnlocks
-  const modes: BulkMode[] = [1, ...(unlocks.five ? [5 as const] : []), ...(unlocks.max ? ['max' as const] : [])]
+  // „×5“ und „Max“ sind raus (Wunsch 2026-11-09): nur Einzelkauf, Gedrückthalten baut schnell weiter
+  const modes: BulkMode[] = [1]
   const bulk: BulkMode = modes.includes(bulkPref) ? bulkPref : 1
-  const { seen: seenHints, markSeen } = useHints()
-  const newHint: HintId | null = !unlocks.max
-    ? null
-    : !seenHints.includes('bulkMax')
-      ? 'bulkMax'
-      : unlocks.five && !seenHints.includes('bulk5')
-        ? 'bulk5'
-          : null
+  const { markSeen } = useHints()
+  const newHint: HintId | null = null
 
   function clearHold() {
     holding.current = false
@@ -127,8 +121,6 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
   const cardMult = cardAreaMult(game.state.seasonCard, def.id)
   const lineRate = generatorRate(def, owned) * lineMult * eff * cardMult
   const nextRate = generatorRate(def, owned + bulkCount) * lineMult * eff * cardMult
-  const maxGain =
-    maxInfo.count > 1 ? generatorRate(def, owned + maxInfo.count) * lineMult * eff * cardMult - lineRate : 0
   const careBuyable = owned < 1 ? 0 :
     (['efficiency', 'capacity'] as const).filter((k) => {
       const rank = k === 'efficiency' ? branch.efficiency : branch.capacity
@@ -278,9 +270,6 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
                 ))}
               </div>
             </div>
-            ) : null}
-            {unlocks.max && maxGain > 0 ? (
-              <p className="gc-max-preview">{t.ux.upgrade.maxPreview(maxInfo.count, formatErnte(maxGain))}</p>
             ) : null}
             {newHint && owned >= 1 ? (
               <aside className="gc-tip" role="status">

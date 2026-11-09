@@ -121,6 +121,7 @@ export const lifeStrings = {
       gartenroute: 'Omas Gartenroute',
       tauschpost: 'Omas Tauschpost',
       herkunftsbeet: 'Omas Herkunftsbeet',
+      morgengarten: 'Der Garten für morgen',
     } as Record<string, string>,
     blurbs: {
       pavillon: 'Opa und Tante Hilde helfen beim Wiederaufbau des alten Pavillons.',
@@ -130,6 +131,7 @@ export const lifeStrings = {
       gartenroute: 'Ein Radweg von Garten zu Garten — so fuhr Oma früher zum Tauschen.',
       tauschpost: 'Ein Saatgut-Postamt im Garten: Tütchen aus zehn Ländern, sortiert wie in Omas Dose.',
       herkunftsbeet: 'Ein Beet, in dem jede Pflanze ein Schild trägt: woher sie stammt und wer die Samen geschickt hat.',
+      morgengarten: 'Mila und alle aus Bogen IV bauen mit: Wildbienen, Regenwasser, eine grüne Wand und ein Beet, in dem Kinder säen.',
     } as Record<string, string>,
   },
   album: {

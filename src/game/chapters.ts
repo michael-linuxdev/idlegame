@@ -65,6 +65,11 @@ export type ChapterId =
   | 'waldgarten'
   | 'samenbank'
   | 'klimagarten'
+  | 'wildblumenband'
+  | 'fassadengarten'
+  | 'solawihof'
+  | 'saatguttausch'
+  | 'weltgartenschau'
 
 export interface AreaDef {
   id: string

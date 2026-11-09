@@ -6,7 +6,7 @@
 import type { ReactNode } from 'react'
 import { P } from './art/palette'
 
-export type PathStyle = 'track' | 'loop' | 'shore' | 'cross' | 'rondel' | 'switchback' | 'lane' | 'stones' | 'promenade' | 'yard' | 'cloister' | 'axis' | 'nurseryRows' | 'boardwalk' | 'dikeTrack' | 'fliess' | 'flagstones' | 'bulbLanes' | 'canals' | 'forestTrail' | 'patioTiles' | 'montadoTrack' | 'pepperLanes' | 'limestone' | 'roseLanes' | 'terraceSteps' | 'andenSteps' | 'milpaRing' | 'forestZigzag' | 'subakSteps' | 'spiceTrail' | 'oasisRing' | 'cocoaTrail' | 'bushSpiral' | 'fernBoardwalk' | 'kimchiRows' | 'roofRing' | 'schoolZigzag' | 'chipSpiral' | 'seedRing' | 'mulchZigzag'
+export type PathStyle = 'track' | 'loop' | 'shore' | 'cross' | 'rondel' | 'switchback' | 'lane' | 'stones' | 'promenade' | 'yard' | 'cloister' | 'axis' | 'nurseryRows' | 'boardwalk' | 'dikeTrack' | 'fliess' | 'flagstones' | 'bulbLanes' | 'canals' | 'forestTrail' | 'patioTiles' | 'montadoTrack' | 'pepperLanes' | 'limestone' | 'roseLanes' | 'terraceSteps' | 'andenSteps' | 'milpaRing' | 'forestZigzag' | 'subakSteps' | 'spiceTrail' | 'oasisRing' | 'cocoaTrail' | 'bushSpiral' | 'fernBoardwalk' | 'kimchiRows' | 'roofRing' | 'schoolZigzag' | 'chipSpiral' | 'seedRing' | 'mulchZigzag' | 'meadowSpiral' | 'courtSteps' | 'farmRows' | 'swapRing' | 'expoRing'
 
 const NS = { vectorEffect: 'non-scaling-stroke' as const, fill: 'none', strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const }
 
@@ -553,6 +553,77 @@ export function ChapterPath({ style, color }: { style: PathStyle; color: string 
         </g>
       )
     }
+    /* Wildblumenband: gemähter Graspfad als Spirale, Blumen säumen den Rand */
+    case 'meadowSpiral': {
+      const d = 'M50 100 L50 86 C80 82 82 62 70 50 C58 38 30 40 24 56 C20 68 40 76 54 66 C62 60 56 52 50 52'
+      return (
+        <g>
+          <path d={d} stroke="#8a9a50" strokeWidth="11" {...NS} />
+          <path d={d} stroke={color} strokeWidth="8" {...NS} />
+          <path d={d} stroke="#c9a46b" strokeWidth="1.6" strokeDasharray="1 3" {...NS} />
+          <Dots pts={[[62, 88], [80, 68], [62, 38], [30, 42], [20, 64], [40, 78]]} n={14} rx={1.1} color={[P.red, P.blue, P.white]} />
+          <Dots pts={[[40, 92], [86, 70], [70, 30], [20, 44], [12, 70]]} n={10} rx={1} color={[P.yellow, P.red, P.lilac]} />
+          <path d="M50 52 L50 22" stroke={color} strokeWidth="6" {...NS} opacity=".85" />
+        </g>
+      )
+    }
+    /* Fassadengarten: Treppe im Zickzack an den Etagen, Pflanzkübel auf den Absätzen */
+    case 'courtSteps': {
+      const pts: [number, number][] = [[50, 100], [50, 88], [42, 80], [58, 66], [42, 52], [56, 38], [50, 22]]
+      const d = 'M' + pts.map((p) => p.join(' ')).join(' L')
+      return (
+        <g>
+          {[92, 76, 60, 44, 30].map((y) => (
+            <path key={y} d={`M4 ${y} H96`} stroke="#a69a8a" strokeWidth="2.4" {...NS} />
+          ))}
+          <Way d={d} color={color} w={10} edge="#8f8676" edgeW={2} />
+          <path d={d} stroke="#a69a8a" strokeWidth="10" strokeDasharray=".5 1.8" {...NS} strokeLinecap="butt" />
+          <Dots pts={pts.map(([x, y]) => [x - 8, y] as [number, number])} n={8} rx={1.2} color={[P.leafDark, P.red]} />
+          <Dots pts={pts.map(([x, y]) => [x + 8, y] as [number, number])} n={8} rx={1.2} color={[P.leaf, P.terracotta]} />
+        </g>
+      )
+    }
+    /* Solawi-Hof: Feldweg in der Mitte, Beete in Querstreifen */
+    case 'farmRows':
+      return (
+        <g>
+          <Way d="M50 100 V22" color={color} w={12} edge="#a5733f" edgeW={2} />
+          <path d="M48.6 100 V22 M51.4 100 V22" stroke="#a5733f" strokeWidth="1.6" {...NS} opacity=".7" />
+          <path d="M8 82 H38 M62 82 H92 M8 66 H38 M62 66 H92 M14 50 H38 M62 50 H86" stroke={P.soil} strokeWidth="4" {...NS} opacity=".55" />
+          <Dots pts={[[40, 98], [40, 26]]} n={14} rx={1} color={[P.leafPale, P.orange]} />
+          <Dots pts={[[60, 98], [60, 26]]} n={14} rx={1} color={[P.leaf, P.red]} />
+        </g>
+      )
+    /* Saatguttausch: Festwiese mit Ring aus Wiesenweg, Wimpel-Pflöcke */
+    case 'swapRing':
+      return (
+        <g>
+          <Way d="M50 100 V72" color={color} w={12} edge="#b8a070" edgeW={2} />
+          <ellipse cx="50" cy="58" rx="18" ry="14" stroke="#b8a070" strokeWidth="13" {...NS} />
+          <ellipse cx="50" cy="58" rx="18" ry="14" stroke={color} strokeWidth="11" {...NS} />
+          <path d="M50 44 V22" stroke={color} strokeWidth="9" {...NS} />
+          <ellipse cx="50" cy="58" rx="4" ry="2.4" fill={P.woodLight} />
+          <path d="M50 58v-4" stroke={P.woodDark} strokeWidth="1.2" vectorEffect="non-scaling-stroke" />
+          <Dots pts={[[30, 60], [32, 70], [42, 75]]} n={5} rx={0.9} color={[P.tomato, P.yellow, P.blue]} />
+          <Dots pts={[[70, 60], [68, 70], [58, 75]]} n={5} rx={0.9} color={[P.blue, P.cream, P.tomato]} />
+        </g>
+      )
+    /* Weltgartenschau: breite Promenade im Ring um ein Blumenrondell */
+    case 'expoRing':
+      return (
+        <g>
+          <Way d="M50 100 V72" color={color} w={13} edge="#a69a8a" edgeW={2} />
+          <ellipse cx="50" cy="58" rx="18" ry="14" stroke="#a69a8a" strokeWidth="14" {...NS} />
+          <ellipse cx="50" cy="58" rx="18" ry="14" stroke={color} strokeWidth="12" strokeDasharray="6 1" {...NS} strokeLinecap="butt" />
+          <path d="M50 44 V22" stroke={color} strokeWidth="10" {...NS} />
+          <ellipse cx="50" cy="58" rx="5" ry="3" fill={P.leaf} />
+          {[P.red, P.yellow, P.blue, P.pink].map((c, i) => (
+            <ellipse key={i} cx={47.6 + (i % 2) * 4.8} cy={57 + Math.floor(i / 2) * 2} rx="1.2" ry=".6" fill={c} />
+          ))}
+          <Dots pts={[[30, 60], [32, 70], [42, 75]]} n={5} rx={0.9} color={[P.red, P.yellow]} />
+          <Dots pts={[[70, 60], [68, 70], [58, 75]]} n={5} rx={0.9} color={[P.blue, P.pink]} />
+        </g>
+      )
     /* Moorgarten: Bohlenweg in einer Schleife übers dunkle Wasser */
     case 'boardwalk': {
       const d = 'M50 100 L50 86 C80 82 82 62 70 50 C58 38 30 40 24 56 C20 68 40 76 54 66 C62 60 56 52 50 52'

@@ -131,6 +131,9 @@ Vornamen bleiben deutsch (Flair). Verwandtschaft wird übersetzt.
 | Mila (Jonas’ Tochter) | **Mila** | Ab Kapitel 40 (Bogen IV); schreibt die Bereichs-Notizen in Omas Notizbuch weiter („Aus Omas Notizbuch · Mila“ → *From Grandma’s notebook · Mila*); nennt Jonas „Papa“ → *Dad*; Kapitel 40 Absenderin |
 | Derya Yilmaz (Lehrerin, „Familie Yilmaz“ aus den Bestellungen) | **Derya Yilmaz** | Kapitel 41; siezt die Familie → neutral-höflich; Sachunterricht → *science and social studies*, Grundschule → *elementary school*, Sommerferien → *summer vacation*, Gießplan → *watering schedule*; Unterschrift *Warm regards, Derya Yilmaz* |
 | Dr. Amara Okafor (leitet eine Samenbank am Stadtrand) | **Dr. Amara Okafor** | Kapitel 43; siezt die Familie; Kühltresor → *cold vault*, Keimtest → *germination test*, minus 18 Grad → *minus 18 degrees Celsius*, Spitzbergen → *Svalbard* (nur als Vergleich), Tag der offenen Tür → *open house* |
+| Till (Onkel Fritz’ Enkel, Lenas Bruder) | **Till** | Kapitel 47; „Mein Opa, für euch Onkel Fritz“ → *My grandpa, Uncle Fritz to you*; Solawi / Solidarische Landwirtschaft → *CSA, community supported agriculture*, Ernteanteil → *share*, Bieterrunde → *pledge round*, Hühnermobil → *mobile henhouse*, Folientunnel → *polytunnel* |
+| Briefpartner aus aller Welt (Sammelbrief) | **Your pen friends from all over the world** | Kapitel 48; alle Absender der Kapitel 13–39 zusammen; Ort: die Wiese der alten Gartenschau |
+| Dr. Elisabeth Grün, Leiterin der Weltgartenschau | **Dr. Elisabeth Grün, Director of the World Garden Expo** | Kapitel 49 (wie Kapitel 8, siezt die Familie); in Milas Notizen „Frau Grün“ → *Dr. Grün*; Zukunftshalle → *Hall of the Future* |
 | Enkelkind (Anrede) | **my dear grandchild** | „Mein liebes Enkelkind,“ → *My dear grandchild,* |
 
 ## Kapitel und Währungen
@@ -181,6 +184,11 @@ Vornamen bleiben deutsch (Flair). Verwandtschaft wird übersetzt.
 | 42 | Waldgarten | **The Forest Garden** | Haselnüsse → **Hazelnuts** | Forest |
 | 43 | Samenbank | **The Seed Bank** | Saatgutproben → **Seed Samples** | Seed Bank |
 | 44 | Klimagarten | **The Climate Garden** | Regenwasser → **Rainwater** | Climate |
+| 45 | Wildblumenband | **The Wildflower Corridor** | Hummeln → **Bumblebees** | Wildflowers |
+| 46 | Fassadengarten | **The Living Wall** | Ranken → **Vines** | Wall |
+| 47 | Solawi-Hof | **The Community Farm** | Ernteanteile → **Harvest Shares** | Farm |
+| 48 | Großer Saatguttausch | **The Great Seed Swap** | Tauschbriefe → **Swap Letters** | Seed Swap |
+| 49 | Weltgartenschau | **The World Garden Expo** | Gäste → **Guests** | Expo |
 
 Ab Kapitel 13 (Bogen I „Nach der Schau“ → *After the Show*): Omas Saatgutdose
 → **Grandma’s seed tin**, Samentütchen → **seed packet**. Großprojekt Bogen I:
@@ -207,6 +215,7 @@ garden*, Schichten → *layers* (Kronenschicht → *Canopy Layer*), Schwammstadt
 *sponge city*, Schwammfläche → *Sponge Hollow*, Mischkultur → *mixed planting*,
 Mauerpfeffer → *stonecrop*, Kiwibeere → *hardy kiwi*, Weidentipi → *willow
 tipi*, Kräuterschnecke → *herb snail*, Insektenhotel → *bug hotel* (wie die Deko).
+Wildblumenband → *wildflower corridor*, Blühstreifen → *flower strip*, Feldrain → *field margin*, Grünbrücke → *green bridge*, Wilder Wein → *Virginia creeper*, Hopfenranken → *hop bines*, Großprojekt Bogen IV: Der Garten für morgen → **The Garden for Tomorrow**.
 
 „Streuobstwiese“ beim ersten Auftreten kurz erklären: *a meadow orchard — old,
 tall fruit trees scattered over grassland*.
