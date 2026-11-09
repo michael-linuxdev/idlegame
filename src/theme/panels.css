@@ -21,6 +21,29 @@
   padding-top: calc(var(--safe-top) + 2.6rem);
 }
 
+/*
+ * Deckstreifen oben: Inhalt darf beim Scrollen nie im oberen Rand (Statusleiste
+ * + Hecke) sichtbar werden. Fixierte Leisten (Samen-Stand, Reiter, Sprungmarken)
+ * kleben an der Unterkante dieses Rands — ohne Deckstreifen scrollte darüber
+ * der Inhalt weiter. Gleiche Hecke/gleicher Verlauf wie der Hintergrund, damit
+ * man den Streifen nicht sieht.
+ */
+.app-main:not(.map-mode)::before {
+  --cover: calc(var(--safe-top) + 2.6rem);
+  content: '';
+  position: sticky;
+  top: calc(-1 * var(--cover));
+  z-index: 5;
+  display: block;
+  height: var(--cover);
+  margin: calc(-1 * var(--cover)) -1rem 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 0, #4f8a3a 0 21px, transparent 22px) 0 -4px / 46px 30px repeat-x,
+    radial-gradient(circle at 50% 0, #5f9e45 0 18px, transparent 19px) 23px -2px / 46px 30px repeat-x,
+    #e7f1dc;
+}
+
 .app-main:not(.map-mode) .panel-header .eyebrow {
   font-family: var(--oc-font-hand);
   font-size: 1.15rem;
