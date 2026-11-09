@@ -109,3 +109,70 @@
   --radius: var(--oc-radius);
   color-scheme: light;
 }
+
+/* —— Spielgrafik-Palette (Quelle: src/theme/art/palette.ts, Test hält beides gleich) —— */
+:root {
+  /* Bodenschatten aller Grafik (Bausteine: art/parts Shadow) */
+  --g-shadow: rgba(38, 58, 22, 0.22);
+  --art-outline: #3d2f1f;
+  --art-outline-wood: #6e4a2b;
+  --art-outline-soft: #8a6a40;
+  --art-outline-stone: #7a6e5a;
+  --art-leaf-light: #7fbf5a;
+  --art-leaf: #5f9e45;
+  --art-leaf-dark: #3f7a30;
+  --art-leaf-moss: #4f7a2e;
+  --art-leaf-pale: #9ad16f;
+  --art-wood-light: #c9a46b;
+  --art-wood: #b98450;
+  --art-wood-mid: #a5733f;
+  --art-wood-dark: #8a5a32;
+  --art-bark: #7a5532;
+  --art-soil: #7a4d30;
+  --art-soil-dark: #5b3721;
+  --art-compost: #5b3a22;
+  --art-stone-light: #c9c3b6;
+  --art-stone: #a69a8a;
+  --art-stone-dark: #8f8676;
+  --art-glass: #d6f0f6;
+  --art-glass-edge: #e8f6fa;
+  --art-water-light: #8fd0ec;
+  --art-water: #6aa6c9;
+  --art-water-deep: #3d8db8;
+  --art-pond: #5aa9c6;
+  --art-skin: #f2c9a0;
+  --art-skin-light: #f2d9a0;
+  --art-white: #ffffff;
+  --art-cream: #fbf6e8;
+  --art-paper: #efe1c2;
+  --art-canvas: #f4ead2;
+  --art-lamp: #ffd36b;
+  --art-roof: #c4553f;
+  --art-red: #e0485e;
+  --art-berry: #d7263d;
+  --art-tomato: #e2453c;
+  --art-barn: #d9534f;
+  --art-yellow: #f5c542;
+  --art-gold: #e8b422;
+  --art-brass: #c9a24a;
+  --art-honey: #f0a530;
+  --art-amber: #f5a623;
+  --art-orange: #f08a2c;
+  --art-pink: #f28ab2;
+  --art-lilac: #c77dd1;
+  --art-lavender: #9a6bc9;
+  --art-plum: #6a3d8f;
+  --art-blue: #3d6fd1;
+  --art-denim: #5a8fc2;
+  --art-terracotta: #c8693e;
+  --art-terracotta-light: #d97f50;
+  --art-seed: #7a4a1a;
+  --art-blossom: #f7c6d9;
+  --art-frost: #c9d0c4;
+  --art-feather: #f7f1e6;
+  --art-label: #fff6dc;
+  --art-outline-fur: #8a7a6a;
+  --art-metal: #6b6f73;
+  --art-charcoal: #3a3a3a;
+  --art-ink: #1a1a1a;
+}

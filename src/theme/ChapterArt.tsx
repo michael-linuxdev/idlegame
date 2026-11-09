@@ -4,20 +4,15 @@
  * five growth tiers. Backdrops are specs too (palette, water, mountains …).
  * Kapitel 2/3 keep their hand-made art (OrchardArt, VineyardArt).
  */
-import { ChapterPath } from './ChapterPaths'
 import { memo, type ReactNode } from 'react'
-import { useSvgId } from './svgId'
-import type { Animals, ArtSpec, BackdropSpec, Flowers, House, Rows, Stones, Tree, Water } from './chapterArtSpecs'
+import type { Animals, ArtSpec, Flowers, House, Rows, Stones, Tree, Water } from './chapterArtSpecs'
 import type { Season } from './ambient'
 import { moduleTier, sameTierProps } from './tiers'
 import { ArtSvg } from './ArtSvg'
+import { P } from './art/palette'
+import { Shadow, seeded } from './art/parts'
 
-const shadow = (rx: number) => <ellipse cx="40" cy="65" rx={rx} ry="4.5" fill="rgba(40,60,20,0.22)" />
 
-function seeded(i: number): number {
-  const x = Math.sin(i * 12.9898) * 43758.5453
-  return x - Math.floor(x)
-}
 
 function TreeArt({ s, tier, season }: { s: Tree; tier: number; season?: Season }) {
   const scale = 0.78 + tier * 0.055
@@ -28,7 +23,7 @@ function TreeArt({ s, tier, season }: { s: Tree; tier: number; season?: Season }
   if (s.shape === 'palm') {
     body = (
       <g>
-        <path d="M40 66 Q38 40 42 22" stroke="#8a6a40" strokeWidth="4" fill="none" />
+        <path d="M40 66 Q38 40 42 22" stroke={P.outlineSoft} strokeWidth="4" fill="none" />
         {[-60, -20, 20, 60, 100, 140].map((r) => (
           <ellipse key={r} cx="42" cy="22" rx="16" ry="4" fill={crown} transform={`rotate(${r} 42 22) translate(10 0)`} />
         ))}
@@ -37,10 +32,10 @@ function TreeArt({ s, tier, season }: { s: Tree; tier: number; season?: Season }
   } else if (s.shape === 'cone') {
     body = (
       <g>
-        <rect x="37" y="54" width="6" height="12" fill="#6e4a2b" />
+        <rect x="37" y="54" width="6" height="12" fill={P.outlineWood} />
         <path d="M40 6 L20 58 H60z" fill={crown} />
-        <path d="M40 6 L30 40 H50z" fill="#fff" opacity=".1" />
-        {snow ? <path d="M40 6 L33 24 H47z" fill="#fff" /> : null}
+        <path d="M40 6 L30 40 H50z" fill={P.white} opacity=".1" />
+        {snow ? <path d="M40 6 L33 24 H47z" fill={P.white} /> : null}
       </g>
     )
   } else if (s.shape === 'bamboo') {
@@ -48,7 +43,7 @@ function TreeArt({ s, tier, season }: { s: Tree; tier: number; season?: Season }
       <g>
         {[26, 34, 42, 50, 56].map((x, i) => (
           <g key={x}>
-            <path d={`M${x} 66 V${10 + (i % 3) * 6}`} stroke="#7fae58" strokeWidth="3" />
+            <path d={`M${x} 66 V${10 + (i % 3) * 6}`} stroke={P.leafLight} strokeWidth="3" />
             {[20, 34, 48].map((y) => (
               <path key={y} d={`M${x - 2} ${y} h4`} stroke="#4f7a3a" strokeWidth="1" />
             ))}
@@ -61,13 +56,13 @@ function TreeArt({ s, tier, season }: { s: Tree; tier: number; season?: Season }
     const olive = s.shape === 'olive'
     body = (
       <g>
-        <path d={olive ? 'M36 66 Q30 50 38 40 Q44 50 42 66z' : 'M37 66 L38 40 Q40 34 42 40 L43 66z'} fill="#7a5532" />
+        <path d={olive ? 'M36 66 Q30 50 38 40 Q44 50 42 66z' : 'M37 66 L38 40 Q40 34 42 40 L43 66z'} fill={P.bark} />
         <circle cx="40" cy="26" r={olive ? 17 : 20} fill={crown} opacity={olive ? 0.9 : 1} />
         <circle cx="28" cy="31" r="12" fill={crown} />
         <circle cx="52" cy="30" r="12" fill={crown} />
         <circle cx="40" cy="19" r="13" fill={crown} />
-        <circle cx="36" cy="16" r="5" fill="#fff" opacity="0.15" />
-        {snow ? <ellipse cx="40" cy="8" rx="12" ry="3" fill="#fff" /> : null}
+        <circle cx="36" cy="16" r="5" fill={P.white} opacity="0.15" />
+        {snow ? <ellipse cx="40" cy="8" rx="12" ry="3" fill={P.white} /> : null}
         {!snow && (s.fruit || s.shape === 'blossom' || s.shape === 'linden')
           ? Array.from({ length: n }, (_, i) => {
               const a = seeded(i + 3) * Math.PI * 2
@@ -78,7 +73,7 @@ function TreeArt({ s, tier, season }: { s: Tree; tier: number; season?: Season }
                   cx={40 + Math.cos(a) * d}
                   cy={25 + Math.sin(a) * d * 0.8}
                   r={s.shape === 'blossom' ? 2 : 1.5}
-                  fill={s.shape === 'blossom' ? (i % 3 ? '#fff' : '#e85d8a') : s.fruit}
+                  fill={s.shape === 'blossom' ? (i % 3 ? P.white : '#e85d8a') : s.fruit}
                 />
               )
             })
@@ -88,7 +83,7 @@ function TreeArt({ s, tier, season }: { s: Tree; tier: number; season?: Season }
   }
   return (
     <ArtSvg viewBox="0 0 80 72">
-      {shadow(18 + tier * 2)}
+      <Shadow grid="chapter" rx={18 + tier * 2} />
       <g transform={`translate(40 66) scale(${scale}) translate(-40 -66)`}>{body}</g>
     </ArtSvg>
   )
@@ -99,7 +94,7 @@ function RowsArt({ s, tier, season }: { s: Rows; tier: number; season?: Season }
   const winter = season === 'winter'
   return (
     <ArtSvg viewBox="0 0 80 72">
-      <ellipse cx="40" cy="58" rx="34" ry="12" fill="#8a6a40" opacity="0.45" />
+      <ellipse cx="40" cy="58" rx="34" ry="12" fill={P.outlineSoft} opacity="0.45" />
       {Array.from({ length: rows }, (_, r) => {
         const y = 64 - r * 6
         return (
@@ -119,7 +114,7 @@ function RowsArt({ s, tier, season }: { s: Rows; tier: number; season?: Season }
           </g>
         )
       })}
-      {winter ? <ellipse cx="40" cy="56" rx="30" ry="6" fill="#fff" opacity=".55" /> : null}
+      {winter ? <ellipse cx="40" cy="56" rx="30" ry="6" fill={P.white} opacity=".55" /> : null}
     </ArtSvg>
   )
 }
@@ -129,9 +124,9 @@ function Animal({ kind, x, y, i }: { kind: Animals['animal']; x: number; y: numb
     case 'cow':
       return (
         <g className="sheep" style={{ animationDelay: `${i * 0.6}s` }}>
-          <ellipse cx={x} cy={y} rx="8" ry="5" fill="#fbf6e8" stroke="#6a5a4a" strokeWidth=".7" />
+          <ellipse cx={x} cy={y} rx="8" ry="5" fill={P.cream} stroke="#6a5a4a" strokeWidth=".7" />
           <ellipse cx={x - 2} cy={y - 1} rx="3" ry="2.2" fill="#5a3d22" />
-          <ellipse cx={x + 8.5} cy={y - 2} rx="3" ry="2.6" fill="#fbf6e8" stroke="#6a5a4a" strokeWidth=".7" />
+          <ellipse cx={x + 8.5} cy={y - 2} rx="3" ry="2.6" fill={P.cream} stroke="#6a5a4a" strokeWidth=".7" />
           <ellipse cx={x + 10} cy={y - 1} rx="1.6" ry="1.2" fill="#f2b8b0" />
           <path d={`M${x - 5} ${y + 4}v3M${x + 4} ${y + 4}v3`} stroke="#4a3a2a" strokeWidth="1.3" />
         </g>
@@ -139,8 +134,8 @@ function Animal({ kind, x, y, i }: { kind: Animals['animal']; x: number; y: numb
     case 'goat':
       return (
         <g className="sheep" style={{ animationDelay: `${i * 0.5}s` }}>
-          <ellipse cx={x} cy={y} rx="6" ry="4" fill="#efe6d4" stroke="#8a7a6a" strokeWidth=".6" />
-          <circle cx={x + 6} cy={y - 3} r="2.4" fill="#efe6d4" />
+          <ellipse cx={x} cy={y} rx="6" ry="4" fill={P.paper} stroke="#8a7a6a" strokeWidth=".6" />
+          <circle cx={x + 6} cy={y - 3} r="2.4" fill={P.paper} />
           <path d={`M${x + 5} ${y - 5}l-1-3M${x + 7} ${y - 5}l1-3`} stroke="#8a7a6a" strokeWidth=".8" />
           <path d={`M${x - 4} ${y + 3}v3M${x + 3} ${y + 3}v3`} stroke="#4a3a2a" strokeWidth="1.1" />
         </g>
@@ -157,22 +152,22 @@ function Animal({ kind, x, y, i }: { kind: Animals['animal']; x: number; y: numb
     case 'duck':
       return (
         <g className="sheep" style={{ animationDelay: `${i * 0.5}s` }}>
-          <ellipse cx={x} cy={y} rx="5" ry="3.4" fill={kind === 'goose' ? '#fbf6e8' : '#8a6a40'} stroke="#8a7a6a" strokeWidth=".6" />
-          <path d={`M${x + 4} ${y - 1} q2 -5 1 -7`} stroke={kind === 'goose' ? '#fbf6e8' : '#3f7a30'} strokeWidth="2" fill="none" />
-          <path d={`M${x + 5} ${y - 8}l3 1-3 1z`} fill="#f08a2c" />
+          <ellipse cx={x} cy={y} rx="5" ry="3.4" fill={kind === 'goose' ? P.cream : P.outlineSoft} stroke="#8a7a6a" strokeWidth=".6" />
+          <path d={`M${x + 4} ${y - 1} q2 -5 1 -7`} stroke={kind === 'goose' ? P.cream : P.leafDark} strokeWidth="2" fill="none" />
+          <path d={`M${x + 5} ${y - 8}l3 1-3 1z`} fill={P.orange} />
         </g>
       )
     case 'koi':
     case 'fish':
       return (
         <g className="bee" style={{ animationDelay: `${i * 0.4}s` }}>
-          <ellipse cx={x} cy={y} rx="4.4" ry="1.8" fill={kind === 'koi' ? (i % 2 ? '#f08a2c' : '#fbf6e8') : '#8aa0a8'} />
-          {kind === 'koi' && i % 2 === 0 ? <circle cx={x - 1} cy={y} r="1" fill="#e0485e" /> : null}
-          <path d={`M${x - 4} ${y}l-3 -2v4z`} fill={kind === 'koi' ? '#f08a2c' : '#8aa0a8'} />
+          <ellipse cx={x} cy={y} rx="4.4" ry="1.8" fill={kind === 'koi' ? (i % 2 ? P.orange : P.cream) : '#8aa0a8'} />
+          {kind === 'koi' && i % 2 === 0 ? <circle cx={x - 1} cy={y} r="1" fill={P.red} /> : null}
+          <path d={`M${x - 4} ${y}l-3 -2v4z`} fill={kind === 'koi' ? P.orange : '#8aa0a8'} />
         </g>
       )
     default:
-      return <ellipse cx={x} cy={y} rx="2" ry="1.4" fill="#f5c542" />
+      return <ellipse cx={x} cy={y} rx="2" ry="1.4" fill={P.yellow} />
   }
 }
 
@@ -188,11 +183,11 @@ function AnimalsArt({ s, tier }: { s: Animals; tier: number }) {
   return (
     <ArtSvg viewBox="0 0 80 72">
       {s.water ? (
-        <ellipse cx="40" cy="52" rx="34" ry="15" fill="#6aa6c9" stroke="#4f86a6" strokeWidth="1" />
+        <ellipse cx="40" cy="52" rx="34" ry="15" fill={P.water} stroke="#4f86a6" strokeWidth="1" />
       ) : (
         <g>
-          <ellipse cx="40" cy="52" rx="34" ry="14" fill="#8cc06a" opacity="0.6" />
-          <path d="M6 62 V44 M74 62 V44 M6 48 H74 M6 56 H74" stroke="#8a6a40" strokeWidth="1.5" />
+          <ellipse cx="40" cy="52" rx="34" ry="14" fill={P.leafLight} opacity="0.6" />
+          <path d="M6 62 V44 M74 62 V44 M6 48 H74 M6 56 H74" stroke={P.outlineSoft} strokeWidth="1.5" />
         </g>
       )}
       {pos.slice(0, n).map(([x, y], i) => (
@@ -228,51 +223,51 @@ function HouseArt({ s, tier }: { s: House; tier: number }) {
   }
   return (
     <ArtSvg viewBox="0 0 80 72">
-      {shadow(w / 2 + 10)}
+      <Shadow grid="chapter" rx={w / 2 + 10} />
       {s.prop === 'tower' ? (
         <g>
-          <rect x="34" y="12" width="12" height="52" fill={s.wall} stroke="#8a6a40" strokeWidth="1" />
+          <rect x="34" y="12" width="12" height="52" fill={s.wall} stroke={P.outlineSoft} strokeWidth="1" />
           <path d="M30 14 L40 2 L50 14z" fill={s.roof} />
-          <rect x="37" y="20" width="6" height="6" fill="#8fd0ec" />
-          <rect x="37" y="36" width="6" height="6" fill="#8fd0ec" />
+          <rect x="37" y="20" width="6" height="6" fill={P.waterLight} />
+          <rect x="37" y="36" width="6" height="6" fill={P.waterLight} />
         </g>
       ) : s.prop === 'gate' ? (
         <g>
-          <rect x={x} y="34" width="6" height="30" fill={s.wall} stroke="#8a6a40" strokeWidth=".8" />
-          <rect x={x + w - 6} y="34" width="6" height="30" fill={s.wall} stroke="#8a6a40" strokeWidth=".8" />
+          <rect x={x} y="34" width="6" height="30" fill={s.wall} stroke={P.outlineSoft} strokeWidth=".8" />
+          <rect x={x + w - 6} y="34" width="6" height="30" fill={s.wall} stroke={P.outlineSoft} strokeWidth=".8" />
           {roof}
           {Array.from({ length: tier * 2 }, (_, i) => (
-            <circle key={i} cx={x + 4 + i * ((w - 8) / Math.max(1, tier * 2 - 1))} cy={30 - Math.sin((i / Math.max(1, tier * 2 - 1)) * Math.PI) * 14} r="2" fill={['#e0485e', '#f5c542', '#f28ab2'][i % 3]} />
+            <circle key={i} cx={x + 4 + i * ((w - 8) / Math.max(1, tier * 2 - 1))} cy={30 - Math.sin((i / Math.max(1, tier * 2 - 1)) * Math.PI) * 14} r="2" fill={[P.red, P.yellow, P.pink][i % 3]} />
           ))}
         </g>
       ) : s.prop === 'stage' ? (
         <g>
-          <rect x={x - 2} y="50" width={w + 4} height="8" fill="#a5733f" />
-          <path d={`M${x} 34 V50 M${x + w} 34 V50`} stroke="#6e4a2b" strokeWidth="2" />
+          <rect x={x - 2} y="50" width={w + 4} height="8" fill={P.woodMid} />
+          <path d={`M${x} 34 V50 M${x + w} 34 V50`} stroke={P.outlineWood} strokeWidth="2" />
           {roof}
           {tier >= 3 ? [0, 1, 2, 3].map((i) => <circle key={i} className="fest-twinkle" cx={x + 6 + i * (w - 12) / 3} cy="34" r="1.6" fill="#fff3b0" />) : null}
         </g>
       ) : (
         <g>
           {roof}
-          <rect x={x} y="40" width={w} height="24" fill={s.wall} stroke={glass ? '#8aa8b8' : '#8a6a40'} strokeWidth="1" opacity={glass ? 0.85 : 1} />
+          <rect x={x} y="40" width={w} height="24" fill={s.wall} stroke={glass ? '#8aa8b8' : P.outlineSoft} strokeWidth="1" opacity={glass ? 0.85 : 1} />
           {glass
             ? Array.from({ length: 5 }, (_, i) => <path key={i} d={`M${x + (i + 1) * (w / 6)} 40 V64`} stroke="#8aa8b8" strokeWidth=".8" />)
-            : <rect x="36" y="50" width="8" height="14" fill="#7a5532" />}
+            : <rect x="36" y="50" width="8" height="14" fill={P.bark} />}
           {glass ? (
             <g>
-              <circle cx={x + 8} cy="56" r="4" fill="#5f9e45" />
-              <circle cx={x + w - 8} cy="55" r="5" fill={s.wall === '#f4ecd8' ? '#7fae58' : '#4f8a3a'} />
-              {tier >= 3 ? <circle cx="40" cy="54" r="3" fill="#e0485e" /> : null}
+              <circle cx={x + 8} cy="56" r="4" fill={P.leaf} />
+              <circle cx={x + w - 8} cy="55" r="5" fill={s.wall === '#f4ecd8' ? P.leafLight : '#4f8a3a'} />
+              {tier >= 3 ? <circle cx="40" cy="54" r="3" fill={P.red} /> : null}
             </g>
           ) : tier >= 2 ? (
-            <rect x={x + 4} y="45" width="7" height="6" fill="#8fd0ec" stroke="#8a6a40" strokeWidth=".6" />
+            <rect x={x + 4} y="45" width="7" height="6" fill={P.waterLight} stroke={P.outlineSoft} strokeWidth=".6" />
           ) : null}
         </g>
       )}
       {s.prop === 'chimney' ? (
         <g>
-          <rect x={x + w - 10} y="22" width="5" height="12" fill="#8a6a40" />
+          <rect x={x + w - 10} y="22" width="5" height="12" fill={P.outlineSoft} />
           {tier >= 2 ? <path className="smoke" d={`M${x + w - 7} 20c-2-3 2-5 0-8`} stroke="#ccc" strokeWidth="1.6" fill="none" /> : null}
         </g>
       ) : null}
@@ -280,11 +275,11 @@ function HouseArt({ s, tier }: { s: House; tier: number }) {
         ? Array.from({ length: Math.min(4, tier) }, (_, i) => {
             const bx = i < 2 ? 6 + i * 8 : 60 + (i - 2) * 8
             return s.prop === 'barrels' ? (
-              <ellipse key={i} cx={bx + 3} cy="60" rx="3.6" ry="4.4" fill="#a5733f" stroke="#6e4a2b" strokeWidth=".7" />
+              <ellipse key={i} cx={bx + 3} cy="60" rx="3.6" ry="4.4" fill={P.woodMid} stroke={P.outlineWood} strokeWidth=".7" />
             ) : s.prop === 'hives' ? (
-              <rect key={i} x={bx} y="54" width="7" height="9" fill={['#f5c542', '#3d8db8', '#e0485e', '#7fbf5a'][i]} stroke="#6e4a2b" strokeWidth=".6" />
+              <rect key={i} x={bx} y="54" width="7" height="9" fill={[P.yellow, P.waterDeep, P.red, P.leafLight][i]} stroke={P.outlineWood} strokeWidth=".6" />
             ) : (
-              <rect key={i} x={bx} y="56" width="5" height="7" rx="1.4" fill="#e8b422" stroke="#a5733f" strokeWidth=".6" />
+              <rect key={i} x={bx} y="56" width="5" height="7" rx="1.4" fill={P.gold} stroke={P.woodMid} strokeWidth=".6" />
             )
           })
         : null}
@@ -294,11 +289,11 @@ function HouseArt({ s, tier }: { s: House; tier: number }) {
           <path d="M66 49 q8 -4 10 4" stroke="#c4783a" strokeWidth="1.6" fill="none" />
         </g>
       ) : null}
-      {s.prop === 'bell' ? <path d="M40 18 q-4 0-4 5h8q0-5-4-5z" fill="#e8b422" /> : null}
+      {s.prop === 'bell' ? <path d="M40 18 q-4 0-4 5h8q0-5-4-5z" fill={P.gold} /> : null}
       {s.prop === 'flag' ? (
         <g>
-          <path d="M60 64 V28" stroke="#6e4a2b" strokeWidth="1.4" />
-          <path d="M60 28 h10 l-3 3 3 3 h-10z" fill="#e2453c" />
+          <path d="M60 64 V28" stroke={P.outlineWood} strokeWidth="1.4" />
+          <path d="M60 28 h10 l-3 3 3 3 h-10z" fill={P.tomato} />
         </g>
       ) : null}
       {s.prop === 'cable' ? <path d="M0 18 L80 6" stroke="#4a3a2a" strokeWidth=".8" /> : null}
@@ -308,7 +303,7 @@ function HouseArt({ s, tier }: { s: House; tier: number }) {
 }
 
 function WaterArt({ s, tier }: { s: Water; tier: number }) {
-  const pond = <ellipse cx="40" cy="52" rx="32" ry="14" fill="#6aa6c9" stroke="#4f86a6" strokeWidth="1" />
+  const pond = <ellipse cx="40" cy="52" rx="32" ry="14" fill={P.water} stroke="#4f86a6" strokeWidth="1" />
   switch (s.variant) {
     case 'lilies':
       return (
@@ -316,8 +311,8 @@ function WaterArt({ s, tier }: { s: Water; tier: number }) {
           {pond}
           {Array.from({ length: Math.min(6, tier + 1) }, (_, i) => (
             <g key={i}>
-              <ellipse cx={20 + i * 8} cy={48 + (i % 2) * 7} rx="5" ry="2.6" fill="#5f9e45" />
-              <circle cx={20 + i * 8} cy={47 + (i % 2) * 7} r="1.6" fill={i % 2 ? '#fbf6e8' : '#f28ab2'} />
+              <ellipse cx={20 + i * 8} cy={48 + (i % 2) * 7} rx="5" ry="2.6" fill={P.leaf} />
+              <circle cx={20 + i * 8} cy={47 + (i % 2) * 7} r="1.6" fill={i % 2 ? P.cream : P.pink} />
             </g>
           ))}
         </ArtSvg>
@@ -329,7 +324,7 @@ function WaterArt({ s, tier }: { s: Water; tier: number }) {
           {Array.from({ length: 4 + tier * 2 }, (_, i) => (
             <g key={i}>
               <path d={`M${10 + i * 5} 60 V${32 + (i % 3) * 5}`} stroke="#7a8a4c" strokeWidth="1.4" />
-              <ellipse cx={10 + i * 5} cy={31 + (i % 3) * 5} rx="1.2" ry="3" fill="#6e4a2b" />
+              <ellipse cx={10 + i * 5} cy={31 + (i % 3) * 5} rx="1.2" ry="3" fill={P.outlineWood} />
             </g>
           ))}
         </ArtSvg>
@@ -337,10 +332,10 @@ function WaterArt({ s, tier }: { s: Water; tier: number }) {
     case 'stream':
       return (
         <ArtSvg viewBox="0 0 80 72">
-          <path d="M10 30 C30 40 20 50 40 56 S70 60 74 66" stroke="#6aa6c9" strokeWidth={8 + tier} fill="none" strokeLinecap="round" />
+          <path d="M10 30 C30 40 20 50 40 56 S70 60 74 66" stroke={P.water} strokeWidth={8 + tier} fill="none" strokeLinecap="round" />
           <path d="M10 30 C30 40 20 50 40 56 S70 60 74 66" stroke="#a9d6ee" strokeWidth="2" fill="none" strokeDasharray="4 6" className="orchard-stream" />
           {Array.from({ length: tier }, (_, i) => (
-            <ellipse key={i} cx={18 + i * 12} cy={48 + (i % 2) * 8} rx="4" ry="2.6" fill="#a69a84" />
+            <ellipse key={i} cx={18 + i * 12} cy={48 + (i % 2) * 8} rx="4" ry="2.6" fill={P.stone} />
           ))}
         </ArtSvg>
       )
@@ -348,30 +343,30 @@ function WaterArt({ s, tier }: { s: Water; tier: number }) {
       return (
         <ArtSvg viewBox="0 0 80 72">
           {pond}
-          <rect x="18" y="44" width={20 + tier * 6} height="6" fill="#a5733f" stroke="#6e4a2b" strokeWidth=".7" />
+          <rect x="18" y="44" width={20 + tier * 6} height="6" fill={P.woodMid} stroke={P.outlineWood} strokeWidth=".7" />
           {Array.from({ length: 2 + tier }, (_, i) => (
-            <path key={i} d={`M${20 + i * 6} 50 v8`} stroke="#6e4a2b" strokeWidth="1.4" />
+            <path key={i} d={`M${20 + i * 6} 50 v8`} stroke={P.outlineWood} strokeWidth="1.4" />
           ))}
-          {tier >= 3 ? <path d="M54 54 q8 6 16 0z" fill="#e2453c" /> : null}
+          {tier >= 3 ? <path d="M54 54 q8 6 16 0z" fill={P.tomato} /> : null}
         </ArtSvg>
       )
     case 'bridge':
       return (
         <ArtSvg viewBox="0 0 80 72">
           {pond}
-          <path d="M10 50 Q40 22 70 50" stroke="#c4553f" strokeWidth="5" fill="none" />
-          <path d="M14 46 Q40 18 66 46" stroke="#c4553f" strokeWidth="1.6" fill="none" />
+          <path d="M10 50 Q40 22 70 50" stroke={P.roof} strokeWidth="5" fill="none" />
+          <path d="M14 46 Q40 18 66 46" stroke={P.roof} strokeWidth="1.6" fill="none" />
           {Array.from({ length: 3 + tier }, (_, i) => (
-            <path key={i} d={`M${16 + i * (48 / (2 + tier))} ${44 - Math.sin(((i + 0.5) / (3 + tier)) * Math.PI) * 18} v6`} stroke="#c4553f" strokeWidth="1.2" />
+            <path key={i} d={`M${16 + i * (48 / (2 + tier))} ${44 - Math.sin(((i + 0.5) / (3 + tier)) * Math.PI) * 18} v6`} stroke={P.roof} strokeWidth="1.2" />
           ))}
-          {tier >= 3 ? <path d="M28 60 q6 4 12 0z" fill="#3d8db8" /> : null}
+          {tier >= 3 ? <path d="M28 60 q6 4 12 0z" fill={P.waterDeep} /> : null}
         </ArtSvg>
       )
     default:
       return (
         <ArtSvg viewBox="0 0 80 72">
           {pond}
-          <ellipse cx="40" cy="50" rx="10" ry="4" fill="#a69a84" />
+          <ellipse cx="40" cy="50" rx="10" ry="4" fill={P.stone} />
           {Array.from({ length: Math.min(5, tier + 1) }, (_, i) => (
             <path key={i} className="fountain-jet" d={`M${32 + i * 4} 48 q${(i - 2) * 2} -${14 + tier * 3} ${(i - 2) * 4} -2`} stroke="#a9d6ee" strokeWidth="1.6" fill="none" style={{ animationDelay: `${i * 0.2}s` }} />
           ))}
@@ -396,7 +391,7 @@ function FlowersArt({ s, tier }: { s: Flowers; tier: number }) {
       ))}
       {s.arch && tier >= 2 ? (
         <g>
-          <path d="M20 60 V36 Q40 16 60 36 V60" stroke="#6e4a2b" strokeWidth="2" fill="none" />
+          <path d="M20 60 V36 Q40 16 60 36 V60" stroke={P.outlineWood} strokeWidth="2" fill="none" />
           {Array.from({ length: tier * 3 }, (_, i) => {
             const t = i / Math.max(1, tier * 3 - 1)
             const ang = Math.PI * t
@@ -424,9 +419,9 @@ function StonesArt({ s, tier }: { s: Stones; tier: number }) {
     const k = Math.min(4, tier)
     return (
       <ArtSvg viewBox="0 0 80 72">
-        {shadow(30)}
+        <Shadow grid="chapter" rx={30} />
         {Array.from({ length: k }, (_, i) => (
-          <rect key={i} x={10 + i * 6} y={34 + i * 4} width={60 - i * 12} height={30 - i * 8} rx="3" fill="none" stroke="#3f7a30" strokeWidth="4" strokeDasharray={`${30 - i * 4} 6`} />
+          <rect key={i} x={10 + i * 6} y={34 + i * 4} width={60 - i * 12} height={30 - i * 8} rx="3" fill="none" stroke={P.leafDark} strokeWidth="4" strokeDasharray={`${30 - i * 4} 6`} />
         ))}
       </ArtSvg>
     )
@@ -437,7 +432,7 @@ function StonesArt({ s, tier }: { s: Stones; tier: number }) {
         <path d="M6 62 Q40 50 74 62" stroke="#d9c79a" strokeWidth="6" fill="none" />
         {Array.from({ length: Math.min(4, tier + 1) }, (_, i) => (
           <g key={i} transform={`translate(${12 + i * 18} ${40 - (i % 2) * 4})`}>
-            <rect x="-3" y="10" width="6" height="12" fill="#a69a84" />
+            <rect x="-3" y="10" width="6" height="12" fill={P.stone} />
             <rect x="-5" y="4" width="10" height="7" fill="#c9bfa8" />
             <rect x="-2.5" y="5.5" width="5" height="4" className="fest-glow" fill="#fff3b0" />
             <path d="M-7 4 L0 -2 L7 4z" fill="#8a8a7a" />
@@ -446,17 +441,17 @@ function StonesArt({ s, tier }: { s: Stones; tier: number }) {
       </ArtSvg>
     )
   }
-  const flower = s.variant === 'edelweiss' ? '#fbf6e8' : s.variant === 'moss' ? '#5f9e45' : '#c77dd1'
+  const flower = s.variant === 'edelweiss' ? P.cream : s.variant === 'moss' ? P.leaf : P.lilac
   return (
     <ArtSvg viewBox="0 0 80 72">
-      {shadow(30)}
+      <Shadow grid="chapter" rx={30} />
       {Array.from({ length: 3 + Math.min(4, tier) }, (_, i) => (
-        <ellipse key={i} cx={14 + i * 9} cy={56 - (i % 2) * 6} rx="7" ry="5" fill={s.variant === 'moss' ? '#6d8a4a' : '#a69a84'} stroke="#7a6e5a" strokeWidth=".6" />
+        <ellipse key={i} cx={14 + i * 9} cy={56 - (i % 2) * 6} rx="7" ry="5" fill={s.variant === 'moss' ? P.leaf : P.stone} stroke={P.outlineStone} strokeWidth=".6" />
       ))}
       {Array.from({ length: tier * 3 }, (_, i) => (
         <g key={`f${i}`}>
           {s.variant === 'moss' ? (
-            <path d={`M${12 + seeded(i + 2) * 56} 60 q2 -8 6 -10`} stroke="#3f7a30" strokeWidth="1.4" fill="none" />
+            <path d={`M${12 + seeded(i + 2) * 56} 60 q2 -8 6 -10`} stroke={P.leafDark} strokeWidth="1.4" fill="none" />
           ) : (
             <circle cx={12 + seeded(i + 2) * 56} cy={46 + seeded(i + 5) * 12} r={s.variant === 'edelweiss' ? 1.8 : 1.4} fill={flower} />
           )}
@@ -494,306 +489,5 @@ export const ChapterAreaArt = memo(function ChapterAreaArt({
   }
 }, sameTierProps)
 
-/** Unplanted spot: tilled earth with a little sign. */
-export function ChapterReady() {
-  return (
-    <ArtSvg viewBox="0 0 80 72">
-      <ellipse cx="40" cy="60" rx="26" ry="7" fill="#8a6a40" opacity="0.55" />
-      <path d="M22 58h36M26 62h28" stroke="#6e4a2b" strokeWidth=".8" opacity=".6" />
-      <path d="M40 60V44" stroke="#8a6a40" strokeWidth="1.6" />
-      <rect x="33" y="38" width="14" height="8" rx="1.4" fill="#efe1c2" stroke="#8a6a40" strokeWidth=".8" />
-    </ArtSvg>
-  )
-}
-
-/** Overgrown spot (locked). */
-export function ChapterWild({ seed = 0 }: { seed?: number }) {
-  return (
-    <ArtSvg viewBox="0 0 80 72">
-      <ellipse cx="40" cy="60" rx="28" ry="8" fill="#5f8a3a" opacity="0.5" />
-      <ellipse cx="26" cy="52" rx="12" ry="9" fill="#6d9a3f" />
-      <ellipse cx="54" cy="54" rx="13" ry="8" fill="#5f8a3a" />
-      {Array.from({ length: 6 }, (_, i) => (
-        <path key={i} d={`M${18 + i * 8} 62q${i % 2 ? 2 : -2} -${10 + ((i + seed) % 3) * 4} ${i % 2 ? 4 : -2} -${14 + ((i + seed) % 4) * 3}`} stroke="#a3b85a" strokeWidth="1.4" fill="none" />
-      ))}
-    </ArtSvg>
-  )
-}
-
-export const ChapterBackdrop = memo(function ChapterBackdrop({ spec, stage }: { spec: BackdropSpec; stage: number }) {
-  const [far, mid, near] = spec.grass
-  const id = useSvgId('cb-grass')
-  return (
-    <div className="garden-ground chapter-ground" aria-hidden="true" data-stage={stage}>
-      <ArtSvg className="garden-ground-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
-        <defs>
-          <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor={far} />
-            <stop offset="55%" stopColor={mid} />
-            <stop offset="100%" stopColor={near} />
-          </linearGradient>
-        </defs>
-        <rect width="100" height="100" fill={`url(#${id})`} />
-        {spec.stripes
-          ? Array.from({ length: 10 }, (_, i) => (
-              <path key={i} d={`M0 ${28 + i * 7.4} Q50 ${25 + i * 7.4} 100 ${28 + i * 7.4}`} stroke={spec.stripes} strokeWidth="3" fill="none" vectorEffect="non-scaling-stroke" opacity="0.35" />
-            ))
-          : null}
-        {spec.fields
-          ? [
-              [4, 30, 30, 14, '#b8c46a'],
-              [62, 28, 34, 12, '#c9b070'],
-              [6, 74, 26, 12, '#a3b85a'],
-              [68, 76, 28, 14, '#d4c27a'],
-              [30, 92, 40, 8, '#b0c060'],
-            ].map(([x, y, w, h, c], i) => (
-              <g key={i}>
-                <rect x={x as number} y={y as number} width={w as number} height={h as number} fill={c as string} opacity="0.55" />
-                {Array.from({ length: 4 }, (_, k) => (
-                  <path key={k} d={`M${x} ${(y as number) + 2 + k * ((h as number) / 4)}h${w}`} stroke="#8a6a40" strokeWidth="1" vectorEffect="non-scaling-stroke" opacity=".25" />
-                ))}
-              </g>
-            ))
-          : null}
-        {spec.bigLake ? (
-          <g>
-            <ellipse cx="50" cy="60" rx="34" ry="16" fill="#7a8a4c" opacity=".45" />
-            <ellipse cx="50" cy="60" rx="32" ry="14.5" fill="#5f9ec4" />
-            <ellipse cx="42" cy="55" rx="12" ry="3" fill="#fff" opacity=".18" />
-          </g>
-        ) : null}
-        {spec.herbGarden
-          ? [
-              [1, 42, 10, 4.4],
-              [89, 40, 10, 4.4],
-              [1, 66, 10, 4.4],
-              [89, 64, 10, 4.4],
-            ].map(([x, y, w, h], i) => (
-              <g key={`hb${i}`}>
-                <rect x={x} y={y} width={w} height={h} fill="#4f8a3a" />
-                <rect x={x! + 1} y={y! + 0.6} width={w! - 2} height={h! - 1.2} fill="#8a6a40" />
-                {Array.from({ length: 3 }, (_, k) => (
-                  <ellipse key={k} cx={x! + 2.4 + k * ((w! - 4.8) / 2)} cy={y! + h! / 2} rx="1" ry=".5" fill={['#c77dd1', '#f5c542', '#fbf6e8'][(i + k) % 3]} />
-                ))}
-              </g>
-            ))
-          : null}
-        {spec.glasshouse ? (
-          <g>
-            {[
-              [6, 44],
-              [94, 42],
-              [8, 72],
-              [92, 70],
-            ].map(([x, y], i) => (
-              <ellipse key={i} cx={x} cy={y} rx="4" ry="1.9" fill={i % 2 ? '#4f8f3c' : '#5f9e45'} />
-            ))}
-          </g>
-        ) : null}
-        {spec.alps
-          ? [
-              [5, 42, 0],
-              [95, 40, 1],
-              [4, 70, 2],
-              [96, 74, 0],
-              [50, 96, 1],
-            ].map(([x, y, k], i) =>
-              k === 1 ? (
-                <path key={`al${i}`} d={`M${x} ${y} l-3 6 h6z`} fill="#2f6a3a" />
-              ) : (
-                <path key={`al${i}`} d={`M${x! - 3} ${y} l1.6 -2.4 h2.6 l1.8 2.4z`} fill="#a69a8a" />
-              ),
-            )
-          : null}
-        {spec.provence
-          ? [
-              [4, 44],
-              [96, 40],
-              [3, 72],
-              [97, 70],
-            ].map(([x, y], i) => <path key={`pv${i}`} d={`M${x} ${y} q-2 -4 0 -9 q2 5 0 9z`} fill="#2f5a3a" />)
-          : null}
-        {spec.japan ? (
-          <g>
-            <ellipse cx="50" cy="62" rx="20" ry="9" stroke="#e8e2d0" strokeWidth="2" fill="none" vectorEffect="non-scaling-stroke" opacity=".8" />
-            <ellipse cx="50" cy="62" rx="24" ry="11" stroke="#e8e2d0" strokeWidth="1.4" fill="none" vectorEffect="non-scaling-stroke" opacity=".6" />
-            {[
-              [5, 44],
-              [95, 42],
-              [6, 74],
-              [94, 72],
-            ].map(([x, y], i) => (
-              <ellipse key={i} cx={x} cy={y} rx="2.8" ry="1.3" fill={i % 2 ? '#c4402a' : '#a83a2a'} opacity=".85" />
-            ))}
-          </g>
-        ) : null}
-        {spec.showground
-          ? [
-              [5, 44, '#e0485e'],
-              [95, 42, '#f5c542'],
-              [5, 74, '#c77dd1'],
-              [95, 72, '#f08a2c'],
-            ].map(([x, y, c], i) => (
-              <g key={`sg${i}`}>
-                <ellipse cx={x as number} cy={y as number} rx="4.4" ry="2.1" fill="#4f8a3a" />
-                <ellipse cx={x as number} cy={y as number} rx="3.4" ry="1.5" fill={c as string} />
-                <ellipse cx={x as number} cy={y as number} rx="1.4" ry=".7" fill="#fbf6e8" />
-              </g>
-            ))
-          : null}
-        {spec.water === 'lake' ? <ellipse cx="50" cy="62" rx="16" ry="7" fill="#6aa6c9" opacity="0.9" /> : null}
-        {spec.water === 'river' ? (
-          <path d="M100 58 C90 64 96 72 86 78 C78 84 84 92 76 100" stroke="#6aa6c9" strokeWidth="14" fill="none" vectorEffect="non-scaling-stroke" />
-        ) : null}
-        {spec.way ? (
-          <ChapterPath style={spec.way} color={spec.path} />
-        ) : (
-          <path
-            d="M50 100 C46 90 40 86 44 78 C48 70 58 68 54 58 C50 50 40 48 46 40 C50 34 52 30 50 22"
-            stroke={spec.path}
-            strokeWidth="14"
-            fill="none"
-            vectorEffect="non-scaling-stroke"
-            opacity="0.9"
-          />
-        )}
-        {Array.from({ length: 30 }, (_, i) => (
-          <circle key={i} cx={(i * 37) % 100} cy={26 + ((i * 53) % 72)} r="0.4" fill={['#fff', '#f5c542', '#c77dd1'][i % 3]} opacity={stage >= i % 10 ? 0.8 : 0.2} />
-        ))}
-      </ArtSvg>
-      <div className="garden-hedge orchard-hills">
-        <ArtSvg viewBox="0 0 400 60" preserveAspectRatio="none">
-          {spec.mountains ? (
-            <g>
-              <path d="M0 60 L60 6 L110 40 L170 0 L240 44 L300 10 L360 38 L400 20 V60z" fill="#9aa8b6" />
-              <path d="M50 14 L60 6 L70 14 M160 8 L170 0 L180 8 M290 18 L300 10 L310 18" stroke="#fff" strokeWidth="5" fill="none" />
-            </g>
-          ) : null}
-          {spec.alps ? (
-            <g>
-              <path d="M0 60 L50 4 L96 34 L150 0 L214 40 L262 6 L330 36 L372 12 L400 24 V60z" fill="#8a9aae" />
-              <path d="M0 60 L50 4 L70 26 L60 60z M150 0 L176 22 L160 60 L130 60z M262 6 L290 30 L276 60 L240 60z" fill="#7a8a9e" />
-              <path d="M38 18 L50 4 L64 20 L56 17 L50 22 L44 16z M136 16 L150 0 L166 18 L157 14 L150 20 L143 13z M250 20 L262 6 L276 22 L268 18 L262 24 L256 18z M364 20 L372 12 L382 20 L376 18z" fill="#fff" />
-            </g>
-          ) : null}
-          {spec.japan ? (
-            <g>
-              <path d="M150 60 L230 4 Q240 0 250 4 L330 60z" fill="#8a9aae" />
-              <path d="M216 14 L230 4 Q240 0 250 4 L264 14 L254 12 L246 18 L238 11 L228 17z" fill="#fff" />
-            </g>
-          ) : null}
-          <path d="M0 60 V30 Q60 8 140 26 T280 18 T400 24 V60z" fill={spec.hills[0]} />
-          {spec.provence ? (
-            <g>
-              {[40, 60, 76, 340, 360].map((x, i) => (
-                <path key={i} d={`M${x} 48 q-5 -14 0 -30 q5 16 0 30z`} fill="#2f5a3a" />
-              ))}
-              <rect x="150" y="26" width="22" height="14" fill="#e8d4a8" />
-              <path d="M148 26 L161 18 L174 26z" fill="#c4553f" />
-              <rect x="176" y="22" width="26" height="18" fill="#efe1c2" />
-              <path d="M174 22 L189 14 L204 22z" fill="#c4553f" />
-              <rect x="206" y="10" width="10" height="30" fill="#e8d4a8" />
-              <path d="M204 10 L211 2 L218 10z" fill="#c4553f" />
-              <rect x="220" y="28" width="20" height="12" fill="#e8d4a8" />
-              <path d="M218 28 L230 20 L242 28z" fill="#c4553f" />
-            </g>
-          ) : null}
-          {spec.japan ? (
-            <g>
-              <rect x="56" y="30" width="16" height="16" fill="#a83a2a" />
-              <path d="M48 32 Q64 24 80 32z M50 22 Q64 14 78 22z M52 12 Q64 6 76 12z" fill="#3a3a3a" />
-              <rect x="58" y="22" width="12" height="8" fill="#a83a2a" />
-              <rect x="60" y="12" width="8" height="8" fill="#a83a2a" />
-              <path d="M64 6v-6" stroke="#3a3a3a" strokeWidth="1.6" />
-              {[320, 344, 370].map((x) => (
-                <circle key={x} cx={x} cy={32} r="11" fill="#c4402a" />
-              ))}
-            </g>
-          ) : null}
-          {spec.showground ? (
-            <g>
-              <circle cx="70" cy="24" r="20" fill="none" stroke="#fbf6e8" strokeWidth="2" />
-              {Array.from({ length: 8 }, (_, i) => {
-                const a = (i / 8) * Math.PI * 2
-                return (
-                  <g key={i}>
-                    <path d={`M70 24 L${70 + Math.cos(a) * 20} ${24 + Math.sin(a) * 20}`} stroke="#fbf6e8" strokeWidth="1" />
-                    <rect x={70 + Math.cos(a) * 20 - 3} y={24 + Math.sin(a) * 20} width="6" height="5" rx="1" fill={['#e0485e', '#3d6fd1', '#f5c542', '#5f9e45'][i % 4]} />
-                  </g>
-                )
-              })}
-              <path d="M60 50 L70 24 L80 50" stroke="#fbf6e8" strokeWidth="2" fill="none" />
-              <path d="M300 44 V26 L330 12 L360 26 V44z" fill="#fbf6e8" />
-              <path d="M300 26 L330 12 L360 26" stroke="#e2453c" strokeWidth="3" fill="none" />
-              {[150, 190, 230, 270].map((x, i) => (
-                <g key={x}>
-                  <path d={`M${x} 46 V14`} stroke="#8a6a40" strokeWidth="1.4" />
-                  <path d={`M${x} 14 l12 4 -12 4z`} fill={['#e0485e', '#3d6fd1', '#f5c542', '#c77dd1'][i]} />
-                </g>
-              ))}
-            </g>
-          ) : null}
-
-          {spec.herbGarden ? (
-            <g>
-              <rect x="0" y="34" width="400" height="14" fill="#b8654a" />
-              {Array.from({ length: 20 }, (_, i) => (
-                <path key={i} d={`M${i * 20} 34v14M${i * 20 + 10} 41v7M0 41h400`} stroke="#8a4a32" strokeWidth="1" />
-              ))}
-              <rect x="0" y="31" width="400" height="4" fill="#d9c0a0" />
-              <path d="M188 48 V34 a12 12 0 0 1 24 0 V48z" fill="#5a3d22" />
-              <path d="M200 22 v26" stroke="#3a2a1a" strokeWidth="1" />
-              <rect x="300" y="16" width="38" height="24" fill="#f5f0e0" />
-              <path d="M296 16 L319 2 L342 16z" fill="#7a5ab8" />
-              <rect x="314" y="26" width="10" height="14" fill="#7a5532" />
-              <rect x="306" y="20" width="6" height="5" fill="#8fd0ec" />
-              <rect x="326" y="20" width="6" height="5" fill="#8fd0ec" />
-            </g>
-          ) : null}
-          {spec.glasshouse ? (
-            <g>
-              <path d="M130 44 V26 Q200 -14 270 26 V44z" fill="#cfe8f4" opacity=".85" stroke="#fff" strokeWidth="1.6" />
-              <path d="M170 44 V14 M200 44 V6 M230 44 V14 M130 32 H270" stroke="#fff" strokeWidth="1.2" />
-              <path d="M184 18 Q200 -2 216 18z" fill="#e8f4fa" stroke="#fff" strokeWidth="1.2" />
-              <path d="M200 2 v-6" stroke="#6e4a2b" strokeWidth="1.4" />
-              <path d="M150 40 q6 -14 12 -12 M244 40 q-4 -14 -10 -14" stroke="#4f9a3a" strokeWidth="3" fill="none" />
-              {[40, 80, 330, 370].map((x) => (
-                <circle key={x} cx={x} cy={30} r="12" fill="#4f8f3c" />
-              ))}
-            </g>
-          ) : null}
-          {spec.alps ? (
-            <g>
-              {Array.from({ length: 9 }, (_, i) => {
-                const x = 10 + i * 44 + (i % 2) * 8
-                return <path key={i} d={`M${x} 46 L${x + 6} 28 L${x + 12} 46z`} fill="#2f5a2e" />
-              })}
-              <rect x="300" y="26" width="16" height="14" fill="#f5f0e0" />
-              <path d="M298 26 L308 16 L318 26z" fill="#8a3a2a" />
-              <rect x="304" y="12" width="5" height="10" fill="#f5f0e0" />
-              <path d="M303 12 L306.5 4 L310 12z" fill="#8a3a2a" />
-            </g>
-          ) : null}
-
-          {spec.forest
-            ? Array.from({ length: 26 }, (_, i) => {
-                const x = i * 16 - 4
-                const h = 26 + ((i * 7) % 12)
-                return <path key={i} d={`M${x} 60 L${x + 8} ${60 - h} L${x + 16} 60z`} fill={i % 2 ? '#2f5a2e' : '#3a6a34'} />
-              })
-            : null}
-          {spec.fields ? (
-            <g>
-              <rect x="300" y="22" width="26" height="16" fill="#efe1c2" />
-              <path d="M296 22 L313 10 L330 22z" fill="#b8403a" />
-              <rect x="334" y="16" width="8" height="22" fill="#c9d0d8" />
-              <path d="M334 16 a4 3 0 0 1 8 0" fill="#9aa8b6" />
-            </g>
-          ) : null}
-          <path d="M0 60 V42 Q90 26 180 40 T400 34 V60z" fill={spec.hills[1]} />
-        </ArtSvg>
-      </div>
-      <div className="ambient-tint" />
-    </div>
-  )
-})
+export { ChapterReady, ChapterWild } from './art/chapters/spots'
+export { ChapterBackdrop } from './art/chapters/backdrop'

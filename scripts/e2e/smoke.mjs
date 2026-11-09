@@ -173,6 +173,9 @@ try {
     await p.getByRole('button', { name: /Kapitel 12/ }).click()
     await p.locator('.orchard-intro .btn').click()
     await p.locator('.chapter-gartenschau').waitFor()
+    // Kapitel-Grafik kommt als eigenes Bündel nach: Kulisse und Bereichsgrafik müssen erscheinen
+    await p.locator('.chapter-gartenschau .garden-ground').waitFor()
+    assert((await p.locator('.chapter-gartenschau .garden-plot .plot-visual svg *').count()) > 20, 'chapter art loaded')
     await p.locator('.garden-plot').first().click()
     await p.locator('.upgrade-hud-buy').waitFor()
     await ctx.close()

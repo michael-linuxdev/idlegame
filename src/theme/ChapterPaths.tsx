@@ -4,6 +4,7 @@
  * non-scaling widths (px), round things use ry ≈ rx · 0.45 to stay round.
  */
 import type { ReactNode } from 'react'
+import { P } from './art/palette'
 
 export type PathStyle = 'track' | 'loop' | 'shore' | 'cross' | 'rondel' | 'switchback' | 'lane' | 'stones' | 'promenade'
 
@@ -58,9 +59,9 @@ export function ChapterPath({ style, color }: { style: PathStyle; color: string 
           <Way d="M50 48 L50 22" color={color} w={10} edge="#b8a070" edgeW={2} />
           <ellipse cx="50" cy="58" rx="13" ry="10" stroke="#b8a070" strokeWidth="14" {...NS} />
           <ellipse cx="50" cy="58" rx="13" ry="10" stroke={color} strokeWidth="12" {...NS} />
-          <ellipse cx="50" cy="58" rx="8.4" ry="6" fill="#8cc06a" />
-          <Dots pts={[[44, 56], [56, 56], [50, 61], [44, 59], [56, 60]]} n={9} rx={0.9} color={['#c77dd1', '#f5c542', '#fbf6e8']} />
-          <ellipse cx="50" cy="55.4" rx="2.4" ry="1.4" fill="#e8b422" stroke="#8a6a40" strokeWidth=".3" />
+          <ellipse cx="50" cy="58" rx="8.4" ry="6" fill={P.leafLight} />
+          <Dots pts={[[44, 56], [56, 56], [50, 61], [44, 59], [56, 60]]} n={9} rx={0.9} color={[P.lilac, P.yellow, P.cream]} />
+          <ellipse cx="50" cy="55.4" rx="2.4" ry="1.4" fill={P.gold} stroke={P.outlineSoft} strokeWidth=".3" />
         </g>
       )
     /* Teich: Uferweg rund um den See + Holzsteg vom Eingang */
@@ -68,7 +69,7 @@ export function ChapterPath({ style, color }: { style: PathStyle; color: string 
       return (
         <g>
           <ellipse cx="50" cy="60" rx="37" ry="19" stroke={color} strokeWidth="8" {...NS} opacity=".95" />
-          <path d="M50 100 L50 79" stroke="#8a5a32" strokeWidth="13" {...NS} strokeLinecap="butt" />
+          <path d="M50 100 L50 79" stroke={P.woodDark} strokeWidth="13" {...NS} strokeLinecap="butt" />
           <path d="M50 100 L50 79" stroke="#c49a6a" strokeWidth="11" strokeDasharray="1.2 .5" {...NS} strokeLinecap="butt" />
           <path d="M50 79 L50 72" stroke="#c49a6a" strokeWidth="11" {...NS} strokeLinecap="butt" opacity=".9" />
           <path d="M50 41 L50 22" stroke={color} strokeWidth="9" {...NS} />
@@ -78,11 +79,11 @@ export function ChapterPath({ style, color }: { style: PathStyle; color: string 
     case 'cross':
       return (
         <g>
-          <Way d="M50 100 V22" color={color} w={11} edge="#5f8a3a" edgeW={4} />
-          <Way d="M40 72 H60 M40 40 H60" color={color} w={8} edge="#5f8a3a" edgeW={4} />
-          <ellipse cx="50" cy="56" rx="8" ry="3.8" fill="#5f8a3a" />
+          <Way d="M50 100 V22" color={color} w={11} edge={P.leaf} edgeW={4} />
+          <Way d="M40 72 H60 M40 40 H60" color={color} w={8} edge={P.leaf} edgeW={4} />
+          <ellipse cx="50" cy="56" rx="8" ry="3.8" fill={P.leaf} />
           <ellipse cx="50" cy="56" rx="7" ry="3.2" fill={color} />
-          <ellipse cx="50" cy="55.6" rx="1.6" ry="1" fill="#a69a8a" />
+          <ellipse cx="50" cy="55.6" rx="1.6" ry="1" fill={P.stone} />
           <path d="M50 55.6 L52 54.6" stroke="#4a3a2a" strokeWidth="1.4" {...NS} />
         </g>
       )
@@ -95,7 +96,7 @@ export function ChapterPath({ style, color }: { style: PathStyle; color: string 
           <ellipse cx="50" cy="58" rx="11" ry="3.6" fill="#c9bfa8" />
           <ellipse cx="50" cy="58" rx="10.4" ry="3.2" fill={color} />
           <ellipse cx="50" cy="58" rx="6" ry="1.9" fill="#bdb3a0" />
-          <ellipse cx="50" cy="57.8" rx="5" ry="1.5" fill="#6aa6c9" />
+          <ellipse cx="50" cy="57.8" rx="5" ry="1.5" fill={P.water} />
           <ellipse cx="50" cy="57.2" rx=".8" ry="1" fill="#d6eef8" />
           <Dots pts={[[50, 98], [50, 64]]} n={6} rx={1.2} color="#4f8f3c" />
         </g>
@@ -108,8 +109,8 @@ export function ChapterPath({ style, color }: { style: PathStyle; color: string 
         <g>
           <path d={d} stroke="#a89060" strokeWidth="11" {...NS} />
           <path d={d} stroke={color} strokeWidth="8" {...NS} />
-          <Dots pts={pts} n={18} rx={0.7} color="#a69a8a" />
-          <path d="M57 77 V71 M55 71.6 H60 L61 72.4 L60 73.2 H55" stroke="#8a5a32" strokeWidth="1.6" {...NS} />
+          <Dots pts={pts} n={18} rx={0.7} color={P.stone} />
+          <path d="M57 77 V71 M55 71.6 H60 L61 72.4 L60 73.2 H55" stroke={P.woodDark} strokeWidth="1.6" {...NS} />
         </g>
       )
     }
@@ -133,7 +134,7 @@ export function ChapterPath({ style, color }: { style: PathStyle; color: string 
           <path d={d} stroke="#e8e2d0" strokeWidth="20" {...NS} opacity=".75" />
           <path d={d} stroke="#d4ccb4" strokeWidth="1" strokeDasharray="0" {...NS} transform="translate(-1.6 0)" opacity=".7" />
           <path d={d} stroke="#d4ccb4" strokeWidth="1" {...NS} transform="translate(1.6 0)" opacity=".7" />
-          <Dots pts={pts} n={20} rx={2.4} color={['#a69a8a', '#9a8e7e', '#b0a494']} />
+          <Dots pts={pts} n={20} rx={2.4} color={[P.stone, '#9a8e7e', '#b0a494']} />
         </g>
       )
     }
@@ -145,10 +146,10 @@ export function ChapterPath({ style, color }: { style: PathStyle; color: string 
           <ellipse cx="50" cy="62" rx="21" ry="10.5" stroke="#c9bfa8" strokeWidth="13" {...NS} />
           <ellipse cx="50" cy="62" rx="21" ry="10.5" stroke={color} strokeWidth="10" {...NS} />
           <Way d="M50 52 L50 22" color={color} w={14} edge="#c9bfa8" edgeW={3} />
-          <Dots pts={[[46.4, 99], [46.4, 72]]} n={8} rx={0.9} color={['#e0485e', '#f5c542', '#c77dd1']} />
-          <Dots pts={[[53.6, 99], [53.6, 72]]} n={8} rx={0.9} color={['#f5c542', '#c77dd1', '#e0485e']} />
-          <Dots pts={[[47.4, 50], [47.4, 24]]} n={7} rx={0.8} color={['#f28ab2', '#fbf6e8']} />
-          <Dots pts={[[52.6, 50], [52.6, 24]]} n={7} rx={0.8} color={['#fbf6e8', '#f28ab2']} />
+          <Dots pts={[[46.4, 99], [46.4, 72]]} n={8} rx={0.9} color={[P.red, P.yellow, P.lilac]} />
+          <Dots pts={[[53.6, 99], [53.6, 72]]} n={8} rx={0.9} color={[P.yellow, P.lilac, P.red]} />
+          <Dots pts={[[47.4, 50], [47.4, 24]]} n={7} rx={0.8} color={[P.pink, P.cream]} />
+          <Dots pts={[[52.6, 50], [52.6, 24]]} n={7} rx={0.8} color={[P.cream, P.pink]} />
         </g>
       )
   }

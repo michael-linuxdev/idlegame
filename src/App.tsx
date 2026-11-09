@@ -41,6 +41,7 @@ import './theme/panels.css'
 import './theme/story.css'
 import './theme/expansion.css'
 import './theme/ux.css'
+import { prefetchChapterArt } from './theme/art/chapterArt'
 
 export default function App() {
   const game = useGame()
@@ -51,6 +52,11 @@ export default function App() {
   const [previewSkin, setPreviewSkin] = useState<CosmeticId | null>(null)
   const [photoMode, setPhotoMode] = useState(false)
   const chapterShown = plot !== 'garden' && game.openChapters.includes(plot) ? plot : null
+  // Kapitel-Grafik der offenen Kapitel im Leerlauf vorladen (eigene Bündel)
+  const openKey = game.openChapters.join(',')
+  useEffect(() => {
+    if (openKey) prefetchChapterArt(openKey.split(',') as ChapterId[])
+  }, [openKey])
 
   // Test hooks: ?kapitel2=1 / ?kapitel3=1 open a chapter right away
   const { forceChapter } = game

@@ -6,6 +6,7 @@
 import { memo, type ReactNode } from 'react'
 import type { FestId } from '../game/fests'
 import { ArtSvg } from './ArtSvg'
+import { P } from './art/palette'
 
 function D({
   left,
@@ -30,17 +31,17 @@ function D({
 function Laterne({ hue = '#f5a83a' }: { hue?: string }) {
   return (
     <ArtSvg viewBox="0 0 20 44">
-      <path d="M10 44V10" stroke="#6e4a2b" strokeWidth="1.6" />
-      <path d="M10 10q6-4 8 2" stroke="#6e4a2b" strokeWidth="1.2" fill="none" />
+      <path d="M10 44V10" stroke={P.outlineWood} strokeWidth="1.6" />
+      <path d="M10 10q6-4 8 2" stroke={P.outlineWood} strokeWidth="1.2" fill="none" />
       <ellipse className="fest-glow" cx="17" cy="21" rx="7" ry="7" fill="#fff3b0" opacity="0.35" />
       <ellipse cx="17" cy="21" rx="4.2" ry="5.4" fill={hue} stroke="#a5531a" strokeWidth=".8" />
       <ellipse cx="17" cy="21" rx="2" ry="5.4" fill="none" stroke="#c4651f" strokeWidth=".7" />
-      <path d="M17 12v3.6" stroke="#6e4a2b" strokeWidth=".8" />
+      <path d="M17 12v3.6" stroke={P.outlineWood} strokeWidth=".8" />
     </ArtSvg>
   )
 }
 
-function Ei({ c = '#f28ab2', s = '#fff' }: { c?: string; s?: string }) {
+function Ei({ c = P.pink, s = P.white }: { c?: string; s?: string }) {
   return (
     <ArtSvg viewBox="0 0 16 20">
       <ellipse cx="8" cy="11" rx="6" ry="8" fill={c} stroke="rgba(0,0,0,.25)" strokeWidth=".8" />
@@ -54,8 +55,8 @@ function Tulpen() {
     <ArtSvg viewBox="0 0 36 30">
       {[6, 14, 22, 30].map((x, i) => (
         <g key={x}>
-          <path d={`M${x} 30V14`} stroke="#4f7a2e" strokeWidth="1.6" />
-          <path d={`M${x - 4} 10q4 9 8 0l-2 2-2-4-2 4z`} fill={['#e0485e', '#f5c542', '#f28ab2', '#e0485e'][i]} />
+          <path d={`M${x} 30V14`} stroke={P.leafMoss} strokeWidth="1.6" />
+          <path d={`M${x - 4} 10q4 9 8 0l-2 2-2-4-2 4z`} fill={[P.red, P.yellow, P.pink, P.red][i]} />
         </g>
       ))}
     </ArtSvg>
@@ -63,10 +64,10 @@ function Tulpen() {
 }
 
 function Wimpelkette() {
-  const colors = ['#e2453c', '#f5c542', '#3d8db8', '#7fbf5a', '#f28ab2']
+  const colors = [P.tomato, P.yellow, P.waterDeep, P.leafLight, P.pink]
   return (
     <ArtSvg viewBox="0 0 200 20" preserveAspectRatio="none">
-      <path d="M0 3 Q100 14 200 3" stroke="#6e4a2b" strokeWidth="1" fill="none" />
+      <path d="M0 3 Q100 14 200 3" stroke={P.outlineWood} strokeWidth="1" fill="none" />
       {Array.from({ length: 16 }, (_, i) => {
         const x = 6 + i * 12
         const y = 3 + 11 * Math.sin((Math.PI * x) / 200) * 0.95
@@ -79,9 +80,9 @@ function Wimpelkette() {
 function Sonnenschirm() {
   return (
     <ArtSvg viewBox="0 0 40 44">
-      <path d="M20 12v32" stroke="#6e4a2b" strokeWidth="1.6" />
-      <path d="M2 16Q20 -2 38 16z" fill="#e2453c" />
-      <path d="M2 16Q11 8 14 16M14 16Q20 6 26 16M26 16Q29 8 38 16" fill="#fff" opacity=".85" />
+      <path d="M20 12v32" stroke={P.outlineWood} strokeWidth="1.6" />
+      <path d="M2 16Q20 -2 38 16z" fill={P.tomato} />
+      <path d="M2 16Q11 8 14 16M14 16Q20 6 26 16M26 16Q29 8 38 16" fill={P.white} opacity=".85" />
       <ellipse cx="20" cy="43" rx="10" ry="1.5" fill="rgba(0,0,0,.18)" />
     </ArtSvg>
   )
@@ -90,18 +91,18 @@ function Sonnenschirm() {
 function Sonnenblume() {
   return (
     <ArtSvg viewBox="0 0 20 52">
-      <path d="M10 52V14" stroke="#4f7a2e" strokeWidth="2.2" />
-      <ellipse cx="6" cy="32" rx="4.5" ry="2" fill="#5f9e45" transform="rotate(-30 6 32)" />
-      <ellipse cx="14" cy="38" rx="4.5" ry="2" fill="#5f9e45" transform="rotate(30 14 38)" />
+      <path d="M10 52V14" stroke={P.leafMoss} strokeWidth="2.2" />
+      <ellipse cx="6" cy="32" rx="4.5" ry="2" fill={P.leaf} transform="rotate(-30 6 32)" />
+      <ellipse cx="14" cy="38" rx="4.5" ry="2" fill={P.leaf} transform="rotate(30 14 38)" />
       {Array.from({ length: 12 }, (_, i) => (
-        <ellipse key={i} cx="10" cy="5" rx="1.8" ry="4" fill="#f5c542" transform={`rotate(${i * 30} 10 11)`} />
+        <ellipse key={i} cx="10" cy="5" rx="1.8" ry="4" fill={P.yellow} transform={`rotate(${i * 30} 10 11)`} />
       ))}
-      <circle cx="10" cy="11" r="4" fill="#6e4a2b" />
+      <circle cx="10" cy="11" r="4" fill={P.outlineWood} />
     </ArtSvg>
   )
 }
 
-function Kuerbis({ c = '#f08a2c' }: { c?: string }) {
+function Kuerbis({ c = P.orange }: { c?: string }) {
   return (
     <ArtSvg viewBox="0 0 24 18">
       <ellipse cx="12" cy="11" rx="11" ry="7" fill={c} stroke="#a5531a" strokeWidth=".8" />
@@ -128,14 +129,14 @@ function Garbe() {
 function Tanne({ lights = true }: { lights?: boolean }) {
   return (
     <ArtSvg viewBox="0 0 40 56">
-      <rect x="17" y="46" width="6" height="8" fill="#6e4a2b" />
+      <rect x="17" y="46" width="6" height="8" fill={P.outlineWood} />
       <path d="M20 2L4 26h8L2 40h10L0 50h40L28 40h10L28 26h8z" fill="#2f6b3a" stroke="#1f4a28" strokeWidth=".8" />
       <path d="M20 0l1.6 3.4 3.6.3-2.8 2.4.9 3.6L20 7.8l-3.3 1.9.9-3.6-2.8-2.4 3.6-.3z" fill="#f5d76e" />
       {lights
         ? [
             [14, 22], [26, 24], [10, 36], [22, 34], [30, 38], [16, 46], [26, 46], [20, 16],
           ].map(([x, y], i) => (
-            <circle key={i} className="fest-twinkle" cx={x} cy={y} r="1.6" fill={['#f5c542', '#e0485e', '#8fd0ec'][i % 3]} style={{ animationDelay: `${i * 0.3}s` }} />
+            <circle key={i} className="fest-twinkle" cx={x} cy={y} r="1.6" fill={[P.yellow, P.red, P.waterLight][i % 3]} style={{ animationDelay: `${i * 0.3}s` }} />
           ))
         : null}
     </ArtSvg>
@@ -149,12 +150,12 @@ function Kranz() {
       <ellipse cx="20" cy="17" rx="10" ry="3" fill="#24502c" />
       {[8, 16, 24, 32].map((x, i) => (
         <g key={x}>
-          <rect x={x - 2} y={6 + (i % 2)} width="4" height="10" rx="1" fill="#c4553f" />
-          <path className="fest-flame" d={`M${x} ${1 + (i % 2)}q2 3 0 5q-2-2 0-5z`} fill="#f5c542" />
+          <rect x={x - 2} y={6 + (i % 2)} width="4" height="10" rx="1" fill={P.roof} />
+          <path className="fest-flame" d={`M${x} ${1 + (i % 2)}q2 3 0 5q-2-2 0-5z`} fill={P.yellow} />
         </g>
       ))}
-      <circle cx="12" cy="20" r="1.4" fill="#e0485e" />
-      <circle cx="28" cy="20" r="1.4" fill="#e0485e" />
+      <circle cx="12" cy="20" r="1.4" fill={P.red} />
+      <circle cx="28" cy="20" r="1.4" fill={P.red} />
     </ArtSvg>
   )
 }
@@ -164,8 +165,8 @@ function Schneegloeckchen() {
     <ArtSvg viewBox="0 0 30 22">
       {[5, 12, 19, 25].map((x, i) => (
         <g key={x}>
-          <path d={`M${x} 22V${8 + (i % 2) * 2}q0-3 3-4`} stroke="#5f9e45" strokeWidth="1.2" fill="none" />
-          <path d={`M${x + 3} ${4 + (i % 2) * 2}q-2.4 1-1.6 5q1.6-1 1.6-5q2.4 1 1.6 5q-1.6-1-1.6-5z`} fill="#fff" stroke="#9fb7c9" strokeWidth=".5" />
+          <path d={`M${x} 22V${8 + (i % 2) * 2}q0-3 3-4`} stroke={P.leaf} strokeWidth="1.2" fill="none" />
+          <path d={`M${x + 3} ${4 + (i % 2) * 2}q-2.4 1-1.6 5q1.6-1 1.6-5q2.4 1 1.6 5q-1.6-1-1.6-5z`} fill={P.white} stroke="#9fb7c9" strokeWidth=".5" />
         </g>
       ))}
     </ArtSvg>
@@ -175,11 +176,11 @@ function Schneegloeckchen() {
 function Pfingstrose() {
   return (
     <ArtSvg viewBox="0 0 36 28">
-      <ellipse cx="18" cy="20" rx="17" ry="8" fill="#4f7a2e" />
-      {[[9, 13, '#f28ab2'], [19, 10, '#e9a3d3'], [28, 14, '#f28ab2']].map(([x, y, c], i) => (
+      <ellipse cx="18" cy="20" rx="17" ry="8" fill={P.leafMoss} />
+      {[[9, 13, P.pink], [19, 10, '#e9a3d3'], [28, 14, P.pink]].map(([x, y, c], i) => (
         <g key={i}>
           <circle cx={x as number} cy={y as number} r="5.5" fill={c as string} />
-          <circle cx={x as number} cy={y as number} r="3" fill="#fff" opacity=".45" />
+          <circle cx={x as number} cy={y as number} r="3" fill={P.white} opacity=".45" />
         </g>
       ))}
     </ArtSvg>
@@ -197,11 +198,11 @@ function Stern() {
 function Erntekrone() {
   return (
     <ArtSvg viewBox="0 0 30 34">
-      <path d="M15 0v6" stroke="#6e4a2b" strokeWidth="1" />
+      <path d="M15 0v6" stroke={P.outlineWood} strokeWidth="1" />
       <path d="M4 14Q15 2 26 14" stroke="#d9b34a" strokeWidth="3" fill="none" />
       <path d="M8 14Q15 6 22 14" stroke="#c49a3a" strokeWidth="2" fill="none" />
       <ellipse cx="15" cy="16" rx="11" ry="3" fill="#d9b34a" />
-      {[[6, 20, '#e0485e'], [12, 23, '#c4553f'], [18, 23, '#f08a2c'], [24, 20, '#e0485e']].map(([x, y, c], i) => (
+      {[[6, 20, P.red], [12, 23, P.roof], [18, 23, P.orange], [24, 20, P.red]].map(([x, y, c], i) => (
         <path key={i} d={`M${x} 17v${(y as number) - 17}`} stroke={c as string} strokeWidth="2.4" strokeLinecap="round" />
       ))}
       <path d="M10 26c2 3 8 3 10 0" stroke="#e85d8a" strokeWidth="1.6" fill="none" />
@@ -216,11 +217,11 @@ export const FestDecor = memo(function FestDecor({ fest }: { fest: FestId }) {
       return (
         <div className="fest-layer-map fest-lantern-night">
           <D left="43%" top="50%" w={7}><Laterne /></D>
-          <D left="57%" top="62%" w={7}><Laterne hue="#e0485e" /></D>
-          <D left="42%" top="76%" w={7}><Laterne hue="#8fd0ec" /></D>
-          <D left="56%" top="38%" w={7}><Laterne hue="#f5c542" /></D>
+          <D left="57%" top="62%" w={7}><Laterne hue={P.red} /></D>
+          <D left="42%" top="76%" w={7}><Laterne hue={P.waterLight} /></D>
+          <D left="56%" top="38%" w={7}><Laterne hue={P.yellow} /></D>
           <D left="8%" top="56%" w={7}><Laterne /></D>
-          <D left="92%" top="50%" w={7}><Laterne hue="#c77dd1" /></D>
+          <D left="92%" top="50%" w={7}><Laterne hue={P.lilac} /></D>
         </div>
       )
     case 'advent':
@@ -252,10 +253,10 @@ export const FestDecor = memo(function FestDecor({ fest }: { fest: FestId }) {
       return (
         <div className="fest-layer-map">
           <D left="9%" top="54%" w={4.2}><Ei /></D>
-          <D left="44%" top="70%" w={3.8}><Ei c="#f5c542" s="#e0485e" /></D>
-          <D left="56%" top="47%" w={3.8}><Ei c="#7fbf5a" /></D>
-          <D left="91%" top="44%" w={4.2}><Ei c="#8fd0ec" s="#f28ab2" /></D>
-          <D left="56%" top="80%" w={3.6}><Ei c="#c77dd1" /></D>
+          <D left="44%" top="70%" w={3.8}><Ei c={P.yellow} s={P.red} /></D>
+          <D left="56%" top="47%" w={3.8}><Ei c={P.leafLight} /></D>
+          <D left="91%" top="44%" w={4.2}><Ei c={P.waterLight} s={P.pink} /></D>
+          <D left="56%" top="80%" w={3.6}><Ei c={P.lilac} /></D>
           <D left="8%" top="63%" w={12}><Tulpen /></D>
         </div>
       )
@@ -286,11 +287,11 @@ export const FestDecor = memo(function FestDecor({ fest }: { fest: FestId }) {
       return (
         <div className="fest-layer-map">
           <D left="39%" top="31%" w={7}><Kuerbis /></D>
-          <D left="61%" top="31.5%" w={5.5}><Kuerbis c="#e8b422" /></D>
+          <D left="61%" top="31.5%" w={5.5}><Kuerbis c={P.gold} /></D>
           <D left="9%" top="53%" w={8}><Garbe /></D>
           <D left="56%" top="73%" w={6}><Kuerbis c="#d2752c" /></D>
           <D left="91%" top="52%" w={7}><Kuerbis /></D>
-          <D left="44%" top="57%" w={5}><Kuerbis c="#e8b422" /></D>
+          <D left="44%" top="57%" w={5}><Kuerbis c={P.gold} /></D>
         </div>
       )
   }
@@ -302,7 +303,7 @@ export const FestSkinDecor = memo(function FestSkinDecor({ skin, fest }: { skin?
     return (
       <div className="fest-layer-map">
         <D left="8%" top="63%" w={12}><Tulpen /></D>
-        <D left="9%" top="54%" w={4}><Ei c="#8fd0ec" /></D>
+        <D left="9%" top="54%" w={4}><Ei c={P.waterLight} /></D>
       </div>
     )
   }
