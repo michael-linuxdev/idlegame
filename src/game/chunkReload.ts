@@ -12,6 +12,16 @@ import { logPlaytest } from './playtestLog'
 const KEY = 'gartenerbe-chunk-reload'
 const MIN_GAP_MS = 60_000
 
+// Beim Verlassen/Neuladen der Seite brechen laufende Nachlade-Anfragen ab und
+// melden dieselben Fehler — das ist kein Update. Dann nie neu laden (sonst
+// überschreibt reload() die laufende Navigation).
+let leaving = false
+if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
+  window.addEventListener('pagehide', () => (leaving = true))
+  window.addEventListener('beforeunload', () => (leaving = true))
+  window.addEventListener('pageshow', () => (leaving = false))
+}
+
 const PATTERNS = [
   /Importing a module script failed/i, // Safari
   /Failed to fetch dynamically imported module/i, // Chrome
@@ -27,6 +37,7 @@ export function isChunkLoadError(err: unknown): boolean {
 
 /** Lädt die Seite neu, wenn das nicht gerade erst passiert ist. Gibt true zurück, wenn neu geladen wird. */
 export function reloadForNewVersion(now = Date.now()): boolean {
+  if (leaving) return false
   try {
     const last = Number(sessionStorage.getItem(KEY) ?? 0)
     if (Number.isFinite(last) && now - last < MIN_GAP_MS) return false
