@@ -1,20 +1,22 @@
 /** Streuobstwiese backdrop: meadow, stream, path, hills with a barn. */
 import { memo } from 'react'
+import { useSvgId } from './svgId'
 
 const PATH = 'M50 100 C46 90 40 86 44 78 C48 70 58 68 54 58 C50 50 40 48 46 40 C50 34 52 30 50 22'
 
 export const OrchardBackdrop = memo(function OrchardBackdrop({ stage }: { stage: number }) {
+  const grass = useSvgId('og-grass')
   return (
     <div className="garden-ground orchard-ground" aria-hidden="true" data-stage={stage}>
       <svg className="garden-ground-svg" viewBox="0 0 100 100" preserveAspectRatio="none" focusable="false">
         <defs>
-          <linearGradient id="og-grass" x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id={grass} x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="#a9cf7a" />
             <stop offset="50%" stopColor="#93c167" />
             <stop offset="100%" stopColor="#7fb058" />
           </linearGradient>
         </defs>
-        <rect width="100" height="100" fill="url(#og-grass)" />
+        <rect width="100" height="100" fill={`url(#${grass})`} />
         {/* gentle hill bands */}
         <path d="M0 30 Q30 24 60 30 T100 28 V100 H0z" fill="#ffffff" opacity="0.05" />
         <path d="M0 52 Q40 44 70 52 T100 50 V100 H0z" fill="#ffffff" opacity="0.05" />

@@ -6,6 +6,7 @@
  */
 import { ChapterPath } from './ChapterPaths'
 import { memo, type ReactNode } from 'react'
+import { useSvgId } from './svgId'
 import type { Animals, ArtSpec, BackdropSpec, Flowers, House, Rows, Stones, Tree, Water } from './chapterArtSpecs'
 import type { Season } from './ambient'
 import { moduleTier, sameTierProps } from './tiers'
@@ -520,7 +521,7 @@ export function ChapterWild({ seed = 0 }: { seed?: number }) {
 
 export const ChapterBackdrop = memo(function ChapterBackdrop({ spec, stage }: { spec: BackdropSpec; stage: number }) {
   const [far, mid, near] = spec.grass
-  const id = `cb-${far.slice(1)}`
+  const id = useSvgId('cb-grass')
   return (
     <div className="garden-ground chapter-ground" aria-hidden="true" data-stage={stage}>
       <svg className="garden-ground-svg" viewBox="0 0 100 100" preserveAspectRatio="none" focusable="false">

@@ -3,6 +3,7 @@
  * terraced backdrop with the river.
  */
 import { memo } from 'react'
+import { useSvgId } from './svgId'
 import { moduleTier, sameTierProps } from './tiers'
 import type { Season } from './ambient'
 
@@ -218,17 +219,18 @@ export function VineyardWild({ seed = 0 }: { seed?: number }) {
 }
 
 export const VineyardBackdrop = memo(function VineyardBackdrop({ stage }: { stage: number }) {
+  const slope = useSvgId('vg-slope')
   return (
     <div className="garden-ground vineyard-ground" aria-hidden="true" data-stage={stage}>
       <svg className="garden-ground-svg" viewBox="0 0 100 100" preserveAspectRatio="none" focusable="false">
         <defs>
-          <linearGradient id="vg-slope" x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id={slope} x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="#b9c47a" />
             <stop offset="60%" stopColor="#a3b566" />
             <stop offset="100%" stopColor="#8fa457" />
           </linearGradient>
         </defs>
-        <rect width="100" height="100" fill="url(#vg-slope)" />
+        <rect width="100" height="100" fill={`url(#${slope})`} />
         {/* terraces */}
         {[38, 50, 62, 75, 88].map((y, i) => (
           <g key={y}>

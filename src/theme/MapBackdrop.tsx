@@ -15,6 +15,7 @@ import { GENERATORS } from '../game/generators'
 import type { Ambient } from './ambient'
 import type { FestId } from '../game/fests'
 import { FestDecor, FestSkinDecor } from './FestDecor'
+import { useSvgId } from './svgId'
 
 interface Props {
   /** Number of garden areas angelegt (0–10) */
@@ -290,17 +291,18 @@ function Hecke() {
 
 /** Jägerzaun with a garden gate in the middle. */
 function Zaun() {
+  const pickets = useSvgId('gz-pickets')
   return (
     <svg viewBox="0 0 400 40" preserveAspectRatio="none" focusable="false">
       <defs>
-        <pattern id="gz-pickets" width="14" height="40" patternUnits="userSpaceOnUse">
+        <pattern id={pickets} width="14" height="40" patternUnits="userSpaceOnUse">
           <path d="M2 40 L2 12 L5 7 L8 12 L8 40 Z" fill="#e9dcc2" stroke="#8a7350" strokeWidth="1" />
         </pattern>
       </defs>
       <rect x="0" y="16" width="400" height="4" fill="#cdb98f" />
       <rect x="0" y="28" width="400" height="4" fill="#cdb98f" />
-      <rect x="0" y="0" width="168" height="40" fill="url(#gz-pickets)" />
-      <rect x="232" y="0" width="168" height="40" fill="url(#gz-pickets)" />
+      <rect x="0" y="0" width="168" height="40" fill={`url(#${pickets})`} />
+      <rect x="232" y="0" width="168" height="40" fill={`url(#${pickets})`} />
       {/* open gate */}
       <rect x="166" y="6" width="6" height="34" rx="1.5" fill="#a77d4c" />
       <rect x="228" y="6" width="6" height="34" rx="1.5" fill="#a77d4c" />
@@ -437,6 +439,8 @@ function Particles({ ambient }: { ambient: Ambient }) {
 
 /** Memoized: re-renders only when the stage or ambient mood changes. */
 export const MapBackdrop = memo(function MapBackdrop({ stage, ambient, skin, fest }: Props) {
+  const grass = useSvgId('gg-grass')
+  const light = useSvgId('gg-light')
   return (
     <div className="garden-ground" aria-hidden="true" data-stage={stage}>
       <svg
@@ -446,17 +450,17 @@ export const MapBackdrop = memo(function MapBackdrop({ stage, ambient, skin, fes
         focusable="false"
       >
         <defs>
-          <linearGradient id="gg-grass" x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id={grass} x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" style={{ stopColor: 'var(--g-grass-far)' }} />
             <stop offset="55%" style={{ stopColor: 'var(--g-grass)' }} />
             <stop offset="100%" style={{ stopColor: 'var(--g-grass-near)' }} />
           </linearGradient>
-          <radialGradient id="gg-light" cx="62%" cy="38%" r="70%">
+          <radialGradient id={light} cx="62%" cy="38%" r="70%">
             <stop offset="0%" stopColor="#fffbe0" stopOpacity="0.32" />
             <stop offset="100%" stopColor="#fffbe0" stopOpacity="0" />
           </radialGradient>
         </defs>
-        <rect width="100" height="100" fill="url(#gg-grass)" />
+        <rect width="100" height="100" fill={`url(#${grass})`} />
         {/* mowing stripes */}
         {Array.from({ length: 9 }, (_, i) => (
           <rect
@@ -469,7 +473,7 @@ export const MapBackdrop = memo(function MapBackdrop({ stage, ambient, skin, fes
             opacity="0.045"
           />
         ))}
-        <rect width="100" height="100" fill="url(#gg-light)" />
+        <rect width="100" height="100" fill={`url(#${light})`} />
 
         {/* path edge, then gravel */}
         <g fill="none" strokeLinecap="round" strokeLinejoin="round">

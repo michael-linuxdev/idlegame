@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { moduleTier, sameTierProps } from '../theme/tiers'
+import { moduleTier, sameTierProps as same0 } from '../theme/tiers'
+
+const sameTierProps = (a: Record<string, unknown> & { level: number }, b: Record<string, unknown> & { level: number }) => same0(a, b)
 
 describe('Grafik: Neuzeichnen nur bei Stufenwechsel', () => {
   it('gleiche Stufe, andere Level → kein Neuzeichnen', () => {
