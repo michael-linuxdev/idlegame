@@ -20,6 +20,18 @@ export type Distribution = 'web' | 'store'
 
 export const DISTRIBUTION: Distribution = 'web'
 
+/**
+ * Testphase: Beim ersten Start der installierten App erscheint der Hinweis,
+ * dass die Nutzung aufgezeichnet wird (Playtest-Log, nur auf dem Gerät),
+ * per Häkchen abwählbar (components/TestPhaseNotice.tsx).
+ *
+ * NACH DER TESTPHASE / VOR DEM STORE-START auf false stellen — auch das prüft
+ * src/test/distribution.test.ts, sobald eine Store-Hülle im Repo liegt.
+ * Ganz entfernen: TestPhaseNotice.tsx, game/testPhase.ts, den Eintrag in
+ * App.tsx und `testPhase` in strings.ts löschen.
+ */
+export const TEST_PHASE = true
+
 /** Der Vollbild-Hinweis zum Installieren gehört nur zur Web-Fassung. */
 export function webInstallGateEnabled(dist: Distribution = DISTRIBUTION): boolean {
   return dist === 'web'

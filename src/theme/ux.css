@@ -1508,3 +1508,66 @@ html.pref-calm *::after {
   font-size: 0.8rem;
   color: var(--oc-ink-faint, #4a6340);
 }
+
+/* ——— Testphasen-Hinweis (game/distribution.ts TEST_PHASE) ——— */
+.test-phase-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 95;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+  background: rgba(22, 36, 20, 0.55);
+}
+
+.test-phase {
+  width: 100%;
+  max-width: 440px;
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 1.2rem 1.2rem 1rem;
+  border-radius: 18px;
+  background: #fffaf0;
+  color: var(--oc-ink, #162414);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+}
+
+.test-phase h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.3rem;
+}
+
+.test-phase ul {
+  margin: 0.4rem 0 0.8rem;
+  padding-left: 1.2rem;
+  line-height: 1.45;
+}
+
+.test-phase-check {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2.75rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 12px;
+  background: rgba(95, 158, 69, 0.14);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.test-phase-check input {
+  width: 1.4rem;
+  height: 1.4rem;
+  accent-color: #3f9a3a;
+}
+
+.test-phase-later {
+  margin: 0.6rem 0;
+  font-size: 0.82rem;
+  color: var(--oc-ink-faint, #4a6340);
+}
+
+.test-phase-ok {
+  width: 100%;
+}

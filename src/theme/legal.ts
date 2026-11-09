@@ -33,7 +33,7 @@ export const PRIVACY = {
     },
     {
       heading: 'Playtest-Log',
-      body: 'Das optionale Playtest-Log ist standardmäßig aus. Wenn du es im Menü einschaltest, werden Spielereignisse nur lokal gesammelt; du kannst sie selbst exportieren oder löschen. Es wird nichts automatisch übertragen.',
+      body: 'Während der Testphase wirst du beim ersten Start der installierten App gefragt, ob das Playtest-Log laufen darf (vorausgewählt, per Häkchen abwählbar). Sonst ist es aus und lässt sich im Menü einschalten. Gesammelt wird nur auf deinem Gerät: welche Spielaktionen du wann machst, Sitzungen, Spielzeit und ein Fortschritts-Stand pro Tag. Du kannst das Log jederzeit ausschalten, exportieren oder löschen. Es wird nichts automatisch übertragen.',
     },
     {
       heading: 'Hosting',

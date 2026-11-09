@@ -72,6 +72,20 @@ export const strings = {
     unmuteAria: 'Soundeffekte einschalten',
   },
 
+  // Hinweis zur Testphase beim ersten Start der installierten App (game/distribution.ts TEST_PHASE)
+  testPhase: {
+    title: 'Willkommen in der Testphase',
+    intro: 'Gartenerbe wird gerade getestet. Damit wir das Spiel verbessern können, zeichnet die App auf, wie gespielt wird:',
+    points: [
+      'welche Spielaktionen du wann machst (z. B. Ausbauen, Saisonende, Menü),',
+      'wie lange und wie oft du spielst, dazu ein Fortschritts-Stand pro Tag.',
+      'Alles bleibt auf deinem Gerät. Nichts wird automatisch gesendet — du kannst das Log selbst exportieren und weitergeben.',
+    ],
+    checkbox: 'Aufzeichnung erlauben',
+    later: 'Du kannst das jederzeit ändern: Menü → Einstellungen → Playtest-Log.',
+    confirm: 'Verstanden',
+  },
+
   // Installations-Hinweis beim Start im Browser (nur Web-Fassung, siehe game/distribution.ts)
   installGate: {
     title: 'Zuerst die App installieren',

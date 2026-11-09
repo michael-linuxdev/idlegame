@@ -14,3 +14,4 @@ Es gibt echte Spielstände. Fortschritt darf durch ein Update nie verloren gehen
 
 - Handy/Tablet im Browser zeigt beim Start den Vollbild-Hinweis „Zuerst die App installieren“ (`src/components/InstallGate.tsx`, Logik `src/game/installGate.ts`).
 - **Vor dem App-Store-/Play-Store-Start:** `DISTRIBUTION` in `src/game/distribution.ts` auf `'store'` stellen. `src/test/distribution.test.ts` schlägt fehl, sobald eine Store-Hülle (`capacitor.config.*`, `android/`, `ios/`, `twa-manifest.json`) im Repo liegt und dort noch `'web'` steht. Wie man den Hinweis ganz entfernt, steht in `distribution.ts`.
+- **Testphase:** Beim ersten Start der installierten App muss der Hinweis zur Aufzeichnung (Playtest-Log, abwählbar) bestätigt werden (`src/components/TestPhaseNotice.tsx`). Nach der Testphase bzw. vor dem Store-Start `TEST_PHASE` in `distribution.ts` auf `false` stellen (ebenfalls vom Test erzwungen).
