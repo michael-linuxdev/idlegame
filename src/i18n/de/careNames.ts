@@ -534,4 +534,15 @@ export const careNames: Record<string, readonly [string, string]> = {
   familienpavillon: ['Einrichten', 'Erzählen'],
   aussichtssteg: ['Fegen', 'Führen'],
   eroeffnung: ['Einladen', 'Feiern'],
+  // Kapitel 50 Omas Schrebergarten
+  omasbeet: ['Säen', 'Jäten'],
+  omaskompost: ['Umsetzen', 'Sieben'],
+  omasspirale: ['Schichten', 'Schneiden'],
+  omashecke: ['Pflücken', 'Schneiden'],
+  opasapfel: ['Veredeln', 'Ernten'],
+  omasbienen: ['Füttern', 'Schleudern'],
+  omashuehner: ['Füttern', 'Ausmisten'],
+  altglashaus: ['Lüften', 'Kitten'],
+  omaslaube: ['Streichen', 'Aufschreiben'],
+  omasbank: ['Zusammenrücken', 'Erzählen'],
 }

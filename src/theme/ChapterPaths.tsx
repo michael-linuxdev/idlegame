@@ -6,7 +6,7 @@
 import type { ReactNode } from 'react'
 import { P } from './art/palette'
 
-export type PathStyle = 'track' | 'loop' | 'shore' | 'cross' | 'rondel' | 'switchback' | 'lane' | 'stones' | 'promenade' | 'yard' | 'cloister' | 'axis' | 'nurseryRows' | 'boardwalk' | 'dikeTrack' | 'fliess' | 'flagstones' | 'bulbLanes' | 'canals' | 'forestTrail' | 'patioTiles' | 'montadoTrack' | 'pepperLanes' | 'limestone' | 'roseLanes' | 'terraceSteps' | 'andenSteps' | 'milpaRing' | 'forestZigzag' | 'subakSteps' | 'spiceTrail' | 'oasisRing' | 'cocoaTrail' | 'bushSpiral' | 'fernBoardwalk' | 'kimchiRows' | 'roofRing' | 'schoolZigzag' | 'chipSpiral' | 'seedRing' | 'mulchZigzag' | 'meadowSpiral' | 'courtSteps' | 'farmRows' | 'swapRing' | 'expoRing'
+export type PathStyle = 'track' | 'loop' | 'shore' | 'cross' | 'rondel' | 'switchback' | 'lane' | 'stones' | 'promenade' | 'yard' | 'cloister' | 'axis' | 'nurseryRows' | 'boardwalk' | 'dikeTrack' | 'fliess' | 'flagstones' | 'bulbLanes' | 'canals' | 'forestTrail' | 'patioTiles' | 'montadoTrack' | 'pepperLanes' | 'limestone' | 'roseLanes' | 'terraceSteps' | 'andenSteps' | 'milpaRing' | 'forestZigzag' | 'subakSteps' | 'spiceTrail' | 'oasisRing' | 'cocoaTrail' | 'bushSpiral' | 'fernBoardwalk' | 'kimchiRows' | 'roofRing' | 'schoolZigzag' | 'chipSpiral' | 'seedRing' | 'mulchZigzag' | 'meadowSpiral' | 'courtSteps' | 'farmRows' | 'swapRing' | 'expoRing' | 'omaZigzag'
 
 const NS = { vectorEffect: 'non-scaling-stroke' as const, fill: 'none', strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const }
 
@@ -624,6 +624,19 @@ export function ChapterPath({ style, color }: { style: PathStyle; color: string 
           <Dots pts={[[70, 60], [68, 70], [58, 75]]} n={5} rx={0.9} color={[P.blue, P.pink]} />
         </g>
       )
+    /* Omas Schrebergarten: Kiesweg im Zickzack wie im Garten (Kapitel 1), Trittplatten und Ringelblumen am Rand */
+    case 'omaZigzag': {
+      const pts: [number, number][] = [[50, 100], [50, 90], [44, 80], [56, 70], [42, 60], [58, 50], [42, 40], [54, 30], [50, 22]]
+      const d = 'M' + pts.map((p) => p.join(' ')).join(' L')
+      return (
+        <g>
+          <Way d={d} color={color} w={10} edge="#b8a070" edgeW={2} />
+          <Dots pts={pts} n={16} rx={1.3} color={P.stoneLight} />
+          <Dots pts={pts.map(([x, y]) => [x - 6.5, y] as [number, number])} n={9} rx={0.9} color={[P.orange, P.yellow]} />
+          <Dots pts={pts.map(([x, y]) => [x + 6.5, y] as [number, number])} n={9} rx={0.9} color={[P.lavender, P.white]} />
+        </g>
+      )
+    }
     /* Moorgarten: Bohlenweg in einer Schleife übers dunkle Wasser */
     case 'boardwalk': {
       const d = 'M50 100 L50 86 C80 82 82 62 70 50 C58 38 30 40 24 56 C20 68 40 76 54 66 C62 60 56 52 50 52'

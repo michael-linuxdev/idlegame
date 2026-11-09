@@ -1,6 +1,6 @@
 # Gartenerbe — Roadmap & Produktvermerke
 
-Stand: 2026-11-08 (Update-Runde „Mehr Garten“).
+Stand: 2026-11-09 (Kapitel 13–50 „Omas Saatgutdose“ fertig).
 
 ## Produkt
 
@@ -121,12 +121,20 @@ Werkzeug: `npm run balance -- <engaged|regular|casual> <stunden>` — spielt die
 
 - Ein Kapitel trägt ~6–10 Wochen neue Ziele; Feste erneuern sich jährlich.
 - Ziel: **10–12 große Kapitel** in 5 Jahren (≈ alle 4–6 Monate), dazwischen je ein System-/Fest-Update. Ohne Zwischen-Updates wären ~20 Kapitel nötig.
-- Kapitel 2–49 sind gebaut (Welle 1 von Kapitel 13–50: Gemeinschaftsgarten, Klostergarten, Schlossgarten, Baumschule, Moor- und Heidegarten; Welle 2: Deichgarten, Spreewald, Cottage-Garten, Tulpenfelder, Artischockeninsel, Beerenwald, dazu das Großprojekt „Omas Gartenroute“ für Bogen I; Welle 3: Andalusischer Patio, Korkeichenhain, Paprikafelder, Steinfelder von Aran, Rosental, Pistazienhain auf Ägina, dazu das Großprojekt „Omas Tauschpost“ für Bogen II; Welle 4, Beginn Bogen III „Wo die Samen herkommen“: Kartoffeln der Anden, Milpa in Mexiko, Kaffeewald in Äthiopien, Reisterrassen auf Bali, Gewürzgarten in Kerala; Welle 5, Abschluss Bogen III: Dattel-Oase in Marokko, Kakaogarten in Ghana, Buschgarten in Australien, Farnwald in Neuseeland, Kimchi-Garten in Korea, dazu das Großprojekt „Omas Herkunftsbeet“ für Bogen III; Welle 6, Beginn Bogen IV „Saatgut für morgen“ mit Notizen von Mila: Dachgarten, Schulgarten, Waldgarten, Samenbank, Klimagarten; Welle 7, Abschluss Bogen IV: Wildblumenband, Fassadengarten, Solawi-Hof, Großer Saatguttausch, Weltgartenschau, dazu das Großprojekt „Der Garten für morgen“ für Bogen IV). Plan, Geschichte und Welle für Kapitel 50: `docs/kapitel/plan.md`.
+- **Kapitel 2–50 sind gebaut** (Welle 1 von Kapitel 13–50: Gemeinschaftsgarten, Klostergarten, Schlossgarten, Baumschule, Moor- und Heidegarten; Welle 2: Deichgarten, Spreewald, Cottage-Garten, Tulpenfelder, Artischockeninsel, Beerenwald, dazu das Großprojekt „Omas Gartenroute“ für Bogen I; Welle 3: Andalusischer Patio, Korkeichenhain, Paprikafelder, Steinfelder von Aran, Rosental, Pistazienhain auf Ägina, dazu das Großprojekt „Omas Tauschpost“ für Bogen II; Welle 4, Beginn Bogen III „Wo die Samen herkommen“: Kartoffeln der Anden, Milpa in Mexiko, Kaffeewald in Äthiopien, Reisterrassen auf Bali, Gewürzgarten in Kerala; Welle 5, Abschluss Bogen III: Dattel-Oase in Marokko, Kakaogarten in Ghana, Buschgarten in Australien, Farnwald in Neuseeland, Kimchi-Garten in Korea, dazu das Großprojekt „Omas Herkunftsbeet“ für Bogen III; Welle 6, Beginn Bogen IV „Saatgut für morgen“ mit Notizen von Mila: Dachgarten, Schulgarten, Waldgarten, Samenbank, Klimagarten; Welle 7, Abschluss Bogen IV: Wildblumenband, Fassadengarten, Solawi-Hof, Großer Saatguttausch, Weltgartenschau, dazu das Großprojekt „Der Garten für morgen“ für Bogen IV; Welle 8, Finale: Omas Schrebergarten mit Omas letztem Brief und der einmaligen Abschluss-Szene auf Omas Bank). Plan und Geschichte: `docs/kapitel/plan.md`, Überblick: `docs/kapitel/abschluss-bericht.md`.
 - Freischaltung staffeln über Prestige-Ebenen (Tiefer Winter / Generation N), damit jedes Kapitel ein neues Ziel nach einem Reset ist.
+
+## Nächste Schritte nach Kapitel 50 (Stand 2026-11-09)
+
+1. **Playtest-Auswertung:** Logs der zwei Tester (Menü → Export JSONL) auswerten: Wo hängen sie, welche Fenster werden übersprungen, wie lange dauern Saisons und Kapitel wirklich? Ergebnisse gegen die Simulator-Taktung (`docs/kapitel/plan.md` „Taktung“) legen.
+2. **Balance mit echten Kapiteln:** Der Simulator rechnet Kapitel 13–50 mit Ilse als einzigem Baumeister. Mit echten Ständen prüfen, ob Kapitel 13 im Monat 9–12 kommt und ob der Abstand 4–6 Wochen hält; Garten-Bonus der Kapitel (×300 nach 5 Jahren) im Auge behalten.
+3. **Prüfbedürftige Stellen ersetzen:** Fremdsprachige Grüße, nachzuprüfende Zahlen und Bräuche in Kapitel 13–49 werden in einem eigenen Durchgang durch Aussagen ersetzt, die kein Gegenlesen brauchen.
+4. **Grafik-Feinschliff:** Bereichsgrafiken sind auf der Karte klein; einzelne Motive (Kapitel 40–50) brauchen kräftigere Silhouetten, der Horizont liegt teils hinter der Kopfleiste. Grafikbögen in `scripts/e2e/art-baseline/` durchsehen.
+5. **Leistung:** 50 Kapitel-Bündel werden nachgeladen; Ladezeit auf älteren Handys messen (Kapitel-Grafik, Tierleben-CSS), Leistungsgrenze Hauptgarten (1500 SVG-Elemente) gilt auch als Richtwert für Kapitel-Karten.
+6. **Store-Vorbereitung:** Texte in `docs/store/texte.md` (de + en) mit `listing.md`/`listing.en.md` abgleichen, Screenshots mit späten Kapiteln ergänzen, Markenrecherche, `DISTRIBUTION = 'store'` und `TEST_PHASE = false`, echte Käufe (`STORE_ENABLED`) erst mit Store-Anbindung.
 
 ## Ideen-Backlog (nächste Updates)
 
-- Kapitel 18–50 in Wellen nach `docs/kapitel/plan.md` (nächste: Welle 2, Kapitel 18–23).
 - Echter Online-Wettbewerb für den Kürbis (mit Multiplayer-Backend).
 - Ilse-/Jonas-Geschichten als kurze Briefe im Notizbuch.
 - Gartenstile für Kapitel-Karten.

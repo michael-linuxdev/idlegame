@@ -119,7 +119,7 @@ function PlotSheet({ game, current, onGo, onClose }: { game: GameApi; current: P
             </li>
           ) : (
             <li className="plot-row locked">
-              <span className="plot-row-name">{t.chapterUi.moreSoon}</span>
+              <span className="plot-row-name">{t.chapterUi.allFound}</span>
             </li>
           )}
         </ul>

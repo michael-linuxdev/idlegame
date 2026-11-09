@@ -222,6 +222,7 @@ export const expansionStrings = {
       solawihof: ['Shares', 'Rotation'],
       saatguttausch: ['Swapping', 'Stories'],
       weltgartenschau: ['Guests', 'Beds'],
+      omasgarten: ['Remembering', 'Passing on'],
     } as Record<string, readonly [string, string]>,
     growPer: '+6 % per rank',
     thriftPer: '−4 % cost per rank',
@@ -247,9 +248,25 @@ export const expansionStrings = {
     goal: (name: string) => `Tend: ${name}`,
     goalPlant: (name: string) => `Plant: ${name}`,
     unlockedToast: (n: number, name: string) => `Chapter ${n} unlocked: ${name}!`,
-    moreSoon: 'More gardens are on their way.',
+    /** All 50 chapters open (plots, collection, deep winter) */
+    allFound: 'Every packet has found its garden. Grandma’s tin is empty, and the garden keeps growing.',
+    /** Collection, while chapters are still missing */
+    lastChapter: 'Chapter 50 closes the circle.',
     /** From Arc IV on, Mila writes in Grandma's notebook */
     noteLabelMila: 'From Grandma’s notebook · Mila',
+    /** Closing scene once chapter 50 is fully planted (once) */
+    finale: {
+      eyebrow: 'Chapter 50 · Back to the beginning',
+      title: 'Everyone on Grandma’s bench',
+      body: [
+        'The bench has grown long enough. Jonas and Mila, Lena and Till, Ilse and everyone who ever wrote a letter shuffle up to make room.',
+        'The tin is empty. Just one packet is left on the bench. It has no address on it, only: For you.',
+        'A garden is never finished, Grandma always said.',
+      ],
+      packet: 'For you',
+      sceneAria: 'Every generation of the family on Grandma’s bench in front of the arbour: Grandma, Ilse, Jonas, Mila, Lena and Till. In front of them, the empty tin and a packet that says “For you”.',
+      cta: 'Keep gardening',
+    },
   },
 
   chapters: {

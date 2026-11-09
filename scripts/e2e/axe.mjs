@@ -28,15 +28,15 @@ async function waitForServer() {
 
 const violations = []
 
-async function audit(p, name) {
+async function audit(p, name, within) {
   await p.waitForTimeout(400)
   await p.addScriptTag({ content: AXE })
   const tags = (process.env.AXE_TAGS || 'wcag2a,wcag2aa,wcag21a,wcag21aa').split(',')
-  const res = await p.evaluate(async (tags) => {
+  const res = await p.evaluate(async ([tags, within]) => {
     // eslint-disable-next-line no-undef
-    const r = await axe.run(document, { runOnly: { type: 'tag', values: tags } })
+    const r = await axe.run(within ? document.querySelector(within) : document, { runOnly: { type: 'tag', values: tags } })
     return r.violations.map((v) => ({ id: v.id, impact: v.impact, nodes: v.nodes.slice(0, 20).map((n) => n.target.join(' ')) }))
-  }, tags)
+  }, [tags, within])
   for (const v of res) violations.push(`${name}: ${v.id} (${v.impact}) ${v.nodes.join(' | ')}`)
   return res.length
 }
@@ -50,7 +50,10 @@ try {
     await ctx.addInitScript(() => {
       if (sessionStorage.getItem('seed')) return
       const owned = { gemuesebeet: 60, kompost: 40, kraeuterspirale: 30, beerenhecke: 20, obstwiese: 10, bienenstock: 5 }
-      localStorage.setItem('gartenerbe-spielstand-v1', JSON.stringify({ owned, ernte: 3e6, ernteSeason: 4e6, saisonenden: 4, erbstuecke: 900, samen: 400, lastSeen: Date.now(), saveVersion: 1 }))
+      // Kapitel 50 ganz angelegt → die Abschluss-Szene wird am Ende mitgeprüft
+      const omas = ['omasbeet', 'omaskompost', 'omasspirale', 'omashecke', 'opasapfel', 'omasbienen', 'omashuehner', 'altglashaus', 'omaslaube', 'omasbank']
+      const omasgarten = { cur: 0, curLifetime: 1, owned: Object.fromEntries(omas.map((a) => [a, 10])), openedAt: 1, introSeen: true }
+      localStorage.setItem('gartenerbe-spielstand-v1', JSON.stringify({ owned, ernte: 3e6, ernteSeason: 4e6, saisonenden: 4, erbstuecke: 900, samen: 400, lastSeen: Date.now(), saveVersion: 1, chapters: { omasgarten } }))
       localStorage.setItem('gartenerbe-ftue-v1', JSON.stringify({ beat: 'done', dismissed: true, completed: [], startedAt: 1 }))
       localStorage.setItem('gartenerbe-install-v1', JSON.stringify({ dismissed: true, installed: false, shown: true }))
       localStorage.setItem('gartenerbe-hints-v1', JSON.stringify(['season', 'truhe', 'deep', 'visitor', 'order', 'variety', 'weekly']))
@@ -86,6 +89,12 @@ try {
     await p.locator('.nav-menu-item').first().click()
     await p.waitForTimeout(500)
     n += await audit(p, `${lang} notebook`)
+    await p.keyboard.press('Escape')
+    // Nur Kapitel 50 ist offen: der Knopf an der Seite führt direkt hin
+    await p.locator('.map-side .plot-switch').last().click()
+    await p.locator('.abschluss-scene').waitFor()
+    // Nur das offene Fenster: die Karte dahinter ist durch aria-modal verdeckt
+    n += await audit(p, `${lang} abschluss`, '.abschluss-scene')
     console.log(`${lang}: ${n} Verstöße`)
     await ctx.close()
   }

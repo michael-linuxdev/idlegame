@@ -174,6 +174,7 @@ export function parseExpansion(parsed: Record<string, unknown>): ExpansionSlice 
     ilseCarryMs: 0,
     weinleseAt: parseNum(parsed.weinleseAt),
     tieferWinterAt: parseNum(parsed.tieferWinterAt),
+    abschlussSeen: parsed.abschlussSeen === true,
     milestoneRecord: parseNumRecord(parsed.milestoneRecord),
     lastChest: null,
     recipe: parseRecipe(parsed.recipe),

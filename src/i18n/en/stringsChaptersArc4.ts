@@ -2,8 +2,10 @@
  * English copy for Arc IV “Seeds for Tomorrow” (chapters 40–49): the next
  * generation takes over. Grandma’s seed tin is almost empty, and Mila (Jonas’s
  * daughter) fills it again with seeds from the gardens of the future. From here
- * on the area notes are Mila’s, written in Grandma’s notebook. Same shape as
- * stringsChapters.ts; spread in stringsExpansion.ts.
+ * on the area notes are Mila’s, written in Grandma’s notebook. Plus the finale
+ * (chapter 50, Grandma’s allotment): letter and notes by Grandma herself, the
+ * last packet from the tin. Same shape as stringsChapters.ts; spread in
+ * stringsExpansion.ts.
  */
 
 interface Area {
@@ -318,6 +320,37 @@ export const arc4ChapterStrings = {
       familienpavillon: a('Our Pavilion', 'Letters, notebook, pictures.', '“Our pavilion has pictures of five generations. Right at the front there’s one of Grandma, with a spade and a straw hat.”'),
       aussichtssteg: a('Skywalk', 'A walkway high above the expo.', '“From up there you can see the moor, the cranes by the rooftop garden and Till’s fields. Almost everything we’ve planted together.”'),
       eroeffnung: a('Opening Day', 'All the gardens celebrate together.', '“At the opening Dr. Grün gave a very short speech. Then she picked up the pruning shears and cut the ribbon.”'),
+    },
+  },
+  /* —— Finale: Back to the Beginning (chapter 50) —— */
+  omasgarten: {
+    title: 'Grandma’s Allotment',
+    currency: 'Memories',
+    chip: 'Beginning',
+    to: 'Back to the beginning',
+    teaser: 'Chapter 50: Grandma’s allotment — from the middle of the 29th generation, once the opening day begins at the world garden expo.',
+    intro: {
+      title: 'The last packet',
+      body: [
+        'My dear grandchild,',
+        'if you are reading this letter, the tin is empty. Every packet has found its way: to Jonas in the backyard, to Frauke on the dike, all across Europe and all the way to the other side of the world. And from there the seeds came back, with new names on them. That was how it was meant to be.',
+        'This last packet has no address on it. It is for you. Inside are radishes from my very first bed. I was very young then, the plot was one big tangle of brambles, and a neighbor passed me the seeds over the fence. Ever since, I have let a few radishes flower every year and packed up the seeds again.',
+        'Sow them where it all began. Lay out the bed again, the compost, Grandpa’s apple tree and the bench in front of the arbour. Seed never belongs to just one person. You keep it for a while, and then you pass it on.',
+        'I am very proud of you. Love, Grandma',
+      ],
+      cta: 'Open the packet',
+    },
+    areas: {
+      omasbeet: a('First Bed', 'Radishes, just like back then.', '“My first bed was crooked and far too small. The radishes didn’t mind.”'),
+      omaskompost: a('Compost Heap', 'Three boards and lots of patience.', '“Grandpa knocked the first compost bin together from old boards. It lasted thirty years, the compost longer than the boards.”'),
+      omasspirale: a('Herb Spiral', 'Stones from the edge of the field.', '“I fetched the stones from the field in the baby carriage. Your mother sat on top and sang.”'),
+      omashecke: a('Berry Hedge', 'Currants for nibbling.', '“The first currants were picked by a pair of blackbirds. The next year I planted more, for the blackbirds and for us.”'),
+      opasapfel: a('Grandpa’s Apple Tree', 'A little tree, barely hip-high.', '“Grandpa planted the apple tree for our wedding. In the first year it bore exactly one apple. We shared it.”'),
+      omasbienen: a('Bee Box', 'Grandpa’s first bees.', '“Grandpa had more respect for the bees than for anything else. He still put on his beekeeper hat every summer.”'),
+      omashuehner: a('Chicken Coop', 'Three hens and a rooster.', '“Our first hens were named after my aunts. The aunts found that less funny than we did.”'),
+      altglashaus: a('Old Greenhouse', 'Built from old windows.', '“We built the greenhouse from windows the neighbor wanted to get rid of. Every one had a different frame.”'),
+      omaslaube: a('Arbour', 'This is where the notebook lives.', '“In the arbour I labeled the very first packet. Back then the tin still stood empty on the shelf.”'),
+      omasbank: a('Grandma’s Bench', 'Room for everyone.', '“A garden bench is for those who want to sit after work, and for those who listen. Make it long enough.”'),
     },
   },
 } as const

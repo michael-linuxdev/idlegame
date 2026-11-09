@@ -1,0 +1,79 @@
+/* Abschluss-Szene Kapitel 50 (components/AbschlussScene.tsx) */
+.season-ceremony.abschluss-scene {
+  background: linear-gradient(180deg, #f3c98b 0%, #f7e2b8 45%, #cfe6b4 100%);
+  cursor: default;
+  overflow-y: auto;
+  /* Karte höher als der Schirm: oben anfangen, damit nichts unerreichbar abgeschnitten wird */
+  align-items: flex-start;
+}
+
+.abschluss-card {
+  margin: auto 0;
+  text-align: center;
+}
+
+.abschluss-card h2 {
+  margin: 0.2rem 0 0.6rem;
+  font-family: var(--ge-font-display);
+  font-size: 1.5rem;
+  color: #33261a;
+}
+
+.abschluss-card p {
+  margin: 0 0 0.45rem;
+  font-size: 0.95em;
+  line-height: 1.4;
+}
+
+.abschluss-art {
+  margin: 0 auto 0.8rem;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1.5px solid #c9b48a;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+}
+
+.abschluss-art svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.abschluss-card .btn {
+  margin-top: 0.4rem;
+}
+
+.abschluss-light {
+  animation: abschluss-twinkle 3.2s ease-in-out infinite;
+}
+
+.abschluss-light:nth-child(even) {
+  animation-delay: -1.6s;
+}
+
+.abschluss-firefly {
+  animation: abschluss-drift 5s ease-in-out infinite;
+}
+
+@keyframes abschluss-twinkle {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
+@keyframes abschluss-drift {
+  0%, 100% { transform: translate(0, 0); opacity: 0.25; }
+  50% { transform: translate(2px, -3px); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .season-ceremony.abschluss-scene,
+  .abschluss-card,
+  .abschluss-light,
+  .abschluss-firefly {
+    animation: none !important;
+  }
+
+  .abschluss-firefly {
+    opacity: 0.8;
+  }
+}

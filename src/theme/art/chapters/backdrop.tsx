@@ -9,6 +9,7 @@ import { GroundExtrasArc1, HorizonExtrasArc1 } from './backdropArc1'
 import { GroundExtrasArc2, HorizonExtrasArc2 } from './backdropArc2'
 import { GroundExtrasArc3, HorizonExtrasArc3 } from './backdropArc3'
 import { GroundExtrasArc4, HorizonExtrasArc4 } from './backdropArc4'
+import { GroundExtrasFinale, HorizonExtrasFinale } from './backdropFinale'
 
 export const ChapterBackdrop = memo(function ChapterBackdrop({ spec, stage }: { spec: BackdropSpec; stage: number }) {
   const [far, mid, near] = spec.grass
@@ -198,6 +199,7 @@ export const ChapterBackdrop = memo(function ChapterBackdrop({ spec, stage }: { 
         <GroundExtrasArc2 spec={spec} />
         <GroundExtrasArc3 spec={spec} />
         <GroundExtrasArc4 spec={spec} />
+        <GroundExtrasFinale spec={spec} stage={stage} />
         {spec.water === 'lake' ? <ellipse cx="50" cy="62" rx="16" ry="7" fill={P.water} opacity="0.9" /> : null}
         {spec.water === 'river' ? (
           <path d="M100 58 C90 64 96 72 86 78 C78 84 84 92 76 100" stroke={P.water} strokeWidth="14" fill="none" vectorEffect="non-scaling-stroke" />
@@ -335,6 +337,7 @@ export const ChapterBackdrop = memo(function ChapterBackdrop({ spec, stage }: { 
           <HorizonExtrasArc2 spec={spec} />
           <HorizonExtrasArc3 spec={spec} />
           <HorizonExtrasArc4 spec={spec} />
+          <HorizonExtrasFinale spec={spec} stage={stage} />
           {spec.provence ? (
             <g>
               {[40, 60, 76, 340, 360].map((x, i) => (

@@ -28,6 +28,7 @@ export {
 export {
   chapterOpen,
   openChapters,
+  abschlussDue,
   syncChaptersOpen,
   chapterRateMult,
   chapterPerSecond,

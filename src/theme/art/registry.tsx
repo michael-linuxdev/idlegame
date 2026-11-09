@@ -54,6 +54,7 @@ import fassadengarten from './kapitel/fassadengarten'
 import solawihof from './kapitel/solawihof'
 import saatguttausch from './kapitel/saatguttausch'
 import weltgartenschau from './kapitel/weltgartenschau'
+import omasgarten from './kapitel/omasgarten'
 import type { ChapterArtEntry } from './kapitel/types'
 
 export type { AreaArtProps, ChapterArtEntry } from './kapitel/types'
@@ -107,4 +108,5 @@ export const ART_REGISTRY: Record<ChapterId, ChapterArtEntry> = {
   solawihof,
   saatguttausch,
   weltgartenschau,
+  omasgarten,
 }

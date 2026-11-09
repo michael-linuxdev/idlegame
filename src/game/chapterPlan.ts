@@ -8,8 +8,7 @@
  * `SIM_ALL_CHAPTERS` alle 50 ein, um die Taktung über fünf Jahre zu messen.
  *
  * Bereichs-IDs gehören zum Speicherformat, sobald ein Kapitel veröffentlicht
- * ist. Für noch nicht gebaute Kapitel sind es Platzhalter (`<id>_1` …), die
- * mit der Welle ersetzt werden.
+ * ist (seit Welle 8 alle 50 Kapitel) — nie umbenennen.
  */
 
 export type SlotLayout = 'ZIGZAG' | 'RING' | 'TERRACES' | 'ROWS' | 'SPIRAL'
@@ -23,9 +22,7 @@ export interface PlannedChapter {
 }
 
 /** Bis zu diesem Kapitel ist alles gebaut (Texte, Grafik) und im Spiel. */
-export const RELEASED_UP_TO = 49
-
-const placeholder = (id: string) => Array.from({ length: 10 }, (_, i) => `${id}_${i + 1}`)
+export const RELEASED_UP_TO = 50
 
 export const PLANNED_CHAPTERS: readonly PlannedChapter[] = [
   // Bogen I — Nach der Schau
@@ -70,7 +67,7 @@ export const PLANNED_CHAPTERS: readonly PlannedChapter[] = [
   { id: 'saatguttausch', number: 48, layout: 'RING', areas: ['tauschtische', 'sortenschau', 'erzaehlzelt', 'briefstation', 'samenwerkstatt', 'pflanzenboerse', 'weltkueche', 'musikbuehne', 'archivwagen', 'abschlussrunde'] },
   { id: 'weltgartenschau', number: 49, layout: 'RING', areas: ['europabeete', 'weltbeete', 'zukunftshalle', 'gondelbahn', 'wasserlichter', 'saatguttempel', 'kinderwald', 'familienpavillon', 'aussichtssteg', 'eroeffnung'] },
   // Finale
-  { id: 'omasgarten', number: 50, layout: 'ZIGZAG', areas: placeholder('omasgarten') },
+  { id: 'omasgarten', number: 50, layout: 'ZIGZAG', areas: ['omasbeet', 'omaskompost', 'omasspirale', 'omashecke', 'opasapfel', 'omasbienen', 'omashuehner', 'altglashaus', 'omaslaube', 'omasbank'] },
 ]
 
 /** Bogen (Abschnitt) eines Kapitels — für Gruppierung in Grundstücke/Sammlung. */

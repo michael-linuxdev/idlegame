@@ -53,6 +53,11 @@ export function useChapterActions({ setState, stateRef }: UseChapterActionsDeps)
     setState((s) => ({ ...s, chapters: { ...s.chapters, [id]: { ...s.chapters[id], introSeen: true } } }))
   }, [setState])
 
+  /** Abschluss-Szene von Kapitel 50 gesehen (einmalig, gespeichert). */
+  const seeAbschluss = useCallback(() => {
+    setState((s) => (s.abschlussSeen ? s : { ...s, abschlussSeen: true }))
+  }, [setState])
+
   /** Test hook (?kapitel2=1 / ?kapitel3=1): open a chapter right away. */
   const forceChapter = useCallback((id: ChapterId) => {
     setState((s) => syncChaptersOpen(s, Date.now(), id))
@@ -96,5 +101,5 @@ export function useChapterActions({ setState, stateRef }: UseChapterActionsDeps)
     })
   }, [setState])
 
-  return { buyChapter, buyChapterBulk, buyChapterCareRank, seeChapterIntro, forceChapter, hireIlse, switchIlse, weinlese, ackChest, cookRecipe, tapRainbow, wish, claimPumpkin, buyFest }
+  return { buyChapter, buyChapterBulk, buyChapterCareRank, seeChapterIntro, seeAbschluss, forceChapter, hireIlse, switchIlse, weinlese, ackChest, cookRecipe, tapRainbow, wish, claimPumpkin, buyFest }
 }

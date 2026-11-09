@@ -70,6 +70,7 @@ export type ChapterId =
   | 'solawihof'
   | 'saatguttausch'
   | 'weltgartenschau'
+  | 'omasgarten'
 
 export interface AreaDef {
   id: string

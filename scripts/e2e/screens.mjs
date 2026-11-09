@@ -159,7 +159,12 @@ try {
     for (let i = 0; i < items; i++) {
       // Jedes Fenster frisch öffnen (manche, z. B. der Foto-Modus, schließen nicht per Escape)
       await p.goto(URL + q + '&kapitel=all&fest=advent')
-      await p.locator('.garden-map').waitFor()
+      // Selten bleibt die Seite nach dem Foto-Modus leer (Module abgebrochen, Service Worker aktiv): einmal neu laden
+      if (!(await p.locator('.garden-map').waitFor({ timeout: 15_000 }).then(() => true, () => false))) {
+        console.log(`Hinweis: leere Seite vor Fenster ${i}, lade neu`)
+        await p.reload()
+        await p.locator('.garden-map').waitFor()
+      }
       await p.locator('.menu-fab').click()
       await p.locator('.nav-sheet').waitFor()
       const item = p.locator('.nav-menu-item').nth(i)
@@ -191,6 +196,26 @@ try {
     await p.locator('.garden-plot').first().click()
     await p.locator('.upgrade-hud').waitFor().catch(() => {})
     await check(p, 'chapter-upgrade')
+    await ctx.close()
+  }
+
+  // Kapitel 50: Omas letzter Brief, Karte, Abschluss-Szene
+  {
+    const omas = ['omasbeet', 'omaskompost', 'omasspirale', 'omashecke', 'opasapfel', 'omasbienen', 'omashuehner', 'altglashaus', 'omaslaube', 'omasbank']
+    const owned = Object.fromEntries(omas.map((a) => [a, 10]))
+    const { ctx, p } = await seeded({ chapters: { omasgarten: { cur: 0, curLifetime: 1, owned, openedAt: 1, introSeen: false } } })
+    await p.goto(URL + q)
+    await p.locator('.garden-map').waitFor()
+    // Nur Kapitel 50 ist offen: der Knopf an der Seite führt direkt hin
+    await p.locator('.map-side .plot-switch').last().click()
+    await p.locator('.orchard-intro').waitFor()
+    await check(p, 'chapter50-letter')
+    await p.locator('.orchard-intro .btn').click()
+    await p.locator('.abschluss-scene').waitFor()
+    await check(p, 'chapter50-finale')
+    await p.locator('.abschluss-scene .btn').click()
+    await p.waitForTimeout(400)
+    await check(p, 'chapter50-map')
     await ctx.close()
   }
 

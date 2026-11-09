@@ -31,6 +31,18 @@ export function openChapters(state: GameState): ChapterId[] {
   return CHAPTERS.filter((c) => chapterOpen(state, c.id)).map((c) => c.id)
 }
 
+/**
+ * Abschluss-Szene (nur Darstellung): sobald Kapitel 50 vollständig angelegt ist
+ * (letzter Bereich gepflanzt) und der Brief gelesen wurde — einmalig.
+ */
+export function abschlussDue(state: GameState): boolean {
+  if (state.abschlussSeen) return false
+  const c = state.chapters.omasgarten
+  if (!c || c.openedAt <= 0 || !c.introSeen) return false
+  const last = chapterDef('omasgarten').areas.at(-1)!
+  return (c.owned[last.id] ?? 0) >= 1
+}
+
 /** Opens every chapter whose rule is met (or `force`, test hook). */
 export function syncChaptersOpen(state: GameState, now = Date.now(), force?: ChapterId): GameState {
   let chapters = state.chapters

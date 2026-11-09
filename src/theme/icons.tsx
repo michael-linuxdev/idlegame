@@ -799,6 +799,16 @@ export function IconChapterCurrency({ chapter }: { chapter: string }) {
           <path d="M12 5c0 -2 2 -3 4 -3c0 2 -2 3 -4 3z" fill="#5f9e45" stroke="#3f7a30" strokeWidth=".6" />
         </Svg>
       )
+    case 'omasgarten': // Erinnerungen: Omas Dose mit einem Tütchen
+      return (
+        <Svg>
+          <rect x="4" y="11" width="16" height="9" rx="1.2" fill="#3f7a30" stroke="#2e4a2a" strokeWidth="1" />
+          <rect x="3.4" y="9" width="17.2" height="2.6" rx=".8" fill="#c9a227" stroke="#8a6a40" strokeWidth=".8" />
+          <circle cx="12" cy="15.6" r="2" fill="#d7263d" />
+          <path d="M14 9.4V3.6l.8 -.8h4.4l.8 .8v5.8" fill="#fff6dc" stroke="#8a6a40" strokeWidth=".9" />
+          <path d="M15.6 5.2h3M15.6 6.8h2" stroke="#8a6a40" strokeWidth=".7" />
+        </Svg>
+      )
     default: // Gartenschau: Besucher-Medaille
       return (
         <Svg>

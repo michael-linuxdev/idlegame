@@ -76,7 +76,7 @@ export function CollectionSheet({ game, onClose }: { game: GameApi; onClose: () 
           })}
           <li className="locked">
             <span className="collection-chapter-text">
-              <small>{t.chapterUi.moreSoon}</small>
+              <small>{CHAPTERS.every((c) => game.openChapters.includes(c.id)) ? t.chapterUi.allFound : t.chapterUi.lastChapter}</small>
             </span>
           </li>
         </ul>
