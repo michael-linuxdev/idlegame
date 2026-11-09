@@ -22,7 +22,10 @@ npm run build
 npm run preview
 npm run lint
 npm run build && npm run e2e               # Playwright-Durchlauf (Start, Saisonende, Notizbuch, Spielstand, UX-Layout)
-                                           #   Screenshots landen in e2e-screens/
+                                           #   + Grafik-Vergleich (?artsheet gegen scripts/e2e/art-baseline/,
+                                           #   höchstens 1.500 SVG-Elemente im Hauptgarten); Screenshots/Diffs in e2e-screens/
+npm run build && npm run art:update        # Vergleichsbilder nach gewollter Grafik-Änderung erneuern
+node scripts/art/shots.mjs <ordner>        # Spielfeld-Screenshots Tag/Abend/Nacht + 4 Jahreszeiten
 npm test                                   # Vitest (Format, Balance-Formeln, Gartenjahre, Notizbuch)
 SUMMARY=1 npm run balance -- regular 336   # Balance-Simulator (engaged | regular | casual, Stunden)
 python3 scripts/generate-pwa-icons.py   # App-Icons neu erzeugen (Pillow)
@@ -34,6 +37,7 @@ python3 scripts/generate-pwa-icons.py   # App-Icons neu erzeugen (Pillow)
 |---|---|
 | `src/game/` | Spielkern: Wirtschaft, Module, Prestige, Tagesziele, Events, Speicherstand |
 | `src/theme/` | Gartenerbe-Präsentation: Texte (`strings.ts`), Farben (`tokens.css`), Karte (`MapBackdrop`, `PlotArt`), Modulgrafik mit 5 Ausbaustufen (`ModuleArt`), Icons, Schriften, Stimmung (`ambient.ts`), Styles (`garden.css`, `hud.css`, `polish.css`) |
+| `src/theme/art/` | Spielgrafik-Fundament: Farbpalette (`palette.ts`), Bausteine mit Stilregel und Maßtabelle (`parts/`), Bereiche je Datei (`garden/`, `chapters/`), Kapitel-Grafikliste (`registry.tsx`). Übersicht aller Grafiken: `index.html?artsheet` |
 | `src/components/` | UI: `GardenMap` + `hud/` (Ziel, Event-Leiste, Gießen/Ernten, Boni, Willkommen), `AppNav` (untere Leiste + Menü), Sheets, Panels |
 | `src/game/overlays.ts` | Fenster-Regeln: offenes Fenster erkennen, Escape/Zurück schließt das oberste |
 | `src/theme/ux.css` | Gemeinsame Bausteine der UX-Runde (×-Knopf, Leiste, Menü, Breitbild, Einstellungen) |
