@@ -487,11 +487,3 @@ export function IconCheck({ className }: { className?: string }) {
   )
 }
 
-/** Menü (drei Striche); Farbe über currentColor */
-export function IconMenu({ className }: { className?: string }) {
-  return (
-    <Svg className={`g-icon-mono${className ? ` ${className}` : ''}`}>
-      <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
-    </Svg>
-  )
-}

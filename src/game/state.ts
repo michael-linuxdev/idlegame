@@ -12,7 +12,7 @@ export {
   effectiveClanMult,
   syncClanBoost,
   syncYieldBoost,
-  syncBattlePass,
+  syncGartenwoche,
   syncMonetization,
   effectiveYieldBoostMult,
   eventProductionMult,
@@ -99,7 +99,7 @@ export {
   dismissFlashEvent,
   claimFlashEventGoal,
 } from './state/events'
-export { nextPrestigeErbstuecke, canPrestigeNow, prestigeProgress, applyTick } from './state/tick'
+export { canPrestigeNow, prestigeProgress, applyTick } from './state/tick'
 export {
   skipHoursRemaining,
   buyTimeSkip,
@@ -125,8 +125,8 @@ export {
   countSession,
   waterRefillsLeft,
   refillWateringCan,
-  claimBattlePassDailyXp,
-  claimBattlePassTier,
+  claimGartenwocheDailyXp,
+  claimGartenwocheTier,
 } from './state/market'
 export type { RewardedAdResult } from './state/market'
 export { applyOfflineCatchup, creditOfflinePending, claimOfflineReward } from './state/offline'

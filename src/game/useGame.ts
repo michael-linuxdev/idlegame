@@ -158,8 +158,8 @@ export function useGame() {
     watchRewardedAd,
     claimGift,
     buyWaterRefill,
-    claimBpDailyXp,
-    claimBpTier,
+    gartenwocheClaimXp,
+    gartenwocheClaimTier,
     claimDaily,
     dismissEvent,
     claimEventGoal,
@@ -201,7 +201,7 @@ export function useGame() {
   const adCooldownMs = state.adsRemoved
     ? 0
     : rewardedAdCooldownMsLeft(state.lastRewardedAdAt, nowTick)
-  const bpDailyXpReady = state.gartenwocheXpDay !== dayKey(nowTick)
+  const gartenwocheXpReady = state.gartenwocheXpDay !== dayKey(nowTick)
 
   const dailyReady = canClaimDaily(state.dailyClaimDay, nowTick)
   const dailyPreview = previewDailyReward(
@@ -381,7 +381,7 @@ export function useGame() {
     yieldBoostMult,
     adReady,
     adCooldownMs,
-    bpDailyXpReady,
+    gartenwocheXpReady,
     skipHoursRemaining: skipLeft,
     equippedCosmetic: equipped,
     nextPrestige: erbstueckePayout(state.ernteSeason, state.saisonenden, isProbeYear(state)),
@@ -424,8 +424,8 @@ export function useGame() {
     giftReady: marketGiftReady(state, nowTick),
     albumReady: albumReadyCount(state, nowTick),
     buyWaterRefill,
-    claimBpDailyXp,
-    claimBpTier,
+    gartenwocheClaimXp,
+    gartenwocheClaimTier,
     claimDaily,
     dismissEvent,
     claimEventGoal,

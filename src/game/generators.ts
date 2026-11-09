@@ -22,7 +22,6 @@ export type GeneratorId =
   | 'hofladen'
   | 'orangerie'
 
-
 export type EconomyId =
   | 'G1'
   | 'G2'
@@ -207,9 +206,6 @@ export const GENERATORS: GeneratorDef[] = [
 
 export const GENERATOR_IDS: GeneratorId[] = GENERATORS.map((g) => g.id)
 
-/** @deprecated alias — prefer GENERATOR_IDS */
-export const MVP_GENERATOR_IDS = GENERATOR_IDS
-
 /** Cost to buy level n → n+1: C(n) = C0 · g^n */
 export function generatorCost(def: GeneratorDef, owned: number, discountMult = 1): number {
   const raw = def.baseCost * Math.pow(def.costScale, owned) * discountMult
@@ -276,18 +272,6 @@ export function isGeneratorUnlocked(
     if (!requires || (owned[requires.id] ?? 0) >= 1) return true
   }
   return false
-}
-
-/** Legacy helper */
-export function isUnlocked(
-  def: GeneratorDef,
-  ernteSeason: number,
-  kompostVomVorjahr: boolean,
-  owned: Record<GeneratorId, number> = {} as Record<GeneratorId, number>,
-  playerLevel = 1,
-  saisonenden = 0,
-): boolean {
-  return isGeneratorUnlocked(def, ernteSeason, owned, kompostVomVorjahr, playerLevel, saisonenden)
 }
 
 /** Gartenjahr still missing for this corner (0 = no season gate left). */

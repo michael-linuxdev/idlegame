@@ -55,6 +55,7 @@ Der alte Schlüssel wird nicht gelöscht und nicht gelesen. Andere Schlüssel (N
 | `bpClaimedPremium` | `gartenwocheClaimedPremium` | |
 | `bpDailyXpDay` | `gartenwocheXpDay` | |
 | `ownedOfferIds`: `obsidian50/150/500` | `samen50/150/500` | Samen-Päckchen |
+| Angebots-ID `battlePassPremium` (Wert) | `gartenwochePlus` | Gartenwoche Premium |
 | Fenster-ID `bw-JJJJ-MM-TT` (Wert) | `ef-JJJJ-MM-TT` | Erntefest |
 | `quests[].kind`: `earnAsh` (Wert) | `earnErnte` | Tagesaufgabe „Ernte sammeln“ |
 | `quests[].rewardAsh` | `quests[].rewardErnte` | |
@@ -86,6 +87,8 @@ Unverändert (schon passend): `ernte`, `ernteSeason`, `ernteLifetime`, `erbstuec
 | `t.packs.obsidian*` | `t.packs.samen*` |
 | `t.prestige.branchUptime*`, Zweig-ID `uptime` | `t.prestige.branchPflege*`, `pflege` |
 | `t.nav.station` | `t.nav.garten` |
+| `BATTLE_PASS_*`, `BattlePass*`, `syncBattlePass`, `claimBattlePass*`, `t.shop.battlePass*` | `GARTENWOCHE_*`, `Gartenwoche*`, `syncGartenwoche`, `claimGartenwoche*`, `t.shop.gartenwoche*` |
+| `useGame()`: `claimBpTier`, `claimBpDailyXp`, `bpDailyXpReady` | `gartenwocheClaimTier`, `gartenwocheClaimXp`, `gartenwocheXpReady` |
 | `t.resources.compute`, `t.resources.credits`, `t.prestige.credits*` | `t.resources.ernte`, `t.resources.erbstuecke`, `t.prestige.erbstuecke*` |
 | `legacyStorage.ts` (`purgeLegacyStorage`) | entfernt: räumte nur Schlüssel der Prototypen (`turmfarm-*`, `orbit-rack-*`, `ash-dominion-*`) weg; die einzigen Geräte mit solchen Schlüsseln (Entwickler) sind längst bereinigt, und liegengebliebene Schlüssel schaden nicht. |
 

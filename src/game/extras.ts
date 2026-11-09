@@ -58,11 +58,6 @@ export const WATER_NOTIFY_GAP_MS = 4 * 3600_000
 /** … and only after the app sat in the background for 30 min (no ping on quick app switches). */
 export const WATER_NOTIFY_AWAY_MS = 30 * 60_000
 
-/** Delay (ms from leaving the app) until the Gießkanne reminder may fire. */
-export function waterReminderDelay(now: number, lastNotify: number, waterLeftMs: number): number {
-  return Math.max(waterLeftMs, WATER_NOTIFY_AWAY_MS, lastNotify + WATER_NOTIFY_GAP_MS - now)
-}
-
 function emptyWeek(): Record<WeeklyTaskId, number> {
   return { water: 0, upgrades: 0, orders: 0, visitors: 0, seasons: 0, daily: 0, varieties: 0 }
 }

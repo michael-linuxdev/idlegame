@@ -3,8 +3,8 @@ import { formatErnte, formatDecimal, formatMult } from '../game/format'
 import {
   AD_ERNTE_MINUTES,
   AD_SAMEN,
-  BATTLE_PASS_MAX_XP,
-  BATTLE_PASS_TIERS,
+  GARTENWOCHE_MAX_XP,
+  GARTENWOCHE_TIERS,
   CLAN_BOOST,
   COSMETICS,
   type CosmeticId,
@@ -101,9 +101,9 @@ export function ShopPanel({ game, onPreview }: Props) {
     watchRewardedAd,
     claimGift,
     buyWaterRefill,
-    claimBpDailyXp,
-    claimBpTier,
-    bpDailyXpReady,
+    gartenwocheClaimXp,
+    gartenwocheClaimTier,
+    gartenwocheXpReady,
   } = game
 
   const [tab, setTab] = useState<Tab>(loadTab)
@@ -118,7 +118,7 @@ export function ShopPanel({ game, onPreview }: Props) {
 
   const offerOwned = (offer: ShopOfferDef) => {
     if (offer.kind === 'removeAds') return state.adsRemoved
-    if (offer.kind === 'battlePassPremium') return state.gartenwochePremium
+    if (offer.kind === 'gartenwochePlus') return state.gartenwochePremium
     if (offer.once) return state.ownedOfferIds.includes(offer.id)
     return false
   }
@@ -127,7 +127,7 @@ export function ShopPanel({ game, onPreview }: Props) {
   const removeAds = SHOP_OFFERS.filter((o) => o.section === 'removeAds')
   const currency = SHOP_OFFERS.filter((o) => o.section === 'currency')
   const cosmeticPacks = SHOP_OFFERS.filter((o) => o.section === 'cosmetics')
-  const bpPremiumOffer = SHOP_OFFERS.find((o) => o.kind === 'battlePassPremium')
+  const gartenwochePlusOffer = SHOP_OFFERS.find((o) => o.kind === 'gartenwochePlus')
 
   const rewardLabel = (kind: 'samen' | 'ernteSec', amount: number) =>
     kind === 'samen' ? t.shop.rewardSamen(amount) : t.shop.rewardErnteSec(amount)
@@ -214,19 +214,19 @@ export function ShopPanel({ game, onPreview }: Props) {
 
           {STORE_ENABLED ? (
             <>
-              <h3 className="subhead">{t.shop.battlePassTitle}</h3>
-              <p className="muted">{t.shop.battlePassIntro}</p>
+              <h3 className="subhead">{t.shop.gartenwocheTitle}</h3>
+              <p className="muted">{t.shop.gartenwocheIntro}</p>
               <div className="shop-bp-header">
                 <div className="shop-wallet-chip">
                   <span className="shop-wallet-label">EP</span>
-                  <span className="shop-wallet-value">{t.shop.battlePassXp(state.gartenwocheXp, BATTLE_PASS_MAX_XP)}</span>
+                  <span className="shop-wallet-value">{t.shop.gartenwocheXpLabel(state.gartenwocheXp, GARTENWOCHE_MAX_XP)}</span>
                 </div>
-                <button type="button" className="btn ghost" disabled={!bpDailyXpReady} onClick={claimBpDailyXp}>
-                  {bpDailyXpReady ? t.shop.battlePassDailyXp : t.shop.battlePassDailyDone}
+                <button type="button" className="btn ghost" disabled={!gartenwocheXpReady} onClick={gartenwocheClaimXp}>
+                  {gartenwocheXpReady ? t.shop.gartenwocheDailyXp : t.shop.gartenwocheDailyDone}
                 </button>
               </div>
               <ul className="shop-bp-list">
-                {BATTLE_PASS_TIERS.map((tier) => {
+                {GARTENWOCHE_TIERS.map((tier) => {
                   const xpOk = state.gartenwocheXp >= tier.xp
                   const freeClaimed = state.gartenwocheClaimedFree.includes(tier.tier)
                   const premClaimed = state.gartenwocheClaimedPremium.includes(tier.tier)
@@ -234,31 +234,31 @@ export function ShopPanel({ game, onPreview }: Props) {
                     <li key={tier.tier} className="shop-bp-row">
                       <div className="shop-bp-tier">
                         <span className="shop-bp-tier-num">T{tier.tier}</span>
-                        <span className="muted">{t.shop.battlePassNeedXp(tier.xp)}</span>
+                        <span className="muted">{t.shop.gartenwocheNeedXp(tier.xp)}</span>
                       </div>
                       <div className="shop-bp-track">
-                        <span className="shop-bp-track-label">{t.shop.battlePassFree}</span>
+                        <span className="shop-bp-track-label">{t.shop.gartenwocheFree}</span>
                         <span className="laden-effect">{rewardLabel(tier.free.kind, tier.free.amount)}</span>
-                        <button type="button" className="btn ghost" disabled={!xpOk || freeClaimed} onClick={() => claimBpTier(tier.tier, 'free')}>
-                          {freeClaimed ? t.shop.battlePassClaimed : xpOk ? t.shop.battlePassClaim : t.shop.battlePassLocked}
+                        <button type="button" className="btn ghost" disabled={!xpOk || freeClaimed} onClick={() => gartenwocheClaimTier(tier.tier, 'free')}>
+                          {freeClaimed ? t.shop.gartenwocheClaimed : xpOk ? t.shop.gartenwocheClaim : t.shop.gartenwocheLocked}
                         </button>
                       </div>
                       <div className="shop-bp-track premium">
-                        <span className="shop-bp-track-label">{t.shop.battlePassPremium}</span>
+                        <span className="shop-bp-track-label">{t.shop.gartenwochePlus}</span>
                         <span className="laden-effect">{rewardLabel(tier.premium.kind, tier.premium.amount)}</span>
                         <button
                           type="button"
                           className="btn ghost"
                           disabled={!state.gartenwochePremium || !xpOk || premClaimed}
-                          onClick={() => claimBpTier(tier.tier, 'premium')}
+                          onClick={() => gartenwocheClaimTier(tier.tier, 'premium')}
                         >
                           {premClaimed
-                            ? t.shop.battlePassClaimed
+                            ? t.shop.gartenwocheClaimed
                             : !state.gartenwochePremium
-                              ? t.shop.battlePassNeedPremium
+                              ? t.shop.gartenwocheNeedPremium
                               : xpOk
-                                ? t.shop.battlePassClaim
-                                : t.shop.battlePassLocked}
+                                ? t.shop.gartenwocheClaim
+                                : t.shop.gartenwocheLocked}
                         </button>
                       </div>
                     </li>
@@ -410,7 +410,7 @@ export function ShopPanel({ game, onPreview }: Props) {
             {removeAds.map((offer) => (
               <OfferButton key={offer.id} offer={offer} owned={offerOwned(offer)} onBuy={() => purchaseOffer(offer)} />
             ))}
-            {bpPremiumOffer ? <OfferButton offer={bpPremiumOffer} owned={state.gartenwochePremium} onBuy={() => purchaseOffer(bpPremiumOffer)} /> : null}
+            {gartenwochePlusOffer ? <OfferButton offer={gartenwochePlusOffer} owned={state.gartenwochePremium} onBuy={() => purchaseOffer(gartenwochePlusOffer)} /> : null}
           </ul>
         </div>
       ) : null}

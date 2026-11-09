@@ -165,7 +165,7 @@ export type ShopOfferKind =
   | 'grantSamen'
   | 'removeAds'
   | 'cosmeticPack'
-  | 'battlePassPremium'
+  | 'gartenwochePlus'
   | 'starterBundle'
 
 export interface ShopOfferDef {
@@ -182,7 +182,7 @@ export interface ShopOfferDef {
   /** One-time; tracked via ownedOfferIds */
   once?: boolean
   /** Section grouping in shop UI */
-  section: 'bundles' | 'currency' | 'cosmetics' | 'removeAds' | 'battlePass'
+  section: 'bundles' | 'currency' | 'cosmetics' | 'removeAds' | 'gartenwoche'
 }
 
 export const SHOP_OFFERS: ShopOfferDef[] = [
@@ -244,21 +244,15 @@ export const SHOP_OFFERS: ShopOfferDef[] = [
     section: 'cosmetics',
   },
   {
-    id: 'battlePassPremium',
-    kind: 'battlePassPremium',
-    name: t.packs.battlePassPremium.name,
-    blurb: t.packs.battlePassPremium.blurb,
-    label: t.packs.battlePassPremium.label,
+    id: 'gartenwochePlus',
+    kind: 'gartenwochePlus',
+    name: t.packs.gartenwochePlus.name,
+    blurb: t.packs.gartenwochePlus.blurb,
+    label: t.packs.gartenwochePlus.label,
     once: false,
-    section: 'battlePass',
+    section: 'gartenwoche',
   },
 ]
-
-/** @deprecated Prefer SHOP_OFFERS — kept for older call sites */
-export type SamenPackDef = ShopOfferDef
-export const SAMEN_PACKS: ShopOfferDef[] = SHOP_OFFERS.filter(
-  (o) => o.section === 'bundles' || o.section === 'currency',
-)
 
 export type RewardedAdRewardKind = 'skipCrumb' | 'samenCrumb' | 'yieldCrumb'
 
@@ -291,18 +285,18 @@ export const REWARDED_AD_REWARDS: RewardedAdRewardDef[] = [
   { kind: 'yieldCrumb', minutes: 2 },
 ]
 
-export type BattlePassRewardKind = 'samen' | 'ernteSec'
+export type GartenwocheRewardKind = 'samen' | 'ernteSec'
 
-export interface BattlePassTierDef {
+export interface GartenwocheTierDef {
   tier: number
   /** Cumulative XP required */
   xp: number
-  free: { kind: BattlePassRewardKind; amount: number }
-  premium: { kind: BattlePassRewardKind; amount: number }
+  free: { kind: GartenwocheRewardKind; amount: number }
+  premium: { kind: GartenwocheRewardKind; amount: number }
 }
 
 /** Weekly battle-pass lite — free + paid stub tracks */
-export const BATTLE_PASS_TIERS: BattlePassTierDef[] = [
+export const GARTENWOCHE_TIERS: GartenwocheTierDef[] = [
   {
     tier: 1,
     xp: 0,
@@ -335,9 +329,9 @@ export const BATTLE_PASS_TIERS: BattlePassTierDef[] = [
   },
 ]
 
-export const BATTLE_PASS_DAILY_XP = 25
-export const BATTLE_PASS_AD_XP = 10
-export const BATTLE_PASS_MAX_XP = 100
+export const GARTENWOCHE_DAILY_XP = 25
+export const GARTENWOCHE_AD_XP = 10
+export const GARTENWOCHE_MAX_XP = 100
 
 /** Calendar day key in local time for daily skip caps */
 export function dayKey(now = Date.now()): string {
@@ -383,8 +377,3 @@ export function rewardedAdCooldownMsLeft(
   return Math.max(0, REWARDED_AD_COOLDOWN_MS - (now - lastRewardedAdAt))
 }
 
-/** Deterministic rotating reward index from claim count */
-export function nextRewardedAdReward(claimCount: number): RewardedAdRewardDef {
-  const i = Math.abs(claimCount) % REWARDED_AD_REWARDS.length
-  return REWARDED_AD_REWARDS[i]!
-}

@@ -103,6 +103,11 @@ Werkzeug: `npm run balance -- <engaged|regular|casual> <stunden>` — spielt die
     - **Rückkehr:** Willkommen-Karte mit fertigen Dingen und bezahlbaren Beeten, „Bald fertig“, Erinnerungen max. 2/Tag und nie nachts.
     - **Abwechslung & Ziele:** Saison-Karten ab Jahr 4, „Sammlung & Ziele“ mit allen Kapiteln, Omas Herausforderungen ab Jahr 8 (+3 % je geschaffter).
     - **Messen:** Ereignisdichte + aktive Saisondauer im Simulator, Tempo-Korridor-Test.
+15f. ✅ **Aufräum-Runde „Klarer Code, klare Namen“ (2026-11-09, Prompt `docs/prompts/aufraeumen.md`):**
+    - **Spielstand neu:** Schlüssel `gartenerbe-spielstand-v1`, `SAVE_VERSION = 1`, gespeicherte Felder nach Spielbegriffen (`truhe`, `saisonenden`, `tiefeWinter`, `gartenwoche…` …, Wörterbuch `docs/cleanup/namen.md`), neue Fixture `save-v1.json`. Ab hier gilt die Migrationsregel wieder.
+    - **Namen:** keine Bezeichner aus TurmFarm / Orbit Rack / Ash Dominion mehr (Prüftest `legacyNames.test.ts`); CSS-Variablen `--ge-*`.
+    - **Aufteilung:** `state.ts` → `src/game/state/*`, `useGame` → `src/game/hooks/*`, Truhe und Feld-Parser eigene Module; keine Datei in `src/game/` über ~550 Zeilen, keine Zirkel-Importe. `GardenMap`/`PrestigePanel` in Teilkomponenten, große Stylesheets nach Bereichen (gebautes CSS byte-gleich), toter CSS-Code entfernt.
+    - **Laden:** selten genutzte Fenster als eigene Bündel (Start 777 → 685 kB), nur woff2, Offline-E2E. Balance unverändert (Sim-Vergleich).
 16. Multiplayer-Architektur (Kleingartenverein mit echtem Backend; Kürbis-Runde umstellen).
 17. Store-IAP, Impressum-Daten, Namensprüfung „Gartenerbe“, Store-Assets, Soft-Launch. Vor Launch: `STORE_ENABLED` prüfen (Platzhalter) **und `DISTRIBUTION = 'store'`** in `src/game/distribution.ts` (schaltet den Installations-Hinweis der Web-Fassung ab; ein Test erzwingt das, sobald eine Store-Hülle im Repo liegt).
 

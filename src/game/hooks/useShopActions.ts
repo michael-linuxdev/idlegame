@@ -15,8 +15,8 @@ import {
   buyTimeSkip,
   buyYieldBoost,
   claimErntefestGoal,
-  claimBattlePassDailyXp,
-  claimBattlePassTier,
+  claimGartenwocheDailyXp,
+  claimGartenwocheTier,
   claimDailyOps,
   claimFlashEventGoal,
   claimQuestReward,
@@ -134,12 +134,12 @@ export function useShopActions({ setState, offlineGained, setOfflineGained, offl
     })
   }, [setState])
 
-  const claimBpDailyXp = useCallback(() => {
-    setState((s) => claimBattlePassDailyXp(s))
+  const gartenwocheClaimXp = useCallback(() => {
+    setState((s) => claimGartenwocheDailyXp(s))
   }, [setState])
 
-  const claimBpTier = useCallback((tier: number, track: 'free' | 'premium') => {
-    setState((s) => claimBattlePassTier(s, tier, track))
+  const gartenwocheClaimTier = useCallback((tier: number, track: 'free' | 'premium') => {
+    setState((s) => claimGartenwocheTier(s, tier, track))
   }, [setState])
 
   const claimDaily = useCallback(() => {
@@ -228,8 +228,8 @@ export function useShopActions({ setState, offlineGained, setOfflineGained, offl
     watchRewardedAd,
     claimGift,
     buyWaterRefill,
-    claimBpDailyXp,
-    claimBpTier,
+    gartenwocheClaimXp,
+    gartenwocheClaimTier,
     claimDaily,
     dismissEvent,
     claimEventGoal,

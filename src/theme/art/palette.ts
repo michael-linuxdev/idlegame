@@ -107,30 +107,6 @@ export const P = Object.fromEntries(
   (Object.keys(HEX) as PaletteName[]).map((k) => [k, `var(${cssVar(k)}, ${HEX[k]})`]),
 ) as { readonly [K in PaletteName]: string }
 
-/**
- * Ähnliche Altwerte, die beim Umstellen auf einen Palettenton gezogen
- * werden (Aussehen bleibt im Wesentlichen gleich).
- */
-export const NEAR: Record<string, PaletteName> = {
-  '#fff': 'white',
-  '#4f9a3a': 'leaf',
-  '#5f8a3a': 'leaf',
-  '#6d8a4a': 'leaf',
-  '#4f8a3a': 'leafDark',
-  '#7fae58': 'leafLight',
-  '#8cc06a': 'leafLight',
-  '#7a5232': 'bark',
-  '#a69a84': 'stone',
-  '#857d6c': 'stoneDark',
-  '#e9dcc2': 'paper',
-  '#efe6d4': 'paper',
-  '#f4f1e6': 'cream',
-  '#f5f0e0': 'cream',
-  '#2c1d12': 'compost',
-  '#e5484d': 'red',
-  '#f5d33d': 'yellow',
-}
-
 /** CSS-Variablen-Name für einen Palettenton (`--art-leaf-dark`). */
 export function cssVar(name: PaletteName): string {
   return `--art-${name.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`)}`

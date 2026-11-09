@@ -22,9 +22,6 @@ export const TRUHE_UNLOCK_ERNTE_SQRT_DIV = 100
 
 export const TRUHE_UNLOCK_ERNTE_CAP = 30_000
 
-/** @deprecated Use TRUHE_UNLOCK_PER_MODULE_LEVEL — kept for older docs/imports. */
-export const TRUHE_UNLOCK_ERNTE_PER_MODULE_LEVEL = TRUHE_UNLOCK_PER_MODULE_LEVEL
-
 export interface TruheUpgrades {
   /** Omas Gartenschere — +5% global Ernte/s per rank */
   gartenschere: number
@@ -522,14 +519,3 @@ export function nextLockedTruheUnlock(
   return best
 }
 
-/** Immediate tip-band Truhe sink at a given prestige count — balance probe. */
-export function immediateTruheSinkCost(saisonenden = 1): number {
-  let total = 0
-  for (const item of TRUHE_ITEMS) {
-    for (let rank = 0; rank < item.maxRank; rank++) {
-      if (truheRankUnlockNeed(item.id, rank, saisonenden) > 0) break
-      total += item.cost(rank)
-    }
-  }
-  return total
-}

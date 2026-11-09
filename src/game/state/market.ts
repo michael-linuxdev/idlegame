@@ -14,10 +14,10 @@ import {
   AD_ERNTE_MINUTES,
   AD_SAMEN,
   type AdChoice,
-  BATTLE_PASS_AD_XP,
-  BATTLE_PASS_DAILY_XP,
-  BATTLE_PASS_MAX_XP,
-  BATTLE_PASS_TIERS,
+  GARTENWOCHE_AD_XP,
+  GARTENWOCHE_DAILY_XP,
+  GARTENWOCHE_MAX_XP,
+  GARTENWOCHE_TIERS,
   CLAN_BOOST,
   CLAN_BOOST_MAX,
   COSMETICS,
@@ -203,7 +203,7 @@ export function mockBuyOffer(state: GameState, offer: ShopOfferDef, now = Date.n
   let next = syncMonetization(state, now)
   if (offer.once && next.ownedOfferIds.includes(offer.id)) return state
   if (offer.kind === 'removeAds' && next.adsRemoved) return state
-  if (offer.kind === 'battlePassPremium' && next.gartenwochePremium) return state
+  if (offer.kind === 'gartenwochePlus' && next.gartenwochePremium) return state
 
   const ownedCosmetics = new Set(next.ownedCosmetics)
   for (const id of offer.cosmeticIds ?? []) ownedCosmetics.add(id)
@@ -219,7 +219,7 @@ export function mockBuyOffer(state: GameState, offer: ShopOfferDef, now = Date.n
     ownedCosmetics: Array.from(ownedCosmetics),
     ownedOfferIds,
     adsRemoved: offer.kind === 'removeAds' ? true : next.adsRemoved,
-    gartenwochePremium: offer.kind === 'battlePassPremium' ? true : next.gartenwochePremium,
+    gartenwochePremium: offer.kind === 'gartenwochePlus' ? true : next.gartenwochePremium,
     lastSeen: now,
   }
 }
@@ -255,7 +255,7 @@ export function claimRewardedAd(state: GameState, choice: AdChoice = 'ernte', no
   const ernteGained = choice === 'ernte' ? productionPerSecond(next, now) * AD_ERNTE_MINUTES * 60 : 0
   const samenGained = choice === 'samen' ? AD_SAMEN : 0
   next = withEventProgress(next, ernteGained, now)
-  const gartenwocheXp = Math.min(BATTLE_PASS_MAX_XP, next.gartenwocheXp + BATTLE_PASS_AD_XP)
+  const gartenwocheXp = Math.min(GARTENWOCHE_MAX_XP, next.gartenwocheXp + GARTENWOCHE_AD_XP)
   return {
     ok: true,
     kind: choice === 'ernte' ? 'yieldCrumb' : 'samenCrumb',
@@ -338,26 +338,26 @@ export function refillWateringCan(state: GameState, now = Date.now()): GameState
   }
 }
 
-export function claimBattlePassDailyXp(state: GameState, now = Date.now()): GameState {
+export function claimGartenwocheDailyXp(state: GameState, now = Date.now()): GameState {
   let next = syncMonetization(state, now)
   const today = dayKey(now)
   if (next.gartenwocheXpDay === today) return state
   return {
     ...next,
-    gartenwocheXp: Math.min(BATTLE_PASS_MAX_XP, next.gartenwocheXp + BATTLE_PASS_DAILY_XP),
+    gartenwocheXp: Math.min(GARTENWOCHE_MAX_XP, next.gartenwocheXp + GARTENWOCHE_DAILY_XP),
     gartenwocheXpDay: today,
     lastSeen: now,
   }
 }
 
-export function claimBattlePassTier(
+export function claimGartenwocheTier(
   state: GameState,
   tier: number,
   track: 'free' | 'premium',
   now = Date.now(),
 ): GameState {
   let next = syncMonetization(state, now)
-  const def = BATTLE_PASS_TIERS.find((row) => row.tier === tier)
+  const def = GARTENWOCHE_TIERS.find((row) => row.tier === tier)
   if (!def) return state
   if (next.gartenwocheXp < def.xp) return state
   if (track === 'premium' && !next.gartenwochePremium) return state

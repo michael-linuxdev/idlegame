@@ -10,7 +10,7 @@ import {
   isGeneratorUnlocked,
   type GeneratorId,
 } from './generators'
-import { LEVEL_MODULE_GATES, xpForLevel } from './progression'
+import { LEVEL_MODULE_GATES } from './progression'
 import { prestigeMinErnte, isProbeYear } from './economy'
 import { gateSeasons } from './longLoop'
 import type { GameState } from './state'
@@ -236,7 +236,3 @@ export function computeNextGoal(
   )
 }
 
-/** Unused helper kept for tests / debug — XP remaining to next level. */
-export function xpRemaining(level: number, intoLevel: number): number {
-  return Math.max(0, xpForLevel(level) - intoLevel)
-}

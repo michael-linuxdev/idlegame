@@ -9,10 +9,6 @@ import { runHelper } from './garden'
 import { syncAlbum } from './life'
 import type { GameState } from './types'
 
-export function nextPrestigeErbstuecke(ernteSeason: number, saisonenden = 0): number {
-  return erbstueckePayout(ernteSeason, saisonenden)
-}
-
 export function canPrestigeNow(state: GameState): boolean {
   return (
     prestigeBlockReason({

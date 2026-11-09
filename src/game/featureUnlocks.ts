@@ -148,7 +148,3 @@ export function markFeatureSeen(id: FeatureId): void {
   seenListeners.forEach((l) => l())
 }
 
-/** Test helper */
-export function resetFeaturesSeenCache(): void {
-  seenCache = null
-}

@@ -20,14 +20,6 @@ export const OFFLINE_HARD_HOURS = 24
 export const OFFLINE_DECAY_RATE = 0.5
 
 /**
- * Prestige gate: P_min = PRESTIGE_BASE · 1.8^p
- * IG-31: 50_000 → 2_000_000 so first Soft-Reset lands ~45–75 min engaged
- * (was ~5–10 min after content-depth rate snowball).
- */
-export const PRESTIGE_BASE_ERNTE = 2_000_000
-export const PRESTIGE_GROWTH = 1.8
-
-/**
  * Saisonende balance knobs (tuned with scripts/balance/sim.ts).
  *  - gate(p)   = prestigeBase · prestigeGrowth^min(p, knee) · lateGrowth^max(0, p − knee)
  *  - payout    = payoutBase · payoutGrowth^p · f(ernte / gate)
@@ -58,13 +50,6 @@ export const BALANCE = {
 /** Modules that must be online (owned ≥ 1) before Run 2+ Soft-Prestige. */
 export const PRESTIGE_MIN_MODULES_ONLINE = 3
 
-/**
- * Soft-cap on √ Erbstücke payout (L2 agency without 39k runaway wallets).
- * Raw √ stays linear up to SOFT; overflow diminishes toward CEIL.
- */
-export const ERBSTUECKE_PAYOUT_SOFT = 500
-export const ERBSTUECKE_PAYOUT_CEIL = 1_600
-
 /** Base Erbstücke paid exactly at the gate for this season. */
 /** Probe-Winter gilt nur im allerersten Gartenjahr (nicht nach Tiefem Winter / Generation). */
 export function isProbeYear(s: { saisonenden: number; tiefeWinter: number; generation: number }): boolean {
@@ -74,11 +59,6 @@ export function isProbeYear(s: { saisonenden: number; tiefeWinter: number; gener
 export function payoutAtGate(saisonenden: number, probe = false): number {
   if (probe) return BALANCE.firstSeasonPayout
   return Math.round(BALANCE.payoutBase * Math.pow(BALANCE.payoutGrowth, Math.max(0, saisonenden)))
-}
-
-/** Min payout before Saisonende — the gate payout (kept for UI copy). */
-export function prestigeMinErbstueckeForRun(saisonenden: number): number {
-  return payoutAtGate(saisonenden)
 }
 
 /** Saisonende gate: Ernte this season ≥ prestigeBase · prestigeGrowth^p */
@@ -106,13 +86,6 @@ export function erbstueckePayout(ernteSeason: number, saisonenden = 0, probe = f
   if (ernteSeason <= 0) return 0
   const r = ernteSeason / Math.max(1, prestigeMinErnte(saisonenden, probe))
   return Math.floor(payoutAtGate(saisonenden, probe) * payoutCurve(r))
-}
-
-/** Ernte needed this season to be paid `erbstuecke` (inverse of the √ band). */
-export function ernteForErbstueckePayout(erbstuecke: number, saisonenden = 0, probe = false): number {
-  if (erbstuecke <= 0) return 0
-  const ratio = erbstuecke / Math.max(1, payoutAtGate(saisonenden, probe))
-  return Math.ceil(prestigeMinErnte(saisonenden, probe) * ratio * ratio)
 }
 
 export function modulesOnlineCount(

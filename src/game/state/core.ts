@@ -145,7 +145,7 @@ export function syncYieldBoost(state: GameState, now = Date.now()): GameState {
 }
 
 /** Reset battle-pass progress when the local week rolls. */
-export function syncBattlePass(state: GameState, now = Date.now()): GameState {
+export function syncGartenwoche(state: GameState, now = Date.now()): GameState {
   const key = weekKey(now)
   if (state.gartenwocheKey === key) return state
   return {
@@ -160,7 +160,7 @@ export function syncBattlePass(state: GameState, now = Date.now()): GameState {
 }
 
 export function syncMonetization(state: GameState, now = Date.now()): GameState {
-  return syncBattlePass(syncYieldBoost(syncClanBoost(state, now), now), now)
+  return syncGartenwoche(syncYieldBoost(syncClanBoost(state, now), now), now)
 }
 
 export function effectiveYieldBoostMult(state: GameState, now = Date.now()): number {

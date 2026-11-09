@@ -116,6 +116,7 @@ export const LOG_NAMES: Record<string, string> = {
   obsidian50: 'samen50',
   obsidian150: 'samen150',
   obsidian500: 'samen500',
+  battlePassPremium: 'gartenwochePlus',
   // Sprösslings-Laden (Schlüssel bis zur Aufräum-Runde 2026-11-09)
   deepYield: 'tiefeWurzeln',
   deepWatch: 'winterschutz',

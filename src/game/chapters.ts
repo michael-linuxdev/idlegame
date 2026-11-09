@@ -176,8 +176,6 @@ export const CHAPTERS: ChapterDef[] = [
   }),
 ]
 
-export const CHAPTER_IDS: ChapterId[] = CHAPTERS.map((c) => c.id)
-
 export function chapterDef(id: ChapterId): ChapterDef {
   return CHAPTERS.find((c) => c.id === id)!
 }
