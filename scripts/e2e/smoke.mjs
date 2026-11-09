@@ -14,6 +14,7 @@
  * 10. Offline: nach dem ersten Laden aus dem Precache, auch die nachgeladenen Fenster
  * 11. Sprache: Browser en-US startet englisch, Umschalter wechselt live (ohne Neuladen),
  *     die Wahl übersteht das Neuladen, ?lang= hat Vorrang
+ * 12. Deko und Saatgut kreuzen öffnen auch aus Markt und Saison
  * Alle anderen Abschnitte laufen mit Browser-Sprache de-DE.
  * Fails on any uncaught page error. Run: npm run build && npm run e2e
  */
@@ -435,6 +436,38 @@ try {
     await p.locator('.menu-fab').click()
     await p.getByRole('menuitem', { name: T.notebook.title }).click()
     await p.getByText(T.notebook.title).first().waitFor({ timeout: 10_000 })
+    await ctx.close()
+  }
+
+  // 12 — Deko und Saatgut kreuzen öffnen aus jedem Tab (liegen auf der Garten-Karte)
+  {
+    const ctx = await browser.newContext({ ...devices['iPhone 13'], reducedMotion: 'reduce' })
+    await ctx.addInitScript(() => {
+      if (sessionStorage.getItem('seed')) return
+      const owned = { gemuesebeet: 30, kompost: 20, kraeuterspirale: 10 }
+      localStorage.setItem('gartenerbe-spielstand-v1', JSON.stringify({ owned, ernte: 1e5, saisonenden: 3, samen: 200, collection: ['radieschenEiszapfen', 'wurmhumus'], lastSeen: Date.now(), saveVersion: 1 }))
+      localStorage.setItem('gartenerbe-ftue-v1', JSON.stringify({ beat: 'done', dismissed: true, completed: [], startedAt: 1 }))
+      localStorage.setItem('gartenerbe-install-v1', JSON.stringify({ dismissed: true, installed: false, shown: true }))
+      localStorage.setItem('gartenerbe-hints-v1', JSON.stringify(['season', 'truhe', 'deep', 'visitor', 'order', 'variety', 'weekly', 'crossNew']))
+      sessionStorage.setItem('seed', '1')
+    })
+    const p = await ctx.newPage()
+    p.on('pageerror', (err) => errors.push(err.message))
+    await p.goto(URL)
+    await p.locator('.garden-map').waitFor()
+    for (const tab of ['garten', 'shop', 'prestige']) {
+      for (const [name, sheet] of [[T.decor.title, '.decor-sheet, [aria-labelledby="decor-title"]'], [T.crossing.title, '.cross-sheet']]) {
+        await p.locator(`.tabbar .tab-${tab}`).click()
+        if (tab === 'garten') await p.keyboard.press('Escape') // Garten erneut → Grundstücke schließen
+        await p.locator('.menu-fab').click()
+        await p.getByRole('menuitem', { name }).click()
+        await p.locator(sheet).first().waitFor({ timeout: 5000 }).catch(() => {
+          throw new Error(`E2E: ${name} does not open from tab ${tab}`)
+        })
+        await p.keyboard.press('Escape')
+        await p.waitForTimeout(200)
+      }
+    }
     await ctx.close()
   }
 

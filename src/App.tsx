@@ -191,6 +191,12 @@ export default function App() {
       return next
     })
   }, [])
+  // Deko/Kreuzen liegen auf der Garten-Karte: aus Markt oder Saison erst dorthin wechseln
+  const openMapSheet = (sheet: 'decor' | 'cross') => {
+    goPlot('garden')
+    onTabChange('garten')
+    setMapSheet(sheet)
+  }
 
   // Panels (Saison, Markt, Verein): Escape / Zurück returns to the garden
   useDismiss(() => onTabChange('garten'), tab !== 'garten')
@@ -321,8 +327,8 @@ export default function App() {
         onOpenNotebook={() => openNotebook(null)}
         onOpenLegal={() => setLegalOpen(true)}
         onOpenBackup={() => setBackupOpen(true)}
-        onOpenDecor={game.features.has('decor') ? () => { goPlot('garden'); setMapSheet('decor') } : undefined}
-        onOpenCross={game.features.has('cross') ? () => { goPlot('garden'); setMapSheet('cross') } : undefined}
+        onOpenDecor={game.features.has('decor') ? () => openMapSheet('decor') : undefined}
+        onOpenCross={game.features.has('cross') ? () => openMapSheet('cross') : undefined}
         crossReady={!!game.state.crossing && game.state.crossing.endsAt <= game.nowTick}
         onOpenAlbum={game.features.has('album') ? () => setAlbumOpen(true) : undefined}
         albumReady={game.albumReady}
