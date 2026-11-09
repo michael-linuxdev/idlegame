@@ -5,12 +5,22 @@
  * alle Bündel im Precache des Service Workers.
  */
 import { lazy, Suspense, type ComponentType } from 'react'
+import { isChunkLoadError, reloadForNewVersion } from '../game/chunkReload'
 
 const loaders: (() => Promise<unknown>)[] = []
 
 function lazyNamed<P extends object>(load: () => Promise<ComponentType<P>>) {
   loaders.push(load)
-  const Lazy = lazy(() => load().then((Component) => ({ default: Component })))
+  const Lazy = lazy(() =>
+    load().then(
+      (Component) => ({ default: Component }),
+      (err: unknown) => {
+        // Neue Version auf dem Server: einmal neu laden statt Fehlerseite
+        if (isChunkLoadError(err) && reloadForNewVersion()) return new Promise<never>(() => {})
+        throw err
+      },
+    ),
+  )
   return function LazyWindow(props: P) {
     return (
       <Suspense fallback={null}>

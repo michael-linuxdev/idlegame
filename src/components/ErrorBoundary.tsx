@@ -1,5 +1,6 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react'
 import { exportCode } from '../game/backup'
+import { isChunkLoadError, reloadForNewVersion } from '../game/chunkReload'
 import { logPlaytest } from '../game/playtestLog'
 import { copyText } from '../game/saveFile'
 import { t } from '../i18n'
@@ -18,6 +19,8 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, State> {
   }
 
   componentDidCatch(error: Error, info: ErrorInfo): void {
+    // Bündel einer alten Version fehlt (z. B. Kapitel-Grafik): neu laden statt Fehlerseite
+    if (isChunkLoadError(error) && reloadForNewVersion()) return
     logPlaytest('error', {
       where: 'render',
       msg: String(error?.message ?? error).slice(0, 160),

@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { registerSW } from 'virtual:pwa-register'
 import App from './App'
 import { ErrorBoundary } from './components/ErrorBoundary'
+import { reloadForNewVersion } from './game/chunkReload'
 import { logPlaytest } from './game/playtestLog'
 import { startSaveLock } from './game/saveGuard'
 import { initLocale } from './i18n'
@@ -28,6 +29,10 @@ function startGame() {
     /* nicht unterstützt */
   }
   registerSW({ immediate: true })
+  // Vite meldet fehlgeschlagenes Vorladen alter Bündel nach einem Update: einmal neu laden
+  window.addEventListener('vite:preloadError', (e) => {
+    if (reloadForNewVersion()) e.preventDefault()
+  })
 
   // Nur Hochformat: Android-PWA sperrt die Drehung, iOS zeigt den Hinweis (CSS .rotate-lock)
   try {
