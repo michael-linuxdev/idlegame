@@ -22,6 +22,8 @@ const SCENES = [
   { name: 'voll-fruehling', owned: lv([130, 120, 108, 96, 84, 72, 60, 50, 40, 30]), extra: { prestiges: 14 }, ambient: 'day-spring' },
   { name: 'voll-herbst', owned: lv([130, 120, 108, 96, 84, 72, 60, 50, 40, 30]), extra: { prestiges: 14 }, ambient: 'day-autumn' },
   { name: 'voll-winter', owned: lv([130, 120, 108, 96, 84, 72, 60, 50, 40, 30]), extra: { prestiges: 14 }, ambient: 'day-winter' },
+  { name: 'regen', owned: lv([60, 40, 30, 20, 10, 1]), extra: { prestiges: 4 }, ambient: 'day-summer', query: '&wetter=regen' },
+  { name: 'wind', owned: lv([60, 40, 30, 20, 10, 1]), extra: { prestiges: 4 }, ambient: 'day-autumn', query: '&wetter=wind' },
   { name: 'mittel-tag', owned: lv([30, 26, 12, 10, 1, 1]), extra: { prestiges: 4 }, ambient: 'day-summer' },
 ]
 

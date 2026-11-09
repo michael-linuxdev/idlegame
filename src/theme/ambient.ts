@@ -52,3 +52,10 @@ export function useAmbient(): Ambient {
   }, [])
   return ambient
 }
+
+/** Test-Hook für die Wetter-Darstellung: `?wetter=regen|wind|sonne|mild`. */
+export function weatherOverride(): 'sonne' | 'regen' | 'wind' | 'mild' | null {
+  if (typeof location === 'undefined') return null
+  const w = new URLSearchParams(location.search).get('wetter')
+  return w === 'regen' || w === 'wind' || w === 'sonne' || w === 'mild' ? w : null
+}

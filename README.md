@@ -28,7 +28,8 @@ npm run build && npm run art:update        # Vergleichsbilder nach gewollter Gra
 node scripts/art/shots.mjs <ordner>        # Spielfeld-Screenshots Tag/Abend/Nacht + 4 Jahreszeiten
 npm test                                   # Vitest (Format, Balance-Formeln, Gartenjahre, Notizbuch)
 SUMMARY=1 npm run balance -- regular 336   # Balance-Simulator (engaged | regular | casual, Stunden)
-python3 scripts/generate-pwa-icons.py   # App-Icons neu erzeugen (Pillow)
+npm run build && python3 scripts/generate-pwa-icons.py   # App-Icons aus den echten Bausteinen (?artsheet=icon, Pillow)
+npx vite preview --port 4175 & node scripts/store/screenshots.cjs docs/store/screenshots   # Store-Screenshots
 ```
 
 ## Code-Aufbau

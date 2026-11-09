@@ -1,4 +1,8 @@
-/** Hand-drawn Deko pieces (viewBox 40×40, standing on the bottom edge). */
+/**
+ * Hand-drawn Deko pieces (viewBox 40×40, standing on the bottom edge).
+ * Lichter (.decor-light, Schein .art-glow) leuchten abends und nachts auf
+ * der Karte (data-daypart), tagsüber bleiben Lampions und Laternen aus.
+ */
 import { memo } from 'react'
 import type { DecorId } from '../game/decor'
 import type { Season } from './ambient'
@@ -116,7 +120,12 @@ function draw(id: DecorId, winter: boolean) {
           <path d="M4 13Q20 22 36 13" stroke={P.outlineWood} strokeWidth=".6" fill="none" />
           {[9, 15, 21, 27, 32].map((x, i) => {
             const y = 13 + Math.sin((i / 4) * Math.PI) * 4.4
-            return <ellipse key={x} className="fest-glow" cx={x} cy={y + 3} rx="2.4" ry="3" fill={[P.orange, P.red, P.yellow, P.lilac, P.waterDeep][i]} />
+            return (
+              <g key={x}>
+                <circle className="art-glow" cx={x} cy={y + 3} r="5" fill={P.lamp} />
+                <ellipse className="decor-light" cx={x} cy={y + 3} rx="2.4" ry="3" fill={[P.orange, P.red, P.yellow, P.lilac, P.waterDeep][i]} />
+              </g>
+            )
           })}
         </g>
       )
@@ -172,11 +181,12 @@ function draw(id: DecorId, winter: boolean) {
       return (
         <g>
           <Shadow grid="decor" rx={10} />
+          <circle className="art-glow" cx="20" cy="28" r="15" fill={P.lamp} />
           <ellipse cx="20" cy="29" rx="10" ry="8" fill="#e8731a" stroke="#a5531a" strokeWidth=".8" />
           <path d="M14 22q-2 7 0 14M26 22q2 7 0 14M20 21v16" stroke="#c4551a" strokeWidth=".7" fill="none" />
           <path d="M19 21q0-4 3-5" stroke="#5f7a2e" strokeWidth="1.6" fill="none" />
-          <path d="M15 27l2.4-2 1.6 2.6zM21 27l2.4-2 1.6 2.6z" fill="#ffd25a" className="fest-glow" />
-          <path d="M15 31q5 4 10 0l-1.6 1-1.6-1-1.8 1-1.6-1-1.6 1z" fill="#ffd25a" className="fest-glow" />
+          <path d="M15 27l2.4-2 1.6 2.6zM21 27l2.4-2 1.6 2.6z" fill="#ffd25a" className="decor-light" />
+          <path d="M15 31q5 4 10 0l-1.6 1-1.6-1-1.8 1-1.6-1-1.6 1z" fill="#ffd25a" className="decor-light" />
         </g>
       )
     case 'schneemann':
@@ -216,6 +226,17 @@ function draw(id: DecorId, winter: boolean) {
           <path d="M5 18Q20 2 35 18z" fill={P.leafDark} stroke="#2f5a22" strokeWidth=".6" />
           <circle cx="20" cy="7.4" r="1.6" fill="#e0a21a" />
           {winter ? <path d="M7 16.6Q20 3.6 33 16.6" stroke={P.white} strokeWidth="1.8" fill="none" /> : null}
+          {/* Lichterkette unter dem Dach und eine Laterne in der Mitte: leuchten abends */}
+          <path d="M6 18 Q13 22 20 19 Q27 22 34 18" stroke={P.outline} strokeWidth=".4" fill="none" />
+          {[9, 13, 17, 23, 27, 31].map((x, i) => (
+            <g key={x}>
+              <circle className="art-glow" cx={x} cy={19.6 + (i % 3 === 1 ? 1 : 0.4)} r="2.2" fill={P.lamp} />
+              <circle className="decor-light" cx={x} cy={19.6 + (i % 3 === 1 ? 1 : 0.4)} r=".8" fill={P.lamp} />
+            </g>
+          ))}
+          <circle className="art-glow" cx="20" cy="25" r="5" fill={P.lamp} />
+          <path d="M20 19v3" stroke={P.outline} strokeWidth=".4" />
+          <rect className="decor-light" x="18.6" y="22" width="2.8" height="3.4" rx=".6" fill={P.lamp} stroke={P.outline} strokeWidth=".3" />
         </g>
       )
   }

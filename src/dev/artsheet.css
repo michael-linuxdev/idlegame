@@ -66,3 +66,23 @@ body,
 .as-small {
   width: 48px;
 }
+
+.as-laube {
+  width: 130px;
+  padding: 4px;
+  border-radius: 6px;
+}
+
+.as-laube[data-daypart='night'] {
+  background: #2c3a52;
+}
+
+.as-night {
+  background: #2c3a52;
+  border-radius: 4px;
+}
+
+.artsheet-icon {
+  padding: 0;
+  background: none;
+}
