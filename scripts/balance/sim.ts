@@ -44,6 +44,7 @@ import {
   buyEmberUpgrade,
   buyGenerator,
   canPrestigeNow,
+  pickSeasonCard,
   claimDailyOps,
   claimOfflineReward,
   createInitialState,
@@ -316,6 +317,18 @@ export function run(profile: Profile, hours: number) {
         note(`PRESTIGE #${s.prestiges + 1} payout ${payout} (run ${fmtT((clock - runStart) / 1000)})`)
         const lastDur = (clock - runStart) / 1000
         s = doPrestige(s)
+        // Saison-Karte: CARD=best (Standard, Spieler sieht die Vorschau) | random | none
+        if (s.seasonCardOffer.length > 0) {
+          const mode = process.env.CARD ?? 'best'
+          const offer = s.seasonCardOffer
+          const pick =
+            mode === 'none'
+              ? null
+              : mode === 'random'
+                ? offer[Math.floor(Math.random() * offer.length)].id
+                : [...offer].sort((a, b) => b.preview - a.preview)[0].id
+          s = pickSeasonCard(s, pick)
+        }
         event()
         for (const g of GENERATORS) lastLevel[g.id] = s.owned[g.id] ?? 0
         if (canDeepReset(s.prestiges) && (lastDur > Number(process.env.DEEP_AFTER_H ?? 12) * 3600 || s.prestiges >= Number(process.env.DEEP_AT_YEAR ?? 99) - 1)) {

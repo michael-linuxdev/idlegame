@@ -72,6 +72,30 @@ export const strings = {
     unmuteAria: 'Soundeffekte einschalten',
   },
 
+  seasonCards: {
+    title: 'Ein Thema für dieses Gartenjahr',
+    intro: 'Oma hat jedes Jahr etwas anders gemacht. Such dir ein Thema aus — es gilt bis zum nächsten Saisonende.',
+    preview: (pct: number) => `mit deinem letzten Garten ≈ ${pct > 0 ? '+' : ''}${pct} % Ernte`,
+    previewEven: 'mit deinem letzten Garten ≈ gleich viel Ernte',
+    previewQuiet: 'lohnt sich, wenn du oft länger weg bist',
+    skip: 'Ohne Thema weitergärtnern',
+    pill: (name: string) => name,
+    cards: {
+      tomatenjahr: { name: 'Tomatenjahr', effect: 'Gemüsebeet ×2 · Obstwiese ×0,8' },
+      kompostjahr: { name: 'Kompostjahr', effect: 'Kompost ×2 · Beerenhecke ×0,8' },
+      kraeuterjahr: { name: 'Kräuterjahr', effect: 'Kräuterspirale ×2 · Gemüsebeet ×0,8' },
+      beerenjahr: { name: 'Beerenjahr', effect: 'Beerenhecke ×2 · Kompost ×0,8' },
+      obstjahr: { name: 'Obstjahr', effect: 'Obstwiese ×1,8 · Kräuterspirale ×0,8' },
+      bienenjahr: { name: 'Bienenjahr', effect: 'Bienenstock ×1,8 · Hühnerstall ×0,8' },
+      huehnerjahr: { name: 'Hühnerjahr', effect: 'Hühnerstall ×1,8 · Bienenstock ×0,8' },
+      glashausjahr: { name: 'Glashausjahr', effect: 'Gewächshaus ×1,8 · Beerenhecke ×0,8' },
+      hofladenjahr: { name: 'Hofladenjahr', effect: 'Hofladen ×1,8 · Gewächshaus ×0,8' },
+      ruhigesJahr: { name: 'Ruhiges Jahr', effect: 'Während du weg bist +50 % · beim Spielen −20 %' },
+      fleissjahr: { name: 'Fleißiges Jahr', effect: 'Beim Spielen +10 % · während du weg bist −40 %' },
+      gutesJahr: { name: 'Gutes Jahr', effect: 'Alles +5 %' },
+    },
+  },
+
   features: {
     newBadge: 'Neu',
   },

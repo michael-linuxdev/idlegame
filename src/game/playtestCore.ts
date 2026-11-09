@@ -42,6 +42,7 @@ export type PlaytestEventType =
   | 'water_refill'
   | 'wheel'
   | 'error'
+  | 'season_card'
   | 'storage'
 
 export type PlaytestPayload = Record<string, string | number | boolean | null | undefined>

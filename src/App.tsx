@@ -19,6 +19,7 @@ import { ProjectSheet } from './components/ProjectSheet'
 import { AlbumSheet } from './components/AlbumSheet'
 import { getFeaturesSeen, markFeatureSeen, MENU_FEATURES, subscribeFeaturesSeen, type FeatureId } from './game/featureUnlocks'
 import { SeasonCeremony } from './components/story/SeasonCeremony'
+import { SeasonCardPicker } from './components/SeasonCardPicker'
 import { LegalSheet } from './components/LegalSheet'
 import { SaveSheet } from './components/SaveSheet'
 import { ComebackLetter, COMEBACK_SEEDS } from './components/story/ComebackLetter'
@@ -356,6 +357,8 @@ export default function App() {
           }}
         />
       ) : null}
+
+      {!game.seasonEnd ? <SeasonCardPicker game={game} /> : null}
 
       {game.seasonEnd ? (
         <SeasonCeremony

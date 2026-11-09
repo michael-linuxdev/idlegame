@@ -40,6 +40,7 @@ export const uxStrings = {
       nachbarn: 'Nachbarschaftshilfe',
       regenbogen: 'Regenbogen',
       fruehling: 'Frühlingsschub',
+      karte: 'Jahres-Thema',
     } as Record<string, string>,
   },
   pills: {
