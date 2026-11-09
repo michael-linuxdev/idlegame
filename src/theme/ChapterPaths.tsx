@@ -6,7 +6,7 @@
 import type { ReactNode } from 'react'
 import { P } from './art/palette'
 
-export type PathStyle = 'track' | 'loop' | 'shore' | 'cross' | 'rondel' | 'switchback' | 'lane' | 'stones' | 'promenade' | 'yard' | 'cloister' | 'axis' | 'nurseryRows' | 'boardwalk' | 'dikeTrack' | 'fliess' | 'flagstones' | 'bulbLanes' | 'canals' | 'forestTrail' | 'patioTiles' | 'montadoTrack' | 'pepperLanes' | 'limestone' | 'roseLanes' | 'terraceSteps' | 'andenSteps' | 'milpaRing' | 'forestZigzag' | 'subakSteps' | 'spiceTrail' | 'oasisRing' | 'cocoaTrail' | 'bushSpiral' | 'fernBoardwalk' | 'kimchiRows'
+export type PathStyle = 'track' | 'loop' | 'shore' | 'cross' | 'rondel' | 'switchback' | 'lane' | 'stones' | 'promenade' | 'yard' | 'cloister' | 'axis' | 'nurseryRows' | 'boardwalk' | 'dikeTrack' | 'fliess' | 'flagstones' | 'bulbLanes' | 'canals' | 'forestTrail' | 'patioTiles' | 'montadoTrack' | 'pepperLanes' | 'limestone' | 'roseLanes' | 'terraceSteps' | 'andenSteps' | 'milpaRing' | 'forestZigzag' | 'subakSteps' | 'spiceTrail' | 'oasisRing' | 'cocoaTrail' | 'bushSpiral' | 'fernBoardwalk' | 'kimchiRows' | 'roofRing' | 'schoolZigzag' | 'chipSpiral' | 'seedRing' | 'mulchZigzag'
 
 const NS = { vectorEffect: 'non-scaling-stroke' as const, fill: 'none', strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const }
 
@@ -480,6 +480,79 @@ export function ChapterPath({ style, color }: { style: PathStyle; color: string 
           <Dots pts={[[56.4, 98], [56.4, 26]]} n={16} rx={1} color={[P.berry, P.leafPale]} />
         </g>
       )
+    /* Dachgarten: Plattenweg im Ring um ein Oberlicht, Kies dazwischen */
+    case 'roofRing':
+      return (
+        <g>
+          <Way d="M50 100 V72" color={color} w={12} edge="#a69a8a" edgeW={2} />
+          <ellipse cx="50" cy="58" rx="18" ry="14" stroke="#a69a8a" strokeWidth="13" {...NS} />
+          <ellipse cx="50" cy="58" rx="18" ry="14" stroke={color} strokeWidth="11" strokeDasharray="5 1" {...NS} strokeLinecap="butt" />
+          <path d="M50 44 V22" stroke={color} strokeWidth="9" {...NS} />
+          <rect x="47" y="56.4" width="6" height="3.2" fill={P.glass} stroke={P.metal} strokeWidth="1.4" vectorEffect="non-scaling-stroke" />
+          <path d="M50 56.4v3.2" stroke={P.metal} strokeWidth="1" vectorEffect="non-scaling-stroke" />
+          <Dots pts={[[30, 60], [32, 70], [42, 75]]} n={5} rx={0.9} color={[P.yellow, P.leafLight]} />
+          <Dots pts={[[70, 60], [68, 70], [58, 75]]} n={5} rx={0.9} color={[P.leafLight, P.berry]} />
+        </g>
+      )
+    /* Schulgarten: Asphaltweg im Zickzack, Hüpfkästchen und Kreide am Rand */
+    case 'schoolZigzag': {
+      const pts: [number, number][] = [[50, 100], [46, 88], [56, 76], [44, 62], [56, 48], [46, 34], [50, 22]]
+      const d = 'M' + pts.map((p) => p.join(' ')).join(' L')
+      return (
+        <g>
+          <Way d={d} color={color} w={12} edge="#8f8676" edgeW={2} />
+          {[0, 1, 2, 3].map((k) => (
+            <rect key={k} x={47.4 + (k % 2) * 0.3} y={93 - k * 2} width="3.2" height="1.6" fill={P.white} fillOpacity=".15" stroke={P.white} strokeWidth="1" vectorEffect="non-scaling-stroke" />
+          ))}
+          <ellipse cx="50" cy="56" rx="2" ry=".9" fill="none" stroke={P.yellow} strokeWidth="1.2" vectorEffect="non-scaling-stroke" />
+          <Dots pts={pts.map(([x, y]) => [x - 7, y] as [number, number])} n={10} rx={0.9} color={[P.red, P.leafDark, P.yellow]} />
+          <Dots pts={pts.map(([x, y]) => [x + 7, y] as [number, number])} n={10} rx={0.9} color={[P.leaf, P.blue, P.red]} />
+        </g>
+      )
+    }
+    /* Waldgarten: Holzhäckselweg als Spirale unter den Bäumen */
+    case 'chipSpiral': {
+      const d = 'M50 100 L50 86 C80 82 82 62 70 50 C58 38 30 40 24 56 C20 68 40 76 54 66 C62 60 56 52 50 52'
+      return (
+        <g>
+          <path d={d} stroke="#8a5a32" strokeWidth="10" {...NS} />
+          <path d={d} stroke={color} strokeWidth="8" {...NS} />
+          <path d={d} stroke="#c9a46b" strokeWidth="2" strokeDasharray="1 3" {...NS} />
+          <Dots pts={[[62, 84], [78, 66], [60, 40], [30, 44], [22, 64], [40, 74]]} n={9} rx={1} color={[P.leafDark, P.autumn, P.leaf]} />
+          <path d="M50 52 L50 22" stroke={color} strokeWidth="6" {...NS} opacity=".85" />
+        </g>
+      )
+    }
+    /* Samenbank: Kiesweg im Ring um ein rundes Sortenbeet mit Etiketten */
+    case 'seedRing':
+      return (
+        <g>
+          <Way d="M50 100 V72" color={color} w={12} edge="#a69a8a" edgeW={2} />
+          <ellipse cx="50" cy="58" rx="18" ry="14" stroke="#a69a8a" strokeWidth="13" {...NS} />
+          <ellipse cx="50" cy="58" rx="18" ry="14" stroke={color} strokeWidth="11" {...NS} />
+          <path d="M50 44 V22" stroke={color} strokeWidth="9" {...NS} />
+          <ellipse cx="50" cy="58" rx="5" ry="2.8" fill={P.soil} />
+          {[P.leafLight, P.yellow, P.leaf, P.berry].map((c, i) => (
+            <ellipse key={i} cx={48 + (i % 2) * 4} cy={57 + Math.floor(i / 2) * 2} rx="1.2" ry=".6" fill={c} />
+          ))}
+          <Dots pts={[[30, 60], [32, 70], [42, 75]]} n={5} rx={0.7} color={P.white} />
+          <Dots pts={[[70, 60], [68, 70], [58, 75]]} n={5} rx={0.7} color={P.white} />
+        </g>
+      )
+    /* Klimagarten: Mulchweg im Zickzack, eine Versickerungsrinne quert ihn */
+    case 'mulchZigzag': {
+      const pts: [number, number][] = [[50, 100], [46, 88], [56, 76], [44, 62], [56, 48], [46, 34], [50, 22]]
+      const d = 'M' + pts.map((p) => p.join(' ')).join(' L')
+      return (
+        <g>
+          <Way d={d} color={color} w={11} edge="#7a5532" edgeW={2} />
+          <path d={d} stroke="#c9a46b" strokeWidth="2" strokeDasharray="1 4" {...NS} />
+          <path d="M14 70 Q30 66 44 70 T86 66" stroke={P.water} strokeWidth="3" {...NS} opacity=".75" />
+          <Dots pts={pts.map(([x, y]) => [x - 7, y] as [number, number])} n={10} rx={0.9} color={[P.lavender, P.winterLeaf]} />
+          <Dots pts={pts.map(([x, y]) => [x + 7, y] as [number, number])} n={10} rx={0.9} color={[P.winterLeafLight, P.pink]} />
+        </g>
+      )
+    }
     /* Moorgarten: Bohlenweg in einer Schleife übers dunkle Wasser */
     case 'boardwalk': {
       const d = 'M50 100 L50 86 C80 82 82 62 70 50 C58 38 30 40 24 56 C20 68 40 76 54 66 C62 60 56 52 50 52'

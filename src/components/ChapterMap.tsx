@@ -17,6 +17,7 @@ import { WEINLESE } from '../game/extrasCore'
 import type { useGame } from '../game/useGame'
 import { t } from '../i18n'
 import { useChapterArt } from '../theme/art/chapterArt'
+import { chapterArc } from '../game/chapterPlan'
 import { ChapterCritters } from './ChapterCritters'
 import { PlotButtons } from './PlotPicker'
 import { useSignsAlways } from '../game/prefs'
@@ -403,7 +404,7 @@ function ChapterSheet({
 
         {level === 0 && unlocked ? (
           <figure className="oma-note">
-            <figcaption className="oma-note-label">{t.upgrade.noteLabel}</figcaption>
+            <figcaption className="oma-note-label">{chapterArc(def.number) === 4 ? t.chapterUi.noteLabelMila : t.upgrade.noteLabel}</figcaption>
             <blockquote className="oma-note-text">{ac.note}</blockquote>
           </figure>
         ) : null}

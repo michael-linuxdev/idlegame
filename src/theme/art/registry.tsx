@@ -44,6 +44,11 @@ import kakaogarten from './kapitel/kakaogarten'
 import buschgarten from './kapitel/buschgarten'
 import farngarten from './kapitel/farngarten'
 import kimchigarten from './kapitel/kimchigarten'
+import dachgarten from './kapitel/dachgarten'
+import schulgarten from './kapitel/schulgarten'
+import waldgarten from './kapitel/waldgarten'
+import samenbank from './kapitel/samenbank'
+import klimagarten from './kapitel/klimagarten'
 import type { ChapterArtEntry } from './kapitel/types'
 
 export type { AreaArtProps, ChapterArtEntry } from './kapitel/types'
@@ -87,4 +92,9 @@ export const ART_REGISTRY: Record<ChapterId, ChapterArtEntry> = {
   buschgarten,
   farngarten,
   kimchigarten,
+  dachgarten,
+  schulgarten,
+  waldgarten,
+  samenbank,
+  klimagarten,
 }

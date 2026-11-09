@@ -88,6 +88,21 @@ describe('Spielstand v1 (neues Format ab 2026-11-09)', () => {
     for (const id of Object.keys(v1.chapters)) expect(before.chapters[id as keyof typeof before.chapters], id).toBeDefined()
   })
 
+  it('Kapitel 40–44 (Welle 6) kommen leer dazu, ein Stand mit Kapitel 39 lädt verlustfrei', () => {
+    const before = parseSave(v1)!
+    for (const id of ['dachgarten', 'schulgarten', 'waldgarten', 'samenbank', 'klimagarten'] as const) {
+      expect(before.chapters[id], id).toEqual(emptyChapter(CHAPTERS.find((c) => c.id === id)!))
+    }
+    // Stand nach Welle 5: Kimchi-Garten angelegt und gepflegt
+    const kimchi = { ...emptyChapter(CHAPTERS.find((c) => c.id === 'kimchigarten')!), cur: 1234, curLifetime: 5678, openedAt: 42, introSeen: true }
+    kimchi.owned = { ...kimchi.owned, kohlreihen: 12, rettichbeet: 3 }
+    const raw = { ...(v1 as unknown as Record<string, unknown>), chapters: { ...v1.chapters, kimchigarten: kimchi } }
+    const s = parseSave(raw)!
+    expect(s.chapters.kimchigarten).toEqual(kimchi)
+    expect(s.chapters.dachgarten).toEqual(emptyChapter(CHAPTERS.find((c) => c.id === 'dachgarten')!))
+    for (const id of Object.keys(v1.chapters)) expect(s.chapters[id as keyof typeof s.chapters], id).toEqual(before.chapters[id as keyof typeof before.chapters])
+  })
+
   it('gibt später hinzugekommenen Feldern ihren Startwert', () => {
     const s = parseSave(v1)! as unknown as Record<string, unknown>
     for (const [k, v] of Object.entries(ADDED_AFTER_V1)) expect(s[k]).toEqual(v)

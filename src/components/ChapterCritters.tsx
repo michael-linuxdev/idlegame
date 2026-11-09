@@ -32,7 +32,11 @@ import { P } from '../theme/art/palette'
  * Ghana — a hornbill, butterflies, hens; Australien — kangaroos grazing calmly,
  * cockatoos flying over, a lizard basking on a stone; Neuseeland — a tūī singing,
  * a fantail flitting, glowworms at night; Korea — magpies, a persimmon branch
- * swaying, ondol smoke rising in winter.
+ * swaying, ondol smoke rising in winter;
+ * Dachgarten — swifts, drifting clouds, a tower crane turning; Schulgarten — butterflies,
+ * a blackbird hopping, a swing swinging; Waldgarten — a jay, a hedgehog at dusk, leaves
+ * falling in autumn; Samenbank — bumblebees, swallows, the vault lamp blinking at night;
+ * Klimagarten — grasshoppers, rain gathering in spring/autumn, cloud shade wandering in summer.
  * CSS: theme/expansion/12-kapitel-tierleben-2.css
  */
 const BEE = (
@@ -1240,6 +1244,161 @@ export const ChapterCritters = memo(function ChapterCritters({ chapter, daypart,
           </ArtSvg>
         </div>
         {season === 'winter' ? <div className="critter k5-ondol" /> : null}
+        {night ? Array.from({ length: 6 }, (_, i) => <span key={i} className="star-twinkle" style={{ left: `${10 + i * 15}%`, top: `${20 + ((i * 7) % 12)}%`, animationDelay: `${-i * 0.7}s` }} />) : null}
+      </div>
+    )
+  }
+  if (chapter === 'dachgarten') {
+    return (
+      <div className="critters" aria-hidden="true">
+        {[0, 1].map((i) => (
+          <div key={`c${i}`} className={`critter k6-cloud c${i}`}>
+            <ArtSvg viewBox="0 0 20 8">
+              <ellipse cx="10" cy="5.4" rx="9" ry="2.6" fill={night ? P.stone : P.white} />
+              <ellipse cx="7" cy="3.6" rx="4" ry="3" fill={night ? P.stone : P.white} />
+              <ellipse cx="12.6" cy="3" rx="4.4" ry="3" fill={night ? P.stone : P.white} />
+            </ArtSvg>
+          </div>
+        ))}
+        <div className="critter k6-crane">
+          <ArtSvg viewBox="0 0 32 20">
+            <path d="M8 20V2M2 3H30M8 0L2 3M8 0L30 3" stroke={P.yellow} strokeWidth="1.2" fill="none" />
+            <rect x="0" y="3" width="4" height="3" fill={P.charcoal} />
+            <path d="M24 3v8" stroke={P.charcoal} strokeWidth=".4" />
+            <rect x="22.6" y="11" width="3" height="2.4" fill={P.woodMid} />
+          </ArtSvg>
+        </div>
+        {!night && season !== 'winter'
+          ? [0, 1].map((i) => (
+              <div key={i} className={`critter k6-swift w${i}`}>
+                <ArtSvg viewBox="0 0 16 6">
+                  <path d="M0 4 Q4 0 8 3 Q12 0 16 4 Q12 2 8 4.4 Q4 2 0 4z" fill={P.charcoal} />
+                </ArtSvg>
+              </div>
+            ))
+          : null}
+        {night ? Array.from({ length: 8 }, (_, i) => <span key={i} className="star-twinkle" style={{ left: `${6 + i * 12}%`, top: `${19 + ((i * 7) % 10)}%`, animationDelay: `${-i * 0.6}s` }} />) : null}
+      </div>
+    )
+  }
+  if (chapter === 'schulgarten') {
+    return (
+      <div className="critters" aria-hidden="true">
+        <div className="critter k6-swingframe">
+          <ArtSvg viewBox="0 0 16 18">
+            <path d="M1 18L4 1M15 18L12 1M2 1H14" stroke={P.blue} strokeWidth="1.2" fill="none" />
+          </ArtSvg>
+        </div>
+        <div className="critter k6-swing">
+          <ArtSvg viewBox="0 0 10 26">
+            <path d="M3 0V22M7 0V22" stroke={P.charcoal} strokeWidth=".5" />
+            <rect x="2" y="22" width="6" height="1.6" fill={P.red} />
+          </ArtSvg>
+        </div>
+        {!night && season !== 'winter'
+          ? [0, 1, 2].map((i) => (
+              <div key={i} className={`critter k6-butterfly f${i}`}>
+                <ArtSvg viewBox="0 0 10 8">
+                  <path d="M5 4L1 1Q0 4 2 5.4zM5 4L9 1Q10 4 8 5.4z" fill={[P.yellow, P.white, P.blue][i]} stroke={P.ink} strokeWidth=".4" />
+                  <path d="M5 2.6v3.6" stroke={P.ink} strokeWidth=".6" />
+                </ArtSvg>
+              </div>
+            ))
+          : null}
+        {!night ? (
+          <div className="critter k6-blackbird">
+            <ArtSvg viewBox="0 0 12 9">
+              <path d="M5.4 9v-1.4M6.8 9v-1.4" stroke={P.amber} strokeWidth=".4" />
+              <path d="M4.2 5l-4 1.4l.4.8l4 -1z" fill={P.ink} />
+              <ellipse cx="6.4" cy="5.4" rx="2.6" ry="1.8" fill={P.ink} />
+              <circle cx="8.6" cy="3.8" r="1.2" fill={P.ink} />
+              <path d="M9.6 3.8l1.4 .3l-1.4 .4z" fill={P.amber} />
+              <circle cx="8.9" cy="3.5" r=".25" fill={P.amber} />
+            </ArtSvg>
+          </div>
+        ) : null}
+        {night ? Array.from({ length: 5 }, (_, i) => <span key={i} className="firefly" style={{ left: `${14 + i * 16}%`, top: `${40 + ((i * 11) % 30)}%` }} />) : null}
+      </div>
+    )
+  }
+  if (chapter === 'waldgarten') {
+    return (
+      <div className="critters" aria-hidden="true">
+        {!night ? (
+          <div className="critter k6-jay">
+            <ArtSvg viewBox="0 0 22 10">
+              <path d="M0 5 Q5 0 10 4 Q15 0 22 4 Q15 3 11 6 Q6 3 0 5z" fill={P.woodLight} />
+              <path d="M6 4.4h3" stroke={P.blue} strokeWidth="1.2" />
+              <path d="M6.4 4.4h.6M7.6 4.4h.6" stroke={P.white} strokeWidth="1.2" />
+              <ellipse cx="11" cy="5.6" rx="3.6" ry="1.4" fill={P.woodLight} />
+              <circle cx="15" cy="4.6" r="1.3" fill={P.woodLight} />
+              <path d="M16.2 4.6l1.2 .3l-1.2 .3z" fill={P.charcoal} />
+              <path d="M1 5.4h3" stroke={P.ink} strokeWidth="1" />
+            </ArtSvg>
+          </div>
+        ) : null}
+        {daypart === 'evening' || night ? (
+          <div className="critter k6-hedgehog">
+            <ArtSvg viewBox="0 0 16 9">
+              <path d="M2 8Q1 3 6 2Q11 1 13 5.6L14.6 7.6L13 8z" fill={P.bark} stroke={P.woodDark} strokeWidth=".4" />
+              <path d="M3 4l-1 -1M5 2.6l-.4 -1.4M7.6 2l.2 -1.4M10 2.6l.8 -1.2M12 4l1.2 -.8" stroke={P.woodDark} strokeWidth=".6" />
+              <ellipse cx="13.4" cy="7" rx="1.6" ry="1" fill={P.woodLight} />
+              <circle cx="15" cy="7.2" r=".4" fill={P.ink} />
+              <path d="M5 8v1M10 8v1" stroke={P.charcoal} strokeWidth=".6" />
+            </ArtSvg>
+          </div>
+        ) : null}
+        {season === 'autumn' ? Array.from({ length: 6 }, (_, i) => <span key={i} className="critter k6-leaf" style={{ left: `${8 + i * 15}%`, top: `${22 + ((i * 7) % 20)}%`, animationDelay: `${-i * 1.5}s` }} />) : null}
+        {night ? Array.from({ length: 6 }, (_, i) => <span key={i} className="firefly" style={{ left: `${10 + i * 15}%`, top: `${36 + ((i * 11) % 34)}%` }} />) : null}
+      </div>
+    )
+  }
+  if (chapter === 'samenbank') {
+    return (
+      <div className="critters" aria-hidden="true">
+        {!night && (season === 'spring' || season === 'summer')
+          ? [0, 1, 2].map((i) => (
+              <div key={i} className={`critter k6-bumble b${i}`}>
+                <ArtSvg viewBox="0 0 8 6">
+                  <ellipse cx="3" cy="1.6" rx="1.6" ry="1" fill={P.white} opacity=".8" />
+                  <ellipse cx="4.6" cy="1.4" rx="1.4" ry=".9" fill={P.white} opacity=".8" />
+                  <ellipse cx="4" cy="3.6" rx="2.6" ry="1.8" fill={P.charcoal} />
+                  <path d="M3.4 1.8v3.6" stroke={P.yellow} strokeWidth=".8" />
+                  <path d="M6 3v1.4" stroke={P.white} strokeWidth=".6" />
+                </ArtSvg>
+              </div>
+            ))
+          : null}
+        {!night && season !== 'winter' ? (
+          <div className="critter k6-swallow">
+            <ArtSvg viewBox="0 0 18 8">
+              <path d="M0 5 Q4 1 8 4 Q12 0 18 3 Q12 3 9 5.4 Q5 3 0 5z" fill={P.ink} />
+              <path d="M7 5l-3 2.6M8 5l-1.4 2.8" stroke={P.ink} strokeWidth=".5" />
+              <ellipse cx="10" cy="4.8" rx="1.4" ry=".6" fill={P.white} />
+            </ArtSvg>
+          </div>
+        ) : null}
+        {night || season === 'winter' ? [0, 1, 2].map((i) => <span key={i} className="critter k6-lamp" style={{ left: `${44 + i * 6}%`, top: `${54 + (i % 2) * 2}%`, animationDelay: `${-i * 0.8}s` }} />) : null}
+      </div>
+    )
+  }
+  if (chapter === 'klimagarten') {
+    return (
+      <div className="critters" aria-hidden="true">
+        {!night && season === 'summer' ? <div className="critter k6-shade" /> : null}
+        {season === 'spring' || season === 'autumn' ? <div className="critter k4-rain" /> : null}
+        {!night && season !== 'winter'
+          ? [0, 1].map((i) => (
+              <div key={i} className={`critter k6-hopper g${i}`}>
+                <ArtSvg viewBox="0 0 12 7">
+                  <ellipse cx="5" cy="4" rx="4" ry="1.4" fill={season === 'autumn' ? P.woodLight : P.leaf} stroke={P.leafDark} strokeWidth=".3" />
+                  <circle cx="9.2" cy="3.6" r="1.1" fill={season === 'autumn' ? P.woodLight : P.leaf} />
+                  <path d="M6 4l2.4 -2.6l1.4 4.4M3 5l-1 1.6M5 5.2l-.4 1.6" stroke={P.leafDark} strokeWidth=".5" fill="none" />
+                  <path d="M10 3l1.6 -2.4" stroke={P.leafDark} strokeWidth=".3" />
+                </ArtSvg>
+              </div>
+            ))
+          : null}
         {night ? Array.from({ length: 6 }, (_, i) => <span key={i} className="star-twinkle" style={{ left: `${10 + i * 15}%`, top: `${20 + ((i * 7) % 12)}%`, animationDelay: `${-i * 0.7}s` }} />) : null}
       </div>
     )

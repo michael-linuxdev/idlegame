@@ -7,6 +7,7 @@
 import { laterChapterStrings } from './stringsChapters'
 import { arc2ChapterStrings } from './stringsChaptersArc2'
 import { arc3ChapterStrings } from './stringsChaptersArc3'
+import { arc4ChapterStrings } from './stringsChaptersArc4'
 import { nFestTokens, nHeirlooms, nSeeds } from './count'
 
 function obst(n: string): string {
@@ -211,6 +212,11 @@ export const expansionStrings = {
       buschgarten: ['Gather seed', 'Share knowledge'],
       farngarten: ['Guard', 'Replant'],
       kimchigarten: ['Pickling', 'Neighbors'],
+      dachgarten: ['Watering', 'Wild bees'],
+      schulgarten: ['Watering plan', 'Lessons'],
+      waldgarten: ['Layers', 'Mulching'],
+      samenbank: ['Seed tests', 'Regrowing'],
+      klimagarten: ['Hold water', 'Shade'],
     } as Record<string, readonly [string, string]>,
     growPer: '+6 % per rank',
     thriftPer: '−4 % cost per rank',
@@ -237,6 +243,8 @@ export const expansionStrings = {
     goalPlant: (name: string) => `Plant: ${name}`,
     unlockedToast: (n: number, name: string) => `Chapter ${n} unlocked: ${name}!`,
     moreSoon: 'More gardens are on their way.',
+    /** From Arc IV on, Mila writes in Grandma's notebook */
+    noteLabelMila: 'From Grandma’s notebook · Mila',
   },
 
   chapters: {
@@ -280,6 +288,7 @@ export const expansionStrings = {
     ...laterChapterStrings,
     ...arc2ChapterStrings,
     ...arc3ChapterStrings,
+    ...arc4ChapterStrings,
   },
 
   ilse: {

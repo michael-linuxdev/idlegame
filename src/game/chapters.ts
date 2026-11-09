@@ -60,6 +60,11 @@ export type ChapterId =
   | 'buschgarten'
   | 'farngarten'
   | 'kimchigarten'
+  | 'dachgarten'
+  | 'schulgarten'
+  | 'waldgarten'
+  | 'samenbank'
+  | 'klimagarten'
 
 export interface AreaDef {
   id: string
