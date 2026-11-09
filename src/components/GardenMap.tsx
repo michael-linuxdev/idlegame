@@ -70,6 +70,8 @@ import {
   IconSeeds,
   IconSnow,
   IconSprout,
+  IconStar,
+  IconStars,
 } from '../theme/icons'
 import { ProgressSheet } from './ProgressSheet'
 import { MapBackdrop } from '../theme/MapBackdrop'
@@ -1015,7 +1017,7 @@ export function GardenMap({
                     <span className="plot-badge-name">{def.name}</span>
                     <span className="plot-badge-level">
                       {level}
-                      {stars > 0 ? <span className="plot-badge-stars">{'★'.repeat(Math.min(3, stars))}</span> : null}
+                      {stars > 0 ? <span className="plot-badge-stars"><IconStars n={Math.min(3, stars)} /></span> : null}
                     </span>
                   </span>
                 ) : null}
@@ -1048,7 +1050,7 @@ export function GardenMap({
                           {milestonesReached(level) > 0 ? (
                             <span className="plot-stars" aria-label={t.milestones.starsAria(milestonesReached(level))}>
                               {' '}
-                              {'★'.repeat(Math.min(3, milestonesReached(level)))}
+                              <IconStars n={Math.min(3, milestonesReached(level))} />
                             </span>
                           ) : null}
                           {producing && selectedHere ? (
@@ -1062,7 +1064,7 @@ export function GardenMap({
                                 style={{ ['--p' as string]: `${Math.round(((level - nextStar.from) / (nextStar.at - nextStar.from)) * 100)}%` }}
                                 aria-hidden="true"
                               />
-                              {t.milestone.toStar(toStar)}
+                              {t.milestone.toStar(toStar)} <IconStar />
                             </span>
                           ) : null}
                         </>

@@ -21,6 +21,7 @@ import { t } from '../i18n'
 import { STORE_ENABLED } from '../game/monetization'
 import type { useGame } from '../game/useGame'
 import { waterRefillsLeft } from '../game/state'
+import { IconCheck } from '../theme/icons'
 
 type GameApi = ReturnType<typeof useGame>
 type Tab = 'free' | 'boosts' | 'styles' | 'seeds'
@@ -148,7 +149,7 @@ export function ShopPanel({ game, onPreview }: Props) {
         {state.adsRemoved ? (
           <div className="shop-wallet-chip ads-free">
             <span className="shop-wallet-label">{t.shop.adsRemovedBadge}</span>
-            <span className="shop-wallet-value">✓</span>
+            <span className="shop-wallet-value"><IconCheck /></span>
           </div>
         ) : null}
       </div>
