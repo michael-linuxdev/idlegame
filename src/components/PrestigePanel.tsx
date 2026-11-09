@@ -21,8 +21,7 @@ import {
   modulesToNextEmberUnlock,
   nextLockedEmberUnlock,
   postPrestigeStartOwned,
-  prestigeBlockReason,
-} from '../game/economy'
+  prestigeBlockReason, isProbeYear } from '../game/economy'
 import { formatEta, formatAsh, formatDecimal, formatMult } from '../game/format'
 import { t } from '../i18n'
 import { WinterScene } from '../theme/WinterScene'
@@ -62,12 +61,14 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
     return () => cancelAnimationFrame(id)
   }, [state.prestiges, state.deepPrestiges, state.generation, state.helperLevel])
   const teaser = prestigeProgress.ratio >= 0.5 && !canPrestige
-  const payout = emberPayout(state.ernteSeason, state.prestiges)
+  const probe = isProbeYear(state)
+  const payout = emberPayout(state.ernteSeason, state.prestiges, probe)
   const online = modulesOnlineCount(state.owned)
   const block = prestigeBlockReason({
     prestiges: state.prestiges,
     ernteSeason: state.ernteSeason,
     owned: state.owned,
+    probe,
   })
   const unlockProgress = emberUnlockProgress(state.ernteSeason, state.owned)
   const readyBuys = countAffordableEmberBuys(
@@ -88,6 +89,7 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
     erbstuecke: state.erbstuecke,
     ernteSeason: state.ernteSeason,
     prestiges: state.prestiges,
+    probe,
   })
 
   const deepOpen = canDeepReset(state.prestiges)
@@ -188,7 +190,17 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
 
         <p className="prestige-stats">
           {t.prestige.nextPayout} <strong>{t.prestige.creditsAmount(payout)}</strong>
-          {canPrestige ? <span className="prestige-teaser"> · {t.prestige.longerHint}</span> : null}
+          {canPrestige ? (
+            (() => {
+              // Vorschau: was 10 Minuten weiter gärtnern bringen würde
+              const later = emberPayout(state.ernteSeason + game.rate * 600, state.prestiges, probe)
+              return later > payout ? (
+                <span className="prestige-teaser"> · {t.prestige.laterPayout(later)}</span>
+              ) : (
+                <span className="prestige-teaser"> · {t.prestige.longerHint}</span>
+              )
+            })()
+          ) : null}
           {teaser ? <span className="prestige-teaser"> · {t.prestige.creditsPreview(nextPrestige)}</span> : null}
         </p>
 

@@ -24,6 +24,7 @@ import {
   BALANCE,
   EMBER_SHOP,
   emberPayout,
+  isProbeYear,
   emberRankUnlocked,
   foundryDiscountMult,
   payoutAtGate,
@@ -209,7 +210,7 @@ export function run(profile: Profile, hours: number) {
   let runStart = clock
   let bestPayoutRate = 0
   let gateAt = -1
-  const runs: { dur: number; active: number; payout: number; levels: number[]; meta: string; day: number }[] = []
+  const runs: { dur: number; active: number; payout: number; levels: number[]; meta: string; day: number; deep?: boolean }[] = []
   // Ereignisdichte: aktive Spielzeit (s) jedes bedeutsamen Ereignisses
   let activeSec = 0
   let runActiveStart = 0
@@ -298,10 +299,11 @@ export function run(profile: Profile, hours: number) {
     }
     if (canPrestigeNow(s)) {
       const runMin = (clock - runStart) / 60_000
-      const payout = emberPayout(s.ernteSeason, s.prestiges)
+      const probe = isProbeYear(s)
+      const payout = emberPayout(s.ernteSeason, s.prestiges, probe)
       const rate = payout / Math.max(1, runMin)
       bestPayoutRate = Math.max(bestPayoutRate, rate)
-      const ready = profile === 'engaged' ? rate < bestPayoutRate * 0.92 : payout >= 1.6 * payoutAtGate(s.prestiges) || runMin > 60 * 30
+      const ready = profile === 'engaged' ? rate < bestPayoutRate * 0.92 : payout >= 1.6 * payoutAtGate(s.prestiges, probe) || runMin > 60 * 30
       if (ready) {
         runs.push({
           dur: (clock - runStart) / 1000,
@@ -319,6 +321,7 @@ export function run(profile: Profile, hours: number) {
         if (canDeepReset(s.prestiges) && (lastDur > Number(process.env.DEEP_AFTER_H ?? 12) * 3600 || s.prestiges >= Number(process.env.DEEP_AT_YEAR ?? 99) - 1)) {
           const sp = sproutPayout(s.prestiges)
           s = doDeepReset(s)
+          runs[runs.length - 1].deep = true
           s = hireJonas(s)
           s = spendSprouts(s)
           deeps.push({ day: Math.floor((clock - start) / 86400000) + 1, sprouts: sp, total: s.sproesslinge })

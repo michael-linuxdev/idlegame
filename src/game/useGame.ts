@@ -13,8 +13,7 @@ import {
   MIN_OFFLINE_CLAIM_AWAY_MS,
   TAP_COOLDOWN_MS,
   tapBonusSeconds,
-  type EmberUpgradeId,
-} from './economy'
+  type EmberUpgradeId, isProbeYear } from './economy'
 import {
   GENERATORS,
   generatorCost,
@@ -86,7 +85,6 @@ import {
   lineCostMult,
   maybeStartFlashEvent,
   mockBuyOffer,
-  nextPrestigeEmbers,
   playerLevelOf,
   prestigeMinAsh,
   prestigeMultiplier,
@@ -398,7 +396,7 @@ export function useGame() {
 
   const prestige = useCallback(() => {
     setState((s) => {
-      const gain = emberPayout(s.ernteSeason, s.prestiges)
+      const gain = emberPayout(s.ernteSeason, s.prestiges, isProbeYear(s))
       const next = doPrestige(s)
       if (next !== s) {
         logPlaytest('prestige', {
@@ -1062,8 +1060,8 @@ export function useGame() {
     bpDailyXpReady,
     skipHoursRemaining: skipLeft,
     equippedCosmetic: equipped,
-    nextPrestige: nextPrestigeEmbers(state.ernteSeason, state.prestiges),
-    prestigeMin: prestigeMinAsh(state.prestiges),
+    nextPrestige: emberPayout(state.ernteSeason, state.prestiges, isProbeYear(state)),
+    prestigeMin: prestigeMinAsh(state.prestiges, isProbeYear(state)),
     prestigeProgress: progress,
     canPrestige: canPrestigeNow(state),
     tapReady,

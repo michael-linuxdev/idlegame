@@ -46,6 +46,14 @@ export const BALANCE = {
   prestigeLateGrowth: 1.12,
   payoutBase: 100,
   payoutGrowth: 1.12,
+  /**
+   * Probe-Winter (2026-11-09): nur Gartenjahr 1 hat eine eigene, niedrige
+   * Schwelle, damit das erste Saisonende in die erste Sitzung fällt
+   * (Dauerspieler ~18 min statt ~60). Ab Gartenjahr 2 gilt die Kurve oben.
+   */
+  firstSeasonGate: 5_000_000,
+  /** Auszahlung an der Probe-Schwelle (2–3 Truhen-Käufe); 45 bremste das Spiel danach (Sim: Jahr 12 = 388 min aktiv). */
+  firstSeasonPayout: 70,
 }
 
 /** Modules that must be online (owned ≥ 1) before Run 2+ Soft-Prestige. */
@@ -76,7 +84,13 @@ export const EMBER_PAYOUT_SOFT = 500
 export const EMBER_PAYOUT_CEIL = 1_600
 
 /** Base Erbstücke paid exactly at the gate for this season. */
-export function payoutAtGate(prestiges: number): number {
+/** Probe-Winter gilt nur im allerersten Gartenjahr (nicht nach Tiefem Winter / Generation). */
+export function isProbeYear(s: { prestiges: number; deepPrestiges: number; generation: number }): boolean {
+  return s.prestiges <= 0 && s.deepPrestiges <= 0 && s.generation <= 0
+}
+
+export function payoutAtGate(prestiges: number, probe = false): number {
+  if (probe) return BALANCE.firstSeasonPayout
   return Math.round(BALANCE.payoutBase * Math.pow(BALANCE.payoutGrowth, Math.max(0, prestiges)))
 }
 
@@ -86,7 +100,8 @@ export function prestigeMinEmbersForRun(prestiges: number): number {
 }
 
 /** Saisonende gate: Ernte this season ≥ prestigeBase · prestigeGrowth^p */
-export function prestigeMinAsh(prestiges: number): number {
+export function prestigeMinAsh(prestiges: number, probe = false): number {
+  if (probe) return BALANCE.firstSeasonGate
   return Math.floor(
     BALANCE.prestigeBase *
       Math.pow(BALANCE.prestigeGrowth, Math.min(Math.max(0, prestiges), BALANCE.prestigeKnee)) *
@@ -105,17 +120,17 @@ function payoutCurve(r: number): number {
  * Erbstücke for ending the season now. Relative to this season's gate, so a
  * stronger garden doesn't turn Saisonende into a 2-minute loop.
  */
-export function emberPayout(ernteSeason: number, prestiges = 0): number {
+export function emberPayout(ernteSeason: number, prestiges = 0, probe = false): number {
   if (ernteSeason <= 0) return 0
-  const r = ernteSeason / Math.max(1, prestigeMinAsh(prestiges))
-  return Math.floor(payoutAtGate(prestiges) * payoutCurve(r))
+  const r = ernteSeason / Math.max(1, prestigeMinAsh(prestiges, probe))
+  return Math.floor(payoutAtGate(prestiges, probe) * payoutCurve(r))
 }
 
 /** Ernte needed this season to be paid `erbstuecke` (inverse of the √ band). */
-export function ashForEmberPayout(erbstuecke: number, prestiges = 0): number {
+export function ashForEmberPayout(erbstuecke: number, prestiges = 0, probe = false): number {
   if (erbstuecke <= 0) return 0
-  const ratio = erbstuecke / Math.max(1, payoutAtGate(prestiges))
-  return Math.ceil(prestigeMinAsh(prestiges) * ratio * ratio)
+  const ratio = erbstuecke / Math.max(1, payoutAtGate(prestiges, probe))
+  return Math.ceil(prestigeMinAsh(prestiges, probe) * ratio * ratio)
 }
 
 export interface EmberUpgrades {
@@ -550,9 +565,10 @@ export function countAffordableEmberBuysAfterPrestige(args: {
   erbstuecke: number
   ernteSeason: number
   prestiges: number
+  probe?: boolean
 }): number {
   const postPrestiges = args.prestiges + 1
-  const wallet = args.erbstuecke + emberPayout(args.ernteSeason, args.prestiges)
+  const wallet = args.erbstuecke + emberPayout(args.ernteSeason, args.prestiges, args.probe)
   return countAffordableEmberBuys(
     args.upgrades,
     wallet,
@@ -658,10 +674,11 @@ export function prestigeBlockReason(args: {
   prestiges: number
   ernteSeason: number
   owned: Partial<Record<GeneratorId, number>>
+  probe?: boolean
 }): PrestigeBlockReason {
-  const min = prestigeMinAsh(args.prestiges)
+  const min = prestigeMinAsh(args.prestiges, args.probe)
   if (args.ernteSeason < min) return 'ernte'
-  const payout = emberPayout(args.ernteSeason, args.prestiges)
+  const payout = emberPayout(args.ernteSeason, args.prestiges, args.probe)
   if (payout <= 0) return 'ernte'
   if (
     args.prestiges >= 1 &&

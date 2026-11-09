@@ -117,7 +117,7 @@ Tempo-Messung (9.1/9.2) kommt **vor** die Balance-Pakete 3 und 6, damit deren Wi
 - [x] C Erste Minuten & Freischaltungen — Tutorial-Schritt „Verein besuchen“ wird übersprungen, solange der Verein noch zu ist; Wetter wirkt weiter auf die Ernte, nur Pille und Wetter-Frage kommen später.
 - [x] D Tempo messen — Hänger Jahr 13/14 toleriert (aktiv 138 min, Rest Nacht); Ziel Sitzung-1-Dichte ≤ 90 s noch offen (Basis 2 min) → Pakete E/F.
 - [x] E Kernschleife — Krümel-Drossel 5 s erst ab „Max“ (15 s verschob das erste Saisonende: Regular 132 → 240 min; ab Max ist Sim identisch). „Gedrückt halten“ gab es schon. Kauf-Kombo (4.4) bewusst weggelassen: Playtest zeigt Einzeltipp-Grind, eine Kombo würde genau das belohnen.
-- [ ] F Probe-Winter
+- [x] F Probe-Winter — 5 Mio / 70 Erbstücke, nur erstes Gartenjahr überhaupt (`isProbeYear`); Saison-Vorschau „in ~10 Minuten wären es …“. Tempo-Test fand zwei Fehler im ersten Entwurf (Probe nach Tiefem Winter → 5-min-Saisons; Auszahlung 45 → Hänger Jahr 12), beide behoben. Korridor jetzt: erste Saison ≤ 30 min, Folgesaisons ≤ 300 min außer vor Tiefem Winter, Dichte S1 ≤ 90 s.
 - [ ] G Rückkehr
 - [ ] H Saison-Karten
 - [ ] I Lange Ziele & Sammlungen

@@ -10,8 +10,7 @@ import {
   countAffordableEmberBuysAfterPrestige,
   emberPayout,
   modulesToNextEmberUnlock,
-  postPrestigeStartOwned,
-} from '../game/economy'
+  postPrestigeStartOwned, isProbeYear } from '../game/economy'
 import {
   GENERATORS,
   generatorRate,
@@ -281,6 +280,7 @@ export function GardenMap({
   }, [postPrestigeFocus, clearPostPrestigeFocus])
 
   /** Map CTA: spend leftover Münzen, or honest prestige preview (never false „lohnt sich“). */
+  const probe = isProbeYear(state)
   const prestigeCta = useMemo(() => {
     const readyBuys = countAffordableEmberBuys(
       state.emberUpgrades,
@@ -301,7 +301,7 @@ export function GardenMap({
     }
     const nearTier = PRESTIGE_SPIKE_RATIOS.findIndex((r) => prestigeProgress.ratio >= r)
     if (nearTier < 0 && !canPrestige) return null
-    const erbstuecke = Math.max(nextPrestige, emberPayout(state.ernteSeason, state.prestiges))
+    const erbstuecke = Math.max(nextPrestige, emberPayout(state.ernteSeason, state.prestiges, probe))
     if (erbstuecke <= 0) return null
     const ready = canPrestige || prestigeProgress.ratio >= 1
     const postBuys = countAffordableEmberBuysAfterPrestige({
@@ -309,6 +309,7 @@ export function GardenMap({
       erbstuecke: state.erbstuecke,
       ernteSeason: state.ernteSeason,
       prestiges: state.prestiges,
+      probe,
     })
     if (postBuys > 0) {
       return {
@@ -348,6 +349,7 @@ export function GardenMap({
     state.prestiges,
     state.deepPrestiges,
     state.generation,
+    probe,
   ])
 
   const stageName =

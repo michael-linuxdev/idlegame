@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   BALANCE,
   emberPayout,
+  isProbeYear,
   payoutAtGate,
   prestigeBlockReason,
   prestigeMinAsh,
@@ -13,6 +14,13 @@ describe('Saisonende gate + payout', () => {
     const g = (p: number) => prestigeMinAsh(p)
     expect(g(0)).toBe(BALANCE.prestigeBase)
     expect(g(1) / g(0)).toBeCloseTo(BALANCE.prestigeGrowth, 5)
+    // Probe-Winter: nur das allererste Gartenjahr hat eine eigene Schwelle
+    expect(prestigeMinAsh(0, true)).toBe(BALANCE.firstSeasonGate)
+    expect(payoutAtGate(0, true)).toBe(BALANCE.firstSeasonPayout)
+    expect(emberPayout(BALANCE.firstSeasonGate, 0, true)).toBe(BALANCE.firstSeasonPayout)
+    expect(isProbeYear({ prestiges: 0, deepPrestiges: 0, generation: 0 })).toBe(true)
+    expect(isProbeYear({ prestiges: 0, deepPrestiges: 1, generation: 0 })).toBe(false)
+    expect(isProbeYear({ prestiges: 0, deepPrestiges: 0, generation: 1 })).toBe(false)
     const k = BALANCE.prestigeKnee
     expect(g(k + 1) / g(k)).toBeCloseTo(BALANCE.prestigeLateGrowth, 5)
   })
