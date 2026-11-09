@@ -7,6 +7,7 @@ import { useSvgId } from './svgId'
 import { moduleTier, sameTierProps } from './tiers'
 import type { Season } from './ambient'
 import { ArtSvg } from './ArtSvg'
+import { P } from './art/palette'
 
 const GRAPE: Record<string, string> = {
   riesling: '#c9d36a',
@@ -18,7 +19,7 @@ const GRAPE: Record<string, string> = {
 function Vines({ id, tier, season }: { id: string; tier: number; season?: Season }) {
   const rows = Math.min(4, 1 + Math.floor(tier / 1.5))
   const grape = GRAPE[id] ?? '#5b2a4a'
-  const leaf = season === 'autumn' ? '#d29a2c' : season === 'winter' ? '#8a7a5a' : '#5f9e45'
+  const leaf = season === 'autumn' ? '#d29a2c' : season === 'winter' ? '#8a7a5a' : P.leaf
   const bunches = season === 'winter' || season === 'spring' ? 0 : Math.min(4, tier)
   return (
     <ArtSvg viewBox="0 0 80 72">
@@ -29,9 +30,9 @@ function Vines({ id, tier, season }: { id: string; tier: number; season?: Season
         const x1 = 70 - r * 3
         return (
           <g key={r}>
-            <path d={`M${x0} ${y}H${x1}`} stroke="#8a6a40" strokeWidth="0.8" />
+            <path d={`M${x0} ${y}H${x1}`} stroke={P.outlineSoft} strokeWidth="0.8" />
             {[x0, (x0 + x1) / 2, x1].map((x) => (
-              <path key={x} d={`M${x} ${y + 4}V${y - 8}`} stroke="#6e4a2b" strokeWidth="1.4" />
+              <path key={x} d={`M${x} ${y + 4}V${y - 8}`} stroke={P.outlineWood} strokeWidth="1.4" />
             ))}
             {Array.from({ length: 6 }, (_, i) => (
               <ellipse key={i} cx={x0 + 4 + i * ((x1 - x0 - 8) / 5)} cy={y - 4} rx="4.2" ry="3.2" fill={leaf} opacity={0.95} />
@@ -43,7 +44,7 @@ function Vines({ id, tier, season }: { id: string; tier: number; season?: Season
                 ))}
               </g>
             ))}
-            {season === 'winter' ? <path d={`M${x0} ${y - 7}H${x1}`} stroke="#fff" strokeWidth="1.4" opacity="0.8" /> : null}
+            {season === 'winter' ? <path d={`M${x0} ${y - 7}H${x1}`} stroke={P.white} strokeWidth="1.4" opacity="0.8" /> : null}
           </g>
         )
       })}
@@ -65,8 +66,8 @@ function Trockenmauer({ tier }: { tier: number }) {
             width="9"
             height="6.4"
             rx="2"
-            fill={['#b8ab94', '#a69a84', '#c4b8a0'][(i + r) % 3]}
-            stroke="#7a6e5a"
+            fill={['#b8ab94', P.stone, '#c4b8a0'][(i + r) % 3]}
+            stroke={P.outlineStone}
             strokeWidth="0.6"
           />
         )),
@@ -80,7 +81,7 @@ function Trockenmauer({ tier }: { tier: number }) {
       {tier >= 4 ? (
         <g>
           {[14, 22, 66].map((x) => (
-            <circle key={x} cx={x} cy={58 - layers * 7} r="2" fill="#c77dd1" />
+            <circle key={x} cx={x} cy={58 - layers * 7} r="2" fill={P.lilac} />
           ))}
         </g>
       ) : null}
@@ -90,7 +91,7 @@ function Trockenmauer({ tier }: { tier: number }) {
 
 function House({ tier, kind }: { tier: number; kind: 'wingerthaus' | 'kelter' | 'weinkeller' | 'strausse' }) {
   const roof = kind === 'wingerthaus' ? '#a5531a' : kind === 'strausse' ? '#b8403a' : '#7a5a3a'
-  const wall = kind === 'weinkeller' ? '#c9b48a' : '#efe1c2'
+  const wall = kind === 'weinkeller' ? '#c9b48a' : P.paper
   const w = kind === 'wingerthaus' ? 26 : 40
   const x = 40 - w / 2
   return (
@@ -98,60 +99,60 @@ function House({ tier, kind }: { tier: number; kind: 'wingerthaus' | 'kelter' | 
       <ellipse cx="40" cy="64" rx={w / 2 + 12} ry="4" fill="rgba(40,60,20,0.22)" />
       {kind === 'weinkeller' ? (
         <g>
-          <path d="M6 64Q40 10 74 64z" fill="#7fae58" />
-          <path d="M28 64V48a12 12 0 0 1 24 0v16z" fill="#c9b48a" stroke="#7a6e5a" strokeWidth="1" />
+          <path d="M6 64Q40 10 74 64z" fill={P.leafLight} />
+          <path d="M28 64V48a12 12 0 0 1 24 0v16z" fill="#c9b48a" stroke={P.outlineStone} strokeWidth="1" />
           <path d="M32 64V50a8 8 0 0 1 16 0v14z" fill="#5a3d22" />
         </g>
       ) : (
         <g>
           <path d={`M${x - 3} 36L40 ${18}L${x + w + 3} 36z`} fill={roof} />
-          <rect x={x} y="36" width={w} height="28" fill={wall} stroke="#8a6a40" strokeWidth="1" />
-          <rect x="35" y="48" width="10" height="16" fill="#7a5532" />
-          {tier >= 2 ? <rect x={x + 4} y="42" width="7" height="6" fill="#8fd0ec" stroke="#8a6a40" strokeWidth=".6" /> : null}
+          <rect x={x} y="36" width={w} height="28" fill={wall} stroke={P.outlineSoft} strokeWidth="1" />
+          <rect x="35" y="48" width="10" height="16" fill={P.bark} />
+          {tier >= 2 ? <rect x={x + 4} y="42" width="7" height="6" fill={P.waterLight} stroke={P.outlineSoft} strokeWidth=".6" /> : null}
         </g>
       )}
       {kind === 'kelter' && tier >= 2 ? (
         <g>
-          <rect x="60" y="48" width="12" height="14" rx="2" fill="#a5733f" stroke="#6e4a2b" strokeWidth="1" />
+          <rect x="60" y="48" width="12" height="14" rx="2" fill={P.woodMid} stroke={P.outlineWood} strokeWidth="1" />
           <path d="M66 48V36M60 36h12" stroke="#4a3a2a" strokeWidth="2" />
         </g>
       ) : null}
       {kind === 'weinkeller'
         ? Array.from({ length: Math.min(4, tier) }, (_, i) => (
             <g key={i}>
-              <ellipse cx={10 + i * 8 + (i > 1 ? 44 : 0)} cy="60" rx="4" ry="4.6" fill="#a5733f" stroke="#6e4a2b" strokeWidth=".8" />
-              <path d={`M${6 + i * 8 + (i > 1 ? 44 : 0)} 58h8M${6 + i * 8 + (i > 1 ? 44 : 0)} 62h8`} stroke="#6e4a2b" strokeWidth=".7" />
+              <ellipse cx={10 + i * 8 + (i > 1 ? 44 : 0)} cy="60" rx="4" ry="4.6" fill={P.woodMid} stroke={P.outlineWood} strokeWidth=".8" />
+              <path d={`M${6 + i * 8 + (i > 1 ? 44 : 0)} 58h8M${6 + i * 8 + (i > 1 ? 44 : 0)} 62h8`} stroke={P.outlineWood} strokeWidth=".7" />
             </g>
           ))
         : null}
       {kind === 'strausse' ? (
         <g>
-          <path d="M40 30v-8" stroke="#6e4a2b" strokeWidth="1.2" />
-          <path d="M36 22l4-8 4 8z" fill="#c9a46b" />
-          {tier >= 2 ? <rect x="6" y="56" width="14" height="3" fill="#a5733f" /> : null}
-          {tier >= 3 ? <rect x="60" y="56" width="14" height="3" fill="#a5733f" /> : null}
-          {tier >= 4 ? <path d="M4 40Q40 52 76 40" stroke="#f5c542" strokeWidth="1" strokeDasharray="1 3" fill="none" /> : null}
+          <path d="M40 30v-8" stroke={P.outlineWood} strokeWidth="1.2" />
+          <path d="M36 22l4-8 4 8z" fill={P.woodLight} />
+          {tier >= 2 ? <rect x="6" y="56" width="14" height="3" fill={P.woodMid} /> : null}
+          {tier >= 3 ? <rect x="60" y="56" width="14" height="3" fill={P.woodMid} /> : null}
+          {tier >= 4 ? <path d="M4 40Q40 52 76 40" stroke={P.yellow} strokeWidth="1" strokeDasharray="1 3" fill="none" /> : null}
         </g>
       ) : null}
-      {kind === 'wingerthaus' && tier >= 3 ? <circle cx="62" cy="58" r="5" fill="#5f9e45" /> : null}
+      {kind === 'wingerthaus' && tier >= 3 ? <circle cx="62" cy="58" r="5" fill={P.leaf} /> : null}
     </ArtSvg>
   )
 }
 
 function Weinfest({ tier }: { tier: number }) {
-  const colors = ['#e2453c', '#f5c542', '#3d8db8', '#7fbf5a']
+  const colors = [P.tomato, P.yellow, P.waterDeep, P.leafLight]
   return (
     <ArtSvg viewBox="0 0 80 72">
       <ellipse cx="40" cy="64" rx="34" ry="5" fill="rgba(40,60,20,0.22)" />
-      <path d="M8 30h64v6H8z" fill="#8a6a40" />
-      <path d="M10 36v28M70 36v28" stroke="#6e4a2b" strokeWidth="2" />
+      <path d="M8 30h64v6H8z" fill={P.outlineSoft} />
+      <path d="M10 36v28M70 36v28" stroke={P.outlineWood} strokeWidth="2" />
       {Array.from({ length: 8 }, (_, i) => (
         <path key={i} d={`M${10 + i * 8} 36l4 6 4-6z`} fill={colors[i % 4]} />
       ))}
       {Array.from({ length: Math.min(3, tier) }, (_, i) => (
         <g key={i}>
-          <rect x={16 + i * 18} y="54" width="14" height="3" fill="#a5733f" />
-          <rect x={18 + i * 18} y="48" width="10" height="2.4" fill="#c9a46b" />
+          <rect x={16 + i * 18} y="54" width="14" height="3" fill={P.woodMid} />
+          <rect x={18 + i * 18} y="48" width="10" height="2.4" fill={P.woodLight} />
           <path d={`M${21 + i * 18} 46v2`} stroke="#5b2a4a" strokeWidth="2" />
         </g>
       ))}
@@ -193,12 +194,12 @@ export const VineyardArt = memo(function VineyardArt({
 export function VineyardStakes() {
   return (
     <ArtSvg viewBox="0 0 80 72">
-      <ellipse cx="40" cy="62" rx="26" ry="5" fill="#8a6a40" opacity="0.45" />
+      <ellipse cx="40" cy="62" rx="26" ry="5" fill={P.outlineSoft} opacity="0.45" />
       {[18, 32, 46, 60].map((x) => (
-        <path key={x} d={`M${x} 64V44`} stroke="#8a6a40" strokeWidth="2" />
+        <path key={x} d={`M${x} 64V44`} stroke={P.outlineSoft} strokeWidth="2" />
       ))}
-      <path d="M18 48H60" stroke="#a69a84" strokeWidth=".8" />
-      <path d="M32 58c-4-2-5-6-3-8 3 1 4 4 3 8zM46 58c4-2 5-6 3-8-3 1-4 4-3 8z" fill="#7fbf5a" />
+      <path d="M18 48H60" stroke={P.stone} strokeWidth=".8" />
+      <path d="M32 58c-4-2-5-6-3-8 3 1 4 4 3 8zM46 58c4-2 5-6 3-8-3 1-4 4-3 8z" fill={P.leafLight} />
     </ArtSvg>
   )
 }
@@ -208,7 +209,7 @@ export function VineyardWild({ seed = 0 }: { seed?: number }) {
   return (
     <ArtSvg viewBox="0 0 80 72">
       {Array.from({ length: 6 }, (_, i) => (
-        <rect key={i} x={10 + i * 10} y={56 + ((i + seed) % 2) * 2} width="9" height="6" rx="2" fill="#a69a84" stroke="#7a6e5a" strokeWidth=".6" />
+        <rect key={i} x={10 + i * 10} y={56 + ((i + seed) % 2) * 2} width="9" height="6" rx="2" fill={P.stone} stroke={P.outlineStone} strokeWidth=".6" />
       ))}
       <ellipse cx="30" cy="50" rx="14" ry="9" fill="#5f7a3a" />
       <ellipse cx="52" cy="52" rx="12" ry="8" fill="#4f6a30" />
@@ -235,8 +236,8 @@ export const VineyardBackdrop = memo(function VineyardBackdrop({ stage }: { stag
         {/* terraces */}
         {[38, 50, 62, 75, 88].map((y, i) => (
           <g key={y}>
-            <path d={`M0 ${y} Q50 ${y - 3} 100 ${y}`} stroke="#a69a84" strokeWidth="5" fill="none" vectorEffect="non-scaling-stroke" opacity="0.8" />
-            <path d={`M0 ${y + 0.8} Q50 ${y - 2.2} 100 ${y + 0.8}`} stroke="#7a6e5a" strokeWidth="1.2" fill="none" vectorEffect="non-scaling-stroke" opacity={0.4 + i * 0.05} />
+            <path d={`M0 ${y} Q50 ${y - 3} 100 ${y}`} stroke={P.stone} strokeWidth="5" fill="none" vectorEffect="non-scaling-stroke" opacity="0.8" />
+            <path d={`M0 ${y + 0.8} Q50 ${y - 2.2} 100 ${y + 0.8}`} stroke={P.outlineStone} strokeWidth="1.2" fill="none" vectorEffect="non-scaling-stroke" opacity={0.4 + i * 0.05} />
           </g>
         ))}
         {/* switchback path */}
@@ -249,15 +250,15 @@ export const VineyardBackdrop = memo(function VineyardBackdrop({ stage }: { stag
           vectorEffect="non-scaling-stroke"
         />
         {/* river at the foot */}
-        <path d="M0 97 Q30 93 60 97 T100 95 V100 H0z" fill="#6aa6c9" />
+        <path d="M0 97 Q30 93 60 97 T100 95 V100 H0z" fill={P.water} />
         <path d="M0 98 Q30 95 60 98 T100 97" stroke="#a9d6ee" strokeWidth="2" fill="none" vectorEffect="non-scaling-stroke" className="orchard-stream" strokeDasharray="4 6" />
       </ArtSvg>
       <div className="garden-hedge orchard-hills">
         <ArtSvg viewBox="0 0 400 60" preserveAspectRatio="none">
           <path d="M0 60 V22 Q60 2 140 18 T280 10 T400 16 V60z" fill="#8a9a5a" />
           <path d="M0 60 V40 Q90 22 180 36 T400 30 V60z" fill="#7a8a4c" />
-          <path d="M300 30 h14 v-10 l7 -6 l7 6 v10 h4 v12 h-32z" fill="#efe1c2" />
-          <path d="M318 14 v-6" stroke="#6e4a2b" strokeWidth="2" />
+          <path d="M300 30 h14 v-10 l7 -6 l7 6 v10 h4 v12 h-32z" fill={P.paper} />
+          <path d="M318 14 v-6" stroke={P.outlineWood} strokeWidth="2" />
         </ArtSvg>
       </div>
       <div className="ambient-tint" />

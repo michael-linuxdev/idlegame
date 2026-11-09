@@ -1,6 +1,7 @@
 import { memo } from 'react'
 import type { Daypart } from '../theme/ambient'
 import { ArtSvg } from '../theme/ArtSvg'
+import { P } from '../theme/art/palette'
 
 interface Props {
   /** Hühnerstall planted → chickens peck around it */
@@ -22,14 +23,14 @@ export const GardenCritters = memo(function GardenCritters({ chickens, bees, day
         ? [0, 1, 2].map((i) => (
             <div key={i} className={`critter chicken c${i}`}>
               <ArtSvg viewBox="0 0 20 18">
-                <ellipse cx="9" cy="11" rx="6.5" ry="5" fill={i === 1 ? '#a5733f' : '#fbf6e8'} stroke="#8a6a40" strokeWidth=".7" />
+                <ellipse cx="9" cy="11" rx="6.5" ry="5" fill={i === 1 ? P.woodMid : P.cream} stroke={P.outlineSoft} strokeWidth=".7" />
                 <g className="chicken-head">
-                  <circle cx="15" cy="7" r="3" fill={i === 1 ? '#a5733f' : '#fbf6e8'} stroke="#8a6a40" strokeWidth=".7" />
-                  <path d="M17.6 7l2 .8-2 .6z" fill="#e8b422" />
-                  <path d="M14.4 3.8q1-1.6 2 0" fill="#e0485e" />
+                  <circle cx="15" cy="7" r="3" fill={i === 1 ? P.woodMid : P.cream} stroke={P.outlineSoft} strokeWidth=".7" />
+                  <path d="M17.6 7l2 .8-2 .6z" fill={P.gold} />
+                  <path d="M14.4 3.8q1-1.6 2 0" fill={P.red} />
                   <circle cx="15.6" cy="6.6" r=".5" fill="#1f1a14" />
                 </g>
-                <path d="M7 16v2M10 16v2" stroke="#e8b422" strokeWidth=".9" />
+                <path d="M7 16v2M10 16v2" stroke={P.gold} strokeWidth=".9" />
               </ArtSvg>
             </div>
           ))
@@ -38,9 +39,9 @@ export const GardenCritters = memo(function GardenCritters({ chickens, bees, day
         ? [0, 1, 2, 3].map((i) => (
             <div key={i} className={`critter bee-trail b${i}`}>
               <ArtSvg viewBox="0 0 8 6">
-                <ellipse cx="4" cy="3.4" rx="2.6" ry="1.9" fill="#f5c542" stroke="#4a3208" strokeWidth=".5" />
+                <ellipse cx="4" cy="3.4" rx="2.6" ry="1.9" fill={P.yellow} stroke="#4a3208" strokeWidth=".5" />
                 <path d="M3.4 1.6v3.6M4.8 1.6v3.6" stroke="#4a3208" strokeWidth=".5" />
-                <ellipse cx="3.4" cy="1.2" rx="1.4" ry=".9" fill="#fff" opacity=".8" />
+                <ellipse cx="3.4" cy="1.2" rx="1.4" ry=".9" fill={P.white} opacity=".8" />
               </ArtSvg>
             </div>
           ))
@@ -61,7 +62,7 @@ export const GardenCritters = memo(function GardenCritters({ chickens, bees, day
             {Array.from({ length: 7 }, (_, i) => (
               <path key={i} d={`M${6 + i * 2} ${5 + (i % 2)}l1-3`} stroke="#4a3a2a" strokeWidth=".8" />
             ))}
-            <path d="M18 9q4 0 5 2l-4 1z" fill="#c9a46b" />
+            <path d="M18 9q4 0 5 2l-4 1z" fill={P.woodLight} />
             <circle cx="22.6" cy="11" r=".7" fill="#1f1a14" />
           </ArtSvg>
         </div>

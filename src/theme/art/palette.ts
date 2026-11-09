@@ -1,0 +1,110 @@
+/**
+ * Gartenerbe-Farbpalette für alle Spielgrafik.
+ *
+ * Neue Grafik nimmt Farben nur von hier (oder als CSS-Variable `--art-*`
+ * aus tokens.css). Ein Test (src/test/artPalette.test.ts) meldet neue
+ * feste Hex-Werte in src/theme/art/**.
+ *
+ * Licht kommt von oben links: „light“-Töne für die obere/linke Seite,
+ * „dark“-Töne für Schatten und Unterseiten.
+ */
+export const P = {
+  // Umrisse je Material
+  outline: '#3d2f1f',
+  outlineWood: '#6e4a2b',
+  outlineSoft: '#8a6a40',
+  outlineStone: '#7a6e5a',
+  // Laub
+  leafLight: '#7fbf5a',
+  leaf: '#5f9e45',
+  leafDark: '#3f7a30',
+  leafMoss: '#4f7a2e',
+  leafPale: '#9ad16f',
+  // Holz
+  woodLight: '#c9a46b',
+  wood: '#b98450',
+  woodMid: '#a5733f',
+  woodDark: '#8a5a32',
+  bark: '#7a5532',
+  // Erde
+  soil: '#7a4d30',
+  soilDark: '#5b3721',
+  compost: '#5b3a22',
+  // Stein
+  stoneLight: '#c9c3b6',
+  stone: '#a69a8a',
+  stoneDark: '#8f8676',
+  // Glas
+  glass: '#d6f0f6',
+  glassEdge: '#e8f6fa',
+  // Wasser
+  waterLight: '#8fd0ec',
+  water: '#6aa6c9',
+  waterDeep: '#3d8db8',
+  pond: '#5aa9c6',
+  // Haut
+  skin: '#f2c9a0',
+  skinLight: '#f2d9a0',
+  // Papier, Stoff, Licht
+  white: '#ffffff',
+  cream: '#fbf6e8',
+  paper: '#efe1c2',
+  canvas: '#f4ead2',
+  lamp: '#ffd36b',
+  // Dächer, Rot
+  roof: '#c4553f',
+  red: '#e0485e',
+  berry: '#d7263d',
+  tomato: '#e2453c',
+  barn: '#d9534f',
+  // Gelb, Orange
+  yellow: '#f5c542',
+  gold: '#e8b422',
+  brass: '#c9a24a',
+  honey: '#f0a530',
+  amber: '#f5a623',
+  orange: '#f08a2c',
+  // Blüten
+  pink: '#f28ab2',
+  lilac: '#c77dd1',
+  lavender: '#9a6bc9',
+  plum: '#6a3d8f',
+  // Blau
+  blue: '#3d6fd1',
+  denim: '#5a8fc2',
+  // Metall, Dunkel
+  metal: '#6b6f73',
+  charcoal: '#3a3a3a',
+  ink: '#1a1a1a',
+} as const
+
+export type PaletteName = keyof typeof P
+
+/**
+ * Ähnliche Altwerte, die beim Umstellen auf einen Palettenton gezogen
+ * werden (Aussehen bleibt im Wesentlichen gleich).
+ */
+export const NEAR: Record<string, PaletteName> = {
+  '#fff': 'white',
+  '#4f9a3a': 'leaf',
+  '#5f8a3a': 'leaf',
+  '#6d8a4a': 'leaf',
+  '#4f8a3a': 'leafDark',
+  '#7fae58': 'leafLight',
+  '#8cc06a': 'leafLight',
+  '#7a5232': 'bark',
+  '#a69a84': 'stone',
+  '#857d6c': 'stoneDark',
+  '#e9dcc2': 'paper',
+  '#efe6d4': 'paper',
+  '#f4f1e6': 'cream',
+  '#f5f0e0': 'cream',
+  '#2c1d12': 'compost',
+  '#e5484d': 'red',
+  '#f5d33d': 'yellow',
+}
+
+/** CSS-Variablen-Name für einen Palettenton (`--art-leaf-dark`). */
+export function cssVar(name: PaletteName): string {
+  return `--art-${name.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`)}`
+}

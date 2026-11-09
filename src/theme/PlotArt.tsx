@@ -1,6 +1,7 @@
 import { memo, type ReactNode } from 'react'
 import type { GeneratorId } from '../game/generators'
 import { ArtSvg } from './ArtSvg'
+import { P } from './art/palette'
 /**
  * Plot states before a module exists:
  *  - WildPlot: overgrown corner (brambles / nettles / junk) — locked.
@@ -269,17 +270,17 @@ export const ClearedPlot = memo(function ClearedPlot() {
         />
       ))}
       {/* string line + stakes */}
-      <rect x="18" y="30" width="3" height="16" rx="1" fill="#c9a46b" />
-      <rect x="79" y="30" width="3" height="16" rx="1" fill="#c9a46b" />
+      <rect x="18" y="30" width="3" height="16" rx="1" fill={P.woodLight} />
+      <rect x="79" y="30" width="3" height="16" rx="1" fill={P.woodLight} />
       <path d="M19.5 33 Q50 37 80.5 33" stroke="#f2f0e0" strokeWidth="1.2" fill="none" />
       {/* seed bag */}
       <g transform="translate(58 46)">
-        <path d="M0 4 L14 4 L13 20 L1 20 Z" fill="#e9dcc2" stroke="#8a7350" strokeWidth="1.2" />
+        <path d="M0 4 L14 4 L13 20 L1 20 Z" fill={P.paper} stroke="#8a7350" strokeWidth="1.2" />
         <rect x="3" y="9" width="8" height="6" rx="1" fill="#7bb35a" />
       </g>
       {/* rake */}
       <path d="M28 64 L44 34" stroke="#a77d4c" strokeWidth="2.6" strokeLinecap="round" />
-      <path d="M38 30 L50 38" stroke="#6b6f73" strokeWidth="2.6" strokeLinecap="round" />
+      <path d="M38 30 L50 38" stroke={P.metal} strokeWidth="2.6" strokeLinecap="round" />
     </ArtSvg>
   )
 })

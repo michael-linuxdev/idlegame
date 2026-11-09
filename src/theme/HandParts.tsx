@@ -1,6 +1,7 @@
 /** Shared drawing parts for the hand-made chapter art (HandArt*.tsx). */
 import type { ReactNode } from 'react'
 import { ArtSvg } from './ArtSvg'
+import { P } from './art/palette'
 
 const V = '0 0 80 72'
 
@@ -15,16 +16,16 @@ export function Svg({ children }: { children: ReactNode }) {
 export const Shadow = ({ rx = 30 }: { rx?: number }) => <ellipse cx="40" cy="66" rx={rx} ry="4.5" fill="rgba(40,60,20,0.22)" />
 
 export function Meadow({ winter }: { winter?: boolean }) {
-  return <ellipse cx="40" cy="56" rx="36" ry="14" fill={winter ? '#e8eef0' : '#8cc06a'} opacity="0.75" />
+  return <ellipse cx="40" cy="56" rx="36" ry="14" fill={winter ? '#e8eef0' : P.leafLight} opacity="0.75" />
 }
 
 export function Fence({ y = 60, x0 = 4, x1 = 76 }: { y?: number; x0?: number; x1?: number }) {
   const posts = []
-  for (let x = x0; x <= x1; x += 8) posts.push(<path key={x} d={`M${x} ${y + 4}V${y - 8}`} stroke="#8a6a40" strokeWidth="1.6" />)
+  for (let x = x0; x <= x1; x += 8) posts.push(<path key={x} d={`M${x} ${y + 4}V${y - 8}`} stroke={P.outlineSoft} strokeWidth="1.6" />)
   return (
     <g>
       {posts}
-      <path d={`M${x0} ${y - 5}H${x1}M${x0} ${y}H${x1}`} stroke="#a5733f" strokeWidth="1.4" />
+      <path d={`M${x0} ${y - 5}H${x1}M${x0} ${y}H${x1}`} stroke={P.woodMid} strokeWidth="1.4" />
     </g>
   )
 }
@@ -34,10 +35,10 @@ export function Cow({ x, y, flip = false, brown = false }: { x: number; y: numbe
     <g transform={`translate(${x} ${y}) scale(${flip ? -1 : 1} 1)`}>
       <g className="ha-graze">
       <path d="M-6 3v4M-2 3v4M3 3v4M6 3v4" stroke="#4a3a2a" strokeWidth="1.2" />
-      <ellipse cx="0" cy="0" rx="8" ry="4.8" fill="#fbf6e8" stroke="#6a5a4a" strokeWidth=".6" />
+      <ellipse cx="0" cy="0" rx="8" ry="4.8" fill={P.cream} stroke="#6a5a4a" strokeWidth=".6" />
       <ellipse cx="-2" cy="-1" rx="3" ry="2.4" fill={brown ? '#a5531a' : '#3a2a1a'} />
       <ellipse cx="4" cy="1.5" rx="2" ry="1.6" fill={brown ? '#a5531a' : '#3a2a1a'} />
-      <ellipse cx="8.6" cy="-2" rx="3" ry="2.6" fill="#fbf6e8" stroke="#6a5a4a" strokeWidth=".6" />
+      <ellipse cx="8.6" cy="-2" rx="3" ry="2.6" fill={P.cream} stroke="#6a5a4a" strokeWidth=".6" />
       <ellipse cx="10.4" cy="-1" rx="1.6" ry="1.2" fill="#f2b8b0" />
       <path d="M7 -4.6l-1-1.6M10 -4.6l1-1.6" stroke="#d9c79a" strokeWidth="1" />
       <path d="M-8 0q-2 2-1 5" stroke="#6a5a4a" strokeWidth=".8" fill="none" />
@@ -51,10 +52,10 @@ export function Goat({ x, y, flip = false }: { x: number; y: number; flip?: bool
     <g transform={`translate(${x} ${y}) scale(${flip ? -1 : 1} 1)`}>
       <g className="ha-graze">
       <path d="M-4 3v3.5M-1 3v3.5M2 3v3.5M4 3v3.5" stroke="#4a3a2a" strokeWidth="1" />
-      <ellipse cx="0" cy="0" rx="5.6" ry="3.6" fill="#efe6d4" stroke="#8a7a6a" strokeWidth=".6" />
-      <circle cx="5.6" cy="-2.8" r="2.4" fill="#efe6d4" stroke="#8a7a6a" strokeWidth=".5" />
+      <ellipse cx="0" cy="0" rx="5.6" ry="3.6" fill={P.paper} stroke="#8a7a6a" strokeWidth=".6" />
+      <circle cx="5.6" cy="-2.8" r="2.4" fill={P.paper} stroke="#8a7a6a" strokeWidth=".5" />
       <path d="M4.6 -4.6q-1.4-3 .6-3.6M6.6 -4.6q.6-3 2.2-2.4" stroke="#8a7a6a" strokeWidth=".9" fill="none" />
-      <path d="M6.4 -0.6l.6 2" stroke="#efe6d4" strokeWidth="1.2" />
+      <path d="M6.4 -0.6l.6 2" stroke={P.paper} strokeWidth="1.2" />
       </g>
     </g>
   )
@@ -76,14 +77,14 @@ export function Pig({ x, y, s = 1, flip = false }: { x: number; y: number; s?: n
   )
 }
 
-export function Bird({ x, y, color = '#fbf6e8', neck = '#fbf6e8', flip = false, swim = false }: { x: number; y: number; color?: string; neck?: string; flip?: boolean; swim?: boolean }) {
+export function Bird({ x, y, color = P.cream, neck = P.cream, flip = false, swim = false }: { x: number; y: number; color?: string; neck?: string; flip?: boolean; swim?: boolean }) {
   return (
     <g transform={`translate(${x} ${y}) scale(${flip ? -1 : 1} 1)`}>
       <g className={swim ? 'ha-swim' : 'ha-graze'}>
-      {!swim ? <path d="M-1 3v3M2 3v3" stroke="#f08a2c" strokeWidth="1" /> : null}
+      {!swim ? <path d="M-1 3v3M2 3v3" stroke={P.orange} strokeWidth="1" /> : null}
       <ellipse cx="0" cy="0" rx="5.4" ry="3.4" fill={color} stroke="#8a7a6a" strokeWidth=".5" />
       <path d="M3.6 -1q2-5 .8-7.6" stroke={neck} strokeWidth="2.2" fill="none" strokeLinecap="round" />
-      <path d="M4.2 -8.6l3 .9-3 .9z" fill="#f08a2c" />
+      <path d="M4.2 -8.6l3 .9-3 .9z" fill={P.orange} />
       <path d="M-5 -0.4l-2.4-1.6 1 2.4z" fill={color} />
       </g>
     </g>
@@ -97,8 +98,8 @@ export function Roof({ x, w, y, color, steep = 14 }: { x: number; w: number; y: 
 export function Window({ x, y, lit }: { x: number; y: number; lit?: boolean }) {
   return (
     <g>
-      <rect x={x} y={y} width="6" height="5.4" fill={lit ? '#ffe9a8' : '#8fd0ec'} stroke="#6e4a2b" strokeWidth=".7" />
-      <path d={`M${x + 3} ${y}v5.4M${x} ${y + 2.7}h6`} stroke="#6e4a2b" strokeWidth=".5" />
+      <rect x={x} y={y} width="6" height="5.4" fill={lit ? '#ffe9a8' : P.waterLight} stroke={P.outlineWood} strokeWidth=".7" />
+      <path d={`M${x + 3} ${y}v5.4M${x} ${y + 2.7}h6`} stroke={P.outlineWood} strokeWidth=".5" />
     </g>
   )
 }
@@ -110,7 +111,7 @@ export function Smoke({ x, y }: { x: number; y: number }) {
 export function Crate({ x, y, fruit }: { x: number; y: number; fruit: string }) {
   return (
     <g>
-      <rect x={x} y={y} width="9" height="6" fill="#c9a46b" stroke="#6e4a2b" strokeWidth=".6" />
+      <rect x={x} y={y} width="9" height="6" fill={P.woodLight} stroke={P.outlineWood} strokeWidth=".6" />
       {[1.8, 4.5, 7.2].map((dx) => (
         <circle key={dx} cx={x + dx} cy={y} r="1.6" fill={fruit} />
       ))}
@@ -123,7 +124,7 @@ export function Pond({ cx = 40, cy = 52, rx = 32, ry = 14, frozen }: { cx?: numb
     <g>
       <ellipse cx={cx} cy={cy + 1} rx={rx + 2} ry={ry + 2} fill="#7a8a4c" opacity=".5" />
       <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill={frozen ? '#cfe2ee' : '#5f9ec4'} />
-      <ellipse cx={cx - rx * 0.3} cy={cy - ry * 0.35} rx={rx * 0.35} ry={ry * 0.18} fill="#fff" opacity=".25" />
+      <ellipse cx={cx - rx * 0.3} cy={cy - ry * 0.35} rx={rx * 0.35} ry={ry * 0.18} fill={P.white} opacity=".25" />
     </g>
   )
 }
@@ -131,12 +132,12 @@ export function Pond({ cx = 40, cy = 52, rx = 32, ry = 14, frozen }: { cx?: numb
 export function Lily({ x, y, flower }: { x: number; y: number; flower?: string }) {
   return (
     <g>
-      <path d={`M${x} ${y}m-5 0a5 2.6 0 1 0 10 0a5 2.6 0 1 0 -10 0z`} fill="#5f9e45" />
+      <path d={`M${x} ${y}m-5 0a5 2.6 0 1 0 10 0a5 2.6 0 1 0 -10 0z`} fill={P.leaf} />
       <path d={`M${x} ${y}l4 -1`} stroke="#4f8a3a" strokeWidth=".6" />
       {flower ? (
         <g>
           <ellipse cx={x} cy={y - 1.4} rx="2.6" ry="1.4" fill={flower} />
-          <circle cx={x} cy={y - 1.8} r=".8" fill="#f5c542" />
+          <circle cx={x} cy={y - 1.8} r=".8" fill={P.yellow} />
         </g>
       ) : null}
     </g>
@@ -147,7 +148,7 @@ export function Reed({ x, h }: { x: number; h: number }) {
   return (
     <g>
       <path d={`M${x} 62V${62 - h}`} stroke="#7a8a4c" strokeWidth="1.3" />
-      <ellipse cx={x} cy={62 - h + 3} rx="1.1" ry="3" fill="#6e4a2b" />
+      <ellipse cx={x} cy={62 - h + 3} rx="1.1" ry="3" fill={P.outlineWood} />
       <path d={`M${x} ${62 - h * 0.4}q-4 -4 -6 -10`} stroke="#8a9a5a" strokeWidth="1" fill="none" />
     </g>
   )
@@ -170,8 +171,8 @@ export function Boat({ x, y, color, flip = false }: { x: number; y: number; colo
     <g transform={`translate(${x} ${y}) scale(${flip ? -1 : 1} 1)`}>
       <g className="ha-swim">
       <path d="M-9 0h18l-3 4h-12z" fill={color} stroke="rgba(0,0,0,.3)" strokeWidth=".6" />
-      <path d="M-7 0.6h14" stroke="#fff" strokeWidth=".6" opacity=".6" />
-      <path d="M-2 0l5 -5" stroke="#8a6a40" strokeWidth=".8" />
+      <path d="M-7 0.6h14" stroke={P.white} strokeWidth=".6" opacity=".6" />
+      <path d="M-2 0l5 -5" stroke={P.outlineSoft} strokeWidth=".8" />
       </g>
     </g>
   )
@@ -180,8 +181,8 @@ export function Boat({ x, y, color, flip = false }: { x: number; y: number; colo
 export function Hive({ x, y, color }: { x: number; y: number; color: string }) {
   return (
     <g>
-      <rect x={x} y={y} width="8" height="9" rx="1" fill={color} stroke="#6e4a2b" strokeWidth=".6" />
-      <rect x={x - 0.8} y={y - 2} width="9.6" height="2.4" rx=".6" fill="#8a6a40" />
+      <rect x={x} y={y} width="8" height="9" rx="1" fill={color} stroke={P.outlineWood} strokeWidth=".6" />
+      <rect x={x - 0.8} y={y - 2} width="9.6" height="2.4" rx=".6" fill={P.outlineSoft} />
       <rect x={x + 2.6} y={y + 7} width="2.8" height="1.2" fill="#3a2a1a" />
     </g>
   )
@@ -192,7 +193,7 @@ export function Bees({ n, cx = 40, cy = 26 }: { n: number; cx?: number; cy?: num
     <g>
       {Array.from({ length: n }, (_, i) => (
         <g key={i} className="bee" style={{ animationDelay: `${i * 0.35}s` }}>
-          <ellipse cx={cx - 14 + ((i * 11) % 28)} cy={cy + ((i * 7) % 10) - 4} rx="1.6" ry="1.1" fill="#f5c542" stroke="#4a3208" strokeWidth=".4" />
+          <ellipse cx={cx - 14 + ((i * 11) % 28)} cy={cy + ((i * 7) % 10) - 4} rx="1.6" ry="1.1" fill={P.yellow} stroke="#4a3208" strokeWidth=".4" />
         </g>
       ))}
     </g>
@@ -202,12 +203,12 @@ export function Bees({ n, cx = 40, cy = 26 }: { n: number; cx?: number; cy?: num
 export function BlossomTree({ x, y, s = 1, color = '#f7c6d9', winter }: { x: number; y: number; s?: number; color?: string; winter?: boolean }) {
   return (
     <g transform={`translate(${x} ${y}) scale(${s})`}>
-      <path d="M-1.4 0L-1 -14Q0 -18 1 -14L1.4 0z" fill="#7a5532" />
+      <path d="M-1.4 0L-1 -14Q0 -18 1 -14L1.4 0z" fill={P.bark} />
       <circle cx="0" cy="-22" r="10" fill={winter ? '#c9d0c4' : color} />
       <circle cx="-7" cy="-17" r="6.4" fill={winter ? '#c9d0c4' : color} />
       <circle cx="7" cy="-17" r="6.4" fill={winter ? '#c9d0c4' : color} />
-      {winter ? <ellipse cx="0" cy="-30" rx="7" ry="2" fill="#fff" /> : (
-        <g fill="#fff" opacity=".7">
+      {winter ? <ellipse cx="0" cy="-30" rx="7" ry="2" fill={P.white} /> : (
+        <g fill={P.white} opacity=".7">
           <circle cx="-3" cy="-24" r="1.2" />
           <circle cx="4" cy="-20" r="1.2" />
           <circle cx="-6" cy="-16" r="1" />
@@ -239,9 +240,9 @@ export function House({
   const top = ground - h
   return (
     <g>
-      <rect x={x} y={top} width={w} height={h} fill={wall} stroke="#6e4a2b" strokeWidth=".8" />
+      <rect x={x} y={top} width={w} height={h} fill={wall} stroke={P.outlineWood} strokeWidth=".8" />
       {timber ? (
-        <g stroke="#6e4a2b" strokeWidth="1.2">
+        <g stroke={P.outlineWood} strokeWidth="1.2">
           <path d={`M${x} ${top + h / 2}H${x + w}M${x + w / 3} ${top}V${ground}M${x + (2 * w) / 3} ${top}V${ground}`} />
           <path d={`M${x} ${top}L${x + w / 3} ${top + h / 2}M${x + w} ${top}L${x + (2 * w) / 3} ${top + h / 2}`} />
         </g>

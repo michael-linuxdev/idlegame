@@ -17,6 +17,7 @@ import type { FestId } from '../game/fests'
 import { FestDecor, FestSkinDecor } from './FestDecor'
 import { useSvgId } from './svgId'
 import { ArtSvg } from './ArtSvg'
+import { P } from './art/palette'
 
 interface Props {
   /** Number of garden areas angelegt (0–10) */
@@ -32,11 +33,11 @@ interface Props {
 function Sonnenblume() {
   return (
     <ArtSvg viewBox="0 0 20 44">
-      <path d="M10 44 V14" stroke="#4f7a2e" strokeWidth="2.2" />
-      <ellipse cx="6" cy="28" rx="4.5" ry="2" fill="#5f9e45" transform="rotate(-30 6 28)" />
-      <ellipse cx="14" cy="34" rx="4.5" ry="2" fill="#5f9e45" transform="rotate(30 14 34)" />
+      <path d="M10 44 V14" stroke={P.leafMoss} strokeWidth="2.2" />
+      <ellipse cx="6" cy="28" rx="4.5" ry="2" fill={P.leaf} transform="rotate(-30 6 28)" />
+      <ellipse cx="14" cy="34" rx="4.5" ry="2" fill={P.leaf} transform="rotate(30 14 34)" />
       {Array.from({ length: 12 }, (_, i) => (
-        <ellipse key={i} cx="10" cy="5" rx="2" ry="4.4" fill="#f5c542" transform={`rotate(${i * 30} 10 10)`} />
+        <ellipse key={i} cx="10" cy="5" rx="2" ry="4.4" fill={P.yellow} transform={`rotate(${i * 30} 10 10)`} />
       ))}
       <circle cx="10" cy="10" r="4" fill="#6b4423" />
     </ArtSvg>
@@ -53,7 +54,7 @@ function Kirschbaum() {
       <circle cx="68" cy="46" r="17" fill="#eb93b5" />
       <circle cx="44" cy="30" r="14" fill="#fbd9e6" />
       {[[40, 40], [58, 34], [30, 52], [66, 52], [50, 56]].map(([x, y], i) => (
-        <circle key={i} cx={x} cy={y} r="2" fill="#fff" />
+        <circle key={i} cx={x} cy={y} r="2" fill={P.white} />
       ))}
     </ArtSvg>
   )
@@ -66,7 +67,7 @@ function Lavendel() {
       {Array.from({ length: 9 }, (_, i) => (
         <g key={i}>
           <path d={`M${6 + i * 6} 20 V${8 + (i % 3) * 2}`} stroke="#6f8f5a" strokeWidth="1.4" />
-          <ellipse cx={6 + i * 6} cy={7 + (i % 3) * 2} rx="2" ry="5" fill="#9a6bc9" />
+          <ellipse cx={6 + i * 6} cy={7 + (i % 3) * 2} rx="2" ry="5" fill={P.lavender} />
         </g>
       ))}
     </ArtSvg>
@@ -77,10 +78,10 @@ function Kuerbisse() {
   return (
     <ArtSvg viewBox="0 0 40 24">
       <ellipse cx="20" cy="21" rx="18" ry="3" fill="var(--g-shadow)" />
-      <ellipse cx="12" cy="15" rx="9" ry="7" fill="#f08a2c" stroke="#a8541a" strokeWidth="1.2" />
-      <path d="M12 8 V5" stroke="#4f7a2e" strokeWidth="2" />
-      <ellipse cx="28" cy="17" rx="7" ry="5.5" fill="#f5a623" stroke="#a8541a" strokeWidth="1.2" />
-      <path d="M28 11.5 V9" stroke="#4f7a2e" strokeWidth="2" />
+      <ellipse cx="12" cy="15" rx="9" ry="7" fill={P.orange} stroke="#a8541a" strokeWidth="1.2" />
+      <path d="M12 8 V5" stroke={P.leafMoss} strokeWidth="2" />
+      <ellipse cx="28" cy="17" rx="7" ry="5.5" fill={P.amber} stroke="#a8541a" strokeWidth="1.2" />
+      <path d="M28 11.5 V9" stroke={P.leafMoss} strokeWidth="2" />
     </ArtSvg>
   )
 }
@@ -181,12 +182,12 @@ function Laube() {
     <ArtSvg viewBox="0 0 120 100">
       <ellipse cx="60" cy="92" rx="54" ry="7" fill="var(--g-shadow)" />
       {/* walls */}
-      <rect x="18" y="42" width="84" height="48" rx="2" fill="#d9a56c" stroke="#6e4a2b" strokeWidth="2" />
+      <rect x="18" y="42" width="84" height="48" rx="2" fill="#d9a56c" stroke={P.outlineWood} strokeWidth="2" />
       {[30, 42, 54, 66, 78, 90].map((x) => (
         <line key={x} x1={x} y1="44" x2={x} y2="88" stroke="#b9844f" strokeWidth="1.4" />
       ))}
       {/* roof */}
-      <path d="M8 46 L60 12 L112 46 Z" fill="#c4553f" stroke="#6e2f22" strokeWidth="2.2" strokeLinejoin="round" />
+      <path d="M8 46 L60 12 L112 46 Z" fill={P.roof} stroke="#6e2f22" strokeWidth="2.2" strokeLinejoin="round" />
       <path d="M20 40 L60 16 L100 40" fill="none" stroke="#a8432f" strokeWidth="2" />
       <path d="M30 34 L60 20 L90 34" fill="none" stroke="#a8432f" strokeWidth="1.6" />
       <rect x="80" y="18" width="8" height="14" fill="#9b6a44" stroke="#5a3a22" strokeWidth="1.4" />
@@ -194,16 +195,16 @@ function Laube() {
       <rect x="48" y="58" width="22" height="32" rx="2" fill="#7d9f5a" stroke="#4a5f33" strokeWidth="2" />
       <circle cx="65" cy="75" r="1.6" fill="#f2d27a" />
       {/* window + curtains + flower box */}
-      <rect x="25" y="54" width="17" height="15" fill="#cfe9f2" stroke="#fff" strokeWidth="2.4" />
+      <rect x="25" y="54" width="17" height="15" fill="#cfe9f2" stroke={P.white} strokeWidth="2.4" />
       <path d="M25 54 Q30 61 27 69 M42 54 Q37 61 40 69" stroke="#e98f8f" strokeWidth="2" fill="none" />
       <rect x="23" y="69" width="21" height="5" rx="1" fill="#8a5a3b" />
-      <circle cx="27" cy="68" r="2.2" fill="#e5484d" />
-      <circle cx="33" cy="67.5" r="2.2" fill="#f5c542" />
-      <circle cx="39" cy="68" r="2.2" fill="#e5484d" />
-      <rect x="78" y="54" width="17" height="15" fill="#cfe9f2" stroke="#fff" strokeWidth="2.4" />
-      <line x1="86.5" y1="54" x2="86.5" y2="69" stroke="#fff" strokeWidth="1.6" />
+      <circle cx="27" cy="68" r="2.2" fill={P.red} />
+      <circle cx="33" cy="67.5" r="2.2" fill={P.yellow} />
+      <circle cx="39" cy="68" r="2.2" fill={P.red} />
+      <rect x="78" y="54" width="17" height="15" fill="#cfe9f2" stroke={P.white} strokeWidth="2.4" />
+      <line x1="86.5" y1="54" x2="86.5" y2="69" stroke={P.white} strokeWidth="1.6" />
       {/* doorstep */}
-      <rect x="44" y="89" width="30" height="4" rx="1.5" fill="#c9c1b0" stroke="#8f8676" strokeWidth="1" />
+      <rect x="44" y="89" width="30" height="4" rx="1.5" fill="#c9c1b0" stroke={P.stoneDark} strokeWidth="1" />
     </ArtSvg>
   )
 }
@@ -213,7 +214,7 @@ function Regentonne() {
     <ArtSvg viewBox="0 0 40 50">
       <ellipse cx="20" cy="46" rx="16" ry="3.5" fill="var(--g-shadow)" />
       <path d="M6 10 Q4 28 7 44 L33 44 Q36 28 34 10 Z" fill="#9a6b43" stroke="#5a3a22" strokeWidth="1.8" />
-      <path d="M5.5 18 L34.5 18 M5 34 L35 34" stroke="#6b6f73" strokeWidth="2.4" />
+      <path d="M5.5 18 L34.5 18 M5 34 L35 34" stroke={P.metal} strokeWidth="2.4" />
       <ellipse cx="20" cy="10" rx="14" ry="4.5" fill="#6fb4d0" stroke="#5a3a22" strokeWidth="1.8" />
       <ellipse cx="16" cy="9" rx="5" ry="1.4" fill="#bfe6f2" opacity="0.8" />
     </ArtSvg>
@@ -226,16 +227,16 @@ function Teich() {
       <path
         d="M14 40 C10 22 34 10 58 12 C86 10 112 20 108 42 C106 62 80 72 56 70 C30 70 16 58 14 40 Z"
         fill="#bdb6a6"
-        stroke="#857d6c"
+        stroke={P.stoneDark}
         strokeWidth="2"
       />
       <path
         d="M22 40 C20 26 40 18 58 19 C82 18 101 26 99 42 C97 57 78 63 57 62 C36 62 24 53 22 40 Z"
-        fill="#5aa9c6"
+        fill={P.pond}
       />
       <path d="M34 34 C44 28 62 26 74 30" stroke="#9fd6e8" strokeWidth="2.4" fill="none" strokeLinecap="round" />
       <ellipse cx="44" cy="46" rx="8" ry="5" fill="#5f9a48" />
-      <path d="M44 46 L52 44" stroke="#5aa9c6" strokeWidth="1.6" />
+      <path d="M44 46 L52 44" stroke={P.pond} strokeWidth="1.6" />
       <ellipse cx="76" cy="50" rx="7" ry="4.4" fill="#6fae52" />
       <circle cx="78" cy="48" r="2.6" fill="#f4a6c0" />
       {/* reeds */}
@@ -251,7 +252,7 @@ function Baum({ tone = 0, season }: { tone?: number; season?: Ambient['season'] 
   return (
     <ArtSvg viewBox="0 0 100 100">
       <ellipse cx="50" cy="90" rx="34" ry="8" fill="var(--g-shadow)" />
-      <rect x="44" y="60" width="12" height="30" rx="4" fill="#7a5232" />
+      <rect x="44" y="60" width="12" height="30" rx="4" fill={P.bark} />
       <circle cx="50" cy="42" r="32" fill={b} />
       <circle cx="32" cy="50" r="20" fill={b} />
       <circle cx="68" cy="50" r="20" fill={b} />
@@ -297,7 +298,7 @@ function Zaun() {
     <ArtSvg viewBox="0 0 400 40" preserveAspectRatio="none">
       <defs>
         <pattern id={pickets} width="14" height="40" patternUnits="userSpaceOnUse">
-          <path d="M2 40 L2 12 L5 7 L8 12 L8 40 Z" fill="#e9dcc2" stroke="#8a7350" strokeWidth="1" />
+          <path d="M2 40 L2 12 L5 7 L8 12 L8 40 Z" fill={P.paper} stroke="#8a7350" strokeWidth="1" />
         </pattern>
       </defs>
       <rect x="0" y="16" width="400" height="4" fill="#cdb98f" />
@@ -315,15 +316,15 @@ function Bank() {
   return (
     <ArtSvg viewBox="0 0 60 36">
       <ellipse cx="30" cy="32" rx="26" ry="4" fill="var(--g-shadow)" />
-      <rect x="6" y="6" width="48" height="6" rx="2" fill="#b07a4a" stroke="#6e4a2b" strokeWidth="1.4" />
-      <rect x="4" y="16" width="52" height="7" rx="2" fill="#c48a55" stroke="#6e4a2b" strokeWidth="1.4" />
-      <rect x="9" y="22" width="4" height="9" fill="#6e4a2b" />
-      <rect x="47" y="22" width="4" height="9" fill="#6e4a2b" />
+      <rect x="6" y="6" width="48" height="6" rx="2" fill="#b07a4a" stroke={P.outlineWood} strokeWidth="1.4" />
+      <rect x="4" y="16" width="52" height="7" rx="2" fill="#c48a55" stroke={P.outlineWood} strokeWidth="1.4" />
+      <rect x="9" y="22" width="4" height="9" fill={P.outlineWood} />
+      <rect x="47" y="22" width="4" height="9" fill={P.outlineWood} />
     </ArtSvg>
   )
 }
 
-const FLOWER_COLORS = ['#e5484d', '#f5c542', '#ffffff', '#c76bd9', '#f28ab2', '#ff9b3d']
+const FLOWER_COLORS = [P.red, P.yellow, P.white, '#c76bd9', P.pink, '#ff9b3d']
 
 function Blumen({ seed }: { seed: number }) {
   const dots = Array.from({ length: 7 }, (_, i) => {
@@ -372,7 +373,7 @@ function Lichterkette() {
     <ArtSvg viewBox="0 0 100 20" preserveAspectRatio="none">
       <path d="M0 4 Q25 16 50 6 Q75 -2 100 8" stroke="#5a4a3a" strokeWidth="0.8" fill="none" vectorEffect="non-scaling-stroke" />
       {[8, 20, 32, 44, 56, 68, 80, 92].map((x, i) => (
-        <circle key={x} className="garden-bulb" cx={x} cy={i % 2 ? 9 : 11} r="1.6" fill="#ffd36b" />
+        <circle key={x} className="garden-bulb" cx={x} cy={i % 2 ? 9 : 11} r="1.6" fill={P.lamp} />
       ))}
     </ArtSvg>
   )
@@ -469,7 +470,7 @@ export const MapBackdrop = memo(function MapBackdrop({ stage, ambient, skin, fes
             y="0"
             width="6"
             height="100"
-            fill="#ffffff"
+            fill={P.white}
             opacity="0.045"
           />
         ))}
@@ -560,16 +561,16 @@ export const MapBackdrop = memo(function MapBackdrop({ stage, ambient, skin, fes
       {stage >= 4 ? (
         <>
           <Decor className="decor-butterfly b1" left="44%" top="63%" w={4}>
-            <Schmetterling hue="#f5c542" />
+            <Schmetterling hue={P.yellow} />
           </Decor>
           <Decor className="decor-butterfly b2" left="56%" top="48%" w={3.6}>
-            <Schmetterling hue="#ffffff" />
+            <Schmetterling hue={P.white} />
           </Decor>
         </>
       ) : null}
       {stage >= 7 ? (
         <Decor className="decor-butterfly b3" left="40%" top="38%" w={3.6}>
-          <Schmetterling hue="#f28ab2" />
+          <Schmetterling hue={P.pink} />
         </Decor>
       ) : null}
 
