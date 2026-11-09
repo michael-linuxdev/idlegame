@@ -1,14 +1,15 @@
 /** Hand-drawn Gartenbewohner (viewBox 32×32, standing on the bottom edge). */
 import { memo } from 'react'
 import type { ResidentId } from '../game/residents'
+import { ArtSvg } from './ArtSvg'
 
 const S = () => <ellipse cx="16" cy="30.5" rx="8" ry="1.6" fill="rgba(40,50,20,.25)" />
 
 export const ResidentArt = memo(function ResidentArt({ id, silhouette }: { id: ResidentId; silhouette?: boolean }) {
   return (
-    <svg viewBox="0 0 32 32" focusable="false" aria-hidden="true" className={silhouette ? 'resident-silhouette' : undefined}>
+    <ArtSvg viewBox="0 0 32 32" className={silhouette ? 'resident-silhouette' : undefined}>
       {draw(id)}
-    </svg>
+    </ArtSvg>
   )
 })
 

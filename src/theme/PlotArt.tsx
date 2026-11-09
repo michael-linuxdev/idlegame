@@ -1,5 +1,6 @@
 import { memo, type ReactNode } from 'react'
 import type { GeneratorId } from '../game/generators'
+import { ArtSvg } from './ArtSvg'
 /**
  * Plot states before a module exists:
  *  - WildPlot: overgrown corner (brambles / nettles / junk) — locked.
@@ -236,20 +237,20 @@ export const WildPlot = memo(function WildPlot({ id }: { id: GeneratorId }) {
   const dx = spec.dx ?? 0
   const t = spec.flip ? `translate(${100 + dx} 0) scale(-1 1)` : dx ? `translate(${dx} 0)` : undefined
   return (
-    <svg className="plot-art plot-wild" viewBox={VIEWBOX} focusable="false" aria-hidden="true" data-wild={spec.kind}>
+    <ArtSvg className="plot-art plot-wild" viewBox={VIEWBOX} data-wild={spec.kind}>
       <Shadow />
       <g transform={t}>
         <Art />
       </g>
       {spec.extra ? <WildExtra kind={spec.extra} /> : null}
-    </svg>
+    </ArtSvg>
   )
 })
 
 /** Cleared & raked — the spot waits for its first planting. */
 export const ClearedPlot = memo(function ClearedPlot() {
   return (
-    <svg className="plot-art plot-cleared" viewBox={VIEWBOX} focusable="false" aria-hidden="true">
+    <ArtSvg className="plot-art plot-cleared" viewBox={VIEWBOX}>
       <Shadow />
       <path
         d="M10 70 L22 40 L78 40 L90 70 Z"
@@ -279,6 +280,6 @@ export const ClearedPlot = memo(function ClearedPlot() {
       {/* rake */}
       <path d="M28 64 L44 34" stroke="#a77d4c" strokeWidth="2.6" strokeLinecap="round" />
       <path d="M38 30 L50 38" stroke="#6b6f73" strokeWidth="2.6" strokeLinecap="round" />
-    </svg>
+    </ArtSvg>
   )
 })

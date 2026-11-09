@@ -1,10 +1,11 @@
 import { useSvgId } from './svgId'
+import { ArtSvg } from './ArtSvg'
 /** Saison panel hero — Omas Laube asleep under snow, windows lit. */
 export function WinterScene() {
   const sky = useSvgId('ws-sky')
   const glow = useSvgId('ws-glow')
   return (
-    <svg viewBox="0 0 320 120" preserveAspectRatio="xMidYMid slice" focusable="false">
+    <ArtSvg viewBox="0 0 320 120" preserveAspectRatio="xMidYMid slice">
       <defs>
         <linearGradient id={sky} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#3f5683" />
@@ -62,6 +63,6 @@ export function WinterScene() {
         </g>
       ))}
       <rect x="4" y="97" width="128" height="2" fill="#cdb98f" />
-    </svg>
+    </ArtSvg>
   )
 }

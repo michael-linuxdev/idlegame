@@ -5,6 +5,7 @@ import { WHEEL_SEGMENTS, type WheelKind } from '../../game/gardenLife'
 import { playSfx } from '../../game/sound'
 import { t } from '../../i18n'
 import { IconChest, IconSnow, IconSprout } from '../../theme/icons'
+import { ArtSvg } from '../../theme/ArtSvg'
 
 export interface SeasonEnd {
   /** Gartenjahr that now begins */
@@ -148,7 +149,7 @@ function LuckyWheel({ onSpin, onDone }: { onSpin: (k: WheelKind) => void; onDone
       <p className="lucky-title">{t.wheel.title}</p>
       <div className="lucky-dial">
         <span className="lucky-pointer" aria-hidden="true" />
-        <svg viewBox="-50 -50 100 100" style={{ transform: `rotate(${angle}deg)` }} aria-hidden="true">
+        <ArtSvg viewBox="-50 -50 100 100" style={{ transform: `rotate(${angle}deg)` }}>
           {WHEEL_SEGMENTS.map((kind, i) => {
             const a0 = ((i * 60 - 90) * Math.PI) / 180
             const a1 = (((i + 1) * 60 - 90) * Math.PI) / 180
@@ -180,7 +181,7 @@ function LuckyWheel({ onSpin, onDone }: { onSpin: (k: WheelKind) => void; onDone
           })}
           <circle r="46" fill="none" stroke="#5e3b25" strokeWidth="2" />
           <circle r="6" fill="#fdf8ec" stroke="#5e3b25" strokeWidth="1.5" />
-        </svg>
+        </ArtSvg>
       </div>
       {result ? <p className="lucky-result">{t.wheel.results[result]}</p> : null}
       {result ? (

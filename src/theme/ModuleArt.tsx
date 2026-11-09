@@ -8,6 +8,7 @@
 import { memo, type ReactNode } from 'react'
 import type { GeneratorId } from '../game/generators'
 import { moduleTier } from './tiers'
+import { ArtSvg } from './ArtSvg'
 
 interface Props {
   id: GeneratorId
@@ -1026,9 +1027,9 @@ function ModuleArtImpl({ id, level, producing = false, selected = false }: Props
     (selected ? ' selected' : '')
 
   return (
-    <svg className={cls} viewBox="0 0 100 86" focusable="false" aria-hidden="true" data-tier={tier}>
+    <ArtSvg className={cls} viewBox="0 0 100 86" data-tier={tier}>
       {renderModule(id, tier, producing)}
-    </svg>
+    </ArtSvg>
   )
 }
 

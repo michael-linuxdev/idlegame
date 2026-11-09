@@ -1,5 +1,6 @@
 import { memo } from 'react'
 import type { Daypart } from '../theme/ambient'
+import { ArtSvg } from '../theme/ArtSvg'
 
 interface Props {
   /** Hühnerstall planted → chickens peck around it */
@@ -20,7 +21,7 @@ export const GardenCritters = memo(function GardenCritters({ chickens, bees, day
       {chickens
         ? [0, 1, 2].map((i) => (
             <div key={i} className={`critter chicken c${i}`}>
-              <svg viewBox="0 0 20 18" focusable="false">
+              <ArtSvg viewBox="0 0 20 18">
                 <ellipse cx="9" cy="11" rx="6.5" ry="5" fill={i === 1 ? '#a5733f' : '#fbf6e8'} stroke="#8a6a40" strokeWidth=".7" />
                 <g className="chicken-head">
                   <circle cx="15" cy="7" r="3" fill={i === 1 ? '#a5733f' : '#fbf6e8'} stroke="#8a6a40" strokeWidth=".7" />
@@ -29,18 +30,18 @@ export const GardenCritters = memo(function GardenCritters({ chickens, bees, day
                   <circle cx="15.6" cy="6.6" r=".5" fill="#1f1a14" />
                 </g>
                 <path d="M7 16v2M10 16v2" stroke="#e8b422" strokeWidth=".9" />
-              </svg>
+              </ArtSvg>
             </div>
           ))
         : null}
       {bees
         ? [0, 1, 2, 3].map((i) => (
             <div key={i} className={`critter bee-trail b${i}`}>
-              <svg viewBox="0 0 8 6" focusable="false">
+              <ArtSvg viewBox="0 0 8 6">
                 <ellipse cx="4" cy="3.4" rx="2.6" ry="1.9" fill="#f5c542" stroke="#4a3208" strokeWidth=".5" />
                 <path d="M3.4 1.6v3.6M4.8 1.6v3.6" stroke="#4a3208" strokeWidth=".5" />
                 <ellipse cx="3.4" cy="1.2" rx="1.4" ry=".9" fill="#fff" opacity=".8" />
-              </svg>
+              </ArtSvg>
             </div>
           ))
         : null}
@@ -55,14 +56,14 @@ export const GardenCritters = memo(function GardenCritters({ chickens, bees, day
         : null}
       {daypart === 'night' ? (
         <div className="critter hedgehog">
-          <svg viewBox="0 0 24 14" focusable="false">
+          <ArtSvg viewBox="0 0 24 14">
             <path d="M3 12q1-9 10-9t9 8z" fill="#6e5a44" />
             {Array.from({ length: 7 }, (_, i) => (
               <path key={i} d={`M${6 + i * 2} ${5 + (i % 2)}l1-3`} stroke="#4a3a2a" strokeWidth=".8" />
             ))}
             <path d="M18 9q4 0 5 2l-4 1z" fill="#c9a46b" />
             <circle cx="22.6" cy="11" r=".7" fill="#1f1a14" />
-          </svg>
+          </ArtSvg>
         </div>
       ) : null}
       {daypart === 'morning' ? <div className="morning-mist" /> : null}

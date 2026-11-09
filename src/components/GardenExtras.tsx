@@ -9,6 +9,7 @@ import { playSfx } from '../game/sound'
 import type { Wish } from '../game/state'
 import type { useGame } from '../game/useGame'
 import { t } from '../i18n'
+import { ArtSvg } from '../theme/ArtSvg'
 
 type GameApi = ReturnType<typeof useGame>
 
@@ -84,20 +85,20 @@ export function SkyEventButton({ game, onWish }: { game: GameApi; onWish: () => 
           game.tapRainbow()
         }}
       >
-        <svg viewBox="0 0 100 52" aria-hidden="true">
+        <ArtSvg viewBox="0 0 100 52">
           {['#e0485e', '#f08a2c', '#f5c542', '#7fbf5a', '#3d8db8', '#7a5ab8'].map((c, i) => (
             <path key={c} d={`M${6 + i * 4} 50 A${44 - i * 4} ${44 - i * 4} 0 0 1 ${94 - i * 4} 50`} stroke={c} strokeWidth="4" fill="none" />
           ))}
-        </svg>
+        </ArtSvg>
       </button>
     )
   }
   return (
     <button type="button" className="sky-event star" aria-label={t.sky.starAria} onClick={onWish}>
-      <svg viewBox="0 0 60 30" aria-hidden="true">
+      <ArtSvg viewBox="0 0 60 30">
         <path d="M2 28 L44 8" stroke="#fff3b0" strokeWidth="2" strokeLinecap="round" opacity=".7" />
         <path d="M48 2l2.4 5.2 5.6.6-4.2 3.8 1.2 5.6L48 14.4 43 17.2l1.2-5.6L40 7.8l5.6-.6z" fill="#f5d76e" />
-      </svg>
+      </ArtSvg>
     </button>
   )
 }

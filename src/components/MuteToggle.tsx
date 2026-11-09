@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { isSfxMuted, setSfxMuted } from '../game/sound'
 import { t } from '../i18n'
+import { ArtSvg } from '../theme/ArtSvg'
 
 export function MuteToggle() {
   const [muted, setMuted] = useState(() => isSfxMuted())
@@ -20,12 +21,11 @@ export function MuteToggle() {
       aria-label={muted ? t.sound.unmuteAria : t.sound.muteAria}
       title={muted ? t.sound.unmute : t.sound.mute}
     >
-      <svg
+      <ArtSvg
         className="mute-icon"
         viewBox="0 0 24 24"
         width="18"
         height="18"
-        aria-hidden="true"
       >
         {muted ? (
           <>
@@ -56,7 +56,7 @@ export function MuteToggle() {
             />
           </>
         )}
-      </svg>
+      </ArtSvg>
     </button>
   )
 }

@@ -4,6 +4,7 @@ import { weatherVisitorMult } from '../game/gardenLife'
 import { playSfx } from '../game/sound'
 import type { useGame } from '../game/useGame'
 import { t } from '../i18n'
+import { ArtSvg } from '../theme/ArtSvg'
 
 type GameApi = ReturnType<typeof useGame>
 type VisitorId = 'igel' | 'gerda' | 'schmetterling' | 'rotkehlchen' | 'postbote'
@@ -23,7 +24,7 @@ function Art({ id }: { id: VisitorId }): ReactNode {
   switch (id) {
     case 'igel':
       return (
-        <svg viewBox="0 0 48 32">
+        <ArtSvg viewBox="0 0 48 32">
           <ellipse cx="24" cy="29" rx="18" ry="3" fill="rgba(40,30,10,.25)" />
           <path d="M6 26 Q8 8 26 8 Q40 9 42 24 Z" fill="#7a5a3a" stroke="#3d2f1f" strokeWidth="1.4" />
           {[10, 15, 20, 25, 30, 35].map((x, i) => (
@@ -32,11 +33,11 @@ function Art({ id }: { id: VisitorId }): ReactNode {
           <path d="M36 18 Q46 20 44 26 L36 26 Z" fill="#d9b48a" stroke="#3d2f1f" strokeWidth="1.2" />
           <circle cx="44.5" cy="24" r="1.4" fill="#3d2f1f" />
           <circle cx="40" cy="21" r="1" fill="#3d2f1f" />
-        </svg>
+        </ArtSvg>
       )
     case 'gerda':
       return (
-        <svg viewBox="0 0 40 56">
+        <ArtSvg viewBox="0 0 40 56">
           <ellipse cx="20" cy="53" rx="12" ry="2.6" fill="rgba(40,30,10,.25)" />
           <path d="M10 52 L13 26 H27 L30 52 Z" fill="#c76bd9" stroke="#3d2f1f" strokeWidth="1.3" />
           <path d="M11 40 H29" stroke="#fff" strokeWidth="1.5" strokeDasharray="2 2" />
@@ -48,22 +49,22 @@ function Art({ id }: { id: VisitorId }): ReactNode {
           <path d="M27 34 h9 l-1.5 7 h-6 z" fill="#c9a46b" stroke="#3d2f1f" strokeWidth="1" />
           <circle cx="30" cy="33" r="1.6" fill="#7fbf5a" />
           <circle cx="33" cy="33.4" r="1.6" fill="#e0485e" />
-        </svg>
+        </ArtSvg>
       )
     case 'schmetterling':
       return (
-        <svg viewBox="0 0 40 32">
+        <ArtSvg viewBox="0 0 40 32">
           <path d="M20 16 C8 0 2 10 8 18 C2 26 12 30 20 18 Z" fill="#f5c542" stroke="#3d2f1f" strokeWidth="1.2" />
           <path d="M20 16 C32 0 38 10 32 18 C38 26 28 30 20 18 Z" fill="#f5c542" stroke="#3d2f1f" strokeWidth="1.2" />
           <path d="M9 10 L15 14 M31 10 L25 14 M8 22 l5 -3 M32 22 l-5 -3" stroke="#3d2f1f" strokeWidth="1.4" />
           <circle cx="10" cy="24" r="1.6" fill="#3d8db8" />
           <circle cx="30" cy="24" r="1.6" fill="#3d8db8" />
           <rect x="19" y="8" width="2" height="16" rx="1" fill="#3d2f1f" />
-        </svg>
+        </ArtSvg>
       )
     case 'rotkehlchen':
       return (
-        <svg viewBox="0 0 36 32">
+        <ArtSvg viewBox="0 0 36 32">
           <ellipse cx="18" cy="30" rx="10" ry="2" fill="rgba(40,30,10,.25)" />
           <path d="M6 18 Q8 6 20 7 Q30 8 30 18 Q28 27 17 27 Q8 27 6 18 Z" fill="#8a6a40" stroke="#3d2f1f" strokeWidth="1.2" />
           <path d="M20 12 Q28 12 28 20 Q24 25 18 23 Q16 16 20 12 Z" fill="#e2703a" />
@@ -71,11 +72,11 @@ function Art({ id }: { id: VisitorId }): ReactNode {
           <circle cx="24" cy="11" r="1.4" fill="#1a1a1a" />
           <path d="M29 12 l5 1 l-5 1.5 z" fill="#3d2f1f" />
           <path d="M15 27 v3 M19 27 v3" stroke="#3d2f1f" strokeWidth="1" />
-        </svg>
+        </ArtSvg>
       )
     case 'postbote':
       return (
-        <svg viewBox="0 0 40 56">
+        <ArtSvg viewBox="0 0 40 56">
           <ellipse cx="20" cy="53" rx="12" ry="2.6" fill="rgba(40,30,10,.25)" />
           <path d="M11 52 L13 26 H27 L29 52 Z" fill="#2e5d9a" stroke="#3d2f1f" strokeWidth="1.3" />
           <circle cx="20" cy="18" r="7" fill="#f2d9b0" stroke="#3d2f1f" strokeWidth="1.3" />
@@ -85,7 +86,7 @@ function Art({ id }: { id: VisitorId }): ReactNode {
           <path d="M17 22 q3 1.6 6 0" stroke="#3d2f1f" strokeWidth="0.9" fill="none" />
           <rect x="25" y="30" width="12" height="10" rx="1" fill="#c4823f" stroke="#3d2f1f" strokeWidth="1.1" />
           <path d="M25 35 H37 M31 30 V40" stroke="#8a5a32" strokeWidth="1" />
-        </svg>
+        </ArtSvg>
       )
   }
 }

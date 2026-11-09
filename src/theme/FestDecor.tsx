@@ -5,6 +5,7 @@
  */
 import { memo, type ReactNode } from 'react'
 import type { FestId } from '../game/fests'
+import { ArtSvg } from './ArtSvg'
 
 function D({
   left,
@@ -28,67 +29,67 @@ function D({
 
 function Laterne({ hue = '#f5a83a' }: { hue?: string }) {
   return (
-    <svg viewBox="0 0 20 44" focusable="false">
+    <ArtSvg viewBox="0 0 20 44">
       <path d="M10 44V10" stroke="#6e4a2b" strokeWidth="1.6" />
       <path d="M10 10q6-4 8 2" stroke="#6e4a2b" strokeWidth="1.2" fill="none" />
       <ellipse className="fest-glow" cx="17" cy="21" rx="7" ry="7" fill="#fff3b0" opacity="0.35" />
       <ellipse cx="17" cy="21" rx="4.2" ry="5.4" fill={hue} stroke="#a5531a" strokeWidth=".8" />
       <ellipse cx="17" cy="21" rx="2" ry="5.4" fill="none" stroke="#c4651f" strokeWidth=".7" />
       <path d="M17 12v3.6" stroke="#6e4a2b" strokeWidth=".8" />
-    </svg>
+    </ArtSvg>
   )
 }
 
 function Ei({ c = '#f28ab2', s = '#fff' }: { c?: string; s?: string }) {
   return (
-    <svg viewBox="0 0 16 20" focusable="false">
+    <ArtSvg viewBox="0 0 16 20">
       <ellipse cx="8" cy="11" rx="6" ry="8" fill={c} stroke="rgba(0,0,0,.25)" strokeWidth=".8" />
       <path d="M2.4 10l2-1.4 1.8 1.4 1.8-1.4 1.8 1.4 1.8-1.4 2 1.4" stroke={s} strokeWidth="1.1" fill="none" />
-    </svg>
+    </ArtSvg>
   )
 }
 
 function Tulpen() {
   return (
-    <svg viewBox="0 0 36 30" focusable="false">
+    <ArtSvg viewBox="0 0 36 30">
       {[6, 14, 22, 30].map((x, i) => (
         <g key={x}>
           <path d={`M${x} 30V14`} stroke="#4f7a2e" strokeWidth="1.6" />
           <path d={`M${x - 4} 10q4 9 8 0l-2 2-2-4-2 4z`} fill={['#e0485e', '#f5c542', '#f28ab2', '#e0485e'][i]} />
         </g>
       ))}
-    </svg>
+    </ArtSvg>
   )
 }
 
 function Wimpelkette() {
   const colors = ['#e2453c', '#f5c542', '#3d8db8', '#7fbf5a', '#f28ab2']
   return (
-    <svg viewBox="0 0 200 20" preserveAspectRatio="none" focusable="false">
+    <ArtSvg viewBox="0 0 200 20" preserveAspectRatio="none">
       <path d="M0 3 Q100 14 200 3" stroke="#6e4a2b" strokeWidth="1" fill="none" />
       {Array.from({ length: 16 }, (_, i) => {
         const x = 6 + i * 12
         const y = 3 + 11 * Math.sin((Math.PI * x) / 200) * 0.95
         return <path key={i} d={`M${x - 4} ${y}L${x + 4} ${y}L${x} ${y + 8}z`} fill={colors[i % colors.length]} />
       })}
-    </svg>
+    </ArtSvg>
   )
 }
 
 function Sonnenschirm() {
   return (
-    <svg viewBox="0 0 40 44" focusable="false">
+    <ArtSvg viewBox="0 0 40 44">
       <path d="M20 12v32" stroke="#6e4a2b" strokeWidth="1.6" />
       <path d="M2 16Q20 -2 38 16z" fill="#e2453c" />
       <path d="M2 16Q11 8 14 16M14 16Q20 6 26 16M26 16Q29 8 38 16" fill="#fff" opacity=".85" />
       <ellipse cx="20" cy="43" rx="10" ry="1.5" fill="rgba(0,0,0,.18)" />
-    </svg>
+    </ArtSvg>
   )
 }
 
 function Sonnenblume() {
   return (
-    <svg viewBox="0 0 20 52" focusable="false">
+    <ArtSvg viewBox="0 0 20 52">
       <path d="M10 52V14" stroke="#4f7a2e" strokeWidth="2.2" />
       <ellipse cx="6" cy="32" rx="4.5" ry="2" fill="#5f9e45" transform="rotate(-30 6 32)" />
       <ellipse cx="14" cy="38" rx="4.5" ry="2" fill="#5f9e45" transform="rotate(30 14 38)" />
@@ -96,23 +97,23 @@ function Sonnenblume() {
         <ellipse key={i} cx="10" cy="5" rx="1.8" ry="4" fill="#f5c542" transform={`rotate(${i * 30} 10 11)`} />
       ))}
       <circle cx="10" cy="11" r="4" fill="#6e4a2b" />
-    </svg>
+    </ArtSvg>
   )
 }
 
 function Kuerbis({ c = '#f08a2c' }: { c?: string }) {
   return (
-    <svg viewBox="0 0 24 18" focusable="false">
+    <ArtSvg viewBox="0 0 24 18">
       <ellipse cx="12" cy="11" rx="11" ry="7" fill={c} stroke="#a5531a" strokeWidth=".8" />
       <path d="M8 5c-2 4-2 8 0 12M16 5c2 4 2 8 0 12M12 4v14" stroke="#c4651f" strokeWidth=".8" fill="none" />
       <path d="M12 4c0-2 1-3 3-3" stroke="#5f7a2e" strokeWidth="1.4" fill="none" />
-    </svg>
+    </ArtSvg>
   )
 }
 
 function Garbe() {
   return (
-    <svg viewBox="0 0 24 34" focusable="false">
+    <ArtSvg viewBox="0 0 24 34">
       {Array.from({ length: 9 }, (_, i) => (
         <path key={i} d={`M12 20L${2 + i * 2.5} 2`} stroke="#d9b34a" strokeWidth="1.6" />
       ))}
@@ -120,13 +121,13 @@ function Garbe() {
         <path key={`b${i}`} d={`M12 20L${4 + i * 2} 34`} stroke="#c49a3a" strokeWidth="1.6" />
       ))}
       <rect x="8" y="18" width="8" height="3.4" rx="1" fill="#a5531a" />
-    </svg>
+    </ArtSvg>
   )
 }
 
 function Tanne({ lights = true }: { lights?: boolean }) {
   return (
-    <svg viewBox="0 0 40 56" focusable="false">
+    <ArtSvg viewBox="0 0 40 56">
       <rect x="17" y="46" width="6" height="8" fill="#6e4a2b" />
       <path d="M20 2L4 26h8L2 40h10L0 50h40L28 40h10L28 26h8z" fill="#2f6b3a" stroke="#1f4a28" strokeWidth=".8" />
       <path d="M20 0l1.6 3.4 3.6.3-2.8 2.4.9 3.6L20 7.8l-3.3 1.9.9-3.6-2.8-2.4 3.6-.3z" fill="#f5d76e" />
@@ -137,13 +138,13 @@ function Tanne({ lights = true }: { lights?: boolean }) {
             <circle key={i} className="fest-twinkle" cx={x} cy={y} r="1.6" fill={['#f5c542', '#e0485e', '#8fd0ec'][i % 3]} style={{ animationDelay: `${i * 0.3}s` }} />
           ))
         : null}
-    </svg>
+    </ArtSvg>
   )
 }
 
 function Kranz() {
   return (
-    <svg viewBox="0 0 40 26" focusable="false">
+    <ArtSvg viewBox="0 0 40 26">
       <ellipse cx="20" cy="18" rx="17" ry="6" fill="#2f6b3a" />
       <ellipse cx="20" cy="17" rx="10" ry="3" fill="#24502c" />
       {[8, 16, 24, 32].map((x, i) => (
@@ -154,26 +155,26 @@ function Kranz() {
       ))}
       <circle cx="12" cy="20" r="1.4" fill="#e0485e" />
       <circle cx="28" cy="20" r="1.4" fill="#e0485e" />
-    </svg>
+    </ArtSvg>
   )
 }
 
 function Schneegloeckchen() {
   return (
-    <svg viewBox="0 0 30 22" focusable="false">
+    <ArtSvg viewBox="0 0 30 22">
       {[5, 12, 19, 25].map((x, i) => (
         <g key={x}>
           <path d={`M${x} 22V${8 + (i % 2) * 2}q0-3 3-4`} stroke="#5f9e45" strokeWidth="1.2" fill="none" />
           <path d={`M${x + 3} ${4 + (i % 2) * 2}q-2.4 1-1.6 5q1.6-1 1.6-5q2.4 1 1.6 5q-1.6-1-1.6-5z`} fill="#fff" stroke="#9fb7c9" strokeWidth=".5" />
         </g>
       ))}
-    </svg>
+    </ArtSvg>
   )
 }
 
 function Pfingstrose() {
   return (
-    <svg viewBox="0 0 36 28" focusable="false">
+    <ArtSvg viewBox="0 0 36 28">
       <ellipse cx="18" cy="20" rx="17" ry="8" fill="#4f7a2e" />
       {[[9, 13, '#f28ab2'], [19, 10, '#e9a3d3'], [28, 14, '#f28ab2']].map(([x, y, c], i) => (
         <g key={i}>
@@ -181,21 +182,21 @@ function Pfingstrose() {
           <circle cx={x as number} cy={y as number} r="3" fill="#fff" opacity=".45" />
         </g>
       ))}
-    </svg>
+    </ArtSvg>
   )
 }
 
 function Stern() {
   return (
-    <svg viewBox="0 0 20 20" focusable="false">
+    <ArtSvg viewBox="0 0 20 20">
       <path className="fest-twinkle" d="M10 1l2.2 6 6.3.4-4.9 4 1.6 6.2L10 14.2 4.8 17.6l1.6-6.2-4.9-4L7.8 7z" fill="#f5d76e" />
-    </svg>
+    </ArtSvg>
   )
 }
 
 function Erntekrone() {
   return (
-    <svg viewBox="0 0 30 34" focusable="false">
+    <ArtSvg viewBox="0 0 30 34">
       <path d="M15 0v6" stroke="#6e4a2b" strokeWidth="1" />
       <path d="M4 14Q15 2 26 14" stroke="#d9b34a" strokeWidth="3" fill="none" />
       <path d="M8 14Q15 6 22 14" stroke="#c49a3a" strokeWidth="2" fill="none" />
@@ -204,7 +205,7 @@ function Erntekrone() {
         <path key={i} d={`M${x} 17v${(y as number) - 17}`} stroke={c as string} strokeWidth="2.4" strokeLinecap="round" />
       ))}
       <path d="M10 26c2 3 8 3 10 0" stroke="#e85d8a" strokeWidth="1.6" fill="none" />
-    </svg>
+    </ArtSvg>
   )
 }
 

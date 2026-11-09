@@ -6,6 +6,7 @@ import { memo } from 'react'
 import { useSvgId } from './svgId'
 import { moduleTier, sameTierProps } from './tiers'
 import type { Season } from './ambient'
+import { ArtSvg } from './ArtSvg'
 
 const GRAPE: Record<string, string> = {
   riesling: '#c9d36a',
@@ -20,7 +21,7 @@ function Vines({ id, tier, season }: { id: string; tier: number; season?: Season
   const leaf = season === 'autumn' ? '#d29a2c' : season === 'winter' ? '#8a7a5a' : '#5f9e45'
   const bunches = season === 'winter' || season === 'spring' ? 0 : Math.min(4, tier)
   return (
-    <svg viewBox="0 0 80 72" focusable="false">
+    <ArtSvg viewBox="0 0 80 72">
       <ellipse cx="40" cy="64" rx="30" ry="5" fill="rgba(40,60,20,0.22)" />
       {Array.from({ length: rows }, (_, r) => {
         const y = 58 - r * 10
@@ -46,14 +47,14 @@ function Vines({ id, tier, season }: { id: string; tier: number; season?: Season
           </g>
         )
       })}
-    </svg>
+    </ArtSvg>
   )
 }
 
 function Trockenmauer({ tier }: { tier: number }) {
   const layers = Math.min(4, 1 + Math.floor(tier / 1.3))
   return (
-    <svg viewBox="0 0 80 72" focusable="false">
+    <ArtSvg viewBox="0 0 80 72">
       <ellipse cx="40" cy="64" rx="32" ry="4" fill="rgba(40,60,20,0.22)" />
       {Array.from({ length: layers }, (_, r) =>
         Array.from({ length: 7 }, (_, i) => (
@@ -83,7 +84,7 @@ function Trockenmauer({ tier }: { tier: number }) {
           ))}
         </g>
       ) : null}
-    </svg>
+    </ArtSvg>
   )
 }
 
@@ -93,7 +94,7 @@ function House({ tier, kind }: { tier: number; kind: 'wingerthaus' | 'kelter' | 
   const w = kind === 'wingerthaus' ? 26 : 40
   const x = 40 - w / 2
   return (
-    <svg viewBox="0 0 80 72" focusable="false">
+    <ArtSvg viewBox="0 0 80 72">
       <ellipse cx="40" cy="64" rx={w / 2 + 12} ry="4" fill="rgba(40,60,20,0.22)" />
       {kind === 'weinkeller' ? (
         <g>
@@ -133,14 +134,14 @@ function House({ tier, kind }: { tier: number; kind: 'wingerthaus' | 'kelter' | 
         </g>
       ) : null}
       {kind === 'wingerthaus' && tier >= 3 ? <circle cx="62" cy="58" r="5" fill="#5f9e45" /> : null}
-    </svg>
+    </ArtSvg>
   )
 }
 
 function Weinfest({ tier }: { tier: number }) {
   const colors = ['#e2453c', '#f5c542', '#3d8db8', '#7fbf5a']
   return (
-    <svg viewBox="0 0 80 72" focusable="false">
+    <ArtSvg viewBox="0 0 80 72">
       <ellipse cx="40" cy="64" rx="34" ry="5" fill="rgba(40,60,20,0.22)" />
       <path d="M8 30h64v6H8z" fill="#8a6a40" />
       <path d="M10 36v28M70 36v28" stroke="#6e4a2b" strokeWidth="2" />
@@ -159,7 +160,7 @@ function Weinfest({ tier }: { tier: number }) {
             <circle key={x} className="fest-twinkle" cx={x} cy="28" r="1.6" fill="#fff3b0" style={{ animationDelay: `${i * 0.3}s` }} />
           ))
         : null}
-    </svg>
+    </ArtSvg>
   )
 }
 
@@ -191,21 +192,21 @@ export const VineyardArt = memo(function VineyardArt({
 /** Unplanted terrace spot: stakes, waiting for vines. */
 export function VineyardStakes() {
   return (
-    <svg viewBox="0 0 80 72" focusable="false">
+    <ArtSvg viewBox="0 0 80 72">
       <ellipse cx="40" cy="62" rx="26" ry="5" fill="#8a6a40" opacity="0.45" />
       {[18, 32, 46, 60].map((x) => (
         <path key={x} d={`M${x} 64V44`} stroke="#8a6a40" strokeWidth="2" />
       ))}
       <path d="M18 48H60" stroke="#a69a84" strokeWidth=".8" />
       <path d="M32 58c-4-2-5-6-3-8 3 1 4 4 3 8zM46 58c4-2 5-6 3-8-3 1-4 4-3 8z" fill="#7fbf5a" />
-    </svg>
+    </ArtSvg>
   )
 }
 
 /** Overgrown terrace (locked): brambles over a broken wall. */
 export function VineyardWild({ seed = 0 }: { seed?: number }) {
   return (
-    <svg viewBox="0 0 80 72" focusable="false">
+    <ArtSvg viewBox="0 0 80 72">
       {Array.from({ length: 6 }, (_, i) => (
         <rect key={i} x={10 + i * 10} y={56 + ((i + seed) % 2) * 2} width="9" height="6" rx="2" fill="#a69a84" stroke="#7a6e5a" strokeWidth=".6" />
       ))}
@@ -214,7 +215,7 @@ export function VineyardWild({ seed = 0 }: { seed?: number }) {
       {[24, 30, 50, 56].map((x) => (
         <circle key={x} cx={x} cy={48 + (x % 3)} r="1.4" fill="#3a1838" />
       ))}
-    </svg>
+    </ArtSvg>
   )
 }
 
@@ -222,7 +223,7 @@ export const VineyardBackdrop = memo(function VineyardBackdrop({ stage }: { stag
   const slope = useSvgId('vg-slope')
   return (
     <div className="garden-ground vineyard-ground" aria-hidden="true" data-stage={stage}>
-      <svg className="garden-ground-svg" viewBox="0 0 100 100" preserveAspectRatio="none" focusable="false">
+      <ArtSvg className="garden-ground-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
         <defs>
           <linearGradient id={slope} x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="#b9c47a" />
@@ -250,14 +251,14 @@ export const VineyardBackdrop = memo(function VineyardBackdrop({ stage }: { stag
         {/* river at the foot */}
         <path d="M0 97 Q30 93 60 97 T100 95 V100 H0z" fill="#6aa6c9" />
         <path d="M0 98 Q30 95 60 98 T100 97" stroke="#a9d6ee" strokeWidth="2" fill="none" vectorEffect="non-scaling-stroke" className="orchard-stream" strokeDasharray="4 6" />
-      </svg>
+      </ArtSvg>
       <div className="garden-hedge orchard-hills">
-        <svg viewBox="0 0 400 60" preserveAspectRatio="none" focusable="false">
+        <ArtSvg viewBox="0 0 400 60" preserveAspectRatio="none">
           <path d="M0 60 V22 Q60 2 140 18 T280 10 T400 16 V60z" fill="#8a9a5a" />
           <path d="M0 60 V40 Q90 22 180 36 T400 30 V60z" fill="#7a8a4c" />
           <path d="M300 30 h14 v-10 l7 -6 l7 6 v10 h4 v12 h-32z" fill="#efe1c2" />
           <path d="M318 14 v-6" stroke="#6e4a2b" strokeWidth="2" />
-        </svg>
+        </ArtSvg>
       </div>
       <div className="ambient-tint" />
     </div>

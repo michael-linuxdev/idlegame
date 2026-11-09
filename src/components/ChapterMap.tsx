@@ -31,6 +31,7 @@ import { useAmbient, type Season } from '../theme/ambient'
 import { HelperWalker } from './HelperWalker'
 import { SpeechBubble } from './SpeechBubble'
 import { GoalStrip, type HudGoal } from './hud/GoalStrip'
+import { ArtSvg } from '../theme/ArtSvg'
 
 type GameApi = ReturnType<typeof useGame>
 
@@ -646,12 +647,12 @@ function WeinleseGame({ onDone, rewardPerHit }: { onDone: (hits: number) => void
                     disabled={g !== 'green' || p === 'wait'}
                     aria-label={`Traube ${i + 1}`}
                   >
-                    <svg viewBox="0 0 30 40" aria-hidden="true">
+                    <ArtSvg viewBox="0 0 30 40">
                       <path d="M15 2v6" stroke="#6e4a2b" strokeWidth="1.6" />
                       {[[15, 12], [10, 15], [20, 15], [6, 20], [15, 20], [24, 20], [10, 26], [20, 26], [15, 32]].map(([x, y], k) => (
                         <circle key={k} cx={x} cy={y} r="4.4" />
                       ))}
-                    </svg>
+                    </ArtSvg>
                   </button>
                 )
               })}

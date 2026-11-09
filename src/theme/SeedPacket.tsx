@@ -1,3 +1,4 @@
+import { ArtSvg } from './ArtSvg'
 /** Small seed packet icon, tinted per Kreuzung. */
 const TINTS: Record<string, [string, string]> = {
   kraeutertomate: ['#e0485e', '#5f9e45'],
@@ -17,7 +18,7 @@ const TINTS: Record<string, [string, string]> = {
 export function SeedPacket({ id, unknown }: { id: string; unknown?: boolean }) {
   const [a, b] = TINTS[id] ?? ['#9cc072', '#6f9a48']
   return (
-    <svg viewBox="0 0 32 40" focusable="false" aria-hidden="true">
+    <ArtSvg viewBox="0 0 32 40">
       <path d="M5 6h22l-1 32H6z" fill={unknown ? '#e8dcc0' : '#fbf6e8'} stroke="#a5893a" strokeWidth="1" />
       <path d="M5 6l3 4 3-4 3 4 3-4 3 4 3-4 3 4 2-4" fill="none" stroke="#a5893a" strokeWidth=".8" />
       {unknown ? (
@@ -29,6 +30,6 @@ export function SeedPacket({ id, unknown }: { id: string; unknown?: boolean }) {
           <path d="M13 18q2-4 5-3" stroke="#4f7a2e" strokeWidth="1.4" fill="none" />
         </g>
       )}
-    </svg>
+    </ArtSvg>
   )
 }

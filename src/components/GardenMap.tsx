@@ -58,6 +58,7 @@ import {
 import { RARITY_BONUS, VARIETIES } from '../game/gardenLife'
 import { TIER_LEVELS, moduleTier } from '../theme/tiers'
 import { formatClock, formatDecimal } from '../game/format'
+import { ArtSvg } from '../theme/ArtSvg'
 import { PlotFx } from './PlotFx'
 import { useHarvestFlight } from './HarvestFlight'
 import { EventPills } from './hud/EventPills'
@@ -915,11 +916,11 @@ export function GardenMap({
           >
             {unreadLetters > 0 ? (
               <span className="laube-letter" aria-hidden="true">
-                <svg viewBox="0 0 32 24" width="100%" height="100%">
+                <ArtSvg viewBox="0 0 32 24" width="100%" height="100%">
                   <rect x="1.5" y="1.5" width="29" height="21" rx="2.5" fill="#fdf8ec" stroke="#8a6a40" strokeWidth="1.6" />
                   <path d="M2 3 L16 14 L30 3" fill="none" stroke="#8a6a40" strokeWidth="1.6" />
                   <circle cx="16" cy="14" r="3.4" fill="#c4553f" />
-                </svg>
+                </ArtSvg>
               </span>
             ) : null}
           </button>

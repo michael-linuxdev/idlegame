@@ -2,15 +2,16 @@
 import { memo } from 'react'
 import type { DecorId } from '../game/decor'
 import type { Season } from './ambient'
+import { ArtSvg } from './ArtSvg'
 
 const Shadow = ({ rx = 12 }: { rx?: number }) => <ellipse cx="20" cy="37.5" rx={rx} ry="2.2" fill="rgba(40,50,20,.25)" />
 
 export const DecorArt = memo(function DecorArt({ id, season }: { id: DecorId; season?: Season }) {
   const winter = season === 'winter'
   return (
-    <svg viewBox="0 0 40 40" focusable="false" aria-hidden="true">
+    <ArtSvg viewBox="0 0 40 40">
       {draw(id, winter)}
-    </svg>
+    </ArtSvg>
   )
 })
 

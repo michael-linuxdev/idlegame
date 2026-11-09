@@ -1,4 +1,5 @@
 import { memo } from 'react'
+import { ArtSvg } from '../theme/ArtSvg'
 
 /**
  * Jonas, the Gartenhelfer, pushing a wheelbarrow up and down the garden path
@@ -10,7 +11,7 @@ export const HelperWalker = memo(function HelperWalker({ variant = 'garden' }: {
   return (
     <div className="helper-track" aria-hidden="true">
     <div className={`helper-walker ${variant}`}>
-      <svg viewBox="0 0 48 40" focusable="false">
+      <ArtSvg viewBox="0 0 48 40">
         <ellipse cx="24" cy="37" rx="18" ry="2.6" fill="rgba(40,32,12,0.22)" />
         {/* wheelbarrow */}
         <path d="M4 20h20l-3 8H8z" fill="#c4553f" stroke="#7a2e22" strokeWidth="1.2" strokeLinejoin="round" />
@@ -29,7 +30,7 @@ export const HelperWalker = memo(function HelperWalker({ variant = 'garden' }: {
         <circle cx="34" cy="13" r="4" fill="#f2c9a0" stroke="#8a6a40" strokeWidth=".8" />
         <ellipse cx="34" cy="10" rx="6.5" ry="1.8" fill="#e8c770" stroke="#8a6a40" strokeWidth=".8" />
         <path d="M30.8 9.8c.3-2.4 1.4-3.4 3.2-3.4s2.9 1 3.2 3.4z" fill="#f0d488" stroke="#8a6a40" strokeWidth=".8" />
-      </svg>
+      </ArtSvg>
     </div>
     </div>
   )
@@ -40,7 +41,7 @@ function IlseWalker() {
   return (
     <div className="helper-track" aria-hidden="true">
     <div className="helper-walker ilse">
-      <svg viewBox="0 0 48 40" focusable="false">
+      <ArtSvg viewBox="0 0 48 40">
         <ellipse cx="24" cy="37" rx="14" ry="2.4" fill="rgba(40,32,12,0.22)" />
         <g className="helper-legs">
           <path d="M22 30l-1 6M26 30l1 6" stroke="#4a3a2a" strokeWidth="2.2" strokeLinecap="round" />
@@ -53,7 +54,7 @@ function IlseWalker() {
         <path d="M33 23h9l-1.4 6h-6.2z" fill="#c9a46b" stroke="#6e4a2b" strokeWidth=".8" />
         <circle cx="35.6" cy="22.4" r="1.6" fill="#d9483b" />
         <circle cx="39" cy="22.6" r="1.6" fill="#6b3a78" />
-      </svg>
+      </ArtSvg>
     </div>
     </div>
   )

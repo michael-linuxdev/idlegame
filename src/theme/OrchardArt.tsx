@@ -6,6 +6,7 @@ import { memo } from 'react'
 type OrchardId = string
 import { moduleTier, sameTierProps } from './tiers'
 import type { Season } from './ambient'
+import { ArtSvg } from './ArtSvg'
 
 const FRUIT: Partial<Record<string, { fruit: string; crown: string; crownD: string; r: number }>> = {
   apfel: { fruit: '#d9483b', crown: '#6ca848', crownD: '#4f8a34', r: 1.9 },
@@ -33,7 +34,7 @@ function FruitTree({ id, tier, season = 'summer' }: { id: OrchardId; tier: numbe
   const fruits = Math.min(14, tier * 3)
   const pear = id === 'birne'
   return (
-    <svg viewBox="0 0 80 72" focusable="false">
+    <ArtSvg viewBox="0 0 80 72">
       <ellipse cx="40" cy="66" rx={18 + tier * 3} ry="4.5" fill="rgba(40,60,20,0.22)" />
       {tier >= 3 ? (
         <g>
@@ -88,7 +89,7 @@ function FruitTree({ id, tier, season = 'summer' }: { id: OrchardId; tier: numbe
           ))}
         </g>
       ) : null}
-    </svg>
+    </ArtSvg>
   )
 }
 
@@ -102,7 +103,7 @@ function Schafe({ tier }: { tier: number }) {
     [22, 40],
   ]
   return (
-    <svg viewBox="0 0 80 72" focusable="false">
+    <ArtSvg viewBox="0 0 80 72">
       <ellipse cx="40" cy="52" rx="34" ry="14" fill="#8cc06a" opacity="0.6" />
       <path d="M8 60 L8 44 M72 60 L72 44 M8 48 H72 M8 56 H72" stroke="#8a6a40" strokeWidth="1.6" />
       {pos.slice(0, n).map(([x, y], i) => (
@@ -115,14 +116,14 @@ function Schafe({ tier }: { tier: number }) {
         </g>
       ))}
       {tier >= 4 ? <path d="M60 30h12v8H60z" fill="#a5531a" stroke="#6e341a" strokeWidth="1" /> : null}
-    </svg>
+    </ArtSvg>
   )
 }
 
 function Wildbienen({ tier }: { tier: number }) {
   const rows = Math.min(4, 1 + Math.floor(tier / 1.4))
   return (
-    <svg viewBox="0 0 80 72" focusable="false">
+    <ArtSvg viewBox="0 0 80 72">
       <ellipse cx="40" cy="66" rx="20" ry="4" fill="rgba(40,60,20,0.22)" />
       <path d="M38 66V40M42 66V40" stroke="#7a5532" strokeWidth="2" />
       <path d="M22 26 L40 12 L58 26 Z" fill="#a5531a" stroke="#6e341a" strokeWidth="1" />
@@ -140,13 +141,13 @@ function Wildbienen({ tier }: { tier: number }) {
             <circle key={x} cx={x} cy={62} r="2" fill={['#c77dd1', '#f5c542', '#f28ab2', '#c77dd1'][i]} />
           ))
         : null}
-    </svg>
+    </ArtSvg>
   )
 }
 
 function Mosterei({ tier }: { tier: number }) {
   return (
-    <svg viewBox="0 0 80 72" focusable="false">
+    <ArtSvg viewBox="0 0 80 72">
       <ellipse cx="40" cy="66" rx="30" ry="4" fill="rgba(40,60,20,0.22)" />
       <path d="M14 34 L40 18 L66 34 Z" fill="#b8403a" stroke="#7a2e22" strokeWidth="1" />
       <rect x="18" y="34" width="44" height="30" fill="#d9b78a" stroke="#8a6a40" strokeWidth="1" />
@@ -164,13 +165,13 @@ function Mosterei({ tier }: { tier: number }) {
         </g>
       ))}
       {tier >= 5 ? <path d="M40 18v-6l4 2" stroke="#6e4a2b" strokeWidth="1.2" fill="#f5c542" /> : null}
-    </svg>
+    </ArtSvg>
   )
 }
 
 function Doerrhaus({ tier }: { tier: number }) {
   return (
-    <svg viewBox="0 0 80 72" focusable="false">
+    <ArtSvg viewBox="0 0 80 72">
       <ellipse cx="40" cy="66" rx="22" ry="4" fill="rgba(40,60,20,0.22)" />
       <path d="M22 32 L40 20 L58 32 Z" fill="#6e4a2b" />
       <rect x="25" y="32" width="30" height="32" fill="#c9a46b" stroke="#6e4a2b" strokeWidth="1" />
@@ -185,14 +186,14 @@ function Doerrhaus({ tier }: { tier: number }) {
           ))}
         </g>
       ))}
-    </svg>
+    </ArtSvg>
   )
 }
 
 function Obstmarkt({ tier }: { tier: number }) {
   const crates = Math.min(5, tier + 1)
   return (
-    <svg viewBox="0 0 80 72" focusable="false">
+    <ArtSvg viewBox="0 0 80 72">
       <ellipse cx="40" cy="66" rx="30" ry="4" fill="rgba(40,60,20,0.22)" />
       <path d="M12 24h56l-4 8H16z" fill="#e2453c" />
       <path d="M12 24h8l-1 8h-3zM28 24h8l-1 8h-6zM44 24h8l-1 8h-6zM60 24h8l-4 8h-3z" fill="#fff" opacity=".85" />
@@ -208,7 +209,7 @@ function Obstmarkt({ tier }: { tier: number }) {
       ))}
       {tier >= 3 ? <rect x="56" y="56" width="8" height="8" rx="1" fill="#6e4a2b" /> : null}
       {tier >= 4 ? <path d="M36 14h8v8h-8z" fill="#fbf3e0" stroke="#8a6a40" strokeWidth=".8" /> : null}
-    </svg>
+    </ArtSvg>
   )
 }
 
@@ -241,19 +242,19 @@ export const OrchardArt = memo(function OrchardArt({
 /** Sapling marker for an unlocked but unplanted orchard spot. */
 export function OrchardSapling() {
   return (
-    <svg viewBox="0 0 80 72" focusable="false">
+    <ArtSvg viewBox="0 0 80 72">
       <ellipse cx="40" cy="62" rx="16" ry="5" fill="#8a6a40" opacity="0.55" />
       <path d="M40 62V44" stroke="#6e4a2b" strokeWidth="2" />
       <path d="M40 48c-6-2-8-7-6-10 4 1 6 5 6 10zM40 46c5-3 9-3 10 0-3 3-7 3-10 0z" fill="#7fbf5a" />
       <path d="M33 62l2-14M47 62l-2-14" stroke="#c9a46b" strokeWidth="1.2" />
-    </svg>
+    </ArtSvg>
   )
 }
 
 /** Overgrown spot (locked) — tall grass and an old stump. */
 export function OrchardWild({ seed = 0 }: { seed?: number }) {
   return (
-    <svg viewBox="0 0 80 72" focusable="false">
+    <ArtSvg viewBox="0 0 80 72">
       <ellipse cx="40" cy="62" rx="26" ry="7" fill="#5f8a3a" opacity="0.5" />
       <ellipse cx="22" cy="54" rx="11" ry="8" fill="#6d9a3f" />
       <ellipse cx="58" cy="55" rx="12" ry="8" fill="#5f8a3a" />
@@ -271,6 +272,6 @@ export function OrchardWild({ seed = 0 }: { seed?: number }) {
           fill="none"
         />
       ))}
-    </svg>
+    </ArtSvg>
   )
 }
