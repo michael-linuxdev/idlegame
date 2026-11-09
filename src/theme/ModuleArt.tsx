@@ -20,7 +20,7 @@ import { Kompost } from './art/garden/kompost'
 import { Kraeuterspirale } from './art/garden/kraeuterspirale'
 import { Obstwiese } from './art/garden/obstwiese'
 import { Orangerie } from './art/garden/orangerie'
-import { GardenLamp, SeasonContext } from './art/parts'
+import { GardenLamp, OmaSign, SeasonContext } from './art/parts'
 import type { Season } from './ambient'
 
 /** Gartenlaterne hinter dem Bereich (ab Stufe 3), leuchtet abends und nachts. */
@@ -35,6 +35,20 @@ const LAMP: Record<GeneratorId, { x: number; y: number }> = {
   gewaechshaus: { x: 10, y: 48 },
   hofladen: { x: 92, y: 44 },
   orangerie: { x: 8, y: 50 },
+}
+
+/** Omas Schild: Markenzeichen jedes Bereichs auf Stufe 5 (Level 100). */
+const SIGN: Record<GeneratorId, { x: number; y: number }> = {
+  gemuesebeet: { x: 16, y: 44 },
+  kompost: { x: 92, y: 60 },
+  kraeuterspirale: { x: 90, y: 72 },
+  beerenhecke: { x: 92, y: 50 },
+  obstwiese: { x: 6, y: 70 },
+  bienenstock: { x: 6, y: 64 },
+  huehnerstall: { x: 94, y: 70 },
+  gewaechshaus: { x: 90, y: 62 },
+  hofladen: { x: 10, y: 48 },
+  orangerie: { x: 24, y: 72 },
 }
 
 interface Props {
@@ -89,6 +103,11 @@ function ModuleArtImpl({ id, level, producing = false, selected = false, season 
           </g>
         ) : null}
         {renderModule(id, tier, producing)}
+        {tier >= 5 ? (
+          <g className={tier === 5 ? 't-new' : undefined} style={{ ['--i' as string]: 5 }}>
+            <OmaSign x={SIGN[id].x} y={SIGN[id].y} />
+          </g>
+        ) : null}
       </SeasonContext.Provider>
     </ArtSvg>
   )

@@ -584,6 +584,43 @@ html.tab-hidden .module-art * {
   background: #7fbf5a;
 }
 
+/* Stufe 5 erreicht (Level 100): goldene Sterne und ein Lichtring, einmalig */
+.plot-fx.fx-crown > span {
+  width: 9px;
+  height: 9px;
+  border-radius: 0;
+  background: #f5c542;
+  clip-path: polygon(50% 0, 62% 36%, 100% 38%, 70% 60%, 80% 100%, 50% 76%, 20% 100%, 30% 60%, 0 38%, 38% 36%);
+  animation-duration: 1.8s;
+}
+
+.plot-fx.fx-crown > span:nth-child(3n) {
+  background: #fff3b0;
+}
+
+.fx-crown-ring {
+  position: absolute;
+  left: -30px;
+  top: -30px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 220, 110, 0.9);
+  box-shadow: 0 0 14px rgba(255, 220, 110, 0.8);
+  animation: crown-ring 1.6s ease-out forwards;
+}
+
+@keyframes crown-ring {
+  from {
+    transform: scale(0.2);
+    opacity: 1;
+  }
+  to {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
 /* Progress to the next growth tier on the plant sign */
 .plot-tierbar {
   display: block;
