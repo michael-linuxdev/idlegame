@@ -136,17 +136,6 @@ function Flower({ x, y, c = '#f5c542', r = 2.4 }: { x: number; y: number; c?: st
   )
 }
 
-function FlowerRow({ x, y, n, gap = 7 }: { x: number; y: number; n: number; gap?: number }) {
-  const cs = ['#f5a623', '#e5484d', '#f5c542', '#ffffff', '#f28ab2']
-  return (
-    <g>
-      {Array.from({ length: n }, (_, i) => (
-        <Flower key={i} x={x + i * gap} y={y + (i % 2) * 1.5} c={cs[i % cs.length]} r={2.2} />
-      ))}
-    </g>
-  )
-}
-
 function Bush({
   x,
   y,
@@ -349,9 +338,9 @@ function Gemuesebeet({ t }: { t: number }) {
           <circle cx="78" cy="22" r="0.9" fill={OUT} />
           <circle cx="82" cy="22" r="0.9" fill={OUT} />
           {/* pumpkins */}
-          <ellipse cx="14" cy="70" rx="7" ry="5.4" fill="#f08a2c" stroke={OUT} strokeWidth="1.2" />
-          <path d="M14 65 V62" stroke={LEAF_D} strokeWidth="1.6" />
-          <ellipse cx="88" cy="74" rx="5.4" ry="4.2" fill="#f5a623" stroke={OUT} strokeWidth="1.1" />
+          <ellipse cx="9" cy="64" rx="7" ry="5.4" fill="#f08a2c" stroke={OUT} strokeWidth="1.2" />
+          <path d="M9 59 V56" stroke={LEAF_D} strokeWidth="1.6" />
+          <ellipse cx="91" cy="70" rx="5.4" ry="4.2" fill="#f5a623" stroke={OUT} strokeWidth="1.1" />
         </g>
       ) : null}
       {t <= 1 ? (
@@ -396,7 +385,13 @@ function Gemuesebeet({ t }: { t: number }) {
           <path d="M87 62 q4 -5 8 0" fill="none" stroke={OUT} strokeWidth="1" />
         </g>
       ) : null}
-      {t >= 5 ? <FlowerRow x={20} y={78} n={9} gap={7.4} /> : null}
+      {t >= 5 ? (
+        <g>
+          <Flower x={6} y={44} c="#f28ab2" />
+          <Flower x={12} y={50} c="#f5c542" />
+          <Flower x={5} y={52} c="#e5484d" />
+        </g>
+      ) : null}
     </g>
   )
 }
@@ -639,7 +634,7 @@ function Obstwiese({ t }: { t: number }) {
           {t >= 5 ? (
             <g>
               <Crate x={78} y={70} fruit="#d6c23a" />
-              <Crate x={36} y={72} fruit="#6a3d8f" />
+              <Crate x={9} y={59} fruit="#6a3d8f" />
             </g>
           ) : null}
         </g>
@@ -748,13 +743,13 @@ function Huehnerstall({ t }: { t: number }) {
           ) : null}
         </g>
       )}
-      {t >= 2 ? <Hen x={18} y={68} /> : null}
-      {t >= 3 ? <Hen x={80} y={70} flip c="#c9763a" /> : null}
+      {t >= 2 ? <Hen x={16} y={64} /> : null}
+      {t >= 3 ? <Hen x={82} y={66} flip c="#c9763a" /> : null}
       {t >= 4 ? (
         <g>
           {/* rooster */}
-          <Hen x={62} y={74} c="#8a4a2a" />
-          <path d="M55 72 q-6 -6 -4 -12 q2 6 6 6" fill="#2f5e3a" />
+          <Hen x={64} y={64} c="#8a4a2a" />
+          <path d="M57 62 q-6 -6 -4 -12 q2 6 6 6" fill="#2f5e3a" />
         </g>
       ) : null}
       {t >= 5 ? (
@@ -963,8 +958,8 @@ function Orangerie({ t }: { t: number }) {
       {t >= 5 ? (
         <g>
           {/* fountain */}
-          <ellipse cx="50" cy="78" rx="12" ry="3.4" fill="#5aa9c6" stroke="#857d6c" strokeWidth="1.4" />
-          <path d="M50 78 V72 M46 74 q4 -6 8 0" stroke="#bfe6f2" strokeWidth="1.4" fill="none" />
+          <ellipse cx="12" cy="66" rx="9" ry="2.8" fill="#5aa9c6" stroke="#857d6c" strokeWidth="1.2" />
+          <path d="M12 66 V60 M9 62 q3 -5 6 0" stroke="#bfe6f2" strokeWidth="1.2" fill="none" />
         </g>
       ) : null}
       {/* plinth */}
@@ -990,8 +985,7 @@ function Orangerie({ t }: { t: number }) {
       )}
       {t >= 5 ? (
         <g>
-          <Pot x={6} y={74} s={0.75} />
-          <Pot x={94} y={74} s={0.75} fruit="#f5a623" />
+          <Pot x={92} y={72} s={0.75} fruit="#f5a623" />
         </g>
       ) : null}
     </g>

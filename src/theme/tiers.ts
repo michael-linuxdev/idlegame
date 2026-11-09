@@ -7,3 +7,9 @@ export function moduleTier(level: number): number {
   for (const need of TIER_LEVELS) if (level >= need) tier += 1
   return tier
 }
+
+/**
+ * Schild-Zone: unterhalb dieser y-Koordinate (100×86-Raster) liegt das
+ * Pflanzenschild. Grafik zeichnet dort nur Boden, Schatten und Randdeko.
+ */
+export const SIGN_ZONE_Y = 72

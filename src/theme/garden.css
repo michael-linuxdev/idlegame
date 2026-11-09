@@ -174,12 +174,19 @@
   animation: plot-ready 1.8s ease-in-out infinite;
 }
 
-/* Wooden plant sign */
+/* Wooden plant sign.
+   Schild-Zone: das Schild belegt die unteren 14 viewBox-Einheiten der
+   100×86-Grafik (14 % der Plot-Breite von 24u = 3,36u). Grafik zeichnet dort
+   nur Boden und Schatten — siehe SIGN_ZONE_Y in src/theme/tiers.ts. */
+.garden-plot {
+  --sign-zone: calc(var(--u) * 3.36);
+}
+
 .plot-sign {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: calc(var(--u) * -2.5);
+  margin-top: calc(var(--sign-zone) * -1);
   padding: 0.08rem 0.42rem 0.12rem;
   max-width: calc(var(--u) * 30);
   border: 1.5px solid #8a6a40;

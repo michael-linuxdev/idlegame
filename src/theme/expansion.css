@@ -1292,7 +1292,7 @@ html.tab-hidden .sky-event {
   display: inline-flex;
   align-items: center;
   gap: 0.1rem;
-  margin-top: calc(var(--u) * -2.2);
+  margin-top: calc(var(--sign-zone, calc(var(--u) * 3.36)) * -0.9);
   padding: 0 0.32rem;
   min-width: 1.35rem;
   height: 1.05rem;
