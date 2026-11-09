@@ -25,3 +25,7 @@ dist-ssr
 
 # E2E screenshots
 e2e-screens
+
+# Python
+__pycache__/
+*.pyc

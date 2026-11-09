@@ -1,7 +1,7 @@
 /**
- * Monetization stubs from docs/economy.md §8 + ads / battle-pass lite.
- * Local only — no real ad SDK, no IAP backend.
- * Hard currency: Obsidian (UI: Samen / Obsidian via theme).
+ * Markt-Attrappen (Samen-Päckchen, Werbefrei, Gartenstile) + optionale Werbung / Gartenwoche.
+ * Local only — no real ad SDK, no IAP backend. Store-Pläne: docs/store/.
+ * Premium-Währung: Samen.
  * Soft power stays free; ads are optional rewards, never energy walls.
  */
 

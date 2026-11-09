@@ -1,5 +1,5 @@
 /**
- * Module definitions — Bau-Map content depth (10 slots) + economy.md formulas for G1–G3.
+ * Module definitions — Bau-Map content depth (10 slots) + Kosten-/Ertragsformeln (Balance: ROADMAP.md).
  * Display names come from src/theme/strings.ts (DE).
  *
  * Garden ladder (G1 → G10): Gemüsebeet, Kompost, Kräuterspirale, Beerenhecke,
