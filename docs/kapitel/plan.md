@@ -23,7 +23,7 @@ Das trägt vier Abschnitte und ein Finale, das den Kreis schließt:
 |---|---|---|---|
 | I | 13–19 | **Nach der Schau** | Die Tütchen mit Adressen aus der Heimat. Bekannte Gesichter kommen zurück (Jonas als Erwachsener, Ilse, Onkel Fritz’ Enkelin). Gärten, die man aus Deutschland kennt. |
 | II | 20–29 | **Omas Saatgutbriefe** | Briefwechsel quer durch Europa. Jedes Kapitel ist ein Garten, mit dem Oma jahrzehntelang Samen getauscht hat. |
-| III | 30–39 | **Wo die Samen herkommen** | Die Familie reist zu den Ursprüngen dessen, was in Omas Garten wächst: Kartoffel, Mais und Bohnen, Kaffee, Reis, Pfeffer, Datteln, Kakao, Kohl. |
+| III | 30–39 | **Wo die Samen herkommen** | Die Familie besucht Gärtnerinnen und Gärtner in aller Welt, bei denen wächst, was in Omas Garten steht: Kartoffel, Mais und Bohnen, Kaffee, Reis, Pfeffer, Datteln, Kakao, Kohl. |
 | IV | 40–49 | **Saatgut für morgen** | Die nächste Generation übernimmt. Gärten der Zukunft: Dach, Fassade, Schule, Waldgarten, Samenbank, Klimagarten. Die Notizen stammen hier nicht mehr von Oma, sondern von Mila (Jonas’ Tochter). |
 | — | 50 | **Zurück zum Anfang** | Omas Schrebergarten. Das letzte Tütchen in der Dose trägt keine Adresse, sondern deinen Namen. |
 
@@ -33,13 +33,17 @@ Das trägt vier Abschnitte und ein Finale, das den Kreis schließt:
 - *Teeplantage, Bambushain, Kakteengarten* gestrichen: Tee und Bambus hat Kapitel 11, Kakteen Kapitel 8. Stattdessen Kakao (Ghana), Kimchi-Garten (Korea), Oase (Marokko).
 - *Schwarzwälder Kirschgarten* gestrichen (Streuobst/Kirschen in Kapitel 2). Stattdessen Spreewald.
 - *Forschungsgewächshaus* und *vertikaler Garten* zusammengelegt zu „Fassadengarten“; dafür neu „Solawi-Hof“ und „Großer Saatguttausch“ (schließt an die Saatgutbriefe an).
-- Bogen III ist bewusst **Ursprungs-Geschichte**, kein Reise-Katalog: Jedes Kapitel erklärt, woher eine Pflanze aus Omas Garten stammt.
+- Bogen III ist bewusst **kein Reise-Katalog**: Jedes Kapitel ist ein persönlicher Brief über eine Pflanze aus Omas Garten. Herkunft nur als sicherer Allgemeinplatz („kommt ursprünglich aus Südamerika“).
 
 **Leitlinien für Inhalt und Ton**
 - Keine Klischees, keine Karikaturen von Menschen. Figuren sind Fachleute in ihrem eigenen Garten: Bäuerinnen, Försterinnen, Lehrerinnen, Gärtner.
-- Echte Pflanzen, echte Bauweisen (Subak-Bewässerung, Milpa, Montado, Lazy Beds, Onggi-Töpfe …).
-- Wo Wissen indigener Gemeinschaften berührt wird (Anden, Milpa, Australien, Neuseeland), schreibt jemand, der es selbst trägt, oder es wird ausdrücklich als ihr Wissen benannt.
-- Briefe 4–6 Absätze, eigene Stimme. Grüße in der Landessprache sind erlaubt, wenn der Brief sie gleich erklärt (wie „Moin“ in Kapitel 6).
+- **Nichts, was Gegenlesen braucht** (Nutzerentscheid, Liste der Ersetzungen: `docs/kapitel/entschaerft.md`). Für die Kapitel 13–50 gilt:
+  - keine fremdsprachigen Wörter oder Grüße — außer Personennamen und allgemein bekannten Länder-/Ortsnamen (Bali, Kerala, Ghana, Anden, Spreewald …); was ins Deutsche eingegangen ist (Kimchi, Paprika, Quinoa, Chili, Sauna) darf bleiben;
+  - keine Bräuche, Rituale oder Wissen anderer Völker und Kulturen, keine ethnischen Zuschreibungen;
+  - keine prüfbaren Zahlen, Jahreszahlen, historischen oder statistischen Behauptungen; gärtnerische Allgemeinplätze, die sicher stimmen, dürfen bleiben;
+  - nichts Unsicheres über Tiere oder Pflanzen an bestimmten Orten.
+- Echte Pflanzen, einfache Gartenarbeit: Terrassen, Mischkultur, Wasser teilen, Einlegen, Trocknen.
+- Briefe 4–6 Absätze, eigene Stimme, persönlich und warm: die Gärtnerin oder der Gärtner, die Pflanze, die Arbeit, Wetter, Familie, das Tütchen aus Omas Dose. Anrede auf Deutsch bzw. Englisch („Liebe Familie“, „Hallo, ihr Lieben“).
 - Gleichmäßige Qualität: Lieber ein Bereich einfacher als ein Kapitel aufgebläht.
 
 ## Kapitel
@@ -81,20 +85,20 @@ Bereichs-**IDs** sind über alle Kapitel und den Garten eindeutig (Pflege-Namen 
 - Jahreszeit: Frühling — Wollgras weiß; Herbst — Heide lila, Kranichzug
 
 **18 · `deichgarten`** · Deichgarten an der Nordsee / The Dike Garden · Sanddorn / Sea Buckthorn · **Frauke Petersen** (Deichschäferin) · ZIGZAG
-- Bereiche: Sanddornhecke, Salzwiese, Kartoffelacker im Koog, Windschutzhecke, Strandrosen, Krabbenkutter-Steg, Reetdachkate, Friesenstube, Leuchtturm-Garten, Biikebrennen
+- Bereiche: Sanddornhecke, Salzwiese, Kartoffelacker im Koog, Windschutzhecke, Strandrosen, Krabbenkutter-Steg, Reetdachkate, Teestube, Leuchtturm-Garten, Winterfeuer
 - Landschaft: Deich, Watt, Leuchtturm, Wolkenhimmel
 - Tiere: Schafe auf dem Deich, Austernfischer, Windmühle dreht
-- Jahreszeit: Winter — Biikefeuer (22. Februar); Herbst — Sanddorn orange
+- Jahreszeit: Winter — Winterfeuer am Ende des Winters; Herbst — Sanddorn orange
 
-**19 · `spreewald`** · Spreewald / The Spreewald · Gurken / Gherkins · **Mirko Nowak** (Kahnfährmann, sorbische Familie) · ZIGZAG (Fließe)
-- Bereiche: Gurkenfeld, Meerrettichbeet, Leinölmühle, Kahnanleger, Bauerngarten am Fließ, Einlegeküche, Holzschuppen, Sorbisches Trachtenhaus, Erlenwald, Gurkenfest
+**19 · `spreewald`** · Spreewald / The Spreewald · Gurken / Gherkins · **Mirko Nowak** (Kahnfährmann) · ZIGZAG (Fließe)
+- Bereiche: Gurkenfeld, Meerrettichbeet, Leinölmühle, Kahnanleger, Bauerngarten am Fließ, Einlegeküche, Holzschuppen, Heimatstube, Erlenwald, Gurkenfest
 - Landschaft: Fließe mit Kähnen, Erlen, Blockhäuser
 - Tiere: Kahn gleitet, Eisvogel, Störche auf dem Dach
-- Jahreszeit: Winter — Eis auf den Fließen; Ostern — sorbische Ostereier
+- Jahreszeit: Winter — Eis auf den Fließen; Ostern — bemalte Ostereier
 
 ### Bogen II — Omas Saatgutbriefe (20–29)
 
-**20 · `cottagegarten`** · Cottage-Garten in England / The Cotswold Cottage Garden · Duftwicken / Sweet Peas · **Margaret Pryce** · ZIGZAG
+**20 · `cottagegarten`** · Cottage-Garten in England / The English Cottage Garden · Duftwicken / Sweet Peas · **Margaret Pryce** · ZIGZAG
 - Stockrosenbeet, Wickenzaun, Gemüse-Allotment, Trockenmauer, Apfelspalier, Gewächshaus aus Holz, Teeplatz unter der Eiche, Geißblattlaube, Schuppen, Dorfgartenschau
 - Landschaft: Honigfarbene Steinhäuser, Hügel mit Schafen · Tiere: Rotkehlchen, Schafe, Dampflok in der Ferne · Jahreszeit: Sommer — Gartenschau im Dorf
 
@@ -102,32 +106,32 @@ Bereichs-**IDs** sind über alle Kapitel und den Garten eindeutig (Pflege-Namen 
 - Tulpenreihen, Hyazinthenfeld, Narzissenwiese, Zwiebelscheune, Windmühle, Gracht mit Brücke, Fahrradstall, Versteigerungshalle, Hausboot-Garten, Tulpenmarkt
 - Tiere: Möwen, Windmühlenflügel, Enten in der Gracht · Jahreszeit: Frühling — Felder in Streifen; Herbst — Zwiebeln stecken
 
-**22 · `artischocken`** · Artischockeninsel bei Venedig / Sant’Erasmo Artichokes · Artischocken / Artichokes · **Giulia Zanon** · ZIGZAG (Kanäle)
+**22 · `artischocken`** · Artischockeninsel bei Venedig / The Artichoke Island · Artischocken / Artichokes · **Giulia Zanon** · ZIGZAG (Kanäle)
 - Artischockenfeld, Lagunenwiese, Bootsanleger, Kanalgarten, Granatapfelhecke, Salzgarten, Bootsschuppen, Gemüsekahn, Glockenturm-Blick, Inselfest
-- Tiere: Reiher, Gondel/Sandolo gleitet, Möwen · Jahreszeit: Frühling — „Castraure“ (erste Artischocke)
+- Tiere: Reiher, flaches Boot gleitet, Möwen · Jahreszeit: Frühling — die erste Artischocke
 
 **23 · `beerenwald`** · Beerenwald in Schweden / The Swedish Berry Woods · Blaubeeren / Blueberries · **Ingrid Lund** · SPIRAL
-- Heidelbeerhang, Preiselbeermoos, Moltebeerenmoor, Rote Hütte, Saftküche, Pilzlichtung, Holzstapel, Sauna am See, Mittsommerplatz, Jedermannsrecht-Pfad
-- Tiere: Elch am Waldrand, Eichhörnchen, Polarlicht (Winter) · Jahreszeit: Sommer — Mittsommer-Maibaum; Winter — Polarlicht
+- Heidelbeerhang, Preiselbeermoos, Moltebeerenmoor, Rote Hütte, Saftküche, Pilzlichtung, Holzstapel, Sauna am See, Sommerwiese, Waldpfad für alle
+- Tiere: Elch am Waldrand, Eichhörnchen, Polarlicht (Winter) · Jahreszeit: Sommer — Blumenkränze in der hellsten Nacht; Winter — Polarlicht
 
 **24 · `patio`** · Andalusischer Patio / The Andalusian Patio · Orangen / Seville Oranges · **Inés Morales** · RING (Innenhof)
-- Orangenhof, Brunnen mit Azulejos, Geranienwand, Bewässerungsrinne (Acequia), Jasminbogen, Granatapfelbaum, Kühle Galerie, Marmeladenküche, Gitterfenster, Patio-Fest (Cruces de Mayo)
-- Tiere: Schwalben, Wasserstrahl, Katze im Schatten · Jahreszeit: Frühling — Orangenblüte (Azahar)
+- Orangenhof, Kachelbrunnen, Geranienwand, Bewässerungsrinne, Jasminbogen, Granatapfelbaum, Kühle Galerie, Marmeladenküche, Gitterfenster, Patio-Fest
+- Tiere: Schwalben, Wasserstrahl, Katze im Schatten · Jahreszeit: Frühling — Orangenblüte
 
-**25 · `korkeichen`** · Korkeichenhain in Portugal / The Cork Oak Montado · Kork / Cork · **João Ferreira** · ZIGZAG
+**25 · `korkeichen`** · Korkeichenhain in Portugal / The Cork Oak Grove · Kork / Cork · **João Ferreira** · ZIGZAG
 - Korkeichen, Schälplatz, Eichelweide, Störche auf dem Mast, Brunnen, Korkstapel, Lehmhaus, Honighaus, Korkwerkstatt, Erntefest
-- Tiere: Störche, Eichelhäher, Schafe · Jahreszeit: Sommer — Schälzeit (nur alle 9 Jahre je Baum)
+- Tiere: Störche, Eichelhäher, Schafe · Jahreszeit: Sommer — Schälzeit
 
-**26 · `paprikafelder`** · Paprikafelder in Ungarn / The Kalocsa Paprika Fields · Paprika / Paprika · **Erzsébet Kovács** · ROWS
-- Paprikareihen, Trockenschnüre an der Hauswand, Paprikamühle, Bemalte Bauernstube (Kalocsa-Muster), Brunnenschwengel, Tomatenfeld, Akazienwäldchen, Strohdachscheune, Markt, Paprikafest
+**26 · `paprikafelder`** · Paprikafelder in Ungarn / The Hungarian Paprika Fields · Paprika / Paprika · **Erzsébet Kovács** · ROWS
+- Paprikareihen, Trockenschnüre an der Hauswand, Paprikamühle, Bemalte Bauernstube, Brunnenschwengel, Tomatenfeld, Akazienwäldchen, Strohdachscheune, Markt, Paprikafest
 - Tiere: Störche, Pferd am Brunnen, Lerche · Jahreszeit: Herbst — rote Schnüre an jeder Wand
 
 **27 · `aranfelder`** · Steinfelder der Aran-Inseln / The Aran Island Fields · Wolle / Wool · **Siobhán Ní Fhlatharta** · TERRACES (Mauerfelder)
-- Trockenmauern, Tang-Beete (Lazy Beds), Kartoffelfurchen, Burren-Blumen, Schafweide, Strickstube, Cottage mit Reetdach, Klippenpfad, Hafenmauer, Céilí-Abend
-- Tiere: Schafe, Papageitaucher, Brandung · Jahreszeit: Frühling — Enziane im Kalkstein
+- Trockenmauern, Tang-Beete, Kartoffelfurchen, Felsblumen, Schafweide, Strickstube, Cottage mit Reetdach, Klippenpfad, Hafenmauer, Musikabend
+- Tiere: Schafe, Papageitaucher, Brandung · Jahreszeit: Frühling — Blumen in den Felsspalten
 
 **28 · `rosental`** · Rosental in Bulgarien / The Bulgarian Rose Valley · Rosenöl / Rose Oil · **Petar Ivanov** · ROWS
-- Rosenreihen (Damaszener), Pflückkörbe, Destillierkessel, Walnussallee, Imkerwagen, Rosenwasser-Küche, Bergquelle, Holzveranda, Trocknungsboden, Rosenfest
+- Rosenreihen (Ölrosen), Pflückkörbe, Destillierkessel, Walnussallee, Imkerwagen, Rosenwasser-Küche, Bergquelle, Holzveranda, Trocknungsboden, Rosenfest
 - Tiere: Bienen, Schwalben, Esel mit Körben · Jahreszeit: Frühsommer — Pflücken im Morgengrauen
 
 **29 · `pistazien`** · Pistazienhain auf Ägina / The Pistachio Groves of Aegina · Pistazien / Pistachios · **Eleni Papadaki** · TERRACES
@@ -136,45 +140,45 @@ Bereichs-**IDs** sind über alle Kapitel und den Garten eindeutig (Pflege-Namen 
 
 ### Bogen III — Wo die Samen herkommen (30–39)
 
-**30 · `andenkartoffeln`** · Kartoffelterrassen in den Anden / The Andean Potato Terraces · Kartoffeln / Potatoes · **Rosa Quispe** (Agronomin, Quechua-Gemeinde) · TERRACES
-- Andenes-Terrassen, Sortenbeet (hundert Kartoffeln), Quinoafeld, Chuño-Trockenplatz, Lehmspeicher, Alpakaweide, Bewässerungskanal, Webstube, Saatgut-Park, Kartoffelfest
-- Tiere: Alpakas, Kondor kreist, Kolibri · Jahreszeit: Trockenzeit — Chuño gefriertrocknen im Frost
+**30 · `andenkartoffeln`** · Kartoffelterrassen in den Anden / The Andean Potato Terraces · Kartoffeln / Potatoes · **Rosa Quispe** (Agronomin) · TERRACES
+- Bergterrassen, Sortenbeet, Quinoafeld, Trockenplatz, Lehmspeicher, Alpakaweide, Wasserkanal, Webstube, Kartoffelpark, Kartoffelfest
+- Tiere: Alpakas, Kondor kreist, Kolibri · Jahreszeit: Trockenzeit — kleine Kartoffeln trocknen
 
-**31 · `milpa`** · Milpa in Mexiko / The Milpa Fields · Mais / Corn · **Teodoro Hernández** · RING
-- Drei-Schwestern-Feld (Mais, Bohnen, Kürbis), Chili-Garten, Amaranth, Comal-Küche, Maisspeicher, Agavenzaun, Bienenstand (Melipona), Saatgut-Krüge, Markttag, Erntefeier
-- Tiere: Kolibri, Truthahn, Schmetterlinge (Monarchfalter, Herbst) · Jahreszeit: Herbst — Monarchfalter-Zug
+**31 · `milpa`** · Maisfelder in Mexiko / The Mexican Corn Fields · Mais / Corn · **Teodoro Hernández** · RING
+- Maisfeld (Mais, Bohnen, Kürbis), Chili-Garten, Amaranth, Maisküche, Maisspeicher, Agavenzaun, Bienenstand, Saatgut-Krüge, Markttag, Erntefeier
+- Tiere: Kolibri, Truthahn, Schmetterlinge (Herbst) · Jahreszeit: Herbst — Schmetterlinge über den Feldern
 
 **32 · `kaffeewald`** · Kaffeewald in Äthiopien / The Ethiopian Coffee Forest · Kaffee / Coffee · **Almaz Tesfaye** · ZIGZAG
-- Waldkaffee unter Schattenbäumen, Pflückplatz, Trockenbetten, Ensete-Garten, Honigbäume, Bach mit Waschplatz, Rundhaus (Tukul), Röstplatz, Kaffeezeremonie, Markt
+- Waldkaffee unter Schattenbäumen, Pflückplatz, Trockenbetten, Scheinbananen, Honigbäume, Bach mit Waschplatz, Rundhütte, Röstpfanne, Kaffeetisch, Kaffeemarkt
 - Tiere: Turako, Bienen, Rauch der Röstpfanne · Jahreszeit: Regenzeit — Kaffeeblüte weiß
 
-**33 · `reisterrassen`** · Reisterrassen auf Bali / The Balinese Rice Terraces · Reis / Rice · **Made Wirawan** (Subak-Wasserverwalter) · TERRACES
-- Reisterrassen, Subak-Wasserverteiler, Wassertempelchen, Kokospalmen, Entenweide, Reisspeicher (Lumbung), Gemüsegarten am Hang, Bambusbrücke, Werkstatt, Erntedank im Tempel
+**33 · `reisterrassen`** · Reisterrassen auf Bali / The Balinese Rice Terraces · Reis / Rice · **Made Wirawan** (verteilt das Wasser) · TERRACES
+- Reisfelder, Wasserteiler, Quellhaus, Kokospalmen, Entenweide, Reisspeicher, Gemüse am Hang, Bambusbrücke, Flechtwerkstatt, Erntetag
 - Tiere: Enten im Gänsemarsch, Reiher, Wasser fließt · Jahreszeit: Wechsel grün → gold → Wasserspiegel
 
 **34 · `gewuerzgarten`** · Gewürzgarten in Kerala / The Kerala Spice Garden · Pfeffer / Pepper · **Anjali Menon** · ZIGZAG
-- Pfefferranken am Baum, Kardamom im Schatten, Zimtbäume, Ingwerbeet, Kurkuma, Muskatbaum, Trockenmatten, Hausboot-Steg, Gewürzlager, Onam-Blumenteppich
+- Pfefferranken am Baum, Kardamom im Schatten, Zimtbäume, Ingwerbeet, Kurkuma, Muskatbaum, Trockenmatten, Bootssteg, Gewürzlager, Blumenteppich
 - Tiere: Hornvogel, Schmetterlinge, Monsunregen · Jahreszeit: Monsun — Regenvorhang
 
 **35 · `oase`** · Dattel-Oase in Marokko / The Date Palm Oasis · Datteln / Dates · **Youssef Amrani** · RING
-- Dattelpalmen, Stockwerkgarten (Palme–Obst–Gemüse), Khettara-Wasserlauf, Lehmspeicher (Ksar), Granatäpfel, Minzbeet, Brunnenhof, Teppichwebstube, Dattelernte, Sternenabend
+- Dattelpalmen, Stockwerkgarten (Palme–Obst–Gemüse), Wassertunnel, Lehmburg, Granatäpfel, Minzbeet, Brunnenhof, Teppichwebstube, Dattelernte, Sternenabend
 - Tiere: Kamel am Rand, Wiedehopf, Wasser im Kanal · Jahreszeit: Herbst — Dattelernte
 
 **36 · `kakaogarten`** · Kakaogarten in Ghana / The Ghana Cocoa Farm · Kakao / Cocoa · **Ama Owusu** · ZIGZAG
-- Kakaobäume, Bananen-Schattenreihe, Fermentationskisten, Trockengestelle, Kochbananen, Yamsfeld, Dorfplatz, Genossenschafts-Haus, Schokoladenwerkstatt, Erntefest
+- Kakaobäume, Bananen-Schattenreihe, Gärhaufen, Trockengestelle, Kochbananen, Yamsfeld, Dorfplatz, Genossenschafts-Haus, Schokoladenwerkstatt, Erntefest
 - Tiere: Nashornvogel, Schmetterlinge, Hühner · Jahreszeit: Hauptsaison — Schoten gelb und rot
 
-**37 · `buschgarten`** · Buschgarten in Australien / The Australian Bush Garden · Akaziensamen / Wattleseed · **Kirra Walker** (Bushfood-Gärtnerin, gibt das Wissen ihrer Familie weiter) · SPIRAL
-- Akazienhain, Fingerlimetten, Zitronenmyrte, Saltbush, Wasserloch, Eukalyptushain, Mahlstein-Platz, Saatgut-Hütte, Regenwassertank, Abend am Feuer
+**37 · `buschgarten`** · Buschgarten in Australien / The Australian Bush Garden · Akaziensamen / Acacia Seeds · **Kirra Walker** (Gärtnerin, hat alles von ihrer Großmutter und ihren Tanten gelernt) · SPIRAL
+- Akazienhain, Fingerlimetten, Zitronenmyrte, Salzbusch, Wasserloch, Eukalyptushain, Mahlstein-Platz, Saatgut-Hütte, Regenwassertank, Abend am Feuer
 - Tiere: Kängurus (ruhig grasend), Kakadus, Eidechse auf dem Stein · Jahreszeit: Frühling (September) — gelbe Akazienblüte
 
 **38 · `farngarten`** · Farnwald in Neuseeland / The New Zealand Fern Forest · Farnwedel / Fern Fronds · **Aroha Ngata** (Rangerin) · SPIRAL
-- Baumfarne (Ponga), Kauri-Pfad, Harakeke (Flachs), Hängebrücke, Glühwürmchengrotte, Kūmara-Garten, Wasserfall, Pflanzschule, Hütte am Hang, Matariki-Abend
-- Tiere: Tūī singt, Fantail, Glühwürmchen · Jahreszeit: Winter (Juni/Juli) — Matariki-Sterne
+- Baumfarne, Pfad der Riesen, Flachsbeet, Hängebrücke, Glühwürmchengrotte, Süßkartoffeln, Wasserfall, Pflanzschule, Hütte am Hang, Winternacht
+- Tiere: Vogel singt, Fächerschwanz, Glühwürmchen · Jahreszeit: Winter — klare Sternennächte
 
 **39 · `kimchigarten`** · Kimchi-Garten in Korea / The Korean Kimchi Garden · Chinakohl / Napa Cabbage · **Kim Soo-ah** · ROWS
-- Kohlreihen, Rettichbeet, Chili-Trockenmatten, Onggi-Töpfe, Sesamfeld, Perillabeet, Hanok-Hof, Kimjang-Platz (gemeinsames Einlegen), Kakibaum, Herbstfest (Chuseok)
-- Tiere: Elstern, Kakis wiegen, Rauch der Ondol-Heizung · Jahreszeit: Spätherbst — Kimjang
+- Kohlreihen, Rettichbeet, Chili-Matten, Tontöpfe, Sesamfeld, Blattkräuter, Alter Hof, Einlegeplatz (gemeinsames Einlegen), Kakibaum, Herbstfest
+- Tiere: Elstern, Kakis wiegen, Rauch aus dem Schornstein · Jahreszeit: Spätherbst — Einlegetag
 
 ### Bogen IV — Saatgut für morgen (40–49)
 
@@ -348,6 +352,8 @@ Abweichungen vom Plan: Kapitel 30 heißt im Spiel kurz „Kartoffeln der Anden�
 
 Abweichungen vom Plan: Kapitel 35 „Lehmspeicher (Ksar)“ → *Ksar*, „Teppichwebstube“ → *Teppichstube*, Lage Tafilalet (Herkunft der Medjool, Khettaras); Kapitel 36 „Fermentationskisten“ → *Fermentation* (in Ghana gärt man meist im Haufen unter Bananenblättern; Kisten erst ab Stufe 4), „Bananen-Schattenreihe“ → *Bananenschatten*, „Schokoladenwerkstatt“ → *Schokowerkstatt*, „Erntefest“ hat die ID `kakaofest`; Kapitel 37 „Akazienhain“ hat die ID `wattlehain` (`akazienhain` gibt es in Kapitel 26), „Saltbush“ heißt im Spiel *Salzbusch* (ID `saltbush`), Kirra schreibt bewusst ohne Gruß in einer Sprache der First Nations; Kapitel 38: Omas Tütchen ist Neuseeländer Spinat (seit Cook in europäischen Gärten), Kūmara als zweite Herkunftsgeschichte; Kapitel 39 „Hanok-Hof“ mit Ondol, Rauch im Tierleben (Winter). Jahreszeiten: Australien und Neuseeland nach der Südhalbkugel (Frühling = September), Oase und Ghana nach dem Erntejahr (siehe Kopf der Grafik-Dateien).
 
+> **Stand heute:** Die Abweichungen der Wellen 1–7 beschreiben, wie die Texte zuerst geschrieben wurden (Orte, Begriffe, Herkunftsgeschichten). Seit dem Durchgang „nichts, was Gegenlesen braucht“ heißen viele Bereiche anders, und Orts-, Volks- und Zahlenangaben sind aus den Texten entfernt — maßgeblich ist `docs/kapitel/entschaerft.md`.
+
 Großprojekt Bogen III: `herkunftsbeet` („Omas Herkunftsbeet“, Kapitel 30–39, Belohnung 450 Samen).
 
 ## Welle 6 — Bereichs-IDs
@@ -372,7 +378,7 @@ Abweichungen vom Plan: Kapitel 40 „Wildbienen-Dach“ hat die ID `bienendach` 
 | 48 saatguttausch | tauschtische, sortenschau, erzaehlzelt, briefstation, samenwerkstatt, pflanzenboerse, weltkueche, musikbuehne, archivwagen, abschlussrunde |
 | 49 weltgartenschau | europabeete, weltbeete, zukunftshalle, gondelbahn, wasserlichter, saatguttempel, kinderwald, familienpavillon, aussichtssteg, eroeffnung |
 
-Abweichungen vom Plan: Kapitel 45 „Hecke“ → *Feldhecke*, „Kleingewässer“ → *Tümpel* (ID `tuempel`), „Saatgut-Ernte“ hat die ID `wildsaatgut` (Mahdgut von der alten Moorwiese), „Brücke über die Straße“ → *Grünbrücke*; Greta grüßt wieder mit „Moin“ (schon erklärt). Kapitel 46 „Tröpfchenbewässerung“ → *Tropfschlauch*, „Vogelnistwand“ → *Nistwand*, „Fensterbank-Gärtnerei“ → *Fensterbänke* (ID `fensterbank`); die Wand ist die fensterlose Südwand von Milas Haus. Kapitel 47: Absender ist **Till**, Lenas Bruder (der Plan nannte „Paul“, den gibt es schon als Obergärtner Paul Weidner); der Solawi-Hof ist Onkel Fritz’ alter Hof aus Kapitel 4 (undichtes Scheunendach, freche Gänse, Schlüssel unter dem Blumentopf); „Saatgutvermehrung“ → *Hofsaatgut*, „Mitgliederversammlung“ → *Versammlung* (Bieterrunde), „Hoffest“ hat die ID `solawifest` (`hoffest` gibt es in Kapitel 13). Kapitel 48: Sammelbrief aller Absender der Kapitel 13–39 (je Bogen ein Absatz, jeder bringt zurück, was Oma einst schickte), Ort: die Wiese der alten Gartenschau; „Sortenausstellung“ → *Sortenschau*, „Kinder-Saatgutwerkstatt“ → *Samenwerkstatt*, „Pflanzenflohmarkt“ → *Pflanzenbörse*, „Saatgut-Archivwagen“ → *Archivwagen*. Kapitel 49: „Länderbeete aus Bogen II/III“ → *Europa-Beete* / *Beete der Welt*, „Seilbahn“ hat die ID `gondelbahn` (`seilbahn` gibt es auf der Alm), „Wasserlichtspiele“ → *Wasserlichter*, „Pavillon der Familie“ → *Unser Pavillon* (ID `familienpavillon`), „Aussichtsplattform“ → *Aussichtssteg* (`aussichtsturm` gibt es in Kapitel 12), „Eröffnungsfeier“ hat die ID `eroeffnung`; das Finale (Omas Schrebergarten, die leere Dose) bleibt Kapitel 50 vorbehalten.
+Abweichungen vom Plan: Kapitel 45 „Hecke“ → *Feldhecke*, „Kleingewässer“ → *Tümpel* (ID `tuempel`), „Saatgut-Ernte“ hat die ID `wildsaatgut` (Mahdgut von der alten Moorwiese), „Brücke über die Straße“ → *Grünbrücke*; Greta grüßt (seit `entschaerft.md`) mit „Hallo, ihr Lieben“. Kapitel 46 „Tröpfchenbewässerung“ → *Tropfschlauch*, „Vogelnistwand“ → *Nistwand*, „Fensterbank-Gärtnerei“ → *Fensterbänke* (ID `fensterbank`); die Wand ist die fensterlose Südwand von Milas Haus. Kapitel 47: Absender ist **Till**, Lenas Bruder (der Plan nannte „Paul“, den gibt es schon als Obergärtner Paul Weidner); der Solawi-Hof ist Onkel Fritz’ alter Hof aus Kapitel 4 (undichtes Scheunendach, freche Gänse, Schlüssel unter dem Blumentopf); „Saatgutvermehrung“ → *Hofsaatgut*, „Mitgliederversammlung“ → *Versammlung* (Bieterrunde), „Hoffest“ hat die ID `solawifest` (`hoffest` gibt es in Kapitel 13). Kapitel 48: Sammelbrief aller Absender der Kapitel 13–39 (je Bogen ein Absatz, jeder bringt zurück, was Oma einst schickte), Ort: die Wiese der alten Gartenschau; „Sortenausstellung“ → *Sortenschau*, „Kinder-Saatgutwerkstatt“ → *Samenwerkstatt*, „Pflanzenflohmarkt“ → *Pflanzenbörse*, „Saatgut-Archivwagen“ → *Archivwagen*. Kapitel 49: „Länderbeete aus Bogen II/III“ → *Europa-Beete* / *Beete der Welt*, „Seilbahn“ hat die ID `gondelbahn` (`seilbahn` gibt es auf der Alm), „Wasserlichtspiele“ → *Wasserlichter*, „Pavillon der Familie“ → *Unser Pavillon* (ID `familienpavillon`), „Aussichtsplattform“ → *Aussichtssteg* (`aussichtsturm` gibt es in Kapitel 12), „Eröffnungsfeier“ hat die ID `eroeffnung`; das Finale (Omas Schrebergarten, die leere Dose) bleibt Kapitel 50 vorbehalten.
 
 Großprojekt Bogen IV: `morgengarten` („Der Garten für morgen“, Kapitel 40–49, Belohnung 500 Samen).
 
@@ -399,3 +405,4 @@ Die IDs tragen bewusst das Präfix `omas…`/`opas…`/`alt…`: Die Bereiche sp
 - [x] **Welle 6** — Kapitel 40–44, Beginn Bogen IV (Texte de + en in `stringsChaptersArc4.ts`: Mila, Derya Yilmaz, Lena, Dr. Amara Okafor, Jonas; Bereichs-Notizen von Mila; Grafik je Bereich in 5 Stufen + Jahreszeiten, Teile `partsH`, gesperrte Ecken `wildH`, Kulissen `rooftop`/`schoolyard`/`forestGarden`/`seedBank`/`climateGarden` in `backdropArc4.tsx`, Wege `roofRing`/`schoolZigzag`/`chipSpiral`/`seedRing`/`mulchZigzag`, Tierleben `k6-*`, Währungs-Symbole; kein Großprojekt; `RELEASED_UP_TO = 44`)
 - [x] **Welle 7** — Kapitel 45–49, Abschluss Bogen IV (Texte de + en in `stringsChaptersArc4.ts`: Greta Hansen, Mila, Till, Sammelbrief aller Briefpartner, Dr. Elisabeth Grün; Bereichs-Notizen von Mila; Grafik je Bereich in 5 Stufen + Jahreszeiten, Teile `partsI`, gesperrte Ecken `wildI`, Kulissen `wildflowerBand`/`livingWall`/`communityFarm`/`seedSwap`/`worldExpo` in `backdropArc4.tsx`, Wege `meadowSpiral`/`courtSteps`/`farmRows`/`swapRing`/`expoRing`, Tierleben `k7-*`, Währungs-Symbole; Großprojekt `morgengarten` für Bogen IV; `RELEASED_UP_TO = 49`)
 - [x] **Welle 8** — Kapitel 50, Finale & Abschluss (Brief und Notizen von Oma in `stringsChaptersArc4.ts`; Grafik je Bereich in 5 Stufen + Jahreszeiten von „damals“ zu „heute“, gesperrte Ecken (Brombeeren) in `wildI`, Kulisse `omaGarden` in `backdropFinale.tsx` mit Stufen, Weg `omaZigzag`, Tierleben `k8-*`, Währungs-Symbol (Dose mit Tütchen); Abschluss-Szene mit gespeichertem Feld `abschlussSeen`; Abschluss-Sätze statt „Weitere Gärten folgen“; `RELEASED_UP_TO = 50`, Platzhalter-Funktion entfernt; ROADMAP, Store-Texte `docs/store/texte.md`, Bericht `abschluss-bericht.md`)
+- [x] **Entschärfung** — Kapitel 13–50 (de + en, Pflege-Namen, Glossar, Store-Texte, Bericht): Fremdwörter und Grüße in Landessprache, Bräuche und Wissen anderer Völker, prüfbare Zahlen/Jahreszahlen und unsichere Orts-Angaben ersetzt; IDs unverändert. Liste: `docs/kapitel/entschaerft.md`

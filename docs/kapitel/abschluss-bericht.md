@@ -8,7 +8,7 @@ Bauanleitung: `docs/kapitel/wellen-anleitung.md`, Taktung: `docs/kapitel/balance
 Nach der Gartenschau (Kapitel 12) findet die Familie unter Omas Gedenkbeet eine
 Blechdose voller Samentütchen, jedes mit Name und Adresse, dazu Briefe. Sie
 folgt den Spuren: erst in die Heimat (Bogen I), dann zu Omas Briefpartnern in
-Europa (Bogen II), zu den Ursprüngen der Pflanzen in Omas Garten (Bogen III)
+Europa (Bogen II), zu Gärtnerinnen und Gärtnern in aller Welt, bei denen wächst, was in Omas Garten steht (Bogen III)
 und schließlich in die Gärten von morgen, in denen Mila die Notizen
 weiterschreibt (Bogen IV). Das letzte Tütchen trägt keine Adresse, nur „Für
 dich“: Radieschen von Omas allererstem Beet (Kapitel 50). Wenn der Garten
@@ -25,7 +25,7 @@ Omas Bank, und das Spiel geht weiter.
 | 16 | Baumschule | Setzlinge | Lena (Onkel Fritz’ Enkelin) | I |
 | 17 | Moor- und Heidegarten | Moosbeeren | Greta Hansen (Ilses Nichte) | I |
 | 18 | Deichgarten | Sanddorn | Frauke Petersen (Deichschäferin) | I |
-| 19 | Spreewald | Gurken | Mirko Nowak (Kahnfährmann, sorbische Familie) | I |
+| 19 | Spreewald | Gurken | Mirko Nowak (Kahnfährmann) | I |
 | 20 | Cottage-Garten | Duftwicken | Margaret Pryce | II Omas Saatgutbriefe |
 | 21 | Tulpenfelder | Blumenzwiebeln | Joost de Vries | II |
 | 22 | Artischockeninsel | Artischocken | Giulia Zanon | II |
@@ -36,15 +36,15 @@ Omas Bank, und das Spiel geht weiter.
 | 27 | Steinfelder von Aran | Wolle | Siobhán Ní Fhlatharta | II |
 | 28 | Rosental | Rosenöl | Petar Ivanov | II |
 | 29 | Pistazienhain auf Ägina | Pistazien | Eleni Papadaki | II |
-| 30 | Kartoffeln der Anden | Kartoffeln | Rosa Quispe (Agronomin, Quechua-Gemeinde) | III Wo die Samen herkommen |
-| 31 | Milpa in Mexiko | Mais | Teodoro Hernández | III |
+| 30 | Kartoffeln der Anden | Kartoffeln | Rosa Quispe (Agronomin) | III Wo die Samen herkommen |
+| 31 | Maisfelder in Mexiko | Mais | Teodoro Hernández | III |
 | 32 | Kaffeewald in Äthiopien | Kaffee | Almaz Tesfaye | III |
-| 33 | Reisterrassen auf Bali | Reis | Made Wirawan (Subak) | III |
+| 33 | Reisterrassen auf Bali | Reis | Made Wirawan (verteilt das Wasser) | III |
 | 34 | Gewürzgarten in Kerala | Pfeffer | Anjali Menon | III |
 | 35 | Dattel-Oase in Marokko | Datteln | Youssef Amrani | III |
 | 36 | Kakaogarten in Ghana | Kakao | Ama Owusu | III |
-| 37 | Buschgarten in Australien | Akaziensamen | Kirra Walker (First Nations, Bushfood) | III |
-| 38 | Farnwald in Neuseeland | Farnwedel | Aroha Ngata (Rangerin, Māori) | III |
+| 37 | Buschgarten in Australien | Akaziensamen | Kirra Walker (Gärtnerin) | III |
+| 38 | Farnwald in Neuseeland | Farnwedel | Aroha Ngata (Rangerin) | III |
 | 39 | Kimchi-Garten in Korea | Chinakohl | Kim Soo-ah | III |
 | 40 | Dachgarten | Salat | Mila (Jonas’ Tochter) | IV Saatgut für morgen |
 | 41 | Schulgarten | Radieschen | Derya Yilmaz (Lehrerin) | IV |
@@ -147,7 +147,7 @@ Kapitel-Grafik und rund 1 500 Zeilen Kapitel-Texte je Sprache.
   wenn Ilse oder ein Gedrückthalten den letzten Bereich anlegt, während der
   Spieler woanders ist; einen Spielernamen kennt das Spiel nicht („Für
   dich“).
-- Stellen, die Gegenlesen bräuchten, werden in einem eigenen Durchgang ersetzt.
+- **Entschärft:** Alles, was Gegenlesen gebraucht hätte (Fremdwörter, Grüße in Landessprache, Bräuche und Wissen anderer Völker, prüfbare Zahlen und Jahreszahlen, unsichere Orts-Angaben zu Pflanzen und Tieren), ist durch einfache, sicher wahre Texte ersetzt; Liste in `docs/kapitel/entschaerft.md`. Die Bereichsgrafiken (ohne Text) sind unverändert und zeigen teils noch die alten Motive (z. B. einen kleinen Schrein am Quellhaus auf Bali).
 - **Englisch:** von einem Modell übersetzt, im Ton nicht von Muttersprachlern
   gelesen.
 - **Barrierefreiheit Kapitel-Karten:** axe prüft Kapitel-Karten bisher nicht mit angelegten Bereichen. Beim Prüfen der Abschluss-Szene fiel auf, dass die Bereichs-Knöpfe einer ausgebauten Kapitel-Karte `label-content-name-mismatch` melden (Name „Komposthaufen, Stufe 10“, sichtbar Name + Zahl). Die Szene wird deshalb allein geprüft; die Karten-Knöpfe sind ein offener Punkt (betrifft alle Kapitel).

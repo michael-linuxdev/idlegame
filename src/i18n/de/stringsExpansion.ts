@@ -205,7 +205,7 @@ export const expansionStrings = {
       andenkartoffeln: ['Terrassen', 'Sorten hüten'],
       milpa: ['Mischkultur', 'Saatgut'],
       kaffeewald: ['Schattenbäume', 'Gäste'],
-      reisterrassen: ['Wasser teilen', 'Tempelrat'],
+      reisterrassen: ['Wasser teilen', 'Gemeinsam planen'],
       gewuerzgarten: ['Stützbäume', 'Monsun'],
       oase: ['Wasser teilen', 'Stockwerke'],
       kakaogarten: ['Schatten', 'Genossenschaft'],
