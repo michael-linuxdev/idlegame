@@ -139,12 +139,14 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
         <dl className="season-stats">
           <div>
             <dt>{t.prestige.erbstuecke.replace(':', '')}</dt>
-            <dd>{state.erbstuecke}</dd>
+            <dd>{formatErnte(state.erbstuecke)}</dd>
           </div>
           <div>
             <dt>{t.prestige.multiplier.replace(':', '')}</dt>
-            <dd>{formatMult(multiplier)}</dd>
-            {multiplier <= 1 ? <small className="season-stat-hint">{t.ux.season.bonusHint}</small> : null}
+            <dd>
+              {formatMult(multiplier)}
+              {multiplier <= 1 ? <small className="season-stat-hint">{t.ux.season.bonusHint}</small> : null}
+            </dd>
           </div>
           <div>
             <dt>{t.prestige.runs.replace(':', '')}</dt>

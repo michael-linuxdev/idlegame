@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "balance": "bash scripts/balance/run.sh",
     "test": "vitest run",
-    "e2e": "node scripts/e2e/smoke.mjs && node scripts/e2e/art.mjs",
+    "e2e": "node scripts/e2e/smoke.mjs && node scripts/e2e/art.mjs && node scripts/e2e/axe.mjs",
     "art:update": "node scripts/e2e/art.mjs --update",
     "screens": "node scripts/e2e/screens.mjs"
   },
@@ -28,6 +28,7 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.2",
+    "axe-core": "^4.14.0",
     "oxlint": "^1.90.0",
     "playwright": "^1.63.0",
     "typescript": "~7.0.2",

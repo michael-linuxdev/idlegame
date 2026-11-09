@@ -289,12 +289,16 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
               setOpen((o) => (o === p.key ? null : p.key))
             }}
             aria-expanded={p.detail && !p.onClick ? open === p.key : undefined}
-            aria-label={p.aria}
+            aria-describedby={`pill-desc-${p.key}`}
             style={p.color ? { ['--pill-accent' as string]: p.color } : undefined}
           >
             <span className="hud-pill-icon">{p.icon}</span>
-            {showName ? <span className="hud-pill-name">{name}</span> : null}
+            {/* Name = sichtbarer Text (WCAG „label in name“), Langfassung als Beschreibung */}
+            {showName ? <span className="hud-pill-name">{name}</span> : <span className="sr-only">{name} </span>}
             {p.label ? <span className="hud-pill-label">{p.label}</span> : null}
+            <span className="sr-only" id={`pill-desc-${p.key}`}>
+              {p.aria}
+            </span>
           </button>
           </li>
           )
@@ -305,10 +309,12 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
               type="button"
               className="hud-pill pill-more"
               aria-expanded={showAll}
-              aria-label={showAll ? t.ux.pills.less : t.ux.pills.moreAria(hiddenCount)}
               onClick={() => setShowAll((v) => !v)}
             >
-              <span className="hud-pill-label">{showAll ? '−' : t.ux.pills.more(hiddenCount)}</span>
+              <span className="hud-pill-label" aria-hidden="true">
+                {showAll ? '−' : t.ux.pills.more(hiddenCount)}
+              </span>
+              <span className="sr-only">{showAll ? t.ux.pills.less : t.ux.pills.moreAria(hiddenCount)}</span>
             </button>
           </li>
         ) : null}

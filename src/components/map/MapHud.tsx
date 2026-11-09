@@ -53,8 +53,11 @@ export function MapHud({
           type="button"
           className={`hud-card hud-garden${levelPulse ? ' level-up' : ''}`}
           onClick={onOpenProgress}
-          aria-label={t.hud.gardenAria(stageName, playerLevel.level)}
+          aria-describedby="hud-garden-desc"
         >
+          <span className="sr-only" id="hud-garden-desc">
+            {t.hud.progressOpen}
+          </span>
           <span className="hud-stage">{stageName}</span>
           <span className="hud-level">
             <span className="hud-level-label">
@@ -73,13 +76,17 @@ export function MapHud({
           type="button"
           className="hud-card hud-wallet"
           onClick={onOpenMult}
-          aria-label={`${t.hud.walletAria(formatErnte(state.ernte), formatRate(rate))} — ${t.ux.mults.walletHint}`}
+          aria-describedby="hud-wallet-desc"
         >
+          <span className="sr-only" id="hud-wallet-desc">
+            {t.ux.mults.walletHint}
+          </span>
           <span className={`hud-amount${tickFlash ? ' tick' : ''}`}>
             <span className="hud-amount-icon">
               <IconBasket />
             </span>
             {formatErnte(state.ernte)}
+            <span className="sr-only"> {t.resources.ernte}</span>
           </span>
           <span className="hud-rate">
             {formatRate(rate)}
@@ -88,12 +95,14 @@ export function MapHud({
           <span className="hud-sub">
             {state.erbstuecke > 0 ? (
               <span className="hud-sub-item" title={t.resources.erbstuecke}>
-                <IconChest /> {state.erbstuecke}
+                <IconChest /> {formatErnte(state.erbstuecke)}
+                <span className="sr-only"> {t.resources.erbstuecke}</span>
               </span>
             ) : null}
             {!earlyGame ? (
               <span className="hud-sub-item hud-reveal" title={t.resources.samen}>
-                <IconSeeds /> {state.samen}
+                <IconSeeds /> {formatErnte(state.samen)}
+                <span className="sr-only"> {t.resources.samen}</span>
               </span>
             ) : null}
           </span>

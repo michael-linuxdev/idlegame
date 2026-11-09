@@ -38,6 +38,8 @@
 
 .season-stat-hint {
   display: block;
+  font-weight: 400;
+  letter-spacing: normal;
   margin-top: 0.15rem;
   font-size: 0.62rem;
   line-height: 1.2;

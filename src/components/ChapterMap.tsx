@@ -379,7 +379,7 @@ function ChapterSheet({
             </h2>
             {unlocked ? (
               <>
-                <div className="gc-stars" aria-label={t.milestones.starsAria(stars)}>
+                <div className="gc-stars" role="img" aria-label={t.milestones.starsAria(stars)}>
                   {Array.from({ length: 5 }, (_, i) => (
                     <span key={i} className={i < stars ? 'on' : undefined}>
                       <IconStar />

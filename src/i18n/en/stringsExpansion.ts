@@ -5,6 +5,7 @@
  */
 
 import { laterChapterStrings } from './stringsChapters'
+import { nFestTokens, nHeirlooms, nSeeds } from './count'
 
 function obst(n: string): string {
   return `${n} fruit`
@@ -274,9 +275,9 @@ export const expansionStrings = {
 
   chest: {
     title: 'Milestone Chest',
-    samen: (n: number) => `Milestone Chest: +${n} seeds`,
-    erbstuecke: (n: number) => `Milestone Chest: +${n} heirlooms`,
-    fest: (n: number) => `Milestone Chest: +${n} fest tokens`,
+    samen: (n: number) => `Milestone Chest: +${nSeeds(n)}`,
+    erbstuecke: (n: number) => `Milestone Chest: +${nHeirlooms(n)}`,
+    fest: (n: number) => `Milestone Chest: +${nFestTokens(n)}`,
     variety: (name: string) => `Milestone Chest: new variety ${name}!`,
   },
 
@@ -327,7 +328,7 @@ export const expansionStrings = {
     rank: (n: number) => `Place ${n}`,
     endsIn: (days: number) => (days <= 1 ? 'Weigh-in tonight' : `Weigh-in in ${days} days`),
     result: (rank: number, kg: string) => `Last week: place ${rank} with ${kg}`,
-    claim: (samen: number) => `Collect prize · +${samen} seeds`,
+    claim: (samen: number) => `Collect prize · +${nSeeds(samen)}`,
     claimed: 'Prize collected',
     rewards: 'Prizes: 60 · 40 · 25 · 15 seeds …',
   },
@@ -341,7 +342,7 @@ export const expansionStrings = {
   preview: {
     button: 'Preview',
     banner: (name: string) => `Preview: ${name}`,
-    buy: (cost: number) => `Buy · ${cost} seeds`,
+    buy: (cost: number) => `Buy · ${nSeeds(cost)}`,
     back: 'Back',
   },
 
@@ -447,16 +448,16 @@ export const expansionStrings = {
       boost: 'Festival boost',
       boostBlurb: '30 minutes of +15 % harvest.',
       heirlooms: 'Heirloom box',
-      heirloomsBlurb: (n: number) => `+${n} heirlooms for the chest.`,
+      heirloomsBlurb: (n: number) => `+${nHeirlooms(n)} for the chest.`,
       seeds: 'Seed packet',
-      seedsBlurb: (n: number) => `+${n} seeds.`,
+      seedsBlurb: (n: number) => `+${nSeeds(n)}.`,
       skin: (name: string) => `Festival garden style: ${name}`,
       skinBlurb: 'Its own decor on the map — for good. Extra (seeds).',
       pack: 'Festival basket',
       packBlurb: (n: number, token: string) => `+${n} ${token} right away. Extra (seeds).`,
     },
     costTokens: (n: number, token: string) => `${n} ${token}`,
-    costSamen: (n: number) => `${n} seeds`,
+    costSamen: (n: number) => `${nSeeds(n)}`,
     owned: 'Owned',
     soldOut: 'Sold out',
     left: (n: number) => `${n}× left`,

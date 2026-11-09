@@ -4,6 +4,7 @@
  * and the update check. Spread into `strings` (see strings.ts).
  */
 
+import { zahl } from './count'
 import { laterChapterStrings } from './stringsChapters'
 
 function obst(n: string): string {
@@ -274,9 +275,9 @@ export const expansionStrings = {
 
   chest: {
     title: 'Meilenstein-Truhe',
-    samen: (n: number) => `Meilenstein-Truhe: +${n} Samen`,
-    erbstuecke: (n: number) => `Meilenstein-Truhe: +${n} Erbstücke`,
-    fest: (n: number) => `Meilenstein-Truhe: +${n} Festmarken`,
+    samen: (n: number) => `Meilenstein-Truhe: +${zahl(n)} Samen`,
+    erbstuecke: (n: number) => `Meilenstein-Truhe: +${zahl(n)} Erbstücke`,
+    fest: (n: number) => `Meilenstein-Truhe: +${zahl(n)} Festmarken`,
     variety: (name: string) => `Meilenstein-Truhe: neue Sorte ${name}!`,
   },
 
@@ -327,7 +328,7 @@ export const expansionStrings = {
     rank: (n: number) => `Platz ${n}`,
     endsIn: (days: number) => (days <= 1 ? 'Wiegen heute Abend' : `Wiegen in ${days} Tagen`),
     result: (rank: number, kg: string) => `Letzte Woche: Platz ${rank} mit ${kg}`,
-    claim: (samen: number) => `Preis abholen · +${samen} Samen`,
+    claim: (samen: number) => `Preis abholen · +${zahl(samen)} Samen`,
     claimed: 'Preis abgeholt',
     rewards: 'Preise: 60 · 40 · 25 · 15 Samen …',
   },
@@ -341,7 +342,7 @@ export const expansionStrings = {
   preview: {
     button: 'Vorschau',
     banner: (name: string) => `Vorschau: ${name}`,
-    buy: (cost: number) => `Kaufen · ${cost} Samen`,
+    buy: (cost: number) => `Kaufen · ${zahl(cost)} Samen`,
     back: 'Zurück',
   },
 
@@ -447,16 +448,16 @@ export const expansionStrings = {
       boost: 'Festschub',
       boostBlurb: '30 Minuten +15 % Ernte.',
       heirlooms: 'Erbstück-Kiste',
-      heirloomsBlurb: (n: number) => `+${n} Erbstücke für die Truhe.`,
+      heirloomsBlurb: (n: number) => `+${zahl(n)} Erbstücke für die Truhe.`,
       seeds: 'Samentütchen',
-      seedsBlurb: (n: number) => `+${n} Samen.`,
+      seedsBlurb: (n: number) => `+${zahl(n)} Samen.`,
       skin: (name: string) => `Fest-Gartenstil: ${name}`,
       skinBlurb: 'Eigene Deko auf der Karte — dauerhaft. Extra (Samen).',
       pack: 'Festkorb',
       packBlurb: (n: number, token: string) => `+${n} ${token} sofort. Extra (Samen).`,
     },
     costTokens: (n: number, token: string) => `${n} ${token}`,
-    costSamen: (n: number) => `${n} Samen`,
+    costSamen: (n: number) => `${zahl(n)} Samen`,
     owned: 'Im Besitz',
     soldOut: 'Ausverkauft',
     left: (n: number) => `noch ${n}×`,

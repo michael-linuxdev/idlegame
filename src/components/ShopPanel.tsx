@@ -144,7 +144,7 @@ export function ShopPanel({ game, onPreview }: Props) {
       <div className="shop-wallet sticky-wallet" aria-live="polite">
         <div className="shop-wallet-chip">
           <span className="shop-wallet-label">{t.resources.samen}</span>
-          <span className="shop-wallet-value">{state.samen}</span>
+          <span className="shop-wallet-value">{formatErnte(state.samen)}</span>
         </div>
         {state.adsRemoved ? (
           <div className="shop-wallet-chip ads-free">

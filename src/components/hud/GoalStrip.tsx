@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useId, type ReactNode } from 'react'
 
 export interface HudGoal {
   key: string
@@ -15,6 +15,8 @@ export interface HudGoal {
 
 /** The one and only goal line — next step, Omas tip or Saisonende. */
 export function GoalStrip({ goal }: { goal: HudGoal }) {
+  // Name = sichtbarer Text (WCAG „label in name“); die Langfassung ist die Beschreibung
+  const descId = useId()
   const pct = Math.round(Math.min(1, Math.max(0, goal.ratio)) * 100)
   const ready = pct >= 100
   return (
@@ -22,8 +24,11 @@ export function GoalStrip({ goal }: { goal: HudGoal }) {
       type="button"
       className={`hud-goal tone-${goal.tone}${ready ? ' ready' : ''}${goal.nearMiss ? ' near' : ''}`}
       onClick={goal.onActivate}
-      aria-label={goal.aria}
+      aria-describedby={descId}
     >
+      <span className="sr-only" id={descId}>
+        {goal.aria}
+      </span>
       <span className="hud-goal-icon">{goal.icon}</span>
       <span className="hud-goal-text">
         <span className="hud-goal-title">{goal.title}</span>

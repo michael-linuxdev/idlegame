@@ -282,7 +282,7 @@ export function GardenMap({
           const eta = formatEta(prestigeProgress.min - state.ernteSeason, rate)
           return {
             label: eta ? `${t.prestige.pill(prestigeCta.erbstuecke)} · ${t.ux.season.eta(eta)}` : t.prestige.pill(prestigeCta.erbstuecke),
-            short: eta ? `+${prestigeCta.erbstuecke} · ${eta}` : `+${prestigeCta.erbstuecke}`,
+            short: eta ? `+${formatErnte(prestigeCta.erbstuecke)} · ${eta}` : `+${formatErnte(prestigeCta.erbstuecke)}`,
             onOpen: openPrestigeCta,
           }
         })()

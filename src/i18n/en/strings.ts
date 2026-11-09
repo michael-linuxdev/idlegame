@@ -8,6 +8,7 @@
  * survives Season's End) · Seeds (premium). Prestige = Season's End.
  */
 import type { Strings } from '../types'
+import { count, nHeirlooms, nSeedlings, nSeeds } from './count'
 import { careNames } from './careNames'
 import { manifestStrings } from './manifest'
 import { expansionStrings } from './stringsExpansion'
@@ -17,14 +18,12 @@ import { uxStrings } from './stringsUx'
 const SOFT = 'harvest'
 const SEEDS = 'seeds'
 
-/** “1 heirloom” / “3 heirlooms” */
-function erb(n: number): string {
-  return `${n} ${n === 1 ? 'heirloom' : 'heirlooms'}`
-}
+/** “1 heirloom” / “1,500 heirlooms” */
+const erb = nHeirlooms
 
 /** “1 variety” / “3 varieties” */
 function varieties(n: number): string {
-  return `${n} ${n === 1 ? 'variety' : 'varieties'}`
+  return count(n, 'variety', 'varieties')
 }
 
 export const strings: Strings = {
@@ -316,7 +315,7 @@ export const strings: Strings = {
     graceLabel: 'Collect your reward',
     goalAria: 'Sunbreak goal',
     goalLine: (progress: string, reward: number) =>
-      `${progress} → ${reward} ${SEEDS}`,
+      `${progress} → ${nSeeds(reward)}`,
     claimGoal: 'Collect',
     claimed: 'Collected',
     dismiss: 'Close',
@@ -423,10 +422,6 @@ export const strings: Strings = {
     progressClose: 'Close',
     levelUp: (n: number) => `Gardener level ${n}!`,
     waterCooling: (clock: string) => `Can refilling · ${clock}`,
-    claimAria: (amount: string) => `Bring in the harvest: ${amount}`,
-    walletAria: (amount: string, rate: string) => `${amount} harvest, ${rate}`,
-    gardenAria: (stage: string, level: number) =>
-      `${stage}, gardener level ${level}. Open goals and milestones`,
     questReady: 'Task done — collect',
   },
 
@@ -438,7 +433,7 @@ export const strings: Strings = {
     rewards: {
       ernte: (n: number) => `+${n} ${SOFT}`,
       erbstuecke: (n: number) => `+${erb(n)}`,
-      samen: (n: number) => `+${n} ${SEEDS}`,
+      samen: (n: number) => `+${nSeeds(n)}`,
       cosmetic: (name: string) => `Garden style: ${name}`,
     },
   },
@@ -465,7 +460,7 @@ export const strings: Strings = {
     done: 'Ticked off',
     rewardErnte: (n: number) => `+${n} ${SOFT}`,
     rewardErbstuecke: (n: number) => `+${erb(n)}`,
-    rewardSamen: (n: number) => `+${n} ${SEEDS}`,
+    rewardSamen: (n: number) => `+${nSeeds(n)}`,
     rewardCosmetic: (name: string) => `Garden style: ${name}`,
     firstUpgrade: {
       name: 'First Spadeful',
@@ -519,7 +514,7 @@ export const strings: Strings = {
     earnErnte: (n: string) => `Bring in ${n} ${SOFT}`,
     claimDaily: 'Collect your Daily Rounds',
     rewardLine: (ernte: number, seeds: number) =>
-      seeds > 0 ? `+${ernte} ${SOFT} · +${seeds} ${SEEDS}` : `+${ernte} ${SOFT}`,
+      seeds > 0 ? `+${ernte} ${SOFT} · +${nSeeds(seeds)}` : `+${ernte} ${SOFT}`,
   },
 
   upgrade: {
@@ -627,12 +622,12 @@ export const strings: Strings = {
     keepItems: ['Seedlings & their bonuses', 'Seeds, garden styles, streak', 'Gardener level, Grandma’s letters'],
     loseTitle: 'Fresh in spring',
     loseItems: ['Garden years', 'Heirlooms & Grandma’s Chest', 'Beds and harvest'],
-    cta: (n: number) => `Deep Winter · +${n} seedlings`,
+    cta: (n: number) => `Deep Winter · +${nSeedlings(n)}`,
     gateClosed: (year: number) => `Possible from garden year ${year}`,
     confirmCta: 'Really? Tap again — the garden will rest',
     shopTitle: 'Seedling Shop',
     rank: (rank: number, max: number) => `Rank ${rank}/${max}`,
-    cost: (n: number) => `${n} seedlings`,
+    cost: (n: number) => `${nSeedlings(n)}`,
     items: {
       tiefeWurzeln: {
         name: 'Deep Roots',
@@ -647,7 +642,7 @@ export const strings: Strings = {
       saatgutvorrat: {
         name: 'Seed Store',
         blurb: 'Every fresh start begins with 60 heirlooms per rank.',
-        effect: (rank: number) => `${rank * 60} heirlooms to start`,
+        effect: (rank: number) => `${nHeirlooms(rank * 60)} to start`,
       },
       gartenwissen: {
         name: 'Garden Lore',
@@ -740,13 +735,13 @@ export const strings: Strings = {
     skipHours: (left: number, cap: number) => `${left}/${cap} h`,
     packsTitle: 'Bundles & seeds',
     packsIntro: 'Test purchases with seeds. No real purchases yet.',
-    packEffect: (n: number) => `+${n} ${SEEDS}`,
+    packEffect: (n: number) => `+${nSeeds(n)}`,
     skipsTitle: 'Time skips',
     skipsIntro: (rate: string, cap: number) =>
       `Current harvest ${rate}/s · max. ${cap} h per day.`,
     dailyCapReached: 'Enough for today',
     ernteGain: (amount: string) => `+${amount} ${SOFT}`,
-    costSamen: (n: number) => `${n} ${SEEDS}`,
+    costSamen: (n: number) => `${nSeeds(n)}`,
     skinsTitle: 'Garden Styles',
     skinsIntro: 'Just for looks — no advantage.',
     equipped: 'Active',
@@ -762,11 +757,11 @@ export const strings: Strings = {
     tabsAria: 'Market sections',
     giftTitle: 'Daily gift',
     giftIntro: 'A small gift from the market every day.',
-    giftClaim: (n: number) => `Collect · +${n} ${SEEDS}`,
+    giftClaim: (n: number) => `Collect · +${nSeeds(n)}`,
     giftDone: 'Back tomorrow',
     adsPick: 'Choose a reward:',
     adsErnte: (mins: number, amount: string) => `${mins} min of harvest · +${amount}`,
-    adsSamen: (n: number) => `+${n} ${SEEDS}`,
+    adsSamen: (n: number) => `+${nSeeds(n)}`,
     adsGot: (what: string) => `Added: ${what}`,
     adsGotErnte: (amount: string) => `+${amount} ${SOFT}`,
     refillTitle: 'Refill watering can',
@@ -782,7 +777,7 @@ export const strings: Strings = {
     adsRemovedBadge: 'Ad-free',
     adsRewardSkip: (mins: number, amount: string) =>
       `+${mins} min time skip (${amount})`,
-    adsRewardSamen: (n: number) => `+${n} ${SEEDS}`,
+    adsRewardSamen: (n: number) => `+${nSeeds(n)}`,
     adsRewardYield: (mins: number, amount: string) =>
       `+${mins} min of ${SOFT} (${amount})`,
     removeAdsTitle: 'Ad-free',
@@ -791,7 +786,7 @@ export const strings: Strings = {
     yieldBoostIntro: '+15 % harvest · 30 min · for seeds.',
     yieldBoostActive: (mult: string, left: string) => `Active ×${mult} · ${left}`,
     yieldBoostInactive: 'Not active',
-    yieldBoostBuy: (cost: number) => `${cost} ${SEEDS}`,
+    yieldBoostBuy: (cost: number) => `${nSeeds(cost)}`,
     currencyPacksTitle: 'Seed packets',
     currencyPacksIntro: 'Test top-ups.',
     cosmeticPacksTitle: 'Style bundles',
@@ -808,7 +803,7 @@ export const strings: Strings = {
     gartenwocheLocked: 'Locked',
     gartenwocheNeedXp: (xp: number) => `From ${xp} XP`,
     gartenwocheNeedPremium: 'Premium needed',
-    rewardSamen: (n: number) => `+${n} ${SEEDS}`,
+    rewardSamen: (n: number) => `+${nSeeds(n)}`,
     rewardErnteSec: (sec: number) => `+${sec} s of ${SOFT}`,
   },
 
@@ -1111,7 +1106,7 @@ export const strings: Strings = {
     label: (name: string) => `Order: ${name}`,
     progress: (have: string, need: string, left: string) => `${have} / ${need} · ${left}`,
     claim: (name: string) => `${name}: Deliver!`,
-    reward: (seeds: number) => `Pay: +${seeds} seeds and a basket of harvest`,
+    reward: (seeds: number) => `Pay: +${nSeeds(seeds)} and a basket of harvest`,
     done: (name: string) => `${name} is delighted — thank you!`,
     expired: 'Order missed — the next one is coming soon.',
     customers: ['Mrs. Gerda', 'Mr. Albers', 'Sunshine Daycare', 'Café Laube', 'The Yilmaz family', 'Korn Bakery'],
@@ -1124,9 +1119,9 @@ export const strings: Strings = {
     claim: 'Collect',
     done: 'Done',
     bonusTitle: 'Grandma’s weekly basket',
-    bonusReward: (seeds: number, erb: number) => `+${seeds} seeds · +${erb} heirlooms`,
+    bonusReward: (seeds: number, erb: number) => `+${nSeeds(seeds)} · +${nHeirlooms(erb)}`,
     bonusLocked: (n: number) => `${n} ${n === 1 ? 'task' : 'tasks'} to go`,
-    reward: (seeds: number) => `+${seeds} seeds`,
+    reward: (seeds: number) => `+${nSeeds(seeds)}`,
     tasks: {
       water: (n: number) => `Water ${n}×`,
       upgrades: (n: number) => `Upgrade ${n}×`,
@@ -1164,7 +1159,7 @@ export const strings: Strings = {
   comeback: {
     title: 'There you are again!',
     body: 'I was starting to think the slugs had got you. The garden has been waiting for you — and there’s a little welcome present on the bench.',
-    gift: (seeds: number) => `Present: +${seeds} seeds and 30 minutes of harvest`,
+    gift: (seeds: number) => `Present: +${nSeeds(seeds)} and 30 minutes of harvest`,
     cta: 'Thank you, Grandma',
   },
 
@@ -1242,7 +1237,7 @@ export const strings: Strings = {
     deepTitle: 'Deep Winter',
     deepLine: 'The garden rests long and deep. The roots gather strength.',
     deepSpringTitle: 'A new beginning',
-    sprouts: (n: number) => `+${n} seedlings`,
+    sprouts: (n: number) => `+${nSeedlings(n)}`,
     springLine: 'The snow is melting — time to get going again.',
     gained: (text: string) => `Stored: ${text}`,
     newCorner: (name: string) => `New to clear: ${name}`,
@@ -1266,7 +1261,7 @@ export const strings: Strings = {
     claimToast: 'Daily Rounds done',
     rewardErnte: (amount: string) => `${amount} ${SOFT}`,
     rewardErbstuecke: (n: number) => erb(n),
-    rewardSamen: (n: number) => `${n} ${SEEDS}`,
+    rewardSamen: (n: number) => `${nSeeds(n)}`,
     rows: {
       float2: `2 min of ${SOFT}`,
       shift3: `3 min of ${SOFT}`,
@@ -1287,7 +1282,7 @@ export const strings: Strings = {
     endsDefault: 'Weekend',
     goalAria: 'Harvest Weekend goal',
     goalLine: (progress: string, reward: number) =>
-      `${progress} → ${reward} ${SEEDS}`,
+      `${progress} → ${nSeeds(reward)}`,
     claimGoal: 'Collect',
     claimed: 'Collected',
     dismiss: 'Close',

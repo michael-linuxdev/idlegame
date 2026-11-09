@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useDismiss } from '../game/overlays'
 import { festAt, festEndsAt, festShop, nextFest, type FestShopItem } from '../game/fests'
 import { RARITY_BONUS, VARIETIES } from '../game/gardenLife'
-import { formatDecimal } from '../game/format'
+import { formatDecimal, formatErnte } from '../game/format'
 import { payoutAtGate } from '../game/economy'
 import { COSMETICS } from '../game/monetization'
 import { playSfx } from '../game/sound'
@@ -98,7 +98,7 @@ export function FestSheet({ game, onClose }: Props) {
           </span>
           <strong>{t.fest.wallet(tokens, tokenName)}</strong>
           <span className="fest-wallet-seeds">
-            <IconSeeds /> {state.samen}
+            <IconSeeds /> {formatErnte(state.samen)}
           </span>
         </div>
         <p className="fest-expire">{t.fest.expireNote}</p>

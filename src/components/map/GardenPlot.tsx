@@ -74,20 +74,18 @@ export function GardenPlot({ def, game, selectedHere, animated, totalMult, hl, n
         top: def.slot.top,
         zIndex: 2 + Math.round(Number.parseFloat(def.slot.top)),
       }}
-      aria-label={
-        unlocked
-          ? t.hud.buildingAriaUnlocked(
-              def.name,
-              level,
-              formatRate(buildingRate),
-            )
-          : t.hud.buildingAriaLocked(def.name, hint)
-      }
+      aria-describedby={`plot-desc-${def.id}`}
       aria-pressed={selectedHere}
       onClick={onSelect}
       onContextMenu={(e) => e.preventDefault()}
       onDragStart={(e) => e.preventDefault()}
     >
+      {/* Name = sichtbarer Text (Schild/Plakette, WCAG „label in name“); Langfassung als Beschreibung */}
+      <span className="sr-only" id={`plot-desc-${def.id}`}>
+        {unlocked ? t.hud.buildingAriaUnlocked(def.name, level, formatRate(buildingRate)) : t.hud.buildingAriaLocked(def.name, hint)}
+        {toStar > 0 && nextStar ? ` ${t.milestone.toStarAria(toStar, nextStar.at)}` : null}
+      </span>
+      {!showSign && (!unlocked || level === 0) ? <span className="sr-only">{def.name}</span> : null}
       <span className={`plot-visual${growing ? ' tier-grow' : ''}`}>
         {!unlocked ? (
           <WildPlot id={def.id} season={season} />
@@ -110,7 +108,7 @@ export function GardenPlot({ def, game, selectedHere, animated, totalMult, hl, n
         onTier={onTier}
       />
       {!showSign && unlocked && level > 0 ? (
-        <span className="plot-badge" aria-hidden="true">
+        <span className="plot-badge">
           {canBuy ? <span className="plot-canbuy in-badge" title={t.ux.signs.canBuy} /> : null}
           <span className="plot-badge-name">{def.name}</span>
           <span className="plot-badge-level">
@@ -133,7 +131,7 @@ export function GardenPlot({ def, game, selectedHere, animated, totalMult, hl, n
                   {(() => {
                     const r = unlockRatio(def, state)
                     return r != null && r > 0 ? (
-                      <span className="plot-wild-progress" aria-label={t.ux.signs.wildIn(Math.floor(r * 100))}>
+                      <span className="plot-wild-progress" aria-hidden="true">
                         <span style={{ width: `${Math.floor(r * 100)}%` }} />
                       </span>
                     ) : null
@@ -146,7 +144,7 @@ export function GardenPlot({ def, game, selectedHere, animated, totalMult, hl, n
               <>
                 {t.hud.levelShort(level)}
                 {milestonesReached(level) > 0 ? (
-                  <span className="plot-stars" aria-label={t.milestones.starsAria(milestonesReached(level))}>
+                  <span className="plot-stars" aria-hidden="true">
                     {' '}
                     <IconStars n={Math.min(3, milestonesReached(level))} />
                   </span>
@@ -156,7 +154,7 @@ export function GardenPlot({ def, game, selectedHere, animated, totalMult, hl, n
                 ) : null}
                 <TierBar level={level} />
                 {toStar > 0 && nextStar ? (
-                  <span className="plot-to-star" aria-label={t.milestone.toStarAria(toStar, nextStar.at)}>
+                  <span className="plot-to-star">
                     <span
                       className="plot-to-star-ring"
                       style={{ ['--p' as string]: `${Math.round(((level - nextStar.from) / (nextStar.at - nextStar.from)) * 100)}%` }}

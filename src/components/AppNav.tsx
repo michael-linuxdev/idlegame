@@ -366,7 +366,7 @@ function MenuSheet({
                   </li>
                 ))}
               <li role="none">
-                <button type="button" className="nav-row nav-menu-item nav-menu-settings" onClick={() => setPage('settings')}>
+                <button type="button" role="menuitem" className="nav-row nav-menu-item nav-menu-settings" onClick={() => setPage('settings')}>
                   <span className="nav-row-icon">{Glyph.settings}</span>
                   <span className="tab-label">{t.nav.settings}</span>
                   <span aria-hidden="true">›</span>
@@ -386,7 +386,7 @@ function Toggle({ label, on, onClick, hint }: { label: string; on: boolean; onCl
   return (
     <button
       type="button"
-      role="menuitemcheckbox"
+      role="switch"
       aria-checked={on}
       className={`nav-toggle${on ? ' on' : ''}`}
       title={hint}
@@ -492,7 +492,7 @@ function SettingsPage({ reminders, onToggleReminders }: { reminders: boolean; on
         <PlaytestLogControls />
       </div>
       <div className="nav-menu-update">
-        <button type="button" role="menuitem" className="nav-row nav-menu-item" onClick={onCheckUpdate} disabled={checking}>
+        <button type="button" className="nav-row nav-menu-item" onClick={onCheckUpdate} disabled={checking}>
           <span className="tab-label">{t.appUpdate.menu}</span>
         </button>
         {updateNote ? (
