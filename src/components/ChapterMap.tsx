@@ -16,7 +16,7 @@ import { bestChapterBuy } from '../game/state'
 import { WEINLESE } from '../game/extrasCore'
 import type { useGame } from '../game/useGame'
 import { t } from '../i18n'
-import { ART_REGISTRY } from '../theme/art/registry'
+import { useChapterArt } from '../theme/art/chapterArt'
 import { ChapterCritters } from './ChapterCritters'
 import { PlotButtons } from './PlotPicker'
 import { useSignsAlways } from '../game/prefs'
@@ -44,7 +44,7 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
   const c = state.chapters[chapter]
   const copy = chapterCopy(chapter)
   const ambient = useAmbient()
-  const art = ART_REGISTRY[chapter]
+  const art = useChapterArt(chapter)
   const [selected, setSelected] = useState<string | null>(null)
   const [toast, setToast] = useState<string | null>(null)
   const [weinleseOpen, setWeinleseOpen] = useState(false)
@@ -274,7 +274,7 @@ function ChapterSheet({
   const ms = nextMilestone(level)
   const stars = milestonesReached(level)
   const ambient = useAmbient()
-  const art = ART_REGISTRY[chapter]
+  const art = useChapterArt(chapter)
   const [bulk, setBulk] = useState<ChapterBulk>(1)
   const [flash, setFlash] = useState(false)
   const hold = useRef<number | null>(null)
