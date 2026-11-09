@@ -7,6 +7,8 @@
  * Currencies: Ernte (soft, per run) · Erbstücke (meta, survives Saisonende)
  * · Samen (premium stub). Prestige = Saisonende (Winterruhe → neues Gartenjahr).
  */
+import { careNames } from './careNames'
+import { manifestStrings } from './manifest'
 import { expansionStrings } from './stringsExpansion'
 import { lifeStrings } from './stringsLife'
 import { uxStrings } from './stringsUx'
@@ -27,7 +29,22 @@ export const strings = {
     description:
       'Gartenerbe — vom Schrebergarten zum Gartenpark. Dein Garten wächst auch offline.',
     pwaDescription: 'Omas Garten wächst weiter, auch wenn du weg bist.',
+    manifest: manifestStrings,
   },
+
+  /** Zahlen & Zeiträume (src/game/format.ts) */
+  num: {
+    decimal: ',',
+    group: '.',
+    /** 10³, 10⁶, 10⁹, 10¹², 10¹⁵, 10¹⁸ — lange Skala */
+    units: [' Tsd', ' Mio', ' Mrd', ' Bio', ' Brd', ' Trd'],
+    minutes: (n: number) => (n === 1 ? '1 Minute' : `${n} Minuten`),
+    hours: (n: number) => (n === 1 ? '1 Stunde' : `${n} Stunden`),
+    days: (n: number) => (n === 1 ? '1 Tag' : `${n} Tage`),
+  },
+
+  /** Sprachnamen in der jeweiligen Sprache selbst (Umschalter) */
+  languageNames: { de: 'Deutsch', en: 'English' },
 
   eyebrow: 'Omas Garten',
 
@@ -1290,6 +1307,6 @@ export const strings = {
   ...expansionStrings,
   ...lifeStrings,
   ux: uxStrings,
+  careNames,
 } as const
 
-export type Strings = typeof strings

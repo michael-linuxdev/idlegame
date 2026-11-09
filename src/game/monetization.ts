@@ -54,60 +54,92 @@ export interface CosmeticDef {
 export const COSMETICS: CosmeticDef[] = [
   {
     id: 'wiese',
-    name: t.cosmetics.wiese.name,
-    blurb: t.cosmetics.wiese.blurb,
+    get name() {
+      return t.cosmetics.wiese.name
+    },
+    get blurb() {
+      return t.cosmetics.wiese.blurb
+    },
     cost: 0,
     accentClass: 'skin-wiese',
   },
   {
     id: 'bauerngarten',
-    name: t.cosmetics.bauerngarten.name,
-    blurb: t.cosmetics.bauerngarten.blurb,
+    get name() {
+      return t.cosmetics.bauerngarten.name
+    },
+    get blurb() {
+      return t.cosmetics.bauerngarten.blurb
+    },
     cost: 80,
     accentClass: 'skin-bauerngarten',
   },
   {
     id: 'bluetenmeer',
-    name: t.cosmetics.bluetenmeer.name,
-    blurb: t.cosmetics.bluetenmeer.blurb,
+    get name() {
+      return t.cosmetics.bluetenmeer.name
+    },
+    get blurb() {
+      return t.cosmetics.bluetenmeer.blurb
+    },
     cost: 120,
     accentClass: 'skin-bluetenmeer',
   },
   {
     id: 'goldherbst',
-    name: t.cosmetics.goldherbst.name,
-    blurb: t.cosmetics.goldherbst.blurb,
+    get name() {
+      return t.cosmetics.goldherbst.name
+    },
+    get blurb() {
+      return t.cosmetics.goldherbst.blurb
+    },
     cost: 200,
     accentClass: 'skin-goldherbst',
   },
   {
     id: 'festFruehling',
-    name: t.cosmetics.festFruehling.name,
-    blurb: t.cosmetics.festFruehling.blurb,
+    get name() {
+      return t.cosmetics.festFruehling.name
+    },
+    get blurb() {
+      return t.cosmetics.festFruehling.blurb
+    },
     cost: 150,
     accentClass: 'skin-festFruehling',
     fest: true,
   },
   {
     id: 'festSommer',
-    name: t.cosmetics.festSommer.name,
-    blurb: t.cosmetics.festSommer.blurb,
+    get name() {
+      return t.cosmetics.festSommer.name
+    },
+    get blurb() {
+      return t.cosmetics.festSommer.blurb
+    },
     cost: 150,
     accentClass: 'skin-festSommer',
     fest: true,
   },
   {
     id: 'festErntedank',
-    name: t.cosmetics.festErntedank.name,
-    blurb: t.cosmetics.festErntedank.blurb,
+    get name() {
+      return t.cosmetics.festErntedank.name
+    },
+    get blurb() {
+      return t.cosmetics.festErntedank.blurb
+    },
     cost: 150,
     accentClass: 'skin-festErntedank',
     fest: true,
   },
   {
     id: 'festAdvent',
-    name: t.cosmetics.festAdvent.name,
-    blurb: t.cosmetics.festAdvent.blurb,
+    get name() {
+      return t.cosmetics.festAdvent.name
+    },
+    get blurb() {
+      return t.cosmetics.festAdvent.blurb
+    },
     cost: 150,
     accentClass: 'skin-festAdvent',
     fest: true,
@@ -128,15 +160,23 @@ export interface TimeSkipDef {
 export const TIME_SKIPS: TimeSkipDef[] = [
   {
     id: 'harvestHour',
-    name: t.timeSkips.harvestHour.name,
-    blurb: t.timeSkips.harvestHour.blurb,
+    get name() {
+      return t.timeSkips.harvestHour.name
+    },
+    get blurb() {
+      return t.timeSkips.harvestHour.blurb
+    },
     hours: 1,
     cost: 40,
   },
   {
     id: 'growthDay',
-    name: t.timeSkips.growthDay.name,
-    blurb: t.timeSkips.growthDay.blurb,
+    get name() {
+      return t.timeSkips.growthDay.name
+    },
+    get blurb() {
+      return t.timeSkips.growthDay.blurb
+    },
     hours: 4,
     cost: 120,
   },
@@ -153,8 +193,12 @@ export interface ClanBoostDef {
 
 export const CLAN_BOOST: ClanBoostDef = {
   id: 'vereinsfahne',
-  name: t.clanBoost.name,
-  blurb: t.clanBoost.blurb,
+  get name() {
+    return t.clanBoost.name
+  },
+  get blurb() {
+    return t.clanBoost.blurb
+  },
   cost: 60,
   mult: CLAN_BOOST_MULT,
   durationMs: CLAN_BOOST_MS,
@@ -189,9 +233,15 @@ export const SHOP_OFFERS: ShopOfferDef[] = [
   {
     id: 'starterBundle',
     kind: 'starterBundle',
-    name: t.packs.starterBundle.name,
-    blurb: t.packs.starterBundle.blurb,
-    label: t.packs.starterBundle.label,
+    get name() {
+      return t.packs.starterBundle.name
+    },
+    get blurb() {
+      return t.packs.starterBundle.blurb
+    },
+    get label() {
+      return t.packs.starterBundle.label
+    },
     samen: 200,
     cosmeticIds: ['bauerngarten'],
     once: true,
@@ -200,45 +250,75 @@ export const SHOP_OFFERS: ShopOfferDef[] = [
   {
     id: 'removeAds',
     kind: 'removeAds',
-    name: t.packs.removeAds.name,
-    blurb: t.packs.removeAds.blurb,
-    label: t.packs.removeAds.label,
+    get name() {
+      return t.packs.removeAds.name
+    },
+    get blurb() {
+      return t.packs.removeAds.blurb
+    },
+    get label() {
+      return t.packs.removeAds.label
+    },
     once: true,
     section: 'removeAds',
   },
   {
     id: 'samen50',
     kind: 'grantSamen',
-    name: t.packs.samen50.name,
-    blurb: t.packs.samen50.blurb,
-    label: t.packs.samen50.label,
+    get name() {
+      return t.packs.samen50.name
+    },
+    get blurb() {
+      return t.packs.samen50.blurb
+    },
+    get label() {
+      return t.packs.samen50.label
+    },
     samen: 50,
     section: 'currency',
   },
   {
     id: 'samen150',
     kind: 'grantSamen',
-    name: t.packs.samen150.name,
-    blurb: t.packs.samen150.blurb,
-    label: t.packs.samen150.label,
+    get name() {
+      return t.packs.samen150.name
+    },
+    get blurb() {
+      return t.packs.samen150.blurb
+    },
+    get label() {
+      return t.packs.samen150.label
+    },
     samen: 150,
     section: 'currency',
   },
   {
     id: 'samen500',
     kind: 'grantSamen',
-    name: t.packs.samen500.name,
-    blurb: t.packs.samen500.blurb,
-    label: t.packs.samen500.label,
+    get name() {
+      return t.packs.samen500.name
+    },
+    get blurb() {
+      return t.packs.samen500.blurb
+    },
+    get label() {
+      return t.packs.samen500.label
+    },
     samen: 500,
     section: 'currency',
   },
   {
     id: 'cosmeticPackLeaf',
     kind: 'cosmeticPack',
-    name: t.packs.cosmeticPackLeaf.name,
-    blurb: t.packs.cosmeticPackLeaf.blurb,
-    label: t.packs.cosmeticPackLeaf.label,
+    get name() {
+      return t.packs.cosmeticPackLeaf.name
+    },
+    get blurb() {
+      return t.packs.cosmeticPackLeaf.blurb
+    },
+    get label() {
+      return t.packs.cosmeticPackLeaf.label
+    },
     cosmeticIds: ['bluetenmeer', 'goldherbst'],
     once: true,
     section: 'cosmetics',
@@ -246,9 +326,15 @@ export const SHOP_OFFERS: ShopOfferDef[] = [
   {
     id: 'gartenwochePlus',
     kind: 'gartenwochePlus',
-    name: t.packs.gartenwochePlus.name,
-    blurb: t.packs.gartenwochePlus.blurb,
-    label: t.packs.gartenwochePlus.label,
+    get name() {
+      return t.packs.gartenwochePlus.name
+    },
+    get blurb() {
+      return t.packs.gartenwochePlus.blurb
+    },
+    get label() {
+      return t.packs.gartenwochePlus.label
+    },
     once: false,
     section: 'gartenwoche',
   },

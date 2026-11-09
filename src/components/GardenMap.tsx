@@ -223,6 +223,7 @@ export function GardenMap({
     setPops((list) => list.filter((p) => p.id !== id))
   }, [])
 
+  // Texte darin folgen einem Sprachwechsel mit dem nächsten Takt (state ändert sich alle 250 ms)
   const nextGoal = useMemo(
     () =>
       computeNextGoal(state, {

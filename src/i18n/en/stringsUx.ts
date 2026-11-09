@@ -1,0 +1,122 @@
+// TODO(en): Übersetzung ausstehend — vorerst eine typgleiche Kopie der deutschen Datei.
+/** Copy for the UX pass (2026-11): HUD breakdown, pill names, map signs, welcome back. */
+export const navUxStrings = {
+  groups: {
+    garden: 'Garten',
+    more: 'Mehr',
+  },
+  settings: {
+    back: 'Zurück zum Menü',
+    display: 'Anzeige',
+    /** Bewusst zweisprachig: so findet jeder den Umschalter. */
+    language: 'Sprache / Language',
+    sound: 'Ton & Hinweise',
+    system: 'System',
+    bigText: 'Große Schrift',
+    calm: 'Animationen reduzieren',
+    haptics: 'Vibration',
+    shortcuts: 'Tastatur: G gießen · M Menü · 1–9 Beete · Esc schließen',
+  },
+  plotsHint: 'Garten antippen, um das Grundstück zu wechseln',
+}
+
+export const uxStrings = {
+  nav: navUxStrings,
+  mults: {
+    title: 'Deine Ernte-Boni',
+    intro: 'So setzt sich der Multiplikator zusammen.',
+    total: 'Zusammen',
+    none: 'Noch keine Boni — die kommen mit Festen, Truhe und Pflanzenbuch.',
+    walletHint: 'Tippen für Details',
+    names: {
+      erbe: 'Omas Truhe & Erbstücke',
+      level: 'Gärtnerstufe',
+      verein: 'Vereinsfahne',
+      erntefest: 'Erntefest',
+      sonnenfenster: 'Sonnenfenster',
+      duenger: 'Dünger',
+      winter: 'Tiefe Wurzeln',
+      pflanzenbuch: 'Pflanzenbuch',
+      wetter: 'Wetter',
+      gluecksrad: 'Glücksrad',
+      kapitel: 'Kapitel, Bewohner & Projekte',
+      nachbarn: 'Nachbarschaftshilfe',
+      regenbogen: 'Regenbogen',
+      fruehling: 'Frühlingsschub',
+      karte: 'Jahres-Thema',
+      herausforderungen: 'Omas Herausforderungen',
+    } as Record<string, string>,
+  },
+  pills: {
+    names: {
+      order: 'Bestellung',
+      turbo: 'Frühling',
+      rainbow: 'Regenbogen',
+      recipe: 'Rezept',
+      fest: 'Fest',
+      weather: 'Wetter',
+      wheel: 'Glücksrad',
+      erntefest: 'Erntefest',
+      flash: 'Sonne',
+      boost: 'Dünger',
+      clan: 'Verein',
+      season: 'Saisonende',
+    } as Record<string, string>,
+    more: (n: number) => `+${n}`,
+    moreAria: (n: number) => `${n} weitere Ereignisse zeigen`,
+    less: 'Weniger',
+  },
+  signs: {
+    canBuy: 'Ausbau möglich',
+    wildIn: (pct: number) => `noch ${100 - pct} %`,
+  },
+  upcoming: {
+    title: 'Bald fertig',
+    cross: (left: string) => `Kreuzung reif in ${left}`,
+    water: (left: string) => `Gießkanne voll in ${left}`,
+    daily: 'Nächste Gartenrunde: morgen',
+    gift: 'Nächstes Tagesgeschenk: morgen',
+  },
+  welcomeBack: {
+    title: 'Willkommen zurück!',
+    away: (time: string) => `Du warst ${time} weg. Der Garten ist weitergewachsen:`,
+    harvest: (amount: string) => `+${amount} Ernte`,
+    helper: 'Jonas hat in der Zeit weiter ausgebaut.',
+    claim: 'Einsammeln',
+    bedsTitle: 'Danach kannst du gleich ausbauen:',
+    readyTitle: 'Inzwischen fertig:',
+    ready: {
+      cross: 'deine Kreuzung',
+      album: 'ein Album-Stempel',
+      gift: 'das Tagesgeschenk im Markt',
+      daily: 'die Gartenrunde',
+    },
+  },
+  season: {
+    jump: 'Springen zu',
+    jumps: { season: 'Saisonende', helper: 'Jonas', truhe: 'Truhe', deep: 'Tiefer Winter', generation: 'Generation' } as Record<string, string>,
+    bonusHint: 'Steigt mit Käufen in Omas Truhe',
+    eta: (time: string) => `Saisonende in ca. ${time}`,
+    etaLong: 'Saisonende: noch ein Weilchen',
+  },
+  shop: {
+    need: (n: number) => `noch ${n} Samen`,
+  },
+  clan: {
+    you: 'Du',
+    flagCta: 'Vereinsfahne im Markt',
+  },
+  upgrade: {
+    more: 'Pflege',
+    maxPreview: (levels: number, gain: string) => `Max: +${levels} Stufen · +${gain}/s`,
+    holdHint: 'Gedrückt halten für mehr',
+    careEffect: (pct: string) => `+${pct} % Ernte je Stufe`,
+    careDiscount: (pct: string) => `Ausbauen ${pct} % billiger je Stufe`,
+    careStep: (n: number, max: number) => `Stufe ${n}/${max}`,
+  },
+  map: {
+    toChapter: (name: string) => `Zu ${name}`,
+    helperOn: 'Jonas hilft',
+    helperOff: 'Jonas pausiert',
+  },
+}

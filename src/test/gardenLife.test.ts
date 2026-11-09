@@ -12,7 +12,7 @@ import {
 } from '../game/gardenLife'
 import { WEEKLY_TASKS, makeOrder, orderProgress, syncWeek, loadExtras } from '../game/extras'
 import { createInitialState, doPrestige, grantReward } from '../game/state'
-import { strings } from '../theme/strings'
+import { strings } from '../i18n/de/strings'
 
 describe('Pflanzenbuch', () => {
   it('every variety has a German name and the bonus stays moderate', () => {

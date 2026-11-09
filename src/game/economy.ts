@@ -1,6 +1,6 @@
 /**
  * Economy knobs — core formulas (R(n), C(n), offline) unchanged.
- * Player-facing names come from src/theme/strings.ts.
+ * Player-facing names come from src/i18n/de/strings.ts.
  * Interne Namen folgen den Spielbegriffen (docs/cleanup/namen.md).
  *
  * Balance pass IG-31 (overnight): prestige was ~5 min for engaged play vs

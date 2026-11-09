@@ -12,6 +12,9 @@
  *  8. Installations-Hinweis: Handy-Browser ja (mit ?installGate=1), Computer nein
  *  9. Testphase: Aufzeichnungs-Hinweis bestätigen, Häkchen an/aus, nur einmal
  * 10. Offline: nach dem ersten Laden aus dem Precache, auch die nachgeladenen Fenster
+ * 11. Sprache: Browser en-US startet englisch, Umschalter wechselt live (ohne Neuladen),
+ *     die Wahl übersteht das Neuladen, ?lang= hat Vorrang
+ * Alle anderen Abschnitte laufen mit Browser-Sprache de-DE.
  * Fails on any uncaught page error. Run: npm run build && npm run e2e
  */
 import { spawn } from 'node:child_process'
@@ -44,6 +47,9 @@ let browser
 try {
   await waitForServer()
   browser = await chromium.launch({ executablePath: process.env.PW_EXECUTABLE || undefined })
+  // Deutsch als Browser-Sprache, außer ein Abschnitt verlangt etwas anderes
+  const plainContext = browser.newContext.bind(browser)
+  browser.newContext = (opts = {}) => plainContext({ locale: 'de-DE', ...opts })
 
   // 1 — fresh start
   {
@@ -414,6 +420,61 @@ try {
     await p.locator('.menu-fab').click()
     await p.getByRole('menuitem', { name: 'Omas Notizbuch' }).click()
     await p.getByText('Omas Notizbuch').first().waitFor({ timeout: 10_000 })
+    await ctx.close()
+  }
+
+  // 11 — Sprache: Erkennung, Live-Umschalter, gespeicherte Wahl, ?lang=
+  {
+    const seed = () => {
+      if (sessionStorage.getItem('seed')) return
+      const owned = { gemuesebeet: 30, kompost: 12 }
+      localStorage.setItem('gartenerbe-spielstand-v1', JSON.stringify({ owned, ernte: 1e5, saisonenden: 2, erbstuecke: 500, lastSeen: Date.now(), saveVersion: 1 }))
+      localStorage.setItem('gartenerbe-ftue-v1', JSON.stringify({ beat: 'done', dismissed: true, completed: [], startedAt: 1 }))
+      localStorage.setItem('gartenerbe-install-v1', JSON.stringify({ dismissed: true, installed: false, shown: true }))
+      localStorage.setItem('gartenerbe-hints-v1', JSON.stringify(['season', 'truhe', 'deep', 'visitor', 'order', 'variety', 'weekly']))
+      sessionStorage.setItem('seed', '1')
+    }
+    const lang = (p) => p.evaluate(() => document.documentElement.lang)
+    const openSettings = async (p) => {
+      await p.locator('.menu-fab').click()
+      await p.locator('.nav-menu-settings').click()
+      await p.locator('.nav-lang').waitFor()
+    }
+
+    // Englischer Browser → Englisch
+    const enCtx = await browser.newContext({ ...devices['iPhone 13'], reducedMotion: 'reduce', locale: 'en-US' })
+    await enCtx.addInitScript(seed)
+    const e = await enCtx.newPage()
+    e.on('pageerror', (err) => errors.push(err.message))
+    await e.goto(URL)
+    await e.locator('.garden-map').waitFor()
+    assert((await lang(e)) === 'en', 'en-US browser starts in English')
+    await enCtx.close()
+
+    // Deutscher Browser → Deutsch; Umschalter wechselt live und bleibt gespeichert
+    const ctx = await browser.newContext({ ...devices['iPhone 13'], reducedMotion: 'reduce' })
+    await ctx.addInitScript(seed)
+    const p = await ctx.newPage()
+    p.on('pageerror', (err) => errors.push(err.message))
+    await p.goto(URL)
+    await p.locator('.garden-map').waitFor()
+    assert((await lang(p)) === 'de', 'de-DE browser starts in German')
+    await openSettings(p)
+    await p.evaluate(() => ((window).__noReload = true))
+    await p.locator('.nav-lang [data-lang="en"]').click()
+    await p.waitForFunction(() => document.documentElement.lang === 'en')
+    assert(await p.evaluate(() => (window).__noReload === true), 'language switch needs no reload')
+    assert((await p.locator('.nav-lang [data-lang="en"]').getAttribute('aria-checked')) === 'true', 'English is checked')
+    assert((await p.locator('.nav-settings').innerText()).length > 0, 'settings still open after the switch')
+    await p.reload()
+    await p.locator('.garden-map').waitFor()
+    assert((await lang(p)) === 'en', 'language choice survives a reload')
+    await p.goto(URL + '?lang=de')
+    await p.locator('.garden-map').waitFor()
+    assert((await lang(p)) === 'de', '?lang=de wins over the stored choice')
+    await openSettings(p)
+    await p.locator('.nav-lang [data-lang="de"]').click()
+    await p.waitForFunction(() => document.documentElement.lang === 'de')
     await ctx.close()
   }
 

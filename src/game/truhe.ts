@@ -180,8 +180,12 @@ export const TRUHE_ITEMS: TruheItem[] = [
   {
     id: 'gartenschere',
     branch: 'yield',
-    name: t.truhe.gartenschere.name,
-    blurb: t.truhe.gartenschere.blurb,
+    get name() {
+      return t.truhe.gartenschere.name
+    },
+    get blurb() {
+      return t.truhe.gartenschere.blurb
+    },
     maxRank: 40,
     cost: (rank) => truheGeoCost(25, 1.3, rank),
     effectLabel: (rank) => t.truhe.gartenschere.effect(rank),
@@ -190,8 +194,12 @@ export const TRUHE_ITEMS: TruheItem[] = [
   {
     id: 'saatgutkiste',
     branch: 'yield',
-    name: t.truhe.saatgutkiste.name,
-    blurb: t.truhe.saatgutkiste.blurb,
+    get name() {
+      return t.truhe.saatgutkiste.name
+    },
+    get blurb() {
+      return t.truhe.saatgutkiste.blurb
+    },
     maxRank: 20,
     cost: (rank) => truheGeoCost(18, 1.28, rank),
     effectLabel: (rank) => t.truhe.saatgutkiste.effect(rank),
@@ -200,8 +208,12 @@ export const TRUHE_ITEMS: TruheItem[] = [
   {
     id: 'strohhut',
     branch: 'yield',
-    name: t.truhe.strohhut.name,
-    blurb: t.truhe.strohhut.blurb,
+    get name() {
+      return t.truhe.strohhut.name
+    },
+    get blurb() {
+      return t.truhe.strohhut.blurb
+    },
     maxRank: 25,
     cost: (rank) => truheGeoCost(36, 1.32, rank),
     effectLabel: (rank) => t.truhe.strohhut.effect(rank),
@@ -210,8 +222,12 @@ export const TRUHE_ITEMS: TruheItem[] = [
   {
     id: 'rosenbogen',
     branch: 'yield',
-    name: t.truhe.rosenbogen.name,
-    blurb: t.truhe.rosenbogen.blurb,
+    get name() {
+      return t.truhe.rosenbogen.name
+    },
+    get blurb() {
+      return t.truhe.rosenbogen.blurb
+    },
     maxRank: 20,
     cost: (rank) => truheGeoCost(60, 1.34, rank),
     effectLabel: (rank) => t.truhe.rosenbogen.effect(rank),
@@ -220,8 +236,12 @@ export const TRUHE_ITEMS: TruheItem[] = [
   {
     id: 'alteGiesskanne',
     branch: 'pflege',
-    name: t.truhe.alteGiesskanne.name,
-    blurb: t.truhe.alteGiesskanne.blurb,
+    get name() {
+      return t.truhe.alteGiesskanne.name
+    },
+    get blurb() {
+      return t.truhe.alteGiesskanne.blurb
+    },
     maxRank: 8,
     cost: (rank) => truheGeoCost(30, 1.4, rank),
     effectLabel: (rank) => t.truhe.alteGiesskanne.effect(rank),
@@ -230,8 +250,12 @@ export const TRUHE_ITEMS: TruheItem[] = [
   {
     id: 'messingBrause',
     branch: 'pflege',
-    name: t.truhe.messingBrause.name,
-    blurb: t.truhe.messingBrause.blurb,
+    get name() {
+      return t.truhe.messingBrause.name
+    },
+    get blurb() {
+      return t.truhe.messingBrause.blurb
+    },
     maxRank: 12,
     cost: (rank) => truheGeoCost(20, 1.32, rank),
     effectLabel: (rank) => t.truhe.messingBrause.effect(rank),
@@ -240,8 +264,12 @@ export const TRUHE_ITEMS: TruheItem[] = [
   {
     id: 'laterne',
     branch: 'pflege',
-    name: t.truhe.laterne.name,
-    blurb: t.truhe.laterne.blurb,
+    get name() {
+      return t.truhe.laterne.name
+    },
+    get blurb() {
+      return t.truhe.laterne.blurb
+    },
     maxRank: 15,
     cost: (rank) => truheGeoCost(34, 1.34, rank),
     effectLabel: (rank) => t.truhe.laterne.effect(rank),
@@ -250,8 +278,12 @@ export const TRUHE_ITEMS: TruheItem[] = [
   {
     id: 'kompostVomVorjahr',
     branch: 'start',
-    name: t.truhe.kompostVomVorjahr.name,
-    blurb: t.truhe.kompostVomVorjahr.blurb,
+    get name() {
+      return t.truhe.kompostVomVorjahr.name
+    },
+    get blurb() {
+      return t.truhe.kompostVomVorjahr.blurb
+    },
     maxRank: 1,
     cost: () => 60,
     effectLabel: (rank) => t.truhe.kompostVomVorjahr.effect(rank),
@@ -259,8 +291,12 @@ export const TRUHE_ITEMS: TruheItem[] = [
   {
     id: 'notgroschen',
     branch: 'start',
-    name: t.truhe.notgroschen.name,
-    blurb: t.truhe.notgroschen.blurb,
+    get name() {
+      return t.truhe.notgroschen.name
+    },
+    get blurb() {
+      return t.truhe.notgroschen.blurb
+    },
     maxRank: 12,
     cost: (rank) => truheGeoCost(20, 1.36, rank),
     effectLabel: (rank) => t.truhe.notgroschen.effect(rank),
@@ -269,8 +305,12 @@ export const TRUHE_ITEMS: TruheItem[] = [
   {
     id: 'guteErde',
     branch: 'start',
-    name: t.truhe.guteErde.name,
-    blurb: t.truhe.guteErde.blurb,
+    get name() {
+      return t.truhe.guteErde.name
+    },
+    get blurb() {
+      return t.truhe.guteErde.blurb
+    },
     maxRank: 10,
     cost: (rank) => truheGeoCost(45, 1.38, rank),
     effectLabel: (rank) => t.truhe.guteErde.effect(rank),
@@ -286,18 +326,30 @@ export const PRESTIGE_BRANCHES: {
 }[] = [
   {
     id: 'yield',
-    title: t.prestige.branchYieldTitle,
-    blurb: t.prestige.branchYieldBlurb,
+    get title() {
+      return t.prestige.branchYieldTitle
+    },
+    get blurb() {
+      return t.prestige.branchYieldBlurb
+    },
   },
   {
     id: 'pflege',
-    title: t.prestige.branchPflegeTitle,
-    blurb: t.prestige.branchPflegeBlurb,
+    get title() {
+      return t.prestige.branchPflegeTitle
+    },
+    get blurb() {
+      return t.prestige.branchPflegeBlurb
+    },
   },
   {
     id: 'start',
-    title: t.prestige.branchStartTitle,
-    blurb: t.prestige.branchStartBlurb,
+    get title() {
+      return t.prestige.branchStartTitle
+    },
+    get blurb() {
+      return t.prestige.branchStartBlurb
+    },
   },
 ]
 

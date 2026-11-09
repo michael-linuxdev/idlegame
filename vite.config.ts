@@ -2,12 +2,19 @@ import { execSync } from 'node:child_process'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
+import { manifestStrings as de } from './src/i18n/de/manifest.ts'
+import { manifestStrings as en } from './src/i18n/en/manifest.ts'
 
+/**
+ * The web manifest holds one language only (its `translations` member is not
+ * supported by browsers yet). Name = brand; the description carries both
+ * languages, German first. Store builds get their own texts per language
+ * (docs/store/listing*.md).
+ */
 const APP = {
-  name: 'Gartenerbe',
-  short_name: 'Gartenerbe',
-  description:
-    'Vom Schrebergarten zum Gartenpark. Dein Garten wächst auch offline.',
+  name: de.name,
+  short_name: de.name,
+  description: de.description === en.description ? de.description : `${de.description} · ${en.description}`,
   theme_color: '#e8f0e4',
   background_color: '#dce8d6',
 }
@@ -38,6 +45,7 @@ export default defineConfig({
       includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
       manifest: {
         ...APP,
+        // Ausgangssprache; die Oberfläche wählt zur Laufzeit (src/i18n)
         lang: 'de',
         display: 'standalone',
         orientation: 'portrait',

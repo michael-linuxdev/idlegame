@@ -1,13 +1,13 @@
 /**
  * Module definitions — Bau-Map content depth (10 slots) + Kosten-/Ertragsformeln (Balance: ROADMAP.md).
- * Display names come from src/theme/strings.ts (DE).
+ * Display names come from src/i18n/de/strings.ts (DE).
  *
  * Garden ladder (G1 → G10): Gemüsebeet, Kompost, Kräuterspirale, Beerenhecke,
  * Obstwiese, Bienenstock, Hühnerstall, Gewächshaus, Hofladen, Orangerie.
  */
 
 import { t } from '../i18n'
-import { formatErnte } from './format'
+import { formatErnte, formatInt } from './format'
 import { LEVEL_MODULE_GATES } from './progression'
 
 export type GeneratorId =
@@ -79,9 +79,15 @@ export const GENERATORS: GeneratorDef[] = [
   {
     id: 'gemuesebeet',
     economyId: 'G1',
-    name: t.modules.gemuesebeet.name,
-    blurb: t.modules.gemuesebeet.blurb,
-    note: t.modules.gemuesebeet.note,
+    get name() {
+      return t.modules.gemuesebeet.name
+    },
+    get blurb() {
+      return t.modules.gemuesebeet.blurb
+    },
+    get note() {
+      return t.modules.gemuesebeet.note
+    },
     /* Plot lattice: zig-zag along the garden path, gate (bottom) → Laube (top). See theme/MapBackdrop. */
     slot: { left: '34%', top: '84%' },
     baseRate: 1,
@@ -91,9 +97,15 @@ export const GENERATORS: GeneratorDef[] = [
   {
     id: 'kompost',
     economyId: 'G2',
-    name: t.modules.kompost.name,
-    blurb: t.modules.kompost.blurb,
-    note: t.modules.kompost.note,
+    get name() {
+      return t.modules.kompost.name
+    },
+    get blurb() {
+      return t.modules.kompost.blurb
+    },
+    get note() {
+      return t.modules.kompost.note
+    },
     slot: { left: '74%', top: '80%' },
     baseRate: 4,
     baseCost: 150,
@@ -103,9 +115,15 @@ export const GENERATORS: GeneratorDef[] = [
   {
     id: 'kraeuterspirale',
     economyId: 'G3',
-    name: t.modules.kraeuterspirale.name,
-    blurb: t.modules.kraeuterspirale.blurb,
-    note: t.modules.kraeuterspirale.note,
+    get name() {
+      return t.modules.kraeuterspirale.name
+    },
+    get blurb() {
+      return t.modules.kraeuterspirale.blurb
+    },
+    get note() {
+      return t.modules.kraeuterspirale.note
+    },
     slot: { left: '20%', top: '71%' },
     baseRate: 25,
     baseCost: 1_800,
@@ -115,9 +133,15 @@ export const GENERATORS: GeneratorDef[] = [
   {
     id: 'beerenhecke',
     economyId: 'G4',
-    name: t.modules.beerenhecke.name,
-    blurb: t.modules.beerenhecke.blurb,
-    note: t.modules.beerenhecke.note,
+    get name() {
+      return t.modules.beerenhecke.name
+    },
+    get blurb() {
+      return t.modules.beerenhecke.blurb
+    },
+    get note() {
+      return t.modules.beerenhecke.note
+    },
     slot: { left: '62%', top: '68%' },
     baseRate: 150,
     baseCost: 25_000,
@@ -127,9 +151,15 @@ export const GENERATORS: GeneratorDef[] = [
   {
     id: 'obstwiese',
     economyId: 'G5',
-    name: t.modules.obstwiese.name,
-    blurb: t.modules.obstwiese.blurb,
-    note: t.modules.obstwiese.note,
+    get name() {
+      return t.modules.obstwiese.name
+    },
+    get blurb() {
+      return t.modules.obstwiese.blurb
+    },
+    get note() {
+      return t.modules.obstwiese.note
+    },
     slot: { left: '30%', top: '58%' },
     baseRate: 900,
     baseCost: 200_000,
@@ -139,9 +169,15 @@ export const GENERATORS: GeneratorDef[] = [
   {
     id: 'bienenstock',
     economyId: 'G6',
-    name: t.modules.bienenstock.name,
-    blurb: t.modules.bienenstock.blurb,
-    note: t.modules.bienenstock.note,
+    get name() {
+      return t.modules.bienenstock.name
+    },
+    get blurb() {
+      return t.modules.bienenstock.blurb
+    },
+    get note() {
+      return t.modules.bienenstock.note
+    },
     slot: { left: '76%', top: '55%' },
     baseRate: 5_000,
     baseCost: 1_500_000,
@@ -151,9 +187,15 @@ export const GENERATORS: GeneratorDef[] = [
   {
     id: 'huehnerstall',
     economyId: 'G7',
-    name: t.modules.huehnerstall.name,
-    blurb: t.modules.huehnerstall.blurb,
-    note: t.modules.huehnerstall.note,
+    get name() {
+      return t.modules.huehnerstall.name
+    },
+    get blurb() {
+      return t.modules.huehnerstall.blurb
+    },
+    get note() {
+      return t.modules.huehnerstall.note
+    },
     slot: { left: '20%', top: '45%' },
     baseRate: 30_000,
     baseCost: 12_000_000,
@@ -163,9 +205,15 @@ export const GENERATORS: GeneratorDef[] = [
   {
     id: 'gewaechshaus',
     economyId: 'G8',
-    name: t.modules.gewaechshaus.name,
-    blurb: t.modules.gewaechshaus.blurb,
-    note: t.modules.gewaechshaus.note,
+    get name() {
+      return t.modules.gewaechshaus.name
+    },
+    get blurb() {
+      return t.modules.gewaechshaus.blurb
+    },
+    get note() {
+      return t.modules.gewaechshaus.note
+    },
     slot: { left: '62%', top: '42%' },
     baseRate: 180_000,
     baseCost: 90_000_000,
@@ -175,9 +223,15 @@ export const GENERATORS: GeneratorDef[] = [
   {
     id: 'hofladen',
     economyId: 'G9',
-    name: t.modules.hofladen.name,
-    blurb: t.modules.hofladen.blurb,
-    note: t.modules.hofladen.note,
+    get name() {
+      return t.modules.hofladen.name
+    },
+    get blurb() {
+      return t.modules.hofladen.blurb
+    },
+    get note() {
+      return t.modules.hofladen.note
+    },
     slot: { left: '27%', top: '32%' },
     baseRate: 1_100_000,
     baseCost: 700_000_000,
@@ -190,9 +244,15 @@ export const GENERATORS: GeneratorDef[] = [
   {
     id: 'orangerie',
     economyId: 'G10',
-    name: t.modules.orangerie.name,
-    blurb: t.modules.orangerie.blurb,
-    note: t.modules.orangerie.note,
+    get name() {
+      return t.modules.orangerie.name
+    },
+    get blurb() {
+      return t.modules.orangerie.blurb
+    },
+    get note() {
+      return t.modules.orangerie.note
+    },
     slot: { left: '72%', top: '30%' },
     baseRate: 7_000_000,
     baseCost: 5_000_000_000,
@@ -287,7 +347,7 @@ export function unlockHint(def: GeneratorDef, saisonenden = 0): string {
   const parts: string[] = []
   if (def.unlock.ernteSeason != null) {
     parts.push(
-      t.unlock.ernteEarned(def.unlock.ernteSeason.toLocaleString('de-DE')),
+      t.unlock.ernteEarned(formatInt(def.unlock.ernteSeason)),
     )
   }
   if (def.unlock.requires) {

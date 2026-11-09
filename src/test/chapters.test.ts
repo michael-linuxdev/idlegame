@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { CHAPTERS, chapterDef, emptyChapters } from '../game/chapters'
 import { createInitialState, syncChaptersOpen, type GameState } from '../game/state'
 import { CHAPTER_ART } from '../theme/chapterArtSpecs'
-import { strings } from '../theme/strings'
+import { strings } from '../i18n/de/strings'
 
 describe('Kapitel 2–12', () => {
   it('are numbered 2…12 with ten unique areas each', () => {

@@ -82,6 +82,9 @@ let browser
 try {
   await waitForServer()
   browser = await chromium.launch({ executablePath: process.env.PW_EXECUTABLE || undefined })
+  // Deutsch als Browser-Sprache (Bildvergleich gegen die deutschen Grundbilder)
+  const plainContext = browser.newContext.bind(browser)
+  browser.newContext = (opts = {}) => plainContext({ locale: 'de-DE', ...opts })
   const ctx = await browser.newContext({ viewport: { width: 900, height: 1400 }, deviceScaleFactor: 1, reducedMotion: 'reduce' })
   const page = await ctx.newPage()
   const errors = []

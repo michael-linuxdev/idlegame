@@ -1,7 +1,7 @@
 /**
  * Tägliche Gartenrunde — claimable login reward (Ernte / Erbstücke / Samen-Krümel).
  * Optional streak; miss freezes (does not reset). Never energy/lives walls.
- * Player-facing copy: German via i18n (src/theme/strings.ts).
+ * Player-facing copy: German via i18n (src/i18n/de/strings.ts).
  */
 
 import { t } from '../i18n'
@@ -67,19 +67,35 @@ interface StreakRow {
   label: string
 }
 
+type RowKey = keyof typeof t.daily.rows
+
+/** Label read live from `t`, so a language switch reaches it. */
+function row(ernteSec: number, erbstuecke: number, samen: number, key: RowKey): StreakRow {
+  return {
+    ernteSec,
+    erbstuecke,
+    samen,
+    get label() {
+      return t.daily.rows[key]
+    },
+  }
+}
+
 /** Streak day 1…7 cycles; day N uses index (N-1) % 7 */
 const ROWS: StreakRow[] = [
-  { ernteSec: 120, erbstuecke: 0, samen: 0, label: t.daily.rows.float2 },
-  { ernteSec: 180, erbstuecke: 0, samen: 0, label: t.daily.rows.shift3 },
-  { ernteSec: 60, erbstuecke: 0, samen: 20, label: t.daily.rows.crumb20 },
-  { ernteSec: 240, erbstuecke: 0, samen: 0, label: t.daily.rows.long4 },
-  { ernteSec: 90, erbstuecke: 1, samen: 0, label: t.daily.rows.credit1 },
-  { ernteSec: 300, erbstuecke: 0, samen: 0, label: t.daily.rows.ot5 },
+  row(120, 0, 0, 'float2'),
+  row(180, 0, 0, 'shift3'),
+  row(60, 0, 20, 'crumb20'),
+  row(240, 0, 0, 'long4'),
+  row(90, 1, 0, 'credit1'),
+  row(300, 0, 0, 'ot5'),
   {
     ernteSec: 120,
     erbstuecke: 1,
     samen: 40,
-    label: t.daily.rows.weekSeal,
+    get label() {
+      return t.daily.rows.weekSeal
+    },
   },
 ]
 
