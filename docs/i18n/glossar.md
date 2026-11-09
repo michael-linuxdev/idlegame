@@ -118,6 +118,11 @@ Vornamen bleiben deutsch (Flair). Verwandtschaft wird übersetzt.
 | Siobhán Ní Fhlatharta (Schafhalterin und Strickerin auf Inis Mór) | **Siobhán Ní Fhlatharta** | Kapitel 27; „Dia daoibh!“ und „Slán go fóill“ (Irisch) bleiben + Erklärung; Lazy Beds → *lazy beds*, *céilí*, *currach*; Pullover → *jumper* |
 | Petar Ivanov (Rosenbauer bei Kazanlak) | **Petar Ivanov** | Kapitel 28; „Zdraveyte!“ und „Pozdravi“ (Bulgarisch, lateinisch umschrieben) bleiben + Erklärung; Tscheschma → *cheshma*, Horo → *horo* |
 | Eleni Papadaki (Pistazienbäuerin auf Ägina) | **Eleni Papadaki** | Kapitel 29; „Yia sas!“ und „Me agapi“ (Griechisch, lateinisch umschrieben) bleiben + Erklärung; Ägina → *Aegina* |
+| Rosa Quispe (Agronomin, Quechua-Gemeinde bei Pisac) | **Rosa Quispe** | Kapitel 30; „Allillanchu?“ / „Allillanmi“ (Quechua) bleiben + Erklärung; *andenes*, *chuño*, *muña*, *huatia* klein; Kartoffelpark → *Potato Park* |
+| Teodoro Hernández (Bauer und Saatguthüter in Michoacán) | **Teodoro Hernández** | Kapitel 31; „¡Buenos días, familia!“ und „Hasta pronto“ (Spanisch) bleiben + Erklärung; *milpa*, *teosinte*, *comal*, *tianguis*, *alegría*, *elotes* klein; Mais → *corn* (US), Feldsalat → *lamb’s lettuce* |
+| Almaz Tesfaye (Kaffeebäuerin in Kaffa) | **Almaz Tesfaye** | Kapitel 32; „Selam!“ (Amharisch, lateinisch umschrieben) bleibt + Erklärung; *jebena*, *baraka*, *kocho*, *korarima*, *tukul* klein; Ensete bleibt |
+| Made Wirawan (Wasserverteiler des Subak in Jatiluwih) | **Made Wirawan** | Kapitel 33; „Om Swastiastu!“ und „Om Shanti Shanti Shanti Om“ (Balinesisch) bleiben + Erklärung; *subak*, *sawah*, *lumbung*, *canang*, *gamelan* klein; Laufenten → *runner ducks* |
+| Anjali Menon (Gewürzbäuerin in Kerala) | **Anjali Menon** | Kapitel 34; „Namaskaram!“ (Malayalam) bleibt + Erklärung; *pookalam* klein, Onam, Westghats → *Western Ghats*, Backwaters bleibt |
 | Enkelkind (Anrede) | **my dear grandchild** | „Mein liebes Enkelkind,“ → *My dear grandchild,* |
 
 ## Kapitel und Währungen
@@ -153,6 +158,11 @@ Vornamen bleiben deutsch (Flair). Verwandtschaft wird übersetzt.
 | 27 | Steinfelder von Aran | **The Aran Island Fields** | Wolle → **Wool** | Ireland |
 | 28 | Rosental | **The Bulgarian Rose Valley** | Rosenöl → **Rose Oil** | Bulgaria |
 | 29 | Pistazienhain auf Ägina | **The Pistachio Groves of Aegina** | Pistazien → **Pistachios** | Aegina |
+| 30 | Kartoffeln der Anden | **The Andean Potato Terraces** | Kartoffeln → **Potatoes** | Peru |
+| 31 | Milpa in Mexiko | **The Milpa Fields of Mexico** | Mais → **Corn** | Mexico |
+| 32 | Kaffeewald in Äthiopien | **The Ethiopian Coffee Forest** | Kaffee → **Coffee** | Ethiopia |
+| 33 | Reisterrassen auf Bali | **The Balinese Rice Terraces** | Reis → **Rice** | Bali |
+| 34 | Gewürzgarten in Kerala | **The Kerala Spice Garden** | Pfeffer → **Pepper** | Kerala |
 
 Ab Kapitel 13 (Bogen I „Nach der Schau“ → *After the Show*): Omas Saatgutdose
 → **Grandma’s seed tin**, Samentütchen → **seed packet**. Großprojekt Bogen I:
@@ -162,6 +172,11 @@ Ab Kapitel 20 (Bogen II „Omas Saatgutbriefe“ → *Grandma’s Seed Letters*)
 Briefpartner → **pen friend**. Großprojekt Bogen II: Omas Tauschpost → **Grandma’s Seed Post**. Cottage-Garten bleibt *cottage garden* (nicht mit
 dem Gartenstil *Cottage Garden* = Bauerngarten verwechseln; Bereich am Fließ heißt
 deshalb *Channel-side Garden*).
+
+Ab Kapitel 30 (Bogen III „Wo die Samen herkommen“ → *Where the Seeds Come From*):
+Jedes Kapitel erzählt, woher eine Pflanze aus Omas Garten stammt. Wissen
+indigener Gemeinschaften wird als ihr Wissen benannt (*our grandparents*,
+*Quechua communities*), nie als Folklore.
 
 „Streuobstwiese“ beim ersten Auftreten kurz erklären: *a meadow orchard — old,
 tall fruit trees scattered over grassland*.

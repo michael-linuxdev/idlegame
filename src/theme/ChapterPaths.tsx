@@ -6,7 +6,7 @@
 import type { ReactNode } from 'react'
 import { P } from './art/palette'
 
-export type PathStyle = 'track' | 'loop' | 'shore' | 'cross' | 'rondel' | 'switchback' | 'lane' | 'stones' | 'promenade' | 'yard' | 'cloister' | 'axis' | 'nurseryRows' | 'boardwalk' | 'dikeTrack' | 'fliess' | 'flagstones' | 'bulbLanes' | 'canals' | 'forestTrail' | 'patioTiles' | 'montadoTrack' | 'pepperLanes' | 'limestone' | 'roseLanes' | 'terraceSteps'
+export type PathStyle = 'track' | 'loop' | 'shore' | 'cross' | 'rondel' | 'switchback' | 'lane' | 'stones' | 'promenade' | 'yard' | 'cloister' | 'axis' | 'nurseryRows' | 'boardwalk' | 'dikeTrack' | 'fliess' | 'flagstones' | 'bulbLanes' | 'canals' | 'forestTrail' | 'patioTiles' | 'montadoTrack' | 'pepperLanes' | 'limestone' | 'roseLanes' | 'terraceSteps' | 'andenSteps' | 'milpaRing' | 'forestZigzag' | 'subakSteps' | 'spiceTrail'
 
 const NS = { vectorEffect: 'non-scaling-stroke' as const, fill: 'none', strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const }
 
@@ -350,6 +350,72 @@ export function ChapterPath({ style, color }: { style: PathStyle; color: string 
           ))}
           <Way d={d} color={color} w={9} edge={P.stone} edgeW={2} />
           <path d={d} stroke={P.stoneLight} strokeWidth="9" strokeDasharray=".6 1.6" {...NS} strokeLinecap="butt" />
+        </g>
+      )
+    }
+    /* Anden: Steintreppe im Zickzack, Terrassenmauern quer am Hang */
+    case 'andenSteps': {
+      const pts: [number, number][] = [[50, 100], [50, 90], [42, 80], [58, 66], [42, 52], [56, 38], [50, 22]]
+      const d = 'M' + pts.map((p) => p.join(' ')).join(' L')
+      return (
+        <g>
+          {[94, 80, 66, 52, 38, 26].map((y) => (
+            <path key={y} d={`M2 ${y} Q50 ${y - 3} 98 ${y}`} stroke={P.stoneDark} strokeWidth="3" strokeDasharray="2 .6" {...NS} />
+          ))}
+          <Way d={d} color={color} w={9} edge={P.stoneDark} edgeW={2} />
+          <path d={d} stroke={P.stone} strokeWidth="9" strokeDasharray=".6 1.8" {...NS} strokeLinecap="butt" />
+        </g>
+      )
+    }
+    /* Milpa: Feldweg im Ring um das Maisfeld, Maisreihen in der Mitte */
+    case 'milpaRing':
+      return (
+        <g>
+          <Way d="M50 100 V72" color={color} w={12} edge="#b8a070" edgeW={2} />
+          <ellipse cx="50" cy="58" rx="18" ry="14" stroke="#b8a070" strokeWidth="13" {...NS} />
+          <ellipse cx="50" cy="58" rx="18" ry="14" stroke={color} strokeWidth="11" {...NS} />
+          <path d="M50 44 V22" stroke={color} strokeWidth="9" {...NS} />
+          <Dots pts={[[42, 52], [58, 52]]} n={6} rx={0.9} color={P.leafDark} />
+          <Dots pts={[[40, 58], [60, 58]]} n={7} rx={0.9} color={[P.leafDark, P.yellow]} />
+          <Dots pts={[[42, 64], [58, 64]]} n={6} rx={0.9} color={P.leafDark} />
+        </g>
+      )
+    /* Kaffeewald: roter Erdpfad im Zickzack, Laub und Wurzeln am Rand */
+    case 'forestZigzag': {
+      const pts: [number, number][] = [[50, 100], [46, 88], [56, 76], [44, 62], [56, 48], [46, 34], [50, 22]]
+      const d = 'M' + pts.map((p) => p.join(' ')).join(' L')
+      return (
+        <g>
+          <Way d={d} color={color} w={11} edge="#8a5a32" edgeW={2} />
+          <Dots pts={pts.map(([x, y]) => [x - 7, y] as [number, number])} n={10} rx={0.8} color={[P.leafDark, P.berry, P.leafMoss]} />
+          <Dots pts={pts.map(([x, y]) => [x + 7, y] as [number, number])} n={10} rx={0.8} color={[P.leafMoss, P.leafDark, P.berry]} />
+        </g>
+      )
+    }
+    /* Bali: Pfad über die Reisterrassen, daneben läuft der Subak-Kanal hinab */
+    case 'subakSteps': {
+      const pts: [number, number][] = [[50, 100], [50, 88], [44, 78], [56, 64], [44, 50], [56, 38], [50, 22]]
+      const d = 'M' + pts.map((p) => p.join(' ')).join(' L')
+      return (
+        <g>
+          {[92, 78, 64, 50, 36].map((y, i) => (
+            <path key={y} d={`M2 ${y} Q50 ${y + (i % 2 ? 3 : -3)} 98 ${y}`} stroke={P.leafMoss} strokeWidth="2" {...NS} opacity=".8" />
+          ))}
+          <path d={pts.map(([x, y], i) => `${i ? 'L' : 'M'}${x + 6} ${y}`).join(' ')} stroke={P.water} strokeWidth="3" {...NS} />
+          <Way d={d} color={color} w={8} edge={P.leafMoss} edgeW={2} />
+        </g>
+      )
+    }
+    /* Kerala: Lateritpfad im Zickzack zwischen Gewürzen */
+    case 'spiceTrail': {
+      const pts: [number, number][] = [[50, 100], [47, 88], [55, 76], [45, 62], [55, 48], [46, 35], [50, 22]]
+      const d = 'M' + pts.map((p) => p.join(' ')).join(' L')
+      return (
+        <g>
+          <Way d={d} color={color} w={11} edge={P.autumnDark} edgeW={2} />
+          <path d={d} stroke={P.terracottaLight} strokeWidth="1" strokeDasharray="1 2.4" {...NS} />
+          <Dots pts={pts.map(([x, y]) => [x - 7, y] as [number, number])} n={9} rx={0.8} color={[P.orange, P.yellow, P.berry]} />
+          <Dots pts={pts.map(([x, y]) => [x + 7, y] as [number, number])} n={9} rx={0.8} color={[P.yellow, P.berry, P.orange]} />
         </g>
       )
     }

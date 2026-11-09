@@ -604,6 +604,56 @@ export function IconChapterCurrency({ chapter }: { chapter: string }) {
           <path d="M6.4 16.6l5.6 4.2l5.6 -4.2" fill="#efe1c2" stroke="#8a6a40" strokeWidth="1" />
         </Svg>
       )
+    case 'andenkartoffeln': // zwei Andenkartoffeln, eine lila, eine gelb
+      return (
+        <Svg>
+          <ellipse cx="9.4" cy="13.6" rx="6" ry="4.6" fill="#6a3d8f" stroke="#3d2f1f" strokeWidth="1" transform="rotate(-20 9.4 13.6)" />
+          <ellipse cx="15.4" cy="15.4" rx="5.4" ry="4.2" fill="#f5c542" stroke="#8a5a32" strokeWidth="1" transform="rotate(15 15.4 15.4)" />
+          {[[7, 12], [10.6, 15], [14, 14], [17, 17]].map(([x, y], i) => (
+            <circle key={i} cx={x} cy={y} r=".6" fill={i < 2 ? '#c77dd1' : '#a5733f'} />
+          ))}
+        </Svg>
+      )
+    case 'milpa': // Maiskolben mit Hüllblättern
+      return (
+        <Svg>
+          <path d="M12 21c-3 -2 -6 -6 -5 -11c3 2 4 6 5 11zM12 21c3 -2 6 -6 5 -11c-3 2 -4 6 -5 11z" fill="#5f9e45" stroke="#3f7a30" strokeWidth=".9" />
+          <ellipse cx="12" cy="10.6" rx="3.4" ry="7.4" fill="#f5c542" stroke="#a5733f" strokeWidth="1" />
+          {[6, 8.6, 11.2, 13.8].map((y) => (
+            <path key={y} d={`M9.4 ${y}h5.2`} stroke="#e8b422" strokeWidth=".8" />
+          ))}
+          <circle cx="11" cy="9.6" r=".7" fill="#3d6fd1" />
+        </Svg>
+      )
+    case 'kaffeewald': // Kaffeekirschen am Zweig
+      return (
+        <Svg>
+          <path d="M3.6 6.4c4 1.4 9 4 14.4 11" stroke="#7a5532" strokeWidth="1.3" fill="none" strokeLinecap="round" />
+          <path d="M8 8c-1 -3 1 -5.4 3.4 -5.6c.6 2.4 -1 4.6 -3.4 5.6z" fill="#3f7a30" />
+          {[[9.6, 12.2], [13.4, 13.4], [11.6, 16.2], [15.6, 17.6]].map(([x, y], i) => (
+            <circle key={i} cx={x} cy={y} r="2.4" fill="#d7263d" stroke="#6a3d8f" strokeWidth=".7" />
+          ))}
+        </Svg>
+      )
+    case 'reisterrassen': // Reisrispe
+      return (
+        <Svg>
+          <path d="M8 21.4c1 -6 3 -11 9 -17" stroke="#a5733f" strokeWidth="1.2" fill="none" strokeLinecap="round" />
+          {[[10.4, 15], [12, 12], [13.6, 9.4], [15.4, 7], [9.6, 18], [11.6, 13.6]].map(([x, y], i) => (
+            <ellipse key={i} cx={x + (i % 2 ? 2.2 : -1.4)} cy={y} rx="1.2" ry="2" fill="#e8b422" stroke="#a5733f" strokeWidth=".6" transform={`rotate(${i % 2 ? 40 : -30} ${x + (i % 2 ? 2.2 : -1.4)} ${y})`} />
+          ))}
+        </Svg>
+      )
+    case 'gewuerzgarten': // Pfefferähre mit Blatt
+      return (
+        <Svg>
+          <path d="M12 3.4c-5 1 -7 5 -6 9c4 -1 6 -4 6 -9z" fill="#5f9e45" stroke="#3f7a30" strokeWidth=".9" />
+          <path d="M12 3.4V6" stroke="#3f7a30" strokeWidth="1" />
+          {[7, 9.4, 11.8, 14.2, 16.6, 19].map((y, i) => (
+            <circle key={y} cx={i % 2 ? 13.2 : 11.4} cy={y} r="1.6" fill={i < 2 ? '#3a3a3a' : '#d7263d'} stroke="#3d2f1f" strokeWidth=".5" />
+          ))}
+        </Svg>
+      )
     default: // Gartenschau: Besucher-Medaille
       return (
         <Svg>

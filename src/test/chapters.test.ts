@@ -4,9 +4,9 @@ import { createInitialState, syncChaptersOpen, type GameState } from '../game/st
 import { CHAPTER_ART } from '../theme/chapterArtSpecs'
 import { strings } from '../i18n/de/strings'
 
-describe('Kapitel 2–29', () => {
-  it('are numbered 2…29 with ten unique areas each', () => {
-    expect(CHAPTERS.map((c) => c.number)).toEqual([2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29])
+describe('Kapitel 2–34', () => {
+  it('are numbered 2…34 with ten unique areas each', () => {
+    expect(CHAPTERS.map((c) => c.number)).toEqual([2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34])
     for (const c of CHAPTERS) {
       expect(c.areas).toHaveLength(10)
       expect(new Set(c.areas.map((a) => a.id)).size).toBe(10)
