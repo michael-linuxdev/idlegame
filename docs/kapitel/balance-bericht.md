@@ -136,3 +136,68 @@ verlieren nichts) und **D** für Kapitel 13+, dann alles mit dem Simulator über
 - **Kapitel 13+** über Generations-Fortschritt (½ Generation je Kapitel) und
   das vollständig angelegte vorige Kapitel.
 - Messwerte über 5 Jahre: `docs/kapitel/plan.md` „Taktung“.
+
+## Runde 3 — echte Kapitel 13–50 (Stand 2026-11-09)
+
+Neu gegenüber Paket 1: echte Bereichsdaten aller 50 Kapitel (`RELEASED_UP_TO = 50`,
+Messung ohne `SIM_ALL_CHAPTERS`, gleiche Skalierung `laterScale`), die vier
+neuen Großprojekte (`gartenroute`, `tauschpost`, `herkunftsbeet`,
+`morgengarten`: je Stufe +2 %, Belohnung 300/400/450/500 Samen) und die
+Abschluss-Szene (kein Effekt auf Werte). Der Simulator baut jetzt
+Großprojekte (jede Stufe, sobald die Kapitel-Währungen reichen; `PROJECTS=0`
+schaltet ab) und kann Werbung abholen (`ADS=n` je Sitzung, `ADS=all` =
+Werbefrei: alle 3 min, ganze Sitzung).
+
+```bash
+GEN=1 CHAPTERS=1 CHAPTER_MANUAL=0 SUMMARY=1 npm run balance -- regular 43800   # ~19 min
+ADS=all GEN=1 CHAPTERS=1 CHAPTER_MANUAL=0 SUMMARY=1 npm run balance -- casual 43800   # ~6 min
+COARSE_AFTER_D=30 ADS=all GEN=1 CHAPTERS=1 CHAPTER_MANUAL=0 SUMMARY=1 npm run balance -- engaged 8760   # ~9 min
+```
+
+### Messung (nur Ilse baut Kapitel, Großprojekte gebaut)
+
+| Profil | K12 | K13 | K20 | K30 | K40 | K50 | Abstand ab 13 (min–max, Ø 13–20 / Ø 40–50) | Tag 730 |
+|---|---|---|---|---|---|---|---|---|
+| Regular (Paket 1) | 268 | 313 | 501 | 841 | 1270 | 1784 | 24–56 | — |
+| **Regular** | 263 | **308** (Monat 10) | 498 | 837 | 1266 | **1778** (4,9 J.) | 24–56 Tage (Ø 27 / Ø 51) | K27 |
+| Regular, Werbefrei | 259 | 304 | 493 | 832 | 1261 | 1775 | 24–56 Tage | K27 |
+| **Casual** | 317 | 369 | **585** | 973 | 1465 | (K46 Tag 1805) | 28–60 Tage (Ø 31 / Ø 55) | **K24** |
+| Casual, Werbefrei | 309 | 361 | 577 | 965 | 1457 | (K46 Tag 1797) | 28–60 Tage | K24 |
+| **Dauerspieler** (1 Jahr) | 251 | **292** | — | — | — | — | **21–24 Tage** (K13→K16) | — |
+| Dauerspieler, Werbefrei | 248 | 289 | — | — | — | — | 21–25 Tage | — |
+
+Garten-Bonus aller Kapitel nach 5 Jahren: Regular ×300, Casual ×282 (wie Paket 1).
+
+**Einordnung:** Die echten Kapitel ändern praktisch nichts (Regular K50
+Tag 1778 statt 1784). Ziele: Regular K13 im Monat 9–12 ✓ (Monat 10),
+K50 nach ~4–5 Jahren ✓ (4,9 J.), Abstand im Mittel 40 Tage = 5,7 Wochen ✓ —
+anfangs knapp 4 Wochen (24–32 Tage), gegen Ende 7–8 Wochen (Generationen
+brauchen dann mehr Tiefe Winter). Casual Jahr 2: K24 ✓ (Ziel ≥ K20).
+Dauerspieler: K13 nur ~2 Wochen vor Regular, danach 3 Wochen je Kapitel ✓
+(Ziel höchstens 1 in 2 Wochen). **Nichts klar außerhalb der Ziele —
+keine Werte geändert** (`LATER_RULE`, `laterScale`, `LATER_GARDEN_BONUS`,
+Projekt-Boni bleiben).
+
+Warum alles so stabil ist: Ab Kapitel 13 entscheidet der
+Generations-Fortschritt, und den taktet die Ruhezeit von 3 Tagen nach jedem
+Tiefen Winter. Alle drei Profile machen ihre Tiefen Winter im Takt der
+Ruhezeit (Regular/Casual alle 3–4 Tage, Dauerspieler alle 3 Tage) — mehr
+Ernte im Hauptgarten verkürzt die Saisons, aber nicht die Ruhezeit.
+
+### Werbefrei (alle 3 min 10 min Ernte, ohne Werbung)
+
+- **Rechnung:** Regular (8 Sitzungen à 15 min) holt 5-mal je Sitzung ab →
+  400 min Ernte am Tag zusätzlich ≈ +28 % Tagesernte (Abwesenheit zählt bis
+  8 h voll). Das schafft er auch mit Werbung (`ADS=5` = `ADS=all`).
+  Dauerspieler (16 h am Tag) ≈ 320-mal → +53 h Ernte am Tag, ×3–4 im
+  Hauptgarten. Playtest 11-mal in einer Sitzung ≈ 33 min Spielzeit.
+- **Simulator:** Hauptgarten und frühe Generationen werden schneller
+  (Regular G1 Tag 12 statt 16, Kapitel 2 Tag 4 statt 9). Danach hält die
+  Ruhezeit den Takt: der Vorsprung bleibt bei **3–8 Tagen** und wächst nicht
+  (Regular K50 Tag 1775 statt 1778, Dauerspieler K13 Tag 289 statt 292 bei
+  ~117.000 Abholungen im Jahr).
+- **Ergebnis:** Sprengt die Kapitel-Taktung nicht → **keine Begrenzung**
+  eingebaut, Spiel und Texte unverändert. Falls der Hauptgarten selbst (Saisons
+  in den ersten Wochen) zu schnell wirkt, wäre die mildeste Stellschraube ein
+  Tageslimit nur für Werbefrei-Abholungen (z. B. 20 am Tag) — braucht ein neues
+  gespeichertes Feld mit Startwert, keine Migration.
