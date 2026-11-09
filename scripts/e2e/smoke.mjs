@@ -486,6 +486,49 @@ try {
     await ctx.close()
   }
 
+  // 13 — Testphase: Echtgeld-Angebote mit echtem Preis + Testgeld, Werbung sperrt das Spiel
+  {
+    const ctx = await browser.newContext({ ...devices['iPhone 13'], reducedMotion: 'reduce' })
+    await ctx.addInitScript(() => {
+      if (sessionStorage.getItem('seed')) return
+      localStorage.setItem('gartenerbe-spielstand-v1', JSON.stringify({ owned: { gemuesebeet: 20 }, ernte: 1e4, samen: 10, lastSeen: Date.now(), saveVersion: 1 }))
+      localStorage.setItem('gartenerbe-ftue-v1', JSON.stringify({ beat: 'done', dismissed: true, completed: [], startedAt: 1 }))
+      localStorage.setItem('gartenerbe-install-v1', JSON.stringify({ dismissed: true, installed: false, shown: true }))
+      localStorage.setItem('gartenerbe-hints-v1', JSON.stringify(['season', 'truhe', 'deep', 'visitor', 'order', 'variety', 'weekly', 'crossNew']))
+      localStorage.setItem('gartenerbe-market-tab', 'seeds')
+      sessionStorage.setItem('seed', '1')
+    })
+    const p = await ctx.newPage()
+    p.on('pageerror', (err) => errors.push(err.message))
+    await p.goto(URL)
+    await p.locator('.garden-map').waitFor()
+    await p.locator('.tabbar .tab-shop').click()
+    await p.locator('.test-wallet-chip').waitFor()
+    // „Eher nicht“: nichts gekauft, Guthaben unverändert
+    await p.getByRole('button', { name: T.num.euro('6' + T.num.decimal + '99') }).click()
+    await p.locator('.test-purchase').waitFor()
+    await p.getByRole('button', { name: T.testMoney.no }).click()
+    assert((await p.locator('.test-purchase').count()) === 0, 'dialog closes')
+    assert((await p.evaluate(() => localStorage.getItem('gartenerbe-testgeld-v1'))) === null, 'no money spent on "no"')
+    // „Ja“: 6,99 € vom Testgeld, 500 Samen gutgeschrieben
+    await p.getByRole('button', { name: T.num.euro('6' + T.num.decimal + '99') }).click()
+    await p.getByRole('button', { name: T.testMoney.yes }).click()
+    const w = await p.evaluate(() => JSON.parse(localStorage.getItem('gartenerbe-testgeld-v1') || '{}'))
+    assert(w.spentCents === 699, `test money spent: ${JSON.stringify(w)}`)
+    if (LANG === 'de') await p.screenshot({ path: 'e2e-screens/testgeld.png' })
+    // Werbung: sperrt das Spiel, Abbrechen gibt keine Belohnung
+    await p.getByRole('tab', { name: T.shop.tabs.free }).click()
+    await p.locator('.shop-ad-choices .btn').last().click()
+    await p.locator('.ad-box').waitFor()
+    if (LANG === 'de') await p.screenshot({ path: 'e2e-screens/werbung.png' })
+    let blocked = false
+    await p.locator('.tabbar .tab-garten').click({ timeout: 1500 }).catch(() => (blocked = true))
+    assert(blocked, 'ad blocks the game')
+    await p.getByRole('button', { name: T.testAd.cancel }).click()
+    assert((await p.locator('.ad-box').count()) === 0, 'ad closes on cancel')
+    await ctx.close()
+  }
+
   // 11 — Sprache: Erkennung, Live-Umschalter, gespeicherte Wahl, ?lang=
   {
     const seed = () => {

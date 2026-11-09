@@ -9,6 +9,7 @@ import {
   type TimeSkipId,
 } from '../monetization'
 import { logPlaytest } from '../playtestLog'
+import { TEST_WALLET_ENABLED, pickTestAdSeconds } from '../testWallet'
 import {
   buyClanBoost,
   buyCosmetic,
@@ -99,28 +100,66 @@ export function useShopActions({ setState, offlineGained, setOfflineGained, offl
 
   // Optional ad: runs here (not in the Markt panel) so closing the panel
   // mid-ad can't swallow the reward; the result is shown afterwards.
-  const [adWatching, setAdWatching] = useState(false)
+  // Testphase: the ad runs 30 or 60 s like a real one and locks the game
+  // (components/AdOverlay.tsx); it only counts down while the app is visible.
+  const [adPlaying, setAdPlaying] = useState<{ choice: AdChoice; totalS: number; leftMs: number; blocking: boolean } | null>(null)
   const [adResult, setAdResult] = useState<{ choice: AdChoice; ernte: number; samen: number; at: number } | null>(null)
+  const adRef = useRef<{ choice: AdChoice; totalS: number; leftMs: number; blocking: boolean; last: number } | null>(null)
   const adTimer = useRef<number | null>(null)
-  useEffect(() => () => {
-    if (adTimer.current != null) window.clearTimeout(adTimer.current)
+  const stopAdTimer = () => {
+    if (adTimer.current != null) window.clearInterval(adTimer.current)
+    adTimer.current = null
+  }
+  useEffect(() => stopAdTimer, [])
+
+  const finishAd = useCallback(() => {
+    const ad = adRef.current
+    stopAdTimer()
+    adRef.current = null
+    setAdPlaying(null)
+    if (!ad) return
+    if (ad.blocking) logPlaytest('test_ad', { result: 'done', seconds: ad.totalS, choice: ad.choice })
+    setState((s) => {
+      const result = claimRewardedAd(s, ad.choice)
+      if (!result.ok) return s
+      logPlaytest('shop_tap', { action: 'rewarded_ad', choice: ad.choice })
+      setAdResult({ choice: ad.choice, ernte: result.ernteGained, samen: result.samenGained, at: Date.now() })
+      return result.state
+    })
   }, [setState])
+
   const watchRewardedAd = useCallback((choice: AdChoice) => {
-    if (adTimer.current != null) return
-    setAdWatching(true)
+    if (adRef.current) return
+    const blocking = TEST_WALLET_ENABLED
+    const totalS = blocking ? pickTestAdSeconds() : Math.round(REWARDED_AD_DELAY_MS / 1000)
+    const ad = { choice, totalS, leftMs: blocking ? totalS * 1000 : REWARDED_AD_DELAY_MS, blocking, last: Date.now() }
+    adRef.current = ad
     setAdResult(null)
-    adTimer.current = window.setTimeout(() => {
-      adTimer.current = null
-      setAdWatching(false)
-      setState((s) => {
-        const result = claimRewardedAd(s, choice)
-        if (!result.ok) return s
-        logPlaytest('shop_tap', { action: 'rewarded_ad', choice })
-        setAdResult({ choice, ernte: result.ernteGained, samen: result.samenGained, at: Date.now() })
-        return result.state
-      })
-    }, REWARDED_AD_DELAY_MS)
-  }, [setState])
+    setAdPlaying({ choice, totalS, leftMs: ad.leftMs, blocking })
+    if (blocking) logPlaytest('test_ad', { result: 'start', seconds: totalS, choice })
+    adTimer.current = window.setInterval(() => {
+      const cur = adRef.current
+      if (!cur) return
+      const now = Date.now()
+      const dt = now - cur.last
+      cur.last = now
+      // Im Hintergrund pausiert die Werbung (wie echte Werbung)
+      if (typeof document !== 'undefined' && document.visibilityState === 'hidden') return
+      cur.leftMs = Math.max(0, cur.leftMs - Math.min(dt, 1000))
+      if (cur.leftMs <= 0) finishAd()
+      else setAdPlaying({ choice: cur.choice, totalS: cur.totalS, leftMs: cur.leftMs, blocking: cur.blocking })
+    }, 250)
+  }, [finishAd])
+
+  /** Testphase: Werbung abbrechen — keine Belohnung, keine Abklingzeit. */
+  const cancelAd = useCallback(() => {
+    const ad = adRef.current
+    if (!ad) return
+    stopAdTimer()
+    adRef.current = null
+    setAdPlaying(null)
+    logPlaytest('test_ad', { result: 'abort', seconds: ad.totalS, watched: Math.round(ad.totalS - ad.leftMs / 1000), choice: ad.choice })
+  }, [])
 
   const claimGift = useCallback(() => {
     setState((s) => claimMarketGift(s))
@@ -223,9 +262,11 @@ export function useShopActions({ setState, offlineGained, setOfflineGained, offl
     purchasePack,
     purchaseOffer,
     purchaseYieldBoost,
-    adWatching,
+    adWatching: adPlaying != null,
+    adPlaying,
     adResult,
     watchRewardedAd,
+    cancelAd,
     claimGift,
     buyWaterRefill,
     gartenwocheClaimXp,

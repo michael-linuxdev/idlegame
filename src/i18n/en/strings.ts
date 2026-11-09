@@ -47,6 +47,8 @@ export const strings: Strings = {
     minutes: (n: number) => (n === 1 ? '1 minute' : `${n} minutes`),
     hours: (n: number) => (n === 1 ? '1 hour' : `${n} hours`),
     days: (n: number) => (n === 1 ? '1 day' : `${n} days`),
+    /** Price with currency (amount already uses the decimal sign) */
+    euro: (amount: string) => `€${amount}`,
   },
 
   /** Language names in their own language (switcher) */
@@ -786,16 +788,16 @@ export const strings: Strings = {
     adsRewardYield: (mins: number, amount: string) =>
       `+${mins} min of ${SOFT} (${amount})`,
     removeAdsTitle: 'Ad-free',
-    removeAdsIntro: 'Buy once — ads gone for good. Placeholder.',
+    removeAdsIntro: 'Buy once — bonus ads gone for good, the reward stays.',
     yieldBoostTitle: 'Fertilizer',
     yieldBoostIntro: '+15 % harvest · 30 min · for seeds.',
     yieldBoostActive: (mult: string, left: string) => `Active ×${mult} · ${left}`,
     yieldBoostInactive: 'Not active',
     yieldBoostBuy: (cost: number) => `${nSeeds(cost)}`,
     currencyPacksTitle: 'Seed packets',
-    currencyPacksIntro: 'Test top-ups.',
+    currencyPacksIntro: 'Seeds for garden styles, fertilizer and time skips.',
     cosmeticPacksTitle: 'Style bundles',
-    cosmeticPacksIntro: 'Several garden styles · placeholder.',
+    cosmeticPacksIntro: 'Several garden styles at once.',
     gartenwocheTitle: 'Garden Week',
     gartenwocheIntro: 'Free and premium track. XP from Daily Rounds & ads.',
     gartenwocheXpLabel: (xp: number, max: number) => `${xp}/${max} XP`,
@@ -815,12 +817,12 @@ export const strings: Strings = {
   packs: {
     starterBundle: {
       name: 'Starter Bundle',
-      blurb: '200 seeds + the Cottage Garden style. Placeholder.',
+      blurb: '200 seeds + the Cottage Garden style. Once only.',
       label: 'Buy',
     },
     removeAds: {
       name: 'Ad-free',
-      blurb: 'Bonus ads gone for good. Placeholder.',
+      blurb: 'Bonus ads gone for good, the reward stays.',
       label: 'Ad-free',
     },
     samen50: {
@@ -845,7 +847,7 @@ export const strings: Strings = {
     },
     gartenwochePlus: {
       name: 'Premium Track',
-      blurb: 'Garden Week premium. Placeholder.',
+      blurb: 'Garden Week premium track for one week.',
       label: 'Premium',
     },
   },

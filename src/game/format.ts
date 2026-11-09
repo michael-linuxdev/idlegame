@@ -35,6 +35,11 @@ function fixed(n: number, digits: number): string {
   return n.toFixed(digits).replace('.', t.num.decimal)
 }
 
+/** Preis in Cent → „2,49 €“ / „€2.49“ */
+export function formatPrice(cents: number): string {
+  return t.num.euro(fixed(cents / 100, 2))
+}
+
 export function formatErnte(n: number): string {
   if (!Number.isFinite(n)) return '0'
   const abs = Math.abs(n)

@@ -43,6 +43,8 @@ export const strings = {
     minutes: (n: number) => (n === 1 ? '1 Minute' : `${n} Minuten`),
     hours: (n: number) => (n === 1 ? '1 Stunde' : `${n} Stunden`),
     days: (n: number) => (n === 1 ? '1 Tag' : `${n} Tage`),
+    /** Preis mit Währung (Betrag schon mit Dezimalzeichen) */
+    euro: (amount: string) => `${amount}\u00a0€`,
   },
 
   /** Sprachnamen in der jeweiligen Sprache selbst (Umschalter) */
@@ -782,16 +784,16 @@ export const strings = {
     adsRewardYield: (mins: number, amount: string) =>
       `+${mins} Min ${SOFT} (${amount})`,
     removeAdsTitle: 'Werbefrei',
-    removeAdsIntro: 'Einmal kaufen — Werbung dauerhaft weg. Platzhalter.',
+    removeAdsIntro: 'Einmal kaufen — Bonus-Werbung dauerhaft weg, die Belohnung bleibt.',
     yieldBoostTitle: 'Dünger',
     yieldBoostIntro: '+15 % Ernte · 30 Min · für Samen.',
     yieldBoostActive: (mult: string, left: string) => `Aktiv ×${mult} · ${left}`,
     yieldBoostInactive: 'Nicht aktiv',
     yieldBoostBuy: (cost: number) => `${zahl(cost)} ${SEEDS}`,
     currencyPacksTitle: 'Samentüten',
-    currencyPacksIntro: 'Testgutschriften.',
+    currencyPacksIntro: 'Samen für Gartenstile, Dünger und Zeitsprünge.',
     cosmeticPacksTitle: 'Stil-Pakete',
-    cosmeticPacksIntro: 'Mehrere Gartenstile · Platzhalter.',
+    cosmeticPacksIntro: 'Mehrere Gartenstile auf einmal.',
     gartenwocheTitle: 'Gartenwoche',
     gartenwocheIntro: 'Gratis- und Premium-Reihe. EP aus Gartenrunde & Werbung.',
     gartenwocheXpLabel: (xp: number, max: number) => `${xp}/${max} EP`,
@@ -811,12 +813,12 @@ export const strings = {
   packs: {
     starterBundle: {
       name: 'Startpaket',
-      blurb: '200 Samen + Gartenstil Bauerngarten. Platzhalter.',
+      blurb: '200 Samen + Gartenstil Bauerngarten. Nur einmal.',
       label: 'Kaufen',
     },
     removeAds: {
       name: 'Werbefrei',
-      blurb: 'Bonus-Werbung dauerhaft weg. Platzhalter.',
+      blurb: 'Bonus-Werbung dauerhaft weg, die Belohnung bleibt.',
       label: 'Werbefrei',
     },
     samen50: {
@@ -841,7 +843,7 @@ export const strings = {
     },
     gartenwochePlus: {
       name: 'Premium-Reihe',
-      blurb: 'Gartenwoche Premium. Platzhalter.',
+      blurb: 'Premium-Reihe der Gartenwoche, eine Woche lang.',
       label: 'Premium',
     },
   },

@@ -46,6 +46,8 @@ export type PlaytestEventType =
   | 'season_card'
   | 'challenge'
   | 'storage'
+  | 'test_purchase'
+  | 'test_ad'
 
 export type PlaytestPayload = Record<string, string | number | boolean | null | undefined>
 
