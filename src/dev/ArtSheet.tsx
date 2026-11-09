@@ -13,6 +13,7 @@ import type { Daypart, Season } from '../theme/ambient'
 import { ART_REGISTRY } from '../theme/art/registry'
 import { ArtDefs } from '../theme/art/parts'
 import { DecorArt } from '../theme/DecorArt'
+import { Laube } from '../theme/MapBackdrop'
 import { ModuleArt } from '../theme/ModuleArt'
 import { ClearedPlot, WildPlot } from '../theme/PlotArt'
 import { ResidentArt } from '../theme/ResidentArt'
@@ -99,6 +100,20 @@ export default function ArtSheet() {
         ? SEASONS.flatMap((season) => DAYPARTS.map((d) => <GardenBlock key={`${season}-${d}`} season={season} daypart={d} />))
         : null}
       {chapters ? CHAPTERS.map((c) => <ChapterBlock key={c.id} chapter={c} />) : null}
+      {garden ? (
+        <section className="as-block" data-art-block="laube">
+          <h2>Omas Laube · verfallen / hergerichtet / mit Blumen · Tag und Nacht</h2>
+          <div className="as-flow">
+            {DAYPARTS.map((d) =>
+              [0, 4, 8].map((stage) => (
+                <div className="as-cell as-laube" data-daypart={d} key={`${d}-${stage}`}>
+                  <Laube stage={stage} />
+                </div>
+              )),
+            )}
+          </div>
+        </section>
+      ) : null}
       {part === 'all' ? (
         <section className="as-block" data-art-block="deko">
           <h2>Deko & Bewohner</h2>

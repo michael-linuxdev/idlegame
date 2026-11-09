@@ -17,7 +17,7 @@ import type { FestId } from '../game/fests'
 import { FestDecor, FestSkinDecor } from './FestDecor'
 import { useSvgId } from './svgId'
 import { ArtSvg } from './ArtSvg'
-import { P } from './art/palette'
+import { P, tone } from './art/palette'
 
 interface Props {
   /** Number of garden areas angelegt (0–10) */
@@ -177,34 +177,92 @@ function Decor({
 }
 
 /** Omas Laube — wooden garden house with red roof, the story anchor. */
-function Laube() {
+/** Fortschritt der Laube aus der Zahl der angelegten Bereiche (MapBackdrop stage). */
+function laubePhase(stage: number): 'verfallen' | 'hergerichtet' | 'blumen' {
+  return stage <= 2 ? 'verfallen' : stage <= 6 ? 'hergerichtet' : 'blumen'
+}
+
+/**
+ * Omas Laube am Ende des Wegs, je Fortschritt: verfallen (Moos, Bretter
+ * vorm Fenster, fehlende Ziegel, Unkraut) → hergerichtet → mit Blumen
+ * (Rosenranke, Blumenkasten, Töpfe, Laterne). Folgt der Abend-/Nachtstimmung
+ * (.plot-art); das Fenster leuchtet abends.
+ */
+export function Laube({ stage }: { stage: number }) {
+  const phase = laubePhase(stage)
+  const old = phase === 'verfallen'
+  const bloom = phase === 'blumen'
   return (
-    <ArtSvg viewBox="0 0 120 100">
+    <ArtSvg viewBox="0 0 120 100" className="plot-art laube-art" data-phase={phase}>
       <ellipse cx="60" cy="92" rx="54" ry="7" fill="var(--g-shadow)" />
       {/* walls */}
-      <rect x="18" y="42" width="84" height="48" rx="2" fill="#d9a56c" stroke={P.outlineWood} strokeWidth="2" />
+      <rect x="18" y="42" width="84" height="48" rx="2" fill={old ? tone('#b9946a') : tone('#d9a56c')} stroke={P.outlineWood} strokeWidth="2" />
       {[30, 42, 54, 66, 78, 90].map((x) => (
-        <line key={x} x1={x} y1="44" x2={x} y2="88" stroke="#b9844f" strokeWidth="1.4" />
+        <line key={x} x1={x} y1="44" x2={x} y2="88" stroke={tone('#b9844f')} strokeWidth="1.4" />
       ))}
+      {old ? <path d="M70 84 l8 -3 M22 78 l6 2" stroke={P.outlineWood} strokeWidth="1.2" /> : null}
       {/* roof */}
-      <path d="M8 46 L60 12 L112 46 Z" fill={P.roof} stroke="#6e2f22" strokeWidth="2.2" strokeLinejoin="round" />
-      <path d="M20 40 L60 16 L100 40" fill="none" stroke="#a8432f" strokeWidth="2" />
-      <path d="M30 34 L60 20 L90 34" fill="none" stroke="#a8432f" strokeWidth="1.6" />
-      <rect x="80" y="18" width="8" height="14" fill="#9b6a44" stroke="#5a3a22" strokeWidth="1.4" />
+      <path d="M8 46 L60 12 L112 46 Z" fill={old ? tone('#9a5a48') : P.roof} stroke={tone('#6e2f22')} strokeWidth="2.2" strokeLinejoin="round" />
+      <path d="M20 40 L60 16 L100 40" fill="none" stroke={tone('#a8432f')} strokeWidth="2" />
+      <path d="M30 34 L60 20 L90 34" fill="none" stroke={tone('#a8432f')} strokeWidth="1.6" />
+      {old ? (
+        <g>
+          {/* Moos und fehlende Ziegel */}
+          <path d="M14 44 q8 -6 16 -4 q6 -6 12 -3" fill="none" stroke={P.leafMoss} strokeWidth="4" strokeLinecap="round" />
+          <path d="M72 30 l6 4 l-5 3 z M44 28 l5 3 l-4 2 z" fill={tone('#5a3a22')} />
+        </g>
+      ) : null}
+      <rect x="80" y="18" width="8" height="14" fill={tone('#9b6a44')} stroke={tone('#5a3a22')} strokeWidth="1.4" />
       {/* door */}
-      <rect x="48" y="58" width="22" height="32" rx="2" fill="#7d9f5a" stroke="#4a5f33" strokeWidth="2" />
-      <circle cx="65" cy="75" r="1.6" fill="#f2d27a" />
-      {/* window + curtains + flower box */}
-      <rect x="25" y="54" width="17" height="15" fill="#cfe9f2" stroke={P.white} strokeWidth="2.4" />
-      <path d="M25 54 Q30 61 27 69 M42 54 Q37 61 40 69" stroke="#e98f8f" strokeWidth="2" fill="none" />
-      <rect x="23" y="69" width="21" height="5" rx="1" fill="#8a5a3b" />
-      <circle cx="27" cy="68" r="2.2" fill={P.red} />
-      <circle cx="33" cy="67.5" r="2.2" fill={P.yellow} />
-      <circle cx="39" cy="68" r="2.2" fill={P.red} />
-      <rect x="78" y="54" width="17" height="15" fill="#cfe9f2" stroke={P.white} strokeWidth="2.4" />
+      <rect x="48" y="58" width="22" height="32" rx="2" fill={old ? tone('#8a8a6a') : tone('#7d9f5a')} stroke={tone('#4a5f33')} strokeWidth="2" />
+      <circle cx="65" cy="75" r="1.6" fill={tone('#f2d27a')} />
+      {/* windows */}
+      <rect x="25" y="54" width="17" height="15" fill={P.window} stroke={P.white} strokeWidth="2.4" className="art-window" />
+      <rect x="78" y="54" width="17" height="15" fill={P.window} stroke={P.white} strokeWidth="2.4" className="art-window" />
       <line x1="86.5" y1="54" x2="86.5" y2="69" stroke={P.white} strokeWidth="1.6" />
+      {old ? (
+        <g>
+          {/* Bretter vor dem Fenster */}
+          <path d="M23 57 L44 66 M23 64 L44 58" stroke={tone('#8a6a40')} strokeWidth="3.2" strokeLinecap="round" />
+          {/* Unkraut an der Wand */}
+          {[20, 28, 92, 100].map((x, i) => (
+            <path key={x} d={`M${x} 90 q${i % 2 ? 2 : -2} -8 ${i % 2 ? 1 : -1} -${12 + (i % 2) * 4}`} stroke={P.leafMoss} strokeWidth="1.6" fill="none" />
+          ))}
+        </g>
+      ) : (
+        <g>
+          <path d="M25 54 Q30 61 27 69 M42 54 Q37 61 40 69" stroke={tone('#e98f8f')} strokeWidth="2" fill="none" />
+          <rect x="23" y="69" width="21" height="5" rx="1" fill={tone('#8a5a3b')} />
+          {bloom ? (
+            <g>
+              <circle cx="27" cy="68" r="2.2" fill={P.red} />
+              <circle cx="33" cy="67.5" r="2.2" fill={P.yellow} />
+              <circle cx="39" cy="68" r="2.2" fill={P.red} />
+            </g>
+          ) : (
+            <g>
+              <circle cx="29" cy="68" r="1.6" fill={P.leaf} />
+              <circle cx="37" cy="68" r="1.6" fill={P.leaf} />
+            </g>
+          )}
+        </g>
+      )}
+      {bloom ? (
+        <g>
+          {/* Rosenranke über der Tür, Töpfe und Laterne */}
+          <path d="M46 90 V60 Q59 48 72 60 V90" fill="none" stroke={P.leafDark} strokeWidth="2.2" />
+          {[[47, 74], [48, 62], [54, 55], [64, 55], [70, 62], [71, 76]].map(([x, y], i) => (
+            <circle key={i} cx={x} cy={y} r="2.4" fill={i % 2 ? P.pink : P.red} stroke={P.outline} strokeOpacity="0.5" strokeWidth="0.6" />
+          ))}
+          <path d="M36 91 H44 L43 85 H37 Z M76 91 H84 L83 85 H77 Z" fill={P.terracotta} stroke={P.outline} strokeWidth="0.8" />
+          <circle cx="40" cy="82" r="3" fill={P.lilac} />
+          <circle cx="80" cy="82" r="3" fill={P.yellow} />
+          <path d="M100 46 V54" stroke={P.outline} strokeWidth="1" />
+          <rect x="97.6" y="54" width="4.8" height="6" rx="1" fill={P.lamp} stroke={P.outline} strokeWidth="0.8" />
+        </g>
+      ) : null}
       {/* doorstep */}
-      <rect x="44" y="89" width="30" height="4" rx="1.5" fill="#c9c1b0" stroke={P.stoneDark} strokeWidth="1" />
+      <rect x="44" y="89" width="30" height="4" rx="1.5" fill={tone('#c9c1b0')} stroke={P.stoneDark} strokeWidth="1" />
     </ArtSvg>
   )
 }
@@ -520,7 +578,7 @@ export const MapBackdrop = memo(function MapBackdrop({ stage, ambient, skin, fes
         <Baum tone={0} season={ambient.season} />
       </Decor>
       <Decor className="decor-laube" left="50%" top="26.5%" w={22}>
-        <Laube />
+        <Laube stage={stage} />
         <span className="laube-glow" />
       </Decor>
       <Decor className="decor-tonne" left="5%" top="29%" w={7}>
