@@ -11,7 +11,7 @@ import {
   type GeneratorId,
 } from './generators'
 import { LEVEL_MODULE_GATES, xpForLevel } from './progression'
-import { prestigeMinAsh } from './economy'
+import { prestigeMinAsh, isProbeYear } from './economy'
 import { gateSeasons } from './longLoop'
 import type { GameState } from './state'
 import { t } from '../i18n'
@@ -195,7 +195,7 @@ export function computeNextGoal(
   }
 
   // Prestige gate — strong Zeigarnik when “almost ready”
-  const prestigeMin = prestigeMinAsh(state.prestiges)
+  const prestigeMin = prestigeMinAsh(state.prestiges, isProbeYear(state))
   const prestigeRatio =
     prestigeMin > 0 ? Math.min(1, state.ernteSeason / prestigeMin) : 1
   const prestigeUrgency =

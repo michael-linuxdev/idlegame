@@ -16,6 +16,7 @@ import {
   TAP_COOLDOWN_MS,
   type EmberUpgradeId,
   type EmberUpgrades,
+  isProbeYear,
 } from './economy'
 import {
   GENERATORS,
@@ -1799,6 +1800,7 @@ function maybePrestigeSpike(state: GameState, now: number): GameState {
     state.prestiges,
     state.prestigeSpikeFlags,
     rate,
+    isProbeYear(state),
   )
   if (!spike || spike.prestigeTier == null) return state
   return {
@@ -1886,6 +1888,7 @@ export function canPrestigeNow(state: GameState): boolean {
       prestiges: state.prestiges,
       ernteSeason: state.ernteSeason,
       owned: state.owned,
+      probe: isProbeYear(state),
     }) === null
   )
 }
@@ -1896,13 +1899,14 @@ export function prestigeProgress(state: GameState): {
   ratio: number
   erbstuecke: number
 } {
-  const min = prestigeMinAsh(state.prestiges)
+  const probe = isProbeYear(state)
+  const min = prestigeMinAsh(state.prestiges, probe)
   const current = state.ernteSeason
   return {
     min,
     current,
     ratio: min > 0 ? Math.min(1, current / min) : 1,
-    erbstuecke: emberPayout(current, state.prestiges),
+    erbstuecke: emberPayout(current, state.prestiges, probe),
   }
 }
 
@@ -2559,7 +2563,7 @@ export function buyEmberUpgrade(state: GameState, id: EmberUpgradeId): GameState
 
 export function doPrestige(state: GameState): GameState {
   if (!canPrestigeNow(state)) return state
-  const gain = emberPayout(state.ernteSeason, state.prestiges)
+  const gain = emberPayout(state.ernteSeason, state.prestiges, isProbeYear(state))
   const planted = GENERATORS.filter((g) => (state.owned[g.id] ?? 0) > 0).map((g) => g.id)
   const variety = varietyForSeasonEnd(planted, state.collection)
   const next = createPostPrestigeState(

@@ -388,6 +388,7 @@ export const strings = {
     creditsPreview: (n: number) => `Vorschau +${erb(n)}`,
     nextPayout: 'Jetzt einlagern:',
     longerHint: 'länger gärtnern bringt bis zu doppelt so viel',
+    laterPayout: (n: number) => `in ~10 Minuten wären es ${n}`,
     creditsAmount: (n: number) => `+${erb(n)}`,
     claimReset: (n: number) => `Winterruhe · +${erb(n)}`,
     claimResetRebuild: (n: number, mods: number) =>
