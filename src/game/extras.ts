@@ -44,6 +44,8 @@ export interface ExtrasState {
   notify: boolean
   /** Last Gießkanne reminder (ms) — at most one every WATER_NOTIFY_GAP_MS */
   lastWaterNotify: number
+  /** Zeitpunkte gezeigter Erinnerungen (notify.ts: max. 2 pro Tag) */
+  notifySent: number[]
 }
 
 export const ORDER_DURATION_MS = 30 * 60_000
@@ -77,6 +79,7 @@ function fresh(now: number): ExtrasState {
     lastVisit: now,
     notify: false,
     lastWaterNotify: 0,
+    notifySent: [],
   }
 }
 
@@ -86,7 +89,8 @@ export function loadExtras(now = Date.now()): ExtrasState {
     if (!raw) return fresh(now)
     const p = JSON.parse(raw) as Partial<ExtrasState>
     const base = fresh(now)
-    return { ...base, ...p, week: { ...emptyWeek(), ...(p.week ?? {}) } }
+    const sent = Array.isArray(p.notifySent) ? p.notifySent.filter((n): n is number => typeof n === 'number') : []
+    return { ...base, ...p, week: { ...emptyWeek(), ...(p.week ?? {}) }, notifySent: sent }
   } catch {
     return fresh(now)
   }
