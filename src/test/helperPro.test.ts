@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { HELPER_RANKS, bestGardenBuy, buyHelper, createInitialState, helperIsPro, planGardenBuy, runHelper } from '../game/state'
 
 describe('Profi-Jonas (letzte Stufe)', () => {
-  const base = { ...createInitialState(0), prestiges: 20, helperOn: true }
+  const base = { ...createInitialState(0), saisonenden: 20, helperOn: true }
 
   it('only the last rank is Profi', () => {
     expect(helperIsPro(HELPER_RANKS.length - 1)).toBe(false)
@@ -35,7 +35,7 @@ describe('Profi-Jonas (letzte Stufe)', () => {
 })
 
 describe('Jonas-Preise je Ebene', () => {
-  const base = { ...createInitialState(0), prestiges: 3 }
+  const base = { ...createInitialState(0), saisonenden: 3 }
   it('ranks 1–3 cost Erbstücke, 4 Sprösslinge, 5 Vermächtnis', () => {
     expect(HELPER_RANKS.map((r) => r.currency)).toEqual(['erbstuecke', 'erbstuecke', 'erbstuecke', 'sproesslinge', 'vermaechtnis'])
   })

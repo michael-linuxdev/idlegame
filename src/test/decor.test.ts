@@ -4,7 +4,7 @@ import { buyDecor, createInitialState, doPrestige, grantDecor, placeDecor } from
 import { parseSave } from '../game/storage'
 
 describe('Deko frei platzieren', () => {
-  const base = { ...createInitialState(0), prestiges: 1, samen: 100 }
+  const base = { ...createInitialState(0), saisonenden: 1, samen: 100 }
   it('opens after the first Saisonende', () => {
     expect(decorUnlocked(createInitialState(0))).toBe(false)
     expect(decorUnlocked(base)).toBe(true)

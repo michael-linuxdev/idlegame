@@ -5,7 +5,7 @@
 import { describe, expect, it } from 'vitest'
 import { createInitialState, STORAGE_KEY, type GameState } from '../game/state'
 import { isNewerSave, parseSave, SAVE_VERSION, serializeSave, unknownFields } from '../game/storage'
-import { readCode } from '../game/backup'
+import { BUNDLE_VERSION, readCode } from '../game/backup'
 
 const NOW = 1_800_000_000_000
 
@@ -22,7 +22,7 @@ const TRANSIENT = new Set<string>([
 ])
 
 /** Felder, die beim Laden aus anderen Feldern abgeleitet/gedeckelt werden. */
-const DERIVED = new Set<string>(['clanMult'])
+const DERIVED = new Set<string>(['vereinMult'])
 
 function bumped(v: unknown): unknown {
   if (typeof v === 'number') return v + 3
@@ -77,7 +77,7 @@ describe('Spielstand aus neuerer Version', () => {
     const bundle = (sv: number, inner: number) =>
       JSON.stringify({
         app: 'gartenerbe',
-        v: 1,
+        v: BUNDLE_VERSION,
         at: NOW,
         saveVersion: sv,
         data: { [STORAGE_KEY]: JSON.stringify({ ...save, saveVersion: inner }) },

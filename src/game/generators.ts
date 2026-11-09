@@ -259,10 +259,10 @@ export function isGeneratorUnlocked(
   owned: Record<GeneratorId, number>,
   firstBeacon = false,
   playerLevel = 1,
-  prestiges = 0,
+  saisonenden = 0,
 ): boolean {
   if (!def.unlock) return true
-  if ((def.unlock.seasons ?? 0) > prestiges) return false
+  if ((def.unlock.seasons ?? 0) > saisonenden) return false
   if (firstBeacon && def.id === 'kompost') return true
   const { ernteSeason: needAsh, requires } = def.unlock
   if (needAsh != null && ernteSeason >= needAsh) return true
@@ -282,22 +282,22 @@ export function isGeneratorUnlocked(
 export function isUnlocked(
   def: GeneratorDef,
   ernteSeason: number,
-  firstFlame: boolean,
+  kompostVomVorjahr: boolean,
   owned: Record<GeneratorId, number> = {} as Record<GeneratorId, number>,
   playerLevel = 1,
-  prestiges = 0,
+  saisonenden = 0,
 ): boolean {
-  return isGeneratorUnlocked(def, ernteSeason, owned, firstFlame, playerLevel, prestiges)
+  return isGeneratorUnlocked(def, ernteSeason, owned, kompostVomVorjahr, playerLevel, saisonenden)
 }
 
 /** Gartenjahr still missing for this corner (0 = no season gate left). */
-export function seasonsMissing(def: GeneratorDef, prestiges: number): number {
-  return Math.max(0, (def.unlock?.seasons ?? 0) - prestiges)
+export function seasonsMissing(def: GeneratorDef, saisonenden: number): number {
+  return Math.max(0, (def.unlock?.seasons ?? 0) - saisonenden)
 }
 
-export function unlockHint(def: GeneratorDef, prestiges = 0): string {
+export function unlockHint(def: GeneratorDef, saisonenden = 0): string {
   if (!def.unlock) return ''
-  if (seasonsMissing(def, prestiges) > 0) {
+  if (seasonsMissing(def, saisonenden) > 0) {
     return t.unlock.seasonGate(def.unlock.seasons! + 1)
   }
   const parts: string[] = []
@@ -323,9 +323,9 @@ export function unlockHint(def: GeneratorDef, prestiges = 0): string {
 }
 
 /** Compact unlock gate for map plaques (phone-scale labels). */
-export function shortUnlockGate(def: GeneratorDef, prestiges = 0): string {
+export function shortUnlockGate(def: GeneratorDef, saisonenden = 0): string {
   if (!def.unlock) return t.hud.locked
-  if (seasonsMissing(def, prestiges) > 0) return t.unlock.seasonShort(def.unlock.seasons! + 1)
+  if (seasonsMissing(def, saisonenden) > 0) return t.unlock.seasonShort(def.unlock.seasons! + 1)
   if (def.unlock.ernteSeason != null) {
     return t.hud.gateCompute(formatAsh(def.unlock.ernteSeason).replace(/,0+(?=\D|$)/, ''))
   }

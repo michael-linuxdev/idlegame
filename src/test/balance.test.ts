@@ -18,9 +18,9 @@ describe('Saisonende gate + payout', () => {
     expect(prestigeMinAsh(0, true)).toBe(BALANCE.firstSeasonGate)
     expect(payoutAtGate(0, true)).toBe(BALANCE.firstSeasonPayout)
     expect(emberPayout(BALANCE.firstSeasonGate, 0, true)).toBe(BALANCE.firstSeasonPayout)
-    expect(isProbeYear({ prestiges: 0, deepPrestiges: 0, generation: 0 })).toBe(true)
-    expect(isProbeYear({ prestiges: 0, deepPrestiges: 1, generation: 0 })).toBe(false)
-    expect(isProbeYear({ prestiges: 0, deepPrestiges: 0, generation: 1 })).toBe(false)
+    expect(isProbeYear({ saisonenden: 0, tiefeWinter: 0, generation: 0 })).toBe(true)
+    expect(isProbeYear({ saisonenden: 0, tiefeWinter: 1, generation: 0 })).toBe(false)
+    expect(isProbeYear({ saisonenden: 0, tiefeWinter: 0, generation: 1 })).toBe(false)
     const k = BALANCE.prestigeKnee
     expect(g(k + 1) / g(k)).toBeCloseTo(BALANCE.prestigeLateGrowth, 5)
   })
@@ -39,8 +39,8 @@ describe('Saisonende gate + payout', () => {
 
   it('cannot end the season below the gate', () => {
     const owned = Object.fromEntries(GENERATORS.map((g) => [g.id, 5]))
-    expect(prestigeBlockReason({ prestiges: 2, ernteSeason: prestigeMinAsh(2) - 1, owned })).toBe('ernte')
-    expect(prestigeBlockReason({ prestiges: 2, ernteSeason: prestigeMinAsh(2), owned })).toBeNull()
+    expect(prestigeBlockReason({ saisonenden: 2, ernteSeason: prestigeMinAsh(2) - 1, owned })).toBe('ernte')
+    expect(prestigeBlockReason({ saisonenden: 2, ernteSeason: prestigeMinAsh(2), owned })).toBeNull()
   })
 })
 

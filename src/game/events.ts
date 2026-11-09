@@ -37,7 +37,7 @@ export function isBandwidthSurgeActive(now = Date.now()): boolean {
 
 /**
  * Stable window id for dismiss / goal progress (local weekend start Friday).
- * Format: `bw-YYYY-MM-DD` where date is the Friday that opened the window.
+ * Format: `ef-YYYY-MM-DD` where date is the Friday that opened the window.
  */
 export function bandwidthSurgeWindowKey(now = Date.now()): string {
   const d = new Date(now)
@@ -49,7 +49,7 @@ export function bandwidthSurgeWindowKey(now = Date.now()): string {
   } else if (day === 6) {
     start.setDate(start.getDate() - 1)
   }
-  return `bw-${dayKey(start.getTime())}`
+  return `ef-${dayKey(start.getTime())}`
 }
 
 export function surgeEndsLabel(now = Date.now()): string {

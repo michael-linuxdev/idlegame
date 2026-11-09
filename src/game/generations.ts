@@ -44,17 +44,17 @@ export const LEGACY_SHOP: LegacyItem[] = [
   { id: 'daumen', cost: (r) => 4 + 2 * r },
 ]
 
-export function canHandDown(deepPrestiges: number, generation = 0): boolean {
-  return deepPrestiges >= generationGate(generation)
+export function canHandDown(tiefeWinter: number, generation = 0): boolean {
+  return tiefeWinter >= generationGate(generation)
 }
 
 /**
  * Vermächtnis for handing the garden down now: grows with every Tiefer
  * Winter beyond the gate and with the orchard's size.
  */
-export function legacyPayout(deepPrestiges: number, orchardLevels: number, generation = 0): number {
-  if (!canHandDown(deepPrestiges, generation)) return 0
-  const over = deepPrestiges - generationGate(generation) + 1
+export function legacyPayout(tiefeWinter: number, orchardLevels: number, generation = 0): number {
+  if (!canHandDown(tiefeWinter, generation)) return 0
+  const over = tiefeWinter - generationGate(generation) + 1
   return Math.floor(3 * Math.pow(over, 1.25)) + Math.floor(orchardLevels / 100)
 }
 

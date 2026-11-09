@@ -59,7 +59,7 @@ function unlockProgress(
 ): { ratio: number; detail: string } | null {
   const def = GENERATORS.find((g) => g.id === id)
   if (!def?.unlock) return null
-  if ((def.unlock.seasons ?? 0) > gateSeasons(state.prestiges, state.deepUpgrades)) return null
+  if ((def.unlock.seasons ?? 0) > gateSeasons(state.saisonenden, state.sproesslingLaden)) return null
 
   let best = 0
   let detail = ''
@@ -126,9 +126,9 @@ export function computeNextGoal(
       def,
       state.ernteSeason,
       state.owned,
-      state.emberUpgrades.firstFlame > 0,
+      state.truhe.kompostVomVorjahr > 0,
       opts.playerLevel,
-      gateSeasons(state.prestiges, state.deepUpgrades),
+      gateSeasons(state.saisonenden, state.sproesslingLaden),
     )
     if (!unlocked) continue
     const cost = opts.costOf(def.id)
@@ -160,9 +160,9 @@ export function computeNextGoal(
       def,
       state.ernteSeason,
       state.owned,
-      state.emberUpgrades.firstFlame > 0,
+      state.truhe.kompostVomVorjahr > 0,
       opts.playerLevel,
-      gateSeasons(state.prestiges, state.deepUpgrades),
+      gateSeasons(state.saisonenden, state.sproesslingLaden),
     )
     if (unlocked) continue
     const prog = unlockProgress(state, def.id, opts.playerLevel)
@@ -195,7 +195,7 @@ export function computeNextGoal(
   }
 
   // Prestige gate — strong Zeigarnik when “almost ready”
-  const prestigeMin = prestigeMinAsh(state.prestiges, isProbeYear(state))
+  const prestigeMin = prestigeMinAsh(state.saisonenden, isProbeYear(state))
   const prestigeRatio =
     prestigeMin > 0 ? Math.min(1, state.ernteSeason / prestigeMin) : 1
   const prestigeUrgency =

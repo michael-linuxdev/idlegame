@@ -162,7 +162,7 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
 
   {
     const buff = state.wheelBuff
-    if (buff && buff.prestige === state.prestiges && (buff.kind === 'yield' || buff.kind === 'water')) {
+    if (buff && buff.prestige === state.saisonenden && (buff.kind === 'yield' || buff.kind === 'water')) {
       pills.push({
         key: 'wheel',
         icon: <IconWheel />,
@@ -175,7 +175,7 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
 
   if (surgeVisible) {
     const claim = surgeGoalDone && !surgeGoalClaimed
-    const prog = `${formatAsh(Math.min(state.eventAshProgress, surge.goal))} / ${formatAsh(surge.goal)}`
+    const prog = `${formatAsh(Math.min(state.erntefestErnte, surge.goal))} / ${formatAsh(surge.goal)}`
     pills.push({
       key: 'surge',
       icon: <IconFestival />,
@@ -187,7 +187,7 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
         ? { line: `${surge.endsLabel} · ${t.event.claimed}`, ratio: 1, aria: t.event.goalAria }
         : {
             line: `${surge.endsLabel} · ${t.event.goalLine(prog, surge.goalReward)}`,
-            ratio: Math.min(1, state.eventAshProgress / surge.goal),
+            ratio: Math.min(1, state.erntefestErnte / surge.goal),
             aria: t.event.goalAria,
           },
     })
@@ -223,7 +223,7 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
     pills.push({
       key: 'clan',
       icon: <IconFlag />,
-      label: `${formatMult(game.clanMult)} · ${formatClock(game.clanBoostMsLeft)}`,
+      label: `${formatMult(game.vereinMult)} · ${formatClock(game.clanBoostMsLeft)}`,
       detail: { line: t.clanBoost.name, ratio: 0, aria: t.clanBoost.name },
     })
   }

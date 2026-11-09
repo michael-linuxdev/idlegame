@@ -95,7 +95,7 @@ describe('Gartenhelfer', () => {
   it('is hired after the first Saisonende and keeps building', () => {
     const fresh = { ...createInitialState(0), erbstuecke: 1000 }
     expect(buyHelper(fresh)).toBe(fresh)
-    const s = buyHelper({ ...fresh, prestiges: 1 })
+    const s = buyHelper({ ...fresh, saisonenden: 1 })
     expect(s.helperLevel).toBe(1)
     const rich = { ...s, ernte: 1e6 }
     // Rank 1 is slow on purpose: one Ausbau every 30 s
@@ -109,7 +109,7 @@ describe('Gartenhelfer', () => {
     const s: GameState = {
       ...createInitialState(0),
       helperLevel: 3,
-      prestiges: DEEP_GATE_YEAR,
+      saisonenden: DEEP_GATE_YEAR,
       ernteSeason: 1e30,
       owned: { ...createInitialState(0).owned, gemuesebeet: 50, kompost: 30, kraeuterspirale: 20 },
     }
@@ -127,7 +127,7 @@ describe('Gartenhelfer', () => {
 
 describe('Kapitel (Streuobstwiese, Weinberg)', () => {
   it('opens the Streuobstwiese after the first Tiefer Winter and boosts the garden', () => {
-    const s = { ...createInitialState(0), prestiges: DEEP_GATE_YEAR }
+    const s = { ...createInitialState(0), saisonenden: DEEP_GATE_YEAR }
     const after = doDeepReset(s)
     expect(after.chapters.obstwiese.openedAt).toBeGreaterThan(0)
     expect(after.chapters.weinberg.openedAt).toBe(0)
@@ -217,10 +217,10 @@ describe('Bindung', () => {
   })
 
   it('Nachbarschaftshilfe only helps the first pass in Gartenjahr 11–14', () => {
-    const s = { ...createInitialState(0), prestiges: 12 }
+    const s = { ...createInitialState(0), saisonenden: 12 }
     expect(neighbourMult(s)).toBeGreaterThan(1)
-    expect(neighbourMult({ ...s, deepPrestiges: 1 })).toBe(1)
-    expect(neighbourMult({ ...s, prestiges: 5 })).toBe(1)
+    expect(neighbourMult({ ...s, tiefeWinter: 1 })).toBe(1)
+    expect(neighbourMult({ ...s, saisonenden: 5 })).toBe(1)
   })
 })
 
@@ -230,9 +230,9 @@ describe('Generationen', () => {
     expect(generationGate(1)).toBe(4)
     expect(generationGate(7)).toBe(10)
     const base = createInitialState(0)
-    const g2 = { ...base, generation: 2, deepPrestiges: 4 }
+    const g2 = { ...base, generation: 2, tiefeWinter: 4 }
     expect(doGeneration(g2)).toBe(g2)
-    const ready = { ...g2, deepPrestiges: 5 }
+    const ready = { ...g2, tiefeWinter: 5 }
     expect(doGeneration(ready).generation).toBe(3)
     expect(legacyPayout(5, 0, 2)).toBe(legacyPayout(3, 0, 0))
   })
@@ -241,17 +241,17 @@ describe('Generationen', () => {
     const base = createInitialState(0)
     const s: GameState = {
       ...base,
-      deepPrestiges: GENERATION_GATE_DEEP - 1,
+      tiefeWinter: GENERATION_GATE_DEEP - 1,
       helperLevel: 2,
       collection: ['wurmhumus'],
       chapters: { ...base.chapters, obstwiese: { ...base.chapters.obstwiese, openedAt: 1, owned: { ...base.chapters.obstwiese.owned, apfel: 40 } } },
     }
     expect(doGeneration(s)).toBe(s)
-    const ready = { ...s, deepPrestiges: GENERATION_GATE_DEEP, sproesslinge: 40 }
+    const ready = { ...s, tiefeWinter: GENERATION_GATE_DEEP, sproesslinge: 40 }
     const n = doGeneration(ready)
     expect(n.generation).toBe(1)
     expect(n.vermaechtnis).toBe(legacyPayout(GENERATION_GATE_DEEP, 40))
-    expect(n.deepPrestiges).toBe(0)
+    expect(n.tiefeWinter).toBe(0)
     expect(n.sproesslinge).toBe(0)
     expect(n.helperLevel).toBe(2)
     expect(n.chapters.obstwiese.owned.apfel).toBe(40)
@@ -302,10 +302,10 @@ describe('Mengenkauf-Freischaltung', () => {
     const { bulkUnlocks } = await import('../game/state')
     const base = createInitialState(0)
     expect(bulkUnlocks(base)).toEqual({ max: false, five: false, all: false })
-    expect(bulkUnlocks({ ...base, prestiges: 1 })).toEqual({ max: false, five: false, all: false })
-    expect(bulkUnlocks({ ...base, prestiges: 2 })).toEqual({ max: true, five: false, all: false })
-    expect(bulkUnlocks({ ...base, prestiges: 3 })).toEqual({ max: true, five: true, all: false })
-    expect(bulkUnlocks({ ...base, prestiges: 5 })).toEqual({ max: true, five: true, all: true })
-    expect(bulkUnlocks({ ...base, deepPrestiges: 1 })).toEqual({ max: true, five: true, all: true })
+    expect(bulkUnlocks({ ...base, saisonenden: 1 })).toEqual({ max: false, five: false, all: false })
+    expect(bulkUnlocks({ ...base, saisonenden: 2 })).toEqual({ max: true, five: false, all: false })
+    expect(bulkUnlocks({ ...base, saisonenden: 3 })).toEqual({ max: true, five: true, all: false })
+    expect(bulkUnlocks({ ...base, saisonenden: 5 })).toEqual({ max: true, five: true, all: true })
+    expect(bulkUnlocks({ ...base, tiefeWinter: 1 })).toEqual({ max: true, five: true, all: true })
   })
 })

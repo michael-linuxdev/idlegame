@@ -123,7 +123,7 @@ export interface AchievementStats {
   claimedDailyOnce: boolean
   claimedOfflineOnce: boolean
   playerLevel: number
-  prestiges: number
+  saisonenden: number
   owned: Record<GeneratorId, number>
 }
 
@@ -154,7 +154,7 @@ export function isAchievementComplete(
     case 'levelFive':
       return stats.playerLevel >= 5
     case 'prestigeOnce':
-      return stats.prestiges >= 1
+      return stats.saisonenden >= 1
     case 'upgradesFifty':
       return stats.totalUpgrades >= 50
     default:

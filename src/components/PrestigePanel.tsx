@@ -60,40 +60,40 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
       setJumps(JUMPS.filter((k) => document.getElementById(`jump-${k}`) != null)),
     )
     return () => cancelAnimationFrame(id)
-  }, [state.prestiges, state.deepPrestiges, state.generation, state.helperLevel])
+  }, [state.saisonenden, state.tiefeWinter, state.generation, state.helperLevel])
   const teaser = prestigeProgress.ratio >= 0.5 && !canPrestige
   const probe = isProbeYear(state)
-  const payout = emberPayout(state.ernteSeason, state.prestiges, probe)
+  const payout = emberPayout(state.ernteSeason, state.saisonenden, probe)
   const online = modulesOnlineCount(state.owned)
   const block = prestigeBlockReason({
-    prestiges: state.prestiges,
+    saisonenden: state.saisonenden,
     ernteSeason: state.ernteSeason,
     owned: state.owned,
     probe,
   })
   const unlockProgress = emberUnlockProgress(state.ernteSeason, state.owned)
   const readyBuys = countAffordableEmberBuys(
-    state.emberUpgrades,
+    state.truhe,
     state.erbstuecke,
     state.ernteSeason,
     state.owned,
-    state.prestiges,
+    state.saisonenden,
   )
   const nextUnlock = nextLockedEmberUnlock(
-    state.emberUpgrades,
+    state.truhe,
     state.ernteSeason,
     state.owned,
-    state.prestiges,
+    state.saisonenden,
   )
   const postBuys = countAffordableEmberBuysAfterPrestige({
-    upgrades: state.emberUpgrades,
+    upgrades: state.truhe,
     erbstuecke: state.erbstuecke,
     ernteSeason: state.ernteSeason,
-    prestiges: state.prestiges,
+    saisonenden: state.saisonenden,
     probe,
   })
 
-  const deepOpen = canDeepReset(state.prestiges)
+  const deepOpen = canDeepReset(state.saisonenden)
   const [deepArmed, setDeepArmed] = useState(false)
   const deepPayout = game.deepSprouts
   const [genArmed, setGenArmed] = useState(false)
@@ -101,10 +101,10 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
 
   const postUnlockMods =
     modulesToNextEmberUnlock(
-      state.emberUpgrades,
+      state.truhe,
       0,
-      postPrestigeStartOwned(state.emberUpgrades),
-      state.prestiges + 1,
+      postPrestigeStartOwned(state.truhe),
+      state.saisonenden + 1,
     ) ?? 0
 
   let claimLabel: string
@@ -127,7 +127,7 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
       aria-labelledby="prestige-heading"
     >
       <header className="panel-header">
-        <p className="eyebrow">{t.season.springTitle(state.prestiges + 1)}</p>
+        <p className="eyebrow">{t.season.springTitle(state.saisonenden + 1)}</p>
         <h2 id="prestige-heading">{t.prestige.title}</h2>
         <p className="muted">
           {t.prestige.introBefore} <strong>{t.resources.credits}</strong>{' '}
@@ -167,7 +167,7 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
           </div>
           <div>
             <dt>{t.prestige.runs.replace(':', '')}</dt>
-            <dd>{state.prestiges}</dd>
+            <dd>{state.saisonenden}</dd>
           </div>
         </dl>
         <p className="prestige-stats">
@@ -194,7 +194,7 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
           {canPrestige ? (
             (() => {
               // Vorschau: was 10 Minuten weiter gärtnern bringen würde
-              const later = emberPayout(state.ernteSeason + game.rate * 600, state.prestiges, probe)
+              const later = emberPayout(state.ernteSeason + game.rate * 600, state.saisonenden, probe)
               return later > payout ? (
                 <span className="prestige-teaser"> · {t.prestige.laterPayout(later)}</span>
               ) : (
@@ -353,7 +353,7 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
         {PRESTIGE_BRANCHES.map((branch) => {
           const items = EMBER_SHOP.filter((item) => item.branch === branch.id)
             .map((item) => {
-              const rank = state.emberUpgrades[item.id]
+              const rank = state.truhe[item.id]
               const maxed = rank >= item.maxRank
               const cost = item.cost(rank)
               const unlocked = emberRankUnlocked(
@@ -361,7 +361,7 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
                 rank,
                 state.ernteSeason,
                 state.owned,
-                state.prestiges,
+                state.saisonenden,
               )
               const affordable = state.erbstuecke >= cost && !maxed && unlocked
               const isNext =
@@ -394,7 +394,7 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
                   const needAsh = emberRankUnlockNeed(
                     item.id,
                     rank,
-                    state.prestiges,
+                    state.saisonenden,
                   )
                   const needMods = item.unlockModulesOnline
                   let lockHint: string | null = null
@@ -527,7 +527,7 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
           </div>
           <div>
             <dt>{t.longLoop.winters}</dt>
-            <dd>{state.deepPrestiges}</dd>
+            <dd>{state.tiefeWinter}</dd>
           </div>
           <div>
             <dt>{t.longLoop.payout}</dt>
@@ -591,7 +591,7 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
         <h4 className="prestige-branch-title">{t.longLoop.shopTitle}</h4>
         <ul className="ember-shop long-loop-shop">
           {DEEP_SHOP.map((item) => {
-            const rank = state.deepUpgrades[item.id]
+            const rank = state.sproesslingLaden[item.id]
             const copy = t.longLoop.items[item.id]
             const maxed = rank >= item.maxRank
             const cost = item.cost(rank)
@@ -678,7 +678,7 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
           }}
         >
           {!game.canHandDown
-            ? t.generation.gate(state.deepPrestiges, generationGate(state.generation))
+            ? t.generation.gate(state.tiefeWinter, generationGate(state.generation))
             : genArmed
               ? t.generation.confirmCta
               : t.generation.cta(game.generationPayout)}

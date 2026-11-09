@@ -205,7 +205,7 @@ try {
       if (sessionStorage.getItem('seed')) return
       const ids = ['gemuesebeet', 'kompost', 'kraeuterspirale', 'beerenhecke', 'obstwiese', 'bienenstock', 'huehnerstall', 'gewaechshaus', 'hofladen', 'orangerie']
       const owned = Object.fromEntries(ids.map((id) => [id, 120]))
-      localStorage.setItem('gartenerbe-save-v1', JSON.stringify({ owned, ernte: 1e12, ernteSeason: 1e12, prestiges: 14, helperLevel: 1, helperOn: true, lastSeen: Date.now() }))
+      localStorage.setItem('gartenerbe-spielstand-v1', JSON.stringify({ owned, ernte: 1e12, ernteSeason: 1e12, saisonenden: 14, helperLevel: 1, helperOn: true, lastSeen: Date.now() }))
       localStorage.setItem('gartenerbe-ftue-v1', JSON.stringify({ beat: 'done', dismissed: true, completed: [], startedAt: 1 }))
       localStorage.setItem('gartenerbe-install-v1', JSON.stringify({ dismissed: true, installed: false, shown: true }))
       sessionStorage.setItem('seed', '1')

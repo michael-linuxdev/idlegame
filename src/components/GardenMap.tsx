@@ -298,14 +298,14 @@ export function GardenMap({
   const probe = isProbeYear(state)
   const prestigeCta = useMemo(() => {
     const readyBuys = countAffordableEmberBuys(
-      state.emberUpgrades,
+      state.truhe,
       state.erbstuecke,
       state.ernteSeason,
       state.owned,
-      state.prestiges,
+      state.saisonenden,
     )
     // Truhe erst nach dem ersten Saisonende als Ziel (vorher verwirrt sie nur)
-    if (readyBuys > 0 && state.erbstuecke > 0 && (state.prestiges > 0 || state.deepPrestiges > 0 || state.generation > 0)) {
+    if (readyBuys > 0 && state.erbstuecke > 0 && (state.saisonenden > 0 || state.tiefeWinter > 0 || state.generation > 0)) {
       return {
         ready: true,
         erbstuecke: state.erbstuecke,
@@ -316,14 +316,14 @@ export function GardenMap({
     }
     const nearTier = PRESTIGE_SPIKE_RATIOS.findIndex((r) => prestigeProgress.ratio >= r)
     if (nearTier < 0 && !canPrestige) return null
-    const erbstuecke = Math.max(nextPrestige, emberPayout(state.ernteSeason, state.prestiges, probe))
+    const erbstuecke = Math.max(nextPrestige, emberPayout(state.ernteSeason, state.saisonenden, probe))
     if (erbstuecke <= 0) return null
     const ready = canPrestige || prestigeProgress.ratio >= 1
     const postBuys = countAffordableEmberBuysAfterPrestige({
-      upgrades: state.emberUpgrades,
+      upgrades: state.truhe,
       erbstuecke: state.erbstuecke,
       ernteSeason: state.ernteSeason,
-      prestiges: state.prestiges,
+      saisonenden: state.saisonenden,
       probe,
     })
     if (postBuys > 0) {
@@ -339,10 +339,10 @@ export function GardenMap({
     }
     const mods =
       modulesToNextEmberUnlock(
-        state.emberUpgrades,
+        state.truhe,
         0,
-        postPrestigeStartOwned(state.emberUpgrades),
-        state.prestiges + 1,
+        postPrestigeStartOwned(state.truhe),
+        state.saisonenden + 1,
       ) ?? 0
     return {
       ready,
@@ -359,10 +359,10 @@ export function GardenMap({
     prestigeProgress.ratio,
     state.ernteSeason,
     state.erbstuecke,
-    state.emberUpgrades,
+    state.truhe,
     state.owned,
-    state.prestiges,
-    state.deepPrestiges,
+    state.saisonenden,
+    state.tiefeWinter,
     state.generation,
     probe,
   ])
@@ -409,7 +409,7 @@ export function GardenMap({
       }
     }
     // Ab Gartenjahr 2: ein fast fertiges Pflanzenbuch-Set als Ziel, wenn gerade kein Kauf ansteht
-    const near = state.prestiges >= 1 && !(bestBuy?.affordable) ? nearSets(state.collection, 1)[0] : undefined
+    const near = state.saisonenden >= 1 && !(bestBuy?.affordable) ? nearSets(state.collection, 1)[0] : undefined
     if (near && nextGoal.kind !== 'prestige') {
       const area = GENERATORS.find((g) => g.id === near.module)?.name ?? near.module
       return {
@@ -696,10 +696,10 @@ export function GardenMap({
           visitor: visitorPresent,
           order: Boolean(extras.order),
           variety: state.collection.length > 0,
-          season: canPrestige && state.prestiges === 0,
+          season: canPrestige && state.saisonenden === 0,
           truhe: Boolean(prestigeCta?.spend),
-          weekly: state.prestiges >= 1,
-          deep: canDeepReset(state.prestiges),
+          weekly: state.saisonenden >= 1,
+          deep: canDeepReset(state.saisonenden),
           helperAreas: state.helperLevel > 0,
           recipeNew: !earlyGame && game.features.has('recipe') && state.recipe.areas.length > 0,
           festNew: !earlyGame && game.features.has('fest'),
@@ -849,7 +849,7 @@ export function GardenMap({
 
       {photoMode ? (
         <PhotoOverlay
-          caption={t.photo.caption(stageName, state.prestiges + 1)}
+          caption={t.photo.caption(stageName, state.saisonenden + 1)}
           onClose={() => onExitPhoto?.()}
         />
       ) : null}

@@ -8,7 +8,7 @@ async function scene(b, name, { owned, extra = {}, ftue = false, ambient = 'day-
   const st = { owned, ash: 2e6, ashEarned: 2e6, lastSeen: Date.now(), ...extra };
   await ctx.addInitScript(([v, f]) => {
     if (sessionStorage.getItem('seed')) return
-    localStorage.setItem('gartenerbe-save-v1', v)
+    localStorage.setItem('gartenerbe-spielstand-v1', v)
     if (!f) localStorage.setItem('gartenerbe-ftue-v1', JSON.stringify({beat:'done',dismissed:true,completed:[],startedAt:1}))
     localStorage.setItem('gartenerbe-install-v1', JSON.stringify({dismissed:true,installed:false,shown:true}))
     localStorage.setItem('gartenerbe-notebook-v1', JSON.stringify({unlocked:['welcome'],read:['welcome'],maxStage:0}))

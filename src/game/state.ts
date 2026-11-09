@@ -217,14 +217,14 @@ export interface GameState {
   owned: Record<GeneratorId, number>
   /** Soft meta — Credits (economy.md Embers; survives prestige) */
   erbstuecke: number
-  emberUpgrades: EmberUpgrades
+  truhe: EmberUpgrades
   /** Prestige runs completed (0-indexed for next gate) */
-  prestiges: number
+  saisonenden: number
   lastSeen: number
   /** Last active tap timestamp */
   lastTapAt: number
-  /** Active clan boost multiplier while clanBoostExpiresAt > now (1.0–1.25) */
-  clanMult: number
+  /** Active clan boost multiplier while vereinBoostExpiresAt > now (1.0–1.25) */
+  vereinMult: number
   /** Hard currency — Obsidian (survives prestige) */
   samen: number
   /** Owned cosmetic ids (survives prestige) */
@@ -236,26 +236,26 @@ export interface GameState {
   /** Local calendar day for skipHoursUsedToday */
   skipDayKey: string
   /** Clan boost expiry timestamp; 0 = inactive */
-  clanBoostExpiresAt: number
+  vereinBoostExpiresAt: number
   /** Daily Ops — last claim day key (local); empty = never */
   dailyClaimDay: string
   /** Daily Ops streak (freeze on miss, never energy) */
   dailyStreak: number
   /** Bandwidth Surge window key last dismissed */
-  eventDismissedKey: string
+  erntefestDismissedKey: string
   /** Compute earned toward surge goal in current window */
-  eventAshProgress: number
-  /** Window key for eventAshProgress */
-  eventProgressKey: string
+  erntefestErnte: number
+  /** Window key for erntefestErnte */
+  erntefestProgressKey: string
   /** Window key when surge goal reward was claimed */
-  eventGoalClaimedKey: string
+  erntefestGoalClaimedKey: string
   /** Spieler-Level XP (survives prestige) */
   playerXp: number
   /** Level reward crumbs already claimed (by level number) */
   claimedLevelRewards: number[]
   /** Lifetime upgrades bought (survives prestige) */
   totalUpgrades: number
-  /** Lifetime soft earned across prestiges (survives) */
+  /** Lifetime soft earned across saisonenden (survives) */
   ernteLifetime: number
   /** Achievement flags */
   claimedDailyOnce: boolean
@@ -301,19 +301,19 @@ export interface GameState {
   /** Personal yield boost expiry; 0 = inactive */
   yieldBoostExpiresAt: number
   /** Battle-pass lite week key */
-  bpWeekKey: string
+  gartenwocheKey: string
   /** Battle-pass XP this week (0–100) */
-  bpXp: number
+  gartenwocheXp: number
   /** Free-track tiers claimed this week */
-  bpClaimedFree: number[]
+  gartenwocheClaimedFree: number[]
   /** Premium track unlocked for current week (stub) */
-  bpPremium: boolean
+  gartenwochePremium: boolean
   /** Premium-track tiers claimed this week */
-  bpClaimedPremium: number[]
+  gartenwocheClaimedPremium: number[]
   /** Day key of last battle-pass daily XP claim */
-  bpDailyXpDay: string
+  gartenwocheXpDay: string
   /** Bitmask of prestige near-miss spikes already fired this run */
-  prestigeSpikeFlags: number
+  saisonendeSpikeFlags: number
   /** Last surprise juice for HUD (cleared by UI) */
   lastSurprise: SurpriseJump | null
   /** Zeit des letzten Ausbau-Krümels (Drossel SURPRISE_MIN_GAP_MS) */
@@ -336,9 +336,9 @@ export interface GameState {
   lastFlashAt: number
   /** Deep meta currency (Sprossen / Saison-Jetons) */
   sproesslinge: number
-  deepUpgrades: DeepMetaUpgrades
+  sproesslingLaden: DeepMetaUpgrades
   /** Deep resets completed */
-  deepPrestiges: number
+  tiefeWinter: number
   /** Pflanzenbuch — variety ids found (permanent across all resets) */
   collection: string[]
   /** Glücksrad buff for one Gartenjahr */
@@ -575,7 +575,11 @@ export function pickExpansion(s: GameState): ExpansionSlice {
   }
 }
 
-export const STORAGE_KEY = 'gartenerbe-save-v1'
+/**
+ * Spielstand-Schlüssel. Bis 2026-11-09 hieß er `gartenerbe-save-v1` (anderes
+ * Format, ohne Migration verworfen) — der alte Schlüssel bleibt unangetastet liegen.
+ */
+export const STORAGE_KEY = 'gartenerbe-spielstand-v1'
 
 export function emptyOwned(): Record<GeneratorId, number> {
   const owned = {} as Record<GeneratorId, number>
@@ -596,24 +600,24 @@ export function createInitialState(now = Date.now()): GameState {
     ernteSeason: 0,
     owned: emptyOwned(),
     erbstuecke: 0,
-    emberUpgrades: { ...EMPTY_EMBER_UPGRADES },
-    prestiges: 0,
+    truhe: { ...EMPTY_EMBER_UPGRADES },
+    saisonenden: 0,
     lastSeen: now,
     lastTapAt: 0,
-    clanMult: 1,
+    vereinMult: 1,
     // Day-1 login gift: 20 Obsidian (economy.md §10)
     samen: 20,
     ownedCosmetics: ['wiese'],
     equippedCosmetic: 'wiese',
     skipHoursUsedToday: 0,
     skipDayKey: dayKey(now),
-    clanBoostExpiresAt: 0,
+    vereinBoostExpiresAt: 0,
     dailyClaimDay: '',
     dailyStreak: 0,
-    eventDismissedKey: '',
-    eventAshProgress: 0,
-    eventProgressKey: '',
-    eventGoalClaimedKey: '',
+    erntefestDismissedKey: '',
+    erntefestErnte: 0,
+    erntefestProgressKey: '',
+    erntefestGoalClaimedKey: '',
     playerXp: 0,
     claimedLevelRewards: [],
     totalUpgrades: 0,
@@ -640,13 +644,13 @@ export function createInitialState(now = Date.now()): GameState {
     challengeNext: null,
     challengesDone: [],
     yieldBoostExpiresAt: 0,
-    bpWeekKey: weekKey(now),
-    bpXp: 0,
-    bpClaimedFree: [],
-    bpPremium: false,
-    bpClaimedPremium: [],
-    bpDailyXpDay: '',
-    prestigeSpikeFlags: 0,
+    gartenwocheKey: weekKey(now),
+    gartenwocheXp: 0,
+    gartenwocheClaimedFree: [],
+    gartenwochePremium: false,
+    gartenwocheClaimedPremium: [],
+    gartenwocheXpDay: '',
+    saisonendeSpikeFlags: 0,
     lastSurprise: null,
     lastSurpriseAt: 0,
     lastVariety: null,
@@ -665,18 +669,18 @@ export function createInitialState(now = Date.now()): GameState {
 /** Create a fresh run after prestige, keeping meta + monetization unlocks. */
 export function createPostPrestigeState(prev: GameState, now = Date.now()): GameState {
   const owned = emptyOwned()
-  const startLevel = prestigeStartModuleLevel(prev.emberUpgrades)
+  const startLevel = prestigeStartModuleLevel(prev.truhe)
   if (startLevel > 0) {
     owned.gemuesebeet = Math.max(owned.gemuesebeet, startLevel)
   }
   const g1 = GENERATORS.find((g) => g.id === 'gemuesebeet')
   const g1Level = owned.gemuesebeet
   const g1Cost = g1
-    ? generatorCost(g1, g1Level, foundryDiscountMult(prev.emberUpgrades))
+    ? generatorCost(g1, g1Level, foundryDiscountMult(prev.truhe))
     : 23
   // Always afford the next G1 Ausbauen immediately — Seed-Purse alone can be 0.
   const startAsh = Math.max(
-    prestigeStartAsh(prev.emberUpgrades),
+    prestigeStartAsh(prev.truhe),
     prestigeStartAshFloor(g1Cost),
   )
   return {
@@ -684,23 +688,23 @@ export function createPostPrestigeState(prev: GameState, now = Date.now()): Game
     ernteSeason: 0,
     owned,
     erbstuecke: prev.erbstuecke,
-    emberUpgrades: { ...prev.emberUpgrades },
-    prestiges: prev.prestiges + 1,
+    truhe: { ...prev.truhe },
+    saisonenden: prev.saisonenden + 1,
     lastSeen: now,
     lastTapAt: 0,
-    clanMult: prev.clanMult,
+    vereinMult: prev.vereinMult,
     samen: prev.samen,
     ownedCosmetics: [...prev.ownedCosmetics],
     equippedCosmetic: prev.equippedCosmetic,
     skipHoursUsedToday: prev.skipHoursUsedToday,
     skipDayKey: prev.skipDayKey,
-    clanBoostExpiresAt: prev.clanBoostExpiresAt,
+    vereinBoostExpiresAt: prev.vereinBoostExpiresAt,
     dailyClaimDay: prev.dailyClaimDay,
     dailyStreak: prev.dailyStreak,
-    eventDismissedKey: prev.eventDismissedKey,
-    eventAshProgress: prev.eventAshProgress,
-    eventProgressKey: prev.eventProgressKey,
-    eventGoalClaimedKey: prev.eventGoalClaimedKey,
+    erntefestDismissedKey: prev.erntefestDismissedKey,
+    erntefestErnte: prev.erntefestErnte,
+    erntefestProgressKey: prev.erntefestProgressKey,
+    erntefestGoalClaimedKey: prev.erntefestGoalClaimedKey,
     playerXp: prev.playerXp,
     claimedLevelRewards: [...prev.claimedLevelRewards],
     totalUpgrades: prev.totalUpgrades,
@@ -725,7 +729,7 @@ export function createPostPrestigeState(prev: GameState, now = Date.now()): Game
     seasonCard: null,
     lastSeasonCard: prev.seasonCard ?? prev.lastSeasonCard,
     seasonCardOffer:
-      prev.prestiges + 1 >= SEASON_CARDS_FROM_PRESTIGES
+      prev.saisonenden + 1 >= SEASON_CARDS_FROM_PRESTIGES
         ? offerSeasonCards(prev.owned, prev.seasonCard ?? prev.lastSeasonCard)
         : [],
     // Herausforderung bis zum Saisonende durchgehalten → geschafft
@@ -736,14 +740,14 @@ export function createPostPrestigeState(prev: GameState, now = Date.now()): Game
     challenge: prev.challengeNext,
     challengeNext: null,
     yieldBoostExpiresAt: prev.yieldBoostExpiresAt,
-    bpWeekKey: prev.bpWeekKey,
-    bpXp: prev.bpXp,
-    bpClaimedFree: [...prev.bpClaimedFree],
-    bpPremium: prev.bpPremium,
-    bpClaimedPremium: [...prev.bpClaimedPremium],
-    bpDailyXpDay: prev.bpDailyXpDay,
+    gartenwocheKey: prev.gartenwocheKey,
+    gartenwocheXp: prev.gartenwocheXp,
+    gartenwocheClaimedFree: [...prev.gartenwocheClaimedFree],
+    gartenwochePremium: prev.gartenwochePremium,
+    gartenwocheClaimedPremium: [...prev.gartenwocheClaimedPremium],
+    gartenwocheXpDay: prev.gartenwocheXpDay,
     // Prestige spikes reset per run; flash / daily survive
-    prestigeSpikeFlags: 0,
+    saisonendeSpikeFlags: 0,
     lastSurprise: null,
     lastSurpriseAt: 0,
     lastVariety: null,
@@ -756,8 +760,8 @@ export function createPostPrestigeState(prev: GameState, now = Date.now()): Game
     lastFlashAt: prev.lastFlashAt,
     // L3–L5 survive soft prestige
     sproesslinge: prev.sproesslinge,
-    deepUpgrades: { ...prev.deepUpgrades },
-    deepPrestiges: prev.deepPrestiges,
+    sproesslingLaden: { ...prev.sproesslingLaden },
+    tiefeWinter: prev.tiefeWinter,
     collection: [...prev.collection],
     wheelBuff: prev.wheelBuff,
     ...pickExpansion(prev),
@@ -856,27 +860,27 @@ function withXp(state: GameState, amount: number, now = Date.now()): GameState {
 export function syncEventWindow(state: GameState, now = Date.now()): GameState {
   if (!isBandwidthSurgeActive(now)) return state
   const key = bandwidthSurgeWindowKey(now)
-  if (state.eventProgressKey === key) return state
+  if (state.erntefestProgressKey === key) return state
   return {
     ...state,
-    eventProgressKey: key,
-    eventAshProgress: 0,
+    erntefestProgressKey: key,
+    erntefestErnte: 0,
   }
 }
 
 /** Effective clan multiplier honoring expiry + hard max. */
 export function effectiveClanMult(state: GameState, now = Date.now()): number {
-  if (state.clanBoostExpiresAt > 0 && now >= state.clanBoostExpiresAt) {
+  if (state.vereinBoostExpiresAt > 0 && now >= state.vereinBoostExpiresAt) {
     return 1
   }
-  if (state.clanBoostExpiresAt <= 0) return 1
-  return Math.min(CLAN_BOOST_MAX, Math.max(1, state.clanMult))
+  if (state.vereinBoostExpiresAt <= 0) return 1
+  return Math.min(CLAN_BOOST_MAX, Math.max(1, state.vereinMult))
 }
 
 /** Drop expired clan boost fields (idempotent). */
 export function syncClanBoost(state: GameState, now = Date.now()): GameState {
-  if (state.clanBoostExpiresAt > 0 && now >= state.clanBoostExpiresAt) {
-    return { ...state, clanMult: 1, clanBoostExpiresAt: 0 }
+  if (state.vereinBoostExpiresAt > 0 && now >= state.vereinBoostExpiresAt) {
+    return { ...state, vereinMult: 1, vereinBoostExpiresAt: 0 }
   }
   return state
 }
@@ -892,15 +896,15 @@ export function syncYieldBoost(state: GameState, now = Date.now()): GameState {
 /** Reset battle-pass progress when the local week rolls. */
 export function syncBattlePass(state: GameState, now = Date.now()): GameState {
   const key = weekKey(now)
-  if (state.bpWeekKey === key) return state
+  if (state.gartenwocheKey === key) return state
   return {
     ...state,
-    bpWeekKey: key,
-    bpXp: 0,
-    bpClaimedFree: [],
-    bpPremium: false,
-    bpClaimedPremium: [],
-    bpDailyXpDay: '',
+    gartenwocheKey: key,
+    gartenwocheXp: 0,
+    gartenwocheClaimedFree: [],
+    gartenwochePremium: false,
+    gartenwocheClaimedPremium: [],
+    gartenwocheXpDay: '',
   }
 }
 
@@ -934,8 +938,8 @@ export const NEIGHBOUR_FROM = 10
 export const NEIGHBOUR_STEP = 1.6
 
 export function neighbourMult(state: GameState): number {
-  if (state.deepPrestiges > 0 || state.generation > 0) return 1
-  const steps = Math.min(state.prestiges, 13) - NEIGHBOUR_FROM
+  if (state.tiefeWinter > 0 || state.generation > 0) return 1
+  const steps = Math.min(state.saisonenden, 13) - NEIGHBOUR_FROM
   return steps > 0 ? Math.pow(NEIGHBOUR_STEP, steps) : 1
 }
 
@@ -949,7 +953,7 @@ export function expansionGardenMult(state: GameState): number {
 }
 
 export function productionPerSecond(state: GameState, now = Date.now()): number {
-  const mPrestige = prestigeMultiplier(state.emberUpgrades)
+  const mPrestige = prestigeMultiplier(state.truhe)
   const mClan = effectiveClanMult(state, now)
   const mEvent = eventProductionMult(now)
   const mFlash = flashProductionMult(state, now)
@@ -972,11 +976,11 @@ export function productionPerSecond(state: GameState, now = Date.now()): number 
     mFlash *
     mLevel *
     mYield *
-    deepYieldMult(state.deepUpgrades) *
+    deepYieldMult(state.sproesslingLaden) *
     collectionMult(state.collection) *
     weatherYieldMult(now) *
     weatherBuffMult(state.weatherBuff, now) *
-    wheelYieldMult(state.wheelBuff, state.prestiges) *
+    wheelYieldMult(state.wheelBuff, state.saisonenden) *
     expansionGardenMult(state) *
     neighbourMult(state) *
     rainbowMult(state, now) *
@@ -1012,7 +1016,7 @@ export function syncChaptersOpen(state: GameState, now = Date.now(), force?: Cha
 export function chapterRateMult(state: GameState): number {
   return (
     legacyOrchardMult(state.legacy) *
-    (1 + 0.05 * state.deepPrestiges) *
+    (1 + 0.05 * state.tiefeWinter) *
     (1 + 0.1 * state.generation) *
     levelProductionMult(playerLevelOf(state))
   )
@@ -1206,7 +1210,7 @@ export function finishWeinlese(state: GameState, hits: number, now = Date.now())
 function withMilestoneChest(state: GameState, key: string, level: number): GameState {
   const stars = milestonesReached(level)
   if (stars <= (state.milestoneRecord[key] ?? 0)) return state
-  const chest = rollChest(state.prestiges, state.collection)
+  const chest = rollChest(state.saisonenden, state.collection)
   let next: GameState = {
     ...state,
     milestoneRecord: { ...state.milestoneRecord, [key]: stars },
@@ -1318,11 +1322,11 @@ export { CONTEST_KG }
 /* ———————————— Generationen ———————————— */
 
 export function generationPayout(state: GameState): number {
-  return legacyPayout(state.deepPrestiges, totalChapterLevels(state.chapters), state.generation)
+  return legacyPayout(state.tiefeWinter, totalChapterLevels(state.chapters), state.generation)
 }
 
 export function canHandDownNow(state: GameState): boolean {
-  return canHandDown(state.deepPrestiges, state.generation)
+  return canHandDown(state.tiefeWinter, state.generation)
 }
 
 /**
@@ -1334,17 +1338,17 @@ export function doGeneration(state: GameState, now = Date.now()): GameState {
   if (!canHandDownNow(state)) return state
   const gain = generationPayout(state)
   const fresh = createPostPrestigeState(
-    { ...state, erbstuecke: 0, emberUpgrades: { ...EMPTY_EMBER_UPGRADES } },
+    { ...state, erbstuecke: 0, truhe: { ...EMPTY_EMBER_UPGRADES } },
     now,
   )
   return collectReadyAchievements(syncChaptersOpen({
     ...fresh,
-    prestiges: 0,
+    saisonenden: 0,
     erbstuecke: 0,
-    emberUpgrades: { ...EMPTY_EMBER_UPGRADES },
+    truhe: { ...EMPTY_EMBER_UPGRADES },
     sproesslinge: 0,
-    deepUpgrades: { ...EMPTY_DEEP_META },
-    deepPrestiges: 0,
+    sproesslingLaden: { ...EMPTY_DEEP_META },
+    tiefeWinter: 0,
     generation: state.generation + 1,
     vermaechtnis: state.vermaechtnis + gain,
     wheelBuff: null,
@@ -1410,7 +1414,7 @@ export function buyFestItem(state: GameState, itemId: string, now = Date.now()):
       next = { ...next, festTokens: next.festTokens + (item.amount ?? 0) }
       break
     case 'heirlooms': {
-      const gain = Math.max(5, Math.round(payoutAtGate(next.prestiges) * 0.5))
+      const gain = Math.max(5, Math.round(payoutAtGate(next.saisonenden) * 0.5))
       next = { ...next, erbstuecke: next.erbstuecke + gain }
       break
     }
@@ -1426,7 +1430,7 @@ export function buyFestItem(state: GameState, itemId: string, now = Date.now()):
 /* ———————————— Gartenhelfer & Mengenkauf ———————————— */
 
 export function helperUnlocked(state: GameState): boolean {
-  return state.prestiges >= 1 || state.deepPrestiges > 0 || state.generation > 0 || state.helperLevel > 0
+  return state.saisonenden >= 1 || state.tiefeWinter > 0 || state.generation > 0 || state.helperLevel > 0
 }
 
 export function helperInterval(level: number): number {
@@ -1655,11 +1659,11 @@ export function toggleHelper(state: GameState): GameState {
  *  „Alles ausbauen“ — from Gartenjahr 6. Tiefer Winter / Generation keep them.
  */
 export function bulkUnlocks(state: GameState): { max: boolean; five: boolean; all: boolean } {
-  const meta = state.deepPrestiges > 0 || state.generation > 0
+  const meta = state.tiefeWinter > 0 || state.generation > 0
   return {
-    max: meta || state.prestiges >= 2,
-    five: meta || state.prestiges >= 3,
-    all: meta || state.prestiges >= 5,
+    max: meta || state.saisonenden >= 2,
+    five: meta || state.saisonenden >= 3,
+    all: meta || state.saisonenden >= 5,
   }
 }
 
@@ -1671,7 +1675,7 @@ export function bestGardenBuy(state: GameState, skip: readonly GeneratorId[] = [
   let bestScore = 0
   for (const def of GENERATORS) {
     if (skip.includes(def.id)) continue
-    if (!isGeneratorUnlocked(def, state.ernteSeason, state.owned, state.emberUpgrades.firstFlame > 0, lvl, gates)) continue
+    if (!isGeneratorUnlocked(def, state.ernteSeason, state.owned, state.truhe.kompostVomVorjahr > 0, lvl, gates)) continue
     const cost = generatorCost(def, state.owned[def.id] ?? 0, lineCostMult(state, def.id))
     if (cost > state.ernte) continue
     const n = state.owned[def.id] ?? 0
@@ -1704,7 +1708,7 @@ export function planGardenBuy(state: GameState, now = Date.now()): GeneratorId |
   type Cand = { id: GeneratorId; score: number; nextCost: number }
   const cands: Cand[] = []
   for (const def of GENERATORS) {
-    if (!isGeneratorUnlocked(def, state.ernteSeason, state.owned, state.emberUpgrades.firstFlame > 0, lvl, gates)) continue
+    if (!isGeneratorUnlocked(def, state.ernteSeason, state.owned, state.truhe.kompostVomVorjahr > 0, lvl, gates)) continue
     const n = state.owned[def.id] ?? 0
     const mult = lineCostMult(state, def.id)
     const nextCost = generatorCost(def, n, mult)
@@ -1820,7 +1824,7 @@ export function runHelper(state: GameState, dtMs: number, maxBuys = 40): { state
 
 /** Season count used for Gartenjahr gates (includes Gartenwissen). */
 export function gatePrestiges(state: GameState): number {
-  return gateSeasons(state.prestiges, state.deepUpgrades)
+  return gateSeasons(state.saisonenden, state.sproesslingLaden)
 }
 
 function withEventProgress(state: GameState, gained: number, now: number): GameState {
@@ -1830,7 +1834,7 @@ function withEventProgress(state: GameState, gained: number, now: number): GameS
     const synced = syncEventWindow(next, now)
     next = {
       ...synced,
-      eventAshProgress: synced.eventAshProgress + gained,
+      erntefestErnte: synced.erntefestErnte + gained,
     }
   }
   if (next.flashEventId && next.flashEndsAt > now && !next.flashClaimed) {
@@ -1846,8 +1850,8 @@ function maybePrestigeSpike(state: GameState, now: number): GameState {
   const rate = productionPerSecond(state, now) / turboMult(state, now)
   const spike = rollPrestigeSpike(
     state.ernteSeason,
-    state.prestiges,
-    state.prestigeSpikeFlags,
+    state.saisonenden,
+    state.saisonendeSpikeFlags,
     rate,
     isProbeYear(state),
   )
@@ -1857,8 +1861,8 @@ function maybePrestigeSpike(state: GameState, now: number): GameState {
     ernte: state.ernte + spike.amount,
     ernteSeason: state.ernteSeason + spike.amount,
     ernteLifetime: state.ernteLifetime + spike.amount,
-    prestigeSpikeFlags:
-      state.prestigeSpikeFlags | prestigeSpikeBit(spike.prestigeTier),
+    saisonendeSpikeFlags:
+      state.saisonendeSpikeFlags | prestigeSpikeBit(spike.prestigeTier),
     lastSurprise: spike,
     lastSeen: now,
   }
@@ -1927,14 +1931,14 @@ export function claimFlashEventGoal(
   }
 }
 
-export function nextPrestigeEmbers(ernteSeason: number, prestiges = 0): number {
-  return emberPayout(ernteSeason, prestiges)
+export function nextPrestigeEmbers(ernteSeason: number, saisonenden = 0): number {
+  return emberPayout(ernteSeason, saisonenden)
 }
 
 export function canPrestigeNow(state: GameState): boolean {
   return (
     prestigeBlockReason({
-      prestiges: state.prestiges,
+      saisonenden: state.saisonenden,
       ernteSeason: state.ernteSeason,
       owned: state.owned,
       probe: isProbeYear(state),
@@ -1949,13 +1953,13 @@ export function prestigeProgress(state: GameState): {
   erbstuecke: number
 } {
   const probe = isProbeYear(state)
-  const min = prestigeMinAsh(state.prestiges, probe)
+  const min = prestigeMinAsh(state.saisonenden, probe)
   const current = state.ernteSeason
   return {
     min,
     current,
     ratio: min > 0 ? Math.min(1, current / min) : 1,
-    erbstuecke: emberPayout(current, state.prestiges, probe),
+    erbstuecke: emberPayout(current, state.saisonenden, probe),
   }
 }
 
@@ -2066,7 +2070,7 @@ export function dismissBandwidthSurge(state: GameState, now = Date.now()): GameS
   if (!isBandwidthSurgeActive(now)) return state
   return {
     ...state,
-    eventDismissedKey: bandwidthSurgeWindowKey(now),
+    erntefestDismissedKey: bandwidthSurgeWindowKey(now),
     lastSeen: now,
   }
 }
@@ -2075,12 +2079,12 @@ export function claimBandwidthSurgeGoal(state: GameState, now = Date.now()): Gam
   if (!isBandwidthSurgeActive(now)) return state
   const key = bandwidthSurgeWindowKey(now)
   let next = syncEventWindow(state, now)
-  if (next.eventGoalClaimedKey === key) return state
-  if (next.eventAshProgress < BANDWIDTH_SURGE_GOAL) return state
+  if (next.erntefestGoalClaimedKey === key) return state
+  if (next.erntefestErnte < BANDWIDTH_SURGE_GOAL) return state
   return {
     ...next,
     samen: next.samen + BANDWIDTH_SURGE_GOAL_REWARD,
-    eventGoalClaimedKey: key,
+    erntefestGoalClaimedKey: key,
     lastSeen: now,
   }
 }
@@ -2114,17 +2118,17 @@ export function equipCosmetic(state: GameState, id: CosmeticId, now = Date.now()
 export function buyClanBoost(state: GameState, now = Date.now()): GameState {
   let next = syncMonetization(state, now)
   if (next.samen < CLAN_BOOST.cost) return state
-  const active = next.clanBoostExpiresAt > now
-  const baseExpiry = active ? next.clanBoostExpiresAt : now
+  const active = next.vereinBoostExpiresAt > now
+  const baseExpiry = active ? next.vereinBoostExpiresAt : now
   const nextMult = Math.min(
     CLAN_BOOST_MAX,
-    Math.max(next.clanMult > 1 ? next.clanMult : 1, CLAN_BOOST.mult),
+    Math.max(next.vereinMult > 1 ? next.vereinMult : 1, CLAN_BOOST.mult),
   )
   return {
     ...next,
     samen: next.samen - CLAN_BOOST.cost,
-    clanMult: nextMult,
-    clanBoostExpiresAt: baseExpiry + CLAN_BOOST.durationMs,
+    vereinMult: nextMult,
+    vereinBoostExpiresAt: baseExpiry + CLAN_BOOST.durationMs,
     lastSeen: now,
   }
 }
@@ -2147,7 +2151,7 @@ export function mockBuyOffer(state: GameState, offer: ShopOfferDef, now = Date.n
   let next = syncMonetization(state, now)
   if (offer.once && next.ownedOfferIds.includes(offer.id)) return state
   if (offer.kind === 'removeAds' && next.adsRemoved) return state
-  if (offer.kind === 'battlePassPremium' && next.bpPremium) return state
+  if (offer.kind === 'battlePassPremium' && next.gartenwochePremium) return state
 
   const ownedCosmetics = new Set(next.ownedCosmetics)
   for (const id of offer.cosmeticIds ?? []) ownedCosmetics.add(id)
@@ -2163,7 +2167,7 @@ export function mockBuyOffer(state: GameState, offer: ShopOfferDef, now = Date.n
     ownedCosmetics: Array.from(ownedCosmetics),
     ownedOfferIds,
     adsRemoved: offer.kind === 'removeAds' ? true : next.adsRemoved,
-    bpPremium: offer.kind === 'battlePassPremium' ? true : next.bpPremium,
+    gartenwochePremium: offer.kind === 'battlePassPremium' ? true : next.gartenwochePremium,
     lastSeen: now,
   }
 }
@@ -2199,7 +2203,7 @@ export function claimRewardedAd(state: GameState, choice: AdChoice = 'ernte', no
   const ashGained = choice === 'ernte' ? productionPerSecond(next, now) * AD_ERNTE_MINUTES * 60 : 0
   const obsidianGained = choice === 'samen' ? AD_SAMEN : 0
   next = withEventProgress(next, ashGained, now)
-  const bpXp = Math.min(BATTLE_PASS_MAX_XP, next.bpXp + BATTLE_PASS_AD_XP)
+  const gartenwocheXp = Math.min(BATTLE_PASS_MAX_XP, next.gartenwocheXp + BATTLE_PASS_AD_XP)
   return {
     ok: true,
     kind: choice === 'ernte' ? 'yieldCrumb' : 'obsidianCrumb',
@@ -2213,7 +2217,7 @@ export function claimRewardedAd(state: GameState, choice: AdChoice = 'ernte', no
       samen: next.samen + obsidianGained,
       lastRewardedAdAt: now,
       rewardedAdClaims: next.rewardedAdClaims + 1,
-      bpXp,
+      gartenwocheXp,
       lastSeen: now,
     },
   }
@@ -2230,7 +2234,7 @@ export function claimMarketGift(state: GameState, now = Date.now()): GameState {
 }
 
 export function challengesOpen(state: GameState): boolean {
-  return state.prestiges >= CHALLENGES_FROM_PRESTIGES || state.deepPrestiges > 0 || state.generation > 0
+  return state.saisonenden >= CHALLENGES_FROM_PRESTIGES || state.tiefeWinter > 0 || state.generation > 0
 }
 
 /** Herausforderung für die nächste Saison wählen (null = keine). */
@@ -2285,11 +2289,11 @@ export function refillWateringCan(state: GameState, now = Date.now()): GameState
 export function claimBattlePassDailyXp(state: GameState, now = Date.now()): GameState {
   let next = syncMonetization(state, now)
   const today = dayKey(now)
-  if (next.bpDailyXpDay === today) return state
+  if (next.gartenwocheXpDay === today) return state
   return {
     ...next,
-    bpXp: Math.min(BATTLE_PASS_MAX_XP, next.bpXp + BATTLE_PASS_DAILY_XP),
-    bpDailyXpDay: today,
+    gartenwocheXp: Math.min(BATTLE_PASS_MAX_XP, next.gartenwocheXp + BATTLE_PASS_DAILY_XP),
+    gartenwocheXpDay: today,
     lastSeen: now,
   }
 }
@@ -2303,10 +2307,10 @@ export function claimBattlePassTier(
   let next = syncMonetization(state, now)
   const def = BATTLE_PASS_TIERS.find((row) => row.tier === tier)
   if (!def) return state
-  if (next.bpXp < def.xp) return state
-  if (track === 'premium' && !next.bpPremium) return state
+  if (next.gartenwocheXp < def.xp) return state
+  if (track === 'premium' && !next.gartenwochePremium) return state
   const claimed =
-    track === 'free' ? next.bpClaimedFree : next.bpClaimedPremium
+    track === 'free' ? next.gartenwocheClaimedFree : next.gartenwocheClaimedPremium
   if (claimed.includes(tier)) return state
   const reward = track === 'free' ? def.free : def.premium
   let ashGained = 0
@@ -2324,8 +2328,8 @@ export function claimBattlePassTier(
     ernteSeason: next.ernteSeason + ashGained,
     ernteLifetime: next.ernteLifetime + ashGained,
     samen: next.samen + obsidianGained,
-    bpClaimedFree: track === 'free' ? nextClaimed : next.bpClaimedFree,
-    bpClaimedPremium: track === 'premium' ? nextClaimed : next.bpClaimedPremium,
+    gartenwocheClaimedFree: track === 'free' ? nextClaimed : next.gartenwocheClaimedFree,
+    gartenwocheClaimedPremium: track === 'premium' ? nextClaimed : next.gartenwocheClaimedPremium,
     lastSeen: now,
   }
 }
@@ -2339,8 +2343,8 @@ export function applyOfflineCatchup(
   let base = withQuestSync(syncEventWindow(syncMonetization(state, now), now), now)
   base = applyLevelRewards(base, now)
   const rate = productionPerSecond(base, now)
-  const emberCaps = offlineCapsHours(base.emberUpgrades)
-  const deepCaps = deepOfflineBonusHours(base.deepUpgrades)
+  const emberCaps = offlineCapsHours(base.truhe)
+  const deepCaps = deepOfflineBonusHours(base.sproesslingLaden)
   const gained =
     offlineCatchupAsh(rate, elapsedSec, emberCaps.soft + deepCaps.soft, emberCaps.hard + deepCaps.hard) *
     cardOfflineMult(base.seasonCard)
@@ -2412,7 +2416,7 @@ export function claimOfflineReward(
 export function lineCostMult(state: GameState, id: GeneratorId): number {
   const branch = state.branches[id]
   return (
-    foundryDiscountMult(state.emberUpgrades) *
+    foundryDiscountMult(state.truhe) *
     capacityCostMult(branch?.capacity ?? 0) *
     legacyCostMult(state.legacy)
   )
@@ -2438,7 +2442,7 @@ export function buyGenerator(state: GameState, id: GeneratorId, mode: BuyMode | 
       def,
       state.ernteSeason,
       state.owned,
-      state.emberUpgrades.firstFlame > 0,
+      state.truhe.kompostVomVorjahr > 0,
       level,
       gatePrestiges(state),
     )
@@ -2552,7 +2556,7 @@ export function claimAchievement(
     claimedDailyOnce: state.claimedDailyOnce,
     claimedOfflineOnce: state.claimedOfflineOnce,
     playerLevel: playerLevelOf(state),
-    prestiges: state.prestiges,
+    saisonenden: state.saisonenden,
     owned: state.owned,
   }
   if (!isAchievementComplete(id, stats)) return state
@@ -2592,7 +2596,7 @@ export function collectReadyAchievements(
       claimedDailyOnce: next.claimedDailyOnce,
       claimedOfflineOnce: next.claimedOfflineOnce,
       playerLevel: playerLevelOf(next),
-      prestiges: next.prestiges,
+      saisonenden: next.saisonenden,
       owned: next.owned,
     }
     if (isAchievementComplete(def.id, stats)) {
@@ -2605,7 +2609,7 @@ export function collectReadyAchievements(
 export function buyEmberUpgrade(state: GameState, id: EmberUpgradeId): GameState {
   const item = EMBER_SHOP.find((s) => s.id === id)
   if (!item) return state
-  const rank = state.emberUpgrades[id]
+  const rank = state.truhe[id]
   if (rank >= item.maxRank) return state
   if (
     !emberRankUnlocked(
@@ -2613,7 +2617,7 @@ export function buyEmberUpgrade(state: GameState, id: EmberUpgradeId): GameState
       rank,
       state.ernteSeason,
       state.owned,
-      state.prestiges,
+      state.saisonenden,
     )
   ) {
     return state
@@ -2623,8 +2627,8 @@ export function buyEmberUpgrade(state: GameState, id: EmberUpgradeId): GameState
   return {
     ...state,
     erbstuecke: state.erbstuecke - cost,
-    emberUpgrades: {
-      ...state.emberUpgrades,
+    truhe: {
+      ...state.truhe,
       [id]: rank + 1,
     },
     lastSeen: Date.now(),
@@ -2633,7 +2637,7 @@ export function buyEmberUpgrade(state: GameState, id: EmberUpgradeId): GameState
 
 export function doPrestige(state: GameState): GameState {
   if (!canPrestigeNow(state)) return state
-  const gain = emberPayout(state.ernteSeason, state.prestiges, isProbeYear(state))
+  const gain = emberPayout(state.ernteSeason, state.saisonenden, isProbeYear(state))
   const planted = GENERATORS.filter((g) => (state.owned[g.id] ?? 0) > 0).map((g) => g.id)
   const variety = varietyForSeasonEnd(planted, state.collection)
   const next = createPostPrestigeState(
@@ -2645,21 +2649,21 @@ export function doPrestige(state: GameState): GameState {
 
 /** Sprösslinge for a Tiefer Winter now (incl. Wurzelwerk). */
 export function deepSproutPayout(state: GameState): number {
-  return Math.floor(sproutPayout(state.prestiges) * legacySproutMult(state.legacy))
+  return Math.floor(sproutPayout(state.saisonenden) * legacySproutMult(state.legacy))
 }
 
 /** Sprösslings-Laden purchase. */
 export function buyDeepUpgrade(state: GameState, id: DeepMetaId): GameState {
   const item = DEEP_SHOP.find((d) => d.id === id)
   if (!item) return state
-  const rank = state.deepUpgrades[id]
+  const rank = state.sproesslingLaden[id]
   if (rank >= item.maxRank) return state
   const cost = item.cost(rank)
   if (state.sproesslinge < cost) return state
   return {
     ...state,
     sproesslinge: state.sproesslinge - cost,
-    deepUpgrades: { ...state.deepUpgrades, [id]: rank + 1 },
+    sproesslingLaden: { ...state.sproesslingLaden, [id]: rank + 1 },
     lastSeen: Date.now(),
   }
 }
@@ -2669,21 +2673,21 @@ export function buyDeepUpgrade(state: GameState, id: DeepMetaId): GameState {
  * their boosts, Samen, Gartenstile, Gärtnerstufe and streaks stay.
  */
 export function doDeepReset(state: GameState): GameState {
-  if (!canDeepReset(state.prestiges)) return state
+  if (!canDeepReset(state.saisonenden)) return state
   const sprouts = deepSproutPayout(state)
   const fresh = createPostPrestigeState({
     ...state,
     erbstuecke: 0,
-    emberUpgrades: { ...EMPTY_EMBER_UPGRADES },
+    truhe: { ...EMPTY_EMBER_UPGRADES },
   })
   return collectReadyAchievements(
     syncChaptersOpen({
       ...fresh,
-      prestiges: 0,
-      erbstuecke: deepStartEmbers(state.deepUpgrades),
-      emberUpgrades: { ...EMPTY_EMBER_UPGRADES },
+      saisonenden: 0,
+      erbstuecke: deepStartEmbers(state.sproesslingLaden),
+      truhe: { ...EMPTY_EMBER_UPGRADES },
       sproesslinge: state.sproesslinge + sprouts,
-      deepPrestiges: state.deepPrestiges + 1,
+      tiefeWinter: state.tiefeWinter + 1,
     }),
   )
 }
@@ -2692,7 +2696,7 @@ export function doDeepReset(state: GameState): GameState {
 export function waterMult(state: GameState, now = Date.now()): number {
   return (
     weatherWaterMult(now) *
-    wheelWaterMult(state.wheelBuff, state.prestiges) *
+    wheelWaterMult(state.wheelBuff, state.saisonenden) *
     legacyWaterMult(state.legacy)
   )
 }
@@ -2730,7 +2734,7 @@ export function grantReward(state: GameState, reward: Reward, now = Date.now()):
 
 /** Glücksrad result for the Gartenjahr that just began. */
 export function applyWheel(state: GameState, kind: WheelKind): GameState {
-  let next: GameState = { ...state, wheelBuff: { kind, prestige: state.prestiges } }
+  let next: GameState = { ...state, wheelBuff: { kind, prestige: state.saisonenden } }
   if (kind === 'seeds') next = { ...next, samen: next.samen + WHEEL_SEEDS }
   if (kind === 'variety') {
     const planted = GENERATORS.map((g) => g.id)
@@ -2806,16 +2810,16 @@ export type MultKey =
  */
 export function multBreakdown(state: GameState, now = Date.now()): { key: MultKey; mult: number }[] {
   const all: [MultKey, number][] = [
-    ['erbe', prestigeMultiplier(state.emberUpgrades)],
+    ['erbe', prestigeMultiplier(state.truhe)],
     ['level', levelProductionMult(playerLevelOf(state))],
     ['pflanzenbuch', collectionMult(state.collection)],
     ['kapitel', expansionGardenMult(state)],
-    ['winter', deepYieldMult(state.deepUpgrades)],
+    ['winter', deepYieldMult(state.sproesslingLaden)],
     ['nachbarn', neighbourMult(state)],
     ['erntefest', eventProductionMult(now)],
     ['sonnenfenster', flashProductionMult(state, now)],
     ['wetter', weatherYieldMult(now) * weatherBuffMult(state.weatherBuff, now)],
-    ['gluecksrad', wheelYieldMult(state.wheelBuff, state.prestiges)],
+    ['gluecksrad', wheelYieldMult(state.wheelBuff, state.saisonenden)],
     ['verein', effectiveClanMult(state, now)],
     ['duenger', effectiveYieldBoostMult(state, now)],
     ['regenbogen', rainbowMult(state, now)],

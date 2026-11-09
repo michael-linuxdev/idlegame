@@ -40,7 +40,7 @@ export interface ChestReward {
   variety?: string
 }
 
-export function rollChest(prestiges: number, collection: readonly string[], rng = Math.random): ChestReward {
+export function rollChest(saisonenden: number, collection: readonly string[], rng = Math.random): ChestReward {
   const r = rng()
   if (r < 0.1) {
     const open = GARDEN_VARIETIES.filter((v) => !collection.includes(v.id))
@@ -50,7 +50,7 @@ export function rollChest(prestiges: number, collection: readonly string[], rng 
     }
     return { kind: 'samen', amount: 25 }
   }
-  if (r < 0.35) return { kind: 'erbstuecke', amount: Math.max(3, Math.round(payoutAtGate(prestiges) * 0.25)) }
+  if (r < 0.35) return { kind: 'erbstuecke', amount: Math.max(3, Math.round(payoutAtGate(saisonenden) * 0.25)) }
   if (r < 0.5) return { kind: 'fest', amount: 10 + Math.floor(rng() * 16) }
   return { kind: 'samen', amount: 5 + Math.floor(rng() * 11) }
 }

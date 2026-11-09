@@ -84,12 +84,12 @@ export function rollUpgradeSurprise(
  */
 export function rollPrestigeSpike(
   ernteSeason: number,
-  prestiges: number,
+  saisonenden: number,
   flags: number,
   ratePerSec: number,
   probe = false,
 ): SurpriseJump | null {
-  const min = prestigeMinAsh(prestiges, probe)
+  const min = prestigeMinAsh(saisonenden, probe)
   if (min <= 0) return null
   const ratio = ernteSeason / min
   for (let i = 0; i < PRESTIGE_SPIKE_RATIOS.length; i++) {

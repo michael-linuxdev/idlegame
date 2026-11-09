@@ -32,8 +32,8 @@ describe('Saison-Karten', () => {
 
   it('erst ab Gartenjahr 4, gilt genau ein Jahr', () => {
     const s = { ...createInitialState(NOW), owned: { ...createInitialState(NOW).owned, ...owned } }
-    expect(createPostPrestigeState({ ...s, prestiges: SEASON_CARDS_FROM_PRESTIGES - 2 }, NOW).seasonCardOffer).toEqual([])
-    const after = createPostPrestigeState({ ...s, prestiges: SEASON_CARDS_FROM_PRESTIGES - 1 }, NOW)
+    expect(createPostPrestigeState({ ...s, saisonenden: SEASON_CARDS_FROM_PRESTIGES - 2 }, NOW).seasonCardOffer).toEqual([])
+    const after = createPostPrestigeState({ ...s, saisonenden: SEASON_CARDS_FROM_PRESTIGES - 1 }, NOW)
     expect(after.seasonCardOffer.length).toBe(3)
     const picked = pickSeasonCard(after, after.seasonCardOffer[0].id)
     expect(picked.seasonCard).toBe(after.seasonCardOffer[0].id)
@@ -43,14 +43,14 @@ describe('Saison-Karten', () => {
       after.seasonCardOffer.some((o) => o.id === 'hofladenjahr') ? 'hofladenjahr' : null,
     )
     // nächstes Saisonende: Karte endet, wird „Vorjahr“
-    const next = createPostPrestigeState({ ...picked, prestiges: picked.prestiges + 1 }, NOW)
+    const next = createPostPrestigeState({ ...picked, saisonenden: picked.saisonenden + 1 }, NOW)
     expect(next.seasonCard).toBeNull()
     expect(next.lastSeasonCard).toBe(picked.seasonCard)
     expect(next.seasonCardOffer.some((o) => o.id === picked.seasonCard)).toBe(false)
   })
 
   it('ohne Karte weiter geht immer', () => {
-    const s = createPostPrestigeState({ ...createInitialState(NOW), owned: { ...createInitialState(NOW).owned, ...owned }, prestiges: 5 }, NOW)
+    const s = createPostPrestigeState({ ...createInitialState(NOW), owned: { ...createInitialState(NOW).owned, ...owned }, saisonenden: 5 }, NOW)
     const n = pickSeasonCard(s, null)
     expect(n.seasonCard).toBeNull()
     expect(n.seasonCardOffer).toEqual([])

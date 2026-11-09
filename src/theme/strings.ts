@@ -611,22 +611,22 @@ export const strings = {
     rank: (rank: number, max: number) => `Rang ${rank}/${max}`,
     cost: (n: number) => `${n} Sprösslinge`,
     items: {
-      deepYield: {
+      tiefeWurzeln: {
         name: 'Tiefe Wurzeln',
         blurb: '+10 % Ernte/s pro Rang — für immer.',
         effect: (rank: number) => `+${rank * 10} % ${SOFT}/s`,
       },
-      deepWatch: {
+      winterschutz: {
         name: 'Winterschutz',
         blurb: 'Länger offline wachsen: +1 h / +2 h max. pro Rang.',
         effect: (rank: number) => `+${rank} h / +${rank * 2} h max.`,
       },
-      deepPurse: {
+      saatgutvorrat: {
         name: 'Saatgutvorrat',
         blurb: 'Jeder Neubeginn startet mit 60 Erbstücken pro Rang.',
         effect: (rank: number) => `${rank * 60} Erbstücke zum Start`,
       },
-      deepStart: {
+      gartenwissen: {
         name: 'Gartenwissen',
         blurb: 'Jede Gartenecke lässt sich ein Gartenjahr früher roden.',
         effect: (rank: number) => (rank > 0 ? `${rank} Jahr(e) früher` : 'Noch nicht'),
@@ -635,54 +635,54 @@ export const strings = {
   },
 
   emberShop: {
-    dominionYield: {
+    gartenschere: {
       name: 'Omas Gartenschere',
       blurb: '+5 % Ernte/s pro Rang. Höhere Ränge beim Neuanlegen.',
       effect: (rank: number) => `+${rank * 5} % ${SOFT}/s`,
     },
-    longWatch: {
+    alteGiesskanne: {
       name: 'Alte Gießkanne',
       blurb: 'Länger offline wachsen: +1 h weich, +2 h max. pro Rang.',
       effect: (rank: number) => `+${rank} h / +${rank * 2} h max.`,
     },
-    foundryDiscount: {
+    saatgutkiste: {
       name: 'Saatgutkiste',
       blurb: '−2 % auf alle Ausbaukosten pro Rang.',
       effect: (rank: number) => `×${Math.pow(0.98, rank).toFixed(3).replace('.', ',')} Kosten`,
     },
-    firstFlame: {
+    kompostVomVorjahr: {
       name: 'Kompost vom Vorjahr',
       blurb: 'Jede Saison startet mit angelegtem Kompost.',
       effect: (rank: number) => (rank > 0 ? 'Kompost von Beginn an' : 'Noch nicht'),
     },
-    tapMastery: {
+    messingBrause: {
       name: 'Messing-Brause',
       blurb: '+15 s mehr Ernte pro Gießen, pro Rang.',
       effect: (rank: number) => `+${rank * 15} s Gießen`,
     },
-    seedPurse: {
+    notgroschen: {
       name: 'Notgroschen',
       blurb: 'Jede Saison startet mit +80 Ernte pro Rang.',
       effect: (rank: number) =>
         rank > 0 ? `+${rank * 80} ${SOFT} zum Start` : 'Kein Startvorrat',
     },
-    canopyBoost: {
+    strohhut: {
       name: 'Strohhut',
       blurb: '+2 % Ernte/s — erste Ränge sofort, spätere beim Neuanlegen.',
       effect: (rank: number) => `+${(rank * 2).toFixed(0)} % ${SOFT}/s`,
     },
-    nightSoil: {
+    laterne: {
       name: 'Laterne',
       blurb: '+30 Min weich und +1 h max. offline pro Rang.',
       effect: (rank: number) => `+${String(rank * 0.5).replace('.', ',')} h / +${rank} h max.`,
     },
-    saplingSurge: {
+    guteErde: {
       name: 'Gute Erde',
       blurb: 'Das Gemüsebeet startet auf dieser Stufe.',
       effect: (rank: number) =>
         rank > 0 ? `Gemüsebeet startet auf Stufe ${rank}` : 'Kein Vorsprung',
     },
-    greenLattice: {
+    rosenbogen: {
       name: 'Rosenbogen',
       blurb: '+1,5 % Ernte/s — öffnet sich beim Neuanlegen.',
       effect: (rank: number) => `+${(rank * 1.5).toFixed(1).replace('.', ',')} % ${SOFT}/s`,
@@ -800,17 +800,17 @@ export const strings = {
       blurb: 'Bonus-Werbung dauerhaft weg. Platzhalter.',
       label: 'Werbefrei',
     },
-    obsidian50: {
+    samen50: {
       name: 'Samentüte S',
       blurb: '50 Samen.',
       label: '+50',
     },
-    obsidian150: {
+    samen150: {
       name: 'Samentüte M',
       blurb: '150 Samen.',
       label: '+150',
     },
-    obsidian500: {
+    samen500: {
       name: 'Samentüte L',
       blurb: '500 Samen.',
       label: '+500',
@@ -1200,6 +1200,7 @@ export const strings = {
     confirm: 'Wirklich? Ersetzt den aktuellen Garten',
     invalid: 'Das ist kein gültiger Gartenerbe-Code.',
     newer: 'Dieser Spielstand stammt aus einer neueren Version. Bitte zuerst die App aktualisieren (Menü → Nach Updates suchen).',
+    old: 'Dieser Code stammt aus einer Vorversion des Spiels und lässt sich nicht mehr einspielen.',
     found: (when: string) => `Gültiger Spielstand vom ${when}.`,
     close: 'Schließen',
   },

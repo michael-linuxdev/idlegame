@@ -12,11 +12,11 @@ import {
 import { parseSave } from '../game/storage'
 
 const NOW = 1_800_000_000_000
-const rich = () => ({ ...createInitialState(NOW), ernte: 1e40, ernteSeason: 1e40, prestiges: CHALLENGES_FROM_PRESTIGES, samen: 100 })
+const rich = () => ({ ...createInitialState(NOW), ernte: 1e40, ernteSeason: 1e40, saisonenden: CHALLENGES_FROM_PRESTIGES, samen: 100 })
 
 describe('Omas Herausforderungen', () => {
   it('erst ab Gartenjahr 8 wählbar, startet beim nächsten Saisonende', () => {
-    const early = { ...rich(), prestiges: CHALLENGES_FROM_PRESTIGES - 1 }
+    const early = { ...rich(), saisonenden: CHALLENGES_FROM_PRESTIGES - 1 }
     expect(chooseNextChallenge(early, 'ohneKompost')).toBe(early)
     const s = chooseNextChallenge(rich(), 'ohneKompost')
     expect(s.challenge).toBeNull()

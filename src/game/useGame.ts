@@ -200,8 +200,8 @@ export function useGame() {
   useState(() => {
     const s = boot.state
     const ctx = {
-      prestiges: s.prestiges,
-      deepPrestiges: s.deepPrestiges,
+      saisonenden: s.saisonenden,
+      tiefeWinter: s.tiefeWinter,
       generation: s.generation,
       sessions: s.sessions,
       owned: s.owned,
@@ -229,8 +229,8 @@ export function useGame() {
     registerPlaytestSnapshot(() => {
       const s = stateRef.current
       return {
-        saisons: s.prestiges,
-        tieferWinter: s.deepPrestiges,
+        saisons: s.saisonenden,
+        tieferWinter: s.tiefeWinter,
         generation: s.generation,
         stufe: playerLevelOf(s),
         erntePerS: Math.round(productionPerSecond(s)),
@@ -345,7 +345,7 @@ export function useGame() {
       if (!challengeAllowsWater(s.challenge)) return s
       if (s.lastTapAt > 0 && now - s.lastTapAt < TAP_COOLDOWN_MS) return s
       const rate = productionPerSecond(s, now)
-      const fromRate = rate * tapBonusSeconds(s.emberUpgrades) * waterMult(s, now)
+      const fromRate = rate * tapBonusSeconds(s.truhe) * waterMult(s, now)
       // Cold post-prestige: one Schub must cover the next G1 Ausbauen if the
       // wallet is still short (rate alone can be ~1/s → 60 Phyto).
       const g1 = GENERATORS.find((g) => g.id === 'gemuesebeet')
@@ -403,16 +403,16 @@ export function useGame() {
 
   const prestige = useCallback(() => {
     setState((s) => {
-      const gain = emberPayout(s.ernteSeason, s.prestiges, isProbeYear(s))
+      const gain = emberPayout(s.ernteSeason, s.saisonenden, isProbeYear(s))
       const next = doPrestige(s)
       if (next !== s) {
         logPlaytest('prestige', {
-          run: next.prestiges,
+          run: next.saisonenden,
           erbstuecke: gain,
           wallet: next.erbstuecke,
         })
         setPostPrestigeFocus(true)
-        setSeasonEnd({ year: next.prestiges + 1, gained: gain })
+        setSeasonEnd({ year: next.saisonenden + 1, gained: gain })
       }
       return next
     })
@@ -446,7 +446,7 @@ export function useGame() {
       const gain = deepSproutPayout(s)
       const next = doDeepReset(s)
       if (next !== s) {
-        logPlaytest('deep_reset', { deep: next.deepPrestiges, sprouts: gain })
+        logPlaytest('deep_reset', { deep: next.tiefeWinter, sprouts: gain })
         setPostPrestigeFocus(true)
         setSeasonEnd({ year: 1, gained: gain, deep: true })
       }
@@ -884,19 +884,19 @@ export function useGame() {
     return () => document.removeEventListener('visibilitychange', onVis)
   }, [])
 
-  const mult = prestigeMultiplier(state.emberUpgrades)
+  const mult = prestigeMultiplier(state.truhe)
   const levelMult = levelProductionMult(playerLevelOf(state))
-  const clanMult = effectiveClanMult(state, nowTick)
+  const vereinMult = effectiveClanMult(state, nowTick)
   const eventMult =
     eventProductionMult(nowTick) * flashProductionMult(state, nowTick)
   const progress = prestigeProgress(state)
-  const discount = foundryDiscountMult(state.emberUpgrades)
+  const discount = foundryDiscountMult(state.truhe)
   const equipped = cosmeticById(state.equippedCosmetic)
   const skipLeft = skipHoursRemaining(state, nowTick)
   const clanBoostActive =
-    state.clanBoostExpiresAt > nowTick && clanMult > 1
+    state.vereinBoostExpiresAt > nowTick && vereinMult > 1
   const clanBoostMsLeft = clanBoostActive
-    ? Math.max(0, state.clanBoostExpiresAt - nowTick)
+    ? Math.max(0, state.vereinBoostExpiresAt - nowTick)
     : 0
 
   const yieldBoostMult = effectiveYieldBoostMult(state, nowTick)
@@ -908,7 +908,7 @@ export function useGame() {
   const adCooldownMs = state.adsRemoved
     ? 0
     : rewardedAdCooldownMsLeft(state.lastRewardedAdAt, nowTick)
-  const bpDailyXpReady = state.bpDailyXpDay !== dayKey(nowTick)
+  const bpDailyXpReady = state.gartenwocheXpDay !== dayKey(nowTick)
 
   const dailyReady = canClaimDaily(state.dailyClaimDay, nowTick)
   const dailyPreview = previewDailyReward(
@@ -921,9 +921,9 @@ export function useGame() {
   const surge = bandwidthSurgeStatus(nowTick)
   const surgeWindow = bandwidthSurgeWindowKey(nowTick)
   const surgeVisible =
-    isBandwidthSurgeActive(nowTick) && state.eventDismissedKey !== surgeWindow
-  const surgeGoalDone = state.eventAshProgress >= surge.goal
-  const surgeGoalClaimed = state.eventGoalClaimedKey === surgeWindow
+    isBandwidthSurgeActive(nowTick) && state.erntefestDismissedKey !== surgeWindow
+  const surgeGoalDone = state.erntefestErnte >= surge.goal
+  const surgeGoalClaimed = state.erntefestGoalClaimedKey === surgeWindow
 
   const flash = flashEventStatus(
     {
@@ -948,7 +948,7 @@ export function useGame() {
       claimedDailyOnce: state.claimedDailyOnce,
       claimedOfflineOnce: state.claimedOfflineOnce,
       playerLevel: playerLevel.level,
-      prestiges: state.prestiges,
+      saisonenden: state.saisonenden,
       owned: state.owned,
     })
     return { def, claimed, complete }
@@ -988,24 +988,24 @@ export function useGame() {
         def,
         state.ernteSeason,
         state.owned,
-        state.emberUpgrades.firstFlame > 0,
+        state.truhe.kompostVomVorjahr > 0,
         playerLevel.level,
-        gateSeasons(state.prestiges, state.deepUpgrades),
+        gateSeasons(state.saisonenden, state.sproesslingLaden),
       )
     },
     [
       state.ernteSeason,
       state.owned,
-      state.emberUpgrades.firstFlame,
+      state.truhe.kompostVomVorjahr,
       playerLevel.level,
-      state.prestiges,
-      state.deepUpgrades,
+      state.saisonenden,
+      state.sproesslingLaden,
     ],
   )
 
   const featureCtx = {
-    prestiges: state.prestiges,
-    deepPrestiges: state.deepPrestiges,
+    saisonenden: state.saisonenden,
+    tiefeWinter: state.tiefeWinter,
     generation: state.generation,
     sessions: state.sessions,
     owned: state.owned,
@@ -1079,7 +1079,7 @@ export function useGame() {
     buyFest,
     multiplier: mult,
     levelMult,
-    clanMult,
+    vereinMult,
     eventMult,
     clanBoostActive,
     clanBoostMsLeft,
@@ -1091,8 +1091,8 @@ export function useGame() {
     bpDailyXpReady,
     skipHoursRemaining: skipLeft,
     equippedCosmetic: equipped,
-    nextPrestige: emberPayout(state.ernteSeason, state.prestiges, isProbeYear(state)),
-    prestigeMin: prestigeMinAsh(state.prestiges, isProbeYear(state)),
+    nextPrestige: emberPayout(state.ernteSeason, state.saisonenden, isProbeYear(state)),
+    prestigeMin: prestigeMinAsh(state.saisonenden, isProbeYear(state)),
     prestigeProgress: progress,
     canPrestige: canPrestigeNow(state),
     tapReady,

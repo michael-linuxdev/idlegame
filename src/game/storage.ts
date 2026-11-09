@@ -75,61 +75,24 @@ function parseCosmetics(raw: unknown): CosmeticId[] {
   return out
 }
 
-/** Field names used before the Ernte/Erbstücke/Samen rename (Nov 2026). */
-const RENAMED_FIELDS: Record<string, string> = {
-  ash: 'ernte',
-  ashEarned: 'ernteSeason',
-  lifetimeAshEarned: 'ernteLifetime',
-  embers: 'erbstuecke',
-  obsidian: 'samen',
-  deepEmbers: 'sproesslinge',
-}
-
-/** Accept saves written with the old internal field names. */
-export function migrateFieldNames(raw: Record<string, unknown>): Record<string, unknown> {
-  const out: Record<string, unknown> = { ...raw }
-  for (const [oldKey, newKey] of Object.entries(RENAMED_FIELDS)) {
-    if (out[newKey] === undefined && out[oldKey] !== undefined) out[newKey] = out[oldKey]
-    delete out[oldKey]
-  }
-  return out
-}
-
 /**
- * Spielstand-Migration (aktiv seit 2026-11-08 — echte Spieler):
- *  - Jede Format-Änderung bekommt einen Schritt in MIGRATIONS und erhöht
- *    SAVE_VERSION. Felder werden nie still umbenannt oder entfernt.
+ * Spielstand-Format. Neu begonnen am 2026-11-09 (Aufräum-Runde, neuer
+ * Speicherschlüssel `gartenerbe-spielstand-v1`, Wörterbuch docs/cleanup/namen.md).
+ *  - Jede inkompatible Format-Änderung bekommt einen Schritt in MIGRATIONS
+ *    und erhöht SAVE_VERSION. Felder werden nie still umbenannt oder entfernt.
  *  - src/test/fixtures/save-v*.json hält echte Stände jeder Version fest;
  *    src/test/migration.test.ts muss sie verlustfrei laden.
  */
-export const SAVE_VERSION = 2
+export const SAVE_VERSION = 1
 
 type Raw = Record<string, unknown>
 
-const MIGRATIONS: Record<number, (raw: Raw) => Raw> = {
-  // v1 → v2: Streuobstwiese lived in `orchard` before the Kapitel-Baukasten
-  1: (raw) => {
-    const out = { ...raw }
-    const o = raw.orchard
-    if (isRecord(o) && !isRecord(raw.chapters)) {
-      out.chapters = {
-        obstwiese: {
-          cur: o.obst,
-          curLifetime: o.obstLifetime,
-          owned: o.owned,
-          openedAt: o.openedAt,
-          introSeen: o.introSeen,
-        },
-      }
-    }
-    delete out.orchard
-    return out
-  },
-}
+/** MIGRATIONS[v]: Stand der Version v → v + 1. */
+const MIGRATIONS: Record<number, (raw: Raw) => Raw> = {}
 
-/** Bring any stored save up to SAVE_VERSION (field renames + version steps). */
+/** Bring any stored save up to SAVE_VERSION. */
 export function migrateSave(raw: Raw): Raw {
-  let out = migrateFieldNames(raw)
+  let out = raw
   let v = typeof out.saveVersion === 'number' && out.saveVersion >= 1 ? Math.floor(out.saveVersion) : 1
   while (v < SAVE_VERSION) {
     const step = MIGRATIONS[v]
@@ -150,16 +113,12 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
   const ernteSeason =
     typeof parsed.ernteSeason === 'number' ? Math.max(0, parsed.ernteSeason) : ernte
 
-  let erbstuecke = 0
-  if (typeof parsed.erbstuecke === 'number') {
-    erbstuecke = Math.max(0, Math.floor(parsed.erbstuecke))
-  } else if (typeof parsed.dominion === 'number') {
-    erbstuecke = Math.max(0, Math.floor(parsed.dominion))
-  }
+  const erbstuecke =
+    typeof parsed.erbstuecke === 'number' ? Math.max(0, Math.floor(parsed.erbstuecke)) : 0
 
-  const prestiges =
-    typeof parsed.prestiges === 'number'
-      ? Math.max(0, Math.floor(parsed.prestiges))
+  const saisonenden =
+    typeof parsed.saisonenden === 'number'
+      ? Math.max(0, Math.floor(parsed.saisonenden))
       : 0
   const lastSeen =
     typeof parsed.lastSeen === 'number' && parsed.lastSeen > 0
@@ -169,9 +128,9 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
     typeof parsed.lastTapAt === 'number' && parsed.lastTapAt >= 0
       ? parsed.lastTapAt
       : 0
-  const clanMult =
-    typeof parsed.clanMult === 'number' && Number.isFinite(parsed.clanMult)
-      ? Math.min(1.25, Math.max(1, parsed.clanMult))
+  const vereinMult =
+    typeof parsed.vereinMult === 'number' && Number.isFinite(parsed.vereinMult)
+      ? Math.min(1.25, Math.max(1, parsed.vereinMult))
       : 1
 
   const samen =
@@ -198,10 +157,10 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
     Number.isFinite(parsed.skipHoursUsedToday)
       ? Math.max(0, parsed.skipHoursUsedToday)
       : 0
-  const clanBoostExpiresAt =
-    typeof parsed.clanBoostExpiresAt === 'number' &&
-    Number.isFinite(parsed.clanBoostExpiresAt)
-      ? Math.max(0, parsed.clanBoostExpiresAt)
+  const vereinBoostExpiresAt =
+    typeof parsed.vereinBoostExpiresAt === 'number' &&
+    Number.isFinite(parsed.vereinBoostExpiresAt)
+      ? Math.max(0, parsed.vereinBoostExpiresAt)
       : 0
 
   const dailyClaimDay =
@@ -210,18 +169,18 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
     typeof parsed.dailyStreak === 'number' && Number.isFinite(parsed.dailyStreak)
       ? Math.max(0, Math.floor(parsed.dailyStreak))
       : 0
-  const eventDismissedKey =
-    typeof parsed.eventDismissedKey === 'string' ? parsed.eventDismissedKey : ''
-  const eventAshProgress =
-    typeof parsed.eventAshProgress === 'number' &&
-    Number.isFinite(parsed.eventAshProgress)
-      ? Math.max(0, parsed.eventAshProgress)
+  const erntefestDismissedKey =
+    typeof parsed.erntefestDismissedKey === 'string' ? parsed.erntefestDismissedKey : ''
+  const erntefestErnte =
+    typeof parsed.erntefestErnte === 'number' &&
+    Number.isFinite(parsed.erntefestErnte)
+      ? Math.max(0, parsed.erntefestErnte)
       : 0
-  const eventProgressKey =
-    typeof parsed.eventProgressKey === 'string' ? parsed.eventProgressKey : ''
-  const eventGoalClaimedKey =
-    typeof parsed.eventGoalClaimedKey === 'string'
-      ? parsed.eventGoalClaimedKey
+  const erntefestProgressKey =
+    typeof parsed.erntefestProgressKey === 'string' ? parsed.erntefestProgressKey : ''
+  const erntefestGoalClaimedKey =
+    typeof parsed.erntefestGoalClaimedKey === 'string'
+      ? parsed.erntefestGoalClaimedKey
       : ''
 
   const owned = parseOwned(parsed.owned)
@@ -278,7 +237,7 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
   const sessions =
     typeof parsed.sessions === 'number' && Number.isFinite(parsed.sessions) && parsed.sessions >= 1
       ? Math.floor(parsed.sessions)
-      : prestiges > 0 || parseNonNegInt(parsed.deepPrestiges) > 0 || parseNonNegInt(parsed.generation) > 0
+      : saisonenden > 0 || parseNonNegInt(parsed.tiefeWinter) > 0 || parseNonNegInt(parsed.generation) > 0
         ? 10
         : totalUpgrades > 0
           ? 2
@@ -288,32 +247,32 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
     Number.isFinite(parsed.yieldBoostExpiresAt)
       ? Math.max(0, parsed.yieldBoostExpiresAt)
       : 0
-  const bpWeekKey =
-    typeof parsed.bpWeekKey === 'string' && parsed.bpWeekKey.length > 0
-      ? parsed.bpWeekKey
+  const gartenwocheKey =
+    typeof parsed.gartenwocheKey === 'string' && parsed.gartenwocheKey.length > 0
+      ? parsed.gartenwocheKey
       : weekKey()
-  const bpXp =
-    typeof parsed.bpXp === 'number' && Number.isFinite(parsed.bpXp)
-      ? Math.max(0, Math.floor(parsed.bpXp))
+  const gartenwocheXp =
+    typeof parsed.gartenwocheXp === 'number' && Number.isFinite(parsed.gartenwocheXp)
+      ? Math.max(0, Math.floor(parsed.gartenwocheXp))
       : 0
-  const bpClaimedFree = Array.isArray(parsed.bpClaimedFree)
-    ? parsed.bpClaimedFree.filter(
+  const gartenwocheClaimedFree = Array.isArray(parsed.gartenwocheClaimedFree)
+    ? parsed.gartenwocheClaimedFree.filter(
         (n): n is number => typeof n === 'number' && Number.isFinite(n),
       )
     : []
-  const bpPremium = parsed.bpPremium === true
-  const bpClaimedPremium = Array.isArray(parsed.bpClaimedPremium)
-    ? parsed.bpClaimedPremium.filter(
+  const gartenwochePremium = parsed.gartenwochePremium === true
+  const gartenwocheClaimedPremium = Array.isArray(parsed.gartenwocheClaimedPremium)
+    ? parsed.gartenwocheClaimedPremium.filter(
         (n): n is number => typeof n === 'number' && Number.isFinite(n),
       )
     : []
-  const bpDailyXpDay =
-    typeof parsed.bpDailyXpDay === 'string' ? parsed.bpDailyXpDay : ''
+  const gartenwocheXpDay =
+    typeof parsed.gartenwocheXpDay === 'string' ? parsed.gartenwocheXpDay : ''
 
-  const prestigeSpikeFlags =
-    typeof parsed.prestigeSpikeFlags === 'number' &&
-    Number.isFinite(parsed.prestigeSpikeFlags)
-      ? Math.max(0, Math.floor(parsed.prestigeSpikeFlags))
+  const saisonendeSpikeFlags =
+    typeof parsed.saisonendeSpikeFlags === 'number' &&
+    Number.isFinite(parsed.saisonendeSpikeFlags)
+      ? Math.max(0, Math.floor(parsed.saisonendeSpikeFlags))
       : 0
   const flashEventId =
     typeof parsed.flashEventId === 'string' ? parsed.flashEventId : ''
@@ -344,23 +303,23 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
     ernteSeason,
     owned,
     erbstuecke,
-    emberUpgrades: parseUpgrades(parsed.emberUpgrades),
-    prestiges,
+    truhe: parseUpgrades(parsed.truhe),
+    saisonenden,
     lastSeen,
     lastTapAt,
-    clanMult,
+    vereinMult,
     samen,
     ownedCosmetics,
     equippedCosmetic,
     skipHoursUsedToday,
     skipDayKey,
-    clanBoostExpiresAt,
+    vereinBoostExpiresAt,
     dailyClaimDay,
     dailyStreak,
-    eventDismissedKey,
-    eventAshProgress,
-    eventProgressKey,
-    eventGoalClaimedKey,
+    erntefestDismissedKey,
+    erntefestErnte,
+    erntefestProgressKey,
+    erntefestGoalClaimedKey,
     playerXp,
     claimedLevelRewards,
     totalUpgrades,
@@ -397,13 +356,13 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
       ? [...new Set((parsed.challengesDone as unknown[]).filter(isChallengeId))]
       : [],
     yieldBoostExpiresAt,
-    bpWeekKey,
-    bpXp,
-    bpClaimedFree,
-    bpPremium,
-    bpClaimedPremium,
-    bpDailyXpDay,
-    prestigeSpikeFlags,
+    gartenwocheKey,
+    gartenwocheXp,
+    gartenwocheClaimedFree,
+    gartenwochePremium,
+    gartenwocheClaimedPremium,
+    gartenwocheXpDay,
+    saisonendeSpikeFlags,
     lastSurprise: null,
     lastSurpriseAt: parseNum(parsed.lastSurpriseAt),
     lastVariety: null,
@@ -570,8 +529,8 @@ function parseLongLoop(parsed: Record<string, unknown>) {
   const defaults = emptyLongLoopSlice()
   return {
     sproesslinge: parseNonNegInt(parsed.sproesslinge, defaults.sproesslinge),
-    deepUpgrades: parseDeepUpgrades(parsed.deepUpgrades),
-    deepPrestiges: parseNonNegInt(parsed.deepPrestiges, defaults.deepPrestiges),
+    sproesslingLaden: parseDeepUpgrades(parsed.sproesslingLaden),
+    tiefeWinter: parseNonNegInt(parsed.tiefeWinter, defaults.tiefeWinter),
     collection: Array.isArray(parsed.collection)
       ? parsed.collection.filter(
           (id): id is string => typeof id === 'string' && VARIETY_IDS.has(id),
@@ -710,7 +669,7 @@ export function loadState(): GameState {
     if (isNewerSave(parsed)) {
       // Neuere Version hat gespeichert: lesen ja, überschreiben nie
       setSaveBlock('newer')
-      return parseGameState(migrateFieldNames(parsed))
+      return parseGameState(parsed)
     }
     // Keep the last pre-migration save around, just in case
     if (parsed.saveVersion !== SAVE_VERSION) keepCopy(`${STORAGE_KEY}-before-v${SAVE_VERSION}`, raw)

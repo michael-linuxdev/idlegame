@@ -4,8 +4,8 @@ import { SURPRISE_MIN_GAP_MS } from '../game/surpriseJumps'
 
 const NOW = 1_800_000_000_000
 
-function tapMany(prestiges: number, taps: number, everyMs: number) {
-  let s = { ...createInitialState(NOW), prestiges, ernte: 1e30, ernteSeason: 1e6, owned: { ...createInitialState(NOW).owned, gemuesebeet: 10 } }
+function tapMany(saisonenden: number, taps: number, everyMs: number) {
+  let s = { ...createInitialState(NOW), saisonenden, ernte: 1e30, ernteSeason: 1e6, owned: { ...createInitialState(NOW).owned, gemuesebeet: 10 } }
   let crumbs = 0
   for (let i = 0; i < taps; i++) {
     vi.setSystemTime(NOW + i * everyMs)

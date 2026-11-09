@@ -113,7 +113,7 @@ export default function App() {
     reminderRef.current = {
       water: game.tapCooldownLeftMs,
       cross: s.crossing ? s.crossing.endsAt : 0,
-      basketHours: offlineCapsHours(s.emberUpgrades).hard,
+      basketHours: offlineCapsHours(s.truhe).hard,
       sent: extras.notifySent ?? [],
     }
   })
@@ -163,8 +163,8 @@ export default function App() {
   const gardenStage = GENERATORS.filter(
     (g) => (game.state.owned[g.id] ?? 0) > 0 && game.unlocked(g.id),
   ).length
-  const year = game.state.prestiges + 1
-  const { notebook, unread, markRead } = useNotebook(gardenStage, year, game.state.deepPrestiges, { helper: game.state.helperLevel, ilse: game.state.ilseLevel, generation: game.state.generation })
+  const year = game.state.saisonenden + 1
+  const { notebook, unread, markRead } = useNotebook(gardenStage, year, game.state.tiefeWinter, { helper: game.state.helperLevel, ilse: game.state.ilseLevel, generation: game.state.generation })
   const openNotebook = useCallback(
     (entry: NotebookEntryId | null = null) => setNotebookOpen({ entry }),
     [],
@@ -200,11 +200,11 @@ export default function App() {
     game.canPrestige ||
     (game.state.erbstuecke > 0 &&
       countAffordableEmberBuys(
-        game.state.emberUpgrades,
+        game.state.truhe,
         game.state.erbstuecke,
         game.state.ernteSeason,
         game.state.owned,
-        game.state.prestiges,
+        game.state.saisonenden,
       ) > 0)
   const plotLabel = chapterShown ? chapterCopy(chapterShown).chip : undefined
 
@@ -293,13 +293,13 @@ export default function App() {
       {/* Testphase: Hinweis zur Aufzeichnung beim ersten Start der installierten App (game/distribution.ts) */}
       <TestPhaseNotice />
       {/* Web-Fassung: Vollbild-Hinweis „Zuerst installieren“ (Store-Fassung: aus, siehe game/distribution.ts) */}
-      <InstallGate hasProgress={game.state.totalUpgrades > 1 || game.state.prestiges > 0 || game.state.deepPrestiges > 0} />
+      <InstallGate hasProgress={game.state.totalUpgrades > 1 || game.state.saisonenden > 0 || game.state.tiefeWinter > 0} />
 
       {/* Install cue waits for the first Saisonende — never in the first session */}
       <InstallPrompt
         holdForFtue={
           holdInstall ||
-          (game.state.prestiges < 1 && game.state.deepPrestiges === 0 && game.state.generation === 0)
+          (game.state.saisonenden < 1 && game.state.tiefeWinter === 0 && game.state.generation === 0)
         }
       />
 
@@ -342,7 +342,7 @@ export default function App() {
         reminders={extras.notify}
         // Erinnerungen erst nach dem ersten Saisonende anbieten (wer sie schon an hat, behält den Schalter)
         onToggleReminders={
-          extras.notify || game.state.prestiges > 0 || game.state.deepPrestiges > 0 || game.state.generation > 0
+          extras.notify || game.state.saisonenden > 0 || game.state.tiefeWinter > 0 || game.state.generation > 0
             ? toggleReminders
             : undefined
         }
