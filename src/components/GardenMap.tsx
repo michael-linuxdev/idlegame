@@ -44,6 +44,7 @@ import { OmaHint } from './OmaHint'
 import { hasOpenWindow, useOverlayOpen } from '../game/overlays'
 import { MultSheet } from './hud/MultSheet'
 import { WelcomeBack } from './hud/WelcomeBack'
+import { nearSets } from '../game/collections'
 import { pickHint, useHints } from '../game/hints'
 import { canDeepReset } from '../game/longLoop'
 import {
@@ -391,6 +392,21 @@ export function GardenMap({
           logPlaytest('best_buy_tap', { id: bestBuy.id, affordable: bestBuy.affordable })
           setSelected(bestBuy.id)
         },
+      }
+    }
+    // Ab Gartenjahr 2: ein fast fertiges Pflanzenbuch-Set als Ziel, wenn gerade kein Kauf ansteht
+    const near = state.prestiges >= 1 && !(bestBuy?.affordable) ? nearSets(state.collection, 1)[0] : undefined
+    if (near && nextGoal.kind !== 'prestige') {
+      const area = GENERATORS.find((g) => g.id === near.module)?.name ?? near.module
+      return {
+        key: `set-${near.module}`,
+        title: t.collections.goalTitle(area),
+        detail: t.collections.goalDetail(near.missing),
+        ratio: 0.9,
+        tone: 'goal',
+        icon: <IconNotebook />,
+        aria: `${t.goal.stripAria}: ${t.collections.goalTitle(area)}. ${t.collections.goalDetail(near.missing)}`,
+        onActivate: onGoalActivate,
       }
     }
     return {

@@ -72,6 +72,28 @@ export const strings = {
     unmuteAria: 'Soundeffekte einschalten',
   },
 
+  collections: {
+    menu: 'Sammlung',
+    title: 'Sammlung & Ziele',
+    total: (pct: number) => `${pct} % gesammelt`,
+    rows: {
+      pflanzenbuch: 'Pflanzenbuch',
+      bewohner: 'Gartenbewohner',
+      album: 'Jahreszeiten-Album (diese Saison)',
+      erfolge: 'Erfolge',
+      kreuzungen: 'Kreuzungen',
+    },
+    nearSet: (n: number, area: string) => `Noch ${n} ${n === 1 ? 'Sorte' : 'Sorten'} bis zum Set ${area} (+2 % Ernte)`,
+    chaptersTitle: 'Omas Grundstücke',
+    unknown: '???',
+    chapterOpen: 'offen',
+    chapterFirst: 'frei nach dem 1. Tiefen Winter',
+    chapterSecond: 'frei ab der 1. Generation',
+    chapterLater: (gen: number, prev: number) => `frei ab Generation ${gen}, wenn in Kapitel ${prev} der 8. Bereich steht`,
+    goalTitle: (area: string) => `Pflanzenbuch: Set ${area}`,
+    goalDetail: (n: number) => `noch ${n} ${n === 1 ? 'Sorte' : 'Sorten'}`,
+  },
+
   seasonCards: {
     title: 'Ein Thema für dieses Gartenjahr',
     intro: 'Oma hat jedes Jahr etwas anders gemacht. Such dir ein Thema aus — es gilt bis zum nächsten Saisonende.',
