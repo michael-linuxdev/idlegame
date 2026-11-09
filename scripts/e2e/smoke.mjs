@@ -11,6 +11,7 @@
  *  7. Spielstand-Schutz: zweites Fenster speichert nicht, neuerer Stand bleibt unberührt
  *  8. Installations-Hinweis: Handy-Browser ja (mit ?installGate=1), Computer nein
  *  9. Testphase: Aufzeichnungs-Hinweis bestätigen, Häkchen an/aus, nur einmal
+ * 10. Offline: nach dem ersten Laden aus dem Precache, auch die nachgeladenen Fenster
  * Fails on any uncaught page error. Run: npm run build && npm run e2e
  */
 import { spawn } from 'node:child_process'
@@ -375,6 +376,45 @@ try {
       assert((await p.locator('.test-phase').count()) === 0, 'asked only once')
       await ctx.close()
     }
+  }
+
+  // 10 — Offline: nach dem ersten Laden läuft alles aus dem Precache, auch die nachgeladenen Fenster
+  {
+    const ctx = await browser.newContext({ ...devices['iPhone 13'], reducedMotion: 'reduce' })
+    await ctx.addInitScript(() => {
+      if (sessionStorage.getItem('seed')) return
+      const owned = { gemuesebeet: 30, kompost: 12 }
+      localStorage.setItem('gartenerbe-spielstand-v1', JSON.stringify({ owned, ernte: 1e5, saisonenden: 2, erbstuecke: 500, lastSeen: Date.now(), saveVersion: 1 }))
+      localStorage.setItem('gartenerbe-ftue-v1', JSON.stringify({ beat: 'done', dismissed: true, completed: [], startedAt: 1 }))
+      localStorage.setItem('gartenerbe-install-v1', JSON.stringify({ dismissed: true, installed: false, shown: true }))
+      localStorage.setItem('gartenerbe-hints-v1', JSON.stringify(['season', 'truhe', 'deep', 'visitor', 'order', 'variety', 'weekly']))
+      sessionStorage.setItem('seed', '1')
+    })
+    const p = await ctx.newPage()
+    p.on('pageerror', (e) => errors.push(e.message))
+    await p.goto(URL)
+    await p.locator('.garden-map').waitFor()
+    // Service Worker aktiv und Precache fertig
+    await p.evaluate(async () => {
+      const reg = await navigator.serviceWorker.ready
+      if (!navigator.serviceWorker.controller) {
+        await new Promise((r) => navigator.serviceWorker.addEventListener('controllerchange', r, { once: true }))
+      }
+      return reg.active?.state
+    })
+    await ctx.setOffline(true)
+    await p.reload()
+    await p.locator('.garden-map').waitFor()
+    assert(await p.evaluate(() => !navigator.onLine), 'context is offline')
+    for (const tab of ['prestige', 'shop']) {
+      await p.locator(`.tabbar .tab-${tab}`).click()
+      await p.locator(tab === 'shop' ? '.shop-panel' : '#jump-truhe').first().waitFor({ timeout: 10_000 })
+    }
+    await p.locator('.tabbar .tab-garten').click()
+    await p.locator('.menu-fab').click()
+    await p.getByRole('menuitem', { name: 'Omas Notizbuch' }).click()
+    await p.getByText('Omas Notizbuch').first().waitFor({ timeout: 10_000 })
+    await ctx.close()
   }
 
   assert(errors.length === 0, 'page errors: ' + errors.join(' | '))

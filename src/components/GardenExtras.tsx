@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useDismiss } from '../game/overlays'
-import { toPng } from 'html-to-image'
 import { GENERATORS } from '../game/generators'
 import { RECIPE_NEED } from '../game/extrasCore'
 import { logPlaytest } from '../game/playtestLog'
@@ -136,6 +135,8 @@ export function PhotoOverlay({ caption, onClose }: { caption: string; onClose: (
     if (!node) return
     setBusy(true)
     try {
+      // erst beim Foto nachladen (eigenes Bündel, offline im Precache)
+      const { toPng } = await import('html-to-image')
       const url = await toPng(node, { pixelRatio: 2, cacheBust: true })
       const blob = await (await fetch(url)).blob()
       const file = new File([blob], 'gartenerbe-postkarte.png', { type: 'image/png' })

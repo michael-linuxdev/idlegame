@@ -1,0 +1,108 @@
+# Bündel nach der Aufräum-Runde
+
+Start = Einstiegs-Bündel aus index.html plus alle Bündel, die index.html per modulepreload sofort mitlädt (das ist, was ein Spieler beim ersten Öffnen wirklich lädt).
+
+## Vorher (main aacbf7f)
+- Start-JS: 3 Dateien, 777.3 kB (gzip 232.6 kB)
+- Start-CSS: 1 Dateien, 157.2 kB (gzip 33.6 kB)
+- Alle JS: 20 Dateien, 934.7 kB (gzip 280.8 kB)
+- Einstiegs-Bündel: 754.8 kB
+- Schriftdateien: 9 woff2 + 9 woff
+
+## Nachher
+- Start-JS: 22 Dateien, 684.9 kB (gzip 212.6 kB)
+- Start-CSS: 1 Dateien, 150.5 kB (gzip 32.5 kB)
+- Alle JS: 55 Dateien, 954.4 kB (gzip 297.3 kB)
+- Einstiegs-Bündel: 465.4 kB (gzip 135.0 kB)
+- Schriftdateien: 9 woff2 + 0 woff
+
+## Ziel „Start-Bündel < 450 kB (≈ 140 kB gzip)“
+
+- Das Einstiegs-Bündel selbst liegt jetzt bei 465 kB (135 kB gzip): das gzip-Ziel ist erreicht, roh knapp darüber.
+- Ehrlich gemessen (inklusive der sofort mitgeladenen Bündel) sinkt der Start von 777 kB auf 685 kB (−12 %, gzip 233 → 213 kB).
+  Rolldown legt Module, die Start und nachgeladene Fenster gemeinsam nutzen, in eigene Bündel (i18n 82 kB, state 53 kB …);
+  sie werden trotzdem beim Start gebraucht.
+- Was beim Start bleibt und sich nicht nachladen lässt: react-dom (207 kB), alle Texte (86 kB, `t` wird beim Import
+  aufgebaut — die englische Runde fasst das ohnehin an), die Spiellogik (146 kB) und die Gartenkarte mit ihren Grafiken.
+  Weniger als ~600 kB wären nur mit größeren Umbauten möglich (z. B. Texte je Sprache nachladen, Karten-Ebenen wie
+  Fest-Deko/Bewohner verzögert zeichnen). Das ändert sichtbares Verhalten beim Start und wurde deshalb nicht gemacht.
+- Nachgeladen (eigene Bündel, im Leerlauf nach dem Start vorgeladen, offline im Precache): Saison- und Markt-Panel,
+  Verein, Kapitel-Karten, Notizbuch, Saisonende-Feier, Projekte, Album, Sammlung, Rechtliches, Spielstand, Fest,
+  Kreuzen, Deko, Fortschritt sowie html-to-image (nur Foto-Modus).
+- Schriften: nur noch woff2 im CSS und im Build (vorher zusätzlich 9 woff-Dateien, ~260 kB), font-display: swap unverändert.
+
+## Build-Ausgabe nachher
+
+```
+dist/manifest.webmanifest                                  0.52 kB
+dist/index.html                                            2.75 kB │ gzip:   0.83 kB
+dist/assets/nunito-sans-latin-700-normal-CICRJDmU.woff2   13.83 kB
+dist/assets/nunito-sans-latin-400-normal-AkRraKH2.woff2   13.89 kB
+dist/assets/nunito-sans-latin-600-normal-BtVRvDNj.woff2   14.00 kB
+dist/assets/dm-sans-latin-500-normal-B9HHJjqV.woff2       14.30 kB
+dist/assets/dm-sans-latin-700-normal-DvUfVpUG.woff2       14.34 kB
+dist/assets/fraunces-latin-600-normal-BFCDtZfi.woff2      18.09 kB
+dist/assets/fraunces-latin-700-normal-CEOla-zY.woff2      18.21 kB
+dist/assets/caveat-latin-500-normal-B9SDL8cy.woff2        50.90 kB
+dist/assets/caveat-latin-700-normal-D8_1Nw6V.woff2        51.02 kB
+dist/assets/ArtSheet-DPF_cPnU.css                         10.68 kB │ gzip:   3.95 kB
+dist/assets/index-DJucxtXB.css                           150.47 kB │ gzip:  32.88 kB
+dist/assets/ArtSvg-BKUItBye.js                             0.15 kB │ gzip:   0.15 kB
+dist/assets/decor-BgFt4DpM.js                              1.10 kB │ gzip:   0.52 kB
+dist/assets/economy-Dgzy2hcZ.js                            1.24 kB │ gzip:   0.56 kB
+dist/assets/format-CE0D39vm.js                             1.41 kB │ gzip:   0.69 kB
+dist/assets/crossing-DjOVW9gT.js                           1.44 kB │ gzip:   0.62 kB
+dist/assets/palette-DXy-VQ3B.js                            1.46 kB │ gzip:   0.83 kB
+dist/assets/DecorSheet-BOXPlCKx.js                         1.49 kB │ gzip:   0.66 kB
+dist/assets/extras-B_00NKgu.js                             1.70 kB │ gzip:   0.87 kB
+dist/assets/extrasCore-HET2Axr0.js                         1.83 kB │ gzip:   1.02 kB
+dist/assets/wildA-BrGgE1Sc.js                              1.84 kB │ gzip:   0.78 kB
+dist/assets/residents-Dqx61sdT.js                          1.90 kB │ gzip:   0.80 kB
+dist/assets/wildB-Bl98LUEj.js                              2.21 kB │ gzip:   0.89 kB
+dist/assets/AlbumSheet-l6XZfMzk.js                         2.28 kB │ gzip:   0.95 kB
+dist/assets/CollectionSheet-BS3Tv3ew.js                    2.29 kB │ gzip:   0.89 kB
+dist/assets/fests-Cx_dkKBZ.js                              2.49 kB │ gzip:   1.12 kB
+dist/assets/SaveSheet-D_5NA_Wv.js                          2.60 kB │ gzip:   1.05 kB
+dist/assets/ProjectSheet-DW-wLYFb.js                       2.66 kB │ gzip:   1.06 kB
+dist/assets/LegalSheet-CcKMBixl.js                         2.70 kB │ gzip:   1.34 kB
+dist/assets/partsA-YgmjloaD.js                             2.79 kB │ gzip:   1.09 kB
+dist/assets/gardenLife-DW2Ciqd5.js                         3.76 kB │ gzip:   1.32 kB
+dist/assets/monetization-B8xmIdZa.js                       3.76 kB │ gzip:   1.08 kB
+dist/assets/FestSheet-ColMjdai.js                          4.09 kB │ gzip:   1.59 kB
+dist/assets/ClanPanel-dZcTVsA6.js                          4.14 kB │ gzip:   1.45 kB
+dist/assets/chapters-B8Oy009m.js                           4.41 kB │ gzip:   2.07 kB
+dist/assets/SeasonCeremony-BBFfQbRL.js                     4.44 kB │ gzip:   1.71 kB
+dist/assets/CrossSheet-DhlZiO9z.js                         4.46 kB │ gzip:   1.86 kB
+dist/assets/ArtSheet-BQXiGx-e.js                           5.00 kB │ gzip:   1.70 kB
+dist/assets/achievements-B33ecSlo.js                       5.08 kB │ gzip:   1.79 kB
+dist/assets/ProgressSheet-CltOAVnC.js                      5.24 kB │ gzip:   1.58 kB
+dist/assets/generators-Caa4Larm.js                         5.48 kB │ gzip:   1.74 kB
+dist/assets/workbox-window.prod.es5-Bd17z0YL.js            5.65 kB │ gzip:   2.20 kB
+dist/assets/imkerei-BayJwMw4.js                            6.80 kB │ gzip:   2.24 kB
+dist/assets/NotebookSheet-CO-4t4_l.js                      6.81 kB │ gzip:   2.07 kB
+dist/assets/teich-D1wmfopM.js                              7.14 kB │ gzip:   2.23 kB
+dist/assets/bauernhof-1RdircgK.js                          7.72 kB │ gzip:   2.38 kB
+dist/assets/jsx-runtime-DHXBON9B.js                        8.43 kB │ gzip:   3.19 kB
+dist/assets/weinberg-_pKT119-.js                           9.13 kB │ gzip:   3.05 kB
+dist/assets/japangarten-ImcEJZ4t.js                       10.37 kB │ gzip:   3.12 kB
+dist/assets/gartenschau-rNU__Frn.js                       10.59 kB │ gzip:   3.15 kB
+dist/assets/notebook-BkvE2Oc_.js                          10.79 kB │ gzip:   4.49 kB
+dist/assets/ShopPanel-M4Ah-xOv.js                         11.10 kB │ gzip:   2.81 kB
+dist/assets/botanik-C322jJOL.js                           11.48 kB │ gzip:   3.49 kB
+dist/assets/kraeuter-Cm31ew26.js                          11.61 kB │ gzip:   3.46 kB
+dist/assets/es-DkBHCmzi.js                                11.74 kB │ gzip:   4.73 kB
+dist/assets/lavendel-DZJkCKZc.js                          12.16 kB │ gzip:   3.54 kB
+dist/assets/obstwiese-DD3oa7Tk.js                         12.17 kB │ gzip:   3.75 kB
+dist/assets/parts-S9HB6nFU.js                             12.24 kB │ gzip:   3.58 kB
+dist/assets/alm-DsukCc_a.js                               12.49 kB │ gzip:   3.57 kB
+dist/assets/icons-DOypAV0s.js                             15.94 kB │ gzip:   3.90 kB
+dist/assets/PrestigePanel-DNFrL7dY.js                     22.08 kB │ gzip:   5.66 kB
+dist/assets/ChapterMap-Brx2B75X.js                        23.00 kB │ gzip:   6.77 kB
+dist/assets/hand-Cy6NQ2Wn.js                              29.11 kB │ gzip:   8.50 kB
+dist/assets/state-D62ftTAZ.js                             53.05 kB │ gzip:  16.52 kB
+dist/assets/i18n-BrXIj7Co.js                              81.79 kB │ gzip:  31.19 kB
+dist/assets/index-mEF_dkUI.js                            465.35 kB │ gzip: 137.03 kB
+precache  78 entries (1529.86 KiB)
+  dist/sw.js
+  dist/workbox-9c191d2f.js
+```

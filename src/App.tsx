@@ -1,30 +1,33 @@
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { AppNav, type Tab } from './components/AppNav'
-import { ClanPanel } from './components/ClanPanel'
+import {
+  ClanPanel,
+  ChapterMap,
+  PrestigePanel,
+  ShopPanel,
+  NotebookSheet,
+  ProjectSheet,
+  AlbumSheet,
+  SeasonCeremony,
+  CollectionSheet,
+  LegalSheet,
+  SaveSheet,
+  preloadLazy,
+} from './components/lazy'
 import { GardenMap } from './components/GardenMap'
-import { ChapterMap } from './components/ChapterMap'
 import { CHAPTERS, type ChapterId } from './game/chapters'
 import type { CosmeticId } from './game/monetization'
 import { FtueCoach } from './components/FtueCoach'
 import { InstallPrompt } from './components/InstallPrompt'
 import { InstallGate } from './components/InstallGate'
 import { TestPhaseNotice } from './components/TestPhaseNotice'
-import { PrestigePanel } from './components/PrestigePanel'
-import { ShopPanel } from './components/ShopPanel'
 import { bootPlaytestLog, logPlaytest } from './game/playtestLog'
 import { SaveGuardBanner } from './components/SaveGuardBanner'
 import { useGame } from './game/useGame'
 import { GENERATORS } from './game/generators'
 import { useNotebook, yearLetterFor, type NotebookEntryId } from './game/notebook'
-import { NotebookSheet } from './components/story/NotebookSheet'
-import { ProjectSheet } from './components/ProjectSheet'
-import { AlbumSheet } from './components/AlbumSheet'
 import { getFeaturesSeen, markFeatureSeen, MENU_FEATURES, subscribeFeaturesSeen, type FeatureId } from './game/featureUnlocks'
-import { SeasonCeremony } from './components/story/SeasonCeremony'
 import { SeasonCardPicker } from './components/SeasonCardPicker'
-import { CollectionSheet } from './components/CollectionSheet'
-import { LegalSheet } from './components/LegalSheet'
-import { SaveSheet } from './components/SaveSheet'
 import { ComebackLetter, COMEBACK_SEEDS } from './components/story/ComebackLetter'
 import { useExtras } from './game/extras'
 import { deliver, planReminder, pruneSent, type ReminderCandidate } from './game/notify'
@@ -59,6 +62,8 @@ export default function App() {
   useEffect(() => {
     if (openKey) prefetchChapterArt(openKey.split(',') as ChapterId[])
   }, [openKey])
+  // Selten genutzte Fenster (eigene Bündel) im Leerlauf vorladen
+  useEffect(() => preloadLazy(), [])
 
   // Test hooks: ?kapitel2=1 / ?kapitel3=1 open a chapter right away
   const { forceChapter } = game
