@@ -22,6 +22,12 @@ import klostergarten from './kapitel/klostergarten'
 import schlossgarten from './kapitel/schlossgarten'
 import baumschule from './kapitel/baumschule'
 import moorgarten from './kapitel/moorgarten'
+import deichgarten from './kapitel/deichgarten'
+import spreewald from './kapitel/spreewald'
+import cottagegarten from './kapitel/cottagegarten'
+import tulpenfelder from './kapitel/tulpenfelder'
+import artischocken from './kapitel/artischocken'
+import beerenwald from './kapitel/beerenwald'
 import type { ChapterArtEntry } from './kapitel/types'
 
 export type { AreaArtProps, ChapterArtEntry } from './kapitel/types'
@@ -43,4 +49,10 @@ export const ART_REGISTRY: Record<ChapterId, ChapterArtEntry> = {
   schlossgarten,
   baumschule,
   moorgarten,
+  deichgarten,
+  spreewald,
+  cottagegarten,
+  tulpenfelder,
+  artischocken,
+  beerenwald,
 }

@@ -57,6 +57,14 @@ describe('Spielstand v1 (neues Format ab 2026-11-09)', () => {
     }
   })
 
+  it('neue Großprojekte (Gartenroute, Welle 2) starten bei 0, alte Bauabschnitte bleiben', () => {
+    const raw = { ...(v1 as unknown as Record<string, unknown>), projects: { pavillon: 3, brunnen: 1, rosengarten: 2 } }
+    const s = parseSave(raw)!
+    expect(s.projects).toEqual({ pavillon: 3, brunnen: 1, rosengarten: 2 })
+    expect(s.projects.gartenroute ?? 0).toBe(0)
+    expect(parseSave(v1)!.projects).toEqual({})
+  })
+
   it('gibt später hinzugekommenen Feldern ihren Startwert', () => {
     const s = parseSave(v1)! as unknown as Record<string, unknown>
     for (const [k, v] of Object.entries(ADDED_AFTER_V1)) expect(s[k]).toEqual(v)

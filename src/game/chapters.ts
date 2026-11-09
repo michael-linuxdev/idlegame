@@ -38,6 +38,12 @@ export type ChapterId =
   | 'schlossgarten'
   | 'baumschule'
   | 'moorgarten'
+  | 'deichgarten'
+  | 'spreewald'
+  | 'cottagegarten'
+  | 'tulpenfelder'
+  | 'artischocken'
+  | 'beerenwald'
 
 export interface AreaDef {
   id: string

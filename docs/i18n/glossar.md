@@ -106,6 +106,12 @@ Vornamen bleiben deutsch (Flair). Verwandtschaft wird übersetzt.
 | Obergärtner Paul Weidner | **Paul Weidner, Head Gardener** | Kapitel 15 |
 | Lena (Onkel Fritz’ Enkelin) | **Lena** | Kapitel 16; „Mein Opa, für euch Onkel Fritz“ → *My grandpa, Uncle Fritz to you* (nie *Grandpa Fritz*: *Grandpa* ist Omas Mann) |
 | Greta Hansen (Ilses Nichte, Naturschutzwartin) | **Greta Hansen** | Kapitel 17; „Moin!“ mit Erklärung wie bei Jan |
+| Frauke Petersen (Deichschäferin) | **Frauke Petersen** | Kapitel 18; grüßt bewusst nicht mit „Moin“ (kennt man schon): „ein Nicken ist schon ein ganzer Satz“ → *a nod is a whole sentence*; Biike → *the Biike* (+ Erklärung *a great bonfire*) |
+| Mirko Nowak (Kahnfährmann, sorbische Familie) | **Mirko Nowak** | Kapitel 19; Gruß „Dobry źeń!“ (Niedersorbisch/Wendisch) bleibt + Erklärung; Fließe → *channels* (kein ß im Englischen), Kahn → *punt*, staken → *punt/pole* |
+| Margaret Pryce | **Margaret Pryce** | Kapitel 20 (Bogen II); Unterschrift „Herzlich, …“ → *Warmly, Margaret Pryce* |
+| Joost de Vries | **Joost de Vries** | Kapitel 21; „Beste familie“ (Niederländisch) bleibt + Erklärung |
+| Giulia Zanon | **Giulia Zanon** | Kapitel 22; „Bondì!“ (Venezianisch) bleibt + Erklärung; *nonna*, *castraura*, *sagra*, *vaporetto*, *sandolo*, *barene* klein und ohne Anführungszeichen |
+| Ingrid Lund (Försterin in Dalarna) | **Ingrid Lund** | Kapitel 23; „Hej!“ + Erklärung; Jedermannsrecht → *right to roam* („Allemansrätten“ nur im Deutschen, wegen ä) |
 | Enkelkind (Anrede) | **my dear grandchild** | „Mein liebes Enkelkind,“ → *My dear grandchild,* |
 
 ## Kapitel und Währungen
@@ -129,9 +135,21 @@ Vornamen bleiben deutsch (Flair). Verwandtschaft wird übersetzt.
 | 15 | Schlossgarten | **The Palace Garden** | Spargel → **Asparagus** | Palace |
 | 16 | Baumschule | **The Tree Nursery** | Setzlinge → **Saplings** | Nursery |
 | 17 | Moor- und Heidegarten | **The Moorland Garden** | Moosbeeren → **Cranberries** | Moor |
+| 18 | Deichgarten | **The Dike Garden** | Sanddorn → **Sea Buckthorn** | Dike |
+| 19 | Spreewald | **The Spreewald** | Gurken → **Gherkins** | Spree |
+| 20 | Cottage-Garten | **The Cotswold Cottage Garden** | Duftwicken → **Sweet Peas** | England |
+| 21 | Tulpenfelder | **The Dutch Bulb Fields** | Blumenzwiebeln → **Bulbs** | Holland |
+| 22 | Artischockeninsel | **Sant’Erasmo Artichokes** | Artischocken → **Artichokes** | Venice |
+| 23 | Beerenwald | **The Swedish Berry Woods** | Blaubeeren → **Blueberries** | Sweden |
 
 Ab Kapitel 13 (Bogen I „Nach der Schau“ → *After the Show*): Omas Saatgutdose
-→ **Grandma’s seed tin**, Samentütchen → **seed packet**.
+→ **Grandma’s seed tin**, Samentütchen → **seed packet**. Großprojekt Bogen I:
+Omas Gartenroute → **Grandma’s Garden Route**.
+
+Ab Kapitel 20 (Bogen II „Omas Saatgutbriefe“ → *Grandma’s Seed Letters*):
+Briefpartner → **pen friend**. Cottage-Garten bleibt *cottage garden* (nicht mit
+dem Gartenstil *Cottage Garden* = Bauerngarten verwechseln; Bereich am Fließ heißt
+deshalb *Channel-side Garden*).
 
 „Streuobstwiese“ beim ersten Auftreten kurz erklären: *a meadow orchard — old,
 tall fruit trees scattered over grassland*.

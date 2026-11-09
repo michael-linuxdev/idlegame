@@ -295,13 +295,26 @@ Jede Welle ist für sich spielbar: Hinter dem letzten gebauten Kapitel zeigen
 | 16 baumschule | saatbeete, veredelung, obstgehoelze, alleebaeume, heckenpflanzen, containerplatz, giessanlage, packschuppen, hofverkauf, pflanztag |
 | 17 moorgarten | torfmoos, moosbeeren, wollgras, sonnentau, birkenhain, bohlenweg, beobachtungsturm, moorhuette, schnuckenstall, moorfest |
 
+## Welle 2 — Bereichs-IDs
+
+| Kapitel | IDs (Reihenfolge = Leiter) |
+|---|---|
+| 18 deichgarten | sanddorn, salzwiese, koogacker, windschutz, strandrosen, kuttersteg, reetkate, friesenstube, leuchtturm, biike |
+| 19 spreewald | gurkenfeld, meerrettich, leinoelmuehle, kahnanleger, fliessgarten, einlegekueche, holzschuppen, trachtenhaus, erlenwald, gurkenfest |
+| 20 cottagegarten | stockrosen, wickenzaun, gemueseparzelle, steinmauer, apfelspalier, holzgewaechshaus, teeplatz, geissblattlaube, gartenschuppen, dorfschau |
+| 21 tulpenfelder | tulpenreihen, hyazinthen, narzissen, zwiebelscheune, windmuehle, gracht, fahrradstall, versteigerung, hausboot, tulpenmarkt |
+| 22 artischocken | artischockenfeld, lagunenwiese, bootsanleger, kanalgarten, granatapfelhecke, salzgarten, bootsschuppen, gemuesekahn, glockenturm, inselfest |
+| 23 beerenwald | heidelbeerhang, preiselbeeren, moltebeeren, rotehuette, saftkueche, pilzlichtung, holzstapel, seesauna, mittsommer, jedermannspfad |
+
+Großprojekt Bogen I: `gartenroute` („Omas Gartenroute“, Kapitel 13–19, Belohnung 300 Samen).
+
 ## Fortschritt
 
 - [x] **Paket 0** — Plan & Geschichte (dieses Dokument)
 - [x] **Paket 1** — Taktung & Technik (Ruhezeit, Kapitel-Boni addiert, Freischaltregel 13+, Simulator mit Kapiteln, Kapitel-Daten in `chapterPlan.ts`, Spielstand-Größe, „Weitere Gärten folgen“)
 - [x] **Welle 1** — Kapitel 13–17 (Texte de + en, Grafik je Bereich in 5 Stufen + Jahreszeiten, Kulissen `cityYard`/`monastery`/`palace`/`nursery`/`moor`, eigene Wege `yard`/`cloister`/`axis`/`nurseryRows`/`boardwalk`, Tierleben, Währungs-Symbole; `RELEASED_UP_TO = 17`)
-  - Offen für Welle 2: Großprojekt für Bogen I (Kapitel 13–19), sobald der Bogen vollständig ist (`src/game/projects.ts`).
-- [ ] Welle 2 — Kapitel 18–23
+  - Großprojekt für Bogen I: erledigt in Welle 2 (`gartenroute`).
+- [x] **Welle 2** — Kapitel 18–23 (Texte de + en, Bogen II in `stringsChaptersArc2.ts`; Grafik je Bereich in 5 Stufen + Jahreszeiten, gesperrte Ecken `wildD`, Kulissen `dike`/`spreewald`/`cotswolds`/`bulbFields`/`lagoon`/`swedishWoods` in `backdropArc1/2.tsx`, Wege `dikeTrack`/`fliess`/`flagstones`/`bulbLanes`/`canals`/`forestTrail`, Tierleben in `12-kapitel-tierleben-2.css`, Währungs-Symbole; Großprojekt `gartenroute` für Bogen I; `RELEASED_UP_TO = 23`)
 - [ ] Welle 3 — Kapitel 24–29
 - [ ] Welle 4 — Kapitel 30–34
 - [ ] Welle 5 — Kapitel 35–39

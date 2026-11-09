@@ -1,5 +1,5 @@
 /**
- * German copy for Kapitel 4–17 (data-only chapters, see game/chapters.ts).
+ * German copy for Kapitel 4–19 (data-only chapters, see game/chapters.ts).
  * Each chapter: title, currency, map chip, intro letter and ten areas.
  */
 
@@ -433,6 +433,66 @@ export const laterChapterStrings = {
       moorhuette: a('Moorhütte', 'Reetdach, Ofen, Tee.', '„Drinnen ist es warm, auch wenn draußen der Nebel steht.“'),
       schnuckenstall: a('Schnuckenstall', 'Heidschnucken halten die Heide kurz.', '„Ohne Schnucken wäre hier bald Wald.“'),
       moorfest: a('Moorfest', 'Laternen über dem Wasser.', '„Einmal im Jahr feiert das Dorf sein Moor.“'),
+    },
+  },
+  deichgarten: {
+    title: 'Deichgarten',
+    currency: 'Sanddorn',
+    chip: 'Deich',
+    to: 'Zum Deichgarten',
+    teaser: 'Kapitel 18: Der Deichgarten an der Nordsee — ab der Mitte der 13. Generation, wenn das Moorfest gefeiert wird.',
+    intro: {
+      title: 'Hinter dem Deich',
+      body: [
+        'Liebe Gartenfamilie,',
+        'in Omas Dose steckt ein Tütchen Sanddornkerne mit meiner Adresse: „Frauke, Deich bei Hof Petersen. Kerne zurück, wenn die Hecke trägt.“ Oma hat sie mir geschenkt, als ich mit dem Schafehüten anfing. Die Hecke trägt längst. Zurückgeschickt habe ich nie etwas.',
+        'Ich bin Deichschäferin. Meine Schafe halten das Gras auf dem Deich kurz und treten die Erde fest, das schützt vor Sturmflut besser als jede Maschine. Hinter dem Deich liegt der Koog, Land, das man dem Meer abgerungen hat: Kartoffeln, Hecken gegen den Wind und Rosen, denen Salz nichts ausmacht.',
+        'Hier oben wird nicht viel geredet, ein Nicken ist schon ein ganzer Satz. Wer kommt, packt mit an. Am 22. Februar zünden wir zusammen die Biike an, ein großes Feuer, das den Winter verabschiedet. Bringt warme Jacken mit, der Wind kommt immer von vorn.',
+        'Frauke Petersen',
+      ],
+      cta: 'Über den Deich',
+    },
+    areas: {
+      sanddorn: a('Sanddornhecke', 'Orange Beeren an dornigen Zweigen.', '„Die Beeren haben mehr Vitamin C als jede Zitrone.“'),
+      salzwiese: a('Salzwiese', 'Queller und Strandflieder vor dem Deich.', '„Zweimal am Tag kommt das Meer zu Besuch.“'),
+      koogacker: a('Kartoffelacker im Koog', 'Kartoffeln auf altem Meeresboden.', '„Wo heute Kartoffeln wachsen, war früher Watt.“'),
+      windschutz: a('Windschutzhecke', 'Weißdorn und Weiden gegen den Wind.', '„Ohne Hecke fliegt dir hier der Salat davon.“'),
+      strandrosen: a('Strandrosen', 'Rosa Blüten, rote Hagebutten, viel Salz.', '„Die Strandrose verträgt Salz, Sand und Sturm. Fast wie Frauke.“'),
+      kuttersteg: a('Krabbenkutter-Steg', 'Der Kutter bringt Krabben und Neuigkeiten.', '„Krabben pult man am besten zu zweit und mit Geduld.“'),
+      reetkate: a('Reetdachkate', 'Weiße Wände, dickes Reetdach.', '„Ein gutes Reetdach hält vierzig Jahre.“'),
+      friesenstube: a('Friesenstube', 'Blaue Kacheln, Tee mit Kluntje.', '„Erst der Kluntje, dann der Tee, dann die Sahne. Nicht umrühren.“'),
+      leuchtturm: a('Leuchtturm-Garten', 'Ein Garten im Windschatten des Turms.', '„Der Leuchtturmwärter hatte immer die frühesten Erbsen.“'),
+      biike: a('Biikebrennen', 'Ein großes Feuer am 22. Februar.', '„Früher verabschiedete das Feuer die Walfänger. Heute den Winter.“'),
+    },
+  },
+  spreewald: {
+    title: 'Spreewald',
+    currency: 'Gurken',
+    chip: 'Spree',
+    to: 'Zum Spreewald',
+    teaser: 'Kapitel 19: Der Spreewald — ab der 14. Generation, wenn im Deichgarten die Biike brennt.',
+    intro: {
+      title: 'Vom Fließ',
+      body: [
+        'Dobry źeń! So sagt man bei uns „Guten Tag“, auf Sorbisch, genauer Niedersorbisch oder Wendisch, wie man hier sagt. Meine Familie spricht es seit Generationen, auch wenn die Kinder heute lieber Deutsch reden.',
+        'Ich fahre den Kahn auf den Fließen, den vielen kleinen Armen der Spree. Manche Höfe erreicht man nur mit dem Boot, sogar die Post kommt im Kahn. In Omas Dose liegt ein Tütchen Gurkensamen mit unserer Adresse, von meiner Großmutter. Die beiden haben jedes Jahr Rezepte getauscht: für Salzgurken und für Senfgurken.',
+        'Die Gurken wachsen am Wasser, der Meerrettich gleich daneben, und im Herbst riecht das ganze Dorf nach Dill und Essig. Im Winter frieren die Fließe zu, dann fahren wir mit Schlittschuhen zum Nachbarhof.',
+        'Kommt vorbei, ich hole euch am Anleger ab. Rudern müsst ihr nicht. Staken schon.',
+        'Mirko Nowak',
+      ],
+      cta: 'In den Kahn steigen',
+    },
+    areas: {
+      gurkenfeld: a('Gurkenfeld', 'Ranken, gelbe Blüten, kleine Gurken.', '„Gepflückt wird jeden Morgen, sonst werden sie zu groß.“'),
+      meerrettich: a('Meerrettichbeet', 'Scharfe Wurzeln, tief im Sand.', '„Beim Reiben weinen alle. Das gehört dazu.“'),
+      leinoelmuehle: a('Leinölmühle', 'Leinsamen werden zu goldenem Öl.', '„Pellkartoffeln mit Quark und Leinöl. Mehr braucht man nicht.“'),
+      kahnanleger: a('Kahnanleger', 'Hier legen die Kähne an.', '„Ein Kahn wird gestakt, nicht gerudert.“'),
+      fliessgarten: a('Bauerngarten am Fließ', 'Gemüse und Blumen bis ans Wasser.', '„Gegossen wird mit dem Eimer, direkt aus dem Fließ.“'),
+      einlegekueche: a('Einlegeküche', 'Dill, Senfkörner und große Fässer.', '„Jede Familie hat ihr eigenes Gurkenrezept. Verraten wird es nur guten Freunden.“'),
+      holzschuppen: a('Holzschuppen', 'Erlenholz für den langen Winter.', '„Das Holz von heute wärmt im übernächsten Winter.“'),
+      trachtenhaus: a('Sorbisches Trachtenhaus', 'Hauben, Bänder und bemalte Eier.', '„Die große Haube heißt Lapa. Sie zu binden dauert eine Stunde.“'),
+      erlenwald: a('Erlenwald', 'Erlen mit nassen Füßen.', '„Erlen stehen gern mit den Füßen im Wasser.“'),
+      gurkenfest: a('Gurkenfest', 'Kähne voller Gurken und Musik.', '„Am Ende wird die Gurkenkönigin gekrönt.“'),
     },
   },
 } as const

@@ -6,7 +6,7 @@
 import { chapterDef, type ChapterId } from './chapters'
 import type { DecorId } from './decor'
 
-export type ProjectId = 'pavillon' | 'brunnen' | 'dorffest' | 'rosengarten'
+export type ProjectId = 'pavillon' | 'brunnen' | 'dorffest' | 'rosengarten' | 'gartenroute'
 
 export interface ProjectDef {
   id: ProjectId
@@ -19,6 +19,12 @@ export const PROJECTS: ProjectDef[] = [
   { id: 'brunnen', chapters: ['bauernhof', 'imkerei', 'teich'], reward: { decor: 'brunnen' } },
   { id: 'dorffest', chapters: ['kraeuter', 'botanik', 'alm'], reward: { samen: 150 } },
   { id: 'rosengarten', chapters: ['lavendel', 'japangarten', 'gartenschau'], reward: { bonus: 0.05 } },
+  // Bogen I „Nach der Schau“ (Kapitel 13–19)
+  {
+    id: 'gartenroute',
+    chapters: ['stadtgarten', 'klostergarten', 'schlossgarten', 'baumschule', 'moorgarten', 'deichgarten', 'spreewald'],
+    reward: { samen: 300 },
+  },
 ]
 
 export const PROJECT_IDS: ProjectId[] = PROJECTS.map((p) => p.id)

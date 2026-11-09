@@ -118,12 +118,14 @@ export const lifeStrings = {
       brunnen: 'Der Dorfbrunnen',
       dorffest: 'Das große Dorffest',
       rosengarten: 'Omas Rosengarten',
+      gartenroute: 'Omas Gartenroute',
     } as Record<string, string>,
     blurbs: {
       pavillon: 'Opa und Tante Hilde helfen beim Wiederaufbau des alten Pavillons.',
       brunnen: 'Onkel Fritz, die Imker und die Fischer bauen einen Brunnen für alle.',
       dorffest: 'Kräuter, Blüten und Almkäse für ein Fest, von dem man noch lange spricht.',
       rosengarten: 'Zum Schluss: ein Rosengarten in Omas Namen.',
+      gartenroute: 'Ein Radweg von Garten zu Garten — so fuhr Oma früher zum Tauschen.',
     } as Record<string, string>,
   },
   album: {

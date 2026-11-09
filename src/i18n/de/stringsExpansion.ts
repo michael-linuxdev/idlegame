@@ -6,6 +6,7 @@
 
 import { zahl } from './count'
 import { laterChapterStrings } from './stringsChapters'
+import { arc2ChapterStrings } from './stringsChaptersArc2'
 
 function obst(n: string): string {
   return `${n} Obst`
@@ -187,6 +188,12 @@ export const expansionStrings = {
       schlossgarten: ['Gartenkunst', 'Förderverein'],
       baumschule: ['Anzucht', 'Vorrat'],
       moorgarten: ['Wasser halten', 'Ehrenamt'],
+      deichgarten: ['Deichpflege', 'Nachbarhilfe'],
+      spreewald: ['Fließpflege', 'Rezepte'],
+      cottagegarten: ['Nachbarn', 'Samen ernten'],
+      tulpenfelder: ['Zwiebelzucht', 'Sortieren'],
+      artischocken: ['Gezeiten', 'Ableger'],
+      beerenwald: ['Waldpflege', 'Vorräte'],
     } as Record<string, readonly [string, string]>,
     growPer: '+6 % pro Rang',
     thriftPer: '−4 % Kosten pro Rang',
@@ -254,6 +261,7 @@ export const expansionStrings = {
       },
     },
     ...laterChapterStrings,
+    ...arc2ChapterStrings,
   },
 
   ilse: {
