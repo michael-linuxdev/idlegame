@@ -379,7 +379,7 @@ export default function App() {
       ) : null}
 
       {legalOpen ? <LegalSheet onClose={() => setLegalOpen(false)} /> : null}
-      {backupOpen ? <SaveSheet onClose={() => setBackupOpen(false)} /> : null}
+      {backupOpen ? <SaveSheet state={game.state} onClose={() => setBackupOpen(false)} /> : null}
 
       {comebackOpen && !game.seasonEnd ? (
         <ComebackLetter

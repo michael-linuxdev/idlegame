@@ -17,6 +17,7 @@
  * 11. Sprache: Browser en-US startet englisch, Umschalter wechselt live (ohne Neuladen),
  *     die Wahl übersteht das Neuladen, ?lang= hat Vorrang
  * 12. Deko und Saatgut kreuzen öffnen auch aus Markt und Saison
+ * 14. Automatische Sicherung: Spielstand löschen → Angebot → Wiederherstellen (Gartenjahr, Währungen, Kapitel)
  * Alle anderen Abschnitte laufen mit Browser-Sprache de-DE.
  * Fails on any uncaught page error. Run: npm run build && npm run e2e
  */
@@ -621,6 +622,89 @@ try {
     await p.getByRole('button', { name: T.testAd.cancel }).click()
     assert((await p.locator('.ad-box').count()) === 0, 'ad closes on cancel')
     await ctx.close()
+  }
+
+  // 14 — Automatische Sicherung: Tages-Sicherung in IndexedDB, Spielstand löschen →
+  //      Angebot vor dem neuen Garten → nach Wiederherstellen stimmen Gartenjahr, Währungen, Kapitel
+  {
+    const ctx = await browser.newContext({ ...devices['iPhone 13'], reducedMotion: 'reduce' })
+    await ctx.addInitScript(() => {
+      if (sessionStorage.getItem('seed')) return
+      const owned = { gemuesebeet: 60, kompost: 40, kraeuterspirale: 30 }
+      const chapters = { obstwiese: { openedAt: 1, introSeen: true, cur: 4321, curLifetime: 9999, owned: { apfel: 5 }, care: {} } }
+      localStorage.setItem('gartenerbe-spielstand-v1', JSON.stringify({ owned, ernte: 123456, saisonenden: 6, erbstuecke: 88, samen: 321, tiefeWinter: 1, chapters, lastSeen: Date.now(), saveVersion: 1 }))
+      localStorage.setItem('gartenerbe-ftue-v1', JSON.stringify({ beat: 'done', dismissed: true, completed: [], startedAt: 1 }))
+      localStorage.setItem('gartenerbe-install-v1', JSON.stringify({ dismissed: true, installed: false, shown: true }))
+      localStorage.setItem('gartenerbe-hints-v1', JSON.stringify(['season', 'truhe', 'deep', 'visitor', 'order', 'variety', 'weekly']))
+      sessionStorage.setItem('seed', '1')
+    })
+    let p = await ctx.newPage()
+    p.on('pageerror', (e) => errors.push(e.message))
+    await p.goto(URL)
+    await p.locator('.garden-map').waitFor()
+    // Erstes Speichern (alle 4 s) legt die Tages-Sicherung an
+    const count = () =>
+      p.evaluate(
+        () =>
+          new Promise((res) => {
+            const r = indexedDB.open('gartenerbe-sicherungen', 1)
+            r.onupgradeneeded = () => r.result.createObjectStore('sicherungen', { keyPath: 'id' })
+            r.onsuccess = () => {
+              const g = r.result.transaction('sicherungen', 'readonly').objectStore('sicherungen').getAll()
+              g.onsuccess = () => {
+                r.result.close()
+                res(g.result.map((e) => e.kind))
+              }
+            }
+          }),
+      )
+    let kinds = []
+    for (let i = 0; i < 30 && !kinds.includes('daily'); i++) {
+      await p.waitForTimeout(500)
+      kinds = await count()
+    }
+    assert(kinds.includes('daily'), 'daily backup written to IndexedDB')
+    // Menü → Spielstand zeigt die Sicherung
+    await p.locator('.menu-fab').click()
+    await p.getByRole('menuitem', { name: T.backup.menu }).click()
+    await p.getByText(T.backup.autoTitle).waitFor()
+    await p.locator('.backup-row').first().waitFor()
+    assert((await p.locator('.backup-row').first().innerText()).includes(T.backup.kinds.daily), 'backup listed in the menu')
+    await p.screenshot({ path: `e2e-screens/backup-menu-${LANG}.png` })
+    await p.locator('.notebook-close').click()
+
+    // Spielstand weg (z. B. kaputt oder einzeln gelöscht, IndexedDB blieb) → Angebot vor dem neuen Garten.
+    // Erst das Fenster schließen (es speichert beim Verlassen), dann im neuen Fenster einmal löschen.
+    await p.close()
+    await ctx.addInitScript(() => {
+      if (sessionStorage.getItem('wiped')) return
+      localStorage.removeItem('gartenerbe-spielstand-v1')
+      sessionStorage.setItem('wiped', '1')
+    })
+    p = await ctx.newPage()
+    p.on('pageerror', (e) => errors.push(e.message))
+    await p.goto(URL)
+    await p.locator('.restore-offer').waitFor({ timeout: 10_000 })
+    assert((await p.locator('#restore-offer-title').innerText()) === T.backup.offerTitle, 'restore offer title')
+    assert((await p.locator('.garden-map').count()) === 0, 'no new garden before the answer')
+    assert(await p.evaluate(() => localStorage.getItem('gartenerbe-spielstand-v1') === null), 'nothing restored silently')
+    await p.screenshot({ path: `e2e-screens/backup-offer-${LANG}.png` })
+    await p.locator('.restore-offer .backup-restore').first().click()
+    await p.locator('.garden-map').waitFor({ timeout: 15_000 })
+    const back = await p.evaluate(() => JSON.parse(localStorage.getItem('gartenerbe-spielstand-v1') || '{}'))
+    assert(back.saisonenden === 6 && back.samen === 321 && back.erbstuecke === 88 && back.tiefeWinter === 1, `restored garden year and currencies (${JSON.stringify({ s: back.saisonenden, samen: back.samen, e: back.erbstuecke })})`)
+    assert(back.chapters?.obstwiese?.openedAt > 0 && back.chapters.obstwiese.cur >= 4321, 'restored chapter')
+    assert(back.ernte >= 123456, 'restored harvest')
+    await ctx.close()
+
+    // Ohne Sicherung: direkt ein neuer Garten (kein Angebot)
+    const fresh = await browser.newContext({ ...devices['iPhone 13'], reducedMotion: 'reduce' })
+    const q = await fresh.newPage()
+    q.on('pageerror', (e) => errors.push(e.message))
+    await q.goto(URL)
+    await q.getByText(T.ftue.welcome.title).waitFor({ timeout: 10_000 })
+    assert((await q.locator('.restore-offer').count()) === 0, 'no offer without backups')
+    await fresh.close()
   }
 
   // 11 — Sprache: Erkennung, Live-Umschalter, gespeicherte Wahl, ?lang=

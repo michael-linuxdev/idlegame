@@ -48,6 +48,7 @@ export type PlaytestEventType =
   | 'storage'
   | 'test_purchase'
   | 'test_ad'
+  | 'backup'
 
 export type PlaytestPayload = Record<string, string | number | boolean | null | undefined>
 

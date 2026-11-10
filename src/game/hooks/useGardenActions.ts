@@ -12,6 +12,7 @@ import type { LegacyId } from '../generations'
 import { GENERATORS, generatorCost, type GeneratorId } from '../generators'
 import type { DeepMetaId } from '../longLoop'
 import { logPlaytest } from '../playtestLog'
+import { backupBeforeOccasion } from '../autoBackup'
 import type { ProjectId } from '../projects'
 import type { ResidentId } from '../residents'
 import type { SeasonCardId } from '../seasonCards'
@@ -167,6 +168,9 @@ export function useGardenActions({ setState, stateRef }: UseGardenActionsDeps) {
   }, [setState])
 
   const deepReset = useCallback(() => {
+    // Automatische Sicherung des Stands direkt davor (läuft im Hintergrund)
+    const before = stateRef.current
+    if (doDeepReset(before) !== before) void backupBeforeOccasion('deep', before)
     setState((s) => {
       const gain = deepSproutPayout(s)
       const next = doDeepReset(s)
@@ -177,9 +181,11 @@ export function useGardenActions({ setState, stateRef }: UseGardenActionsDeps) {
       }
       return next
     })
-  }, [setState])
+  }, [setState, stateRef])
 
   const handDown = useCallback(() => {
+    const before = stateRef.current
+    if (doGeneration(before) !== before) void backupBeforeOccasion('generation', before)
     setState((s) => {
       const gain = generationPayout(s)
       const next = doGeneration(s)
@@ -190,7 +196,7 @@ export function useGardenActions({ setState, stateRef }: UseGardenActionsDeps) {
       }
       return next
     })
-  }, [setState])
+  }, [setState, stateRef])
 
   const buyLegacyRank = useCallback((id: LegacyId) => {
     setState((s) => {

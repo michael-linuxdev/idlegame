@@ -19,6 +19,8 @@ import { FloatPops, type FloatPopItem } from './FloatPops'
 import { BottomBar } from './hud/BottomBar'
 import { Visitors } from './Visitors'
 import { OmaHint } from './OmaHint'
+import { BackupReminder } from './BackupReminder'
+import { exportReminderDue, loadRecord } from '../game/backupReminder'
 import { hasOpenWindow, useOverlayOpen } from '../game/overlays'
 import { MultSheet } from './hud/MultSheet'
 import { WelcomeBack } from './hud/WelcomeBack'
@@ -552,6 +554,11 @@ export function GardenMap({
   const [shownHint, setShownHint] = useState<typeof candidate>(null)
   if (candidate !== shownHint && (candidate === null || quiet)) setShownHint(candidate)
   const hint = candidate !== null && candidate === shownHint ? candidate : null
+  // Sicherung außerhalb des Geräts: nur, wenn sonst kein Hinweis und kein Fenster offen ist
+  // (Regel zuletzt prüfen — sie liest einen kleinen Eintrag aus localStorage)
+  const [remindDone, setRemindDone] = useState(false)
+  const [remindShown, setRemindShown] = useState(false)
+  if (!remindShown && !remindDone && candidate === null && !hint && quiet && !hintsBlocked && !overlayOpen && !photoMode && exportReminderDue(loadRecord(), state, Date.now())) setRemindShown(true)
 
   return (
     <section className={`garten-home${photoMode ? ' photo-mode' : ''}`} aria-labelledby="ernte-heading">
@@ -587,6 +594,15 @@ export function GardenMap({
       ) : null}
 
       {hint ? <OmaHint id={hint} onOk={() => markSeen(hint)} /> : null}
+      {remindShown && !remindDone && !hint && !overlayOpen ? (
+        <BackupReminder
+          state={state}
+          onDone={() => {
+            setRemindDone(true)
+            setRemindShown(false)
+          }}
+        />
+      ) : null}
       {multOpen ? <MultSheet rows={multRows} onClose={() => setMultOpen(false)} /> : null}
       {!welcomeDone && !hintsBlocked && !photoMode && game.offlineGained != null && game.offlineAwayMs >= 5 * 60_000 ? (
         <WelcomeBack

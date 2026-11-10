@@ -1,0 +1,110 @@
+{
+ "save-v1": {
+  "erntePerS": 41825533.88815878,
+  "chapterPerS": {
+   "obstwiese": 1985.0880000000002
+  },
+  "currencies": {
+   "ernte": 129732269572.66489,
+   "ernteSeason": 1599305494718.799,
+   "erbstuecke": 11,
+   "samen": 354,
+   "sproesslinge": 5,
+   "vermaechtnis": 0,
+   "kapitel:obstwiese": 46.0000000007567
+  },
+  "openChapters": [
+   "obstwiese"
+  ],
+  "deepRestLeftMs": 0,
+  "crossingLeftMs": 14340000
+ },
+ "v1-spaet": {
+  "erntePerS": 245223906.95369765,
+  "chapterPerS": {
+   "obstwiese": 19283.712000000007,
+   "stadtgarten": 4099885971310.081,
+   "spreewald": 11377292071519.084,
+   "cottagegarten": 34666623581430.97,
+   "pistazien": 20342901669831.266,
+   "andenkartoffeln": 1379236326184631.8,
+   "kimchigarten": 690917936963602.5,
+   "dachgarten": 19285340569413736,
+   "weltgartenschau": 38479954401485800
+  },
+  "currencies": {
+   "ernte": 129732269572.66489,
+   "ernteSeason": 1599305494718.799,
+   "erbstuecke": 11,
+   "samen": 354,
+   "sproesslinge": 5,
+   "vermaechtnis": 0,
+   "kapitel:obstwiese": 46.0000000007567,
+   "kapitel:stadtgarten": 1000000000,
+   "kapitel:spreewald": 1000000000,
+   "kapitel:cottagegarten": 1000000000,
+   "kapitel:pistazien": 1000000000,
+   "kapitel:andenkartoffeln": 1000000000,
+   "kapitel:kimchigarten": 1000000000,
+   "kapitel:dachgarten": 1000000000,
+   "kapitel:weltgartenschau": 1000000000
+  },
+  "openChapters": [
+   "obstwiese",
+   "stadtgarten",
+   "spreewald",
+   "cottagegarten",
+   "pistazien",
+   "andenkartoffeln",
+   "kimchigarten",
+   "dachgarten",
+   "weltgartenschau"
+  ],
+  "deepRestLeftMs": 172800000,
+  "crossingLeftMs": 14340000
+ },
+ "v1-spaet-ruhe-frisch": {
+  "erntePerS": 245223906.95369765,
+  "chapterPerS": {
+   "obstwiese": 19283.712000000007,
+   "stadtgarten": 4099885971310.081,
+   "spreewald": 11377292071519.084,
+   "cottagegarten": 34666623581430.97,
+   "pistazien": 20342901669831.266,
+   "andenkartoffeln": 1379236326184631.8,
+   "kimchigarten": 690917936963602.5,
+   "dachgarten": 19285340569413736,
+   "weltgartenschau": 38479954401485800
+  },
+  "currencies": {
+   "ernte": 129732269572.66489,
+   "ernteSeason": 1599305494718.799,
+   "erbstuecke": 11,
+   "samen": 354,
+   "sproesslinge": 5,
+   "vermaechtnis": 0,
+   "kapitel:obstwiese": 46.0000000007567,
+   "kapitel:stadtgarten": 1000000000,
+   "kapitel:spreewald": 1000000000,
+   "kapitel:cottagegarten": 1000000000,
+   "kapitel:pistazien": 1000000000,
+   "kapitel:andenkartoffeln": 1000000000,
+   "kapitel:kimchigarten": 1000000000,
+   "kapitel:dachgarten": 1000000000,
+   "kapitel:weltgartenschau": 1000000000
+  },
+  "openChapters": [
+   "obstwiese",
+   "stadtgarten",
+   "spreewald",
+   "cottagegarten",
+   "pistazien",
+   "andenkartoffeln",
+   "kimchigarten",
+   "dachgarten",
+   "weltgartenschau"
+  ],
+  "deepRestLeftMs": 259140000,
+  "crossingLeftMs": 14340000
+ }
+}

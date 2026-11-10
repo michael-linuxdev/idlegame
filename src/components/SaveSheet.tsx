@@ -2,14 +2,19 @@ import { useMemo, useRef, useState } from 'react'
 import { useDismiss } from '../game/overlays'
 import { applyBundle, downloadBackup, exportCode, readCode } from '../game/backup'
 import { formatDateTime } from '../game/format'
+import { backupBeforeOccasion, withTimeout } from '../game/autoBackup'
+import { markExported } from '../game/backupReminder'
+import type { GameState } from '../game/state'
 import { t } from '../i18n'
+import { BackupList } from './BackupList'
 
 interface Props {
   onClose: () => void
+  state: GameState
 }
 
-/** Spielstand sichern — export as code/file, import on a new device. */
-export function SaveSheet({ onClose }: Props) {
+/** Spielstand sichern — export as code/file, import on a new device, automatische Sicherungen. */
+export function SaveSheet({ onClose, state }: Props) {
   useDismiss(onClose)
   const code = useMemo(() => exportCode(), [])
   const [copied, setCopied] = useState(false)
@@ -22,6 +27,7 @@ export function SaveSheet({ onClose }: Props) {
   async function copy() {
     try {
       await navigator.clipboard.writeText(code)
+      markExported(state)
       setCopied(true)
       window.setTimeout(() => setCopied(false), 2000)
     } catch {
@@ -39,7 +45,9 @@ export function SaveSheet({ onClose }: Props) {
       window.setTimeout(() => setArmed(false), 4000)
       return
     }
-    applyBundle(parsed.bundle)
+    // Vorher den jetzigen Garten automatisch sichern (höchstens 2 s warten)
+    const bundle = parsed.bundle
+    void withTimeout(backupBeforeOccasion('import', state), 2000, false).then(() => applyBundle(bundle))
   }
 
   return (
@@ -67,7 +75,9 @@ export function SaveSheet({ onClose }: Props) {
           <button type="button" className="btn buy" onClick={copy}>
             {copied ? t.backup.copied : t.backup.copy}
           </button>
-          <button type="button" className="btn ghost" onClick={() => downloadBackup(code)}>
+          <button type="button" className="btn ghost" onClick={() => void downloadBackup(code).then((r) => {
+            if (r === 'shared' || r === 'downloaded') markExported(state)
+          })}>
             {t.backup.download}
           </button>
         </div>
@@ -107,6 +117,10 @@ export function SaveSheet({ onClose }: Props) {
         {parsed && parsed.ok ? (
           <p className="save-ok">{t.backup.found(formatDateTime(parsed.bundle.at))}</p>
         ) : null}
+
+        <h3>{t.backup.autoTitle}</h3>
+        <p className="notebook-intro">{t.backup.autoIntro}</p>
+        <BackupList confirm state={state} />
       </div>
     </div>
   )

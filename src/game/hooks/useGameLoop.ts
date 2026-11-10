@@ -17,6 +17,8 @@ import {
   openChapters,
 } from '../state'
 import { loadState, saveState } from '../storage'
+import { noteSaved } from '../autoBackup'
+import { ensureRecord } from '../backupReminder'
 import { useEffect, useRef, useState } from 'react'
 
 /** Economy + React UI cadence. 100ms was overheating iPhone Safari PWAs. */
@@ -56,6 +58,8 @@ export function useGameLoop() {
     const fresh = loadFeaturesSeen() === null
     const seen = ensureFeaturesSeen(ctx)
     if (fresh) seedHintsSeen(seen.map((id) => FEATURE_HINTS[id]).filter((h): h is HintId => h != null))
+    // Sicherung außerhalb des Geräts: ab jetzt zählen (backupReminder.ts)
+    ensureRecord(s)
     return true
   })
   const [offlineGained, setOfflineGained] = useState<number | null>(boot.pending)
@@ -95,14 +99,15 @@ export function useGameLoop() {
       dirtySaveRef.current = false
       const next = { ...stateRef.current, lastSeen: Date.now() }
       stateRef.current = next
-      saveState(next)
+      if (saveState(next)) void noteSaved()
     }
 
     const saveTimer = window.setInterval(() => {
       if (!dirtySaveRef.current) return
       if (document.visibilityState === 'hidden') return
       dirtySaveRef.current = false
-      saveState(stateRef.current)
+      // Einmal am Tag danach eine automatische Sicherung (autoBackup.ts, nie störend)
+      if (saveState(stateRef.current)) void noteSaved()
     }, SAVE_MS)
 
     let tickTimer: number | null = null

@@ -6,6 +6,8 @@ import { ErrorBoundary } from './components/ErrorBoundary'
 import { reloadForNewVersion } from './game/chunkReload'
 import { logPlaytest } from './game/playtestLog'
 import { startSaveLock } from './game/saveGuard'
+import { storedSaveState } from './game/storage'
+import { listBackups, withTimeout } from './game/autoBackup'
 import { initLocale } from './i18n'
 import './theme/fonts'
 import './index.css'
@@ -46,11 +48,38 @@ function startGame() {
   }
 
   // Sprache vor dem ersten Bild festlegen (Englisch wird nur bei Bedarf geladen)
-  void initLocale().then(() => render())
+  void initLocale().then(() => offerRestoreOrStart())
 }
 
-function render() {
-  createRoot(document.getElementById('root')!).render(
+/**
+ * Leerer oder kaputter Spielstand, aber automatische Sicherungen vorhanden:
+ * zuerst fragen (RestoreOffer), erst danach entsteht ein neuer Garten.
+ * IndexedDB, die nicht antwortet, hält den Start höchstens 1,5 s auf.
+ */
+async function offerRestoreOrStart() {
+  const root = createRoot(document.getElementById('root')!)
+  const st = storedSaveState()
+  if (st === 'empty' || st === 'broken') {
+    try {
+      const backups = await withTimeout(listBackups(), 1500, [])
+      if (backups.length > 0) {
+        const { RestoreOffer } = await import('./components/RestoreOffer')
+        root.render(
+          <StrictMode>
+            <RestoreOffer backups={backups} onNewGarden={() => render(root)} />
+          </StrictMode>,
+        )
+        return
+      }
+    } catch {
+      /* Sicherungen nicht lesbar: normal starten */
+    }
+  }
+  render(root)
+}
+
+function render(root = createRoot(document.getElementById('root')!)) {
+  root.render(
     <StrictMode>
       <ErrorBoundary>
         <App />

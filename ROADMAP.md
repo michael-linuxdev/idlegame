@@ -46,6 +46,16 @@ Werkzeug: `npm run balance -- <engaged|regular|casual> <stunden>` — spielt die
 - **Saison-Karten (2026-11-09):** ab Gartenjahr 4 nach jedem Saisonende 1 von 3 Jahres-Themen (12 Karten, `src/game/seasonCards.ts`), nur angelegte Bereiche, Vorschau ≥ ±0, nie zweimal hintereinander. Sim 14 Tage Saisons (Dauerspieler/Regular/Casual): ohne Karte 169/64/28, Zufall 175/64/29, beste Wahl 182/66/29 (Simulator Standard: beste Wahl). Erste Fassung (×3/×2,5) war mit +19 % (Regular 76) zu stark.
 - **Kapitel und Generationen (2026-11-09, Paket 1 Kapitel 13–50):** Der Simulator baut jetzt auch Kapitel aus (`CHAPTERS=1`, Ilse). Befund: Die multiplizierten, ungedeckelten Kapitel-Boni trieben den Garten auf ×10¹², Tiefe Winter und Generationen kamen im Tagestakt (Regular: Kapitel 12 an Tag 84). Umgesetzt: **3 Tage Ruhezeit nach jedem Tiefen Winter** und **Kapitel-Boni addiert**. Ergebnis (5 Jahre, Regular): Kapitel 12 Tag 268, Kapitel 13 Tag 313, danach alle 24–56 Tage, Kapitel 50 Tag 1784; Garten-Bonus der Kapitel ×300. Bericht: `docs/kapitel/balance-bericht.md`, Taktung: `docs/kapitel/plan.md`.
 - Tiefer Winter ab Gartenjahr 15: Sprösslinge = 2 · (Jahr − 13)^1,3; Sim-Policy: Tiefer Winter, sobald eine Saison > 18 h dauert.
+- **Runde 4 „Sichern, Bündeln, Belohnen, Unterscheiden“ (2026-11-10) — Basis vor der ersten Änderung** (Commit bb5054f, Befehle aus `docs/prompts/runde-4.md` Regel 8; Casual 2 Jahre: `GEN=1 CHAPTERS=1 CHAPTER_MANUAL=0 SUMMARY=1 npm run balance -- casual 17520`):
+
+  | Messung | Ergebnis |
+  |---|---|
+  | Dauerspieler 14 Tage | 120 Saisons, erstes Saisonende 14 min, Tiefe Winter Tag 3/7/12 |
+  | Regular 14 Tage | 67 Saisons, erstes 120 min, Tiefe Winter Tag 10/13 |
+  | Casual 14 Tage | 29 Saisons, erstes 180 min, Tiefer Winter Tag 8 |
+  | Regular 5 Jahre (Kapitel, nur Ilse) | K12 Tag 263, **K13 Tag 309** (Monat 10), K20 498, K30 837, K40 1268, **K50 Tag 1781** (4,9 J.); Abstand ab K13 24–55 Tage, **Ø 39,8** (5,7 Wochen); Tag 730: K27 |
+  | Dauerspieler 1 Jahr (grob ab Tag 30) | K13 Tag 296, K14 318, K15 340, K16 364 — Abstand 22–24 Tage |
+  | Casual 2 Jahre (zusätzlich, für „Casual ≥ K20“) | K12 Tag 317, K13 369, K20 585, **Tag 730: K24** |
 
 ## Prinzipien
 
