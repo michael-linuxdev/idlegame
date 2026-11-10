@@ -5,7 +5,7 @@ import { FEST_EARN } from '../fests'
 import { deepOfflineBonusHours } from '../longLoop'
 import { xpFromOfflineClaim } from '../progression'
 import { cardOfflineMult } from '../seasonCards'
-import { rollOfflineJackpot } from '../surpriseJumps'
+import { OFFLINE_JACKPOT_BONUS, rollOfflineJackpot } from '../surpriseJumps'
 import { collectReadyAchievements } from './buy'
 import { runIlse, syncChaptersOpen, tickChapters } from './chapters'
 import {
@@ -38,11 +38,14 @@ export function applyOfflineCatchup(
   const gained =
     offlineCatchupErnte(rate, elapsedSec, truheCaps.soft + deepCaps.soft, truheCaps.hard + deepCaps.hard) *
     cardOfflineMult(base.seasonCard)
+  // „Über Nacht gewachsen“ gilt für jeden Garten: ein Wurf, Kapitel bekommen dieselben +35 %
+  const jackpot = gained > 0 ? rollOfflineJackpot(gained, elapsedMs) : null
+  const chapterJackpot = jackpot ? 1 + OFFLINE_JACKPOT_BONUS : 1
   // Chapters grow offline with the same caps; Ilse keeps tending them
   base = syncContest(syncFest(syncChaptersOpen(base, now), now), now)
   base = tickChapters(
     base,
-    (r) => offlineCatchupErnte(r, elapsedSec, truheCaps.soft + deepCaps.soft, truheCaps.hard + deepCaps.hard),
+    (r) => offlineCatchupErnte(r, elapsedSec, truheCaps.soft + deepCaps.soft, truheCaps.hard + deepCaps.hard) * chapterJackpot,
     true,
   )
   if (base.ilseLevel > 0 && base.ilseOn && elapsedMs > 60_000) {
@@ -55,7 +58,6 @@ export function applyOfflineCatchup(
     return { state: { ...base, lastSeen: now }, gained: 0 }
   }
   let total = gained
-  const jackpot = rollOfflineJackpot(gained, elapsedMs)
   if (jackpot) total += jackpot.amount
   let withProg = withEventProgress(base, total, now)
   withProg = {

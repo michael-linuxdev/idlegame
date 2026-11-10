@@ -23,6 +23,7 @@ import { FEST_EARN } from '../fests'
 import { legacyCostMult, legacyOrchardMult } from '../generations'
 import { masteryMult, masteryStars } from '../mastery'
 import { milestonesReached } from '../generators'
+import { SURPRISE_MIN_GAP_MS, rollChapterJackpot } from '../surpriseJumps'
 import { XP_PER_UPGRADE, levelProductionMult } from '../progression'
 import type { BuyMode } from './buy'
 import { playerLevelOf, withXp } from './core'
@@ -181,6 +182,15 @@ export function buyChapterArea(
     },
     totalUpgrades: state.totalUpgrades + 1,
     lastSeen: Date.now(),
+  }
+  // Kapitel-Jackpot: nur beim eigenen Tippen, höchstens einer je 5 s (wie im Garten)
+  const now = next.lastSeen
+  const jackpot =
+    mode === 'manual' && now - state.lastSurpriseAt >= SURPRISE_MIN_GAP_MS
+      ? rollChapterJackpot(id, chapterPerSecond(next, id), next.chapters[id].curLifetime)
+      : null
+  if (jackpot) {
+    next = { ...withChapterCur(next, id, jackpot.amount), lastSurprise: jackpot, lastSurpriseAt: now }
   }
   next = withMilestoneChest(next, `${id}:${areaId}`, owned + 1)
   next = withXp(next, mode === 'helper' ? 1 : XP_PER_UPGRADE)

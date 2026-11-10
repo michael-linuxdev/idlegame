@@ -4,7 +4,7 @@
  * online (Bogen IV: offline genau mit seinem Faktor), keine Wirkung auf
  * Garten-Bonus, Samen oder Freischaltung.
  */
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { ARC_RULE_CAP, PATE, PLAN, TAUSCH, WASSER, arcOf, arcRateMult, bestChoice, normalizeChoice } from '../game/arcRules'
 import { CHAPTERS, chapterDef, chaptersGardenMult, type ChapterId } from '../game/chapters'
 import { parseSave } from '../game/storage'
@@ -173,13 +173,15 @@ describe('Bogen IV: Plan für morgen', () => {
     expect(chapterPerSecond(jetzt, id, true)).toBe(base)
     expect(chapterPerSecond(morgen, id)).toBe(base)
     expect(chapterPerSecond(morgen, id, true) / base).toBeCloseTo(PLAN.morgen.away, 10)
-    // Offline-Ernte über 2 h
+    // Offline-Ernte über 2 h (ohne Offline-Jackpot, der gilt seit 2026-11-10 auch für Kapitel)
+    const rnd = vi.spyOn(Math, 'random').mockReturnValue(0.99)
     const away = (x: GameState) => {
       const before = { ...x, lastSeen: NOW - 2 * 3600_000, ilseOn: false }
       return applyOfflineCatchup(before, NOW).state.chapters[id].cur - before.chapters[id].cur
     }
     expect(away(morgen) / away(s)).toBeCloseTo(PLAN.morgen.away, 6)
     expect(away(jetzt) / away(s)).toBeCloseTo(1, 6)
+    rnd.mockRestore()
   })
 })
 

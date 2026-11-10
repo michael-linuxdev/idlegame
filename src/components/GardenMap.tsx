@@ -10,7 +10,6 @@ import { computeNextGoal } from '../game/nextGoal'
 import { xpFromOfflineClaim } from '../game/progression'
 import { logPlaytest } from '../game/playtestLog'
 import { playSfx } from '../game/sound'
-import { type SurpriseKind } from '../game/surpriseJumps'
 import { multBreakdown } from '../game/state'
 import { t } from '../i18n'
 import type { useGame } from '../game/useGame'
@@ -57,19 +56,8 @@ import { buildHudGoal } from './map/hudGoal'
 import { MapHud } from './map/MapHud'
 import { GardenCritters } from './GardenCritters'
 import { PhotoOverlay, SkyEventButton, WishSheet } from './GardenExtras'
+import { surpriseText } from './surpriseText'
 
-function surpriseLabel(kind: SurpriseKind, amount: string): string {
-  switch (kind) {
-    case 'milestone':
-      return t.surprise.milestone(amount)
-    case 'jackpot':
-      return t.surprise.jackpot(amount)
-    case 'prestigeNear':
-      return t.surprise.prestigeNear(amount)
-    case 'offlineJackpot':
-      return t.surprise.offlineJackpot(amount)
-  }
-}
 
 type GameApi = ReturnType<typeof useGame>
 
@@ -307,7 +295,7 @@ export function GardenMap({
       ...list.slice(-4),
       {
         id: (list.at(-1)?.id ?? 0) + 1,
-        text: surpriseLabel(surprise.kind, formatErnte(surprise.amount)),
+        text: surpriseText(surprise),
         kind: 'claim',
       },
     ])
@@ -321,6 +309,7 @@ export function GardenMap({
       kind: surprise.kind,
       amount: Math.round(surprise.amount * 100) / 100,
       tier: surprise.prestigeTier ?? null,
+      chapter: surprise.chapter ?? null,
     })
     ackSurprise()
   }, [state.lastSurprise, ackSurprise])

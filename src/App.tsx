@@ -238,6 +238,7 @@ export default function App() {
         {tab === 'shop' ? (
           <ShopPanel
             game={game}
+            plot={chapterShown ?? 'garden'}
             onPreview={(id) => {
               setPreviewSkin(id)
               setPlot('garden')

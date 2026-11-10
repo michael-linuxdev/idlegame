@@ -35,6 +35,8 @@ import {
   IconStars,
 } from '../theme/icons'
 import { chapterCopy } from './chapterCopy'
+import { surpriseText } from './surpriseText'
+import { logPlaytest } from '../game/playtestLog'
 import { MasteryStars } from './MasteryStars'
 import { useAmbient } from '../theme/ambient'
 import { HelperWalker } from './HelperWalker'
@@ -109,6 +111,23 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
     showToast(t.mastery.toast(mastery.stars, Math.round(MASTERY_BONUS.perStar * mastery.stars * 100)), 2600)
   }, [chapter, mastery.stars])
   useEffect(() => () => window.clearTimeout(toastTimer.current), [])
+
+  // Kapitel-Jackpot beim Ausbau: kurzer Hinweis hier (Garten-Überraschungen zeigt die Gartenkarte)
+  const { ackSurprise } = game
+  const surprise = state.lastSurprise
+  const [seenSurprise, setSeenSurprise] = useState(surprise)
+  if (surprise && surprise !== seenSurprise && surprise.chapter === chapter) {
+    setSeenSurprise(surprise)
+    setToast(surpriseText(surprise))
+  }
+  useEffect(() => {
+    if (!surprise || surprise.chapter !== chapter) return
+    playSfx('claim')
+    window.clearTimeout(toastTimer.current)
+    toastTimer.current = window.setTimeout(() => setToast(null), 1800)
+    logPlaytest('surprise', { kind: surprise.kind, amount: Math.round(surprise.amount * 100) / 100, tier: null, chapter })
+    ackSurprise()
+  }, [surprise, chapter, ackSurprise])
 
 
   const best = bestChapterBuy(state, chapter)
