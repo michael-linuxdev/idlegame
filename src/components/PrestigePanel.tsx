@@ -422,7 +422,9 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
                           ) : null}
                         </div>
                         <p className="laden-blurb">{item.blurb}</p>
-                        <p className="laden-effect">{item.effectLabel(rank)}</p>
+                        <p className={`laden-effect${rank > 0 ? '' : ' laden-effect--none'}`}>
+                          {rank > 0 ? t.prestige.effectNow(item.effectLabel(rank)) : t.prestige.effectNone}
+                        </p>
                         {lockHint ? (
                           <p className="laden-lock muted">{lockHint}</p>
                         ) : null}

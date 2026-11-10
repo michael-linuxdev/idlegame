@@ -599,6 +599,8 @@ export const strings: Strings = {
       `Next up: ${name} rank ${nextRank} (${pct}%) — keep upgrading.`,
     shopUnlockAria: (name: string) => `Progress towards ${name}`,
     shopNextTag: 'Next up',
+    effectNow: (effect: string) => `Now: ${effect}`,
+    effectNone: 'Not bought yet',
     shopRankLocked: (need: string) =>
       `${need} more progress (upgrades / harvest)`,
     shopRankLockedProgress: (pct: number, left: string) =>

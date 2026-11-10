@@ -118,7 +118,7 @@ export function DeepWinterBlock({ game, onOpenChapter }: { game: GameApi; onOpen
                   </span>
                 </div>
                 <p className="laden-blurb">{copy.blurb}</p>
-                <p className="laden-effect">{copy.effect(rank)}</p>
+                <p className={`laden-effect${rank > 0 ? '' : ' laden-effect--none'}`}>{rank > 0 ? t.prestige.effectNow(copy.effect(rank)) : t.prestige.effectNone}</p>
               </div>
               <button
                 type="button"
