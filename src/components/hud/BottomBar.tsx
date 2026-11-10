@@ -2,6 +2,8 @@ import { formatErnte, formatClock } from '../../game/format'
 import type { useGame } from '../../game/useGame'
 import { t } from '../../i18n'
 import { IconBasket, IconNotebook, IconWateringCan } from '../../theme/icons'
+import { todayReadyCount } from '../../game/today'
+import type { ExtrasState } from '../../game/extras'
 
 type GameApi = ReturnType<typeof useGame>
 
@@ -9,20 +11,21 @@ interface Props {
   game: GameApi
   highlightOffline: boolean
   onClaimOffline: () => void
-  onClaimDaily: () => void
+  /** „Heute“-Karte öffnen (Gartenrunde, Rezept, Tagesziele, Wochenplan) */
+  onOpenToday: () => void
+  extras: ExtrasState
   onWater: () => void
 }
 
 /**
- * Bottom action zone: one claim slot (offline Ernte beats Gartenrunde) and
+ * Bottom action zone: one slot (offline Ernte beats the „Heute“ entry) and
  * the big Gießen button. The Menü FAB (AppNav) sits to the right.
  */
-export function BottomBar({ game, highlightOffline, onClaimOffline, onClaimDaily, onWater }: Props) {
-  const { offlineGained, dailyReady, dailyPreview, state, tapReady } = game
+export function BottomBar({ game, highlightOffline, onClaimOffline, onOpenToday, extras, onWater }: Props) {
+  const { offlineGained, dailyReady, state, tapReady } = game
   const cooldownLeft = game.tapCooldownLeftMs
   const ratio = tapReady ? 1 : 1 - cooldownLeft / game.tapCooldownMs
-  const streak = state.dailyStreak
-  const day = Math.max(1, Math.min(7, (streak || 0) + 1))
+  const ready = todayReadyCount({ state, dailyReady, recipeOpen: game.features.has('recipe'), extras })
 
   return (
     <div className="hud-bottom">
@@ -44,27 +47,26 @@ export function BottomBar({ game, highlightOffline, onClaimOffline, onClaimDaily
               </span>
             </span>
           </button>
-        ) : dailyReady ? (
+        ) : (
           <button
             type="button"
-            className={`hud-claim daily${dailyPreview.comeback ? ' comeback' : ''}`}
-            onClick={onClaimDaily}
-            aria-describedby="hud-daily-desc"
+            className={`hud-claim hud-today${ready > 0 ? ' ready' : ''}`}
+            onClick={onOpenToday}
+            aria-describedby="hud-today-desc"
           >
-            <span className="sr-only" id="hud-daily-desc">
-              {`${t.daily.kicker}: ${dailyPreview.label}`}
+            <span className="sr-only" id="hud-today-desc">
+              {t.today.open}
             </span>
             <span className="hud-claim-icon">
               <IconNotebook />
             </span>
             <span className="hud-claim-text">
-              <span className="hud-claim-title">{t.daily.short}</span>
-              <span className="hud-claim-sub">
-                {dailyPreview.comeback ? t.daily.comebackLabel : t.daily.dayOf(day)}
-              </span>
+              <span className="hud-claim-title">{t.today.button}</span>
+              <span className="hud-claim-sub">{ready > 0 ? t.today.ready(ready) : t.today.allDone}</span>
             </span>
+            {ready > 0 ? <span className="hud-dot" aria-hidden="true" /> : null}
           </button>
-        ) : null}
+        )}
       </div>
 
       <button

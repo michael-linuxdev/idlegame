@@ -29,13 +29,15 @@ npm run lint
 npm run build && npm run e2e               # Playwright-Durchlauf auf Deutsch und Englisch (Start, Saisonende, Notizbuch,
                                            #   Spielstand, UX-Layout, Sprachumschalter) + Grafik-Vergleich (?artsheet gegen
                                            #   scripts/e2e/art-baseline/, höchstens 1.500 SVG-Elemente im Hauptgarten)
-                                           #   + axe (WCAG A/AA, beide Sprachen) + englische Fenster-Durchsicht;
+                                           #   + axe (WCAG A/AA, beide Sprachen) + HUD-Grenze (scripts/e2e/hud.mjs: höchstens
+                                           #   3 Ereignis-Pillen, ein Zugang „Heute“) + englische Fenster-Durchsicht;
                                            #   Screenshots/Diffs in e2e-screens/
 npm run build && npm run screens -- en     # Jedes Fenster im iPhone-13-Format → e2e-screens/en/ (oder de)
 npm run build && npm run art:update        # Vergleichsbilder nach gewollter Grafik-Änderung erneuern
 node scripts/art/shots.mjs <ordner>        # Spielfeld-Screenshots Tag/Abend/Nacht + 4 Jahreszeiten
 npm test                                   # Vitest (Format, Balance-Formeln, Gartenjahre, Notizbuch)
 SUMMARY=1 npm run balance -- regular 336   # Balance-Simulator (engaged | regular | casual, Stunden)
+WEATHER=best DECISIONS=1 SUMMARY=1 npm run balance -- regular 8760   # … mit Wetter-Entscheidungen, zählt jede Wahl
 npm run build && python3 scripts/generate-pwa-icons.py   # App-Icons aus den echten Bausteinen (?artsheet=icon, Pillow)
 npx vite preview --port 4175 & node scripts/store/screenshots.cjs docs/store/screenshots de   # Store-Screenshots
 node scripts/store/screenshots.cjs docs/store/screenshots-en en                              #   … englisch

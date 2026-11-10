@@ -28,7 +28,6 @@ import { pickHint, useHints } from '../game/hints'
 import { canDeepReset } from '../game/longLoop'
 import {
   ORDER_PAUSE_MS,
-  WEEKLY_TASKS,
   makeOrder,
   orderProgress,
   type ExtrasState,
@@ -51,13 +50,13 @@ import { useSignsAlways } from '../game/prefs'
 import type { ChapterId } from '../game/chapters'
 import { COSMETICS, type CosmeticId } from '../game/monetization'
 import { SpeechBubble } from './SpeechBubble'
-import { CrossSheet, DecorSheet, FestSheet, ProgressSheet } from './lazy'
+import { CrossSheet, DecorSheet, FestSheet, ProgressSheet, TodaySheet } from './lazy'
 import { GardenPlot } from './map/GardenPlot'
 import { usePrestigeCta } from './map/usePrestigeCta'
 import { buildHudGoal } from './map/hudGoal'
 import { MapHud } from './map/MapHud'
 import { GardenCritters } from './GardenCritters'
-import { PhotoOverlay, RecipeSheet, SkyEventButton, WishSheet } from './GardenExtras'
+import { PhotoOverlay, SkyEventButton, WishSheet } from './GardenExtras'
 
 function surpriseLabel(kind: SurpriseKind, amount: string): string {
   switch (kind) {
@@ -186,7 +185,7 @@ export function GardenMap({
   const earlyGame = !game.features.has('events')
   const previewDef = previewSkin ? COSMETICS.find((c) => c.id === previewSkin) ?? null : null
   const skinClass = previewDef?.accentClass ?? equippedCosmetic?.accentClass ?? 'skin-wiese'
-  const [recipeOpen, setRecipeOpen] = useState(false)
+  const [todayOpen, setTodayOpen] = useState(false)
   const decorOpen = sheet === 'decor'
   const crossOpen = sheet === 'cross'
   const setDecorOpen = (open: boolean) => onSheet?.(open ? 'decor' : null)
@@ -213,10 +212,6 @@ export function GardenMap({
   const nextWildId = GENERATORS.find((g) => !game.unlocked(g.id))?.id ?? null
   const producingIds = GENERATORS.filter((g) => (state.owned[g.id] ?? 0) > 0 && game.unlocked(g.id)).map((g) => g.id)
   const animId = producingIds.length ? producingIds[animTick % producingIds.length] : null
-  const questReady =
-    game.questRows.some((q: { ready: boolean }) => q.ready) ||
-    WEEKLY_TASKS.some((x) => !extras.weekClaimed.includes(x.id) && extras.week[x.id] >= x.target)
-
   const pushPop = useCallback((text: string, kind?: FloatPopItem['kind']) => {
     setPops((list) => [...list.slice(-4), { id: (list.at(-1)?.id ?? 0) + 1, text, kind }])
   }, [])
@@ -473,6 +468,7 @@ export function GardenMap({
           ratio: Math.min(1, orderHave / order.need),
           claim: orderDone,
           onClaim: claimOrder,
+          msLeft: Math.max(0, order.expiresAt - game.nowTick),
         }
       })()
     : null
@@ -571,7 +567,6 @@ export function GardenMap({
         hudRef={hudRef}
         stageName={stageName}
         levelPulse={levelPulse}
-        questReady={questReady}
         tickFlash={tickFlash}
         totalMult={totalMult}
         earlyGame={earlyGame}
@@ -581,7 +576,6 @@ export function GardenMap({
         onOpenProgress={() => setProgressOpen(true)}
         onOpenMult={() => setMultOpen(true)}
         onOpenFest={() => setFestOpen(true)}
-        onOpenRecipe={() => setRecipeOpen(true)}
       />
 
       <FloatPops items={pops} onDone={removePop} />
@@ -686,7 +680,8 @@ export function GardenMap({
         game={game}
         highlightOffline={highlightId === 'offline'}
         onClaimOffline={claimOffline}
-        onClaimDaily={claimDaily}
+        onOpenToday={() => setTodayOpen(true)}
+        extras={extras}
         onWater={onRake}
       />
 
@@ -796,15 +791,19 @@ export function GardenMap({
         />
       ) : null}
       {festOpen ? <FestSheet game={game} onClose={() => setFestOpen(false)} /> : null}
-      {recipeOpen ? <RecipeSheet game={game} onClose={() => setRecipeOpen(false)} onCooked={showToast} /> : null}
       {wishOpen ? <WishSheet game={game} onClose={() => setWishOpen(false)} /> : null}
 
       {progressOpen ? (
-        <ProgressSheet
+        <ProgressSheet game={game} onClose={() => setProgressOpen(false)} />
+      ) : null}
+      {todayOpen ? (
+        <TodaySheet
           game={game}
-          onClose={() => setProgressOpen(false)}
+          onClose={() => setTodayOpen(false)}
           extras={extras}
           updateExtras={updateExtras}
+          onClaimDaily={claimDaily}
+          onCooked={showToast}
         />
       ) : null}
     </section>

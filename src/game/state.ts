@@ -130,6 +130,7 @@ export {
   claimGartenwocheTier,
 } from './state/market'
 export type { RewardedAdResult } from './state/market'
+export type { WeatherPreview } from './state/rewards'
 export { applyOfflineCatchup, creditOfflinePending, claimOfflineReward } from './state/offline'
 export {
   lineCostMult,
@@ -150,6 +151,9 @@ export {
   grantTapErnte,
   multBreakdown,
   totalGardenMult,
+  weatherPreview,
+  bestWeatherChoice,
+  SAMEN_AS_SECONDS,
 } from './state/rewards'
 export type { Reward, MultKey } from './state/rewards'
 export { CONTEST_KG } from './extrasCore'

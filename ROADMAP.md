@@ -57,6 +57,8 @@ Werkzeug: `npm run balance -- <engaged|regular|casual> <stunden>` — spielt die
   | Dauerspieler 1 Jahr (grob ab Tag 30) | K13 Tag 296, K14 318, K15 340, K16 364 — Abstand 22–24 Tage |
   | Casual 2 Jahre (zusätzlich, für „Casual ≥ K20“) | K12 Tag 317, K13 369, K20 585, **Tag 730: K24** |
 
+  Nach Paket 2 (Heute-Karte, HUD-Grenze, Hitzewelle +20 % → +16 %): 14 Tage aller drei Profile **identisch** mit der Basis (der Simulator entscheidet Wetter nur mit `WEATHER=…`; die Wahl-Messung steht in `docs/systeme-inventur.md`).
+
 ## Prinzipien
 
 - DE-UI (Ausgangssprache), EN gleichwertig; Bau-Karte; echtes Idle; keine Energy-Walls; helle, lesbare UI.

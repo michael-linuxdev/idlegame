@@ -32,6 +32,19 @@
  *                     Sitzung, sobald die Abklingzeit um ist · ADS=all: ohne
  *                     Grenze (Werbefrei: alle 3 min, ganze Sitzung)
  *  Ausgabe: „chapters: K2@d… K13@d…“ und der Garten-Bonus aller Kapitel
+ *
+ * Entscheidungen (Runde 4, Paket 2):
+ *  CARD=best|bestAway|random|none  Saison-Karte (Standard best: höchste Vorschau;
+ *                     bestAway: Ruhiges/Fleißiges Jahr nach dem Offline-Anteil des Profils)
+ *  WEATHER=best|safe|risk|random  Wetter-Entscheidung in jeder Sitzung, sobald
+ *                     eine offen ist (Standard: aus — wie vor Runde 4). best =
+ *                     höhere Erwartung in Ernte, Samen zum Markt-Preis
+ *                     (bestWeatherChoice)
+ *  DECISIONS=1        druckt, wie oft jede Karte angeboten/gewählt und jede
+ *                     Wetter-Option genommen wurde
+ *  CARD_TUNE='{"hofladenjahr":[1.6,0.8]}'  Karten-Werte probeweise ändern
+ *                     ([Bereich ×, gedämpfter Bereich ×] bzw. [Garten ×, weg ×])
+ *  SIM_START=2027-06-01  anderes Startdatum (Hitzewelle gibt es nur im Sommer)
  *  Fünf Jahre:  GEN=1 SIM_ALL_CHAPTERS=1 SUMMARY=1 npm run balance -- regular 43800
  */
 import './simFlags'
@@ -75,9 +88,37 @@ import { moduleTier } from '../../src/theme/tiers'
 import { DEEP_SHOP, canDeepNow, sproutPayout } from '../../src/game/longLoop'
 import { LEGACY_SHOP } from '../../src/game/generations'
 import { CHAPTER_BONUS, CHAPTERS, chaptersGardenMult, totalChapterLevels } from '../../src/game/chapters'
-import { bestChapterBuy, buyChapterArea, buyIlse, openChapters, buildProjectStage, claimRewardedAd } from '../../src/game/state'
+import { bestChapterBuy, buyChapterArea, buyIlse, openChapters, buildProjectStage, claimRewardedAd, weatherPreview, bestWeatherChoice, decideWeather } from '../../src/game/state'
 import { PROJECTS } from '../../src/game/projects'
 import { MASTERY_BONUS, masteryStars, totalMasteryStars } from '../../src/game/mastery'
+import { SEASON_CARDS } from '../../src/game/seasonCards'
+import { SAFE_COST, WEATHER_EFFECTS } from '../../src/game/weatherEvents'
+
+// WEATHER_TUNE='{"sturm":{"risk":{"bad":0.8}},"frost":{"cost":{"minutes":8}}}' — Wetter-Werte probeweise ändern
+if (process.env.WEATHER_TUNE) {
+  const tune = JSON.parse(process.env.WEATHER_TUNE) as Record<string, { risk?: object; safe?: object; cost?: { samen?: number; minutes?: number } }>
+  for (const [k, v] of Object.entries(tune)) {
+    const kind = k as keyof typeof WEATHER_EFFECTS
+    if (v.risk) Object.assign(WEATHER_EFFECTS[kind].risk, v.risk)
+    if (v.safe && WEATHER_EFFECTS[kind].safe) Object.assign(WEATHER_EFFECTS[kind].safe!, v.safe)
+    if (v.cost) SAFE_COST[kind] = v.cost
+  }
+}
+
+if (process.env.CARD_TUNE) {
+  const tune = JSON.parse(process.env.CARD_TUNE) as Record<string, [number, number?]>
+  for (const c of SEASON_CARDS) {
+    const v = tune[c.id]
+    if (!v) continue
+    if (c.area) {
+      c.area.mult = v[0]
+      if (v[1] != null) c.area.dampenMult = v[1]
+    } else {
+      c.mult = v[0]
+      if (v[1] != null) c.offline = v[1]
+    }
+  }
+}
 
 const PLAY_CHAPTERS = !!(process.env.CHAPTERS || process.env.SIM_ALL_CHAPTERS)
 // Formel-Vergleich für den Kapitel-Bonus (nur Simulator): product | sum | soft | log
@@ -86,6 +127,29 @@ if (process.env.CHAPTER_BONUS_CAP) CHAPTER_BONUS.cap = Number(process.env.CHAPTE
 if (process.env.CHAPTER_BONUS_L0) CHAPTER_BONUS.l0 = Number(process.env.CHAPTER_BONUS_L0)
 // Kapitel-Meisterschaft: Bonus je Stern (0 = aus, zum Vergleich)
 if (process.env.MASTERY_PER_STAR) MASTERY_BONUS.perStar = Number(process.env.MASTERY_PER_STAR)
+/**
+ * „Beste Wahl“ bei den Saison-Karten: die Vorschau (wie im Spiel); für Karten,
+ * die auf die Abwesenheit wirken (Ruhiges/Fleißiges Jahr), zählt der Anteil
+ * der Ernte, die dieses Profil offline einfährt (grob aus dem Sitzungsmuster).
+ */
+const OFFLINE_SHARE: Record<Profile, number> = { engaged: 0.33, regular: 0.85, casual: 0.95 }
+function cardValue(o: { id: string; preview: number }, profile: Profile): number {
+  const def = SEASON_CARDS.find((c) => c.id === o.id)
+  if (!def?.offline) return o.preview
+  const f = OFFLINE_SHARE[profile]
+  return (1 - f) * o.preview + f * o.preview * def.offline
+}
+/** Entscheidungen zählen (DECISIONS=1): Karten angeboten/gewählt, Wetter-Optionen je Art. */
+export const decisions = {
+  cardsOffered: {} as Record<string, number>,
+  cardsPicked: {} as Record<string, number>,
+  weather: {} as Record<string, { safe: number; risk: number }>,
+}
+function resetDecisions() {
+  decisions.cardsOffered = {}
+  decisions.cardsPicked = {}
+  decisions.weather = {}
+}
 /** Erster Tag mit 1/2/3 Meister-Sternen je Kapitel (MASTERY=1 druckt sie). */
 const masteryDays: Record<string, number[]> = {}
 
@@ -114,7 +178,8 @@ function playChapters(s: GameState, maxPerChapter = 6): GameState {
 const helperDays: number[] = []
 let simStart = 0
 // Monday 2026-11-09 08:00 local → avoids starting inside a weekend event
-let clock = new Date(2026, 10, 9, 8, 0, 0).getTime()
+const startAt = () => (process.env.SIM_START ? new Date(`${process.env.SIM_START}T08:00:00`).getTime() : new Date(2026, 10, 9, 8, 0, 0).getTime())
+let clock = startAt()
 const realNow = Date.now
 Date.now = () => clock
 let seed = 12345
@@ -247,6 +312,8 @@ export function run(profile: Profile, hours: number) {
   simStart = clock
   helperDays.length = 0
   let s = createInitialState(clock)
+  resetDecisions()
+  const weatherMode = process.env.WEATHER
   const milestones: Milestone[] = []
   const seenUnlock = new Set<string>()
   const seenTier = new Set<string>()
@@ -311,6 +378,23 @@ export function run(profile: Profile, hours: number) {
       if (n !== s) {
         s = n
         lastDaily = day
+      }
+    }
+    if (weatherMode) {
+      const p = weatherPreview(s, clock)
+      if (p) {
+        const choice =
+          weatherMode === 'safe' || weatherMode === 'risk'
+            ? weatherMode
+            : weatherMode === 'random'
+              ? Math.random() < 0.5 ? 'safe' : 'risk'
+              : bestWeatherChoice(p, productionPerSecond(s, clock), s.samen)
+        const next = decideWeather(s, choice, clock).state
+        if (next !== s) {
+          const w = (decisions.weather[p.kind] ??= { safe: 0, risk: 0 })
+          w[choice] += 1
+          s = next
+        }
       }
     }
     if (s.lastTapAt <= 0 || clock - s.lastTapAt >= 5 * 60_000) s = water(s)
@@ -397,7 +481,11 @@ export function run(profile: Profile, hours: number) {
               ? null
               : mode === 'random'
                 ? offer[Math.floor(Math.random() * offer.length)].id
-                : [...offer].sort((a, b) => b.preview - a.preview)[0].id
+                : mode === 'bestAway'
+                  ? [...offer].sort((a, b) => cardValue(b, profile) - cardValue(a, profile))[0].id
+                  : [...offer].sort((a, b) => b.preview - a.preview)[0].id
+          for (const o of offer) decisions.cardsOffered[o.id] = (decisions.cardsOffered[o.id] ?? 0) + 1
+          decisions.cardsPicked[pick ?? 'keine'] = (decisions.cardsPicked[pick ?? 'keine'] ?? 0) + 1
           s = pickSeasonCard(s, pick)
         }
         event()
@@ -477,7 +565,7 @@ export function eventDensity(events: number[], profile: Profile) {
 
 function report(profile: Profile, hours: number) {
   seed = 12345
-  clock = new Date(2026, 10, 9, 8, 0, 0).getTime()
+  clock = startAt()
   const { s, milestones, runs, stageByDay, deeps, gens, chapters, adClaims, density } = run(profile, hours)
   const dn = (sec: number) => (Number.isFinite(sec) ? (sec >= 120 ? `${Math.round(sec / 60)}m` : `${Math.round(sec)}s`) : '-')
   if (process.env.SUMMARY) {
@@ -510,6 +598,16 @@ function report(profile: Profile, hours: number) {
       })
       const tot = totalMasteryStars(s.chapters)
       console.log(`  mastery (×${MASTERY_BONUS.perStar}/star): ${tot.have}/${tot.total} stars | ${rows.join(' ')}`)
+    }
+    if (process.env.DECISIONS) {
+      const cards = Object.keys(decisions.cardsOffered)
+        .sort()
+        .map((id) => `${id} ${decisions.cardsPicked[id] ?? 0}/${decisions.cardsOffered[id]} (${Math.round((100 * (decisions.cardsPicked[id] ?? 0)) / decisions.cardsOffered[id]!)} %)`)
+      const total = Object.values(decisions.cardsPicked).reduce((a, b) => a + b, 0)
+      const share = Object.entries(decisions.cardsPicked).sort((a, b) => b[1] - a[1]).map(([id, n]) => `${id} ${Math.round((100 * n) / total)} %`)
+      console.log(`  cards picked/offered: ${cards.join(' · ')}`)
+      console.log(`  cards share of all picks (${total}): ${share.join(' · ')}`)
+      console.log(`  weather: ${Object.entries(decisions.weather).map(([k, w]) => `${k} safe ${w.safe} / risk ${w.risk} (risk ${Math.round((100 * w.risk) / Math.max(1, w.safe + w.risk))} %)`).join(' · ')}`)
     }
     if (deeps.length || process.env.DEEP)
       console.log(

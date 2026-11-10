@@ -1,6 +1,6 @@
 /** Spielkern — Gießen, Glücksrad, Multiplikator-Aufschlüsselung. Öffentlich über src/game/state.ts. */
 import { challengesMult } from '../challenges'
-import { prestigeMultiplier } from '../truhe'
+import { prestigeMultiplier, tapBonusSeconds } from '../truhe'
 import {
   WHEEL_SEEDS,
   type WheelKind,
@@ -16,7 +16,7 @@ import { GENERATORS } from '../generators'
 import { deepYieldMult } from '../longLoop'
 import { levelProductionMult } from '../progression'
 import { cardGlobalMult } from '../seasonCards'
-import { weatherBuffMult } from '../weatherEvents'
+import { SAFE_COST, weatherBuffMult, weatherOutcome, type WeatherChoice, type WeatherEventKind } from '../weatherEvents'
 import {
   bumpQuest,
   effectiveClanMult,
@@ -26,13 +26,15 @@ import {
   flashProductionMult,
   neighbourMult,
   playerLevelOf,
+  productionPerSecond,
   rainbowMult,
   syncEventWindow,
   syncMonetization,
   turboMult,
 } from './core'
 import { withEventProgress } from './events'
-import { albumCount } from './life'
+import { albumCount, pendingWeatherEvent } from './life'
+import { TAP_COOLDOWN_MS } from '../economy'
 import type { GameState } from './types'
 
 /** Gießen multiplier from weather (Regen) and the Glücksrad. */
@@ -145,3 +147,52 @@ export function multBreakdown(state: GameState, now = Date.now()): { key: MultKe
 export function totalGardenMult(state: GameState, now = Date.now()): number {
   return multBreakdown(state, now).reduce((p, x) => p * x.mult, 1)
 }
+
+/**
+ * Was die Wahl für **diesen** Garten bedeutet (Runde 4, Paket 2): Erwartung in
+ * Ernte, aus den echten Werten von weatherOutcome und SAFE_COST mit der
+ * Ernte/s von jetzt. Grundlage der Anzeige vor der Wahl und der Strategie
+ * „beste Wahl“ im Simulator.
+ */
+export interface WeatherPreview {
+  kind: WeatherEventKind
+  safe: { samen: number; ernte: number }
+  /** Riskant: Ernte bei Pech bzw. Glück, Chance auf Pech, Erwartung, Wert der geleerten Gießkanne */
+  risk: { bad: number; good: number; chanceBad: number; expected: number; canCost: number }
+}
+
+export function weatherPreview(state: GameState, now = Date.now()): WeatherPreview | null {
+  const kind = pendingWeatherEvent(state, now)
+  if (!kind) return null
+  const rate = productionPerSecond(state, now)
+  const gain = (o: ReturnType<typeof weatherOutcome>) => (o.buff ? (o.buff.mult - 1) * rate * ((o.buff.until - now) / 1000) : 0)
+  const cost = SAFE_COST[kind]
+  const safeOut = weatherOutcome(kind, 'safe', 1, now)
+  const safe = {
+    samen: cost.samen ?? 0,
+    ernte: gain(safeOut) - (cost.minutes ? Math.min(state.ernte, rate * cost.minutes * 60) : 0),
+  }
+  const bad = gain(weatherOutcome(kind, 'risk', 0, now))
+  const good = gain(weatherOutcome(kind, 'risk', 0.99, now))
+  const chanceBad = weatherOutcome(kind, 'risk', 0, now).good === weatherOutcome(kind, 'risk', 0.99, now).good ? 0 : 0.5
+  // Hitze: „früh gießen“ leert die Gießkanne — so viel ist ihr nächster Guss gerade wert
+  let canCost = 0
+  if (kind === 'hitze') {
+    const sinceTap = state.lastTapAt > 0 ? now - state.lastTapAt : TAP_COOLDOWN_MS
+    const filled = Math.min(1, sinceTap / TAP_COOLDOWN_MS)
+    canCost = rate * tapBonusSeconds(state.truhe) * waterMult(state, now) * filled
+  }
+  const expected = chanceBad * bad + (1 - chanceBad) * good - canCost
+  return { kind, safe, risk: { bad, good, chanceBad, expected, canCost } }
+}
+
+/** Ein Same in Ernte-Sekunden: Markt-Preis „Eine Stunde Ernte“ (40 Samen). Nur für die Strategie im Simulator. */
+export const SAMEN_AS_SECONDS = 3600 / 40
+
+/** Strategie „beste Wahl“: höhere Erwartung in Ernte, Samen zum Markt-Preis. */
+export function bestWeatherChoice(p: WeatherPreview, rate: number, samen: number): WeatherChoice {
+  if (p.safe.samen > samen) return 'risk'
+  const safe = p.safe.ernte - p.safe.samen * SAMEN_AS_SECONDS * rate
+  return p.risk.expected > safe ? 'risk' : 'safe'
+}
+

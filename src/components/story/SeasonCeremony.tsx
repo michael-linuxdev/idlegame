@@ -6,6 +6,7 @@ import { playSfx } from '../../game/sound'
 import { t } from '../../i18n'
 import { IconChest, IconSnow, IconSprout } from '../../theme/icons'
 import { ArtSvg } from '../../theme/ArtSvg'
+import type { SeasonCardId } from '../../game/seasonCards'
 
 export interface SeasonEnd {
   /** Gartenjahr that now begins */
@@ -15,6 +16,8 @@ export interface SeasonEnd {
   deep?: boolean
   /** Generation handed down (number of the new generation) */
   generation?: number
+  /** Saison-Karte des Jahres, das gerade endet: was sie mit diesem Garten gebracht hat */
+  card?: { id: SeasonCardId; preview: number; offline?: number }
 }
 
 interface Props {
@@ -109,6 +112,17 @@ export function SeasonCeremony({ event, onDone, onSpin }: Props) {
             )}
           </p>
           {corner ? <p className="season-corner">{t.season.newCorner(corner.name)}</p> : null}
+          {event.card ? (
+            <p className="season-corner season-card-result">
+              {event.card.offline
+                ? t.seasonCards.resultAway(
+                    t.seasonCards.cards[event.card.id].name,
+                    Math.round((event.card.preview - 1) * 100),
+                    Math.round((event.card.preview * event.card.offline - 1) * 100),
+                  )
+                : t.seasonCards.result(t.seasonCards.cards[event.card.id].name, Math.round((event.card.preview - 1) * 100))}
+            </p>
+          ) : null}
           {onSpin && !event.deep ? <LuckyWheel onSpin={onSpin} onDone={onDone} /> : (
             <button type="button" className="btn buy" onClick={onDone}>
               {t.season.cta}

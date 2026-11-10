@@ -169,7 +169,7 @@ export const lifeStrings = {
       safe: 'Shade net · 5 seeds',
       risk: 'Water early',
       safeDone: 'Shade net is up: +10 % harvest for 4 hours.',
-      riskGood: 'Watered early: +20 % harvest for 2 hours (the watering can is empty).',
+      riskGood: 'Watered early: +16 % harvest for 2 hours (the watering can is empty).',
       riskBad: '',
     },
     frost: {
@@ -181,5 +181,11 @@ export const lifeStrings = {
       riskBad: 'Frost! −30 % harvest for 2 hours.',
     },
     aria: 'Weather decision',
+    costErnte: (amount: string) => `costs ≈ ${amount} harvest from the basket`,
+    costSamen: (n: number) => `costs ${n} seeds`,
+    gainFor: (amount: string, hours: number) => `≈ +${amount} harvest over ${hours} h`,
+    riskChance: (pct: number, amount: string, hours: number) => `${pct} %: ≈ −${amount} harvest over ${hours} h, otherwise nothing`,
+    canCost: (amount: string) => `watering can emptied (≈ −${amount})`,
+    result: (amount: string) => `That’s ≈ ${amount} harvest.`,
   },
 }

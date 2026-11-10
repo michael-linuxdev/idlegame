@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { weatherBuffMult, weatherEventAt, weatherOutcome } from '../game/weatherEvents'
+import { WEATHER_EFFECTS, weatherBuffMult, weatherEventAt, weatherOutcome } from '../game/weatherEvents'
 import { weatherAt } from '../game/gardenLife'
-import { createInitialState, decideWeather, doPrestige, pendingWeatherEvent, productionPerSecond } from '../game/state'
+import { bestWeatherChoice, createInitialState, decideWeather, doPrestige, pendingWeatherEvent, productionPerSecond, weatherPreview } from '../game/state'
 import { parseSave } from '../game/storage'
 
 /** First day from `start` whose weather event is `kind`. */
@@ -40,7 +40,7 @@ describe('Wetter-Entscheidungen', () => {
     const t = dayWith('hitze', summer)
     const r = decideWeather(createInitialState(0), 'risk', t, 0.5)
     expect(r.state.lastTapAt).toBe(t)
-    expect(r.state.weatherBuff?.mult).toBe(1.2)
+    expect(r.state.weatherBuff?.mult).toBe(1.16) // Runde 4: +20 % → +16 % (docs/systeme-inventur.md)
   })
   it('survives Saisonende; old saves load empty', () => {
     const s = { ...createInitialState(0), weatherDecided: '2026-07-01', ernteSeason: 1e40 }
@@ -50,5 +50,57 @@ describe('Wetter-Entscheidungen', () => {
     delete raw.weatherBuff
     expect(parseSave(raw)?.weatherDecided).toBe('')
     expect(parseSave(raw)?.weatherBuff).toBeNull()
+  })
+})
+
+describe('Entscheidungen schärfen (Runde 4, Paket 2)', () => {
+  const summer = new Date(2026, 6, 1, 12).getTime()
+  const garden = (extra: Partial<ReturnType<typeof createInitialState>> = {}) => ({
+    ...createInitialState(0),
+    owned: { ...createInitialState(0).owned, gemuesebeet: 60, kompost: 40, kraeuterspirale: 25 },
+    samen: 100,
+    ...extra,
+  })
+
+  it('zeigt die Folge in Ernte für diesen Garten (Sturm: höchstens, was im Korb liegt)', () => {
+    const t = dayWith('sturm', summer)
+    const rate = productionPerSecond(garden(), t)
+    const full = weatherPreview(garden({ ernte: 1e12 }), t)!
+    expect(full.safe.ernte).toBeCloseTo(-rate * 600, 3)
+    expect(full.risk.chanceBad).toBe(0.5)
+    expect(full.risk.bad).toBeCloseTo(-0.25 * rate * 7200, 3)
+    const empty = weatherPreview(garden({ ernte: 0 }), t)!
+    expect(empty.safe.ernte).toBe(0)
+  })
+
+  it('Hitzewelle ist eine echte Entscheidung: die Gießkanne entscheidet mit', () => {
+    const t = dayWith('hitze', summer)
+    const rate = productionPerSecond(garden(), t)
+    const justWatered = weatherPreview(garden({ lastTapAt: t - 1000 }), t)!
+    const canFull = weatherPreview(garden({ lastTapAt: 0, truhe: { ...createInitialState(0).truhe, messingBrause: 10 } }), t)!
+    expect(justWatered.risk.canCost).toBeLessThan(canFull.risk.canCost)
+    expect(bestWeatherChoice(justWatered, rate, 100)).toBe('risk')
+    expect(bestWeatherChoice(canFull, productionPerSecond(garden({ truhe: { ...createInitialState(0).truhe, messingBrause: 10 } }), t), 100)).toBe('safe')
+    // ohne Samen bleibt nur „früh gießen“
+    expect(bestWeatherChoice(canFull, rate, 0)).toBe('risk')
+  })
+
+  it('nach der Wahl stimmt die Wirkung mit der Vorschau überein', () => {
+    const t = dayWith('hitze', summer)
+    const s = garden({ lastTapAt: t - 1000 })
+    const p = weatherPreview(s, t)!
+    const r = decideWeather(s, 'risk', t, 0.5).state
+    expect(r.weatherBuff!.mult).toBe(WEATHER_EFFECTS.hitze.risk.good)
+    expect(p.risk.good).toBeCloseTo((WEATHER_EFFECTS.hitze.risk.good - 1) * productionPerSecond(s, t) * 7200, 3)
+  })
+})
+
+describe('Saison-Karte: was das Thema gebracht hat', () => {
+  it('gleiche Zahl wie die Vorschau, mit den Stufen am Saisonende', async () => {
+    const { cardPreview } = await import('../game/seasonCards')
+    const owned = { gemuesebeet: 80, kompost: 10 }
+    const p = cardPreview('tomatenjahr', owned)
+    expect(p).toBeGreaterThan(1)
+    expect(cardPreview('gutesJahr', owned)).toBeCloseTo(1.05, 6)
   })
 })

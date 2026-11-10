@@ -37,3 +37,27 @@ describe('Kein Stand schlechter als vor Runde 4', () => {
     })
   }
 })
+
+describe('Paket 2: Bündeln ändert keinen Wert eines alten Stands', () => {
+  it('eine laufende Hitze-Wirkung von vorher (+20 %) bleibt bis zum Ende', async () => {
+    const { fixtureStates, NOW } = await import('./noWorse/core')
+    const { parseSave } = await import('../game/storage')
+    const { productionPerSecond } = await import('../game/state')
+    const raw = { ...fixtureStates()['save-v1']!, weatherBuff: { mult: 1.2, until: NOW + 3600_000 } }
+    const s = parseSave(raw)!
+    expect(s.weatherBuff).toEqual({ mult: 1.2, until: NOW + 3600_000 })
+    const without = parseSave({ ...raw, weatherBuff: null })!
+    expect(productionPerSecond(s, NOW) / productionPerSecond(without, NOW)).toBeCloseTo(1.2, 6)
+  })
+
+  it('Gartenrunde, Rezept, Tagesziele und Serien bleiben im Spielstand, wie sie waren', async () => {
+    const { fixtureStates } = await import('./noWorse/core')
+    const { parseSave } = await import('../game/storage')
+    const raw = fixtureStates()['save-v1'] as Record<string, unknown>
+    const s = parseSave(raw)!
+    expect(s.dailyStreak).toBe(raw.dailyStreak)
+    expect(s.dailyClaimDay).toBe(raw.dailyClaimDay)
+    expect(s.quests).toEqual(raw.quests)
+    expect(s.recipe).toEqual(raw.recipe)
+  })
+})

@@ -15,7 +15,6 @@ interface Props {
   hudRef: Ref<HTMLElement>
   stageName: string
   levelPulse: boolean
-  questReady: boolean
   tickFlash: boolean
   totalMult: number
   earlyGame: boolean
@@ -25,7 +24,6 @@ interface Props {
   onOpenProgress: () => void
   onOpenMult: () => void
   onOpenFest: () => void
-  onOpenRecipe: () => void
 }
 
 export function MapHud({
@@ -33,7 +31,6 @@ export function MapHud({
   hudRef,
   stageName,
   levelPulse,
-  questReady,
   tickFlash,
   totalMult,
   earlyGame,
@@ -43,7 +40,6 @@ export function MapHud({
   onOpenProgress,
   onOpenMult,
   onOpenFest,
-  onOpenRecipe,
 }: Props) {
   const { state, rate, playerLevel } = game
   return (
@@ -67,9 +63,6 @@ export function MapHud({
               <span style={{ width: `${Math.round(playerLevel.ratio * 100)}%` }} />
             </span>
           </span>
-          {questReady ? (
-            <span className="hud-dot" title={t.hud.questReady} aria-hidden="true" />
-          ) : null}
         </button>
 
         <button
@@ -116,7 +109,6 @@ export function MapHud({
         season={seasonPill}
         order={orderPill}
         onOpenFest={onOpenFest}
-        onOpenRecipe={onOpenRecipe}
       />
       )}
     </header>

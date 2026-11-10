@@ -236,6 +236,9 @@ export const strings: Strings = {
     preview: (pct: number) => `with your last garden ≈ ${pct > 0 ? '+' : ''}${pct} % harvest`,
     previewEven: 'with your last garden ≈ the same harvest',
     previewQuiet: 'pays off if you’re often away for a while',
+    previewAway: (active: number, away: number) => `while playing ≈ ${active > 0 ? '+' : ''}${active} % · while away ≈ ${away > 0 ? '+' : ''}${away} %`,
+    result: (name: string, pct: number) => `Your theme “${name}” brought ≈ ${pct > 0 ? '+' : ''}${pct} % harvest with your garden.`,
+    resultAway: (name: string, active: number, away: number) => `Your theme “${name}”: ≈ ${active > 0 ? '+' : ''}${active} % while playing, ≈ ${away > 0 ? '+' : ''}${away} % harvest while you were away.`,
     skip: 'Keep gardening without a theme',
     pill: (name: string) => name,
     cards: {
@@ -1210,12 +1213,12 @@ export const strings: Strings = {
     variety: 'A new variety! You’ll find them all in the notebook under “Plant Book” — each one brings a little more harvest forever.',
     season: 'The season can end now. The garden rests over winter, but you take heirlooms with you — and every garden year grows richer.',
     truhe: 'Treasures are waiting in Grandma’s Chest. Trade your heirlooms for bonuses that last through every winter.',
-    weekly: 'New: Grandma’s Weekly Plan. Tap your garden stage in the top left — you’ll find seven tasks for this week there.',
+    weekly: 'New: Grandma’s Weekly Plan. Tap “Today” in the bottom left — you’ll find seven tasks for this week there.',
     deep: 'Every corner is open. If you like, the garden can now rest through a Deep Winter — for seedlings that stay forever.',
     bulkMax: 'New: “Max”. Upgrades this bed as many times as your harvest allows — one tap instead of many.',
     bulk5: 'New: “×5”. Buys exactly five levels at once — handy for heading straight for the next milestone.',
     buyAll: 'New: “Upgrade all”. Spreads your whole harvest across all beds — always first where it brings the most harvest per second. It doesn’t buy care or chapters.',
-    recipeNew: 'New: Grandma’s Recipe of the Day. The bar at the top shows which beds supply something for today’s recipe — once it’s cooked, you get a bonus.',
+    recipeNew: 'New: Grandma’s Recipe of the Day. Under “Today” in the bottom left you’ll see which beds supply something for today’s recipe — once it’s cooked, you get a bonus.',
     festNew: 'New: garden festivals. Every season has a festival with fest tokens and its own stall — tap the festival pill at the top.',
     weatherNew: 'New: the weather. It changes your harvest a little, and sometimes the sky asks what you’d like to do — you can see tomorrow at the top, too.',
     crossNew: 'New: Cross Seeds (Menu → Cross). Two varieties from the Plant Book make something new in 4 hours — start one now and a surprise will be waiting when you’re back.',
@@ -1287,6 +1290,18 @@ export const strings: Strings = {
     newCorner: (name: string) => `New to clear: ${name}`,
     cta: 'Into the new garden year',
     skip: 'Next',
+  },
+
+  today: {
+    title: 'Today',
+    eyebrow: 'For today',
+    button: 'Today',
+    ready: (n: number) => `${n} ready`,
+    allDone: 'all done',
+    open: 'Open Today: Daily Rounds, Recipe of the Day, daily goals and Weekly Plan',
+    close: 'Close',
+    dailyDone: 'Done',
+    movedNote: 'Daily goals and Grandma’s Weekly Plan are now under “Today” (bottom left).',
   },
 
   daily: {

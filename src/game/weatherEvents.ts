@@ -33,18 +33,29 @@ export const SAFE_COST: Record<WeatherEventKind, { samen?: number; minutes?: num
   frost: { samen: 5 },
 }
 
+/**
+ * Wirkung der Optionen als Daten (Runde 4: vom Simulator „beste Wahl“
+ * angeglichen, docs/systeme-inventur.md):
+ *  - safe: Ernte-Faktor für `hours` (nur Hitzewelle; sonst nichts),
+ *  - risk: mit `chanceBad` ein schlechter Faktor, sonst `good` (beides für `hours`).
+ */
+export const WEATHER_EFFECTS: Record<WeatherEventKind, { safe?: { mult: number; hours: number }; risk: { bad: number; good: number; chanceBad: number; hours: number } }> = {
+  // Sturm: sichern kostet 10 min Ernte aus dem Korb (höchstens, was drin ist)
+  sturm: { risk: { bad: 0.75, good: 1, chanceBad: 0.5, hours: 2 } },
+  // Hitzewelle: Schattennetz (+10 % für 4 h, 5 Samen) oder früh gießen (Gießkanne wird geleert)
+  // Runde 4: früh gießen +20 % → +16 % (Simulator „beste Wahl“: vorher immer riskant, jetzt 10–45 %)
+  hitze: { safe: { mult: 1.1, hours: 4 }, risk: { bad: 1.16, good: 1.16, chanceBad: 0, hours: 2 } },
+  // Spätfrost: Vlies (5 Samen) oder riskieren
+  frost: { risk: { bad: 0.7, good: 1, chanceBad: 0.5, hours: 2 } },
+}
+
 /** Outcome of a choice; `roll` decides risky ones (0–1). */
 export function weatherOutcome(kind: WeatherEventKind, choice: WeatherChoice, roll: number, now: number): { buff: WeatherBuff | null; good: boolean } {
-  if (kind === 'hitze') {
-    // safe = Schattennetz (+10 % for 4 h); risk = früh gießen (+20 % 2 h, can is emptied)
-    return choice === 'safe'
-      ? { buff: { mult: 1.1, until: now + 4 * HOUR }, good: true }
-      : { buff: { mult: 1.2, until: now + 2 * HOUR }, good: true }
-  }
-  if (choice === 'safe') return { buff: null, good: true }
-  const hurt = roll < 0.5
-  if (!hurt) return { buff: null, good: true }
-  return { buff: { mult: kind === 'sturm' ? 0.75 : 0.7, until: now + 2 * HOUR }, good: false }
+  const e = WEATHER_EFFECTS[kind]
+  if (choice === 'safe') return { buff: e.safe ? { mult: e.safe.mult, until: now + e.safe.hours * HOUR } : null, good: true }
+  const hurt = roll < e.risk.chanceBad
+  const mult = hurt ? e.risk.bad : e.risk.good
+  return { buff: mult === 1 ? null : { mult, until: now + e.risk.hours * HOUR }, good: !hurt }
 }
 
 export function weatherBuffMult(buff: WeatherBuff | null, now: number): number {

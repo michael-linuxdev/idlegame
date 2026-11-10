@@ -232,6 +232,9 @@ export const strings = {
     preview: (pct: number) => `mit deinem letzten Garten ≈ ${pct > 0 ? '+' : ''}${pct} % Ernte`,
     previewEven: 'mit deinem letzten Garten ≈ gleich viel Ernte',
     previewQuiet: 'lohnt sich, wenn du oft länger weg bist',
+    previewAway: (active: number, away: number) => `beim Spielen ≈ ${active > 0 ? '+' : ''}${active} % · während du weg bist ≈ ${away > 0 ? '+' : ''}${away} %`,
+    result: (name: string, pct: number) => `Dein Thema „${name}“ hat mit deinem Garten ≈ ${pct > 0 ? '+' : ''}${pct} % Ernte gebracht.`,
+    resultAway: (name: string, active: number, away: number) => `Dein Thema „${name}“: beim Spielen ≈ ${active > 0 ? '+' : ''}${active} %, während du weg warst ≈ ${away > 0 ? '+' : ''}${away} % Ernte.`,
     skip: 'Ohne Thema weitergärtnern',
     pill: (name: string) => name,
     cards: {
@@ -1206,12 +1209,12 @@ export const strings = {
     variety: 'Eine neue Sorte! Im Notizbuch unter „Pflanzenbuch“ siehst du alle — jede bringt für immer etwas mehr Ernte.',
     season: 'Die Saison kann enden. Im Winter ruht der Garten, aber du nimmst Erbstücke mit — damit wird jedes Gartenjahr reicher.',
     truhe: 'In Omas Truhe warten Schätze. Tausch deine Erbstücke gegen Boni, die jeden Winter überdauern.',
-    weekly: 'Neu: Omas Wochenplan. Tipp oben links auf deine Gartenstufe — dort stehen sieben Aufgaben für diese Woche.',
+    weekly: 'Neu: Omas Wochenplan. Tipp unten links auf „Heute“ — dort stehen sieben Aufgaben für diese Woche.',
     deep: 'Alle Ecken sind offen. Wenn du magst, kann der Garten jetzt einen Tiefen Winter ruhen — für Sprösslinge, die für immer bleiben.',
     bulkMax: 'Neu: „Max“. Damit baust du dieses Beet so oft aus, wie deine Ernte gerade reicht — ein Tipp statt vieler.',
     bulk5: 'Neu: „×5“. Kauft genau fünf Stufen auf einmal — praktisch, um gezielt auf den nächsten Meilenstein zuzugehen.',
     buyAll: 'Neu: „Alles ausbauen“. Verteilt deine ganze Ernte auf alle Beete — immer zuerst dort, wo sie am meisten Ernte pro Sekunde bringt. Pflege und Kapitel kauft es nicht.',
-    recipeNew: 'Neu: Omas Tagesrezept. Oben in der Leiste steht, welche Beete heute etwas fürs Rezept liefern — fertig gekocht gibt es einen Bonus.',
+    recipeNew: 'Neu: Omas Tagesrezept. Unten links unter „Heute“ steht, welche Beete heute etwas fürs Rezept liefern — fertig gekocht gibt es einen Bonus.',
     festNew: 'Neu: Gartenfeste. Zu jeder Jahreszeit gibt es ein Fest mit Festmarken und einem eigenen Laden — tipp oben auf die Fest-Pille.',
     weatherNew: 'Neu: das Wetter. Es ändert die Ernte ein wenig, und manchmal fragt der Himmel, was du tun willst — oben siehst du auch morgen.',
     crossNew: 'Neu: Saatgut kreuzen (Menü → Kreuzen). Zwei Sorten aus dem Pflanzenbuch ergeben in 4 Stunden etwas Neues — leg gleich eine an, dann wartet bei deiner Rückkehr eine Überraschung.',
@@ -1283,6 +1286,18 @@ export const strings = {
     newCorner: (name: string) => `Neu zu roden: ${name}`,
     cta: 'Ins neue Gartenjahr',
     skip: 'Weiter',
+  },
+
+  today: {
+    title: 'Heute',
+    eyebrow: 'Für heute',
+    button: 'Heute',
+    ready: (n: number) => `${n} bereit`,
+    allDone: 'erledigt',
+    open: 'Heute öffnen: Gartenrunde, Tagesrezept, Tagesziele und Wochenplan',
+    close: 'Schließen',
+    dailyDone: 'Erledigt',
+    movedNote: 'Tagesziele und Omas Wochenplan stehen jetzt unter „Heute“ (unten links).',
   },
 
   daily: {

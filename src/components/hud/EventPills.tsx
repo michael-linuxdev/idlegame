@@ -17,10 +17,9 @@ import {
   IconSun,
   IconFestToken,
   IconSprout,
-  IconNotebook,
 } from '../../theme/icons'
-import { RECIPE_NEED } from '../../game/extrasCore'
 import { festAt } from '../../game/fests'
+import { selectPills } from '../../game/hudPills'
 
 type GameApi = ReturnType<typeof useGame>
 
@@ -33,6 +32,8 @@ interface Pill {
   claim?: boolean
   detail?: { line: string; ratio: number; aria: string }
   onClick?: () => void
+  /** Restzeit (ms): was abläuft, hat Vorrang (game/hudPills.ts) */
+  msLeft?: number
 }
 
 interface Props {
@@ -40,11 +41,9 @@ interface Props {
   /** Saisonende-Hinweis (not yet the main goal) */
   season?: { label: string; short?: string; onOpen: () => void } | null
   /** Hofladen-Bestellung */
-  order?: { label: string; detail: string; ratio: number; claim: boolean; onClaim: () => void } | null
+  order?: { label: string; detail: string; ratio: number; claim: boolean; onClaim: () => void; msLeft?: number } | null
   /** Open the Festladen */
   onOpenFest?: () => void
-  /** Open Omas Tagesrezept */
-  onOpenRecipe?: () => void
 }
 
 const WEATHER_ICON = {
@@ -54,9 +53,6 @@ const WEATHER_ICON = {
   mild: <IconCloud />,
 } as const
 
-const MAX_VISIBLE = 3
-/** What stays visible when the bar is crowded (claimable pills always lead). */
-const PRIORITY = ['season', 'order', 'fest', 'turbo', 'rainbow', 'erntefest', 'flash', 'recipe', 'boost', 'clan', 'wheel', 'weather']
 const PILLS_SEEN_KEY = 'gartenerbe-pills-seen-v1'
 
 function loadSeen(): string[] {
@@ -69,7 +65,7 @@ function loadSeen(): string[] {
 }
 
 /** Compact event bar — every timed bonus is one small pill, never a card. */
-export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Props) {
+export function EventPills({ game, season, order, onOpenFest }: Props) {
   const [open, setOpen] = useState<string | null>(null)
   const [showAll, setShowAll] = useState(false)
   const [seen, setSeen] = useState<string[]>(loadSeen)
@@ -95,6 +91,7 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
       claim: order.claim,
       onClick: order.claim ? order.onClaim : undefined,
       detail: { line: order.detail, ratio: order.ratio, aria: order.label },
+      msLeft: order.msLeft,
     })
   }
 
@@ -105,6 +102,7 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
       label: `×3 · ${formatClock(game.turboMsLeft)}`,
       aria: t.turbo.pill(formatClock(game.turboMsLeft)),
       detail: { line: t.turbo.detail, ratio: 0, aria: t.turbo.detail },
+      msLeft: game.turboMsLeft,
     })
   }
 
@@ -114,22 +112,12 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
       icon: <IconSun />,
       label: `×5 · ${formatClock(game.rainbowMsLeft)}`,
       aria: t.sky.rainbowActive(formatClock(game.rainbowMsLeft)),
+      msLeft: game.rainbowMsLeft,
     })
   }
 
+  // Omas Tagesrezept steht jetzt auf der „Heute“-Karte (TodaySheet), nicht mehr als Pille
   const { features } = game
-  if (onOpenRecipe && features.has('recipe') && state.recipe.areas.length > 0 && !state.recipe.claimed) {
-    const done = state.recipe.areas.filter((_, i) => (state.recipe.have[i] ?? 0) >= RECIPE_NEED).length
-    pills.push({
-      key: 'recipe',
-      icon: <IconNotebook />,
-      label: game.recipeReady ? t.recipe.cook : `${done}/3`,
-      aria: game.recipeReady ? t.recipe.pillReady : t.recipe.pill(done),
-      claim: game.recipeReady,
-      onClick: onOpenRecipe,
-    })
-  }
-
   if (onOpenFest && features.has('fest')) {
     const fest = festAt(game.nowTick)
     const n = Math.floor(state.festTokens)
@@ -207,6 +195,7 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
         ratio: flash.ratio,
         aria: t.flash.goalAria,
       },
+      msLeft: flash.msLeft,
     })
   }
 
@@ -216,6 +205,7 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
       icon: <IconFertilizer />,
       label: `${formatMult(game.yieldBoostMult)} · ${formatClock(game.yieldBoostMsLeft)}`,
       detail: { line: t.shop.yieldBoostTitle, ratio: 0, aria: t.shop.yieldBoostTitle },
+      msLeft: game.yieldBoostMsLeft,
     })
   }
 
@@ -225,6 +215,7 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
       icon: <IconFlag />,
       label: `${formatMult(game.vereinMult)} · ${formatClock(game.clanBoostMsLeft)}`,
       detail: { line: t.clanBoost.name, ratio: 0, aria: t.clanBoost.name },
+      msLeft: game.clanBoostMsLeft,
     })
   }
 
@@ -262,12 +253,9 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
 
   if (pills.length === 0) return null
   const expanded = pills.find((p) => p.key === open && p.detail)
-  // Claimable first; at most MAX_VISIBLE, the rest behind „+N“
-  const rank = (p: Pill) => (p.claim ? -1 : PRIORITY.indexOf(p.key))
-  const ordered = [...pills].sort((a, b) => rank(a) - rank(b))
-  const hidden = showAll ? 0 : Math.max(0, ordered.length - MAX_VISIBLE)
-  const visible = hidden > 0 ? ordered.slice(0, MAX_VISIBLE - 1) : ordered
-  const hiddenCount = ordered.length - visible.length
+  // Höchstens drei: was abläuft zuerst, der Rest hinter „+N“ nur als Liste
+  const { visible, hidden } = selectPills(pills)
+  const hiddenCount = hidden.length
 
   return (
     <div className="hud-pills-wrap">
@@ -303,7 +291,7 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
           </li>
           )
         })}
-        {hiddenCount > 0 || showAll ? (
+        {hiddenCount > 0 ? (
           <li className="hud-pill-item">
             <button
               type="button"
@@ -312,14 +300,25 @@ export function EventPills({ game, season, order, onOpenFest, onOpenRecipe }: Pr
               onClick={() => setShowAll((v) => !v)}
             >
               <span className="hud-pill-label" aria-hidden="true">
-                {showAll ? '−' : t.ux.pills.more(hiddenCount)}
+                {t.ux.pills.more(hiddenCount)}
               </span>
               <span className="sr-only">{showAll ? t.ux.pills.less : t.ux.pills.moreAria(hiddenCount)}</span>
             </button>
           </li>
         ) : null}
       </ul>
-      {expanded?.detail ? (
+      {showAll && hiddenCount > 0 ? (
+        <div className="hud-pill-detail hud-pill-rest" role="status">
+          <ul>
+            {hidden.map((p) => (
+              <li key={p.key}>
+                <span className="hud-pill-icon" aria-hidden="true">{p.icon}</span>
+                <span>{p.detail?.line ?? p.aria ?? t.ux.pills.names[p.key] ?? p.label}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : expanded?.detail ? (
         <div className="hud-pill-detail" role="status">
           <p>{expanded.detail.line}</p>
           {expanded.detail.ratio > 0 ? (

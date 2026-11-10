@@ -40,7 +40,9 @@ export function SeasonCardPicker({ game }: { game: GameApi }) {
                   <span className="season-card-name">{copy.name}</span>
                   <span className="season-card-effect">{copy.effect}</span>
                   <span className={`season-card-preview${o.preview >= 1 ? ' up' : ' down'}`}>
-                    {o.id === 'ruhigesJahr' ? t.seasonCards.previewQuiet : previewText(o.preview)}
+                    {def.offline
+                      ? t.seasonCards.previewAway(Math.round((o.preview - 1) * 100), Math.round((o.preview * def.offline - 1) * 100))
+                      : previewText(o.preview)}
                   </span>
                 </button>
               </li>
