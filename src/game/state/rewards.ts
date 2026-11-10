@@ -16,7 +16,7 @@ import { GENERATORS } from '../generators'
 import { deepYieldMult } from '../longLoop'
 import { levelProductionMult } from '../progression'
 import { cardGlobalMult } from '../seasonCards'
-import { SAFE_COST, weatherBuffMult, weatherOutcome, type WeatherChoice, type WeatherEventKind } from '../weatherEvents'
+import { SAFE_COST, weatherBuffMult, weatherCtx, weatherOutcome, weatherRisk, type WeatherChoice, type WeatherEventKind } from '../weatherEvents'
 import {
   bumpQuest,
   effectiveClanMult,
@@ -167,14 +167,16 @@ export function weatherPreview(state: GameState, now = Date.now()): WeatherPrevi
   const rate = productionPerSecond(state, now)
   const gain = (o: ReturnType<typeof weatherOutcome>) => (o.buff ? (o.buff.mult - 1) * rate * ((o.buff.until - now) / 1000) : 0)
   const cost = SAFE_COST[kind]
-  const safeOut = weatherOutcome(kind, 'safe', 1, now)
+  const ctx = weatherCtx(state.owned)
+  const safeOut = weatherOutcome(kind, 'safe', 1, now, ctx)
   const safe = {
     samen: cost.samen ?? 0,
     ernte: gain(safeOut) - (cost.minutes ? Math.min(state.ernte, rate * cost.minutes * 60) : 0),
   }
-  const bad = gain(weatherOutcome(kind, 'risk', 0, now))
-  const good = gain(weatherOutcome(kind, 'risk', 0.99, now))
-  const chanceBad = weatherOutcome(kind, 'risk', 0, now).good === weatherOutcome(kind, 'risk', 0.99, now).good ? 0 : 0.5
+  const bad = gain(weatherOutcome(kind, 'risk', 0, now, ctx))
+  const good = gain(weatherOutcome(kind, 'risk', 0.999, now, ctx))
+  // Chance auf Schaden mit diesem Garten (Hecke beim Sturm)
+  const chanceBad = weatherRisk(kind, ctx).chanceBad
   // Hitze: „früh gießen“ leert die Gießkanne — so viel ist ihr nächster Guss gerade wert
   let canCost = 0
   if (kind === 'hitze') {

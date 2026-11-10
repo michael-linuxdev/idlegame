@@ -82,6 +82,17 @@ Werkzeug: `npm run balance -- <engaged|regular|casual> <stunden>` — spielt die
 
   „Keine Wahl“ ist Tag für Tag identisch mit dem Lauf nach Paket 3 (neutraler Start). Korridor hält.
 
+  Paket 5 (Sturm: Hecke als Windschutz, Spätfrost: Glas schützt; Nutzerentscheid 2026-11-10). Der Standard-Simulator entscheidet kein Wetter, darum mit `WEATHER=best TASKS=1`, alte gegen neue Wetter-Regeln:
+
+  | Messung | alt | neu |
+  |---|---|---|
+  | Regular 5 Jahre | K13 291, K50 1702, Abstand Ø 38,1 | K13 294, K50 1709 (4,7 J.), Abstand 24–54, Ø 38,2 |
+  | Dauerspieler 1 Jahr | — | K13 268, Abstand 21–24 |
+  | Casual 2 Jahre | — | Tag 730: K24 |
+  | 14 Tage ab Juni (Saisons D/R/C) | 121 / 57 / 27 | 127 / 63 / 28 (das alte „Sichern“ nahm 10 min aus dem Korb) |
+
+  Wahl „riskieren“ zusammen über alle Profile: Sturm 36 %, Spätfrost 54 %, Hitzewelle 34 % (vorher 0 / 0 / 100 %). Saison-Karten „Faktor nach Anteil“ gemessen und weggelassen (`docs/systeme-inventur.md`).
+
 ## Prinzipien
 
 - DE-UI (Ausgangssprache), EN gleichwertig; Bau-Karte; echtes Idle; keine Energy-Walls; helle, lesbare UI.
@@ -154,7 +165,8 @@ Werkzeug: `npm run balance -- <engaged|regular|casual> <stunden>` — spielt die
     - **Heute-Karte und HUD-Grenze:** Gartenrunde, Tagesrezept, Tagesziele und Wochenplan an einer Stelle; höchstens drei Ereignis-Pillen, was abläuft zuerst; Entscheidungen mit Zahlen für diesen Garten; Hitzewelle +20 % → +16 %; Inventur `docs/systeme-inventur.md`.
     - **Ruhezeit:** erledigte Tage verkürzen die Ruhezeit nach dem Tiefen Winter (−4 h je Tag, höchstens −12 h).
     - **Bogen-Regeln:** Patenbeet, Tauschpost, Wasser verteilen, Plan für morgen (`docs/kapitel/bogen-regeln.md`).
-    - **Offen:** Sturm/Spätfrost und Saison-Karten sind laut Simulator keine echten Entscheidungen (eine Seite gewinnt fast immer) — braucht eine Regeländerung, Entscheidung des Nutzers; Cloud-Sicherung (iCloud/Play Games/Backend) braucht Store-Hülle bzw. Konto; Werte der Bogen-Regeln mit echten Ständen nachprüfen.
+    - **Paket 5 (Nutzerentscheid):** Sturm — „Sichern“ kostet −8 % für 2 h, die Beerenhecke senkt die Schadens-Chance (50 % → 20 %); Spätfrost — Glas (Gewächshaus, Orangerie) hält 69 % des Schadens ab. Beide sind jetzt echte Entscheidungen. Saison-Karten „Faktor nach Anteil“ umgesetzt, gemessen, **weggelassen** (Hofladenjahr blieb bei ~90 %, kleine Bereiche bei ~0 %).
+    - **Offen:** Saison-Karten brauchen eine andere Idee als feste oder anteilige Faktoren (Vorschläge in `docs/systeme-inventur.md`), Entscheidung des Nutzers; Cloud-Sicherung (iCloud/Play Games/Backend) braucht Store-Hülle bzw. Konto; Werte der Bogen-Regeln mit echten Ständen nachprüfen.
 16. Multiplayer-Architektur (Kleingartenverein mit echtem Backend; Kürbis-Runde umstellen).
 17. Store-IAP, Impressum-Daten, Namensprüfung „Gartenerbe“ und „Heirloom Garden“, Store-Assets, Soft-Launch. Vor Launch: `STORE_ENABLED` prüfen (Platzhalter) **und `DISTRIBUTION = 'store'`** in `src/game/distribution.ts` (schaltet den Installations-Hinweis der Web-Fassung ab; ein Test erzwingt das, sobald eine Store-Hülle im Repo liegt).
 

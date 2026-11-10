@@ -107,9 +107,12 @@ import { arcOf, bestChoice } from '../../src/game/arcRules'
 import { PROJECTS } from '../../src/game/projects'
 import { MASTERY_BONUS, masteryStars, totalMasteryStars } from '../../src/game/mastery'
 import { SEASON_CARDS } from '../../src/game/seasonCards'
-import { SAFE_COST, WEATHER_EFFECTS } from '../../src/game/weatherEvents'
+import { SAFE_COST, WEATHER_EFFECTS, WEATHER_GARDEN, weatherCtx } from '../../src/game/weatherEvents'
 
 // WEATHER_TUNE='{"sturm":{"risk":{"bad":0.8}},"frost":{"cost":{"minutes":8}}}' — Wetter-Werte probeweise ändern
+// Paket 5 probeweise: STURM='{"chanceMin":0.25,"hedgeFull":200}', GLASS_PROTECT=0.7
+if (process.env.STURM) Object.assign(WEATHER_GARDEN.sturm, JSON.parse(process.env.STURM))
+if (process.env.GLASS_PROTECT) WEATHER_GARDEN.frost.glassProtect = Number(process.env.GLASS_PROTECT)
 if (process.env.REST_DAY_H) REST_CUT.dayMs = Number(process.env.REST_DAY_H) * 3600_000
 if (process.env.REST_CAP_H) REST_CUT.capMs = Math.min(12, Number(process.env.REST_CAP_H)) * 3600_000
 if (process.env.WEATHER_TUNE) {
@@ -161,11 +164,14 @@ export const decisions = {
   cardsOffered: {} as Record<string, number>,
   cardsPicked: {} as Record<string, number>,
   weather: {} as Record<string, { safe: number; risk: number }>,
+  /** Sturm: Heckenstufe, Frost: Freiland-Anteil in % bei jedem Ereignis */
+  ctx: {} as Record<string, number[]>,
 }
 function resetDecisions() {
   decisions.cardsOffered = {}
   decisions.cardsPicked = {}
   decisions.weather = {}
+  decisions.ctx = {}
 }
 /** Erster Tag mit 1/2/3 Meister-Sternen je Kapitel (MASTERY=1 druckt sie). */
 const masteryDays: Record<string, number[]> = {}
@@ -420,6 +426,10 @@ export function run(profile: Profile, hours: number) {
               ? Math.random() < 0.5 ? 'safe' : 'risk'
               : bestWeatherChoice(p, productionPerSecond(s, clock), s.samen)
         const next = decideWeather(s, choice, clock).state
+        if (next !== s && process.env.DECISIONS) {
+          const ctx = weatherCtx(s.owned)
+          ;(decisions.ctx[p.kind] ??= []).push(p.kind === 'sturm' ? ctx.hedge : Math.round(ctx.openShare * 100))
+        }
         if (next !== s) {
           const w = (decisions.weather[p.kind] ??= { safe: 0, risk: 0 })
           w[choice] += 1
@@ -644,6 +654,8 @@ function report(profile: Profile, hours: number) {
       const share = Object.entries(decisions.cardsPicked).sort((a, b) => b[1] - a[1]).map(([id, n]) => `${id} ${Math.round((100 * n) / total)} %`)
       console.log(`  cards picked/offered: ${cards.join(' · ')}`)
       console.log(`  cards share of all picks (${total}): ${share.join(' · ')}`)
+      const q = (a: number[]) => { const b = [...a].sort((x, y) => x - y); return [0.1, 0.25, 0.5, 0.75, 0.9].map((f) => b[Math.floor(f * (b.length - 1))]).join('/') }
+      console.log(`  weather ctx (p10/25/50/75/90): ${Object.entries(decisions.ctx).map(([k, v]) => `${k} ${q(v)}`).join(' · ')}`)
       console.log(`  weather: ${Object.entries(decisions.weather).map(([k, w]) => `${k} safe ${w.safe} / risk ${w.risk} (risk ${Math.round((100 * w.risk) / Math.max(1, w.safe + w.risk))} %)`).join(' · ')}`)
     }
     if (process.env.TASKS) console.log(`  rest: ${restDays} days shortened the rest by ${REST_CUT.dayMs / 3600_000} h (cap ${REST_CUT.capMs / 3600_000} h)`)

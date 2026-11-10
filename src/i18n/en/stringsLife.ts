@@ -158,7 +158,7 @@ export const lifeStrings = {
   weatherEvent: {
     sturm: {
       title: 'A storm is coming!',
-      safe: 'Secure the beds · 10 min of harvest',
+      safe: 'Secure the beds · −8 % for 2 h',
       risk: 'Take the risk',
       safeDone: 'Everything’s secured — let the storm come.',
       riskGood: 'Lucky you — the storm passed by.',
@@ -187,5 +187,7 @@ export const lifeStrings = {
     riskChance: (pct: number, amount: string, hours: number) => `${pct} %: ≈ −${amount} harvest over ${hours} h, otherwise nothing`,
     canCost: (amount: string) => `watering can emptied (≈ −${amount})`,
     result: (amount: string) => `That’s ≈ ${amount} harvest.`,
+    hedgeNote: (pct: number) => `Your berry hedge breaks the wind: damage in ${pct} % of cases (50 % without a hedge).`,
+    glassNote: (pct: number) => `${pct} % of your harvest grows outdoors — frost hits it fully there, under glass only a third.`,
   },
 }

@@ -1,4 +1,4 @@
-import { SAFE_COST, WEATHER_EFFECTS } from '../game/weatherEvents'
+import { SAFE_COST, WEATHER_EFFECTS, weatherCtx } from '../game/weatherEvents'
 import { weatherPreview } from '../game/state'
 import { formatErnte } from '../game/format'
 import { playSfx } from '../game/sound'
@@ -78,6 +78,8 @@ export function WeatherDecision({ game, onToast }: { game: GameApi; onToast: (te
         <p id="weather-risk-line">
           <strong>{copy.risk}:</strong> {riskLine}
         </p>
+        {kind === 'sturm' && p ? <p>{t.weatherEvent.hedgeNote(Math.round(p.risk.chanceBad * 100))}</p> : null}
+        {kind === 'frost' ? <p>{t.weatherEvent.glassNote(Math.round(weatherCtx(game.state.owned).openShare * 100))}</p> : null}
       </div>
     </div>
   )
