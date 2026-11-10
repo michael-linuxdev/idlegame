@@ -42,7 +42,7 @@ export function applyTick(state: GameState, dtSeconds: number): GameState {
   const now = Date.now()
   let synced = withQuestSync(syncEventWindow(syncMonetization(state, now), now), now)
   synced = syncContest(syncSky(syncFest(syncChaptersOpen(synced, now), now), now), now)
-  synced = tickChapters(synced, (rate) => rate * dtSeconds)
+  synced = tickChapters(synced, (rate) => rate * dtSeconds, false, now)
   synced = syncAlbum(synced, now)
   if (synced.helperLevel > 0 && synced.helperOn) {
     synced = runHelper(synced, dtSeconds * 1000).state

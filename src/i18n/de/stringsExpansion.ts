@@ -535,7 +535,7 @@ export const expansionStrings = {
       variety: (name: string) => `Festsorte: ${name}`,
       varietyBlurb: (pct: string) => `Fürs Pflanzenbuch · dauerhaft +${pct} % Ernte. Nur während dieses Fests.`,
       boost: 'Festschub',
-      boostBlurb: '30 Minuten +15 % Ernte.',
+      boostBlurb: '30 Minuten +15 % Ernte in allen Gärten.',
       heirlooms: 'Erbstück-Kiste',
       heirloomsBlurb: (n: number) => `+${zahl(n)} Erbstücke für die Truhe.`,
       seeds: 'Samentütchen',

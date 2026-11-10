@@ -73,7 +73,7 @@ export function buyTimeSkip(state: GameState, id: TimeSkipId, now = Date.now()):
   const gained = rate * hours * 3600
   next = withEventProgress(next, gained, now)
   // Der Zeitsprung gilt für jeden Garten: offene Kapitel wachsen genauso lange mit
-  next = tickChapters(next, (r) => r * hours * 3600)
+  next = tickChapters(next, (r) => r * hours * 3600, false, now)
   return {
     ...next,
     samen: next.samen - def.cost,
@@ -279,7 +279,7 @@ export function claimRewardedAd(
   const chapter = choice === 'ernte' && plot !== 'garden' && chapterOpen(next, plot) ? plot : undefined
   const samenGained = choice === 'samen' ? AD_SAMEN : 0
   if (chapter) {
-    const gained = chapterPerSecond(next, chapter) * AD_ERNTE_MINUTES * 60
+    const gained = chapterPerSecond(next, chapter, false, now) * AD_ERNTE_MINUTES * 60
     const c = next.chapters[chapter]
     next = {
       ...next,

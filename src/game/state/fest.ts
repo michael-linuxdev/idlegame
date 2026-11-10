@@ -62,13 +62,13 @@ export function buyFestItem(state: GameState, itemId: string, now = Date.now()):
       break
     }
     case 'chapterCrop':
-      next = tickChapters(next, (r) => r * (item.amount ?? 0) * 60)
+      next = tickChapters(next, (r) => r * (item.amount ?? 0) * 60, false, now)
       break
     case 'festNight': {
       const sec = (item.amount ?? 0) * 3600
       const gained = productionPerSecond(next, now) * sec
       next = { ...next, ernte: next.ernte + gained, ernteSeason: next.ernteSeason + gained, ernteLifetime: next.ernteLifetime + gained }
-      next = tickChapters(next, (r) => r * sec)
+      next = tickChapters(next, (r) => r * sec, false, now)
       break
     }
     case 'boost': {

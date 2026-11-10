@@ -823,7 +823,7 @@ export const strings: Strings = {
     removeAdsTitle: 'Ad-free',
     removeAdsIntro: 'Buy once — bonus ads gone for good, the reward stays.',
     yieldBoostTitle: 'Fertilizer',
-    yieldBoostIntro: '+15 % harvest · 30 min · for seeds.',
+    yieldBoostIntro: '+15 % harvest in all gardens · 30 min · for seeds.',
     yieldBoostActive: (mult: string, left: string) => `Active ×${mult} · ${left}`,
     yieldBoostInactive: 'Not active',
     yieldBoostBuy: (cost: number) => `${nSeeds(cost)}`,
