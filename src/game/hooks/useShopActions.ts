@@ -36,6 +36,10 @@ import {
 } from '../state'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { GameCore } from './useGameLoop'
+import type { ChapterId } from '../chapters'
+
+/** Garten, der die Ernte einer Werbung bekommt. */
+export type AdPlot = 'garden' | ChapterId
 
 type UseShopActionsDeps = Pick<GameCore, 'setState' | 'offlineGained' | 'setOfflineGained' | 'offlineAwayMs' | 'setOfflineAwayMs'>
 
@@ -103,8 +107,8 @@ export function useShopActions({ setState, offlineGained, setOfflineGained, offl
   // Testphase: the ad runs 30 or 60 s like a real one and locks the game
   // (components/AdOverlay.tsx); it only counts down while the app is visible.
   const [adPlaying, setAdPlaying] = useState<{ choice: AdChoice; totalS: number; leftMs: number; blocking: boolean } | null>(null)
-  const [adResult, setAdResult] = useState<{ choice: AdChoice; ernte: number; samen: number; at: number } | null>(null)
-  const adRef = useRef<{ choice: AdChoice; totalS: number; leftMs: number; blocking: boolean; last: number } | null>(null)
+  const [adResult, setAdResult] = useState<{ choice: AdChoice; ernte: number; samen: number; chapter?: ChapterId; at: number } | null>(null)
+  const adRef = useRef<{ choice: AdChoice; plot: AdPlot; totalS: number; leftMs: number; blocking: boolean; last: number } | null>(null)
   const adTimer = useRef<number | null>(null)
   const stopAdTimer = () => {
     if (adTimer.current != null) window.clearInterval(adTimer.current)
@@ -120,31 +124,32 @@ export function useShopActions({ setState, offlineGained, setOfflineGained, offl
     if (!ad) return
     if (ad.blocking) logPlaytest('test_ad', { result: 'done', seconds: ad.totalS, choice: ad.choice })
     setState((s) => {
-      const result = claimRewardedAd(s, ad.choice)
+      const result = claimRewardedAd(s, ad.choice, Date.now(), ad.plot)
       if (!result.ok) return s
-      logPlaytest('shop_tap', { action: 'rewarded_ad', choice: ad.choice })
-      setAdResult({ choice: ad.choice, ernte: result.ernteGained, samen: result.samenGained, at: Date.now() })
+      logPlaytest('shop_tap', { action: 'rewarded_ad', choice: ad.choice, plot: ad.plot })
+      setAdResult({ choice: ad.choice, ernte: result.ernteGained, samen: result.samenGained, chapter: result.chapter, at: Date.now() })
       return result.state
     })
   }, [setState])
 
-  const watchRewardedAd = useCallback((choice: AdChoice, adFree = false) => {
+  /** `plot`: der gerade gewählte Garten — nur er bekommt die Ernte. */
+  const watchRewardedAd = useCallback((choice: AdChoice, adFree = false, plot: AdPlot = 'garden') => {
     if (adRef.current) return
     // Werbefrei gekauft: Belohnung sofort, ohne Werbung
     if (adFree) {
       setAdResult(null)
       setState((s) => {
-        const result = claimRewardedAd(s, choice)
+        const result = claimRewardedAd(s, choice, Date.now(), plot)
         if (!result.ok) return s
-        logPlaytest('shop_tap', { action: 'rewarded_ad', choice, adFree: true })
-        setAdResult({ choice, ernte: result.ernteGained, samen: result.samenGained, at: Date.now() })
+        logPlaytest('shop_tap', { action: 'rewarded_ad', choice, adFree: true, plot })
+        setAdResult({ choice, ernte: result.ernteGained, samen: result.samenGained, chapter: result.chapter, at: Date.now() })
         return result.state
       })
       return
     }
     const blocking = TEST_WALLET_ENABLED
     const totalS = blocking ? pickTestAdSeconds() : Math.round(REWARDED_AD_DELAY_MS / 1000)
-    const ad = { choice, totalS, leftMs: blocking ? totalS * 1000 : REWARDED_AD_DELAY_MS, blocking, last: Date.now() }
+    const ad = { choice, plot, totalS, leftMs: blocking ? totalS * 1000 : REWARDED_AD_DELAY_MS, blocking, last: Date.now() }
     adRef.current = ad
     setAdResult(null)
     setAdPlaying({ choice, totalS, leftMs: ad.leftMs, blocking })

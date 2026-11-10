@@ -19,11 +19,13 @@ import {
 } from '../game/monetization'
 import { t } from '../i18n'
 import { STORE_ENABLED } from '../game/monetization'
-import { TEST_BUDGET_CENTS, TEST_WALLET_ENABLED, offerPriceCents, readWallet, walletLeftCents } from '../game/testWallet'
+import { TEST_MONTHLY_CENTS, TEST_WALLET_ENABLED, offerPriceCents, readWallet, walletLeftCents } from '../game/testWallet'
 import { TestPurchaseDialog } from './TestPurchaseDialog'
 import type { useGame } from '../game/useGame'
 import { waterRefillsLeft } from '../game/state'
 import { IconCheck } from '../theme/icons'
+import { chapterCopy } from './chapterCopy'
+import type { AdPlot } from '../game/hooks/useShopActions'
 
 type GameApi = ReturnType<typeof useGame>
 type Tab = 'free' | 'boosts' | 'styles' | 'seeds'
@@ -37,6 +39,8 @@ interface Props {
   game: GameApi
   /** Gartenstil-Vorschau live on the map */
   onPreview?: (id: CosmeticId) => void
+  /** Gerade gewählter Garten: nur er bekommt die Ernte der Werbung */
+  plot?: AdPlot
 }
 
 function formatMsLeft(ms: number): string {
@@ -80,7 +84,7 @@ function OfferButton({ offer, owned, onBuy }: { offer: ShopOfferDef; owned: bool
   )
 }
 
-export function ShopPanel({ game, onPreview }: Props) {
+export function ShopPanel({ game, onPreview, plot = 'garden' }: Props) {
   const {
     state,
     rate,
@@ -141,7 +145,12 @@ export function ShopPanel({ game, onPreview }: Props) {
   const rewardLabel = (kind: 'samen' | 'ernteSec', amount: number) =>
     kind === 'samen' ? t.shop.rewardSamen(amount) : t.shop.rewardErnteSec(amount)
 
-  const adErnte = rate * AD_ERNTE_MINUTES * 60
+  const adChapter = plot !== 'garden' && game.openChapters.includes(plot) ? plot : null
+  const adCopy = adChapter ? chapterCopy(adChapter) : null
+  const adErnte = (adChapter ? game.chapterRate(adChapter) : rate) * AD_ERNTE_MINUTES * 60
+  const adErnteLabel = adCopy
+    ? t.shop.adsErnteChapter(AD_ERNTE_MINUTES, adCopy.chip, formatErnte(adErnte), adCopy.currency)
+    : t.shop.adsErnte(AD_ERNTE_MINUTES, formatErnte(adErnte))
 
   return (
     <section className="panel shop-panel" aria-labelledby="shop-heading">
@@ -191,6 +200,7 @@ export function ShopPanel({ game, onPreview }: Props) {
           <>
               <h3 className="subhead">{state.adsRemoved ? t.shop.adFreeTitle : t.shop.adsTitle}</h3>
               <p className="muted">{state.adsRemoved ? t.shop.adFreeIntro : t.shop.adsIntro}</p>
+              {game.openChapters.length > 0 ? <p className="muted">{t.shop.adsPlotHint}</p> : null}
               <div className="shop-ad-box">
                 {adWatching ? (
                   <p className="shop-ad-status" role="status">
@@ -200,8 +210,8 @@ export function ShopPanel({ game, onPreview }: Props) {
                   <>
                     <p className="shop-ad-status">{t.shop.adsPick}</p>
                     <div className="shop-ad-choices">
-                      <button type="button" className="btn buy" onClick={() => watchRewardedAd('ernte', state.adsRemoved)}>
-                        {t.shop.adsErnte(AD_ERNTE_MINUTES, formatErnte(adErnte))}
+                      <button type="button" className="btn buy" onClick={() => watchRewardedAd('ernte', state.adsRemoved, adChapter ?? 'garden')}>
+                        {adErnteLabel}
                       </button>
                       <button type="button" className="btn buy" onClick={() => watchRewardedAd('samen', state.adsRemoved)}>
                         {t.shop.adsSamen(AD_SAMEN)}
@@ -213,7 +223,13 @@ export function ShopPanel({ game, onPreview }: Props) {
                 )}
                 {adResult && !adWatching ? (
                   <p className="shop-ad-toast" role="status" aria-live="polite">
-                    {t.shop.adsGot(adResult.choice === 'ernte' ? t.shop.adsGotErnte(formatErnte(adResult.ernte)) : t.shop.adsSamen(adResult.samen))}
+                    {t.shop.adsGot(
+                      adResult.choice === 'samen'
+                        ? t.shop.adsSamen(adResult.samen)
+                        : adResult.chapter
+                          ? t.shop.adsGotChapter(formatErnte(adResult.ernte), chapterCopy(adResult.chapter).currency)
+                          : t.shop.adsGotErnte(formatErnte(adResult.ernte)),
+                    )}
                   </p>
                 ) : null}
               </div>
@@ -401,7 +417,7 @@ export function ShopPanel({ game, onPreview }: Props) {
             <div className="shop-wallet-chip test-wallet-chip">
               <span className="shop-wallet-label">{t.testMoney.chip}</span>
               <span className="shop-wallet-value">{t.testMoney.left(formatPrice(walletLeft))}</span>
-              <span className="shop-wallet-label">{t.testMoney.monthly(formatPrice(TEST_BUDGET_CENTS))}</span>
+              <span className="shop-wallet-label">{t.testMoney.monthly(formatPrice(TEST_MONTHLY_CENTS))}</span>
             </div>
           ) : null}
           <h3 className="subhead">{t.shop.packsTitle}</h3>

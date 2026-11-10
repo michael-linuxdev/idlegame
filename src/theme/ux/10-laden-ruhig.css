@@ -1,0 +1,104 @@
+/* Läden (Truhe, Markt) ruhiger — Teil von ux.css (Reihenfolge zählt).
+   Playtest 2026-11-10: schmale Textspalte neben breitem Knopf → 3–4 Zeilen je Eintrag.
+   Jetzt: Name und Text über die ganze Breite, kompakter Knopf rechts neben der Effekt-Zeile. */
+
+.laden {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.laden-row {
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-auto-flow: row dense;
+  column-gap: 0.75rem;
+  row-gap: 0.1rem;
+  align-items: center;
+}
+
+/* Die Teile der Info-Spalte werden selbst Zeilen des Rasters */
+.laden-row > .laden-info {
+  display: contents;
+}
+
+.laden-row > .laden-info > * {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+/* Knopf neben der kurzen Effekt-Zeile; ohne Effekt steht er unten rechts */
+.laden-row > .laden-info > .laden-effect {
+  grid-column: 1;
+}
+
+.laden-row > .btn,
+.laden-row > .laden-action {
+  grid-column: 2;
+  justify-self: end;
+  align-self: end;
+}
+
+.laden-row > .btn,
+.laden-row > .laden-action > .btn {
+  padding: 0.45rem 0.85rem;
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+.laden-name {
+  line-height: 1.25;
+}
+
+.laden-blurb {
+  line-height: 1.35;
+}
+
+/* Truhe: Gruppen ohne Karte-in-Karte */
+.prestige-tree .prestige-branch {
+  padding: 0;
+  border: none;
+  background: none;
+}
+
+.prestige-tree .prestige-branch-title {
+  font-size: 1.05rem;
+}
+
+.prestige-tree .prestige-branch-blurb {
+  margin-bottom: 0.45rem;
+}
+
+.prestige-branch .laden-row:last-child {
+  padding-bottom: 0.65rem;
+}
+
+/* Markt: Samen-Stand als schmale Plaketten statt großer Kästen */
+.shop-wallet {
+  gap: 0.45rem;
+  margin: 0.6rem 0 0.2rem;
+}
+
+.shop-wallet-chip,
+.app-main:not(.map-mode) .shop-wallet-chip {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  box-shadow: 0 1px 0 var(--pp-edge, var(--ge-stroke));
+}
+
+.shop-wallet-value {
+  font-size: 1.05rem;
+}
+
+.shop-wallet-value svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.laden-effect--none,
+.app-main:not(.map-mode) .laden-effect--none {
+  color: var(--pp-ink-soft, var(--ge-ink-muted));
+  font-weight: 500;
+}

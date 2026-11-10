@@ -599,6 +599,8 @@ export const strings: Strings = {
       `Next up: ${name} rank ${nextRank} (${pct}%) — keep upgrading.`,
     shopUnlockAria: (name: string) => `Progress towards ${name}`,
     shopNextTag: 'Next up',
+    effectNow: (effect: string) => `Now: ${effect}`,
+    effectNone: 'Not bought yet',
     shopRankLocked: (need: string) =>
       `${need} more progress (upgrades / harvest)`,
     shopRankLockedProgress: (pct: number, left: string) =>
@@ -797,6 +799,9 @@ export const strings: Strings = {
     adsSamen: (n: number) => `+${nSeeds(n)}`,
     adsGot: (what: string) => `Added: ${what}`,
     adsGotErnte: (amount: string) => `+${amount} ${SOFT}`,
+    adsErnteChapter: (mins: number, place: string, amount: string, currency: string) => `${mins} min of ${place} · +${amount} ${currency}`,
+    adsGotChapter: (amount: string, currency: string) => `+${amount} ${currency}`,
+    adsPlotHint: 'The harvest goes to the garden you have open.',
     refillTitle: 'Refill watering can',
     refillIntro: 'Water again right away instead of waiting 5 minutes.',
     refillReady: 'Watering can is full',

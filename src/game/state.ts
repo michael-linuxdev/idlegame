@@ -62,7 +62,7 @@ export {
 } from './state/extras'
 export type { Wish } from './state/extras'
 export { generationPayout, canHandDownNow, doGeneration, buyLegacy } from './state/generation'
-export { syncFest, earnFest, buyFestItem } from './state/fest'
+export { syncFest, earnFest, buyFestItem, festPlusActive } from './state/fest'
 export {
   helperUnlocked,
   helperInterval,

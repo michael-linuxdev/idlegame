@@ -39,6 +39,9 @@ import {
 import { XP_PER_DAILY } from '../progression'
 import type { SeasonCardId } from '../seasonCards'
 import { collectReadyAchievements } from './buy'
+import type { ChapterId } from '../chapters'
+import { chapterOpen, chapterPerSecond, tickChapters } from './chapters'
+import { syncFest } from './fest'
 import { bumpQuest, productionPerSecond, syncEventWindow, syncMonetization, withXp } from './core'
 import { withEventProgress } from './events'
 import { growPumpkin } from './extras'
@@ -69,6 +72,8 @@ export function buyTimeSkip(state: GameState, id: TimeSkipId, now = Date.now()):
   const rate = productionPerSecond(next, now)
   const gained = rate * hours * 3600
   next = withEventProgress(next, gained, now)
+  // Der Zeitsprung gilt für jeden Garten: offene Kapitel wachsen genauso lange mit
+  next = tickChapters(next, (r) => r * hours * 3600)
   return {
     ...next,
     samen: next.samen - def.cost,
@@ -206,6 +211,11 @@ export function mockBuyOffer(state: GameState, offer: ShopOfferDef, now = Date.n
   if (offer.once && next.ownedOfferIds.includes(offer.id)) return state
   if (offer.kind === 'removeAds' && next.adsRemoved) return state
   if (offer.kind === 'gartenwochePlus' && next.gartenwochePremium) return state
+  if (offer.kind === 'festPlus') {
+    next = syncFest(next, now)
+    if (next.festPlusKey === next.festKey) return state
+    return { ...next, festPlusKey: next.festKey, lastSeen: now }
+  }
 
   const ownedCosmetics = new Set(next.ownedCosmetics)
   for (const id of offer.cosmeticIds ?? []) ownedCosmetics.add(id)
@@ -243,19 +253,54 @@ export type RewardedAdResult =
       ok: true
       state: GameState
       kind: 'skipCrumb' | 'samenCrumb' | 'yieldCrumb'
+      /** Ernte des gewählten Gartens; bei `chapter` in dessen Währung */
       ernteGained: number
+      /** Kapitel, das die Ernte bekam (fehlt = Hauptgarten) */
+      chapter?: ChapterId
       samenGained: number
     }
 
-/** Grant the optional rewarded ad the player picked (Ernte or Samen). Never blocks play. */
-export function claimRewardedAd(state: GameState, choice: AdChoice = 'ernte', now = Date.now()): RewardedAdResult {
+/**
+ * Grant the optional rewarded ad the player picked (Ernte or Samen). Never blocks play.
+ * Die Ernte geht nur an den Garten, der gerade gewählt ist (`plot`): Hauptgarten
+ * oder ein offenes Kapitel (10 Min von dessen Ertrag, in dessen Währung).
+ */
+export function claimRewardedAd(
+  state: GameState,
+  choice: AdChoice = 'ernte',
+  now = Date.now(),
+  plot: 'garden' | ChapterId = 'garden',
+): RewardedAdResult {
   let next = syncMonetization(state, now)
   // Werbefrei: Belohnung bleibt, nur die Werbung entfällt (Abklingzeit gilt weiter)
   if (!rewardedAdReady(next.lastRewardedAdAt, now)) {
     return { ok: false, reason: 'cooldown' }
   }
-  const ernteGained = choice === 'ernte' ? productionPerSecond(next, now) * AD_ERNTE_MINUTES * 60 : 0
+  const chapter = choice === 'ernte' && plot !== 'garden' && chapterOpen(next, plot) ? plot : undefined
   const samenGained = choice === 'samen' ? AD_SAMEN : 0
+  if (chapter) {
+    const gained = chapterPerSecond(next, chapter) * AD_ERNTE_MINUTES * 60
+    const c = next.chapters[chapter]
+    next = {
+      ...next,
+      chapters: { ...next.chapters, [chapter]: { ...c, cur: c.cur + gained, curLifetime: c.curLifetime + gained } },
+    }
+    return {
+      ok: true,
+      kind: 'yieldCrumb',
+      ernteGained: gained,
+      samenGained: 0,
+      chapter,
+      state: {
+        ...next,
+        lastRewardedAdAt: now,
+        rewardedAdClaims: next.rewardedAdClaims + 1,
+        gartenwocheXp: Math.min(GARTENWOCHE_MAX_XP, next.gartenwocheXp + GARTENWOCHE_AD_XP),
+        lastSeen: now,
+      },
+    }
+  }
+  const ernteGained = choice === 'ernte' ? productionPerSecond(next, now) * AD_ERNTE_MINUTES * 60 : 0
   next = withEventProgress(next, ernteGained, now)
   const gartenwocheXp = Math.min(GARTENWOCHE_MAX_XP, next.gartenwocheXp + GARTENWOCHE_AD_XP)
   return {

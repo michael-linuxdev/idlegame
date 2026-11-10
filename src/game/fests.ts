@@ -122,7 +122,7 @@ export const FEST_EARN = {
   offlineCap: 8,
 } as const
 
-export type FestShopKind = 'variety' | 'boost' | 'seeds' | 'heirlooms' | 'skin' | 'tokenPack'
+export type FestShopKind = 'variety' | 'boost' | 'seeds' | 'heirlooms' | 'skin' | 'tokenPack' | 'chapterCrop' | 'festNight'
 
 export interface FestShopItem {
   id: string
@@ -138,6 +138,19 @@ export interface FestShopItem {
   amount?: number
 }
 
+/** Kapitel-Korb: so viele Minuten Ertrag jedes offenen Kapitels. */
+export const FEST_CHAPTER_CROP_MIN = 30
+/** Festnacht: so viele Stunden Ernte sofort (Garten und Kapitel). */
+export const FEST_NIGHT_HOURS = 1
+
+/** Festladen Plus: so viel mal mehr Vorrat (Nutzer 2026-11-10: doppelt reicht nicht). */
+export const FEST_PLUS_FACTOR = 10
+
+/** Festladen Plus: zehnfacher Vorrat für alles, was es mehrmals gibt. */
+export function festLimit(item: FestShopItem, plus: boolean): number {
+  return plus && item.limit > 1 ? item.limit * FEST_PLUS_FACTOR : item.limit
+}
+
 /** Shop rows for one fest. Varieties are cheap→rare; paid extras last. */
 export function festShop(f: FestDef): FestShopItem[] {
   const items: FestShopItem[] = f.varieties.map((v, i) => ({
@@ -148,10 +161,13 @@ export function festShop(f: FestDef): FestShopItem[] {
     limit: 1,
     variety: v,
   }))
+  // Playtest 2026-11-10: Dauerspieler hatten alles gekauft und ~3000 Festmarken übrig
   items.push(
-    { id: 'boost', kind: 'boost', tokens: 35, samen: 0, limit: 4 },
-    { id: 'heirlooms', kind: 'heirlooms', tokens: 50, samen: 0, limit: 3 },
-    { id: 'seeds', kind: 'seeds', tokens: 90, samen: 0, limit: 5, amount: 15 },
+    { id: 'boost', kind: 'boost', tokens: 35, samen: 0, limit: 6 },
+    { id: 'heirlooms', kind: 'heirlooms', tokens: 50, samen: 0, limit: 5 },
+    { id: 'seeds', kind: 'seeds', tokens: 90, samen: 0, limit: 8, amount: 15 },
+    { id: 'chapterCrop', kind: 'chapterCrop', tokens: 60, samen: 0, limit: 5, amount: FEST_CHAPTER_CROP_MIN },
+    { id: 'festNight', kind: 'festNight', tokens: 120, samen: 0, limit: 3, amount: FEST_NIGHT_HOURS },
   )
   if (f.skin) {
     items.push({ id: `skin-${f.skin}`, kind: 'skin', tokens: 0, samen: 150, limit: 1, skin: f.skin })

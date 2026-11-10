@@ -9,10 +9,14 @@
  * - Prestige near-miss spikes (once each per run): cross 72% / 88% / 97% of
  *   prestige gate → floor(rate × 25s) crumb + “almost ready” juice
  * - Offline jackpot: 15% when away ≥ 30 min → +35% of claimed offline amount
+ *   (gilt für jeden Garten: offene Kapitel bekommen +35 % ihrer Offline-Ernte)
+ * - Kapitel-Jackpot: 7% per manual chapter upgrade → chapter rate × U[90..210]s
+ *   in the chapter's currency (same 5-s gap as the garden)
  *
  * RNG: Math.random() — session-local, not seed-gamed.
  */
 
+import type { ChapterId } from './chapters'
 import { prestigeMinErnte } from './economy'
 
 export type SurpriseKind =
@@ -27,6 +31,8 @@ export interface SurpriseJump {
   amount: number
   /** Threshold index for prestigeNear (0=72%, 1=88%, 2=97%) */
   prestigeTier?: number
+  /** Kapitel-Überraschung: `amount` ist in der Währung dieses Kapitels */
+  chapter?: ChapterId
 }
 
 /** Prestige near-miss thresholds — Zeigarnik “almost there” spikes. */
@@ -76,6 +82,18 @@ export function rollUpgradeSurprise(
     return { kind: 'jackpot', amount }
   }
   return null
+}
+
+/** Kapitel-Jackpot beim Ausbau (gleiche Chance und Spanne wie im Garten). */
+export function rollChapterJackpot(
+  chapter: ChapterId,
+  ratePerSec: number,
+  curLifetime: number,
+  rng = Math.random,
+): SurpriseJump | null {
+  if (ratePerSec <= 0 || !rollChance(UPGRADE_JACKPOT_CHANCE, rng)) return null
+  const sec = 90 + rng() * 120
+  return { kind: 'jackpot', amount: clampCrumb(ratePerSec * sec, ratePerSec, curLifetime), chapter }
 }
 
 /**

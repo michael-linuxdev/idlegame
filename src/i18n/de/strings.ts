@@ -595,6 +595,8 @@ export const strings = {
       `Als Nächstes: ${name} Rang ${nextRank} (${pct}%) — weiter ausbauen.`,
     shopUnlockAria: (name: string) => `Fortschritt bis ${name}`,
     shopNextTag: 'Als Nächstes',
+    effectNow: (effect: string) => `Jetzt: ${effect}`,
+    effectNone: 'Noch nicht gekauft',
     shopRankLocked: (need: string) =>
       `Noch ${need} Fortschritt (Ausbauten / Ernte)`,
     shopRankLockedProgress: (pct: number, left: string) =>
@@ -793,6 +795,9 @@ export const strings = {
     adsSamen: (n: number) => `+${zahl(n)} ${SEEDS}`,
     adsGot: (what: string) => `Gutgeschrieben: ${what}`,
     adsGotErnte: (amount: string) => `+${amount} ${SOFT}`,
+    adsErnteChapter: (mins: number, place: string, amount: string, currency: string) => `${mins} Min ${place} · +${amount} ${currency}`,
+    adsGotChapter: (amount: string, currency: string) => `+${amount} ${currency}`,
+    adsPlotHint: 'Die Ernte geht an den Garten, den du gerade offen hast.',
     refillTitle: 'Gießkanne auffüllen',
     refillIntro: 'Sofort wieder gießen, statt 5 Minuten zu warten.',
     refillReady: 'Gießkanne ist voll',
