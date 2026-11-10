@@ -819,7 +819,7 @@ export const strings = {
     removeAdsTitle: 'Werbefrei',
     removeAdsIntro: 'Einmal kaufen — Bonus-Werbung dauerhaft weg, die Belohnung bleibt.',
     yieldBoostTitle: 'Dünger',
-    yieldBoostIntro: '+15 % Ernte · 30 Min · für Samen.',
+    yieldBoostIntro: '+15 % Ernte in allen Gärten · 30 Min · für Samen.',
     yieldBoostActive: (mult: string, left: string) => `Aktiv ×${mult} · ${left}`,
     yieldBoostInactive: 'Nicht aktiv',
     yieldBoostBuy: (cost: number) => `${zahl(cost)} ${SEEDS}`,

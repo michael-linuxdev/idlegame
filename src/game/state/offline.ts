@@ -47,6 +47,7 @@ export function applyOfflineCatchup(
     base,
     (r) => offlineCatchupErnte(r, elapsedSec, truheCaps.soft + deepCaps.soft, truheCaps.hard + deepCaps.hard) * chapterJackpot,
     true,
+    now,
   )
   if (base.ilseLevel > 0 && base.ilseOn && elapsedMs > 60_000) {
     base = runIlse(base, Math.min(elapsedMs, 8 * 3600_000), 300).state

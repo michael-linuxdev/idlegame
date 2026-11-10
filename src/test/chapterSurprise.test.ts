@@ -1,7 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { chapterDef } from '../game/chapters'
 import { OFFLINE_JACKPOT_BONUS, SURPRISE_MIN_GAP_MS } from '../game/surpriseJumps'
-import { applyOfflineCatchup, buyChapterArea, chapterCostOf, createInitialState } from '../game/state'
+import { applyOfflineCatchup, buyChapterArea, chapterCostOf, chapterPerSecond, createInitialState } from '../game/state'
+import { YIELD_BOOST_MULT } from '../game/monetization'
 import type { GameState } from '../game/state'
 
 const now = 1_800_000_000_000
@@ -56,5 +57,13 @@ describe('Kapitel-Jackpots', () => {
     const lucky = applyOfflineCatchup(s, now)
     expect(lucky.state.lastSurprise?.kind).toBe('offlineJackpot')
     expect(lucky.state.chapters.obstwiese.cur - 1e6).toBeGreaterThan(plain * (1 + OFFLINE_JACKPOT_BONUS) * 0.99)
+  })
+
+  it('Dünger / Festschub (+15 %) gilt auch im Kapitel, solange er läuft', () => {
+    const s = orchardState()
+    const plain = chapterPerSecond(s, 'obstwiese', false, now)
+    const boosted = { ...s, yieldBoostExpiresAt: now + 60_000 }
+    expect(chapterPerSecond(boosted, 'obstwiese', false, now) / plain).toBeCloseTo(YIELD_BOOST_MULT, 10)
+    expect(chapterPerSecond(boosted, 'obstwiese', false, now + 60_000)).toBe(plain)
   })
 })

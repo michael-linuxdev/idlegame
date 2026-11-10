@@ -26,7 +26,7 @@ import { milestonesReached } from '../generators'
 import { SURPRISE_MIN_GAP_MS, rollChapterJackpot } from '../surpriseJumps'
 import { XP_PER_UPGRADE, levelProductionMult } from '../progression'
 import type { BuyMode } from './buy'
-import { playerLevelOf, withXp } from './core'
+import { effectiveYieldBoostMult, playerLevelOf, withXp } from './core'
 import { earnFest } from './fest'
 import type { GameState } from './types'
 
@@ -65,8 +65,10 @@ export function syncChaptersOpen(state: GameState, now = Date.now(), force?: Cha
   return changed ? { ...state, chapters } : state
 }
 
-export function chapterRateMult(state: GameState): number {
+export function chapterRateMult(state: GameState, now = Date.now()): number {
   return (
+    // Dünger / Festschub (+15 %, 30 min) gilt in jedem Garten, auch in den Kapiteln
+    effectiveYieldBoostMult(state, now) *
     legacyOrchardMult(state.legacy) *
     (1 + 0.05 * state.tiefeWinter) *
     (1 + 0.1 * state.generation) *
@@ -83,13 +85,13 @@ export function chapterAreaRates(def: ChapterDef, c: ChapterState): number[] {
  * Ertrag eines Kapitels je Sekunde. `away` = während der Spieler weg ist
  * (Offline-Ernte); nur die Bogen-Regel „Plan für morgen“ unterscheidet das.
  */
-export function chapterPerSecond(state: GameState, id: ChapterId, away = false): number {
+export function chapterPerSecond(state: GameState, id: ChapterId, away = false, now = Date.now()): number {
   if (!chapterOpen(state, id)) return 0
   const def = chapterDef(id)
   const c = state.chapters[id]
   const choice = state.bogenWahl[id]
   const arc = choice ? arcRateMult(def, chapterAreaRates(def, c), choice, away) : 1
-  return chapterBaseRate(def, c) * chapterRateMult(state) * masteryMult(masteryStars(def, c)) * arc
+  return chapterBaseRate(def, c) * chapterRateMult(state, now) * masteryMult(masteryStars(def, c)) * arc
 }
 
 /** Bogen-Regel wählen oder aufheben (null). Ungültiges ändert nichts. */
@@ -116,10 +118,10 @@ function withChapterCur(state: GameState, id: ChapterId, gained: number): GameSt
   }
 }
 
-export function tickChapters(state: GameState, seconds: (rate: number) => number, away = false): GameState {
+export function tickChapters(state: GameState, seconds: (rate: number) => number, away = false, now = Date.now()): GameState {
   let next = state
   for (const def of CHAPTERS) {
-    const rate = chapterPerSecond(next, def.id, away)
+    const rate = chapterPerSecond(next, def.id, away, now)
     if (rate > 0) next = withChapterCur(next, def.id, seconds(rate))
   }
   return next
