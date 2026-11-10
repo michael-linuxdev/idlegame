@@ -41,6 +41,7 @@ import type { SeasonCardId } from '../seasonCards'
 import { collectReadyAchievements } from './buy'
 import type { ChapterId } from '../chapters'
 import { chapterOpen, chapterPerSecond, tickChapters } from './chapters'
+import { syncFest } from './fest'
 import { bumpQuest, productionPerSecond, syncEventWindow, syncMonetization, withXp } from './core'
 import { withEventProgress } from './events'
 import { growPumpkin } from './extras'
@@ -210,6 +211,11 @@ export function mockBuyOffer(state: GameState, offer: ShopOfferDef, now = Date.n
   if (offer.once && next.ownedOfferIds.includes(offer.id)) return state
   if (offer.kind === 'removeAds' && next.adsRemoved) return state
   if (offer.kind === 'gartenwochePlus' && next.gartenwochePremium) return state
+  if (offer.kind === 'festPlus') {
+    next = syncFest(next, now)
+    if (next.festPlusKey === next.festKey) return state
+    return { ...next, festPlusKey: next.festKey, lastSeen: now }
+  }
 
   const ownedCosmetics = new Set(next.ownedCosmetics)
   for (const id of offer.cosmeticIds ?? []) ownedCosmetics.add(id)

@@ -74,6 +74,13 @@ const Glyph = {
       <path d="M10 21v-6h4v6" fill="none" stroke="currentColor" strokeWidth="2" />
     </ArtSvg>
   ),
+  collection: (
+    <ArtSvg viewBox="0 0 24 24" width="20" height="20">
+      <path d="M4 9h16v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+      <path d="M3 5h18v4H3z" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
+      <path d="M10 13h4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </ArtSvg>
+  ),
   photo: (
     <ArtSvg viewBox="0 0 24 24" width="20" height="20">
       <rect x="3" y="6" width="18" height="14" rx="2.5" fill="none" stroke="currentColor" strokeWidth="2" />
@@ -287,10 +294,11 @@ function MenuSheet({
     { key: 'cross', icon: Glyph.cross, label: t.crossing.title, dot: crossReady, on: onOpenCross },
     { key: 'album', icon: Glyph.album, label: t.album.menu, dot: albumReady > 0, on: onOpenAlbum },
     { key: 'projects', icon: Glyph.projects, label: t.projects.menu, on: onOpenProjects },
-    { key: 'collection', icon: Glyph.album, label: t.collections.menu, on: onOpenCollection },
-    { key: 'photo', icon: Glyph.photo, label: t.photo.menu, on: onOpenPhoto },
+    { key: 'collection', icon: Glyph.collection, label: t.collections.menu, on: onOpenCollection },
   ]
+  // Werkzeuge als ruhige Zeilen unter den Garten-Kacheln
   const rows: { key: string; icon: ReactNode; label: string; on?: () => void }[] = [
+    { key: 'photo', icon: Glyph.photo, label: t.photo.menu, on: onOpenPhoto },
     { key: 'backup', icon: Glyph.save, label: t.backup.menu, on: onOpenBackup },
     { key: 'legal', icon: Glyph.legal, label: t.legal.title, on: onOpenLegal },
   ]

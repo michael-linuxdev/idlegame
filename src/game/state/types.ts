@@ -243,6 +243,8 @@ export interface GameState {
   festTokens: number
   /** Fest shop purchases this fest: item id → count */
   festBought: Record<string, number>
+  /** Fest-Schlüssel, für den „Festladen Plus“ gekauft wurde ('' = nie) */
+  festPlusKey: string
 }
 
 /** Gartenhelfer ranks: Erbstücke cost and time between two Ausbauten. */
@@ -320,6 +322,7 @@ export interface ExpansionSlice {
   festKey: string
   festTokens: number
   festBought: Record<string, number>
+  festPlusKey: string
 }
 
 export function emptyExpansion(now = Date.now()): ExpansionSlice {
@@ -366,6 +369,7 @@ export function emptyExpansion(now = Date.now()): ExpansionSlice {
     festKey: festKeyAt(now),
     festTokens: 0,
     festBought: {},
+    festPlusKey: '',
   }
 }
 
@@ -414,6 +418,7 @@ export function pickExpansion(s: GameState): ExpansionSlice {
     festKey: s.festKey,
     festTokens: s.festTokens,
     festBought: { ...s.festBought },
+    festPlusKey: s.festPlusKey,
   }
 }
 

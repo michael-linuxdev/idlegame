@@ -301,3 +301,73 @@
 .cosmetic-swatch.skin-festSommer { background: linear-gradient(145deg, #ffe08a, #e2453c); }
 .cosmetic-swatch.skin-festErntedank { background: linear-gradient(145deg, #f5c542, #d2752c); }
 .cosmetic-swatch.skin-festAdvent { background: linear-gradient(145deg, #eef2f4, #2f6b3a); }
+
+/* Ausverkauft / im Besitz: kleines Schild statt grauem Knopf (2026-11-10) */
+.fest-item.done {
+  opacity: 0.62;
+}
+
+.fest-done {
+  flex: none;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid #c9b48a;
+  border-radius: 999px;
+  background: #fbf6e8;
+  color: #6a5434;
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Festladen Plus: abgesetzt, im Festton */
+.fest-plus {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0.6rem 0 0.4rem;
+  padding: 0.6rem 0.7rem;
+  border: 1.5px solid var(--fest);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--fest) 10%, #fffaf0);
+}
+
+.fest-plus.on .fest-done {
+  border-color: var(--fest);
+  color: #2f5a22;
+}
+
+/* Festladen: kompakte Knöpfe wie in Truhe und Markt */
+.fest-sheet .fest-buy {
+  max-width: none;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.92rem;
+  white-space: nowrap;
+}
+
+/* Festwaren wie die Laden-Zeilen: Text über die volle Breite, unten „noch …“ + Knopf */
+.fest-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-auto-flow: row dense;
+  column-gap: 0.6rem;
+  row-gap: 0.1rem;
+  align-items: center;
+}
+
+.fest-item > .fest-item-info {
+  display: contents;
+}
+
+.fest-item > .fest-item-info > * {
+  grid-column: 1 / -1;
+}
+
+.fest-item > .fest-item-info > .fest-item-left {
+  grid-column: 1;
+}
+
+.fest-item > .fest-buy,
+.fest-item > .fest-done {
+  grid-column: 2;
+  justify-self: end;
+}

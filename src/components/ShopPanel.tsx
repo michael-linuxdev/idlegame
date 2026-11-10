@@ -19,7 +19,7 @@ import {
 } from '../game/monetization'
 import { t } from '../i18n'
 import { STORE_ENABLED } from '../game/monetization'
-import { TEST_BUDGET_CENTS, TEST_WALLET_ENABLED, offerPriceCents, readWallet, walletLeftCents } from '../game/testWallet'
+import { TEST_MONTHLY_CENTS, TEST_WALLET_ENABLED, offerPriceCents, readWallet, walletLeftCents } from '../game/testWallet'
 import { TestPurchaseDialog } from './TestPurchaseDialog'
 import type { useGame } from '../game/useGame'
 import { waterRefillsLeft } from '../game/state'
@@ -417,7 +417,7 @@ export function ShopPanel({ game, onPreview, plot = 'garden' }: Props) {
             <div className="shop-wallet-chip test-wallet-chip">
               <span className="shop-wallet-label">{t.testMoney.chip}</span>
               <span className="shop-wallet-value">{t.testMoney.left(formatPrice(walletLeft))}</span>
-              <span className="shop-wallet-label">{t.testMoney.monthly(formatPrice(TEST_BUDGET_CENTS))}</span>
+              <span className="shop-wallet-label">{t.testMoney.monthly(formatPrice(TEST_MONTHLY_CENTS))}</span>
             </div>
           ) : null}
           <h3 className="subhead">{t.shop.packsTitle}</h3>

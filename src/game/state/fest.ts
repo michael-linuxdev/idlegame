@@ -1,8 +1,9 @@
 /** Spielkern — Feste und Festmarken. Öffentlich über src/game/state.ts. */
 import { payoutAtGate } from '../economy'
-import { festAt, festKeyAt, festShop } from '../fests'
+import { festAt, festKeyAt, festLimit, festShop } from '../fests'
 import { YIELD_BOOST_MS } from '../monetization'
-import { grantCosmetic } from './core'
+import { tickChapters, openChapters } from './chapters'
+import { grantCosmetic, productionPerSecond } from './core'
 import type { GameState } from './types'
 
 /* ———————————— Saisonale Feste ———————————— */
@@ -11,6 +12,11 @@ export function syncFest(state: GameState, now = Date.now()): GameState {
   const key = festKeyAt(now)
   if (state.festKey === key) return state
   return { ...state, festKey: key, festTokens: 0, festBought: {} }
+}
+
+/** Festladen Plus im laufenden Fest gekauft? */
+export function festPlusActive(state: GameState): boolean {
+  return state.festPlusKey !== '' && state.festPlusKey === state.festKey
 }
 
 export function earnFest(state: GameState, amount: number, now = Date.now()): GameState {
@@ -25,7 +31,8 @@ export function buyFestItem(state: GameState, itemId: string, now = Date.now()):
   const item = festShop(fest).find((i) => i.id === itemId)
   if (!item) return state
   const bought = base.festBought[item.id] ?? 0
-  if (bought >= item.limit) return state
+  if (bought >= festLimit(item, festPlusActive(base))) return state
+  if (item.kind === 'chapterCrop' && openChapters(base).length === 0) return state
   if (item.kind === 'variety' && item.variety && base.collection.includes(item.variety)) return state
   if (item.kind === 'skin' && item.skin && base.ownedCosmetics.includes(item.skin)) return state
   if (base.festTokens < item.tokens || base.samen < item.samen) return state
@@ -52,6 +59,16 @@ export function buyFestItem(state: GameState, itemId: string, now = Date.now()):
     case 'heirlooms': {
       const gain = Math.max(5, Math.round(payoutAtGate(next.saisonenden) * 0.5))
       next = { ...next, erbstuecke: next.erbstuecke + gain }
+      break
+    }
+    case 'chapterCrop':
+      next = tickChapters(next, (r) => r * (item.amount ?? 0) * 60)
+      break
+    case 'festNight': {
+      const sec = (item.amount ?? 0) * 3600
+      const gained = productionPerSecond(next, now) * sec
+      next = { ...next, ernte: next.ernte + gained, ernteSeason: next.ernteSeason + gained, ernteLifetime: next.ernteLifetime + gained }
+      next = tickChapters(next, (r) => r * sec)
       break
     }
     case 'boost': {

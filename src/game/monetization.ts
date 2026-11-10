@@ -213,6 +213,7 @@ export type ShopOfferKind =
   | 'cosmeticPack'
   | 'gartenwochePlus'
   | 'starterBundle'
+  | 'festPlus'
 
 export interface ShopOfferDef {
   id: string
@@ -228,10 +229,25 @@ export interface ShopOfferDef {
   /** One-time; tracked via ownedOfferIds */
   once?: boolean
   /** Section grouping in shop UI */
-  section: 'bundles' | 'currency' | 'cosmetics' | 'removeAds' | 'gartenwoche'
+  section: 'bundles' | 'currency' | 'cosmetics' | 'removeAds' | 'gartenwoche' | 'fest'
 }
 
 export const SHOP_OFFERS: ShopOfferDef[] = [
+  {
+    // Festladen Plus: doppelter Vorrat im laufenden Fest (nur im Festladen angeboten)
+    id: 'festPlus',
+    kind: 'festPlus',
+    get name() {
+      return t.fest.plusTitle
+    },
+    get blurb() {
+      return t.fest.plusBlurb
+    },
+    get label() {
+      return t.fest.plusTitle
+    },
+    section: 'fest',
+  },
   {
     id: 'starterBundle',
     kind: 'starterBundle',

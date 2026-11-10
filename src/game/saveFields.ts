@@ -196,6 +196,8 @@ export function parseExpansion(parsed: Record<string, unknown>): ExpansionSlice 
     festKey: typeof parsed.festKey === 'string' ? parsed.festKey : base.festKey,
     festTokens: parseNum(parsed.festTokens),
     festBought,
+    // Festladen Plus (2026-11-10; ältere Stände → nicht gekauft)
+    festPlusKey: typeof parsed.festPlusKey === 'string' ? parsed.festPlusKey.slice(0, 40) : '',
   }
 }
 

@@ -34,6 +34,7 @@ Zeit sparen oder schmücken, nie nötig sein.
 | Blüten-Paket | Blütenmeer + Goldener Herbst | **2,99 €** | zwei Stile (Gegenwert ~350 Samen) |
 | Werbefrei | Bonus-Werbung weg, Belohnung bleibt | **3,99 €** | einmalig, üblich im Genre |
 | Gartenwoche Premium | Premium-Reihe der Gartenwoche | **1,99 € je Woche** | klein halten; alternativ 4,99 € je Monat |
+| Festladen Plus | doppelter Vorrat im laufenden Fest (nur im Festladen) | **3,99 € je Fest** | für Dauerspieler mit vielen Festmarken; nur Mengen, nichts Exklusives |
 
 Grenzen, die das Spiel fair halten (schon im Code): Zeitsprünge max. 6 h am
 Tag, Dünger und Vereinsfahne laufen ab, keine Erbstücke/Sprösslinge/Vermächtnis
@@ -45,8 +46,10 @@ Solange `TEST_PHASE` gilt und es noch keine echten Käufe gibt
 (`src/game/testWallet.ts`):
 
 - Die Echtgeld-Angebote stehen mit den Preisen oben im Markt. Bezahlt wird
-  mit **20 € Testgeld pro Kalendermonat**; es wird nichts abgebucht, das
-  Guthaben liegt nicht im Spielstand.
+  mit Testgeld: **50 € zum Start und +30 € am 1. jedes Monats** (seit
+  2026-11-10; Rest sammelt sich an; wer schon spielte, behält seinen Rest und
+  bekommt die 50 € dazu). Es wird nichts abgebucht, das Guthaben liegt nicht
+  im Spielstand.
 - Vor jedem Kauf fragt das Spiel: „Würdest du dafür wirklich … zahlen?“
   (Ja / Eher nicht). Reicht das Testgeld nicht mehr: „Hätte ich gekauft“.
 - Die **Bonus-Werbung** dauert 30 oder 60 Sekunden (zufällig) und **sperrt

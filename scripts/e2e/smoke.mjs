@@ -607,12 +607,14 @@ try {
     await p.locator('.test-purchase').waitFor()
     await p.getByRole('button', { name: T.testMoney.no }).click()
     assert((await p.locator('.test-purchase').count()) === 0, 'dialog closes')
-    assert((await p.evaluate(() => localStorage.getItem('gartenerbe-testgeld-v1'))) === null, 'no money spent on "no"')
+    // Testgeld: 50 € zum Start (wird beim ersten Lesen festgehalten), „Eher nicht“ bucht nichts ab
+    const w0 = await p.evaluate(() => JSON.parse(localStorage.getItem('gartenerbe-testgeld-v1') || '{}'))
+    assert(w0.balanceCents === 5000 && w0.purchases === 0, `no money spent on "no": ${JSON.stringify(w0)}`)
     // „Ja“: 6,99 € vom Testgeld, 500 Samen gutgeschrieben
     await p.getByRole('button', { name: T.num.euro('6' + T.num.decimal + '99') }).click()
     await p.getByRole('button', { name: T.testMoney.yes }).click()
     const w = await p.evaluate(() => JSON.parse(localStorage.getItem('gartenerbe-testgeld-v1') || '{}'))
-    assert(w.spentCents === 699, `test money spent: ${JSON.stringify(w)}`)
+    assert(w.balanceCents === 5000 - 699 && w.totalCents === 699, `test money spent: ${JSON.stringify(w)}`)
     if (LANG === 'de') await p.screenshot({ path: 'e2e-screens/testgeld.png' })
     // Werbung: sperrt das Spiel, Abbrechen gibt keine Belohnung
     await p.getByRole('tab', { name: T.shop.tabs.free }).click()
