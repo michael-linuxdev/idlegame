@@ -31,6 +31,15 @@
   display: none;
 }
 
+/* Garten wechseln: unten rechts in der freien Ecke neben der Gießkanne (2026-11-10).
+   Links am Rand verdeckten die Knöpfe Schilder (Kräuterspirale, Kirschbaum). */
+.map-side.map-side--right {
+  left: auto;
+  right: 0.6rem;
+  bottom: calc(var(--safe-bottom) + 1.9rem);
+  align-items: flex-end;
+}
+
 .map-side {
   /* Platz für das Schild unter jedem Knopf (.map-side-label, ~0.95rem), sonst
      überdeckt z. B. „Obstwiese“ den Jonas-Knopf darunter */

@@ -227,8 +227,10 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
         </div>
       ) : null}
 
-      <div className="map-side">
+      <div className="map-side map-side--right">
         <PlotButtons game={game} current={chapter} onGo={onGo} />
+      </div>
+      <div className="map-side">
         {state.ilseLevel > 0 ? (
           <button
             type="button"
