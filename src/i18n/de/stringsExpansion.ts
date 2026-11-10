@@ -550,7 +550,7 @@ export const expansionStrings = {
       festNightBlurb: (h: number) => `${h} Stunde Ernte sofort — im Garten und in allen Kapiteln.`,
     },
     plusTitle: 'Festladen Plus',
-    plusBlurb: 'Doppelter Vorrat bei allen Festwaren, bis das Fest endet.',
+    plusBlurb: 'Zehnfacher Vorrat bei allen Festwaren, bis das Fest endet.',
     plusCta: (price: string) => `Mehr für ${price}`,
     plusActive: 'Plus aktiv',
     plusTag: 'Plus',

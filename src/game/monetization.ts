@@ -234,7 +234,7 @@ export interface ShopOfferDef {
 
 export const SHOP_OFFERS: ShopOfferDef[] = [
   {
-    // Festladen Plus: doppelter Vorrat im laufenden Fest (nur im Festladen angeboten)
+    // Festladen Plus: zehnfacher Vorrat im laufenden Fest (nur im Festladen angeboten)
     id: 'festPlus',
     kind: 'festPlus',
     get name() {

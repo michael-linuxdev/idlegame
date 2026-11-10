@@ -51,7 +51,7 @@ describe('Festladen für Dauerspieler', () => {
     const plus = mockBuyOffer(s, shopOfferById('festPlus')!, now)
     expect(festPlusActive(plus)).toBe(true)
     expect(plus.festPlusKey).toBe(festKeyAt(now))
-    expect(buyAll(plus, 'boost').n).toBe(boost.limit * 2)
+    expect(buyAll(plus, 'boost').n).toBe(boost.limit * 10)
     expect(festLimit(festShop(festAt(now)).find((i) => i.kind === 'variety')!, true)).toBe(1)
     // Zweimal kaufen geht nicht; im nächsten Fest ist Plus weg
     expect(mockBuyOffer(plus, shopOfferById('festPlus')!, now)).toBe(plus)

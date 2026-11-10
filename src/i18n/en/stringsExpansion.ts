@@ -550,7 +550,7 @@ export const expansionStrings = {
       festNightBlurb: (h: number) => `${h} hour of harvest right away — in the garden and every chapter.`,
     },
     plusTitle: 'Festival Stall Plus',
-    plusBlurb: 'Double stock of all festival goods until the festival ends.',
+    plusBlurb: 'Ten times the stock of all festival goods until the festival ends.',
     plusCta: (price: string) => `More for ${price}`,
     plusActive: 'Plus active',
     plusTag: 'Plus',

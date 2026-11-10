@@ -143,9 +143,12 @@ export const FEST_CHAPTER_CROP_MIN = 30
 /** Festnacht: so viele Stunden Ernte sofort (Garten und Kapitel). */
 export const FEST_NIGHT_HOURS = 1
 
-/** Festladen Plus: doppelter Vorrat für alles, was es mehrmals gibt. */
+/** Festladen Plus: so viel mal mehr Vorrat (Nutzer 2026-11-10: doppelt reicht nicht). */
+export const FEST_PLUS_FACTOR = 10
+
+/** Festladen Plus: zehnfacher Vorrat für alles, was es mehrmals gibt. */
 export function festLimit(item: FestShopItem, plus: boolean): number {
-  return plus && item.limit > 1 ? item.limit * 2 : item.limit
+  return plus && item.limit > 1 ? item.limit * FEST_PLUS_FACTOR : item.limit
 }
 
 /** Shop rows for one fest. Varieties are cheap→rare; paid extras last. */

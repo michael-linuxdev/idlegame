@@ -34,7 +34,7 @@ Zeit sparen oder schmücken, nie nötig sein.
 | Blüten-Paket | Blütenmeer + Goldener Herbst | **2,99 €** | zwei Stile (Gegenwert ~350 Samen) |
 | Werbefrei | Bonus-Werbung weg, Belohnung bleibt | **3,99 €** | einmalig, üblich im Genre |
 | Gartenwoche Premium | Premium-Reihe der Gartenwoche | **1,99 € je Woche** | klein halten; alternativ 4,99 € je Monat |
-| Festladen Plus | doppelter Vorrat im laufenden Fest (nur im Festladen) | **3,99 € je Fest** | für Dauerspieler mit vielen Festmarken; nur Mengen, nichts Exklusives |
+| Festladen Plus | zehnfacher Vorrat im laufenden Fest (nur im Festladen) | **3,99 € je Fest** | für Dauerspieler mit vielen Festmarken; nur Mengen, nichts Exklusives |
 
 Grenzen, die das Spiel fair halten (schon im Code): Zeitsprünge max. 6 h am
 Tag, Dünger und Vereinsfahne laufen ab, keine Erbstücke/Sprösslinge/Vermächtnis
