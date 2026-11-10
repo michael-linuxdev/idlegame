@@ -65,6 +65,7 @@ export function createInitialState(now = Date.now()): GameState {
     waterRefills: 0,
     sessions: 1,
     seasonCard: null,
+    seasonCardAusbau: false,
     seasonCardOffer: [],
     lastSeasonCard: '',
     challenge: null,
@@ -154,6 +155,7 @@ export function createPostPrestigeState(prev: GameState, now = Date.now()): Game
     sessions: prev.sessions,
     // Jahres-Thema gilt genau ein Gartenjahr; ab Jahr 4 neue Wahl
     seasonCard: null,
+    seasonCardAusbau: false,
     lastSeasonCard: prev.seasonCard ?? prev.lastSeasonCard,
     seasonCardOffer:
       prev.saisonenden + 1 >= SEASON_CARDS_FROM_PRESTIGES

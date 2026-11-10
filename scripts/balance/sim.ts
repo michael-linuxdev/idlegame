@@ -106,13 +106,15 @@ import { bestChapterBuy, buyChapterArea, buyIlse, openChapters, buildProjectStag
 import { arcOf, bestChoice } from '../../src/game/arcRules'
 import { PROJECTS } from '../../src/game/projects'
 import { MASTERY_BONUS, masteryStars, totalMasteryStars } from '../../src/game/mastery'
-import { SEASON_CARDS } from '../../src/game/seasonCards'
+import { CARD_AUSBAU, SEASON_CARDS } from '../../src/game/seasonCards'
 import { SAFE_COST, WEATHER_EFFECTS, WEATHER_GARDEN, weatherCtx } from '../../src/game/weatherEvents'
 
 // WEATHER_TUNE='{"sturm":{"risk":{"bad":0.8}},"frost":{"cost":{"minutes":8}}}' — Wetter-Werte probeweise ändern
 // Paket 5 probeweise: STURM='{"chanceMin":0.25,"hedgeFull":200}', GLASS_PROTECT=0.7
 if (process.env.STURM) Object.assign(WEATHER_GARDEN.sturm, JSON.parse(process.env.STURM))
 if (process.env.GLASS_PROTECT) WEATHER_GARDEN.frost.glassProtect = Number(process.env.GLASS_PROTECT)
+// Ausbau-Karten probeweise: AUSBAU='{"discount":0.5,"surcharge":0.25,"minPreview":1.02}'
+if (process.env.AUSBAU) Object.assign(CARD_AUSBAU, JSON.parse(process.env.AUSBAU))
 if (process.env.REST_DAY_H) REST_CUT.dayMs = Number(process.env.REST_DAY_H) * 3600_000
 if (process.env.REST_CAP_H) REST_CUT.capMs = Math.min(12, Number(process.env.REST_CAP_H)) * 3600_000
 if (process.env.WEATHER_TUNE) {

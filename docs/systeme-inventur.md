@@ -187,3 +187,40 @@ billiger“) — dann lohnt die Karte genau für den Bereich, den man diese Sais
 hochziehen will; (b) Karten geben statt Ernte ein Saison-Ziel mit Belohnung
 in Erbstücken; (c) weniger Karten (nur Gartenweit, Aktiv/Offline), dafür klar
 verschieden. Alle drei bräuchten eigene Messung.
+
+## Saison-Karten „Ausbau statt Ertrag“ (2026-11-10, Nutzerentscheid)
+
+Bereichs-Themen ändern nicht mehr den Ertrag, sondern die **Ausbaukosten**:
+der eigene Bereich **−40 %**, der Gegenspieler **+25 %**
+(`src/game/seasonCards.ts`: `CARD_AUSBAU`, `cardCostMult`, wirkt über
+`lineCostMult`). So lohnt die Karte für den Bereich, den man diese Saison
+hochziehen will. Die Vorschau rechnet aus den Stufen am letzten Saisonende,
+wie viel Ernte in welchen Bereich floss (`spendShares`, `cardSaving`): „mit
+deinem letzten Garten ≈ 7 % weniger Ernte für den Ausbau“; die Zeremonie
+sagt danach, was das Thema gespart hätte. Angeboten werden Bereichs-Themen
+nur, wenn sie mindestens 3 % bringen (keine toten Optionen). Gartenweite
+Themen bleiben; **Fleißiges Jahr** offline −40 % → **−10 %** (mit der
+Abwesenheit gerechnet war es für jeden Spieler eine Falle).
+
+**Spielstand:** neues Feld `seasonCardAusbau` (Startwert `false`). Eine Karte,
+die beim Update schon läuft oder angeboten ist, wirkt nach der alten
+Ertrags-Regel weiter — kein Tester verliert Ernte/s.
+
+**Messung „beste Wahl“** (je Profil ein Jahr ab Mai, gewählt wenn angeboten,
+alle Profile zusammen; Strategie mit Abwesenheit `CARD=bestAway`, weil die
+Karten aktiv und offline getrennt anzeigen):
+
+| Karte | vorher (Ertrags-Regel) | nachher |
+|---|---|---|
+| Hofladenjahr | 93–99 % | **52 %** |
+| Glashausjahr | 50–73 % | 38 % |
+| Hühnerjahr | 33–51 % | 40 % |
+| Obstjahr | 12–28 % | 21 % |
+| Gutes Jahr | 39–53 % | 21 % |
+| Fleißiges Jahr | 54–74 % (ohne Abwesenheit) / 0 % (mit) | 35 % |
+| Ruhiges Jahr | 0 % | 28 % |
+| Bienenjahr | 36–89 % | 85 % (nur 77 von ~15 000 Angeboten) |
+| Kräuter-/Beeren-/Kompost-/Tomatenjahr | 0–5 % | spät kaum noch angeboten (bringen < 3 %), früh im Spiel weiter |
+
+Probe-Werte: Rabatt 50 % / 60 % → Hofladenjahr 74–81 %; ohne Mindestwert
+standen tote Optionen bei 0–3 %.

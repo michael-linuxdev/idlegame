@@ -20,6 +20,7 @@ import {
 } from '../../theme/icons'
 import { festAt } from '../../game/fests'
 import { selectPills } from '../../game/hudPills'
+import { cardEffectText } from '../cardEffect'
 
 type GameApi = ReturnType<typeof useGame>
 
@@ -232,12 +233,13 @@ export function EventPills({ game, season, order, onOpenFest }: Props) {
 
   if (state.seasonCard) {
     const card = t.seasonCards.cards[state.seasonCard]
+    const effect = cardEffectText(state.seasonCard, state.seasonCardAusbau)
     pills.push({
       key: 'card',
       icon: <IconSprout />,
       label: card.name,
-      aria: `${card.name}: ${card.effect}`,
-      detail: { line: `${card.name} · ${card.effect}`, ratio: 0, aria: card.effect },
+      aria: `${card.name}: ${effect}`,
+      detail: { line: `${card.name} · ${effect}`, ratio: 0, aria: effect },
     })
   }
 

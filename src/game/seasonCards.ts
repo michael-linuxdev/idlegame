@@ -45,7 +45,8 @@ export const SEASON_CARDS: SeasonCardDef[] = [
   { id: 'hofladenjahr', area: { boost: 'hofladen', mult: 1.8, dampen: 'gewaechshaus', dampenMult: 0.8 } },
   // „Ruhiges Jahr“: aktiv −20 %, weg +50 % (0,8 × 1,875)
   { id: 'ruhigesJahr', mult: 0.8, offline: 1.875 },
-  { id: 'fleissjahr', mult: 1.1, offline: 0.6 },
+  // Runde 4: offline 0,6 → 0,9 (mit Abwesenheit gerechnet war es für jeden Spieler eine Falle)
+  { id: 'fleissjahr', mult: 1.1, offline: 0.9 },
   { id: 'gutesJahr', mult: 1.05 },
 ]
 
@@ -56,8 +57,54 @@ export function seasonCardDef(id: string | null | undefined): SeasonCardDef | nu
   return SEASON_CARDS.find((c) => c.id === id) ?? null
 }
 
-/** Multiplikator dieses Bereichs durch die aktive Karte. */
-export function cardAreaMult(id: string | null, area: GeneratorId): number {
+/**
+ * Ausbau statt Ertrag (Runde 4, nach Nutzerentscheid): Eine Bereichs-Karte
+ * macht den Ausbau ihres Bereichs billiger und den des Gegenspielers teurer,
+ * statt den Ertrag zu ändern. So lohnt sie genau für den Bereich, den man
+ * diese Saison hochziehen will. Gilt für Karten, die nach dem Update gewählt
+ * werden (GameState.seasonCardAusbau); eine schon laufende Karte behält die
+ * alte Ertrags-Regel.
+ */
+export const CARD_AUSBAU = { discount: 0.4, surcharge: 0.25, minPreview: 1.03 }
+
+/** Kosten-Faktor eines Bereichs durch die aktive Karte (nur Ausbau-Regel). */
+export function cardCostMult(id: string | null, area: GeneratorId, ausbau: boolean): number {
+  if (!ausbau) return 1
+  const c = seasonCardDef(id)
+  if (!c?.area) return 1
+  if (c.area.boost === area) return 1 - CARD_AUSBAU.discount
+  if (c.area.dampen === area) return 1 + CARD_AUSBAU.surcharge
+  return 1
+}
+
+/**
+ * Wofür die Ernte einer Saison ausgegeben wurde: Summe der Ausbaukosten bis
+ * zur erreichten Stufe je Bereich (Anteile, ohne Rabatte — gleich für alle Karten).
+ */
+export function spendShares(owned: Partial<Record<GeneratorId, number>>): Map<GeneratorId, number> {
+  const spent = new Map<GeneratorId, number>()
+  let total = 0
+  for (const def of GENERATORS) {
+    const n = owned[def.id] ?? 0
+    const sum = n > 0 ? (def.baseCost * (Math.pow(def.costScale, n) - 1)) / (def.costScale - 1) : 0
+    spent.set(def.id, sum)
+    total += sum
+  }
+  if (total > 0) for (const [k, v] of spent) spent.set(k, v / total)
+  return spent
+}
+
+/** Ausbau-Regel: Anteil der Ausbaukosten, den die Karte mit diesem Garten gespart hätte (negativ = teurer). */
+export function cardSaving(id: SeasonCardId, owned: Partial<Record<GeneratorId, number>>): number {
+  const c = seasonCardDef(id)
+  if (!c?.area) return 0
+  const sh = spendShares(owned)
+  return CARD_AUSBAU.discount * (sh.get(c.area.boost) ?? 0) - (c.area.dampen ? CARD_AUSBAU.surcharge * (sh.get(c.area.dampen) ?? 0) : 0)
+}
+
+/** Multiplikator dieses Bereichs durch die aktive Karte (Ausbau-Regel: kein Ertrags-Faktor). */
+export function cardAreaMult(id: string | null, area: GeneratorId, ausbau = false): number {
+  if (ausbau) return 1
   const c = seasonCardDef(id)
   if (!c?.area) return 1
   if (c.area.boost === area) return c.area.mult
@@ -91,8 +138,10 @@ export function cardPreview(id: SeasonCardId, owned: Partial<Record<GeneratorId,
 
 export interface CardOffer {
   id: SeasonCardId
-  /** Faktor mit dem Garten der letzten Saison (1,12 = +12 %) */
+  /** Faktor mit dem Garten der letzten Saison (1,12 = +12 %); Ausbau-Regel: gleichwertiger Faktor 1 / (1 − Ersparnis) */
   preview: number
+  /** Bereichs-Karte nach der Ausbau-Regel (fehlt bei älteren Angeboten = alte Ertrags-Regel) */
+  ausbau?: boolean
 }
 
 /**
@@ -107,9 +156,10 @@ export function offerSeasonCards(
 ): CardOffer[] {
   const pool = SEASON_CARDS.filter((c) => c.id !== last)
     .filter((c) => !c.area || (owned[c.area.boost] ?? 0) > 0)
-    .map((c) => ({ id: c.id, preview: cardPreview(c.id, owned) }))
-    // keine Falle: aktiv mindestens gleich, außer bei „Ruhiges Jahr“ (zahlt sich offline aus)
-    .filter((o) => o.preview >= 1 || o.id === 'ruhigesJahr')
+    .map((c) => (c.area ? { id: c.id, preview: 1 / (1 - cardSaving(c.id, owned)), ausbau: true } : { id: c.id, preview: cardPreview(c.id, owned) }))
+    // keine Falle: aktiv mindestens gleich, außer bei „Ruhiges Jahr“ (zahlt sich offline aus);
+    // Ausbau-Karten nur, wenn sie mit diesem Garten etwas bringen (keine toten Optionen)
+    .filter((o) => (o.preview >= 1 && (!('ausbau' in o) || o.preview >= CARD_AUSBAU.minPreview)) || o.id === 'ruhigesJahr')
   const out: CardOffer[] = []
   const left = [...pool]
   while (out.length < 3 && left.length > 0) {

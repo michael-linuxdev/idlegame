@@ -215,7 +215,7 @@ export function productionPerSecond(state: GameState, now = Date.now()): number 
     const owned = state.owned[def.id] ?? 0
     const branch = state.branches[def.id]
     const mEff = efficiencyMult(branch?.efficiency ?? 0)
-    sum += generatorRate(def, owned) * mEff * cardAreaMult(state.seasonCard, def.id)
+    sum += generatorRate(def, owned) * mEff * cardAreaMult(state.seasonCard, def.id, state.seasonCardAusbau)
   }
   return (
     sum *

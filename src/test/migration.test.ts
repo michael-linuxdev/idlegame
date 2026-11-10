@@ -31,6 +31,8 @@ const ADDED_AFTER_V1: Record<string, unknown> = {
   ruhezeitVerkuerzung: { ms: 0, day: '' },
   // Runde 4, Paket 4: Bogen-Regeln der Kapitel 13–49, Wahl je Kapitel (leer = keine Wahl, neutral)
   bogenWahl: {},
+  // Runde 4: Saison-Karte nach der Ausbau-Regel gewählt (false = die laufende Karte wirkt wie vorher)
+  seasonCardAusbau: false,
   // Runde 4, Paket 1 (automatische Sicherung) braucht kein Feld: Sicherungen liegen in IndexedDB,
   // der letzte Export in localStorage `gartenerbe-sicherung-v1` (docs/sicherung.md)
 }

@@ -108,6 +108,8 @@ export interface GameState {
   sessions: number
   /** Saison-Karte dieses Gartenjahres (seasonCards.ts), null = keine */
   seasonCard: SeasonCardId | null
+  /** Saison-Karte nach der Ausbau-Regel gewählt (Runde 4); false = alte Ertrags-Regel */
+  seasonCardAusbau: boolean
   /** Angebot nach dem Saisonende (leer = keine Wahl offen) */
   seasonCardOffer: CardOffer[]
   /** Karte des Vorjahres (nie zweimal hintereinander) */
