@@ -39,6 +39,7 @@ import {
 import { XP_PER_DAILY } from '../progression'
 import type { SeasonCardId } from '../seasonCards'
 import { collectReadyAchievements } from './buy'
+import { tickChapters } from './chapters'
 import { bumpQuest, productionPerSecond, syncEventWindow, syncMonetization, withXp } from './core'
 import { withEventProgress } from './events'
 import { growPumpkin } from './extras'
@@ -257,6 +258,8 @@ export function claimRewardedAd(state: GameState, choice: AdChoice = 'ernte', no
   const ernteGained = choice === 'ernte' ? productionPerSecond(next, now) * AD_ERNTE_MINUTES * 60 : 0
   const samenGained = choice === 'samen' ? AD_SAMEN : 0
   next = withEventProgress(next, ernteGained, now)
+  // „10 Min Ernte“ gilt für jeden Garten: offene Kapitel (Obstwiese …) bekommen ihre eigene Ernte dazu
+  if (choice === 'ernte') next = tickChapters(next, (rate) => rate * AD_ERNTE_MINUTES * 60)
   const gartenwocheXp = Math.min(GARTENWOCHE_MAX_XP, next.gartenwocheXp + GARTENWOCHE_AD_XP)
   return {
     ok: true,

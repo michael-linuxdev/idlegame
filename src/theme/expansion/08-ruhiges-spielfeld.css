@@ -32,7 +32,9 @@
 }
 
 .map-side {
-  gap: 0.45rem;
+  /* Platz für das Schild unter jedem Knopf (.map-side-label, ~0.95rem), sonst
+     überdeckt z. B. „Obstwiese“ den Jonas-Knopf darunter */
+  gap: 1.35rem;
 }
 
 .hud-pill:not(:has(.hud-pill-label)) {

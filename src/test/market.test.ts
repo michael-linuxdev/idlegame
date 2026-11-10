@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { AD_SAMEN, MARKET_GIFT_SAMEN, REWARDED_AD_COOLDOWN_MS, WATER_REFILL_COST, WATER_REFILL_PER_DAY } from '../game/monetization'
+import { AD_ERNTE_MINUTES, AD_SAMEN, MARKET_GIFT_SAMEN, REWARDED_AD_COOLDOWN_MS, WATER_REFILL_COST, WATER_REFILL_PER_DAY } from '../game/monetization'
 import { TAP_COOLDOWN_MS } from '../game/economy'
-import { claimMarketGift, claimRewardedAd, createInitialState, refillWateringCan, waterRefillsLeft } from '../game/state'
+import { chapterPerSecond, claimMarketGift, claimRewardedAd, createInitialState, refillWateringCan, waterRefillsLeft } from '../game/state'
 import { parseSave } from '../game/storage'
+import { chapterDef } from '../game/chapters'
 
 describe('Markt', () => {
   const now = 1_800_000_000_000
@@ -16,6 +17,22 @@ describe('Markt', () => {
     expect(s.ok && s.state.ernte).toBe(base.ernte)
     if (s.ok) expect(claimRewardedAd(s.state, 'samen', now + 1000).ok).toBe(false)
     if (s.ok) expect(claimRewardedAd(s.state, 'samen', now + REWARDED_AD_COOLDOWN_MS).ok).toBe(true)
+  })
+
+  it('Ernte-Belohnung gilt auch für offene Kapitel (Obstwiese), Samen-Belohnung nicht', () => {
+    const area = chapterDef('obstwiese').areas[0].id
+    const orchard = { ...base.chapters.obstwiese, openedAt: 1, cur: 5, owned: { [area]: 3 } }
+    const s = { ...base, chapters: { ...base.chapters, obstwiese: orchard } }
+    const rate = chapterPerSecond(s, 'obstwiese')
+    expect(rate).toBeGreaterThan(0)
+    const e = claimRewardedAd(s, 'ernte', now)
+    expect(e.ok).toBe(true)
+    if (e.ok) {
+      expect(e.state.chapters.obstwiese.cur).toBeCloseTo(5 + rate * AD_ERNTE_MINUTES * 60)
+      expect(e.state.chapters.weinberg.cur).toBe(s.chapters.weinberg.cur)
+    }
+    const k = claimRewardedAd(s, 'samen', now)
+    expect(k.ok && k.state.chapters.obstwiese.cur).toBe(5)
   })
 
   it('Werbefrei: Belohnung bleibt (ohne Werbung), Abklingzeit auch', () => {
