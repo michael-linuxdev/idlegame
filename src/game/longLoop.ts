@@ -55,15 +55,51 @@ export function canDeepReset(saisonenden: number): boolean {
  */
 export const DEEP_REST_MS = 3 * 86_400_000
 
+/**
+ * Ruhezeit verkürzen (Runde 4, Paket 3): Jeder erledigte Tag der „Heute“-Karte
+ * (Tägliche Gartenrunde abgeholt und alle Tagesziele abgeholt) verkürzt die
+ * **laufende** Ruhezeit um REST_CUT.dayMs, zusammen höchstens REST_CUT.capMs —
+ * nie unter 2,5 Tage. Nicht kaufbar, nicht durch Werbung oder Samen.
+ * Betrag je Tag per Simulator (docs/kapitel/balance-bericht.md „Runde 4“).
+ */
+export const REST_CUT = {
+  /** je erledigtem Tag */
+  dayMs: 4 * 3600_000,
+  /** zusammen höchstens (12 h: die Ruhezeit wird nie kürzer als 2,5 Tage) */
+  capMs: 12 * 3600_000,
+}
+
+/** Verdiente Verkürzung der laufenden Ruhezeit; `day` = zuletzt gezählter Tag (JJJJ-MM-TT). */
+export interface RestCut {
+  ms: number
+  day: string
+}
+
+export const EMPTY_REST_CUT: RestCut = { ms: 0, day: '' }
+
 /** Restliche Ruhezeit in ms (0 = Tiefer Winter möglich, sobald das Gartenjahr reicht). */
-export function deepRestLeft(tieferWinterAt: number, now: number): number {
+export function deepRestLeft(tieferWinterAt: number, now: number, cutMs = 0): number {
   if (!(tieferWinterAt > 0)) return 0
-  return Math.max(0, tieferWinterAt + DEEP_REST_MS - now)
+  const cut = Math.min(REST_CUT.capMs, Math.max(0, cutMs))
+  return Math.max(0, tieferWinterAt + DEEP_REST_MS - cut - now)
 }
 
 /** Gartenjahr reicht und die Ruhezeit ist vorbei. */
-export function canDeepNow(saisonenden: number, tieferWinterAt: number, now: number): boolean {
-  return canDeepReset(saisonenden) && deepRestLeft(tieferWinterAt, now) <= 0
+export function canDeepNow(saisonenden: number, tieferWinterAt: number, now: number, cutMs = 0): boolean {
+  return canDeepReset(saisonenden) && deepRestLeft(tieferWinterAt, now, cutMs) <= 0
+}
+
+/**
+ * Ein erledigter Tag zählt höchstens einmal und nur, solange die Ruhezeit
+ * läuft. Tage zählen nur vorwärts: Wer die Uhr zurückstellt, bekommt einen
+ * „neuen“ Tag mit kleinerem Datum — der zählt nicht.
+ */
+export function creditRestDay(cut: RestCut, tieferWinterAt: number, day: string, now: number): RestCut {
+  if (!(tieferWinterAt > 0) || now < tieferWinterAt) return cut
+  if (cut.day && day <= cut.day) return cut
+  if (cut.ms >= REST_CUT.capMs) return cut
+  if (deepRestLeft(tieferWinterAt, now, cut.ms) <= 0) return cut
+  return { ms: Math.min(REST_CUT.capMs, cut.ms + REST_CUT.dayMs), day }
 }
 
 export function deepYieldMult(d: DeepMetaUpgrades): number {

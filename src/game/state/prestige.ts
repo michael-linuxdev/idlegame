@@ -81,7 +81,7 @@ export function buyDeepUpgrade(state: GameState, id: DeepMetaId): GameState {
  * their boosts, Samen, Gartenstile, Gärtnerstufe and streaks stay.
  */
 export function doDeepReset(state: GameState, now = Date.now()): GameState {
-  if (!canDeepNow(state.saisonenden, state.tieferWinterAt, now)) return state
+  if (!canDeepNow(state.saisonenden, state.tieferWinterAt, now, state.ruhezeitVerkuerzung.ms)) return state
   const sprouts = deepSproutPayout(state)
   const fresh = createPostPrestigeState({
     ...state,
@@ -97,6 +97,8 @@ export function doDeepReset(state: GameState, now = Date.now()): GameState {
       sproesslinge: state.sproesslinge + sprouts,
       tiefeWinter: state.tiefeWinter + 1,
       tieferWinterAt: now,
+      // Neue Ruhezeit: verdiente Verkürzung beginnt wieder bei 0
+      ruhezeitVerkuerzung: { ms: 0, day: '' },
     }),
   )
 }

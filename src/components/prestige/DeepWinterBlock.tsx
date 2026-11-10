@@ -1,6 +1,7 @@
 /** Tiefer Winter (Sprösslinge, Sprösslings-Laden) und Oma Ilse. Teil von PrestigePanel. */
 import { useState } from 'react'
-import { DEEP_GATE_YEAR, DEEP_SHOP, canDeepReset } from '../../game/longLoop'
+import { DEEP_GATE_YEAR, DEEP_SHOP, REST_CUT, canDeepReset } from '../../game/longLoop'
+import { restStatus } from '../../game/state/rest'
 import { CHAPTERS, type ChapterId } from '../../game/chapters'
 import { ILSE_RANKS } from '../../game/extrasCore'
 import { formatClock, formatDecimal, formatErnte } from '../../game/format'
@@ -24,7 +25,7 @@ export function DeepWinterBlock({ game, onOpenChapter }: { game: GameApi; onOpen
         {t.longLoop.title}
       </h3>
       <p className="muted">{t.longLoop.intro}</p>
-      {yearOk && restLeft > 0 ? <p className="muted">{t.longLoop.restHint}</p> : null}
+      {restLeft > 0 ? <RestPanel game={game} /> : null}
       <dl className="season-stats">
         <div>
           <dt>{t.longLoop.sprouts}</dt>
@@ -176,5 +177,25 @@ function IlseBlock({ game }: { game: GameApi }) {
         </button>
       ) : null}
     </section>
+  )
+}
+
+const hours = (ms: number) => formatDecimal(ms / 3600_000, ms % 3600_000 === 0 ? 0 : 1)
+
+/** Laufende Ruhezeit nach dem Tiefen Winter: Restzeit, verdiente Verkürzung, was heute noch geht (Runde 4). */
+function RestPanel({ game }: { game: GameApi }) {
+  const r = restStatus(game.state, game.nowTick)
+  return (
+    <div className="rest-panel" role="group" aria-labelledby="rest-panel-left">
+      <p className="muted">{t.longLoop.restHint}</p>
+      <p id="rest-panel-left" className="rest-left">
+        <strong>{t.longLoop.restLeft(formatClock(r.leftMs))}</strong>
+      </p>
+      <p className="rest-earned">{t.longLoop.restEarned(hours(r.earnedMs), hours(r.capMs))}</p>
+      <p className="rest-today">
+        {r.earnedMs >= r.capMs ? t.longLoop.restCapReached : r.countedToday ? t.longLoop.restTodayCounted : t.longLoop.restToday(hours(r.todayMs))}
+      </p>
+      <p className="muted rest-rule">{t.longLoop.restRule(hours(REST_CUT.dayMs), hours(r.capMs))}</p>
+    </div>
   )
 }

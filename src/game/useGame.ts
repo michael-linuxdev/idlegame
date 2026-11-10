@@ -192,7 +192,7 @@ export function useGame() {
   const clanBoostActive =
     state.vereinBoostExpiresAt > nowTick && vereinMult > 1
   // Ruhezeit nach dem Tiefen Winter (Prestige-Panel)
-  const deepRestMs = deepRestLeft(state.tieferWinterAt, nowTick)
+  const deepRestMs = deepRestLeft(state.tieferWinterAt, nowTick, state.ruhezeitVerkuerzung.ms)
   const clanBoostMsLeft = clanBoostActive
     ? Math.max(0, state.vereinBoostExpiresAt - nowTick)
     : 0

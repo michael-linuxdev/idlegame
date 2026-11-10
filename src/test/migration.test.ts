@@ -27,6 +27,8 @@ const ADDED_AFTER_V1: Record<string, unknown> = {
   // Abschluss-Szene Kapitel 50 (Welle 8): alte Stände haben sie noch nicht gesehen
   abschlussSeen: false,
   // Kapitel-Meisterschaft (docs/nach-kapitel-50.md) braucht kein Feld: die Sterne folgen aus chapters[id].owned
+  // Runde 4, Paket 3: verdiente Verkürzung der laufenden Ruhezeit (longLoop.REST_CUT)
+  ruhezeitVerkuerzung: { ms: 0, day: '' },
   // Runde 4, Paket 1 (automatische Sicherung) braucht kein Feld: Sicherungen liegen in IndexedDB,
   // der letzte Export in localStorage `gartenerbe-sicherung-v1` (docs/sicherung.md)
 }

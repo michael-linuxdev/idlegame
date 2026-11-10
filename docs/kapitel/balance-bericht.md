@@ -201,3 +201,36 @@ Ernte im Hauptgarten verkürzt die Saisons, aber nicht die Ruhezeit.
   in den ersten Wochen) zu schnell wirkt, wäre die mildeste Stellschraube ein
   Tageslimit nur für Werbefrei-Abholungen (z. B. 20 am Tag) — braucht ein neues
   gespeichertes Feld mit Startwert, keine Migration.
+
+## Runde 4 — Ruhezeit: Einsatz zahlt sich aus (Stand 2026-11-10)
+
+**Regel** (`src/game/longLoop.ts` `REST_CUT`, `src/game/state/rest.ts`): Ein
+erledigter Tag der „Heute“-Karte — Tägliche Gartenrunde **und** alle
+Tagesziele abgeholt — verkürzt die laufende Ruhezeit nach dem Tiefen Winter um
+**4 Stunden**, zusammen höchstens um **12 Stunden** (nie unter 2,5 Tage). Ein
+Tag zählt einmal, nur vorwärts im Kalender (Uhr zurückstellen bringt nichts)
+und nur, solange die Ruhezeit läuft. Nicht kaufbar, nicht durch Werbung oder
+Samen. Wochenplan und Rezept zählen nicht mit: der Wochenplan liegt nicht im
+Spielstand, das Rezept ist für neue Spieler erst später offen.
+
+**Spielstand:** ein neues Feld `ruhezeitVerkuerzung: { ms, day }`, Startwert
+`{ ms: 0, day: '' }`, beim Tiefen Winter wieder 0. Eine Ruhezeit, die beim
+Update schon läuft, bleibt gleich lang und kann nur kürzer werden.
+
+**Simulator:** `TASKS=1` lässt jedes Profil in seinen Sitzungen fertige
+Tagesziele abholen (die Gartenrunde holt es ohnehin); `REST_DAY_H` /
+`REST_CAP_H` zum Vergleichen. Gemessen mit 0 h (Profile holen Tagesziele ab,
+ohne Verkürzung) gegen 4 h:
+
+| Profil | 0 h je Tag | 4 h je Tag |
+|---|---|---|
+| Regular, 5 Jahre | K13 Tag 313, K50 Tag 1784, Abstand Ø 39,8 Tage | K13 Tag 295 (Monat 9,7), K50 Tag 1702 (4,7 J.), Abstand 24–53, Ø 38,0 Tage |
+| Dauerspieler, 1 Jahr | K13 Tag 291, Abstand 21–25 | K13 Tag 266, Abstand 21–24 |
+| Casual, 2 Jahre | K13 Tag 374, Tag 730: K23 | K13 Tag 372, Tag 730: K23 |
+
+Alle Ziele halten: Regular K13 im Monat 9–12, K50 nach 4–5 Jahren, Abstand
+im Mittel 4–6 Wochen; Dauerspieler höchstens ein Kapitel in zwei Wochen;
+Casual nach zwei Jahren ≥ K20. Den größten Vorteil hat, wer täglich spielt
+(Dauerspieler −25 Tage bis K13) — genau das war das Ziel: aktive Spieler hatten
+von der Ruhezeit bisher nichts. Casual spielt selten genug, dass sein Tiefer
+Winter ohnehin nach der Ruhezeit kommt. Der Deckel musste nicht gesenkt werden.

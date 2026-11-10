@@ -647,6 +647,12 @@ export const strings: Strings = {
     confirmCta: 'Really? Tap again — the garden will rest',
     resting: (clock: string) => `The garden is still resting · ${clock}`,
     restHint: 'After a Deep Winter the soil needs three days of rest before the next one can come.',
+    restRule: (perDay: string, cap: string) => `Every finished day under “Today” (Daily Rounds and all daily goals collected) shortens the rest by ${perDay} hours, by ${cap} hours at most in total.`,
+    restLeft: (clock: string) => `Rest: ${clock} left`,
+    restEarned: (h: string, cap: string) => `Earned so far: −${h} h of at most −${cap} h`,
+    restToday: (h: string) => `Still possible today: −${h} h`,
+    restTodayCounted: 'Today already counted — again tomorrow.',
+    restCapReached: 'This rest can’t get any shorter.',
     shopTitle: 'Seedling Shop',
     rank: (rank: number, max: number) => `Rank ${rank}/${max}`,
     cost: (n: number) => `${nSeedlings(n)}`,
@@ -1302,6 +1308,8 @@ export const strings: Strings = {
     close: 'Close',
     dailyDone: 'Done',
     movedNote: 'Daily goals and Grandma’s Weekly Plan are now under “Today” (bottom left).',
+    restNote: (h: string) => `Collected the Daily Rounds and all daily goals? Then the garden rests ${h} hours less after the Deep Winter.`,
+    restDone: 'Done for today — the rest got shorter.',
   },
 
   daily: {

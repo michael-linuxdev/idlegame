@@ -45,6 +45,13 @@
  *  CARD_TUNE='{"hofladenjahr":[1.6,0.8]}'  Karten-Werte probeweise ändern
  *                     ([Bereich ×, gedämpfter Bereich ×] bzw. [Garten ×, weg ×])
  *  SIM_START=2027-06-01  anderes Startdatum (Hitzewelle gibt es nur im Sommer)
+ *
+ * Ruhezeit verkürzen (Runde 4, Paket 3):
+ *  TASKS=1            der Spieler holt in jeder Sitzung fertige Tagesziele ab
+ *                     (die Gartenrunde holt er immer) — ein erledigter Tag
+ *                     verkürzt dann die laufende Ruhezeit (longLoop.REST_CUT)
+ *  REST_DAY_H=4       Verkürzung je erledigtem Tag in Stunden (Standard: Spielwert)
+ *  REST_CAP_H=12      Deckel je Ruhezeit (höchstens 12)
  *  Fünf Jahre:  GEN=1 SIM_ALL_CHAPTERS=1 SUMMARY=1 npm run balance -- regular 43800
  */
 import './simFlags'
@@ -66,6 +73,7 @@ import {
   canPrestigeNow,
   pickSeasonCard,
   claimDailyOps,
+  claimQuestReward,
   claimOfflineReward,
   createInitialState,
   doPrestige,
@@ -85,7 +93,7 @@ import {
   buyDeepUpgrade,
 } from '../../src/game/state'
 import { moduleTier } from '../../src/theme/tiers'
-import { DEEP_SHOP, canDeepNow, sproutPayout } from '../../src/game/longLoop'
+import { DEEP_SHOP, REST_CUT, canDeepNow, sproutPayout } from '../../src/game/longLoop'
 import { LEGACY_SHOP } from '../../src/game/generations'
 import { CHAPTER_BONUS, CHAPTERS, chaptersGardenMult, totalChapterLevels } from '../../src/game/chapters'
 import { bestChapterBuy, buyChapterArea, buyIlse, openChapters, buildProjectStage, claimRewardedAd, weatherPreview, bestWeatherChoice, decideWeather } from '../../src/game/state'
@@ -95,6 +103,8 @@ import { SEASON_CARDS } from '../../src/game/seasonCards'
 import { SAFE_COST, WEATHER_EFFECTS } from '../../src/game/weatherEvents'
 
 // WEATHER_TUNE='{"sturm":{"risk":{"bad":0.8}},"frost":{"cost":{"minutes":8}}}' — Wetter-Werte probeweise ändern
+if (process.env.REST_DAY_H) REST_CUT.dayMs = Number(process.env.REST_DAY_H) * 3600_000
+if (process.env.REST_CAP_H) REST_CUT.capMs = Math.min(12, Number(process.env.REST_CAP_H)) * 3600_000
 if (process.env.WEATHER_TUNE) {
   const tune = JSON.parse(process.env.WEATHER_TUNE) as Record<string, { risk?: object; safe?: object; cost?: { samen?: number; minutes?: number } }>
   for (const [k, v] of Object.entries(tune)) {
@@ -313,6 +323,8 @@ export function run(profile: Profile, hours: number) {
   helperDays.length = 0
   let s = createInitialState(clock)
   resetDecisions()
+  let restDayCounted = ''
+  let restDays = 0
   const weatherMode = process.env.WEATHER
   const milestones: Milestone[] = []
   const seenUnlock = new Set<string>()
@@ -395,6 +407,13 @@ export function run(profile: Profile, hours: number) {
           w[choice] += 1
           s = next
         }
+      }
+    }
+    if (process.env.TASKS) {
+      for (const q of s.quests) if (!q.claimed && q.progress >= q.target) s = claimQuestReward(s, q.id, clock)
+      if (s.ruhezeitVerkuerzung.day !== restDayCounted) {
+        restDayCounted = s.ruhezeitVerkuerzung.day
+        if (restDayCounted) restDays += 1
       }
     }
     if (s.lastTapAt <= 0 || clock - s.lastTapAt >= 5 * 60_000) s = water(s)
@@ -492,7 +511,7 @@ export function run(profile: Profile, hours: number) {
         for (const g of GENERATORS) lastLevel[g.id] = s.owned[g.id] ?? 0
         // Rendite des Tiefen Winters: Sprösslinge je Tag seit dem letzten
         let deepNow = false
-        if (canDeepNow(s.saisonenden, s.tieferWinterAt, clock)) {
+        if (canDeepNow(s.saisonenden, s.tieferWinterAt, clock, s.ruhezeitVerkuerzung.ms)) {
           const sproutRate = sproutPayout(s.saisonenden) / Math.max(0.25, (clock - lastDeepAt) / 86400000)
           bestSproutRate = Math.max(bestSproutRate, sproutRate)
           deepNow = deepByRate
@@ -538,7 +557,7 @@ export function run(profile: Profile, hours: number) {
     }
   }
   const chapters = CHAPTERS.filter((d) => chapterDays[d.id] != null).map((d) => ({ number: d.number, id: d.id, day: chapterDays[d.id]! }))
-  return { s, milestones, runs, hours, stageByDay, deeps, gens, chapters, adClaims, density: eventDensity(events, profile) }
+  return { s, milestones, runs, hours, stageByDay, deeps, gens, chapters, adClaims, restDays, density: eventDensity(events, profile) }
 }
 
 /** Abstände zwischen bedeutsamen Ereignissen in aktiver Spielzeit. */
@@ -566,7 +585,7 @@ export function eventDensity(events: number[], profile: Profile) {
 function report(profile: Profile, hours: number) {
   seed = 12345
   clock = startAt()
-  const { s, milestones, runs, stageByDay, deeps, gens, chapters, adClaims, density } = run(profile, hours)
+  const { s, milestones, runs, stageByDay, deeps, gens, chapters, adClaims, restDays, density } = run(profile, hours)
   const dn = (sec: number) => (Number.isFinite(sec) ? (sec >= 120 ? `${Math.round(sec / 60)}m` : `${Math.round(sec)}s`) : '-')
   if (process.env.SUMMARY) {
     const act = runs.map((r) => Math.round(r.active / 60))
@@ -609,6 +628,7 @@ function report(profile: Profile, hours: number) {
       console.log(`  cards share of all picks (${total}): ${share.join(' · ')}`)
       console.log(`  weather: ${Object.entries(decisions.weather).map(([k, w]) => `${k} safe ${w.safe} / risk ${w.risk} (risk ${Math.round((100 * w.risk) / Math.max(1, w.safe + w.risk))} %)`).join(' · ')}`)
     }
+    if (process.env.TASKS) console.log(`  rest: ${restDays} days shortened the rest by ${REST_CUT.dayMs / 3600_000} h (cap ${REST_CUT.capMs / 3600_000} h)`)
     if (deeps.length || process.env.DEEP)
       console.log(
         `  deep winters: ${deeps.map((d) => `d${d.day}(+${d.sprouts})`).join(' ')} | end deep ${JSON.stringify(s.sproesslingLaden)} year ${s.saisonenden + 1}`,

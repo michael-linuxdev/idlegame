@@ -61,3 +61,15 @@ describe('Paket 2: Bündeln ändert keinen Wert eines alten Stands', () => {
     expect(s.recipe).toEqual(raw.recipe)
   })
 })
+
+describe('Paket 3: eine laufende Ruhezeit wird beim Update nie länger', () => {
+  it('späte Stände mit laufender Ruhezeit: gleiche Restzeit, Verkürzung startet bei 0', async () => {
+    const { fixtureStates, snapshot } = await import('./noWorse/core')
+    const { parseSave } = await import('../game/storage')
+    for (const name of ['v1-spaet', 'v1-spaet-ruhe-frisch']) {
+      const s = parseSave(fixtureStates()[name]!)!
+      expect(s.ruhezeitVerkuerzung).toEqual({ ms: 0, day: '' })
+      expect(snapshot(s).deepRestLeftMs).toBe(before[name]!.deepRestLeftMs)
+    }
+  })
+})

@@ -17,6 +17,7 @@
  * 11. Sprache: Browser en-US startet englisch, Umschalter wechselt live (ohne Neuladen),
  *     die Wahl übersteht das Neuladen, ?lang= hat Vorrang
  * 12. Deko und Saatgut kreuzen öffnen auch aus Markt und Saison
+ * 15. Ruhezeit: Restzeit und verdiente Verkürzung im Saison-Panel
  * 14. Automatische Sicherung: Spielstand löschen → Angebot → Wiederherstellen (Gartenjahr, Währungen, Kapitel)
  * Alle anderen Abschnitte laufen mit Browser-Sprache de-DE.
  * Fails on any uncaught page error. Run: npm run build && npm run e2e
@@ -705,6 +706,39 @@ try {
     await q.getByText(T.ftue.welcome.title).waitFor({ timeout: 10_000 })
     assert((await q.locator('.restore-offer').count()) === 0, 'no offer without backups')
     await fresh.close()
+  }
+
+  // 15 — Ruhezeit nach dem Tiefen Winter: Restzeit, verdiente Verkürzung, was heute geht (Runde 4, Paket 3)
+  {
+    const ctx = await browser.newContext({ ...devices['iPhone 13'], reducedMotion: 'reduce' })
+    await ctx.addInitScript(() => {
+      if (sessionStorage.getItem('seed')) return
+      const now = Date.now()
+      const d = new Date(now)
+      const day = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+      const owned = { gemuesebeet: 60, kompost: 40, kraeuterspirale: 30 }
+      const save = { owned, ernte: 1e6, saisonenden: 2, tiefeWinter: 1, tieferWinterAt: now - 3600_000, ruhezeitVerkuerzung: { ms: 4 * 3600_000, day }, lastSeen: now, saveVersion: 1, sessions: 12 }
+      localStorage.setItem('gartenerbe-spielstand-v1', JSON.stringify(save))
+      localStorage.setItem('gartenerbe-ftue-v1', JSON.stringify({ beat: 'done', dismissed: true, completed: [], startedAt: 1 }))
+      localStorage.setItem('gartenerbe-install-v1', JSON.stringify({ dismissed: true, installed: false, shown: true }))
+      localStorage.setItem('gartenerbe-hints-v1', JSON.stringify(['season', 'truhe', 'deep', 'visitor', 'order', 'variety', 'weekly']))
+      sessionStorage.setItem('seed', '1')
+    })
+    const p = await ctx.newPage()
+    p.on('pageerror', (e) => errors.push(e.message))
+    await p.goto(URL)
+    await p.locator('.garden-map').waitFor()
+    await p.locator('.tabbar .tab-prestige').click()
+    const panel = p.locator('.rest-panel')
+    await panel.waitFor()
+    const text = await panel.innerText()
+    assert(text.includes(T.longLoop.restTodayCounted), 'rest panel: today already counted')
+    assert(text.includes(T.longLoop.restEarned('4', '12')), `rest panel: earned 4 of 12 h (${text})`)
+    // 72 h − 1 h vorbei − 4 h verdient = 67 h
+    assert(['67 h', '66 h 59', '66 h 58'].some((c) => text.includes(T.longLoop.restLeft(c))), `rest panel: time left (${text})`)
+    await panel.scrollIntoViewIfNeeded()
+    await p.screenshot({ path: `e2e-screens/ruhezeit-${LANG}.png` })
+    await ctx.close()
   }
 
   // 11 — Sprache: Erkennung, Live-Umschalter, gespeicherte Wahl, ?lang=

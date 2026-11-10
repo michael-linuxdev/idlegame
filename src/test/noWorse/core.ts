@@ -71,7 +71,8 @@ export function snapshot(s: GameState, now = NOW): Snapshot {
     chapterPerS,
     currencies,
     openChapters: openChapters(s),
-    deepRestLeftMs: deepRestLeft(s.tieferWinterAt, now),
+    // ab Runde 4 (Paket 3) zählt die verdiente Verkürzung mit; vorher gab es sie nicht (= 0)
+    deepRestLeftMs: deepRestLeft(s.tieferWinterAt, now, (s as { ruhezeitVerkuerzung?: { ms: number } }).ruhezeitVerkuerzung?.ms ?? 0),
     crossingLeftMs: s.crossing ? Math.max(0, s.crossing.endsAt - now) : 0,
   }
 }

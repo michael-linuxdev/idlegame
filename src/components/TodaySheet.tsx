@@ -10,6 +10,8 @@ import { RECIPE_NEED } from '../game/extrasCore'
 import { GENERATORS } from '../game/generators'
 import { playSfx } from '../game/sound'
 import { todaySections } from '../game/today'
+import { restStatus } from '../game/state/rest'
+import { formatDecimal } from '../game/format'
 import type { useGame } from '../game/useGame'
 import { useDismiss } from '../game/overlays'
 
@@ -27,6 +29,7 @@ interface Props {
 export function TodaySheet({ game, onClose, extras, updateExtras, onClaimDaily, onCooked }: Props) {
   const { questRows, claimQuest, state } = game
   useDismiss(onClose)
+  const rest = restStatus(state, game.nowTick)
   const sections = todaySections({ state, dailyReady: game.dailyReady, recipeOpen: game.features.has('recipe'), extras })
   // Ready to claim first, then open tasks, done ones last
   const weekly = [...WEEKLY_TASKS].sort((a, b) => rank(a.id) - rank(b.id))
@@ -215,6 +218,11 @@ export function TodaySheet({ game, onClose, extras, updateExtras, onClaimDaily, 
             ×
           </button>
         </header>
+        {rest.leftMs > 0 && (rest.countedToday || rest.todayMs > 0) ? (
+          <p className="muted progress-intro today-rest">
+            {rest.countedToday ? t.today.restDone : t.today.restNote(formatDecimal(rest.todayMs / 3600_000, rest.todayMs % 3600_000 ? 1 : 0))}
+          </p>
+        ) : null}
         {dailyBlock}
         {sections.includes('recipe') ? recipeBlock : null}
         {questsBlock}

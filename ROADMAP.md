@@ -59,6 +59,18 @@ Werkzeug: `npm run balance -- <engaged|regular|casual> <stunden>` — spielt die
 
   Nach Paket 2 (Heute-Karte, HUD-Grenze, Hitzewelle +20 % → +16 %): 14 Tage aller drei Profile **identisch** mit der Basis (der Simulator entscheidet Wetter nur mit `WEATHER=…`; die Wahl-Messung steht in `docs/systeme-inventur.md`).
 
+  Paket 3 (Ruhezeit verkürzen: je erledigtem Tag −4 h, höchstens −12 h je Ruhezeit). Vorher = Profile holen Tagesziele ab, aber ohne Verkürzung (`TASKS=1 REST_DAY_H=0`); nachher `TASKS=1` (Spielwert 4 h):
+
+  | Messung | vorher | nachher |
+  |---|---|---|
+  | Regular 5 Jahre | K13 Tag 313, K50 Tag 1784 (4,9 J.), Abstand 24–56 (Ø 39,8 Tage) | **K13 Tag 295** (Monat 9,7), **K50 Tag 1702** (4,7 J.), Abstand 24–53 (**Ø 38,0 Tage** = 5,4 Wochen) |
+  | Dauerspieler 1 Jahr | K13 Tag 291, Abstand 21–25 | **K13 Tag 266**, Abstand **21–24 Tage** (höchstens 1 Kapitel in 2 Wochen ✓) |
+  | Casual 2 Jahre | K13 Tag 374, Tag 730: K23 | K13 Tag 372, **Tag 730: K23** (≥ K20 ✓) |
+  | Dauerspieler 14 Tage | 112 Saisons, Tiefe Winter Tag 3/8/11 | 132 Saisons, Tiefe Winter Tag 3/6/9/13 |
+  | Regular / Casual 14 Tage | 66 / 28 Saisons | unverändert (der erste Tiefe Winter kommt vor dem Ende einer Ruhezeit nicht in Frage) |
+
+  Ohne `TASKS` (Standard, `tempo.test.ts`) rechnet der Simulator wie vorher.
+
 ## Prinzipien
 
 - DE-UI (Ausgangssprache), EN gleichwertig; Bau-Karte; echtes Idle; keine Energy-Walls; helle, lesbare UI.

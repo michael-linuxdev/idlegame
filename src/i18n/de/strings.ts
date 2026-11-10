@@ -643,6 +643,12 @@ export const strings = {
     confirmCta: 'Wirklich? Nochmal tippen — der Garten ruht',
     resting: (clock: string) => `Der Garten ruht noch · ${clock}`,
     restHint: 'Nach einem Tiefen Winter braucht der Boden drei Tage Ruhe, bevor der nächste kommen kann.',
+    restRule: (perDay: string, cap: string) => `Jeder erledigte Tag unter „Heute“ (Gartenrunde und alle Tagesziele abgeholt) verkürzt die Ruhe um ${perDay} Stunden, zusammen um höchstens ${cap} Stunden.`,
+    restLeft: (clock: string) => `Ruhezeit: noch ${clock}`,
+    restEarned: (h: string, cap: string) => `Schon verdient: −${h} h von höchstens −${cap} h`,
+    restToday: (h: string) => `Heute noch möglich: −${h} h`,
+    restTodayCounted: 'Heute schon gezählt — morgen wieder.',
+    restCapReached: 'In dieser Ruhezeit ist nicht mehr Verkürzung drin.',
     shopTitle: 'Sprösslings-Laden',
     rank: (rank: number, max: number) => `Rang ${rank}/${max}`,
     cost: (n: number) => `${zahl(n)} Sprösslinge`,
@@ -1298,6 +1304,8 @@ export const strings = {
     close: 'Schließen',
     dailyDone: 'Erledigt',
     movedNote: 'Tagesziele und Omas Wochenplan stehen jetzt unter „Heute“ (unten links).',
+    restNote: (h: string) => `Gartenrunde und alle Tagesziele abgeholt? Dann ruht der Garten nach dem Tiefen Winter ${h} Stunden kürzer.`,
+    restDone: 'Heute erledigt — die Ruhezeit ist kürzer geworden.',
   },
 
   daily: {
