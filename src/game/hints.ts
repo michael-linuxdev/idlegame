@@ -24,6 +24,10 @@ export type HintId =
   | 'weatherNew'
   | 'clanNew'
   | 'crossNew'
+  | 'arcI'
+  | 'arcII'
+  | 'arcIII'
+  | 'arcIV'
 
 /** Priority order when several are pending. */
 export const HINT_ORDER: HintId[] = [
@@ -39,6 +43,10 @@ export const HINT_ORDER: HintId[] = [
   'weatherNew',
   'clanNew',
   'crossNew',
+  'arcI',
+  'arcII',
+  'arcIII',
+  'arcIV',
   'bulkMax',
   'bulk5',
   'buyAll',

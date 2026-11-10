@@ -52,6 +52,12 @@
  *                     verkürzt dann die laufende Ruhezeit (longLoop.REST_CUT)
  *  REST_DAY_H=4       Verkürzung je erledigtem Tag in Stunden (Standard: Spielwert)
  *  REST_CAP_H=12      Deckel je Ruhezeit (höchstens 12)
+ *
+ * Bogen-Regeln der Kapitel 13–49 (Runde 4, Paket 4, src/game/arcRules.ts):
+ *  ARC=best           der Spieler wählt in jedem offenen Kapitel 13–49 die
+ *                     beste Regel (bestChoice; Plan für morgen nach dem
+ *                     Offline-Anteil des Profils) und passt sie laufend an
+ *  ARC=none           keine Wahl (Standard, wie vor Runde 4)
  *  Fünf Jahre:  GEN=1 SIM_ALL_CHAPTERS=1 SUMMARY=1 npm run balance -- regular 43800
  */
 import './simFlags'
@@ -96,7 +102,8 @@ import { moduleTier } from '../../src/theme/tiers'
 import { DEEP_SHOP, REST_CUT, canDeepNow, sproutPayout } from '../../src/game/longLoop'
 import { LEGACY_SHOP } from '../../src/game/generations'
 import { CHAPTER_BONUS, CHAPTERS, chaptersGardenMult, totalChapterLevels } from '../../src/game/chapters'
-import { bestChapterBuy, buyChapterArea, buyIlse, openChapters, buildProjectStage, claimRewardedAd, weatherPreview, bestWeatherChoice, decideWeather } from '../../src/game/state'
+import { bestChapterBuy, buyChapterArea, buyIlse, openChapters, buildProjectStage, claimRewardedAd, weatherPreview, bestWeatherChoice, decideWeather, chapterAreaRates, chooseArcRule } from '../../src/game/state'
+import { arcOf, bestChoice } from '../../src/game/arcRules'
 import { PROJECTS } from '../../src/game/projects'
 import { MASTERY_BONUS, masteryStars, totalMasteryStars } from '../../src/game/mastery'
 import { SEASON_CARDS } from '../../src/game/seasonCards'
@@ -171,6 +178,15 @@ function playChapters(s: GameState, maxPerChapter = 6): GameState {
     const n = buyIlse(s)
     if (n === s) break
     s = n
+  }
+  // Bogen-Regeln: die beste Wahl je offenem Kapitel 13–49 (ARC=best)
+  if (process.env.ARC === 'best') {
+    for (const id of openChapters(s)) {
+      const def = CHAPTERS.find((d) => d.id === id)!
+      if (!arcOf(def.number)) continue
+      const choice = bestChoice(def, chapterAreaRates(def, s.chapters[id]), OFFLINE_SHARE[simProfile])
+      if (choice && s.bogenWahl[id] !== choice) s = chooseArcRule(s, id, choice)
+    }
   }
   // Großprojekte: jede Stufe, sobald alle Kapitel-Währungen reichen
   if (process.env.PROJECTS !== '0') for (const p of PROJECTS) s = buildProjectStage(s, p.id)
@@ -317,7 +333,9 @@ function spendErbstuecke(s: GameState): GameState {
   return s
 }
 
+let simProfile: Profile = 'regular'
 export function run(profile: Profile, hours: number) {
+  simProfile = profile
   const start = clock
   simStart = clock
   helperDays.length = 0

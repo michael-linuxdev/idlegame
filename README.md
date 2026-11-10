@@ -38,6 +38,7 @@ node scripts/art/shots.mjs <ordner>        # Spielfeld-Screenshots Tag/Abend/Nac
 npm test                                   # Vitest (Format, Balance-Formeln, Gartenjahre, Notizbuch)
 SUMMARY=1 npm run balance -- regular 336   # Balance-Simulator (engaged | regular | casual, Stunden)
 WEATHER=best DECISIONS=1 SUMMARY=1 npm run balance -- regular 8760   # … mit Wetter-Entscheidungen, zählt jede Wahl
+TASKS=1 ARC=best GEN=1 CHAPTERS=1 CHAPTER_MANUAL=0 SUMMARY=1 npm run balance -- regular 43800   # … Tagesziele (Ruhezeit) und Bogen-Regeln
 npm run build && python3 scripts/generate-pwa-icons.py   # App-Icons aus den echten Bausteinen (?artsheet=icon, Pillow)
 npx vite preview --port 4175 & node scripts/store/screenshots.cjs docs/store/screenshots de   # Store-Screenshots
 node scripts/store/screenshots.cjs docs/store/screenshots-en en                              #   … englisch
@@ -61,6 +62,7 @@ node scripts/store/screenshots.cjs docs/store/screenshots-en en                 
 | `src/components/lazy.tsx` | Selten genutzte Fenster/Panels als eigene Bündel (im Leerlauf vorgeladen, offline im Precache) |
 | `src/game/overlays.ts` | Fenster-Regeln: offenes Fenster erkennen, Escape/Zurück schließt das oberste |
 | `src/i18n/` | Texte je Sprache: `de/` (Ausgangssprache), `en/` (nur bei Bedarf geladen); `t`, Spracherkennung und Live-Umschalter (`docs/i18n/technik.md`) |
+| `src/game/today.ts`, `hudPills.ts`, `arcRules.ts`, `state/rest.ts` | Heute-Karte, HUD-Grenze (höchstens 3 Pillen), Bogen-Regeln der Kapitel 13–49, Ruhezeit-Verkürzung (Runde 4) |
 | `docs/cleanup/namen.md` | Namens-Wörterbuch (alte Prototyp-Namen → Spielbegriffe); `src/test/legacyNames.test.ts` verhindert ihre Rückkehr |
 
 ## Rechtliches

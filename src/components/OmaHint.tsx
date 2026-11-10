@@ -4,7 +4,7 @@ import { playSfx } from '../game/sound'
 import { t } from '../i18n'
 
 /** Hints about things in the top HUD (goal strip, pills) sit right under it, with an arrow up. */
-const TOP_HINTS: ReadonlySet<HintId> = new Set<HintId>(['season', 'truhe', 'deep', 'order'])
+const TOP_HINTS: ReadonlySet<HintId> = new Set<HintId>(['season', 'truhe', 'deep', 'order', 'arcI', 'arcII', 'arcIII', 'arcIV'])
 
 /** A small handwritten note from Oma, shown once per new system — next to what it explains. */
 export function OmaHint({ id, onOk }: { id: HintId; onOk: () => void }) {

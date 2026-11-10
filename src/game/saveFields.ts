@@ -4,6 +4,7 @@
  * Werte einen gültigen Startwert. Zusammengesetzt in storage.ts (parseGameState).
  */
 import { ACHIEVEMENT_IDS, type AchievementId } from './achievements'
+import { normalizeChoice, type BogenWahl } from './arcRules'
 import { parseAlbum } from './album'
 import { emptyBranches } from './branches'
 import { CHAPTERS, CHAPTER_CARE_MAX, emptyChapter, type ChaptersState, type ChapterState, type ChapterDef } from './chapters'
@@ -176,6 +177,8 @@ export function parseExpansion(parsed: Record<string, unknown>): ExpansionSlice 
     tieferWinterAt: parseNum(parsed.tieferWinterAt),
     // Runde 4 (Paket 3): ältere Stände → keine Verkürzung, eine laufende Ruhezeit bleibt gleich lang
     ruhezeitVerkuerzung: parseRestCut(parsed.ruhezeitVerkuerzung),
+    // Runde 4 (Paket 4): ältere Stände → keine Wahl, jedes Kapitel trägt wie vorher
+    bogenWahl: parseBogenWahl(parsed.bogenWahl),
     abschlussSeen: parsed.abschlussSeen === true,
     milestoneRecord: parseNumRecord(parsed.milestoneRecord),
     lastChest: null,
@@ -330,4 +333,15 @@ export function parseRestCut(raw: unknown): RestCut {
   const ms = typeof raw.ms === 'number' && Number.isFinite(raw.ms) ? Math.min(REST_CUT.capMs, Math.max(0, raw.ms)) : 0
   const day = typeof raw.day === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(raw.day) ? raw.day : ''
   return { ms, day }
+}
+
+/** Bogen-Regeln: nur gültige Wahlen bekannter Kapitel 13–49, sonst keine Wahl. */
+export function parseBogenWahl(raw: unknown): BogenWahl {
+  if (!isRecord(raw)) return {}
+  const out: BogenWahl = {}
+  for (const def of CHAPTERS) {
+    const v = normalizeChoice(def, raw[def.id])
+    if (v) out[def.id] = v
+  }
+  return out
 }

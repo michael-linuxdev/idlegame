@@ -17,6 +17,7 @@
  * 11. Sprache: Browser en-US startet englisch, Umschalter wechselt live (ohne Neuladen),
  *     die Wahl übersteht das Neuladen, ?lang= hat Vorrang
  * 12. Deko und Saatgut kreuzen öffnen auch aus Markt und Saison
+ * 16. Bogen-Regeln der Kapitel 13–49: je Bogen Hinweis, Wahl, Wirkung, gespeichert (?kapitel=13,20,30,40)
  * 15. Ruhezeit: Restzeit und verdiente Verkürzung im Saison-Panel
  * 14. Automatische Sicherung: Spielstand löschen → Angebot → Wiederherstellen (Gartenjahr, Währungen, Kapitel)
  * Alle anderen Abschnitte laufen mit Browser-Sprache de-DE.
@@ -738,6 +739,68 @@ try {
     assert(['67 h', '66 h 59', '66 h 58'].some((c) => text.includes(T.longLoop.restLeft(c))), `rest panel: time left (${text})`)
     await panel.scrollIntoViewIfNeeded()
     await p.screenshot({ path: `e2e-screens/ruhezeit-${LANG}.png` })
+    await ctx.close()
+  }
+
+  // 16 — Bogen-Regeln (Runde 4, Paket 4): je Bogen ein Kapitel über ?kapitel=, Hinweis bei offener Wahl,
+  //      Wahl treffen, Wirkung in der Pille, Screenshot; die Wahl übersteht das Neuladen
+  {
+    const ARC_CHAPTERS = [
+      [13, 'stadtgarten', 'I', ['hochbeete', 'palettenbeete', 'regenspeicher', 'wurmkiste', 'kraeuterleiter', 'saatgutbibliothek', 'lastenrad', 'lehmofen', 'werkstatt', 'hoffest']],
+      [20, 'cottagegarten', 'II', ['stockrosen', 'wickenzaun', 'gemueseparzelle', 'steinmauer', 'apfelspalier', 'holzgewaechshaus', 'teeplatz', 'geissblattlaube', 'gartenschuppen', 'dorfschau']],
+      [30, 'andenkartoffeln', 'III', ['andenes', 'sortenbeet', 'quinoafeld', 'chunoplatz', 'lehmspeicher', 'alpakaweide', 'bergkanal', 'webstube', 'kartoffelpark', 'kartoffelfest']],
+      [40, 'dachgarten', 'IV', ['dachbeete', 'bienendach', 'dachkuppel', 'dachtank', 'solarpergola', 'kraeuterbalkon', 'lastenaufzug', 'dachcafe', 'saatgutschrank', 'abendrotfest']],
+    ]
+    const ctx = await browser.newContext({ ...devices['iPhone 13'], reducedMotion: 'reduce' })
+    await ctx.addInitScript((list) => {
+      if (sessionStorage.getItem('seed')) return
+      const chapters = {}
+      for (const [, id, , areas] of list) {
+        chapters[id] = { cur: 1e6, curLifetime: 1e7, openedAt: 1, introSeen: true, owned: Object.fromEntries(areas.map((a, i) => [a, i < 6 ? 30 - i * 3 : 0])), care: {} }
+      }
+      localStorage.setItem('gartenerbe-spielstand-v1', JSON.stringify({ owned: { gemuesebeet: 20 }, ernte: 1e4, generation: 30, tiefeWinter: 40, lastSeen: Date.now(), saveVersion: 1, chapters }))
+      localStorage.setItem('gartenerbe-ftue-v1', JSON.stringify({ beat: 'done', dismissed: true, completed: [], startedAt: 1 }))
+      localStorage.setItem('gartenerbe-install-v1', JSON.stringify({ dismissed: true, installed: false, shown: true }))
+      localStorage.setItem('gartenerbe-hints-v1', JSON.stringify(['season', 'truhe', 'deep', 'visitor', 'order', 'variety', 'weekly', 'recipeNew', 'festNew', 'weatherNew', 'clanNew', 'crossNew', 'helperAreas']))
+      sessionStorage.setItem('seed', '1')
+    }, ARC_CHAPTERS)
+    const p = await ctx.newPage()
+    p.on('pageerror', (e) => errors.push(e.message))
+    await p.goto(URL + '?kapitel=13,20,30,40')
+    await p.locator('.garden-map').waitFor()
+    for (const [n, id, arc] of ARC_CHAPTERS) {
+      await p.getByRole('button', { name: T.plots.aria }).click()
+      await p.getByRole('button', { name: T.chapterUi.chapter(n) }).click()
+      await p.locator(`.chapter-${id} .garden-ground`).waitFor()
+      const pill = p.locator('.pill-arc')
+      await pill.waitFor()
+      assert((await pill.innerText()).includes(T.arcRules.open), `${id}: choice open in the pill`)
+      // Omas Hinweis bei offener Wahl (einmal je Bogen)
+      const hint = p.locator('.oma-hint')
+      await hint.waitFor()
+      assert((await hint.innerText()).includes(T.hints[`arc${arc}`]), `${id}: Oma's hint for arc ${arc}`)
+      await hint.locator('.oma-hint-ok').click()
+      await pill.click()
+      await p.locator('.arc-sheet').waitFor()
+      assert((await p.locator('.arc-now').innerText()) === T.arcRules.neutral, `${id}: neutral start`)
+      if (arc === 'I') await p.locator('.arc-option').nth(3).click()
+      if (arc === 'II') await p.locator('.arc-option').nth(1).click()
+      if (arc === 'III') {
+        await p.locator('.arc-water li').first().locator('.btn').last().click()
+        await p.locator('.arc-water li').first().locator('.btn').last().click()
+      }
+      if (arc === 'IV') await p.locator('.arc-option').nth(2).click()
+      await p.waitForTimeout(300)
+      assert((await p.locator('.arc-now').innerText()) !== T.arcRules.neutral, `${id}: choice shows its effect`)
+      await p.screenshot({ path: `e2e-screens/bogen-${arc}-${LANG}.png` })
+      await p.keyboard.press('Escape')
+      assert(!(await pill.innerText()).includes(T.arcRules.open), `${id}: pill shows the choice`)
+    }
+    // Gespeichert: nach dem Neuladen ist die Wahl noch da (Spielstand speichert alle 4 s und beim Verlassen)
+    await p.waitForTimeout(4500)
+    const saved = await p.evaluate(() => JSON.parse(localStorage.getItem('gartenerbe-spielstand-v1') || '{}').bogenWahl)
+    assert(saved && Object.keys(saved).length === 4, `four choices saved (${JSON.stringify(saved)})`)
+    assert(saved.cottagegarten === 'ertrag' && saved.dachgarten === 'morgen' && saved.andenkartoffeln.startsWith('2,'), `choices as picked (${JSON.stringify(saved)})`)
     await ctx.close()
   }
 

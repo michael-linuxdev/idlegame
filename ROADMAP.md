@@ -1,6 +1,6 @@
 # Gartenerbe — Roadmap & Produktvermerke
 
-Stand: 2026-11-09 (Kapitel 13–50 „Omas Saatgutdose“ fertig).
+Stand: 2026-11-10 (Runde 4: Sichern, Bündeln, Belohnen, Unterscheiden).
 
 ## Produkt
 
@@ -71,6 +71,17 @@ Werkzeug: `npm run balance -- <engaged|regular|casual> <stunden>` — spielt die
 
   Ohne `TASKS` (Standard, `tempo.test.ts`) rechnet der Simulator wie vorher.
 
+  Paket 4 (Bogen-Regeln, `ARC=best` gegen `ARC=none`, beide mit `TASKS=1`):
+
+  | Messung | keine Wahl | beste Wahl | Abweichung |
+  |---|---|---|---|
+  | Regular 5 Jahre | K13 295, K20 480, K30 810, K40 1218, K50 1702, Abstand Ø 38,0 | K13 295, K20 483, K30 813, K40 1223, K50 1707, Abstand Ø 38,2 | ≤ 0,6 % |
+  | Dauerspieler 1 Jahr | K13 266, K17 353, Abstand 21–24 | K13 266, K17 354, Abstand 21–24 | ≤ 0,3 % |
+  | Casual 2 Jahre | K13 372, Tag 730: K23 | K13 372, Tag 730: K23 | 0 |
+  | Garten-Bonus der Kapitel (Regular, 5 J.) | ×301,9 | ×302,7 | +0,3 % (nur über mehr Stufen) |
+
+  „Keine Wahl“ ist Tag für Tag identisch mit dem Lauf nach Paket 3 (neutraler Start). Korridor hält.
+
 ## Prinzipien
 
 - DE-UI (Ausgangssprache), EN gleichwertig; Bau-Karte; echtes Idle; keine Energy-Walls; helle, lesbare UI.
@@ -138,6 +149,12 @@ Werkzeug: `npm run balance -- <engaged|regular|casual> <stunden>` — spielt die
     - **Alles übersetzt:** Oberfläche, Systeme, alle Briefe (Oma, Jonas, Ilse, Kapitel 2–12), 120 Bereiche, Sorten, Bewohner, Feste mit Erklärung, Datenschutz; Begriffe und Titel im Glossar `docs/i18n/glossar.md`. Zahlen `K/M/B/T` vs. `Tsd/Mio/Mrd`, Mehrzahl über `Intl.PluralRules`.
     - **Prüfungen:** gleicher Typ `Strings` für beide Sprachen, gleiche Schlüsselbäume, keine Texte im Code, keine eingefrorenen Texte beim Import (statisch + Pseudo-Sprache), E2E komplett auch auf Englisch, axe 0 Verstöße (WCAG 2.0/2.1 A/AA, beide Sprachen), Fenster-Durchsicht ohne abgeschnittene Texte (`npm run screens -- en`).
     - **Store:** `docs/store/listing.en.md`, englische Screenshots und Feature-Grafik. Offen: Markenrecherche „Heirloom Garden“.
+15h. ✅ **Runde 4 „Sichern, Bündeln, Belohnen, Unterscheiden“ (2026-11-10, Prompt `docs/prompts/runde-4.md`):**
+    - **Automatische Sicherung:** IndexedDB je Tag und vor Tiefem Winter, Generation, Einspielen und Wiederherstellen (7 + 3, Budget 6 Mio Zeichen), Angebot beim Start vor einem neuen Garten, Liste im Menü, Omas Hinweis zur Sicherung außerhalb des Geräts; Schnittstelle für weitere Ziele (`docs/sicherung.md`).
+    - **Heute-Karte und HUD-Grenze:** Gartenrunde, Tagesrezept, Tagesziele und Wochenplan an einer Stelle; höchstens drei Ereignis-Pillen, was abläuft zuerst; Entscheidungen mit Zahlen für diesen Garten; Hitzewelle +20 % → +16 %; Inventur `docs/systeme-inventur.md`.
+    - **Ruhezeit:** erledigte Tage verkürzen die Ruhezeit nach dem Tiefen Winter (−4 h je Tag, höchstens −12 h).
+    - **Bogen-Regeln:** Patenbeet, Tauschpost, Wasser verteilen, Plan für morgen (`docs/kapitel/bogen-regeln.md`).
+    - **Offen:** Sturm/Spätfrost und Saison-Karten sind laut Simulator keine echten Entscheidungen (eine Seite gewinnt fast immer) — braucht eine Regeländerung, Entscheidung des Nutzers; Cloud-Sicherung (iCloud/Play Games/Backend) braucht Store-Hülle bzw. Konto; Werte der Bogen-Regeln mit echten Ständen nachprüfen.
 16. Multiplayer-Architektur (Kleingartenverein mit echtem Backend; Kürbis-Runde umstellen).
 17. Store-IAP, Impressum-Daten, Namensprüfung „Gartenerbe“ und „Heirloom Garden“, Store-Assets, Soft-Launch. Vor Launch: `STORE_ENABLED` prüfen (Platzhalter) **und `DISTRIBUTION = 'store'`** in `src/game/distribution.ts` (schaltet den Installations-Hinweis der Web-Fassung ab; ein Test erzwingt das, sobald eine Store-Hülle im Repo liegt).
 

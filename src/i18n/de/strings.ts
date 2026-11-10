@@ -14,6 +14,7 @@ import { manifestStrings } from './manifest'
 import { expansionStrings } from './stringsExpansion'
 import { lifeStrings } from './stringsLife'
 import { uxStrings } from './stringsUx'
+import { arcStrings } from './stringsArcs'
 
 const SOFT = 'Ernte'
 const SEEDS = 'Samen'
@@ -1225,6 +1226,10 @@ export const strings = {
     weatherNew: 'Neu: das Wetter. Es ändert die Ernte ein wenig, und manchmal fragt der Himmel, was du tun willst — oben siehst du auch morgen.',
     crossNew: 'Neu: Saatgut kreuzen (Menü → Kreuzen). Zwei Sorten aus dem Pflanzenbuch ergeben in 4 Stunden etwas Neues — leg gleich eine an, dann wartet bei deiner Rückkehr eine Überraschung.',
     clanNew: 'Neu: der Kleingartenverein. Im Menü unter „Verein“ wiegst du jede Woche deinen größten Kürbis gegen die Nachbarn.',
+    arcI: 'Neu in diesem Bogen: ein Patenbeet. Oben unter „Patenbeet“ wählst du einen Bereich — seine Nachbarn tragen dann mehr. Ilse entscheidet das nicht für dich.',
+    arcII: 'Neu in diesem Bogen: die Tauschpost. Oben unter „Tauschpost“ wählst du einen Weg für dieses Kapitel. Ilse entscheidet das nicht für dich.',
+    arcIII: 'Neu in diesem Bogen: Wasser verteilen. Oben unter „Wasser“ gibst du den Bereichen Wasserpunkte. Ilse entscheidet das nicht für dich.',
+    arcIV: 'Neu in diesem Bogen: ein Plan für morgen. Oben unter „Plan“ wählst du, ob das Kapitel jetzt oder während du weg bist mehr trägt. Ilse entscheidet das nicht für dich.',
     helperAreas: 'Jonas hilft jetzt mit. Du bestimmst, was er ausbauen darf: Unter „Saison“ → Gartenhelfer → „Was Jonas ausbauen darf“ kannst du einzelne Bereiche sperren und wieder freigeben.',
   },
 
@@ -1372,6 +1377,7 @@ export const strings = {
   ...expansionStrings,
   ...lifeStrings,
   ux: uxStrings,
+  arcRules: arcStrings,
   careNames,
 } as const
 

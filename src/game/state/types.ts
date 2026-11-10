@@ -1,5 +1,6 @@
 /** Spielkern — Spielstand-Typ, Konstanten und Erweiterungs-Ausschnitt. Öffentlich über src/game/state.ts. */
 import type { AchievementId } from '../achievements'
+import type { BogenWahl } from '../arcRules'
 import { type AlbumState, emptyAlbum } from '../album'
 import type { BranchRanks } from '../branches'
 import type { ChallengeId } from '../challenges'
@@ -208,6 +209,8 @@ export interface GameState {
   tieferWinterAt: number
   /** Verdiente Verkürzung der laufenden Ruhezeit (Runde 4, longLoop.creditRestDay); beim Tiefen Winter wieder 0 */
   ruhezeitVerkuerzung: RestCut
+  /** Bogen-Regeln der Kapitel 13–49 (Runde 4, game/arcRules.ts): Wahl je Kapitel; fehlt = keine Wahl (neutral) */
+  bogenWahl: BogenWahl
   /** Abschluss-Szene von Kapitel 50 (Omas Schrebergarten) gesehen — einmalig, übersteht jeden Reset */
   abschlussSeen: boolean
   /** Best Meilenstein count per area (lifetime) — new record opens a Truhe */
@@ -297,6 +300,7 @@ export interface ExpansionSlice {
   weinleseAt: number
   tieferWinterAt: number
   ruhezeitVerkuerzung: RestCut
+  bogenWahl: BogenWahl
   abschlussSeen: boolean
   milestoneRecord: Record<string, number>
   lastChest: ChestReward | null
@@ -342,6 +346,7 @@ export function emptyExpansion(now = Date.now()): ExpansionSlice {
     weinleseAt: 0,
     tieferWinterAt: 0,
     ruhezeitVerkuerzung: { ...EMPTY_REST_CUT },
+    bogenWahl: {},
     abschlussSeen: false,
     milestoneRecord: {},
     lastChest: null,
@@ -389,6 +394,7 @@ export function pickExpansion(s: GameState): ExpansionSlice {
     weinleseAt: s.weinleseAt,
     tieferWinterAt: s.tieferWinterAt,
     ruhezeitVerkuerzung: s.ruhezeitVerkuerzung,
+    bogenWahl: s.bogenWahl,
     abschlussSeen: s.abschlussSeen,
     milestoneRecord: { ...s.milestoneRecord },
     lastChest: null,

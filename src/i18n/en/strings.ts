@@ -15,6 +15,7 @@ import { manifestStrings } from './manifest'
 import { expansionStrings } from './stringsExpansion'
 import { lifeStrings } from './stringsLife'
 import { uxStrings } from './stringsUx'
+import { arcStrings } from './stringsArcs'
 
 const SOFT = 'harvest'
 const SEEDS = 'seeds'
@@ -1229,6 +1230,10 @@ export const strings: Strings = {
     weatherNew: 'New: the weather. It changes your harvest a little, and sometimes the sky asks what you’d like to do — you can see tomorrow at the top, too.',
     crossNew: 'New: Cross Seeds (Menu → Cross). Two varieties from the Plant Book make something new in 4 hours — start one now and a surprise will be waiting when you’re back.',
     clanNew: 'New: the Allotment Club. In the menu under “Club”, you weigh your biggest pumpkin against the neighbors every week.',
+    arcI: 'New in this arc: a sponsor bed. Up top under “Sponsor bed” you pick an area — its neighbors then yield more. Ilse won’t decide this for you.',
+    arcII: 'New in this arc: the seed post. Up top under “Seed post” you pick a way for this chapter. Ilse won’t decide this for you.',
+    arcIII: 'New in this arc: sharing the water. Up top under “Water” you give the areas water points. Ilse won’t decide this for you.',
+    arcIV: 'New in this arc: a plan for tomorrow. Up top under “Plan” you choose whether the chapter yields more now or while you’re away. Ilse won’t decide this for you.',
     helperAreas: 'Jonas is helping now. You decide what he may upgrade: under “Season” → Garden Helper → “What Jonas may upgrade” you can lock and unlock single areas.',
   },
 
@@ -1376,5 +1381,6 @@ export const strings: Strings = {
   ...expansionStrings,
   ...lifeStrings,
   ux: uxStrings,
+  arcRules: arcStrings,
   careNames,
 }

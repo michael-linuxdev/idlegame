@@ -103,6 +103,11 @@ try {
     await p.locator('.map-side .plot-switch').first().click()
     await p.locator('.chapter-stadtgarten .garden-plot.planted').first().waitFor()
     n += await audit(p, `${lang} kapitel-karte`)
+    // Bogen-Regel (Runde 4): Fenster „Patenbeet“
+    await p.locator('.pill-arc').click()
+    await p.locator('.arc-sheet').waitFor()
+    n += await audit(p, `${lang} bogen-regel`)
+    await p.keyboard.press('Escape')
     // Mit allen Schildern (Einstellung „Schilder immer zeigen“) statt Plaketten
     await p.evaluate(() => {
       localStorage.setItem('gartenerbe-pref-signs', '1')
