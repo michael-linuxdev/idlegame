@@ -12,8 +12,8 @@ type GameApi = ReturnType<typeof useGame>
 type Plot = 'garden' | ChapterId
 
 /**
- * Map-side plot switching: direct round buttons while ≤ 2 other plots are
- * open, one „Grundstücke“ button with a picker sheet beyond that.
+ * Garten wechseln: ein Karten-Knopf unten rechts, sobald es einen zweiten Garten gibt.
+ * Ein anderer Garten → direkter Wechsel; mehrere → Liste (PlotSheet).
  */
 export function PlotButtons({ game, current, onGo }: { game: GameApi; current: Plot; onGo: (p: Plot) => void }) {
   const [open, setOpen] = useState(false)
@@ -42,35 +42,21 @@ export function PlotButtons({ game, current, onGo }: { game: GameApi; current: P
     document.body,
   ) : null
   if (others.length === 0) return null
-  if (others.length <= 2) {
-    return (
-      <>
-        {sheet}
-        {others.map((p) => {
-          if (p === 'garden') {
-            return (
-              <button key="garden" type="button" className="map-side-btn plot-switch back" onClick={() => onGo('garden')} aria-label={labelWithChip(t.chapterUi.chipGarden, t.chapterUi.toGarden)}>
-                <IconSprout />
-                <span className="map-side-label">{t.chapterUi.chipGarden}</span>
-              </button>
-            )
-          }
-          const c = chapterCopy(p)
-          return (
-            <button key={p} type="button" className="map-side-btn plot-switch" onClick={() => onGo(p)} aria-label={labelWithChip(c.chip, c.to)}>
-              {c.icon}
-              <span className="map-side-label">{c.chip}</span>
-            </button>
-          )
-        })}
-      </>
-    )
-  }
+  // Ein Knopf ab dem zweiten Garten: bei genau einem anderen Garten wechselt er direkt,
+  // sonst öffnet er die Liste (Playtest 2026-11-10: einzelne Knöpfe verdeckten Schilder)
+  const single = others.length === 1 ? others[0]! : null
+  const chip = single ? (single === 'garden' ? t.chapterUi.chipGarden : chapterCopy(single).chip) : t.plots.button
+  const aria = single ? (single === 'garden' ? t.chapterUi.toGarden : chapterCopy(single).to) : t.plots.aria
   return (
     <>
-      <button type="button" className="map-side-btn plot-switch" onClick={() => setOpen(true)} aria-label={labelWithChip(t.plots.button, t.plots.aria)}>
+      <button
+        type="button"
+        className={`map-side-btn plot-switch${single === 'garden' ? ' back' : ''}`}
+        onClick={() => (single ? onGo(single) : setOpen(true))}
+        aria-label={labelWithChip(chip, aria)}
+      >
         <IconMap />
-        <span className="map-side-label">{t.plots.button}</span>
+        <span className="map-side-label">{chip}</span>
       </button>
       {sheet}
     </>

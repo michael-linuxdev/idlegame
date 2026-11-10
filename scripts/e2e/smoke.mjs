@@ -160,17 +160,21 @@ try {
     await p.locator('.pill-fest').click()
     await p.getByText(T.fest.names.advent).first().waitFor()
     await p.locator('.fest-sheet .upgrade-hud-close').click()
-    await p.getByRole('button', { name: T.orchard.toOrchard }).click()
+    // Kapitel 2 und 3 offen: der Karten-Knopf unten rechts öffnet die Liste
+    await p.getByRole('button', { name: T.plots.aria }).click()
+    await p.getByRole('button', { name: T.chapterUi.chapter(2) }).click()
     await p.locator('.orchard-intro .btn').click()
     await p.locator('.orchard-home').waitFor()
-    await p.getByRole('button', { name: T.chapters.weinberg.to }).click()
+    await p.getByRole('button', { name: T.plots.aria }).click()
+    await p.getByRole('button', { name: T.chapterUi.chapter(3) }).click()
     await p.locator('.orchard-intro .btn').click()
     await p.locator('.chapter-weinberg').waitFor()
     await p.locator('.pill-weinlese').click()
     await p.getByRole('button', { name: T.weinlese.start }).click()
     await p.waitForTimeout(19_500)
     await p.getByRole('button', { name: T.weinlese.done, exact: true }).click()
-    await p.locator('.plot-switch.back').click()
+    await p.getByRole('button', { name: T.plots.aria }).click()
+    await p.locator('.plot-sheet .plot-row').first().click()
     await p.locator('.tabbar .tab-prestige').click()
     await p.getByRole('button', { name: new RegExp(esc(T.helper.hire('').replace(/ ·.*$/, ''))) }).click()
     await p.getByText(T.helper.rank(1, 5)).waitFor()
@@ -245,7 +249,7 @@ try {
     })
     const p = await ctx.newPage()
     p.on('pageerror', (e) => errors.push(e.message))
-    // Nur Kapitel 50 ist offen: der Knopf an der Seite führt direkt hin
+    // Nur Kapitel 50 ist offen: der Karten-Knopf führt direkt hin
     const openChapter50 = async () => {
       if (!(await p.locator('.chapter-omasgarten').count())) await p.getByRole('button', { name: T.chapters.omasgarten.to }).click()
       await p.locator('.chapter-omasgarten .garden-ground').waitFor()

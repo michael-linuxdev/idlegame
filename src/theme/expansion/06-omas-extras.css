@@ -13,7 +13,8 @@
 /* Speech bubbles for Jonas / Ilse */
 .speech-bubble {
   position: absolute;
-  z-index: 45;
+  /* über allen Bereichen (deren z-index folgt der Höhe auf der Karte, bis ~100) */
+  z-index: 120;
   left: 50%;
   top: 30%;
   max-width: 11rem;

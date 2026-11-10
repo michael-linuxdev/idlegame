@@ -645,11 +645,14 @@ export function GardenMap({
         />
       ) : null}
 
-      {state.helperLevel > 0 || game.openChapters.length > 0 ? (
+      {onGoPlot && game.openChapters.length > 0 ? (
+        <div className="map-side map-side--right">
+          <PlotButtons game={game} current="garden" onGo={onGoPlot} />
+        </div>
+      ) : null}
+      {state.helperLevel > 0 ? (
         <div className="map-side">
-          {onGoPlot ? <PlotButtons game={game} current="garden" onGo={onGoPlot} /> : null}
-          {state.helperLevel > 0 ? (
-            <button
+          <button
               type="button"
               className={`map-side-btn helper-chip${state.helperOn ? ' on' : ''}`}
               onClick={game.switchHelper}
@@ -659,7 +662,6 @@ export function GardenMap({
               <IconHelper />
               <span className="map-side-label">{state.helperOn ? t.ux.map.helperOn : t.ux.map.helperOff}</span>
             </button>
-          ) : null}
         </div>
       ) : null}
 
