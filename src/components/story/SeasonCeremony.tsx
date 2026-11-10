@@ -17,7 +17,7 @@ export interface SeasonEnd {
   /** Generation handed down (number of the new generation) */
   generation?: number
   /** Saison-Karte des Jahres, das gerade endet: was sie mit diesem Garten gebracht hat */
-  card?: { id: SeasonCardId; preview: number; offline?: number }
+  card?: { id: SeasonCardId; preview: number; offline?: number; saving?: number }
 }
 
 interface Props {
@@ -114,7 +114,9 @@ export function SeasonCeremony({ event, onDone, onSpin }: Props) {
           {corner ? <p className="season-corner">{t.season.newCorner(corner.name)}</p> : null}
           {event.card ? (
             <p className="season-corner season-card-result">
-              {event.card.offline
+              {event.card.saving != null
+                ? t.seasonCards.resultAusbau(t.seasonCards.cards[event.card.id].name, Math.round(event.card.saving * 100))
+                : event.card.offline
                 ? t.seasonCards.resultAway(
                     t.seasonCards.cards[event.card.id].name,
                     Math.round((event.card.preview - 1) * 100),

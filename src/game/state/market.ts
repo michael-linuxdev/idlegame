@@ -306,7 +306,8 @@ export function abortChallenge(state: GameState): GameState {
 export function pickSeasonCard(state: GameState, id: SeasonCardId | null): GameState {
   if (state.seasonCardOffer.length === 0) return state
   if (id && !state.seasonCardOffer.some((o) => o.id === id)) return state
-  return { ...state, seasonCard: id, seasonCardOffer: [] }
+  const offer = id ? state.seasonCardOffer.find((o) => o.id === id) : undefined
+  return { ...state, seasonCard: id, seasonCardAusbau: offer?.ausbau === true, seasonCardOffer: [] }
 }
 
 /** Eine neue Sitzung beginnt erst nach dieser Pause (Neuladen zählt nicht). */

@@ -3,6 +3,7 @@ import { ACHIEVEMENTS, type AchievementId, isAchievementComplete } from '../achi
 import { BRANCH_MAX_RANK, type BranchKind, branchCost, capacityCostMult } from '../branches'
 import { challengeAllowsBuy } from '../challenges'
 import { saatgutkisteMult } from '../truhe'
+import { cardCostMult } from '../seasonCards'
 import { CONTEST_KG } from '../extrasCore'
 import { FEST_EARN } from '../fests'
 import { rollVarietyOnUpgrade } from '../gardenLife'
@@ -31,7 +32,9 @@ export function lineCostMult(state: GameState, id: GeneratorId): number {
   return (
     saatgutkisteMult(state.truhe) *
     capacityCostMult(branch?.capacity ?? 0) *
-    legacyCostMult(state.legacy)
+    legacyCostMult(state.legacy) *
+    // Saison-Karte nach der Ausbau-Regel (Runde 4)
+    cardCostMult(state.seasonCard, id, state.seasonCardAusbau)
   )
 }
 

@@ -93,6 +93,15 @@ Werkzeug: `npm run balance -- <engaged|regular|casual> <stunden>` — spielt die
 
   Wahl „riskieren“ zusammen über alle Profile: Sturm 36 %, Spätfrost 54 %, Hitzewelle 34 % (vorher 0 / 0 / 100 %). Saison-Karten „Faktor nach Anteil“ gemessen und weggelassen (`docs/systeme-inventur.md`).
 
+  Saison-Karten „Ausbau statt Ertrag“ (Nutzerentscheid): Bereichs-Themen −40 % Ausbaukosten im eigenen, +25 % im Gegenspieler-Bereich; Fleißiges Jahr offline −40 % → −10 %. „Beste Wahl“ (mit Abwesenheit): alle häufig angebotenen Karten 21–52 % (vorher Hofladenjahr 93–99 %, Ruhiges Jahr 0 %).
+
+  | Messung | vorher | nachher |
+  |---|---|---|
+  | 14 Tage Saisons (D/R/C) | 120 / 67 / 29 | 114 / 63 / 28 (−5 / −6 / −3 %: Bereichs-Themen tragen etwas weniger als die alten ×1,8/×2) |
+  | Regular 5 Jahre (`TASKS=1`) | K13 295, K50 1702, Ø 38,0 Tage | K13 293, K50 1699, Ø 38,0 Tage |
+  | Dauerspieler 1 Jahr | K13 266, 21–24 Tage | K13 269, 21–24 Tage |
+  | Casual 2 Jahre | Tag 730: K23 | Tag 730: K23 |
+
 ## Prinzipien
 
 - DE-UI (Ausgangssprache), EN gleichwertig; Bau-Karte; echtes Idle; keine Energy-Walls; helle, lesbare UI.
@@ -166,7 +175,8 @@ Werkzeug: `npm run balance -- <engaged|regular|casual> <stunden>` — spielt die
     - **Ruhezeit:** erledigte Tage verkürzen die Ruhezeit nach dem Tiefen Winter (−4 h je Tag, höchstens −12 h).
     - **Bogen-Regeln:** Patenbeet, Tauschpost, Wasser verteilen, Plan für morgen (`docs/kapitel/bogen-regeln.md`).
     - **Paket 5 (Nutzerentscheid):** Sturm — „Sichern“ kostet −8 % für 2 h, die Beerenhecke senkt die Schadens-Chance (50 % → 20 %); Spätfrost — Glas (Gewächshaus, Orangerie) hält 69 % des Schadens ab. Beide sind jetzt echte Entscheidungen. Saison-Karten „Faktor nach Anteil“ umgesetzt, gemessen, **weggelassen** (Hofladenjahr blieb bei ~90 %, kleine Bereiche bei ~0 %).
-    - **Offen:** Saison-Karten brauchen eine andere Idee als feste oder anteilige Faktoren (Vorschläge in `docs/systeme-inventur.md`), Entscheidung des Nutzers; Cloud-Sicherung (iCloud/Play Games/Backend) braucht Store-Hülle bzw. Konto; Werte der Bogen-Regeln mit echten Ständen nachprüfen.
+    - **Saison-Karten „Ausbau statt Ertrag“** (Nutzerentscheid): Bereichs-Themen verbilligen den Ausbau ihres Bereichs und verteuern den Gegenspieler; laufende alte Karten wirken weiter wie vorher (Feld `seasonCardAusbau`).
+    - **Offen:** Cloud-Sicherung (iCloud/Play Games/Backend) braucht Store-Hülle bzw. Konto; Werte der Bogen-Regeln mit echten Ständen nachprüfen.
 16. Multiplayer-Architektur (Kleingartenverein mit echtem Backend; Kürbis-Runde umstellen).
 17. Store-IAP, Impressum-Daten, Namensprüfung „Gartenerbe“ und „Heirloom Garden“, Store-Assets, Soft-Launch. Vor Launch: `STORE_ENABLED` prüfen (Platzhalter) **und `DISTRIBUTION = 'store'`** in `src/game/distribution.ts` (schaltet den Installations-Hinweis der Web-Fassung ab; ein Test erzwingt das, sobald eine Store-Hülle im Repo liegt).
 

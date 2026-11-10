@@ -3,6 +3,7 @@ import { playSfx } from '../game/sound'
 import { seasonCardDef, type SeasonCardId } from '../game/seasonCards'
 import type { useGame } from '../game/useGame'
 import { t } from '../i18n'
+import { cardEffectText } from './cardEffect'
 
 type GameApi = ReturnType<typeof useGame>
 
@@ -29,6 +30,7 @@ export function SeasonCardPicker({ game }: { game: GameApi }) {
           {t.seasonCards.title}
         </h2>
         <p className="notebook-intro">{t.seasonCards.intro}</p>
+        <p className="notebook-intro">{t.seasonCards.ausbauRule}</p>
         <ul className="season-card-list">
           {offer.map((o) => {
             const def = seasonCardDef(o.id)
@@ -38,9 +40,11 @@ export function SeasonCardPicker({ game }: { game: GameApi }) {
               <li key={o.id}>
                 <button type="button" className="season-card" onClick={() => pick(o.id)}>
                   <span className="season-card-name">{copy.name}</span>
-                  <span className="season-card-effect">{copy.effect}</span>
+                  <span className="season-card-effect">{cardEffectText(o.id, o.ausbau)}</span>
                   <span className={`season-card-preview${o.preview >= 1 ? ' up' : ' down'}`}>
-                    {def.offline
+                    {o.ausbau
+                      ? t.seasonCards.previewAusbau(Math.round((1 - 1 / o.preview) * 100))
+                      : def.offline
                       ? t.seasonCards.previewAway(Math.round((o.preview - 1) * 100), Math.round((o.preview * def.offline - 1) * 100))
                       : previewText(o.preview)}
                   </span>

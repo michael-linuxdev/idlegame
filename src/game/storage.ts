@@ -286,11 +286,17 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
     sessions,
     // Saison-Karten (2026-11-09; ältere Stände: keine Karte, kein Angebot)
     seasonCard: seasonCardDef(parsed.seasonCard as string)?.id ?? null,
+    // Runde 4: ältere Stände → false = die laufende Karte wirkt wie vorher (Ertrag)
+    seasonCardAusbau: parsed.seasonCardAusbau === true,
     seasonCardOffer: Array.isArray(parsed.seasonCardOffer)
       ? (parsed.seasonCardOffer as unknown[])
-          .filter((o): o is { id: string; preview: number } => isRecord(o) && typeof o.id === 'string')
-          .map((o) => ({ id: seasonCardDef(o.id)?.id, preview: typeof o.preview === 'number' && Number.isFinite(o.preview) ? o.preview : 1 }))
-          .filter((o): o is { id: SeasonCardId; preview: number } => o.id != null)
+          .filter((o): o is { id: string; preview: number; ausbau?: boolean } => isRecord(o) && typeof o.id === 'string')
+          .map((o) => ({
+            id: seasonCardDef(o.id)?.id,
+            preview: typeof o.preview === 'number' && Number.isFinite(o.preview) ? o.preview : 1,
+            ...(o.ausbau === true ? { ausbau: true } : {}),
+          }))
+          .filter((o): o is { id: SeasonCardId; preview: number; ausbau?: boolean } => o.id != null)
           .slice(0, 3)
       : [],
     lastSeasonCard: typeof parsed.lastSeasonCard === 'string' ? parsed.lastSeasonCard.slice(0, 32) : '',

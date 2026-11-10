@@ -17,6 +17,7 @@
  * 11. Sprache: Browser en-US startet englisch, Umschalter wechselt live (ohne Neuladen),
  *     die Wahl übersteht das Neuladen, ?lang= hat Vorrang
  * 12. Deko und Saatgut kreuzen öffnen auch aus Markt und Saison
+ * 17. Saison-Karten „Ausbau statt Ertrag“: Angebot mit Ersparnis, Wahl
  * 16. Bogen-Regeln der Kapitel 13–49: je Bogen Hinweis, Wahl, Wirkung, gespeichert (?kapitel=13,20,30,40)
  * 15. Ruhezeit: Restzeit und verdiente Verkürzung im Saison-Panel
  * 14. Automatische Sicherung: Spielstand löschen → Angebot → Wiederherstellen (Gartenjahr, Währungen, Kapitel)
@@ -801,6 +802,45 @@ try {
     const saved = await p.evaluate(() => JSON.parse(localStorage.getItem('gartenerbe-spielstand-v1') || '{}').bogenWahl)
     assert(saved && Object.keys(saved).length === 4, `four choices saved (${JSON.stringify(saved)})`)
     assert(saved.cottagegarten === 'ertrag' && saved.dachgarten === 'morgen' && saved.andenkartoffeln.startsWith('2,'), `choices as picked (${JSON.stringify(saved)})`)
+    await ctx.close()
+  }
+
+  // 17 — Saison-Karten „Ausbau statt Ertrag“ (Runde 4): Angebot zeigt Ausbau-Wirkung und Ersparnis,
+  //      Wählen speichert die Karte mit der Ausbau-Regel (Kosten: Unit-Test seasonCards.test.ts)
+  {
+    const ctx = await browser.newContext({ ...devices['iPhone 13'], reducedMotion: 'reduce' })
+    await ctx.addInitScript(() => {
+      if (sessionStorage.getItem('seed')) return
+      const owned = { gemuesebeet: 40, kompost: 35, kraeuterspirale: 30, beerenhecke: 25 }
+      const offer = [
+        { id: 'kraeuterjahr', preview: 1.08, ausbau: true },
+        { id: 'gutesJahr', preview: 1.05 },
+        { id: 'ruhigesJahr', preview: 0.8 },
+      ]
+      localStorage.setItem('gartenerbe-spielstand-v1', JSON.stringify({ owned, ernte: 1e6, saisonenden: 5, sessions: 12, seasonCardOffer: offer, lastSeen: Date.now(), saveVersion: 1 }))
+      localStorage.setItem('gartenerbe-ftue-v1', JSON.stringify({ beat: 'done', dismissed: true, completed: [], startedAt: 1 }))
+      localStorage.setItem('gartenerbe-install-v1', JSON.stringify({ dismissed: true, installed: false, shown: true }))
+      localStorage.setItem('gartenerbe-hints-v1', JSON.stringify(['season', 'truhe', 'deep', 'visitor', 'order', 'variety', 'weekly', 'recipeNew', 'festNew', 'weatherNew', 'clanNew', 'crossNew', 'helperAreas']))
+      sessionStorage.setItem('seed', '1')
+    })
+    const p = await ctx.newPage()
+    p.on('pageerror', (e) => errors.push(e.message))
+    await p.goto(URL)
+    const sheet = p.locator('.season-card-sheet')
+    await sheet.waitFor()
+    const text = await sheet.innerText()
+    assert(text.includes(T.seasonCards.ausbauRule), 'card picker explains the Ausbau rule')
+    assert(text.includes(T.seasonCards.previewAusbau(7)), `Ausbau card shows its saving (${text})`)
+    await p.screenshot({ path: `e2e-screens/saisonkarten-${LANG}.png` })
+    // Wählen: die Karte gilt nach der Ausbau-Regel (gespeichert alle 4 s)
+    await p.locator('.season-card').first().click()
+    await sheet.waitFor({ state: 'detached' })
+    await p.waitForTimeout(4500)
+    const saved = await p.evaluate(() => {
+      const s = JSON.parse(localStorage.getItem('gartenerbe-spielstand-v1') || '{}')
+      return { card: s.seasonCard, ausbau: s.seasonCardAusbau }
+    })
+    assert(saved.card === 'kraeuterjahr' && saved.ausbau === true, `card saved with the Ausbau rule (${JSON.stringify(saved)})`)
     await ctx.close()
   }
 

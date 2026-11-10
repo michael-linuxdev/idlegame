@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { cardPreview, offerSeasonCards, SEASON_CARDS, SEASON_CARDS_FROM_PRESTIGES } from '../game/seasonCards'
-import { createInitialState, createPostPrestigeState, pickSeasonCard, productionPerSecond } from '../game/state'
+import { CARD_AUSBAU, cardCostMult, cardPreview, cardSaving, offerSeasonCards, SEASON_CARDS, SEASON_CARDS_FROM_PRESTIGES, spendShares } from '../game/seasonCards'
+import { createInitialState, createPostPrestigeState, lineCostMult, pickSeasonCard, productionPerSecond } from '../game/state'
 import { parseSave } from '../game/storage'
 
 const NOW = 1_800_000_000_000
@@ -69,5 +69,50 @@ describe('Saison-Karten', () => {
     const o = parseSave({ ...old, seasonCard: 'quatsch' })!
     expect(o.seasonCard).toBeNull()
     expect(o.seasonCardOffer).toEqual([])
+  })
+})
+
+describe('Ausbau statt Ertrag (Runde 4)', () => {
+  const owned = { gemuesebeet: 80, kompost: 70, kraeuterspirale: 60, beerenhecke: 50, obstwiese: 40, bienenstock: 30, huehnerstall: 20 }
+
+  it('Bereichs-Karte: Ausbau des Bereichs billiger, des Gegenspielers teurer, Ertrag unverändert', () => {
+    const base = { ...createInitialState(NOW), owned: { ...createInitialState(NOW).owned, ...owned } }
+    const card = { ...base, seasonCard: 'kraeuterjahr' as const, seasonCardAusbau: true }
+    expect(lineCostMult(card, 'kraeuterspirale') / lineCostMult(base, 'kraeuterspirale')).toBeCloseTo(1 - CARD_AUSBAU.discount, 10)
+    expect(lineCostMult(card, 'gemuesebeet') / lineCostMult(base, 'gemuesebeet')).toBeCloseTo(1 + CARD_AUSBAU.surcharge, 10)
+    expect(lineCostMult(card, 'kompost')).toBe(lineCostMult(base, 'kompost'))
+    expect(productionPerSecond(card, NOW)).toBe(productionPerSecond(base, NOW))
+  })
+
+  it('eine schon laufende Karte (vor dem Update gewählt) wirkt wie vorher', () => {
+    const base = { ...createInitialState(NOW), owned: { ...createInitialState(NOW).owned, ...owned } }
+    const old = { ...base, seasonCard: 'kraeuterjahr' as const, seasonCardAusbau: false }
+    expect(cardCostMult('kraeuterjahr', 'kraeuterspirale', false)).toBe(1)
+    expect(productionPerSecond(old, NOW) / productionPerSecond(base, NOW)).toBeCloseTo(cardPreview('kraeuterjahr', base.owned), 6)
+    const raw = { ...(parseSave({})! as unknown as Record<string, unknown>), seasonCard: 'kraeuterjahr' }
+    delete (raw as Record<string, unknown>).seasonCardAusbau
+    expect(parseSave(raw)!.seasonCardAusbau).toBe(false)
+  })
+
+  it('Angebot: Ersparnis aus den Ausbaukosten der letzten Saison, nur Karten, die etwas bringen; Wählen merkt sich die Regel', () => {
+    const sh = spendShares(owned)
+    const sum = [...sh.values()].reduce((a, b) => a + b, 0)
+    expect(sum).toBeCloseTo(1, 10)
+    expect(cardSaving('kraeuterjahr', owned)).toBeCloseTo(CARD_AUSBAU.discount * sh.get('kraeuterspirale')! - CARD_AUSBAU.surcharge * sh.get('gemuesebeet')!, 10)
+    for (let i = 0; i < 30; i++) {
+      for (const o of offerSeasonCards(owned, null)) {
+        const def = SEASON_CARDS.find((c) => c.id === o.id)!
+        if (!def.area) continue
+        expect(o.ausbau).toBe(true)
+        expect(o.preview).toBeGreaterThanOrEqual(CARD_AUSBAU.minPreview)
+        expect(o.preview).toBeCloseTo(1 / (1 - cardSaving(o.id, owned)), 10)
+      }
+    }
+    const s = { ...createInitialState(NOW), owned: { ...createInitialState(NOW).owned, ...owned }, saisonenden: SEASON_CARDS_FROM_PRESTIGES }
+    const after = createPostPrestigeState(s, NOW)
+    const area = after.seasonCardOffer.find((o) => o.ausbau)
+    if (area) expect(pickSeasonCard(after, area.id).seasonCardAusbau).toBe(true)
+    const flat = after.seasonCardOffer.find((o) => !o.ausbau)
+    if (flat) expect(pickSeasonCard(after, flat.id).seasonCardAusbau).toBe(false)
   })
 })

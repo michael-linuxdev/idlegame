@@ -15,7 +15,7 @@ import { logPlaytest } from '../playtestLog'
 import { backupBeforeOccasion } from '../autoBackup'
 import type { ProjectId } from '../projects'
 import type { ResidentId } from '../residents'
-import { cardPreview, seasonCardDef, type SeasonCardId } from '../seasonCards'
+import { cardPreview, cardSaving, seasonCardDef, type SeasonCardId } from '../seasonCards'
 import {
   abortChallenge,
   chooseNextChallenge,
@@ -125,7 +125,7 @@ export function useGardenActions({ setState, stateRef }: UseGardenActionsDeps) {
     gained: number
     deep?: boolean
     generation?: number
-    card?: { id: SeasonCardId; preview: number; offline?: number }
+    card?: { id: SeasonCardId; preview: number; offline?: number; saving?: number }
   } | null>(null)
 
   const prestige = useCallback(() => {
@@ -141,7 +141,11 @@ export function useGardenActions({ setState, stateRef }: UseGardenActionsDeps) {
         setPostPrestigeFocus(true)
         // Was das Jahres-Thema mit diesem Garten gebracht hat (Stufen am Saisonende)
         const def = seasonCardDef(s.seasonCard)
-        const card = def ? { id: def.id, preview: cardPreview(def.id, s.owned), offline: def.offline } : undefined
+        const card = !def
+          ? undefined
+          : def.area && s.seasonCardAusbau
+            ? { id: def.id, preview: 1, saving: cardSaving(def.id, s.owned) }
+            : { id: def.id, preview: cardPreview(def.id, s.owned), offline: def.offline }
         setSeasonEnd({ year: next.saisonenden + 1, gained: gain, card })
       }
       return next

@@ -118,7 +118,7 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
   const branch = game.state.branches[def.id] ?? { efficiency: 0, capacity: 0 }
   const lineMult = totalGardenMult(game.state, game.nowTick)
   const eff = efficiencyMult(branch.efficiency)
-  const cardMult = cardAreaMult(game.state.seasonCard, def.id)
+  const cardMult = cardAreaMult(game.state.seasonCard, def.id, game.state.seasonCardAusbau)
   const lineRate = generatorRate(def, owned) * lineMult * eff * cardMult
   const nextRate = generatorRate(def, owned + bulkCount) * lineMult * eff * cardMult
   const careBuyable = owned < 1 ? 0 :
