@@ -2,8 +2,12 @@
 import {
   CHAPTERS,
   CHAPTER_CARE_MAX,
+  type AreaDef,
   type CareKind,
+  type ChapterDef,
   type ChapterId,
+  type ChapterState,
+  areaRateWithCare,
   areaCost,
   areaRate,
   areaUnlocked,
@@ -14,6 +18,7 @@ import {
   chapterDef,
 } from '../chapters'
 import { ILSE_RANKS, WEINLESE, rollChest } from '../extrasCore'
+import { arcCostMult, arcOf, arcRateMult, normalizeChoice } from '../arcRules'
 import { FEST_EARN } from '../fests'
 import { legacyCostMult, legacyOrchardMult } from '../generations'
 import { masteryMult, masteryStars } from '../mastery'
@@ -68,11 +73,37 @@ export function chapterRateMult(state: GameState): number {
   )
 }
 
-export function chapterPerSecond(state: GameState, id: ChapterId): number {
+/** Ertrag je Bereich ohne Bogen-Regel (Grundlage der Regel und ihrer Anzeige). */
+export function chapterAreaRates(def: ChapterDef, c: ChapterState): number[] {
+  return def.areas.map((a) => areaRateWithCare(a, c.owned[a.id] ?? 0, c))
+}
+
+/**
+ * Ertrag eines Kapitels je Sekunde. `away` = während der Spieler weg ist
+ * (Offline-Ernte); nur die Bogen-Regel „Plan für morgen“ unterscheidet das.
+ */
+export function chapterPerSecond(state: GameState, id: ChapterId, away = false): number {
   if (!chapterOpen(state, id)) return 0
   const def = chapterDef(id)
   const c = state.chapters[id]
-  return chapterBaseRate(def, c) * chapterRateMult(state) * masteryMult(masteryStars(def, c))
+  const choice = state.bogenWahl[id]
+  const arc = choice ? arcRateMult(def, chapterAreaRates(def, c), choice, away) : 1
+  return chapterBaseRate(def, c) * chapterRateMult(state) * masteryMult(masteryStars(def, c)) * arc
+}
+
+/** Bogen-Regel wählen oder aufheben (null). Ungültiges ändert nichts. */
+export function chooseArcRule(state: GameState, id: ChapterId, choice: string | null): GameState {
+  if (!chapterOpen(state, id)) return state
+  const def = chapterDef(id)
+  if (!arcOf(def.number)) return state
+  const bogenWahl = { ...state.bogenWahl }
+  if (choice == null) delete bogenWahl[id]
+  else {
+    const v = normalizeChoice(def, choice)
+    if (!v) return state
+    bogenWahl[id] = v
+  }
+  return { ...state, bogenWahl }
 }
 
 function withChapterCur(state: GameState, id: ChapterId, gained: number): GameState {
@@ -84,10 +115,10 @@ function withChapterCur(state: GameState, id: ChapterId, gained: number): GameSt
   }
 }
 
-export function tickChapters(state: GameState, seconds: (rate: number) => number): GameState {
+export function tickChapters(state: GameState, seconds: (rate: number) => number, away = false): GameState {
   let next = state
   for (const def of CHAPTERS) {
-    const rate = chapterPerSecond(next, def.id)
+    const rate = chapterPerSecond(next, def.id, away)
     if (rate > 0) next = withChapterCur(next, def.id, seconds(rate))
   }
   return next
@@ -97,7 +128,16 @@ export function chapterCostOf(state: GameState, id: ChapterId, areaId: string): 
   const a = chapterDef(id).areas.find((x) => x.id === areaId)
   if (!a) return Infinity
   const c = state.chapters[id]
-  return areaCost(a, c.owned[areaId] ?? 0, legacyCostMult(state.legacy) * careThriftMult(careOf(c, areaId).thrift))
+  const owned = c.owned[areaId] ?? 0
+  const arc = arcCostMult(chapterDef(id), state.bogenWahl[id], 'area', owned)
+  return areaCost(a, owned, legacyCostMult(state.legacy) * careThriftMult(careOf(c, areaId).thrift) * arc)
+}
+
+/** Preis des nächsten Pflege-Rangs (mit Bogen-Regel „Tauschpost: günstiger pflegen“). */
+export function chapterCareCostOf(state: GameState, id: ChapterId, a: AreaDef, kind: CareKind, rank: number): number {
+  const base = careCost(a, kind, rank)
+  const m = arcCostMult(chapterDef(id), state.bogenWahl[id], 'care', 1)
+  return m === 1 ? base : Math.max(1, Math.floor(base * m))
 }
 
 /** Kapitel-Pflege: buy one rank of „Wachsen“ or „Sparen“ for an area. */
@@ -108,7 +148,7 @@ export function buyChapterCare(state: GameState, id: ChapterId, areaId: string, 
   if (!a || (c.owned[areaId] ?? 0) < 1) return state
   const ranks = careOf(c, areaId)
   if (ranks[kind] >= CHAPTER_CARE_MAX) return state
-  const cost = careCost(a, kind, ranks[kind])
+  const cost = chapterCareCostOf(state, id, a, kind, ranks[kind])
   if (c.cur < cost) return state
   return {
     ...state,

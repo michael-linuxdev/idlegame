@@ -6,7 +6,7 @@ export const privacyStrings = {
   sections: [
     {
       heading: 'What is stored',
-      body: 'Your progress, Grandma’s notebook, settings (e.g. sound on/off, language) and the install notice are stored only in your browser’s local storage (localStorage). This data never leaves your device.',
+      body: 'Your progress, Grandma’s notebook, settings (e.g. sound on/off, language) and the install notice are stored only in your browser’s local storage (localStorage). Automatic backups of your progress (up to ten) also stay on your device, in the browser database (IndexedDB). This data never leaves your device.',
     },
     {
       heading: 'No tracking',

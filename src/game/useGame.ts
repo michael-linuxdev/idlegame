@@ -135,6 +135,7 @@ export function useGame() {
     buyChapterCareRank,
     seeChapterIntro,
     seeAbschluss,
+    chooseArc,
     forceChapter,
     hireIlse,
     switchIlse,
@@ -192,7 +193,7 @@ export function useGame() {
   const clanBoostActive =
     state.vereinBoostExpiresAt > nowTick && vereinMult > 1
   // Ruhezeit nach dem Tiefen Winter (Prestige-Panel)
-  const deepRestMs = deepRestLeft(state.tieferWinterAt, nowTick)
+  const deepRestMs = deepRestLeft(state.tieferWinterAt, nowTick, state.ruhezeitVerkuerzung.ms)
   const clanBoostMsLeft = clanBoostActive
     ? Math.max(0, state.vereinBoostExpiresAt - nowTick)
     : 0
@@ -364,6 +365,7 @@ export function useGame() {
     buyChapterBulk,
     seeChapterIntro,
     seeAbschluss,
+    chooseArc,
     buyChapterCareRank,
     forceChapter,
     hireIlse,

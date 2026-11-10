@@ -391,18 +391,55 @@ export function serializeSave(state: GameState, extra: Record<string, unknown> =
   return JSON.stringify({ ...extra, ...state, saveVersion: SAVE_VERSION })
 }
 
-export function saveState(state: GameState): void {
-  if (savesLocked || getSaveBlock() !== null) return
+/** true = der Stand liegt jetzt in localStorage. */
+export function saveState(state: GameState): boolean {
+  if (savesLocked || getSaveBlock() !== null) return false
   try {
     localStorage.setItem(STORAGE_KEY, serializeSave(state))
+    return true
   } catch {
     // Platz knapp: zuerst das Playtest-Log freigeben, Spielstand geht vor
     try {
       freePlaytestSpace()
       localStorage.setItem(STORAGE_KEY, serializeSave(state))
+      return true
     } catch {
       /* private mode */
+      return false
     }
+  }
+}
+
+/**
+ * Ist der gespeicherte Spielstand leer oder kaputt? Dann bietet der Start
+ * eine automatische Sicherung an, bevor ein neuer Garten entsteht.
+ * Ein Stand aus einer neueren Version gilt nie als kaputt.
+ */
+export function storedSaveState(): 'ok' | 'empty' | 'broken' | 'newer' {
+  let raw: string | null
+  try {
+    raw = localStorage.getItem(STORAGE_KEY)
+  } catch {
+    return 'empty'
+  }
+  if (!raw) return 'empty'
+  try {
+    const parsed: unknown = JSON.parse(raw)
+    if (!isRecord(parsed)) return 'broken'
+    if (isNewerSave(parsed)) return 'newer'
+    return parseSave(parsed) ? 'ok' : 'broken'
+  } catch {
+    return 'broken'
+  }
+}
+
+/** Kaputten Stand aufheben, bevor eine Sicherung ihn ersetzt (wie loadState). */
+export function keepBrokenCopy(): void {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    if (raw) keepCopy(`${STORAGE_KEY}-broken`, raw)
+  } catch {
+    /* nichts zu retten */
   }
 }
 

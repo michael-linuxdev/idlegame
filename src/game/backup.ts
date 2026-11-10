@@ -12,6 +12,7 @@ import { saveFile, type SaveResult } from './saveFile'
 
 const PREFIX = 'GARTENERBE1:'
 const KEYS = [STORAGE_KEY, NOTEBOOK_STORAGE_KEY, EXTRAS_STORAGE_KEY, FTUE_STORAGE_KEY] as const
+export type BackupKey = (typeof KEYS)[number]
 
 /**
  * Bündel-Format. v1 (bis 2026-11-09) trug den alten Spielstand
@@ -19,7 +20,7 @@ const KEYS = [STORAGE_KEY, NOTEBOOK_STORAGE_KEY, EXTRAS_STORAGE_KEY, FTUE_STORAG
  */
 export const BUNDLE_VERSION = 2
 
-interface Bundle {
+export interface Bundle {
   app: 'gartenerbe'
   v: typeof BUNDLE_VERSION
   at: number
@@ -46,11 +47,16 @@ function isRecordLike(v: unknown): v is Record<string, unknown> {
   return typeof v === 'object' && v !== null
 }
 
-export function exportCode(now = Date.now()): string {
+/**
+ * Alle KEYS als Code. `override` ersetzt einzelne Schlüssel (z. B. den
+ * Spielstand aus dem Speicher statt aus localStorage, der bis zu 4 s
+ * hinterherhinkt — automatische Sicherung vor dem Tiefen Winter).
+ */
+export function exportCode(now = Date.now(), override: Partial<Record<BackupKey, string>> = {}): string {
   const data: Bundle['data'] = {}
   for (const k of KEYS) {
     try {
-      const v = localStorage.getItem(k)
+      const v = override[k] ?? localStorage.getItem(k)
       if (v) data[k] = v
     } catch {
       /* ignore */

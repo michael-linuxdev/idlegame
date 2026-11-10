@@ -75,6 +75,10 @@ try {
     await p.locator('.upgrade-hud').waitFor()
     n += await audit(p, `${lang} upgrade`)
     await p.keyboard.press('Escape')
+    await p.locator('.hud-today').click()
+    await p.locator('.today-sheet').waitFor()
+    n += await audit(p, `${lang} heute`)
+    await p.keyboard.press('Escape')
     await p.locator('.menu-fab').click()
     await p.locator('.nav-sheet').waitFor()
     n += await audit(p, `${lang} menu`)
@@ -99,6 +103,11 @@ try {
     await p.locator('.map-side .plot-switch').first().click()
     await p.locator('.chapter-stadtgarten .garden-plot.planted').first().waitFor()
     n += await audit(p, `${lang} kapitel-karte`)
+    // Bogen-Regel (Runde 4): Fenster „Patenbeet“
+    await p.locator('.pill-arc').click()
+    await p.locator('.arc-sheet').waitFor()
+    n += await audit(p, `${lang} bogen-regel`)
+    await p.keyboard.press('Escape')
     // Mit allen Schildern (Einstellung „Schilder immer zeigen“) statt Plaketten
     await p.evaluate(() => {
       localStorage.setItem('gartenerbe-pref-signs', '1')

@@ -15,6 +15,7 @@ import { manifestStrings } from './manifest'
 import { expansionStrings } from './stringsExpansion'
 import { lifeStrings } from './stringsLife'
 import { uxStrings } from './stringsUx'
+import { arcStrings } from './stringsArcs'
 
 const SOFT = 'harvest'
 const SEEDS = 'seeds'
@@ -236,6 +237,9 @@ export const strings: Strings = {
     preview: (pct: number) => `with your last garden ≈ ${pct > 0 ? '+' : ''}${pct} % harvest`,
     previewEven: 'with your last garden ≈ the same harvest',
     previewQuiet: 'pays off if you’re often away for a while',
+    previewAway: (active: number, away: number) => `while playing ≈ ${active > 0 ? '+' : ''}${active} % · while away ≈ ${away > 0 ? '+' : ''}${away} %`,
+    result: (name: string, pct: number) => `Your theme “${name}” brought ≈ ${pct > 0 ? '+' : ''}${pct} % harvest with your garden.`,
+    resultAway: (name: string, active: number, away: number) => `Your theme “${name}”: ≈ ${active > 0 ? '+' : ''}${active} % while playing, ≈ ${away > 0 ? '+' : ''}${away} % harvest while you were away.`,
     skip: 'Keep gardening without a theme',
     pill: (name: string) => name,
     cards: {
@@ -644,6 +648,12 @@ export const strings: Strings = {
     confirmCta: 'Really? Tap again — the garden will rest',
     resting: (clock: string) => `The garden is still resting · ${clock}`,
     restHint: 'After a Deep Winter the soil needs three days of rest before the next one can come.',
+    restRule: (perDay: string, cap: string) => `Every finished day under “Today” (Daily Rounds and all daily goals collected) shortens the rest by ${perDay} hours, by ${cap} hours at most in total.`,
+    restLeft: (clock: string) => `Rest: ${clock} left`,
+    restEarned: (h: string, cap: string) => `Earned so far: −${h} h of at most −${cap} h`,
+    restToday: (h: string) => `Still possible today: −${h} h`,
+    restTodayCounted: 'Today already counted — again tomorrow.',
+    restCapReached: 'This rest can’t get any shorter.',
     shopTitle: 'Seedling Shop',
     rank: (rank: number, max: number) => `Rank ${rank}/${max}`,
     cost: (n: number) => `${nSeedlings(n)}`,
@@ -1210,16 +1220,20 @@ export const strings: Strings = {
     variety: 'A new variety! You’ll find them all in the notebook under “Plant Book” — each one brings a little more harvest forever.',
     season: 'The season can end now. The garden rests over winter, but you take heirlooms with you — and every garden year grows richer.',
     truhe: 'Treasures are waiting in Grandma’s Chest. Trade your heirlooms for bonuses that last through every winter.',
-    weekly: 'New: Grandma’s Weekly Plan. Tap your garden stage in the top left — you’ll find seven tasks for this week there.',
+    weekly: 'New: Grandma’s Weekly Plan. Tap “Today” in the bottom left — you’ll find seven tasks for this week there.',
     deep: 'Every corner is open. If you like, the garden can now rest through a Deep Winter — for seedlings that stay forever.',
     bulkMax: 'New: “Max”. Upgrades this bed as many times as your harvest allows — one tap instead of many.',
     bulk5: 'New: “×5”. Buys exactly five levels at once — handy for heading straight for the next milestone.',
     buyAll: 'New: “Upgrade all”. Spreads your whole harvest across all beds — always first where it brings the most harvest per second. It doesn’t buy care or chapters.',
-    recipeNew: 'New: Grandma’s Recipe of the Day. The bar at the top shows which beds supply something for today’s recipe — once it’s cooked, you get a bonus.',
+    recipeNew: 'New: Grandma’s Recipe of the Day. Under “Today” in the bottom left you’ll see which beds supply something for today’s recipe — once it’s cooked, you get a bonus.',
     festNew: 'New: garden festivals. Every season has a festival with fest tokens and its own stall — tap the festival pill at the top.',
     weatherNew: 'New: the weather. It changes your harvest a little, and sometimes the sky asks what you’d like to do — you can see tomorrow at the top, too.',
     crossNew: 'New: Cross Seeds (Menu → Cross). Two varieties from the Plant Book make something new in 4 hours — start one now and a surprise will be waiting when you’re back.',
     clanNew: 'New: the Allotment Club. In the menu under “Club”, you weigh your biggest pumpkin against the neighbors every week.',
+    arcI: 'New in this arc: a sponsor bed. Up top under “Sponsor bed” you pick an area — its neighbors then yield more. Ilse won’t decide this for you.',
+    arcII: 'New in this arc: the seed post. Up top under “Seed post” you pick a way for this chapter. Ilse won’t decide this for you.',
+    arcIII: 'New in this arc: sharing the water. Up top under “Water” you give the areas water points. Ilse won’t decide this for you.',
+    arcIV: 'New in this arc: a plan for tomorrow. Up top under “Plan” you choose whether the chapter yields more now or while you’re away. Ilse won’t decide this for you.',
     helperAreas: 'Jonas is helping now. You decide what he may upgrade: under “Season” → Garden Helper → “What Jonas may upgrade” you can lock and unlock single areas.',
   },
 
@@ -1243,6 +1257,28 @@ export const strings: Strings = {
     old: 'This code comes from an early version of the game and can no longer be loaded.',
     found: (when: string) => `Valid save from ${when}.`,
     close: 'Close',
+    autoTitle: 'Automatic backups',
+    autoIntro: 'The game backs up your garden on this device by itself: once a day and before every Deep Winter, every generation and every restore. They won’t help with a new phone or cleared browser data — for that, keep the code or file from above.',
+    autoEmpty: 'No automatic backup yet.',
+    kinds: {
+      daily: 'Daily backup',
+      deep: 'Before the Deep Winter',
+      generation: 'Before the generation',
+      import: 'Before loading a code',
+      restore: 'Before restoring',
+    },
+    row: (when: string, year: number, chapters: number) => `${when} · Garden Year ${year} · ${chapters} ${chapters === 1 ? 'chapter' : 'chapters'}`,
+    restore: 'Restore',
+    restoreConfirm: 'Really? Your current garden is backed up first',
+    restoreBlocked: 'Not possible right now: the game is open in another window, or a newer version has saved.',
+    restoreFailed: 'This backup can’t be loaded.',
+    offerTitle: 'Your garden is missing',
+    offerBody: 'There’s no saved game on this device, but there are automatic backups. Shall one of them come back?',
+    offerNew: 'Start a new garden',
+    offerNewNote: 'The backups stay; you’ll find them later under Menu → Back up progress.',
+    remindText: 'A lot has grown since your last backup. The backups on this device won’t help if you switch phones or clear your browser data — keep the code somewhere else once.',
+    remindSave: 'Back up now',
+    remindLater: 'Later',
   },
 
   legal: {
@@ -1265,6 +1301,20 @@ export const strings: Strings = {
     newCorner: (name: string) => `New to clear: ${name}`,
     cta: 'Into the new garden year',
     skip: 'Next',
+  },
+
+  today: {
+    title: 'Today',
+    eyebrow: 'For today',
+    button: 'Today',
+    ready: (n: number) => `${n} ready`,
+    allDone: 'all done',
+    open: 'Open Today: Daily Rounds, Recipe of the Day, daily goals and Weekly Plan',
+    close: 'Close',
+    dailyDone: 'Done',
+    movedNote: 'Daily goals and Grandma’s Weekly Plan are now under “Today” (bottom left).',
+    restNote: (h: string) => `Collected the Daily Rounds and all daily goals? Then the garden rests ${h} hours less after the Deep Winter.`,
+    restDone: 'Done for today — the rest got shorter.',
   },
 
   daily: {
@@ -1331,5 +1381,6 @@ export const strings: Strings = {
   ...expansionStrings,
   ...lifeStrings,
   ux: uxStrings,
+  arcRules: arcStrings,
   careNames,
 }

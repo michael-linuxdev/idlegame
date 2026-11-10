@@ -23,6 +23,7 @@ import {
 } from './core'
 import { bumpRecipe, growPumpkin } from './extras'
 import { earnFest } from './fest'
+import { withRestCredit } from './rest'
 import type { GameState } from './types'
 
 export function lineCostMult(state: GameState, id: GeneratorId): number {
@@ -143,7 +144,7 @@ export function claimQuestReward(
   const quests = base.quests.map((q) =>
     q.id === questId ? { ...q, claimed: true } : q,
   )
-  return {
+  const next = {
     ...base,
     ernte: base.ernte + quest.rewardErnte,
     ernteSeason: base.ernteSeason + quest.rewardErnte,
@@ -152,6 +153,8 @@ export function claimQuestReward(
     quests,
     lastSeen: now,
   }
+  // Tag erledigt? Dann verkürzt er die laufende Ruhezeit (Runde 4)
+  return withRestCredit(base, next, now)
 }
 
 export function claimAchievement(

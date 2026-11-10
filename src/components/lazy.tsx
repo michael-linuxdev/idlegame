@@ -45,6 +45,7 @@ export const FestSheet = lazyNamed(() => import('./FestSheet').then((m) => m.Fes
 export const CrossSheet = lazyNamed(() => import('./CrossSheet').then((m) => m.CrossSheet))
 export const DecorSheet = lazyNamed(() => import('./DecorSheet').then((m) => m.DecorSheet))
 export const ProgressSheet = lazyNamed(() => import('./ProgressSheet').then((m) => m.ProgressSheet))
+export const TodaySheet = lazyNamed(() => import('./TodaySheet').then((m) => m.TodaySheet))
 
 /** Alle Bündel im Leerlauf vorladen, damit das erste Öffnen nicht wartet. */
 export function preloadLazy(): void {

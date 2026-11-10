@@ -12,9 +12,10 @@ import type { LegacyId } from '../generations'
 import { GENERATORS, generatorCost, type GeneratorId } from '../generators'
 import type { DeepMetaId } from '../longLoop'
 import { logPlaytest } from '../playtestLog'
+import { backupBeforeOccasion } from '../autoBackup'
 import type { ProjectId } from '../projects'
 import type { ResidentId } from '../residents'
-import type { SeasonCardId } from '../seasonCards'
+import { cardPreview, seasonCardDef, type SeasonCardId } from '../seasonCards'
 import {
   abortChallenge,
   chooseNextChallenge,
@@ -124,6 +125,7 @@ export function useGardenActions({ setState, stateRef }: UseGardenActionsDeps) {
     gained: number
     deep?: boolean
     generation?: number
+    card?: { id: SeasonCardId; preview: number; offline?: number }
   } | null>(null)
 
   const prestige = useCallback(() => {
@@ -137,7 +139,10 @@ export function useGardenActions({ setState, stateRef }: UseGardenActionsDeps) {
           wallet: next.erbstuecke,
         })
         setPostPrestigeFocus(true)
-        setSeasonEnd({ year: next.saisonenden + 1, gained: gain })
+        // Was das Jahres-Thema mit diesem Garten gebracht hat (Stufen am Saisonende)
+        const def = seasonCardDef(s.seasonCard)
+        const card = def ? { id: def.id, preview: cardPreview(def.id, s.owned), offline: def.offline } : undefined
+        setSeasonEnd({ year: next.saisonenden + 1, gained: gain, card })
       }
       return next
     })
@@ -167,6 +172,9 @@ export function useGardenActions({ setState, stateRef }: UseGardenActionsDeps) {
   }, [setState])
 
   const deepReset = useCallback(() => {
+    // Automatische Sicherung des Stands direkt davor (läuft im Hintergrund)
+    const before = stateRef.current
+    if (doDeepReset(before) !== before) void backupBeforeOccasion('deep', before)
     setState((s) => {
       const gain = deepSproutPayout(s)
       const next = doDeepReset(s)
@@ -177,9 +185,11 @@ export function useGardenActions({ setState, stateRef }: UseGardenActionsDeps) {
       }
       return next
     })
-  }, [setState])
+  }, [setState, stateRef])
 
   const handDown = useCallback(() => {
+    const before = stateRef.current
+    if (doGeneration(before) !== before) void backupBeforeOccasion('generation', before)
     setState((s) => {
       const gain = generationPayout(s)
       const next = doGeneration(s)
@@ -190,7 +200,7 @@ export function useGardenActions({ setState, stateRef }: UseGardenActionsDeps) {
       }
       return next
     })
-  }, [setState])
+  }, [setState, stateRef])
 
   const buyLegacyRank = useCallback((id: LegacyId) => {
     setState((s) => {

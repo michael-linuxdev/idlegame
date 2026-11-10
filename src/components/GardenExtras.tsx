@@ -1,7 +1,5 @@
 import { useState } from 'react'
 import { useDismiss } from '../game/overlays'
-import { GENERATORS } from '../game/generators'
-import { RECIPE_NEED } from '../game/extrasCore'
 import { logPlaytest } from '../game/playtestLog'
 import { saveFile } from '../game/saveFile'
 import { playSfx } from '../game/sound'
@@ -11,63 +9,6 @@ import { t } from '../i18n'
 import { ArtSvg } from '../theme/ArtSvg'
 
 type GameApi = ReturnType<typeof useGame>
-
-/** Omas Tagesrezept — three ingredients, cook once a day. */
-export function RecipeSheet({ game, onClose, onCooked }: { game: GameApi; onClose: () => void; onCooked: (msg: string) => void }) {
-  useDismiss(onClose)
-  const r = game.state.recipe
-  const dish = t.recipe.dishes[r.dish % t.recipe.dishes.length]!
-  return (
-    <div className="upgrade-hud-layer" role="presentation" onClick={onClose}>
-      <div className="upgrade-hud recipe-sheet" role="dialog" aria-modal="true" aria-labelledby="recipe-title" onClick={(e) => e.stopPropagation()}>
-        <header className="upgrade-hud-header">
-          <div className="upgrade-hud-heading">
-            <p className="upgrade-hud-eyebrow">{t.recipe.title}</p>
-            <h2 id="recipe-title">{t.recipe.line(dish)}</h2>
-          </div>
-          <button type="button" className="upgrade-hud-close" onClick={onClose} aria-label={t.upgrade.close}>
-            ×
-          </button>
-        </header>
-        {r.claimed ? (
-          <p className="muted">{t.recipe.done}</p>
-        ) : (
-          <>
-            <p className="upgrade-hud-stats">{t.recipe.need(RECIPE_NEED)}</p>
-            <ul className="recipe-list">
-              {r.areas.map((id, i) => {
-                const name = GENERATORS.find((g) => g.id === id)?.name ?? id
-                const have = r.have[i] ?? 0
-                return (
-                  <li key={id} className={have >= RECIPE_NEED ? 'done' : undefined}>
-                    <span>{t.recipe.ingredient(name, have, RECIPE_NEED)}</span>
-                    <span className="milestone-track" aria-hidden="true">
-                      <span style={{ width: `${Math.min(100, (have / RECIPE_NEED) * 100)}%` }} />
-                    </span>
-                  </li>
-                )
-              })}
-            </ul>
-            <p className="fest-expire">{t.recipe.reward}</p>
-            <button
-              type="button"
-              className="btn buy"
-              disabled={!game.recipeReady}
-              onClick={() => {
-                game.cookRecipe()
-                playSfx('streak')
-                onCooked(t.recipe.cooked(dish))
-                onClose()
-              }}
-            >
-              {t.recipe.cook}
-            </button>
-          </>
-        )}
-      </div>
-    </div>
-  )
-}
 
 /** Regenbogen / Sternschnuppe floating over the garden. */
 export function SkyEventButton({ game, onWish }: { game: GameApi; onWish: () => void }) {

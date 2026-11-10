@@ -1,6 +1,6 @@
 # Gartenerbe — Roadmap & Produktvermerke
 
-Stand: 2026-11-09 (Kapitel 13–50 „Omas Saatgutdose“ fertig).
+Stand: 2026-11-10 (Runde 4: Sichern, Bündeln, Belohnen, Unterscheiden).
 
 ## Produkt
 
@@ -46,6 +46,52 @@ Werkzeug: `npm run balance -- <engaged|regular|casual> <stunden>` — spielt die
 - **Saison-Karten (2026-11-09):** ab Gartenjahr 4 nach jedem Saisonende 1 von 3 Jahres-Themen (12 Karten, `src/game/seasonCards.ts`), nur angelegte Bereiche, Vorschau ≥ ±0, nie zweimal hintereinander. Sim 14 Tage Saisons (Dauerspieler/Regular/Casual): ohne Karte 169/64/28, Zufall 175/64/29, beste Wahl 182/66/29 (Simulator Standard: beste Wahl). Erste Fassung (×3/×2,5) war mit +19 % (Regular 76) zu stark.
 - **Kapitel und Generationen (2026-11-09, Paket 1 Kapitel 13–50):** Der Simulator baut jetzt auch Kapitel aus (`CHAPTERS=1`, Ilse). Befund: Die multiplizierten, ungedeckelten Kapitel-Boni trieben den Garten auf ×10¹², Tiefe Winter und Generationen kamen im Tagestakt (Regular: Kapitel 12 an Tag 84). Umgesetzt: **3 Tage Ruhezeit nach jedem Tiefen Winter** und **Kapitel-Boni addiert**. Ergebnis (5 Jahre, Regular): Kapitel 12 Tag 268, Kapitel 13 Tag 313, danach alle 24–56 Tage, Kapitel 50 Tag 1784; Garten-Bonus der Kapitel ×300. Bericht: `docs/kapitel/balance-bericht.md`, Taktung: `docs/kapitel/plan.md`.
 - Tiefer Winter ab Gartenjahr 15: Sprösslinge = 2 · (Jahr − 13)^1,3; Sim-Policy: Tiefer Winter, sobald eine Saison > 18 h dauert.
+- **Runde 4 „Sichern, Bündeln, Belohnen, Unterscheiden“ (2026-11-10) — Basis vor der ersten Änderung** (Commit bb5054f, Befehle aus `docs/prompts/runde-4.md` Regel 8; Casual 2 Jahre: `GEN=1 CHAPTERS=1 CHAPTER_MANUAL=0 SUMMARY=1 npm run balance -- casual 17520`):
+
+  | Messung | Ergebnis |
+  |---|---|
+  | Dauerspieler 14 Tage | 120 Saisons, erstes Saisonende 14 min, Tiefe Winter Tag 3/7/12 |
+  | Regular 14 Tage | 67 Saisons, erstes 120 min, Tiefe Winter Tag 10/13 |
+  | Casual 14 Tage | 29 Saisons, erstes 180 min, Tiefer Winter Tag 8 |
+  | Regular 5 Jahre (Kapitel, nur Ilse) | K12 Tag 263, **K13 Tag 309** (Monat 10), K20 498, K30 837, K40 1268, **K50 Tag 1781** (4,9 J.); Abstand ab K13 24–55 Tage, **Ø 39,8** (5,7 Wochen); Tag 730: K27 |
+  | Dauerspieler 1 Jahr (grob ab Tag 30) | K13 Tag 296, K14 318, K15 340, K16 364 — Abstand 22–24 Tage |
+  | Casual 2 Jahre (zusätzlich, für „Casual ≥ K20“) | K12 Tag 317, K13 369, K20 585, **Tag 730: K24** |
+
+  Nach Paket 2 (Heute-Karte, HUD-Grenze, Hitzewelle +20 % → +16 %): 14 Tage aller drei Profile **identisch** mit der Basis (der Simulator entscheidet Wetter nur mit `WEATHER=…`; die Wahl-Messung steht in `docs/systeme-inventur.md`).
+
+  Paket 3 (Ruhezeit verkürzen: je erledigtem Tag −4 h, höchstens −12 h je Ruhezeit). Vorher = Profile holen Tagesziele ab, aber ohne Verkürzung (`TASKS=1 REST_DAY_H=0`); nachher `TASKS=1` (Spielwert 4 h):
+
+  | Messung | vorher | nachher |
+  |---|---|---|
+  | Regular 5 Jahre | K13 Tag 313, K50 Tag 1784 (4,9 J.), Abstand 24–56 (Ø 39,8 Tage) | **K13 Tag 295** (Monat 9,7), **K50 Tag 1702** (4,7 J.), Abstand 24–53 (**Ø 38,0 Tage** = 5,4 Wochen) |
+  | Dauerspieler 1 Jahr | K13 Tag 291, Abstand 21–25 | **K13 Tag 266**, Abstand **21–24 Tage** (höchstens 1 Kapitel in 2 Wochen ✓) |
+  | Casual 2 Jahre | K13 Tag 374, Tag 730: K23 | K13 Tag 372, **Tag 730: K23** (≥ K20 ✓) |
+  | Dauerspieler 14 Tage | 112 Saisons, Tiefe Winter Tag 3/8/11 | 132 Saisons, Tiefe Winter Tag 3/6/9/13 |
+  | Regular / Casual 14 Tage | 66 / 28 Saisons | unverändert (der erste Tiefe Winter kommt vor dem Ende einer Ruhezeit nicht in Frage) |
+
+  Ohne `TASKS` (Standard, `tempo.test.ts`) rechnet der Simulator wie vorher.
+
+  Paket 4 (Bogen-Regeln, `ARC=best` gegen `ARC=none`, beide mit `TASKS=1`):
+
+  | Messung | keine Wahl | beste Wahl | Abweichung |
+  |---|---|---|---|
+  | Regular 5 Jahre | K13 295, K20 480, K30 810, K40 1218, K50 1702, Abstand Ø 38,0 | K13 295, K20 483, K30 813, K40 1223, K50 1707, Abstand Ø 38,2 | ≤ 0,6 % |
+  | Dauerspieler 1 Jahr | K13 266, K17 353, Abstand 21–24 | K13 266, K17 354, Abstand 21–24 | ≤ 0,3 % |
+  | Casual 2 Jahre | K13 372, Tag 730: K23 | K13 372, Tag 730: K23 | 0 |
+  | Garten-Bonus der Kapitel (Regular, 5 J.) | ×301,9 | ×302,7 | +0,3 % (nur über mehr Stufen) |
+
+  „Keine Wahl“ ist Tag für Tag identisch mit dem Lauf nach Paket 3 (neutraler Start). Korridor hält.
+
+  Paket 5 (Sturm: Hecke als Windschutz, Spätfrost: Glas schützt; Nutzerentscheid 2026-11-10). Der Standard-Simulator entscheidet kein Wetter, darum mit `WEATHER=best TASKS=1`, alte gegen neue Wetter-Regeln:
+
+  | Messung | alt | neu |
+  |---|---|---|
+  | Regular 5 Jahre | K13 291, K50 1702, Abstand Ø 38,1 | K13 294, K50 1709 (4,7 J.), Abstand 24–54, Ø 38,2 |
+  | Dauerspieler 1 Jahr | — | K13 268, Abstand 21–24 |
+  | Casual 2 Jahre | — | Tag 730: K24 |
+  | 14 Tage ab Juni (Saisons D/R/C) | 121 / 57 / 27 | 127 / 63 / 28 (das alte „Sichern“ nahm 10 min aus dem Korb) |
+
+  Wahl „riskieren“ zusammen über alle Profile: Sturm 36 %, Spätfrost 54 %, Hitzewelle 34 % (vorher 0 / 0 / 100 %). Saison-Karten „Faktor nach Anteil“ gemessen und weggelassen (`docs/systeme-inventur.md`).
 
 ## Prinzipien
 
@@ -114,6 +160,13 @@ Werkzeug: `npm run balance -- <engaged|regular|casual> <stunden>` — spielt die
     - **Alles übersetzt:** Oberfläche, Systeme, alle Briefe (Oma, Jonas, Ilse, Kapitel 2–12), 120 Bereiche, Sorten, Bewohner, Feste mit Erklärung, Datenschutz; Begriffe und Titel im Glossar `docs/i18n/glossar.md`. Zahlen `K/M/B/T` vs. `Tsd/Mio/Mrd`, Mehrzahl über `Intl.PluralRules`.
     - **Prüfungen:** gleicher Typ `Strings` für beide Sprachen, gleiche Schlüsselbäume, keine Texte im Code, keine eingefrorenen Texte beim Import (statisch + Pseudo-Sprache), E2E komplett auch auf Englisch, axe 0 Verstöße (WCAG 2.0/2.1 A/AA, beide Sprachen), Fenster-Durchsicht ohne abgeschnittene Texte (`npm run screens -- en`).
     - **Store:** `docs/store/listing.en.md`, englische Screenshots und Feature-Grafik. Offen: Markenrecherche „Heirloom Garden“.
+15h. ✅ **Runde 4 „Sichern, Bündeln, Belohnen, Unterscheiden“ (2026-11-10, Prompt `docs/prompts/runde-4.md`):**
+    - **Automatische Sicherung:** IndexedDB je Tag und vor Tiefem Winter, Generation, Einspielen und Wiederherstellen (7 + 3, Budget 6 Mio Zeichen), Angebot beim Start vor einem neuen Garten, Liste im Menü, Omas Hinweis zur Sicherung außerhalb des Geräts; Schnittstelle für weitere Ziele (`docs/sicherung.md`).
+    - **Heute-Karte und HUD-Grenze:** Gartenrunde, Tagesrezept, Tagesziele und Wochenplan an einer Stelle; höchstens drei Ereignis-Pillen, was abläuft zuerst; Entscheidungen mit Zahlen für diesen Garten; Hitzewelle +20 % → +16 %; Inventur `docs/systeme-inventur.md`.
+    - **Ruhezeit:** erledigte Tage verkürzen die Ruhezeit nach dem Tiefen Winter (−4 h je Tag, höchstens −12 h).
+    - **Bogen-Regeln:** Patenbeet, Tauschpost, Wasser verteilen, Plan für morgen (`docs/kapitel/bogen-regeln.md`).
+    - **Paket 5 (Nutzerentscheid):** Sturm — „Sichern“ kostet −8 % für 2 h, die Beerenhecke senkt die Schadens-Chance (50 % → 20 %); Spätfrost — Glas (Gewächshaus, Orangerie) hält 69 % des Schadens ab. Beide sind jetzt echte Entscheidungen. Saison-Karten „Faktor nach Anteil“ umgesetzt, gemessen, **weggelassen** (Hofladenjahr blieb bei ~90 %, kleine Bereiche bei ~0 %).
+    - **Offen:** Saison-Karten brauchen eine andere Idee als feste oder anteilige Faktoren (Vorschläge in `docs/systeme-inventur.md`), Entscheidung des Nutzers; Cloud-Sicherung (iCloud/Play Games/Backend) braucht Store-Hülle bzw. Konto; Werte der Bogen-Regeln mit echten Ständen nachprüfen.
 16. Multiplayer-Architektur (Kleingartenverein mit echtem Backend; Kürbis-Runde umstellen).
 17. Store-IAP, Impressum-Daten, Namensprüfung „Gartenerbe“ und „Heirloom Garden“, Store-Assets, Soft-Launch. Vor Launch: `STORE_ENABLED` prüfen (Platzhalter) **und `DISTRIBUTION = 'store'`** in `src/game/distribution.ts` (schaltet den Installations-Hinweis der Web-Fassung ab; ein Test erzwingt das, sobald eine Store-Hülle im Repo liegt).
 

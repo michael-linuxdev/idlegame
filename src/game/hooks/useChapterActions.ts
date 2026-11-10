@@ -6,6 +6,7 @@ import {
   buyChapterArea,
   buyChapterMany,
   buyChapterCare,
+  chooseArcRule,
   syncChaptersOpen,
   buyIlse,
   toggleIlse,
@@ -51,6 +52,15 @@ export function useChapterActions({ setState, stateRef }: UseChapterActionsDeps)
 
   const seeChapterIntro = useCallback((id: ChapterId) => {
     setState((s) => ({ ...s, chapters: { ...s.chapters, [id]: { ...s.chapters[id], introSeen: true } } }))
+  }, [setState])
+
+  /** Bogen-Regel eines Kapitels wählen (null = keine Wahl). */
+  const chooseArc = useCallback((id: ChapterId, choice: string | null) => {
+    setState((s) => {
+      const next = chooseArcRule(s, id, choice)
+      if (next !== s) logPlaytest('arc_rule', { chapter: id, choice: choice ?? 'keine' })
+      return next
+    })
   }, [setState])
 
   /** Abschluss-Szene von Kapitel 50 gesehen (einmalig, gespeichert). */
@@ -101,5 +111,5 @@ export function useChapterActions({ setState, stateRef }: UseChapterActionsDeps)
     })
   }, [setState])
 
-  return { buyChapter, buyChapterBulk, buyChapterCareRank, seeChapterIntro, seeAbschluss, forceChapter, hireIlse, switchIlse, weinlese, ackChest, cookRecipe, tapRainbow, wish, claimPumpkin, buyFest }
+  return { buyChapter, buyChapterBulk, buyChapterCareRank, seeChapterIntro, seeAbschluss, chooseArc, forceChapter, hireIlse, switchIlse, weinlese, ackChest, cookRecipe, tapRainbow, wish, claimPumpkin, buyFest }
 }

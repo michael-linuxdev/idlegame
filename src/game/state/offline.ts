@@ -40,8 +40,10 @@ export function applyOfflineCatchup(
     cardOfflineMult(base.seasonCard)
   // Chapters grow offline with the same caps; Ilse keeps tending them
   base = syncContest(syncFest(syncChaptersOpen(base, now), now), now)
-  base = tickChapters(base, (r) =>
-    offlineCatchupErnte(r, elapsedSec, truheCaps.soft + deepCaps.soft, truheCaps.hard + deepCaps.hard),
+  base = tickChapters(
+    base,
+    (r) => offlineCatchupErnte(r, elapsedSec, truheCaps.soft + deepCaps.soft, truheCaps.hard + deepCaps.hard),
+    true,
   )
   if (base.ilseLevel > 0 && base.ilseOn && elapsedMs > 60_000) {
     base = runIlse(base, Math.min(elapsedMs, 8 * 3600_000), 300).state

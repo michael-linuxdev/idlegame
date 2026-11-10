@@ -6,7 +6,7 @@ export const privacyStrings = {
   sections: [
     {
       heading: 'Was gespeichert wird',
-      body: 'Dein Spielstand, Omas Notizbuch, Einstellungen (z. B. Ton an/aus, Sprache) und der Hinweis zur Installation werden ausschließlich im lokalen Speicher deines Browsers (localStorage) abgelegt. Diese Daten verlassen dein Gerät nicht.',
+      body: 'Dein Spielstand, Omas Notizbuch, Einstellungen (z. B. Ton an/aus, Sprache) und der Hinweis zur Installation werden ausschließlich im lokalen Speicher deines Browsers (localStorage) abgelegt. Automatische Sicherungen deines Spielstands (bis zu zehn) liegen ebenfalls nur auf deinem Gerät, in der Browser-Datenbank (IndexedDB). Diese Daten verlassen dein Gerät nicht.',
     },
     {
       heading: 'Kein Tracking',

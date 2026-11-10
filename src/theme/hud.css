@@ -482,6 +482,51 @@
   color: #fff;
 }
 
+.hud-claim.hud-today {
+  position: relative;
+  border-color: var(--ge-gruen-dunkel);
+  background: var(--hud-paper, #fffaf0);
+  box-shadow:
+    0 3px 0 var(--ge-gruen-dunkel),
+    0 6px 14px rgba(20, 60, 20, 0.18);
+  color: var(--ge-ink, #162414);
+  animation: none;
+}
+
+.hud-claim.hud-today.ready {
+  background: linear-gradient(180deg, var(--ge-gruen-hell), var(--ge-gruen));
+  color: #fff;
+  animation: hud-bob 2.2s ease-in-out infinite;
+}
+
+.hud-claim.hud-today .hud-dot {
+  top: -0.2rem;
+  right: -0.1rem;
+}
+
+.today-section + .today-section {
+  margin-top: 0.4rem;
+}
+
+.today-cook {
+  width: 100%;
+  margin-top: 0.4rem;
+}
+
+.hud-pill-rest ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.3rem;
+}
+
+.hud-pill-rest li {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
 .hud-claim:active {
   transform: translateY(2px);
   box-shadow: 0 1px 0 #b8862a;

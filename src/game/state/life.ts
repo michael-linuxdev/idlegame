@@ -29,6 +29,7 @@ import {
   type WeatherEventKind,
   weatherEventAt,
   weatherOutcome,
+  weatherCtx,
 } from '../weatherEvents'
 import { productionPerSecond } from './core'
 import { type GameState, HELPER_RANKS } from './types'
@@ -79,7 +80,7 @@ export function decideWeather(state: GameState, choice: WeatherChoice, now = Dat
     if (cost.minutes) next = { ...next, ernte: Math.max(0, next.ernte - productionPerSecond(state, now) * cost.minutes * 60) }
   }
   if (kind === 'hitze' && choice === 'risk') next = { ...next, lastTapAt: now }
-  const out = weatherOutcome(kind, choice, roll, now)
+  const out = weatherOutcome(kind, choice, roll, now, weatherCtx(state.owned))
   return { good: out.good, state: { ...next, weatherDecided: dayKey(now), weatherBuff: out.buff ?? next.weatherBuff } }
 }
 

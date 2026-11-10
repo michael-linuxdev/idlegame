@@ -14,6 +14,7 @@ import { manifestStrings } from './manifest'
 import { expansionStrings } from './stringsExpansion'
 import { lifeStrings } from './stringsLife'
 import { uxStrings } from './stringsUx'
+import { arcStrings } from './stringsArcs'
 
 const SOFT = 'Ernte'
 const SEEDS = 'Samen'
@@ -232,6 +233,9 @@ export const strings = {
     preview: (pct: number) => `mit deinem letzten Garten ≈ ${pct > 0 ? '+' : ''}${pct} % Ernte`,
     previewEven: 'mit deinem letzten Garten ≈ gleich viel Ernte',
     previewQuiet: 'lohnt sich, wenn du oft länger weg bist',
+    previewAway: (active: number, away: number) => `beim Spielen ≈ ${active > 0 ? '+' : ''}${active} % · während du weg bist ≈ ${away > 0 ? '+' : ''}${away} %`,
+    result: (name: string, pct: number) => `Dein Thema „${name}“ hat mit deinem Garten ≈ ${pct > 0 ? '+' : ''}${pct} % Ernte gebracht.`,
+    resultAway: (name: string, active: number, away: number) => `Dein Thema „${name}“: beim Spielen ≈ ${active > 0 ? '+' : ''}${active} %, während du weg warst ≈ ${away > 0 ? '+' : ''}${away} % Ernte.`,
     skip: 'Ohne Thema weitergärtnern',
     pill: (name: string) => name,
     cards: {
@@ -640,6 +644,12 @@ export const strings = {
     confirmCta: 'Wirklich? Nochmal tippen — der Garten ruht',
     resting: (clock: string) => `Der Garten ruht noch · ${clock}`,
     restHint: 'Nach einem Tiefen Winter braucht der Boden drei Tage Ruhe, bevor der nächste kommen kann.',
+    restRule: (perDay: string, cap: string) => `Jeder erledigte Tag unter „Heute“ (Gartenrunde und alle Tagesziele abgeholt) verkürzt die Ruhe um ${perDay} Stunden, zusammen um höchstens ${cap} Stunden.`,
+    restLeft: (clock: string) => `Ruhezeit: noch ${clock}`,
+    restEarned: (h: string, cap: string) => `Schon verdient: −${h} h von höchstens −${cap} h`,
+    restToday: (h: string) => `Heute noch möglich: −${h} h`,
+    restTodayCounted: 'Heute schon gezählt — morgen wieder.',
+    restCapReached: 'In dieser Ruhezeit ist nicht mehr Verkürzung drin.',
     shopTitle: 'Sprösslings-Laden',
     rank: (rank: number, max: number) => `Rang ${rank}/${max}`,
     cost: (n: number) => `${zahl(n)} Sprösslinge`,
@@ -1206,16 +1216,20 @@ export const strings = {
     variety: 'Eine neue Sorte! Im Notizbuch unter „Pflanzenbuch“ siehst du alle — jede bringt für immer etwas mehr Ernte.',
     season: 'Die Saison kann enden. Im Winter ruht der Garten, aber du nimmst Erbstücke mit — damit wird jedes Gartenjahr reicher.',
     truhe: 'In Omas Truhe warten Schätze. Tausch deine Erbstücke gegen Boni, die jeden Winter überdauern.',
-    weekly: 'Neu: Omas Wochenplan. Tipp oben links auf deine Gartenstufe — dort stehen sieben Aufgaben für diese Woche.',
+    weekly: 'Neu: Omas Wochenplan. Tipp unten links auf „Heute“ — dort stehen sieben Aufgaben für diese Woche.',
     deep: 'Alle Ecken sind offen. Wenn du magst, kann der Garten jetzt einen Tiefen Winter ruhen — für Sprösslinge, die für immer bleiben.',
     bulkMax: 'Neu: „Max“. Damit baust du dieses Beet so oft aus, wie deine Ernte gerade reicht — ein Tipp statt vieler.',
     bulk5: 'Neu: „×5“. Kauft genau fünf Stufen auf einmal — praktisch, um gezielt auf den nächsten Meilenstein zuzugehen.',
     buyAll: 'Neu: „Alles ausbauen“. Verteilt deine ganze Ernte auf alle Beete — immer zuerst dort, wo sie am meisten Ernte pro Sekunde bringt. Pflege und Kapitel kauft es nicht.',
-    recipeNew: 'Neu: Omas Tagesrezept. Oben in der Leiste steht, welche Beete heute etwas fürs Rezept liefern — fertig gekocht gibt es einen Bonus.',
+    recipeNew: 'Neu: Omas Tagesrezept. Unten links unter „Heute“ steht, welche Beete heute etwas fürs Rezept liefern — fertig gekocht gibt es einen Bonus.',
     festNew: 'Neu: Gartenfeste. Zu jeder Jahreszeit gibt es ein Fest mit Festmarken und einem eigenen Laden — tipp oben auf die Fest-Pille.',
     weatherNew: 'Neu: das Wetter. Es ändert die Ernte ein wenig, und manchmal fragt der Himmel, was du tun willst — oben siehst du auch morgen.',
     crossNew: 'Neu: Saatgut kreuzen (Menü → Kreuzen). Zwei Sorten aus dem Pflanzenbuch ergeben in 4 Stunden etwas Neues — leg gleich eine an, dann wartet bei deiner Rückkehr eine Überraschung.',
     clanNew: 'Neu: der Kleingartenverein. Im Menü unter „Verein“ wiegst du jede Woche deinen größten Kürbis gegen die Nachbarn.',
+    arcI: 'Neu in diesem Bogen: ein Patenbeet. Oben unter „Patenbeet“ wählst du einen Bereich — seine Nachbarn tragen dann mehr. Ilse entscheidet das nicht für dich.',
+    arcII: 'Neu in diesem Bogen: die Tauschpost. Oben unter „Tauschpost“ wählst du einen Weg für dieses Kapitel. Ilse entscheidet das nicht für dich.',
+    arcIII: 'Neu in diesem Bogen: Wasser verteilen. Oben unter „Wasser“ gibst du den Bereichen Wasserpunkte. Ilse entscheidet das nicht für dich.',
+    arcIV: 'Neu in diesem Bogen: ein Plan für morgen. Oben unter „Plan“ wählst du, ob das Kapitel jetzt oder während du weg bist mehr trägt. Ilse entscheidet das nicht für dich.',
     helperAreas: 'Jonas hilft jetzt mit. Du bestimmst, was er ausbauen darf: Unter „Saison“ → Gartenhelfer → „Was Jonas ausbauen darf“ kannst du einzelne Bereiche sperren und wieder freigeben.',
   },
 
@@ -1239,6 +1253,28 @@ export const strings = {
     old: 'Dieser Code stammt aus einer Vorversion des Spiels und lässt sich nicht mehr einspielen.',
     found: (when: string) => `Gültiger Spielstand vom ${when}.`,
     close: 'Schließen',
+    autoTitle: 'Automatische Sicherungen',
+    autoIntro: 'Das Spiel sichert deinen Garten selbst auf diesem Gerät: einmal am Tag und vor jedem Tiefen Winter, jeder Generation und jedem Wiederherstellen. Bei einem neuen Handy oder gelöschten Browserdaten helfen sie nicht — dafür Code oder Datei oben sichern.',
+    autoEmpty: 'Noch keine automatische Sicherung.',
+    kinds: {
+      daily: 'Tages-Sicherung',
+      deep: 'Vor dem Tiefen Winter',
+      generation: 'Vor der Generation',
+      import: 'Vor dem Einspielen',
+      restore: 'Vor dem Wiederherstellen',
+    },
+    row: (when: string, year: number, chapters: number) => `${when} · Gartenjahr ${year} · ${chapters} Kapitel`,
+    restore: 'Wiederherstellen',
+    restoreConfirm: 'Wirklich? Dein jetziger Garten wird vorher gesichert',
+    restoreBlocked: 'Gerade nicht möglich: Das Spiel ist in einem anderen Fenster offen oder eine neuere Version hat gespeichert.',
+    restoreFailed: 'Diese Sicherung lässt sich nicht einspielen.',
+    offerTitle: 'Dein Garten fehlt',
+    offerBody: 'Auf diesem Gerät ist kein Spielstand zu finden, aber es gibt automatische Sicherungen. Soll eine davon zurück?',
+    offerNew: 'Neuen Garten anlegen',
+    offerNewNote: 'Die Sicherungen bleiben erhalten; du findest sie später unter Menü → Spielstand sichern.',
+    remindText: 'Seit deiner letzten Sicherung ist viel gewachsen. Die Sicherungen auf diesem Gerät helfen nicht, wenn du das Handy wechselst oder die Browserdaten löschst — leg den Code einmal woanders ab.',
+    remindSave: 'Jetzt sichern',
+    remindLater: 'Später',
   },
 
   legal: {
@@ -1261,6 +1297,20 @@ export const strings = {
     newCorner: (name: string) => `Neu zu roden: ${name}`,
     cta: 'Ins neue Gartenjahr',
     skip: 'Weiter',
+  },
+
+  today: {
+    title: 'Heute',
+    eyebrow: 'Für heute',
+    button: 'Heute',
+    ready: (n: number) => `${n} bereit`,
+    allDone: 'erledigt',
+    open: 'Heute öffnen: Gartenrunde, Tagesrezept, Tagesziele und Wochenplan',
+    close: 'Schließen',
+    dailyDone: 'Erledigt',
+    movedNote: 'Tagesziele und Omas Wochenplan stehen jetzt unter „Heute“ (unten links).',
+    restNote: (h: string) => `Gartenrunde und alle Tagesziele abgeholt? Dann ruht der Garten nach dem Tiefen Winter ${h} Stunden kürzer.`,
+    restDone: 'Heute erledigt — die Ruhezeit ist kürzer geworden.',
   },
 
   daily: {
@@ -1327,6 +1377,7 @@ export const strings = {
   ...expansionStrings,
   ...lifeStrings,
   ux: uxStrings,
+  arcRules: arcStrings,
   careNames,
 } as const
 

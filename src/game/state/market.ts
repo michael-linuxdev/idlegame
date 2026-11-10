@@ -43,6 +43,7 @@ import { bumpQuest, productionPerSecond, syncEventWindow, syncMonetization, with
 import { withEventProgress } from './events'
 import { growPumpkin } from './extras'
 import { albumCount } from './life'
+import { withRestCredit } from './rest'
 import type { GameState } from './types'
 
 function withSkipDay(state: GameState, now = Date.now()): GameState {
@@ -115,7 +116,8 @@ export function claimDailyOps(state: GameState, now = Date.now()): GameState {
   next = bumpQuest(next, 'claimDaily', 1, now)
   next = bumpQuest(next, 'earnErnte', reward.ernte, now)
   next = withXp(next, XP_PER_DAILY, now)
-  return albumCount(collectReadyAchievements(next, now), 'daily', 1, now)
+  // Tag erledigt? Dann verkürzt er die laufende Ruhezeit (Runde 4)
+  return withRestCredit(state, albumCount(collectReadyAchievements(next, now), 'daily', 1, now), now)
 }
 
 export function dismissErntefest(state: GameState, now = Date.now()): GameState {

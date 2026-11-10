@@ -1,5 +1,6 @@
 /** Spielkern — Spielstand-Typ, Konstanten und Erweiterungs-Ausschnitt. Öffentlich über src/game/state.ts. */
 import type { AchievementId } from '../achievements'
+import type { BogenWahl } from '../arcRules'
 import { type AlbumState, emptyAlbum } from '../album'
 import type { BranchRanks } from '../branches'
 import type { ChallengeId } from '../challenges'
@@ -19,7 +20,7 @@ import { festKeyAt } from '../fests'
 import type { WheelBuff } from '../gardenLife'
 import { EMPTY_LEGACY, type LegacyUpgrades } from '../generations'
 import type { GeneratorId } from '../generators'
-import type { DeepMetaUpgrades } from '../longLoop'
+import { EMPTY_REST_CUT, type DeepMetaUpgrades, type RestCut } from '../longLoop'
 import { type CosmeticId, weekKey } from '../monetization'
 import type { ProjectId } from '../projects'
 import type { QuestProgress } from '../quests'
@@ -206,6 +207,10 @@ export interface GameState {
   weinleseAt: number
   /** Letzter Tiefer Winter (Ruhezeit, longLoop.DEEP_REST_MS); 0 = noch keiner seit dem Update */
   tieferWinterAt: number
+  /** Verdiente Verkürzung der laufenden Ruhezeit (Runde 4, longLoop.creditRestDay); beim Tiefen Winter wieder 0 */
+  ruhezeitVerkuerzung: RestCut
+  /** Bogen-Regeln der Kapitel 13–49 (Runde 4, game/arcRules.ts): Wahl je Kapitel; fehlt = keine Wahl (neutral) */
+  bogenWahl: BogenWahl
   /** Abschluss-Szene von Kapitel 50 (Omas Schrebergarten) gesehen — einmalig, übersteht jeden Reset */
   abschlussSeen: boolean
   /** Best Meilenstein count per area (lifetime) — new record opens a Truhe */
@@ -294,6 +299,8 @@ export interface ExpansionSlice {
   ilseCarryMs: number
   weinleseAt: number
   tieferWinterAt: number
+  ruhezeitVerkuerzung: RestCut
+  bogenWahl: BogenWahl
   abschlussSeen: boolean
   milestoneRecord: Record<string, number>
   lastChest: ChestReward | null
@@ -338,6 +345,8 @@ export function emptyExpansion(now = Date.now()): ExpansionSlice {
     ilseCarryMs: 0,
     weinleseAt: 0,
     tieferWinterAt: 0,
+    ruhezeitVerkuerzung: { ...EMPTY_REST_CUT },
+    bogenWahl: {},
     abschlussSeen: false,
     milestoneRecord: {},
     lastChest: null,
@@ -384,6 +393,8 @@ export function pickExpansion(s: GameState): ExpansionSlice {
     ilseCarryMs: 0,
     weinleseAt: s.weinleseAt,
     tieferWinterAt: s.tieferWinterAt,
+    ruhezeitVerkuerzung: s.ruhezeitVerkuerzung,
+    bogenWahl: s.bogenWahl,
     abschlussSeen: s.abschlussSeen,
     milestoneRecord: { ...s.milestoneRecord },
     lastChest: null,

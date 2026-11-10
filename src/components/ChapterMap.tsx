@@ -4,7 +4,6 @@ import { careNamesFor } from '../theme/careNames'
 import {
   CHAPTER_CARE_MAX,
   areaRateWithCare,
-  careCost,
   careOf,
   type CareKind,
   areaCost,
@@ -13,7 +12,12 @@ import { milestonesReached, nextMilestone } from '../game/generators'
 import { MASTERY_BONUS, masteryMult, masteryProgress, masteryStars } from '../game/mastery'
 import { formatErnte, formatClock, formatDecimal } from '../game/format'
 import { playSfx } from '../game/sound'
-import { abschlussDue, bestChapterBuy } from '../game/state'
+import { abschlussDue, bestChapterBuy, chapterAreaRates, chapterCareCostOf } from '../game/state'
+import { arcOf, areaFactor, arcRateMult } from '../game/arcRules'
+import { useHints, type HintId } from '../game/hints'
+import { useOverlayOpen } from '../game/overlays'
+import { OmaHint } from './OmaHint'
+import { ArcRuleSheet } from './ArcRuleSheet'
 import { WEINLESE } from '../game/extrasCore'
 import type { useGame } from '../game/useGame'
 import { t } from '../i18n'
@@ -64,6 +68,13 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
     toastTimer.current = window.setTimeout(() => setToast(null), ms)
   }
   const [weinleseOpen, setWeinleseOpen] = useState(false)
+  // Bogen-Regel (Runde 4): eigene Pille oben, Wahl im Fenster; Ilse entscheidet nie
+  const arc = arcOf(def.number)
+  const [arcOpen, setArcOpen] = useState(false)
+  const arcChoice = state.bogenWahl[chapter] ?? null
+  const arcMult = arc && arcChoice ? arcRateMult(def, chapterAreaRates(def, c), arcChoice) : 1
+  const { seen: seenHints, markSeen } = useHints()
+  const overlayOpen = useOverlayOpen()
   const signsAll = useSignsAlways()
   const stage = chapterStage(def, c)
   const bonusPct = formatDecimal(def.gardenBonusPerLevel * chapterLevels(c) * 100, 1)
@@ -148,6 +159,26 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
           </div>
         </div>
         <GoalStrip goal={goal} />
+        {arc ? (
+          <div className="hud-pills-wrap">
+            <div className="hud-pills">
+              <button
+                type="button"
+                className={`hud-pill pill-arc${arcChoice ? '' : ' claim'}`}
+                onClick={() => setArcOpen(true)}
+                aria-haspopup="dialog"
+              >
+                <span className="hud-pill-icon">
+                  <IconSprout />
+                </span>
+                <span className="hud-pill-name">{t.arcRules.pill[arc]}</span>
+                <span className="hud-pill-label">
+                  {arcChoice ? (arcMult > 1 ? `+${formatDecimal((arcMult - 1) * 100, (arcMult - 1) * 100 < 10 ? 1 : 0)} %` : '✓') : t.arcRules.open}
+                </span>
+              </button>
+            </div>
+          </div>
+        ) : null}
         {chapter === 'weinberg' ? (
           <div className="hud-pills-wrap">
             <div className="hud-pills">
@@ -278,6 +309,10 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
         />
       ) : null}
 
+      {arcOpen ? <ArcRuleSheet game={game} chapter={chapter} onClose={() => setArcOpen(false)} /> : null}
+      {arc && !arcChoice && c.introSeen && !selected && !arcOpen && !overlayOpen && stage >= 2 && !seenHints.includes(`arc${arc}` as HintId) ? (
+        <OmaHint id={`arc${arc}` as HintId} onOk={() => markSeen(`arc${arc}` as HintId)} />
+      ) : null}
       {!c.introSeen ? <ChapterIntro chapter={chapter} onDone={() => game.seeChapterIntro(chapter)} /> : null}
       {chapter === 'omasgarten' && abschlussDue(state) && !selected ? <AbschlussScene onDone={game.seeAbschluss} /> : null}
     </section>
@@ -307,7 +342,9 @@ function ChapterSheet({
   const unlocked = areaUnlocked(a, c.owned)
   const nextCost = game.chapterCostOf(chapter, area)
   const costMult = nextCost / Math.max(1, areaCost(a, level))
-  const mult = game.chapterRateMult * masteryMult(masteryStars(chapterDef(chapter), c))
+  // Bogen-Regel: Faktor dieses Bereichs (mit dem Deckel des Kapitels)
+  const arcFactor = areaFactor(def, chapterAreaRates(def, c), game.state.bogenWahl[chapter], def.areas.indexOf(a))
+  const mult = game.chapterRateMult * masteryMult(masteryStars(chapterDef(chapter), c)) * arcFactor
   const ms = nextMilestone(level)
   const stars = milestonesReached(level)
   const ambient = useAmbient()
@@ -484,7 +521,7 @@ function ChapterSheet({
                 {(['grow', 'thrift'] as CareKind[]).map((kind, i) => {
                   const rank = care[kind]
                   const maxed = rank >= CHAPTER_CARE_MAX
-                  const price = careCost(a, kind, rank)
+                  const price = chapterCareCostOf(game.state, chapter, a, kind, rank)
                   const name = careNames[i]!
                   return (
                     <div

@@ -29,13 +29,16 @@ npm run lint
 npm run build && npm run e2e               # Playwright-Durchlauf auf Deutsch und Englisch (Start, Saisonende, Notizbuch,
                                            #   Spielstand, UX-Layout, Sprachumschalter) + Grafik-Vergleich (?artsheet gegen
                                            #   scripts/e2e/art-baseline/, höchstens 1.500 SVG-Elemente im Hauptgarten)
-                                           #   + axe (WCAG A/AA, beide Sprachen) + englische Fenster-Durchsicht;
+                                           #   + axe (WCAG A/AA, beide Sprachen) + HUD-Grenze (scripts/e2e/hud.mjs: höchstens
+                                           #   3 Ereignis-Pillen, ein Zugang „Heute“) + englische Fenster-Durchsicht;
                                            #   Screenshots/Diffs in e2e-screens/
 npm run build && npm run screens -- en     # Jedes Fenster im iPhone-13-Format → e2e-screens/en/ (oder de)
 npm run build && npm run art:update        # Vergleichsbilder nach gewollter Grafik-Änderung erneuern
 node scripts/art/shots.mjs <ordner>        # Spielfeld-Screenshots Tag/Abend/Nacht + 4 Jahreszeiten
 npm test                                   # Vitest (Format, Balance-Formeln, Gartenjahre, Notizbuch)
 SUMMARY=1 npm run balance -- regular 336   # Balance-Simulator (engaged | regular | casual, Stunden)
+WEATHER=best DECISIONS=1 SUMMARY=1 npm run balance -- regular 8760   # … mit Wetter-Entscheidungen, zählt jede Wahl
+TASKS=1 ARC=best GEN=1 CHAPTERS=1 CHAPTER_MANUAL=0 SUMMARY=1 npm run balance -- regular 43800   # … Tagesziele (Ruhezeit) und Bogen-Regeln
 npm run build && python3 scripts/generate-pwa-icons.py   # App-Icons aus den echten Bausteinen (?artsheet=icon, Pillow)
 npx vite preview --port 4175 & node scripts/store/screenshots.cjs docs/store/screenshots de   # Store-Screenshots
 node scripts/store/screenshots.cjs docs/store/screenshots-en en                              #   … englisch
@@ -49,6 +52,7 @@ node scripts/store/screenshots.cjs docs/store/screenshots-en en                 
 | `src/game/state/` | Spielkern nach Bereichen: `types` (GameState), `create` (Start / nach dem Saisonende), `core` (Stufe, Aufgaben, Multiplikatoren, Ernte/s), `buy`, `garden` (Planen, Mengenkauf, Jonas), `chapters`, `extras`, `generation`, `fest`, `life` (Wetter, Album, Projekte, Kreuzen, Bewohner, Deko), `events`, `tick`, `market`, `offline`, `prestige` (Truhe, Saisonende, Tiefer Winter), `rewards` |
 | `src/game/useGame.ts` + `src/game/hooks/` | React-Anbindung: `useGameLoop` (Laden, Takt, Speichern), `useGardenActions`, `useChapterActions`, `useShopActions` |
 | `src/game/storage.ts`, `saveFields.ts`, `backup.ts`, `saveGuard.ts` | Spielstand: Format/Version und Migration, Feld-Parser, Sicherungscode, Schutz vor Überschreiben |
+| `src/game/autoBackup.ts`, `backupTarget.ts`, `deviceBackup.ts`, `restore.ts`, `backupReminder.ts` | Automatische Sicherungen in IndexedDB (Anlässe, Rotation, Budget), Wiederherstellen beim Start und im Menü, Erinnerung an die Sicherung außerhalb des Geräts (`docs/sicherung.md`) |
 | `src/game/economy.ts`, `truhe.ts`, `generators.ts`, `longLoop.ts`, `generations.ts` | Formeln: Saisonende-Auszahlung und Offline, Omas Truhe, Bereiche, Tiefer Winter, Generationen |
 | `src/game/` (übrige) | Tagesziele, Gartenrunde, Ereignisse, Feste, Kapitel, Playtest-Log, Hinweise, Einstellungen, Benachrichtigungen |
 | `src/theme/` | Präsentation: Farben (`tokens.css`), Schriften (`fonts.css`), Karte (`MapBackdrop`, `PlotArt`), Modulgrafik (`ModuleArt`), Icons, Stimmung (`ambient.ts`) |
@@ -58,6 +62,7 @@ node scripts/store/screenshots.cjs docs/store/screenshots-en en                 
 | `src/components/lazy.tsx` | Selten genutzte Fenster/Panels als eigene Bündel (im Leerlauf vorgeladen, offline im Precache) |
 | `src/game/overlays.ts` | Fenster-Regeln: offenes Fenster erkennen, Escape/Zurück schließt das oberste |
 | `src/i18n/` | Texte je Sprache: `de/` (Ausgangssprache), `en/` (nur bei Bedarf geladen); `t`, Spracherkennung und Live-Umschalter (`docs/i18n/technik.md`) |
+| `src/game/today.ts`, `hudPills.ts`, `arcRules.ts`, `state/rest.ts` | Heute-Karte, HUD-Grenze (höchstens 3 Pillen), Bogen-Regeln der Kapitel 13–49, Ruhezeit-Verkürzung (Runde 4) |
 | `docs/cleanup/namen.md` | Namens-Wörterbuch (alte Prototyp-Namen → Spielbegriffe); `src/test/legacyNames.test.ts` verhindert ihre Rückkehr |
 
 ## Rechtliches

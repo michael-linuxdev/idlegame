@@ -247,3 +247,19 @@
 .long-loop-block .btn.buy:disabled {
   cursor: not-allowed;
 }
+
+/* Ruhezeit nach dem Tiefen Winter (Runde 4) */
+.rest-panel {
+  margin: 0.4rem 0 0.6rem;
+  padding: 0.55rem 0.7rem;
+  border-radius: 12px;
+  background: rgba(95, 158, 69, 0.1);
+}
+
+.rest-panel p {
+  margin: 0.15rem 0;
+}
+
+.rest-panel .rest-rule {
+  font-size: 0.82rem;
+}

@@ -56,3 +56,77 @@
 .mastery-line .mastery-stars {
   font-size: 1rem;
 }
+
+/* Bogen-Regeln der Kapitel 13–49 (Runde 4) */
+.arc-options {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0.5rem 0;
+}
+
+.arc-option {
+  display: grid;
+  gap: 0.1rem;
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.5rem 0.7rem;
+  border: 2px solid rgba(95, 158, 69, 0.35);
+  border-radius: 12px;
+  background: #fffaf0;
+  color: var(--ge-ink, #162414);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.arc-option.on {
+  border-color: var(--ge-gruen-dunkel, #2f6b2a);
+  background: rgba(95, 158, 69, 0.16);
+  font-weight: 700;
+}
+
+.arc-option-detail {
+  font-size: 0.82rem;
+  font-weight: 400;
+}
+
+.arc-now {
+  margin: 0.3rem 0;
+  font-weight: 700;
+}
+
+.arc-water {
+  list-style: none;
+  margin: 0.4rem 0;
+  padding: 0;
+  display: grid;
+  gap: 0.3rem;
+}
+
+.arc-water li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.arc-water li.off {
+  opacity: 0.6;
+}
+
+.arc-water-btns {
+  display: inline-flex;
+  gap: 0.3rem;
+}
+
+.arc-water-btns .btn {
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  padding: 0 0.6rem;
+}
+
+.arc-sheet {
+  max-height: 80vh;
+  overflow-y: auto;
+}

@@ -79,6 +79,13 @@ Offen: Markenrecherche (siehe oben). Ausweichtitel, falls belegt:
 | Weinlese (Minispiel) | **Grape Picking** | Vintage | — |
 | Größter Kürbis | **Giant Pumpkin Contest** | — | — |
 | Meilenstein-Truhe | **Milestone Chest** | — | — |
+| Bogen-Regel (Kapitel 13–49) | **arc rule** | — | Je Bogen eine Wahl im Kapitel (`src/game/arcRules.ts`). |
+| Patenbeet (Bogen I) | **Sponsor bed** | Godparent bed | Ein Bereich, dessen Nachbarn mehr tragen. |
+| Tauschpost (Bogen II) | **Seed post** | — | Wie das Großprojekt *Grandma’s Seed Post*; Wege: *more yield*, *cheaper upgrades*, *cheaper care*. |
+| Wasser verteilen / Wasserpunkte (Bogen III) | **Share the water** / *water points* | — | |
+| Plan für morgen (Bogen IV) | **Plan for tomorrow** | — | *Yield now* / *Yield for tomorrow*. |
+| Heute (Karte) | **Today** | — | Gartenrunde, Rezept, Tagesziele, Wochenplan an einer Stelle. |
+| Ruhezeit (nach dem Tiefen Winter) | **rest** | — | „Der Garten ruht“ → *the garden is resting*. |
 | Kapitel-Meisterschaft / Meister-Stern | **Chapter Mastery** / **mastery star** | — | Alle Bereiche eines Kapitels auf Stufe 100, dann gepflegt (`src/game/mastery.ts`). |
 | Schrebergarten | **allotment** | — | Für Erzähltexte. |
 
