@@ -2,14 +2,18 @@
  * Opt-in Playtest-Log — nur lokal, standardmäßig aus, kein Versand.
  *
  * Läuft über Monate (siehe playtestCore.ts): Tages-Zusammenfassungen bleiben,
- * Roh-Ereignisse nur 48 h, häufige Ereignisse nur gezählt.
+ * häufige Ereignisse nur gezählt (je Minute). Roh-Ereignisse: die letzten
+ * 48 h im localStorage, ältere wandern ins Langzeit-Archiv (IndexedDB,
+ * playtestArchive.ts, ~400 Tage / ~60 MB).
  * Speicher: localStorage in zwei Schlüsseln (abgeschlossene Tage selten,
  * laufender Tag + Roh-Rest alle 12 s), Budget ~1,5 MB + ~0,5 MB. Wird der
  * Platz für den Spielstand knapp, gibt `freePlaytestSpace` zuerst den
  * Roh-Rest frei (Spielstand geht immer vor).
  */
 import { APP_VERSION } from './appUpdate'
+import { playtestArchive } from './playtestArchive'
 import {
+  SPILL_BATCH,
   addPlayTime,
   emptyLog,
   eventCount,
@@ -20,8 +24,10 @@ import {
   recordEvent,
   sessionShow,
   setSnapshot,
+  spillOld,
   type DaySummary,
   type LogState,
+  type PlaytestEvent,
   type PlaytestEventType,
   type PlaytestPayload,
 } from './playtestCore'
@@ -44,6 +50,11 @@ let flushTimer: number | null = null
 let booted = false
 let visibleSince = 0
 let snapshotFn: (() => Record<string, number | string>) | null = null
+
+const archive = playtestArchive()
+let archiving = false
+/** Archiv im Speicher, sobald das Menü es vorgeladen hat (Export ohne Warten → Teilen-Menü am iPhone) */
+let archiveCache: PlaytestEvent[] | null = null
 
 function readOptIn(): boolean {
   if (enabledCache != null) return enabledCache
@@ -79,6 +90,7 @@ function loadLog(): LogState {
         const l = live as Record<string, unknown>
         next.today = parseDay(l.today)
         next.raw = Array.isArray(l.raw) ? l.raw.map(parseEvent).filter((e) => e !== null) : []
+        next.spill = Array.isArray(l.spill) ? l.spill.map(parseEvent).filter((e) => e !== null) : []
         next.lastActive = typeof l.lastActive === 'number' ? l.lastActive : 0
       }
     }
@@ -111,16 +123,42 @@ function persistNow(state: LogState = log): void {
       localStorage.setItem(DAYS_KEY, JSON.stringify(state.days))
       daysWritten = state.days.length
     }
-    localStorage.setItem(LIVE_KEY, JSON.stringify({ today: state.today, raw: state.raw, lastActive: state.lastActive }))
+    localStorage.setItem(LIVE_KEY, JSON.stringify({ today: state.today, raw: state.raw, spill: state.spill, lastActive: state.lastActive }))
   } catch {
     // Platz knapp: Roh-Rest halbieren, Tage bleiben
     try {
       log = { ...state, raw: state.raw.slice(Math.floor(state.raw.length / 2)) }
-      localStorage.setItem(LIVE_KEY, JSON.stringify({ today: log.today, raw: log.raw, lastActive: log.lastActive }))
+      localStorage.setItem(LIVE_KEY, JSON.stringify({ today: log.today, raw: log.raw, spill: log.spill, lastActive: log.lastActive }))
     } catch {
       /* aufgeben */
     }
   }
+}
+
+/**
+ * Wartende Ereignisse ins Langzeit-Archiv schreiben. Erst nach Erfolg aus
+ * `spill` nehmen — bei Fehler bleiben sie im localStorage und kommen später.
+ */
+function archiveSpill(force = false): Promise<void> {
+  if (archiving || log.spill.length === 0) return Promise.resolve()
+  if (!force && log.spill.length < SPILL_BATCH) return Promise.resolve()
+  archiving = true
+  const batch = log.spill
+  const written = new Set(batch)
+  return archive
+    .append(batch, Date.now())
+    .then(() => {
+      log = { ...log, spill: log.spill.filter((e) => !written.has(e)) }
+      if (archiveCache) archiveCache = [...archiveCache, ...batch]
+      dirty = true
+      persistNow()
+    })
+    .catch(() => {
+      /* kein IndexedDB / Platz: bleibt in spill (höchstens SPILL_MAX) */
+    })
+    .finally(() => {
+      archiving = false
+    })
 }
 
 function scheduleFlush(): void {
@@ -129,6 +167,7 @@ function scheduleFlush(): void {
     flushTimer = null
     tickPlayTime()
     persistNow()
+    void archiveSpill()
   }, FLUSH_MS)
 }
 
@@ -154,13 +193,14 @@ export function isPlaytestLogEnabled(): boolean {
 /** Einträge im Roh-Rest + Anzahl der Tage (für die Anzeige im Menü). */
 export function getPlaytestEventCount(): number {
   ensureLoaded()
-  return eventCount(log) + log.days.length + (log.today ? 1 : 0)
+  return eventCount(log) + (archiveCache?.length ?? 0) + log.days.length + (log.today ? 1 : 0)
 }
 
 export function logPlaytest(type: PlaytestEventType, data?: PlaytestPayload): void {
   if (!readOptIn()) return
   ensureLoaded()
-  log = recordEvent(log, type, data, Date.now(), APP_VERSION)
+  const now = Date.now()
+  log = recordEvent(spillOld(log, now), type, data, now, APP_VERSION)
   dirty = true
   scheduleFlush()
 }
@@ -174,7 +214,7 @@ function onShow(now = Date.now()): void {
   if (!readOptIn()) return
   ensureLoaded()
   if (visibleSince > 0) return
-  const r = sessionShow(log, now, APP_VERSION, {
+  const r = sessionShow(spillOld(log, now), now, APP_VERSION, {
     path: typeof location !== 'undefined' ? location.pathname || '/' : '/',
     standalone: typeof matchMedia !== 'undefined' && matchMedia('(display-mode: standalone)').matches,
   })
@@ -182,6 +222,7 @@ function onShow(now = Date.now()): void {
   visibleSince = now
   dirty = true
   persistNow()
+  void archiveSpill()
 }
 
 function onHide(now = Date.now()): void {
@@ -190,6 +231,7 @@ function onHide(now = Date.now()): void {
   visibleSince = 0
   dirty = true
   persistNow()
+  void archiveSpill(true)
 }
 
 export function setPlaytestLogEnabled(on: boolean): void {
@@ -208,6 +250,8 @@ export function clearPlaytestLog(): void {
   log = emptyLog()
   daysWritten = 0
   dirty = false
+  archiveCache = []
+  void archive.clear().catch(() => undefined)
   try {
     localStorage.removeItem(DAYS_KEY)
     localStorage.removeItem(LIVE_KEY)
@@ -232,20 +276,42 @@ export function freePlaytestSpace(): void {
   log = { ...log, raw: [] }
 }
 
+/**
+ * Langzeit-Archiv in den Speicher laden (beim Öffnen des Menüs), damit der
+ * Export später ohne Warten läuft — das Teilen-Menü am iPhone braucht den
+ * Tipp „frisch“. Gibt die neue Gesamtzahl für die Anzeige zurück.
+ */
+export async function preparePlaytestExport(): Promise<number> {
+  ensureLoaded()
+  if (!archiveCache) {
+    try {
+      archiveCache = await archive.readAll()
+    } catch {
+      archiveCache = []
+    }
+  }
+  return getPlaytestEventCount()
+}
+
 export function playtestLogText(now = Date.now()): string {
   ensureLoaded()
   tickPlayTime(now)
   persistNow()
-  return exportLines(log, now, APP_VERSION)
+  return exportLines(log, now, APP_VERSION, archiveCache ?? [])
+}
+
+async function exportText(): Promise<string> {
+  if (!archiveCache) await preparePlaytestExport()
+  return playtestLogText()
 }
 
 /** JSONL speichern — auf dem iPhone über das Teilen-Menü. */
-export function exportPlaytestLog(): Promise<SaveResult> {
-  return saveFile(`playtest-log-${fileStamp()}.jsonl`, playtestLogText(), 'application/x-ndjson')
+export async function exportPlaytestLog(): Promise<SaveResult> {
+  return saveFile(`playtest-log-${fileStamp()}.jsonl`, await exportText(), 'application/x-ndjson')
 }
 
-export function copyPlaytestLog(): Promise<boolean> {
-  return copyText(playtestLogText())
+export async function copyPlaytestLog(): Promise<boolean> {
+  return copyText(await exportText())
 }
 
 /** Call once from App mount — restores the log, tracks visibility. */

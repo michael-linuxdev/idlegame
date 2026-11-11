@@ -1,7 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import {
+  ARCHIVE_BUDGET,
+  ARCHIVE_KEEP_MS,
   DAYS_BUDGET,
   RAW_KEEP_MS,
+  RAW_MAX,
+  SPILL_MAX,
+  chunksToPrune,
+  spillOld,
   addPlayTime,
   emptyLog,
   exportLines,
@@ -10,6 +16,7 @@ import {
   sessionShow,
   setSnapshot,
   type LogState,
+  type PlaytestEvent,
 } from '../game/playtestCore'
 import { canShareFile, prefersShare } from '../game/saveFile'
 
@@ -146,5 +153,55 @@ describe('Datei speichern (iOS)', () => {
         file,
       ),
     ).toBe(false)
+  })
+})
+
+describe('Langzeit-Archiv der Roh-Ereignisse', () => {
+  it('verliert über 90 Tage kein Roh-Ereignis (spill → Archiv)', () => {
+    let log = emptyLog()
+    const archived: PlaytestEvent[] = []
+    let written = 0
+    for (let d = 0; d < 90; d++) {
+      for (let i = 0; i < 40; i++) {
+        const t = T0 + d * 24 * H + i * 5 * MIN
+        log = recordEvent(spillOld(log, t), 'tab_open', { tab: 'garten' }, t)
+        written++
+        // wie playtestLog.ts: ab und zu ins Archiv
+        if (log.spill.length >= 500) {
+          archived.push(...log.spill)
+          log = { ...log, spill: [] }
+        }
+      }
+    }
+    expect(archived.length + log.spill.length + log.raw.length).toBe(written)
+    const all = [...archived, ...log.spill, ...log.raw]
+    expect(all.every((e, i) => i === 0 || e.t >= all[i - 1].t)).toBe(true)
+
+    const lines = exportLines(log, T0 + 91 * 24 * H, 'test', archived).trim().split('\n')
+    const header = JSON.parse(lines[0])
+    expect(header.raw).toBe(written)
+    expect(header.archived).toBe(archived.length)
+    expect(header.rawFrom).toBe(T0)
+  })
+
+  it('spillOld hält RAW_MAX ein und begrenzt spill ohne Archiv', () => {
+    let log = emptyLog()
+    for (let i = 0; i < RAW_MAX + SPILL_MAX + 100; i++) {
+      const t = T0 + i * 1000
+      log = recordEvent(spillOld(log, t), 'tab_open', { tab: 'markt' }, t)
+    }
+    expect(log.raw.length).toBe(RAW_MAX)
+    expect(log.spill.length).toBe(SPILL_MAX)
+    expect(log.spill[log.spill.length - 1].t).toBeLessThan(log.raw[0].t)
+  })
+
+  it('räumt nur zu alte oder zu viele Blöcke ab, älteste zuerst', () => {
+    const now = T0 + 500 * 24 * H
+    const old = { id: 1, to: now - ARCHIVE_KEEP_MS - 1, size: 1000 }
+    const fresh = { id: 2, to: now - H, size: 1000 }
+    expect(chunksToPrune([fresh, old], now)).toEqual([1])
+    expect(chunksToPrune([fresh], now)).toEqual([])
+    const big = [1, 2, 3].map((id) => ({ id, to: now, size: ARCHIVE_BUDGET / 2 }))
+    expect(chunksToPrune(big, now)).toEqual([1])
   })
 })

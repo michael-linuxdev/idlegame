@@ -79,6 +79,11 @@ export interface LogState {
   days: DaySummary[]
   today: DaySummary | null
   raw: PlaytestEvent[]
+  /**
+   * Aus dem Roh-Rest gefallene Ereignisse, die noch ins Langzeit-Archiv
+   * (IndexedDB, playtestArchive.ts) müssen. Liegt bis dahin mit im localStorage.
+   */
+  spill: PlaytestEvent[]
   /** Letzte Aktivität (für die Sitzungsgrenze) */
   lastActive: number
 }
@@ -87,6 +92,14 @@ export const LOG_SCHEMA = 2
 export const SESSION_GAP_MS = 30 * 60_000
 export const RAW_KEEP_MS = 48 * 3600_000
 export const RAW_MAX = 3000
+/** Ab so vielen wartenden Ereignissen ins Archiv schreiben */
+export const SPILL_BATCH = 500
+/** Ohne Archiv (kein IndexedDB) höchstens so viele im localStorage halten */
+export const SPILL_MAX = 5000
+/** Langzeit-Archiv: so lange bleiben Roh-Ereignisse erhalten … */
+export const ARCHIVE_KEEP_MS = 400 * 24 * 3600_000
+/** … solange sie zusammen unter diesem Budget bleiben (JSON-Zeichen, ~100 KB je Spieltag) */
+export const ARCHIVE_BUDGET = 60_000_000
 /** Größte Menge an Detail-Schlüsseln pro Tag */
 export const DAY_MAX_KEYS = 200
 /** Budget für alle abgeschlossenen Tage (JSON-Zeichen) */
@@ -130,7 +143,7 @@ export const LOG_NAMES: Record<string, string> = {
 }
 
 export function emptyLog(): LogState {
-  return { days: [], today: null, raw: [], lastActive: 0 }
+  return { days: [], today: null, raw: [], spill: [], lastActive: 0 }
 }
 
 export function localDay(t: number): string {
@@ -222,6 +235,44 @@ export function trimRaw(raw: PlaytestEvent[], now: number): PlaytestEvent[] {
   while (start < raw.length && raw[start].t < cut) start++
   let out = start > 0 ? raw.slice(start) : raw
   if (out.length > RAW_MAX) out = out.slice(-RAW_MAX)
+  return out
+}
+
+/**
+ * Roh-Ereignisse, die gleich aus dem Roh-Rest fallen würden (älter als 48 h
+ * oder über RAW_MAX), in `spill` verschieben statt sie zu verlieren.
+ * Vor jedem recordEvent/sessionShow aufrufen.
+ */
+export function spillOld(log: LogState, now: number): LogState {
+  const cut = now - RAW_KEEP_MS
+  let n = 0
+  while (n < log.raw.length && log.raw[n].t < cut) n++
+  // +1: recordEvent hängt gleich ein Ereignis an
+  n = Math.max(n, log.raw.length + 1 - RAW_MAX)
+  if (n <= 0) return log
+  let spill = [...log.spill, ...log.raw.slice(0, n)]
+  if (spill.length > SPILL_MAX) spill = spill.slice(-SPILL_MAX)
+  return { ...log, raw: log.raw.slice(n), spill }
+}
+
+export interface ArchiveChunkMeta {
+  id: number
+  /** Zeitpunkt des jüngsten Ereignisses im Block */
+  to: number
+  /** JSON-Zeichen */
+  size: number
+}
+
+/** Welche Archiv-Blöcke fallen weg (zu alt oder über dem Budget, älteste zuerst)? */
+export function chunksToPrune(chunks: ArchiveChunkMeta[], now: number): number[] {
+  const sorted = [...chunks].sort((a, b) => a.id - b.id)
+  const out: number[] = []
+  let total = sorted.reduce((sum, c) => sum + c.size, 0)
+  for (const c of sorted) {
+    if (c.to >= now - ARCHIVE_KEEP_MS && total <= ARCHIVE_BUDGET) break
+    out.push(c.id)
+    total -= c.size
+  }
   return out
 }
 
@@ -336,11 +387,14 @@ export function importLegacyEvents(log: LogState, list: unknown): LogState {
 /* —————————————— Export —————————————— */
 
 export function eventCount(log: LogState): number {
-  return log.raw.length
+  return log.raw.length + log.spill.length
 }
 
-/** JSONL: Kopfzeile, dann Tage, dann Roh-Ereignisse der letzten 48 h. */
-export function exportLines(log: LogState, now: number, version: string): string {
+/**
+ * JSONL: Kopfzeile, dann Tage, dann alle Roh-Ereignisse in Zeitfolge:
+ * Langzeit-Archiv, noch nicht archivierte, letzte 48 h.
+ */
+export function exportLines(log: LogState, now: number, version: string, archived: readonly PlaytestEvent[] = []): string {
   const days = log.today ? [...log.days, log.today] : log.days
   const header = {
     kind: 'header',
@@ -351,10 +405,14 @@ export function exportLines(log: LogState, now: number, version: string): string
     from: days[0]?.day ?? null,
     to: days[days.length - 1]?.day ?? null,
     days: days.length,
-    raw: log.raw.length,
+    raw: archived.length + log.spill.length + log.raw.length,
+    archived: archived.length,
+    rawFrom: archived[0]?.t ?? log.spill[0]?.t ?? log.raw[0]?.t ?? null,
   }
   const lines = [JSON.stringify(header)]
   for (const d of days) lines.push(JSON.stringify({ kind: 'day', ...d }))
+  for (const e of archived) lines.push(JSON.stringify(e))
+  for (const e of log.spill) lines.push(JSON.stringify(e))
   for (const e of log.raw) lines.push(JSON.stringify(e))
   return `${lines.join('\n')}\n`
 }
