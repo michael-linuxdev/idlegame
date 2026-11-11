@@ -89,6 +89,12 @@ describe('Playtest-Log über Monate', () => {
     expect(r.log.today?.sessions).toBe(2)
   })
 
+  it('schreibt die App-Version in session_start', () => {
+    const r = sessionShow(emptyLog(), T0, '2026-11-11 · abc1234', { path: '/' })
+    const ev = r.log.raw.find((e) => e.type === 'session_start')
+    expect(ev?.data).toMatchObject({ path: '/', version: '2026-11-11 · abc1234' })
+  })
+
   it('übernimmt das alte v1-Log und übersetzt alte Namen', () => {
     const legacy = [
       { t: T0, type: 'session_start', data: { app: 'gartenerbe' } },

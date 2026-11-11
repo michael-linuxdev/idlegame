@@ -137,6 +137,9 @@ export function useGardenActions({ setState, stateRef }: UseGardenActionsDeps) {
           run: next.saisonenden,
           erbstuecke: gain,
           wallet: next.erbstuecke,
+          // Herausforderung: geschafft (lief bis hier) bzw. ab jetzt aktiv
+          challengeDone: s.challenge ?? undefined,
+          challenge: next.challenge ?? undefined,
         })
         setPostPrestigeFocus(true)
         // Was das Jahres-Thema mit diesem Garten gebracht hat (Stufen am Saisonende)

@@ -256,7 +256,7 @@ export function sessionShow(
   let next = rollDay(log, t, version)
   if (isNew) {
     const gapMin = log.lastActive > 0 ? Math.round((t - log.lastActive) / 60_000) : null
-    next = recordEvent(next, 'session_start', { ...meta, gapMin }, t, version)
+    next = recordEvent(next, 'session_start', { ...meta, gapMin, version }, t, version)
     next = { ...next, today: { ...next.today!, sessions: next.today!.sessions + 1 } }
   }
   return { log: { ...next, lastActive: t }, isNew }

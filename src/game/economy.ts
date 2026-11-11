@@ -174,5 +174,9 @@ export function offlineCatchupErnte(
 export const TAP_BONUS_SECONDS = 60
 export const TAP_COOLDOWN_MS = 5 * 60 * 1000
 
-/** Ignore offline banner / claim logs below this away time (false claims). */
-export const MIN_OFFLINE_CLAIM_AWAY_MS = 15_000
+/**
+ * Offline-Zettel („Ernten“) erst ab dieser Abwesenheit; kürzere Pausen gehen
+ * ohne Zettel direkt in die Ernte (nichts geht verloren, nur keine EP).
+ * Playtest 2026-11-11: bei 15 s kamen 45 von 61 Zetteln nach < 5 min.
+ */
+export const MIN_OFFLINE_CLAIM_AWAY_MS = 5 * 60 * 1000
