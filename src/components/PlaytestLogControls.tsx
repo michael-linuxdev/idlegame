@@ -5,6 +5,7 @@ import {
   exportPlaytestLog,
   getPlaytestEventCount,
   isPlaytestLogEnabled,
+  preparePlaytestExport,
   setPlaytestLogEnabled,
 } from '../game/playtestLog'
 import { t } from '../i18n'
@@ -13,6 +14,18 @@ import { t } from '../i18n'
 export function PlaytestLogControls() {
   const [on, setOn] = useState(() => isPlaytestLogEnabled())
   const [count, setCount] = useState(() => getPlaytestEventCount())
+
+  // Langzeit-Archiv vorladen: Export/Kopieren laufen dann ohne Warten
+  useEffect(() => {
+    if (!on) return
+    let alive = true
+    void preparePlaytestExport().then((n) => {
+      if (alive) setCount(n)
+    })
+    return () => {
+      alive = false
+    }
+  }, [on])
 
   function toggle() {
     const next = !on

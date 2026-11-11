@@ -507,6 +507,9 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
               )
             })}
           </ul>
+          <p className="challenge-next" role="status">
+            {state.challengeNext ? t.challenges.next(t.challenges.names[state.challengeNext]) : t.challenges.none}
+          </p>
           <p className="muted">{t.challenges.reward}</p>
         </section>
       ) : null}
