@@ -17,11 +17,6 @@ export const LEAF_L = P.leafLight
 
 export const LEAF_D = P.leafDark
 
-/** Glasfläche; `warm` leuchtet abends und nachts (Orangerie). */
-export function Glass({ d, warm = false }: { d: string; warm?: boolean }) {
-  return <path d={d} fill={warm ? P.glassWarm : P.glass} fillOpacity="0.55" stroke={P.glassEdge} strokeWidth="1.6" strokeLinejoin="round" />
-}
-
 /** Lässt ein Bauwerk je Stufe wachsen: skaliert um den Fußpunkt (Standard: Mitte der Bodenlinie). */
 export function Grow({ s, cx = 50, cy = 77, children }: { s: number; cx?: number; cy?: number; children: ReactNode }) {
   return <g transform={s === 1 ? undefined : `translate(${cx} ${cy}) scale(${s}) translate(${-cx} ${-cy})`}>{children}</g>
