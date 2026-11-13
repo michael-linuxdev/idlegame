@@ -31,7 +31,7 @@ export function Bird({ x, y, color = P.cream, neck = P.cream, flip = false, swim
     <Place x={x} y={y} flip={flip}>
       <g className={swim ? 'ha-swim' : 'ha-graze'}>
         {!swim ? <path d="M-1 3v3M2 3v3" stroke={P.orange} strokeWidth="1" /> : null}
-        <ellipse cx="0" cy="0" rx="5.4" ry="3.4" fill={color} stroke={P.outlineFur} strokeWidth=".5" />
+        <ellipse cx="0" cy="0" rx="5.4" ry="3.4" fill={color} stroke={P.outline} strokeWidth={STROKE.hair} />
         <path d="M3.6 -1q2-5 .8-7.6" stroke={neck} strokeWidth="2.2" fill="none" strokeLinecap="round" />
         <path d="M4.2 -8.6l3 .9-3 .9z" fill={P.orange} />
         <path d="M-5 -0.4l-2.4-1.6 1 2.4z" fill={color} />

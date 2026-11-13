@@ -31,7 +31,7 @@ export function Sprout({ x, y }: { x: number; y: number }) {
 export function Lettuce({ x, y, s = 1 }: { x: number; y: number; s?: number }) {
   return (
     <Place x={x} y={y} s={s} className="ma-sway">
-      <circle cx="0" cy="-3" r="5" fill={P.leaf} stroke={P.leafDark} strokeWidth={STROKE.detail} />
+      <circle cx="0" cy="-3" r="5" fill={P.leaf} stroke={P.outline} strokeWidth={STROKE.detail} />
       <circle cx="-2" cy="-4" r="3" fill={P.leafLight} />
       <circle cx="1.6" cy="-2.4" r="2.4" fill={P.leafPale} />
     </Place>

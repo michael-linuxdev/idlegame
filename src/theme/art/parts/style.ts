@@ -1,5 +1,10 @@
-/** Strichstärken im plot-Raster (100×86); kleinere Raster skalieren mit. */
-export const STROKE = { contour: 1.3, detail: 0.9, hair: 0.5 } as const
+import { P } from '../palette'
+
+/**
+ * Strichstärken im plot-Raster (100×86); kleinere Raster skalieren mit.
+ * Seit 2026-11 der kräftige Stil (vorher 1,3 · 0,9 · 0,5).
+ */
+export const STROKE = { contour: 2, detail: 1.2, hair: 0.7 } as const
 
 /**
  * Maßtabelle: Höhe in Einheiten des plot-Rasters (100×86, Plot = 24u breit,
@@ -20,3 +25,17 @@ export const SIZE = {
   schmetterling: 4,
   biene: 3.5,
 } as const
+
+/**
+ * Kräftiger Stil (Probestück 2026-11, Bausteine in bold.tsx): drei
+ * Strichstärken im plot-Raster; im Kapitel-Raster mit k = 0,85.
+ */
+export const BOLD = STROKE
+
+export function boldLine(k = 1) {
+  return { stroke: P.outline, strokeWidth: BOLD.contour * k, strokeLinejoin: 'round' as const, strokeLinecap: 'round' as const }
+}
+
+export function boldDetail(k = 1) {
+  return { stroke: P.outline, strokeWidth: BOLD.detail * k, strokeLinejoin: 'round' as const, strokeLinecap: 'round' as const }
+}

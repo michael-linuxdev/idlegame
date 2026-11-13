@@ -15,7 +15,7 @@ import { SEASONS, chapterAreaHtml, checkPaths, svgElementCount } from './artRend
 const HEAVY = 60_000
 const DAYPARTS = ['morning', 'day', 'evening', 'night'] as const satisfies readonly Daypart[]
 /** Gleiche Grenze wie der Hauptgarten (scripts/e2e/art.mjs, MAX_ELEMENTS). */
-const MAX_ELEMENTS = 1500
+const MAX_ELEMENTS = 2500
 /**
  * Was die Karte außer der Grafik noch zeichnet: Sterne auf den zehn
  * Plaketten (je 3). Im Browser gemessen: `svg *` in der Karte = Kulisse +
