@@ -384,12 +384,12 @@ export function VineyardStakes({ id }: { id?: string }) {
   if (id === 'trockenmauer' || id === 'wingerthaus' || id === 'kelter' || id === 'weinkeller' || id === 'strausse' || id === 'weinfest') return <BuildSite />
   return (
     <ArtSvg viewBox="0 0 80 72">
-      <ellipse cx="40" cy="62" rx="26" ry="5" fill={P.outlineSoft} opacity="0.45" />
+      <ellipse cx="40" cy="62" rx="26" ry="5" fill={P.soil} opacity="0.5" />
+      <path d="M18 48H60" stroke={P.outline} strokeWidth={H * 1.3} />
       {[18, 32, 46, 60].map((x) => (
-        <path key={x} d={`M${x} 64V44`} stroke={P.outlineSoft} strokeWidth="2" />
+        <rect key={x} x={x - 1.3} y="43" width="2.6" height="21" rx=".7" fill={P.woodMid} {...detail} />
       ))}
-      <path d="M18 48H60" stroke={P.stone} strokeWidth=".8" />
-      <path d="M32 58c-4-2-5-6-3-8 3 1 4 4 3 8zM46 58c4-2 5-6 3-8-3 1-4 4-3 8z" fill={P.leafLight} />
+      <path d="M32 58c-4-2-5-6-3-8 3 1 4 4 3 8zM46 58c4-2 5-6 3-8-3 1-4 4-3 8z" fill={P.leafLight} stroke={P.outline} strokeWidth={H} strokeLinejoin="round" />
     </ArtSvg>
   )
 }
@@ -399,12 +399,13 @@ export function VineyardWild({ seed = 0 }: { seed?: number }) {
   return (
     <ArtSvg viewBox="0 0 80 72">
       {Array.from({ length: 6 }, (_, i) => (
-        <rect key={i} x={10 + i * 10} y={56 + ((i + seed) % 2) * 2} width="9" height="6" rx="2" fill={P.stone} stroke={P.outlineStone} strokeWidth=".6" />
+        <rect key={i} x={10 + i * 10} y={56 + ((i + seed) % 2) * 2} width="9" height="6" rx="2" fill={P.stone} {...detail} />
       ))}
-      <ellipse cx="30" cy="50" rx="14" ry="9" fill="#5f7a3a" />
-      <ellipse cx="52" cy="52" rx="12" ry="8" fill="#4f6a30" />
+      <ellipse cx="30" cy="50" rx="14" ry="9" fill="#5f7a3a" {...detail} />
+      <ellipse cx="52" cy="52" rx="12" ry="8" fill="#4f6a30" {...detail} />
+      <ellipse cx="26" cy="46" rx="6" ry="3" fill={P.white} opacity=".12" />
       {[24, 30, 50, 56].map((x) => (
-        <circle key={x} cx={x} cy={48 + (x % 3)} r="1.4" fill="#3a1838" />
+        <circle key={x} cx={x} cy={48 + (x % 3)} r="1.6" fill="#3a1838" />
       ))}
     </ArtSvg>
   )

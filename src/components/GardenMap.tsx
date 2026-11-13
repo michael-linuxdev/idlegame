@@ -764,9 +764,9 @@ export function GardenMap({
             {unreadLetters > 0 ? (
               <span className="laube-letter" aria-hidden="true">
                 <ArtSvg viewBox="0 0 32 24" width="100%" height="100%">
-                  <rect x="1.5" y="1.5" width="29" height="21" rx="2.5" fill="#fdf8ec" stroke="#8a6a40" strokeWidth="1.6" />
-                  <path d="M2 3 L16 14 L30 3" fill="none" stroke="#8a6a40" strokeWidth="1.6" />
-                  <circle cx="16" cy="14" r="3.4" fill="#c4553f" />
+                  <rect x="1.5" y="1.5" width="29" height="21" rx="2.5" fill="#fdf8ec" stroke="#3d2f1f" strokeWidth="1.8" />
+                  <path d="M2.4 3.4 L16 14 L29.6 3.4" fill="none" stroke="#3d2f1f" strokeWidth="1.4" strokeLinejoin="round" />
+                  <circle cx="16" cy="14" r="3.6" fill="#c4553f" stroke="#3d2f1f" strokeWidth="1.1" />
                 </ArtSvg>
               </span>
             ) : null}

@@ -34,7 +34,7 @@ export const WeatherLayer = memo(function WeatherLayer({ weather, season }: { we
         {PUDDLES.map((p, i) => (
           <div key={i} className="weather-puddle" style={{ left: `${p.left}%`, top: `${p.top}%`, width: `calc(var(--u) * ${p.w})` }}>
             <ArtSvg viewBox="0 0 40 14">
-              <ellipse cx="20" cy="7" rx="19" ry="6" fill={frozen ? P.frost : P.water} fillOpacity={frozen ? 0.9 : 0.72} stroke={P.waterDeep} strokeOpacity="0.35" strokeWidth="0.8" />
+              <ellipse cx="20" cy="7" rx="19" ry="6" fill={frozen ? P.frost : P.water} fillOpacity={frozen ? 0.9 : 0.72} stroke={P.outline} strokeOpacity="0.7" strokeWidth="1.1" />
               <ellipse cx="14" cy="5.4" rx="7" ry="1.6" fill={P.white} fillOpacity="0.35" />
               {!frozen ? <ellipse className="weather-ring" cx={12 + i * 4} cy="7.6" rx="3" ry="1.1" fill="none" stroke={P.white} strokeWidth="0.6" /> : null}
             </ArtSvg>
@@ -50,14 +50,15 @@ export const WeatherLayer = memo(function WeatherLayer({ weather, season }: { we
           <div key={i} className="weather-tuft" style={{ left: `${p.left}%`, top: `${p.top}%` }}>
             <ArtSvg viewBox="0 0 20 16">
               {/* Halme vom Wind umgebogen */}
-              <path d="M2 16 Q4 8 13 4 M6 16 Q8 9 17 6 M9 16 Q11 11 19 9 M13 16 Q15 13 20 12" fill="none" stroke={P.leafMoss} strokeWidth="1.5" strokeLinecap="round" />
+              <path d="M2 16 Q4 8 13 4 M6 16 Q8 9 17 6 M9 16 Q11 11 19 9 M13 16 Q15 13 20 12" fill="none" stroke={P.outline} strokeWidth="2.7" strokeLinecap="round" />
+              <path d="M2 16 Q4 8 13 4 M6 16 Q8 9 17 6 M9 16 Q11 11 19 9 M13 16 Q15 13 20 12" fill="none" stroke={P.leafLight} strokeWidth="1.3" strokeLinecap="round" />
             </ArtSvg>
           </div>
         ))}
         {[0, 1, 2].map((i) => (
           <span key={i} className={`weather-leaf l${i}`}>
             <ArtSvg viewBox="0 0 8 5">
-              <ellipse cx="4" cy="2.5" rx="3.6" ry="2" fill={season === 'autumn' ? P.autumn : P.leaf} />
+              <ellipse cx="4" cy="2.5" rx="3.2" ry="1.8" fill={season === 'autumn' ? P.autumn : P.leaf} stroke={P.outline} strokeWidth="0.7" />
             </ArtSvg>
           </span>
         ))}
