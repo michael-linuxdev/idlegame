@@ -1,81 +1,151 @@
-/** Hauptgarten-Bereich: kraeuterspirale. */
+/** Hauptgarten-Bereich: kraeuterspirale (kräftiger Stil, parts/bold.tsx). */
 import { Flower, Shadow, useSeason } from '../parts'
+import { BOLD, boldDetail, boldLine } from '../parts/style'
 import { P, tone } from '../palette'
-import { LEAF, LEAF_D, OUT, SOIL } from './shared'
+import { Grow, LEAF, LEAF_D, OUT } from './shared'
+
+const line = boldLine()
+const detail = boldDetail()
+
+/**
+ * Eine Windung der Spirale: Trockenmauer (Höhe h) mit Erde obenauf.
+ * (cx, y) = Mitte der Erdfläche.
+ */
+function Ring({ cx, y, rx, h, joints = 5 }: { cx: number; y: number; rx: number; h: number; joints?: number }) {
+  const ry = rx * 0.42
+  return (
+    <g>
+      <path d={`M${cx - rx} ${y} a${rx} ${ry} 0 0 0 ${2 * rx} 0 v${h} a${rx} ${ry} 0 0 1 ${-2 * rx} 0 Z`} fill={P.stoneLight} {...line} />
+      <path d={`M${cx} ${y + ry} a${rx} ${ry} 0 0 0 ${rx} ${-ry} v${h} a${rx} ${ry} 0 0 1 ${-rx} ${ry} Z`} fill={OUT} opacity="0.16" />
+      <path
+        d={Array.from({ length: joints }, (_, i) => {
+          const a = Math.PI * (0.14 + (0.72 * i) / Math.max(1, joints - 1))
+          const jx = cx - Math.cos(a) * rx
+          const jy = y + Math.sin(a) * ry
+          return `M${jx.toFixed(1)} ${(jy + 1).toFixed(1)} v${(h - 1.4).toFixed(1)}`
+        }).join(' ')}
+        stroke={OUT}
+        strokeWidth={BOLD.hair}
+        opacity="0.45"
+      />
+      <ellipse cx={cx} cy={y} rx={rx} ry={ry} fill={P.soil} {...line} />
+      <path d={`M${cx - rx * 0.72} ${y - ry * 0.3} q${rx * 0.3} ${-ry * 0.5} ${rx * 0.62} ${-ry * 0.52}`} fill="none" stroke={P.white} strokeWidth="1.3" strokeLinecap="round" opacity="0.2" />
+    </g>
+  )
+}
+
+/** Kräuterbusch; `spike` = Blütenkerze (Lavendel, Salbei). */
+function Herb({ x, y, c, r = 4.4, spike }: { x: number; y: number; c: string; r?: number; spike?: string }) {
+  return (
+    <g>
+      {spike ? (
+        <g>
+          <path d={`M${x} ${y - r} v-7`} stroke={OUT} strokeWidth="4.4" strokeLinecap="round" />
+          <path d={`M${x} ${y - r} v-7`} stroke={spike} strokeWidth="2.6" strokeLinecap="round" />
+        </g>
+      ) : null}
+      <circle cx={x} cy={y - r * 0.7} r={r} fill={c} {...detail} />
+      <circle cx={x - r * 0.3} cy={y - r} r={r * 0.4} fill={P.white} opacity="0.25" />
+    </g>
+  )
+}
 
 export function Kraeuterspirale({ t }: { t: number }) {
   const season = useSeason()
-  const stones = (n: number, cx: number, cy: number, r0: number, grow: number, per = 9) =>
-    Array.from({ length: n }, (_, i) => {
-      const a = (i / per) * Math.PI * 2
-      const r = r0 + i * grow
-      return { x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r * 0.55 }
-    })
-  const herbColors = [LEAF, tone('#8fbf5a'), tone('#6d9b56'), tone('#a3c47a')]
-  const ring = t <= 1 ? stones(12, 50, 60, 24, 0, 12) : stones(t >= 3 ? 24 : 17, 50, 60, 4, t >= 3 ? 1.35 : 1.6)
+  const winter = season === 'winter'
+  const herbs = [LEAF, tone('#8fbf5a'), tone('#6d9b56'), tone('#a3c47a')]
   return (
     <g>
-      <Shadow rx={42} />
+      <Shadow rx={t <= 1 ? 34 : t === 2 ? 39 : 44} />
       {t >= 4 ? (
         <g className={t === 4 ? 't-new' : undefined} style={{ ["--i" as string]: 1 }}>
-          <ellipse cx="78" cy="70" rx="12" ry="5.4" fill={P.pond} stroke={P.stoneDark} strokeWidth="1.6" />
-          <ellipse cx="74" cy="69" rx="3" ry="1.4" fill={LEAF} />
+          {/* Wasserstelle am Fuß der Spirale */}
+          <ellipse cx="82" cy="73" rx="14" ry="6" fill={P.stoneLight} {...line} />
+          <ellipse cx="82" cy="73" rx="10.4" ry="3.9" fill={P.pond} stroke={OUT} strokeWidth={BOLD.hair} />
+          <path d="M76 72 h5" stroke={P.white} strokeWidth="1.1" strokeLinecap="round" opacity="0.7" />
+          <ellipse cx="86.5" cy="73.6" rx="3" ry="1.4" fill={LEAF} stroke={OUT} strokeWidth={BOLD.hair} />
         </g>
       ) : null}
-      {/* soil mound */}
-      <ellipse cx="50" cy={t <= 1 ? 60 : 62} rx={t <= 1 ? 25 : 30} ry={t <= 1 ? 13 : 14} fill={SOIL} />
-      {t >= 3 ? <ellipse cx="50" cy="54" rx="16" ry="8" fill={tone('#8a5a3b')} /> : null}
-      {t >= 3 ? <ellipse cx="50" cy="47" rx="8" ry="4" fill={tone('#966646')} /> : null}
-      {ring.map((p, i) => (
-        <ellipse key={i} cx={p.x} cy={p.y - (t >= 3 ? (24 - i) * 0.55 : 0)} rx="3.6" ry="2.6" fill={P.stoneLight} stroke={P.stoneDark} strokeWidth="0.9" />
-      ))}
-      {/* herbs */}
-      <g className="ma-sway">
-      {Array.from({ length: t <= 1 ? 5 : t === 2 ? 7 : 10 }, (_, i) => {
-        const a = (i / (t <= 1 ? 5 : 10)) * Math.PI * 2 + 0.4
-        const r = t <= 1 ? 11 : 6 + (i % 4) * 4
-        const x = 50 + Math.cos(a) * r
-        const y = (t >= 3 ? 52 : 60) + Math.sin(a) * r * 0.5
-        return (
-          <g key={i}>
-            <circle cx={x} cy={y - 3} r="3.6" fill={herbColors[i % 4]} stroke={LEAF_D} strokeWidth="0.8" />
-            {t >= 3 && i % 3 === 0 ? (
-              <path d={`M${x} ${y - 6} v-5`} stroke={P.lavender} strokeWidth="2.6" strokeLinecap="round" />
-            ) : null}
+      <Grow s={t === 3 ? 0.9 : 1} cx={46}>
+        {t <= 1 ? (
+          <g>
+            <Ring cx={50} y={63} rx={25} h={4.5} joints={6} />
+            <g className="ma-sway">
+              <Herb x={36} y={64} c={herbs[0]!} />
+              <Herb x={50} y={67} c={herbs[1]!} />
+              <Herb x={63} y={64} c={herbs[2]!} />
+              <Herb x={50} y={59} c={herbs[3]!} r={3.6} />
+            </g>
           </g>
-        )
-      })}
-      </g>
-      {season === 'winter' ? (
-        <g className="art-snow" fill={P.white}>
-          {/* Schnee auf der Spirale */}
-          <ellipse cx="50" cy={t >= 3 ? 46 : 54} rx={t >= 3 ? 12 : 16} ry={t >= 3 ? 3.4 : 4.4} opacity="0.92" />
-          <ellipse cx="36" cy={t >= 3 ? 56 : 60} rx="7" ry="2" opacity="0.85" />
-          <ellipse cx="64" cy={t >= 3 ? 58 : 62} rx="6" ry="1.8" opacity="0.85" />
-        </g>
-      ) : null}
+        ) : t === 2 ? (
+          <g>
+            <Ring cx={49} y={62} rx={29} h={7} joints={6} />
+            <g className="ma-sway">
+              <Herb x={27} y={64} c={herbs[2]!} />
+              <Herb x={38} y={70} c={herbs[1]!} />
+              <Herb x={72} y={66} c={herbs[0]!} />
+            </g>
+            <Ring cx={53} y={53} rx={16} h={7} joints={4} />
+            <g className="ma-sway">
+              <Herb x={46} y={55} c={herbs[3]!} />
+              <Herb x={58} y={56} c={herbs[0]!} />
+              <Herb x={53} y={51} c={herbs[1]!} r={3.6} />
+            </g>
+          </g>
+        ) : (
+          <g>
+            <Ring cx={46} y={61} rx={33} h={8} joints={7} />
+            <g className="ma-sway">
+              <Herb x={19} y={62} c={herbs[2]!} />
+              <Herb x={29} y={70} c={herbs[1]!} spike={P.lavender} />
+              <Herb x={42} y={74} c={herbs[0]!} />
+              <Herb x={73} y={64} c={herbs[3]!} />
+            </g>
+            <Ring cx={50} y={49} rx={21} h={8} joints={5} />
+            <g className="ma-sway">
+              <Herb x={34} y={50} c={herbs[0]!} />
+              <Herb x={44} y={57} c={herbs[3]!} />
+              <Herb x={65} y={52} c={herbs[1]!} spike={P.lilac} />
+            </g>
+            <Ring cx={53} y={38} rx={11} h={7} joints={3} />
+            <g className="ma-sway">
+              <Herb x={48} y={40} c={herbs[1]!} />
+              <Herb x={58} y={41} c={herbs[2]!} />
+              <Herb x={53} y={36} c={LEAF_D} r={4} spike={P.lavender} />
+            </g>
+          </g>
+        )}
+        {winter ? (
+          <g className="art-snow" fill={P.white}>
+            {/* Schnee auf der Spirale */}
+            <ellipse cx={t >= 3 ? 53 : t === 2 ? 53 : 50} cy={t >= 3 ? 34 : t === 2 ? 49 : 60} rx={t >= 3 ? 9 : 13} ry={t >= 3 ? 3 : 4} opacity="0.95" />
+            <ellipse cx="32" cy={t >= 3 ? 58 : 62} rx="8" ry="2.4" opacity="0.9" />
+            <ellipse cx="66" cy={t >= 3 ? 59 : 63} rx="7" ry="2.2" opacity="0.9" />
+          </g>
+        ) : null}
+      </Grow>
       {season === 'spring' ? (
         <g>
-          {/* Frühblüher zwischen den Steinen */}
+          {/* Frühblüher am Fuß der Mauer */}
           {[
-            [30, 64, P.yellow],
-            [70, 63, P.white],
-            [44, 70, P.lilac],
+            [12, 74, P.yellow],
+            [22, 79, P.white],
+            [60, 80, P.lilac],
           ].map(([x, y, c], i) => (
-            <circle key={i} cx={x as number} cy={y as number} r="1.8" fill={c as string} stroke={P.leafDark} strokeWidth="0.4" />
+            <circle key={i} cx={x as number} cy={y as number} r="2" fill={c as string} stroke={OUT} strokeWidth={BOLD.hair} />
           ))}
         </g>
       ) : null}
       {t >= 5 ? (
         <g className={t === 5 ? 't-new' : undefined} style={{ ["--i" as string]: 2 }}>
-          {/* gnome */}
-          <path d="M18 72 L22 56 L26 72 Z" fill={P.roof} stroke={OUT} strokeWidth="1" />
-          <circle cx="22" cy="63" r="3" fill={P.skinLight} />
-          <path d="M19 64 Q22 72 25 64" fill={P.white} />
-          <rect x="18.5" y="68" width="7" height="5" rx="1" fill={P.denim} />
-          <Flower x={84} y={56.4} c={P.yellow} />
-          <Flower x={14} y={54.4} c={P.lavender} />
-          <Flower x={90} y={64.4} c={P.white} />
+          {/* Gartenzwerg */}
+          <rect x="5" y="70" width="10" height="8" rx="2" fill={P.denim} {...detail} />
+          <circle cx="10" cy="66" r="4.2" fill={P.skinLight} {...detail} />
+          <path d="M6 66.5 Q10 77 14 66.5 Z" fill={P.white} stroke={OUT} strokeWidth={BOLD.hair} strokeLinejoin="round" />
+          <path d="M4.6 63.6 L10 48 L15.4 63.6 Z" fill={P.roof} {...detail} />
+          <Flower x={93} y={62} c={P.yellow} />
+          <Flower x={22} y={81} c={P.lavender} />
+          <Flower x={68} y={83} c={P.white} />
         </g>
       ) : null}
     </g>

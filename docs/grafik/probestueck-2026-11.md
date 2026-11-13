@@ -27,8 +27,8 @@ weiter als handgeschriebenes SVG.
 - Leistungsgrenze: Hauptgarten 1496 SVG-Elemente (vorher 1434). Die Grenze ist neu bewertet und
   liegt jetzt bei 2500 (Messung in `docs/leistung.md`, Abschnitt 2).
 - Vergleichsbilder erneuert: 8× Hauptgarten, Weinberg.
-- **Nicht ausliefern, bevor entschieden ist:** Zwei kräftige Bereiche neben acht alten sehen im
-  Garten uneinheitlich aus.
+- Zwei kräftige Bereiche neben acht alten sahen im Garten uneinheitlich aus – seit Runde 3
+  (unten) sind alle zehn umgestellt.
 
 ## Nicht Teil des Probestücks
 - Größe der Bereiche auf der Karte, Hintergrund mit Tiefe, Oberfläche (Farben, Schilder).
@@ -49,9 +49,31 @@ weiter als handgeschriebenes SVG.
 - Leistungsgrenze 2500 (`docs/leistung.md`); Hauptgarten weiter 1496.
 - Vergleichsbilder: alle 59 erneuert.
 
-## Als Nächstes
-1. Die übrigen acht Bereiche des Hauptgartens.
-2. Kapitel-Baukasten (`ChapterArt.tsx`, `chapterArtSpecs.ts`) auf Kontur und Licht/Schatten
-   umstellen – hebt die Kapitel 13–50 gemeinsam.
-3. Handgezeichnete Kapitel 1–12 einzeln.
+## Runde 3 (2026-11-13): die übrigen acht Bereiche des Hauptgartens
+Alle zehn Bereiche sind jetzt im kräftigen Stil; der Garten ist wieder einheitlich
+(`runde3-hauptgarten.png`, Übersicht `scripts/e2e/art-baseline/garden-*.png`).
+- **Gemüsebeet:** Beet wächst vom Erdstreifen über den Holzrahmen zum Hochbeet mit Eckpfosten;
+  Bohnenzelt als grüne Pyramide, Vogelscheuche steht hinten im Beet.
+- **Kompost:** Lattenkisten mit Pfosten und Lichtseite, Schutzdach über die ganze Breite, Schubkarre
+  und Eimer mit Kontur.
+- **Kräuterspirale:** statt Steinkreis eine gemauerte Spirale aus ein, zwei, drei Windungen
+  (Trockenmauer mit Fugen), Wasserstelle mit Steinrand, größerer Zwerg.
+- **Beerenhecke:** Himbeerspalier als hohe Laubwand hinter den Büschen (im Winter kahle Ruten),
+  Spalierpfosten wachsen mit, Pflückkorb und Marmeladentisch.
+- **Obstwiese:** Jungbaum am Pfahl, Bäume werden je Stufe größer, Leiter, Fallobst, Kistenstapel,
+  Schaukel auf Stufe 5.
+- **Gewächshaus:** weißer Rahmen mit dunkler Kontur, Steinsockel, Haus wird breiter und höher;
+  Frühbeetkasten mit aufgestelltem Deckel als Stufe 1.
+- **Hofladen:** Theke und Markise mit Kontur, Ladenhäuschen aus `Wall`/`GableRoof`/`Pane`/`ArchDoor`,
+  Schild im Giebel.
+- **Orangerie:** eigene Silhouette statt „zweites Gewächshaus“ – Steinbau mit hohen Bogenfenstern
+  (leuchten abends), Gesims und Glaskuppel.
+- Neue Bausteine in `art/garden/shared.tsx`: `Grow` (Bauwerk wächst je Stufe), `Rod` (Stange/Draht
+  mit Kontur), `Pumpkin`.
+- Leistungsgrenze: Hauptgarten 1554 SVG-Elemente (Grenze 2500). Vergleichsbilder: 8× Hauptgarten.
 
+## Als Nächstes
+1. Kapitel-Baukasten (`ChapterArt.tsx`, `chapterArtSpecs.ts`) auf Kontur und Licht/Schatten
+   umstellen – hebt die Kapitel 13–50 gemeinsam.
+2. Handgezeichnete Kapitel 1–12 einzeln (Weinberg ist fertig).
+3. Wildnis und geräumte Plätze im Hauptgarten (`PlotArt.tsx`) haben noch die dünnen Striche.

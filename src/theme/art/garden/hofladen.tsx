@@ -1,97 +1,118 @@
-/** Hauptgarten-Bereich: hofladen. */
+/** Hauptgarten-Bereich: hofladen (kräftiger Stil, parts/bold.tsx). */
 import { Crate, Flower, Shadow, SnowCap, useSeason } from '../parts'
+import { ArchDoor, GableRoof, Pane, Post, Wall } from '../parts/bold'
+import { BOLD, boldDetail, boldLine } from '../parts/style'
 import { P, tone } from '../palette'
-import { OUT, WOOD, WOOD_D } from './shared'
+import { OUT, Pumpkin, Rod, WOOD } from './shared'
+
+const line = boldLine()
+const detail = boldDetail()
 
 export function Hofladen({ t }: { t: number }) {
   const season = useSeason()
+  const winter = season === 'winter'
   const produce = [P.red, P.orange, P.leafLight, P.yellow, P.plum]
   if (t === 1) {
     return (
       <g>
-        <Shadow rx={42} />
-        <Crate x={27} y={67} fruit={produce[0]} />
-        <Crate x={47} y={69} fruit={produce[1]} />
-        <Crate x={37} y={57} fruit={produce[2]} />
-        <rect x="68" y="40" width="2.4" height="32" fill={WOOD_D} />
-        <rect x="62" y="40" width="22" height="12" rx="1.5" fill={P.canvas} stroke={OUT} strokeWidth="1.2" />
-        <path d="M65 46 H81" stroke={P.soil} strokeWidth="1.6" strokeDasharray="3 2" />
-        {/* honesty box */}
-        <rect x="64" y="62" width="10" height="9" rx="1" fill={P.metal} stroke={OUT} strokeWidth="1" />
-        <rect x="66.5" y="64" width="5" height="1.2" fill={OUT} />
+        <Shadow rx={38} />
+        {/* Schild „Zu verkaufen“ */}
+        <Post x={70} y={76} h={38} w={3.4} />
+        <rect x="57" y="35" width="26" height="14" rx="1.5" fill={P.canvas} {...line} />
+        <path d="M61 42 H79" stroke={P.soil} strokeWidth="1.8" strokeDasharray="3.4 2" />
+        <Crate x={40} y={63} fruit={produce[2]} s={1.3} />
+        <Crate x={28} y={75} fruit={produce[0]} s={1.3} />
+        <Crate x={52} y={76} fruit={produce[1]} s={1.3} />
+        {/* Kasse des Vertrauens */}
+        <rect x="74" y="65" width="12" height="11" rx="1.4" fill={P.metal} {...detail} />
+        <rect x="77" y="68" width="6" height="1.5" rx="0.7" fill={OUT} />
       </g>
     )
   }
-  const stallW = t === 2 ? 56 : 72
-  const x = 50 - stallW / 2
+  const w = t === 2 ? 50 : t === 3 ? 64 : 74
+  const x = 50 - w / 2
+  const stripes = Math.round(w / 9)
+  const sw = (w - 6) / stripes
+  const crates = Math.floor(w / 20)
   return (
     <g>
-      <Shadow rx={stallW / 2 + 8} />
+      <Shadow rx={w / 2 + 8} />
       {t >= 4 ? (
         <g className={t === 4 ? 't-new' : undefined} style={{ ["--i" as string]: 1 }}>
-          {/* shop hut behind the stall */}
-          <rect x={x + 6} y="22" width={stallW - 12} height="34" fill={t >= 5 ? P.paper : WOOD} stroke={OUT} strokeWidth="1.4" />
-          <path d={`M${x} 24 L50 6 L${x + stallW} 24 Z`} fill={P.roof} stroke={OUT} strokeWidth="1.4" strokeLinejoin="round" />
-          {season === 'winter' ? <SnowCap d={`M${x + 2} 22.5 L50 5.5 L${x + stallW - 2} 22.5`} w={3.2} /> : null}
-          <rect x="44" y="34" width="12" height="22" fill={tone('#7d9f5a')} stroke={OUT} strokeWidth="1.2" />
+          {/* Ladenhäuschen hinter dem Stand */}
+          <Wall x={x + 7} y={20} w={w - 14} h={40} fill={t >= 5 ? P.paper : WOOD} planks={t >= 5 ? 0 : 3} />
+          <GableRoof x={x + 7} y={21} w={w - 14} h={t >= 5 ? 18 : 15} over={7} />
+          {winter ? <SnowCap d={`M${x + 3} ${19.5} L50 ${t >= 5 ? 2.5 : 5.5} L${x + w - 3} 19.5`} w={3.8} /> : null}
+          <ArchDoor x={44} y={58} w={12} h={22} fill={tone('#7d9f5a')} />
           {/* Fenster im Laden (leuchten abends) */}
-          <rect x="29" y="24.6" width="9" height="5" fill={P.window} stroke={OUT} strokeWidth="1" className="art-window" />
-          <rect x="62" y="24.6" width="9" height="5" fill={P.window} stroke={OUT} strokeWidth="1" className="art-window" />
+          <Pane x={x + 12} y={24} w={10} h={8} />
+          <Pane x={x + w - 22} y={24} w={10} h={8} />
           {t >= 5 ? (
             <g className={t === 5 ? 't-new' : undefined} style={{ ["--i" as string]: 2 }}>
-              <rect x="34" y="12" width="32" height="9" rx="1.5" fill={tone('#3d5a2e')} stroke={OUT} strokeWidth="1" />
-              <path d="M38 16.5 H62" stroke={P.canvas} strokeWidth="1.8" strokeDasharray="4 1.5" />
-              {/* lanterns */}
-              <circle cx={x + 10} cy="30" r="2.4" fill={P.lamp} stroke={OUT} strokeWidth="0.8" className="garden-bulb" />
-              <circle cx={x + stallW - 10} cy="30" r="2.4" fill={P.lamp} stroke={OUT} strokeWidth="0.8" className="garden-bulb" />
+              {/* Ladenschild im Giebel */}
+              <rect x="33" y="8.5" width="34" height="10" rx="1.6" fill={tone('#3d5a2e')} {...line} />
+              <path d="M37.5 13.5 H62.5" stroke={P.canvas} strokeWidth="2" strokeDasharray="4 1.6" />
             </g>
           ) : null}
         </g>
       ) : null}
-      {/* stall posts + awning */}
-      <rect x={x + 2} y="36" width="3" height="36" fill={WOOD_D} />
-      <rect x={x + stallW - 5} y="36" width="3" height="36" fill={WOOD_D} />
-      <path d={`M${x - 3} 40 L${x + 4} 30 L${x + stallW - 4} 30 L${x + stallW + 3} 40 Z`} fill={P.white} stroke={OUT} strokeWidth="1.3" strokeLinejoin="round" />
-      {season === 'winter' ? <SnowCap d={`M${x + 5} 30 H${x + stallW - 5}`} w={2.6} /> : null}
+      {/* Stand: Pfosten und Markise */}
+      <Post x={x + 3} y={75} h={38} />
+      <Post x={x + w - 3} y={75} h={38} />
+      <path d={`M${x - 4} 46 L${x + 3} 35 H${x + w - 3} L${x + w + 4} 46 Z`} fill={P.white} {...line} />
+      {Array.from({ length: Math.ceil(stripes / 2) }, (_, i) => {
+        const a = x + 3 + i * 2 * sw
+        const k = (w + 8) / (w - 6)
+        const b = x - 4 + i * 2 * sw * k
+        return <path key={i} d={`M${a} 35.8 H${a + sw} L${b + sw * k} 45.2 H${b} Z`} fill={P.barn} />
+      })}
+      <path d={`M${x + w * 0.7} 35.8 H${x + w - 3.4} L${x + w + 2.6} 45.2 H${x + w * 0.72} Z`} fill={OUT} opacity="0.14" />
+      <path d={`M${x - 4} 46 L${x + 3} 35 H${x + w - 3} L${x + w + 4} 46 Z`} fill="none" {...line} />
+      {winter ? <SnowCap d={`M${x + 4} 34 H${x + w - 4}`} w={3.2} /> : null}
+      <g className="ma-flutter">
+        <path
+          d={`M${x - 4} 46 ${Array.from({ length: stripes + 1 }, () => `q${((w + 8) / (stripes + 1) / 2).toFixed(2)} 4.6 ${((w + 8) / (stripes + 1)).toFixed(2)} 0`).join(' ')} Z`}
+          fill={P.barn}
+          {...detail}
+        />
+      </g>
+      {/* Theke mit Ware */}
+      <Wall x={x} y={58} w={w} h={17} planks={1} />
+      {Array.from({ length: crates }, (_, i) => (
+        <Crate key={i} x={50 + (i - (crates - 1) / 2) * 21} y={59} fruit={produce[i % produce.length]} s={1.12} />
+      ))}
+      <rect x={x - 1.5} y={56.6} width={w + 3} height="3.6" rx="1.2" fill={P.woodLight} {...detail} />
       {season === 'autumn' ? (
         <g>
           {/* Kürbisse vor dem Stand */}
-          <ellipse cx={x - 2} cy="68" rx="5" ry="3.8" fill={P.orange} stroke={OUT} strokeWidth="1" />
-          <ellipse cx={x + stallW + 3} cy="69" rx="4" ry="3" fill={P.amber} stroke={OUT} strokeWidth="1" />
+          <Pumpkin x={x + 9} y={77} r={5.4} />
+          <Pumpkin x={x + w - 12} y={78} r={4.4} c={P.amber} />
         </g>
       ) : null}
-      {Array.from({ length: Math.floor(stallW / 8) }, (_, i) => (
-        <path
-          key={i}
-          d={`M${x + 4 + i * 8} 30 L${x + 1 + i * 8.6} 40 L${x + 6 + i * 8.6} 40 L${x + 8 + i * 8} 30 Z`}
-          fill={P.barn}
-        />
-      ))}
-      <g className="ma-flutter">
-        {Array.from({ length: Math.floor(stallW / 8) + 1 }, (_, i) => (
-          <path key={i} d={`M${x - 3 + i * 8.4} 40 q2.1 3 4.2 0`} fill={P.barn} stroke={OUT} strokeWidth="0.8" />
-        ))}
-      </g>
-      {/* counter with produce */}
-      <rect x={x} y="56" width={stallW} height="16" rx="1.5" fill={WOOD} stroke={OUT} strokeWidth="1.3" />
-      <path d={`M${x} 64 H${x + stallW}`} stroke={WOOD_D} strokeWidth="1" />
-      {Array.from({ length: Math.floor(stallW / 18) }, (_, i) => (
-        <Crate key={i} x={x + 3 + i * 18 + 9} y={57} fruit={produce[i % produce.length]} />
-      ))}
       {t >= 3 ? (
         <g className={t === 3 ? 't-new' : undefined} style={{ ["--i" as string]: 3 }}>
-          {/* chalkboard */}
-          <path d="M86 74 L90 52 L98 52 L102 74" fill="none" stroke={WOOD_D} strokeWidth="1.6" />
-          <rect x="88" y="52" width="12" height="14" fill={tone('#2f3b2f')} stroke={WOOD_D} strokeWidth="1.2" />
-          <path d="M90 56 H98 M90 60 H96" stroke={P.cream} strokeWidth="1" />
+          {/* Kreidetafel */}
+          <Rod d="M85.5 81 L89 62 M98.5 81 L95 62" c={P.woodLight} w={1.5} />
+          <rect x="85" y="58" width="14" height="16" rx="1.2" fill={tone('#2f3b2f')} stroke={OUT} strokeWidth={BOLD.contour} />
+          <rect x="85" y="58" width="14" height="16" rx="1.2" fill="none" stroke={P.woodLight} strokeWidth="0.9" />
+          <path d="M88 63 H96 M88 67 H93.5 M88 70.5 H95" stroke={P.cream} strokeWidth="1.1" strokeLinecap="round" />
         </g>
       ) : null}
       {t >= 4 ? (
         <g className={t === 4 ? 't-new' : undefined} style={{ ["--i" as string]: 4 }}>
-          {/* flower buckets */}
-          <rect x="2" y="64" width="8" height="9" fill={P.metal} stroke={OUT} strokeWidth="0.9" />
-          <Flower x={4} y={66.4} c={P.pink} />
-          <Flower x={8.5} y={64.4} c={P.yellow} />
+          {/* Blumeneimer */}
+          <Flower x={3.6} y={72} c={P.pink} />
+          <Flower x={9.4} y={70} c={P.yellow} />
+          <path d="M0.6 71 H12.4 L11 82 H2 Z" fill={P.metal} {...detail} />
+          <rect x="2.6" y="72.4" width="2" height="8.2" fill={P.white} opacity="0.3" />
+        </g>
+      ) : null}
+      {t >= 5 ? (
+        <g className={t === 5 ? 't-new' : undefined} style={{ ["--i" as string]: 5 }}>
+          {/* Laternen unter der Markise */}
+          <path d={`M${x + 10} 47 v4 M${x + w - 10} 47 v4`} stroke={OUT} strokeWidth={BOLD.hair} />
+          <circle cx={x + 10} cy="53" r="2.8" fill={P.lamp} {...detail} className="garden-bulb" />
+          <circle cx={x + w - 10} cy="53" r="2.8" fill={P.lamp} {...detail} className="garden-bulb" />
         </g>
       ) : null}
     </g>
