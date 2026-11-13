@@ -78,31 +78,6 @@ jede Jahreszeit und jede Tageszeit Kulisse + Tierleben + zehn Bereiche
 Stichproben genau mit der Browser-Zählung überein — und verlangt ≤ 1500.
 Ohne Browser, ~0,5 s.
 
-### Grenze neu bewertet (2026-11-13): 1500 → 2500
-
-Die 1500 waren ein Richtwert, nie gegen die Bildrate gemessen. Für den kräftigeren Grafikstil
-(`docs/grafik/probestueck-2026-11.md`) gemessen: Hauptgarten im iPhone-13-Format, Chromium
-(Playwright, ohne GPU), CPU gedrosselt, 6 s Leerlauf mit allen Animationen, danach Ausbau-Fenster
-öffnen. Mehr Elemente künstlich erzeugt, indem jede Bereichs-Grafik ihre Zeichnung ein- bzw.
-zweimal zusätzlich bekommt (mit Animationen).
-
-| Szene | SVG-Elemente | 4× gedrosselt: Bilder/s · 95 %-Bildzeit · Fenster öffnen | 6× gedrosselt |
-|---|---|---|---|
-| alle Bereiche Stufe 1 | 596 | 60 · 17 ms · 223 ms | 59 · 17 ms · 356 ms |
-| alle Bereiche Stufe 5 | 1483 | 60 · 17 ms · 326 ms | 54 · 33 ms · 580 ms |
-| Stufe 5, Zeichnung ×2 | 2573 | 59 · 17 ms · 283 ms | 53 · 33 ms · 485 ms |
-| Stufe 5, Zeichnung ×3 | 3661 | 57 · 17 ms · 364 ms | 48 · 50 ms · 777 ms |
-
-- Zwischen ~1500 und ~2600 Elementen ändert sich nichts Messbares (Stil-Neuberechnung und Layout
-  je 6 s praktisch gleich: 996 → 1029 ms bzw. 148 → 156 ms bei 4×). Erst bei ~3700 fällt die
-  Bildrate und das Öffnen des Fensters wird träge.
-- Der Sprung auf schwacher CPU liegt zwischen Stufe 1 und Stufe 5 – also an den Animationen und
-  dem Leben im Garten, nicht an der reinen Zahl der Formen.
-- **Neue Grenze: 2500** für Hauptgarten (`art.mjs`) und jede Kapitel-Karte
-  (`artSeasons.test.tsx`).
-- Einschränkung: Messung im Headless-Browser, nicht auf einem echten Handy. Vor dem Store-Start
-  einmal auf einem älteren Gerät gegenprüfen (Hauptgarten voll ausgebaut, Nacht, Regen).
-
 ## 3. Spielstand-Größe und localStorage-Budget
 
 - `saveSize.test`: 49 Kapitel voll ausgebaut 37 507 Zeichen, je Kapitel

@@ -24,8 +24,8 @@ weiter als handgeschriebenes SVG.
 ## Stand
 - Jahreszeiten, Abend/Nacht (`art-window`, Stimmungs-Variablen), Winter-Schnee und die
   Stufen-Animation (`t-new`) bleiben erhalten.
-- Leistungsgrenze: Hauptgarten 1496 SVG-Elemente (vorher 1434). Die Grenze ist neu bewertet und
-  liegt jetzt bei 2500 (Messung in `docs/leistung.md`, Abschnitt 2).
+- Leistungsgrenze eingehalten: Hauptgarten 1496 von 1500 SVG-Elementen (vorher 1434). Für den
+  ganzen Garten im neuen Stil muss an anderer Stelle gespart oder die Grenze neu bewertet werden.
 - Vergleichsbilder erneuert: 8× Hauptgarten, Weinberg.
 - **Nicht ausliefern, bevor entschieden ist:** Zwei kräftige Bereiche neben acht alten sehen im
   Garten uneinheitlich aus.

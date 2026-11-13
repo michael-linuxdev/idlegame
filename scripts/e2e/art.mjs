@@ -24,7 +24,7 @@ const DIFF = 'e2e-screens/art-diff'
 /** Anteil deutlich abweichender Pixel, ab dem ein Block als geändert gilt */
 const MAX_DIFF = 0.004
 /** Leistungsgrenze Hauptgarten (alle Bereiche Stufe 5) */
-const MAX_ELEMENTS = 2500
+const MAX_ELEMENTS = 1500
 
 const server = spawn(process.execPath, ['node_modules/vite/bin/vite.js', 'preview', '--port', String(PORT), '--strictPort'], { stdio: 'ignore' })
 // Direkt statt über npx: kill() beendet so wirklich den Server (npx ließ ihn als Waise weiterlaufen)
