@@ -85,6 +85,17 @@ export function IconSun() {
 }
 
 /** Erntefest — bunting flags */
+/** Brief von Oma (wie der Umschlag an der Laube) */
+export function IconLetter() {
+  return (
+    <Svg>
+      <rect x="2.5" y="5" width="19" height="14" rx="2" fill="#fdf8ec" stroke="#8a6a40" strokeWidth="1.4" />
+      <path d="M3 6.2 12 13l9-6.8" fill="none" stroke="#8a6a40" strokeWidth="1.4" />
+      <circle cx="12" cy="13" r="2.3" fill="#c4553f" />
+    </Svg>
+  )
+}
+
 export function IconFestival() {
   return (
     <Svg>

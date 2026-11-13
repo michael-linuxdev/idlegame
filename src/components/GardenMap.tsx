@@ -575,6 +575,7 @@ export function GardenMap({
         onOpenProgress={() => setProgressOpen(true)}
         onOpenMult={() => setMultOpen(true)}
         onOpenFest={() => setFestOpen(true)}
+        onOpenLetter={unreadLetters > 0 && onOpenNotebook ? onOpenNotebook : null}
       />
 
       <FloatPops items={pops} onDone={removePop} />
