@@ -7,7 +7,7 @@ import { STROKE } from './style'
 /** Einheitlicher Bodenschatten: gleiche Höhe und Farbe je Bildraster. */
 export function Shadow({ cx, rx, grid = 'plot' }: { cx?: number; rx: number; grid?: Grid }) {
   const g = GRID[grid]
-  return <ellipse cx={cx ?? g.w / 2} cy={g.ground} rx={rx} ry={g.shadowRy} fill="var(--g-shadow)" />
+  return <ellipse cx={cx ?? g.w / 2} cy={g.ground} rx={rx} ry={g.shadowRy} fill="var(--g-shadow)" stroke="none" />
 }
 
 /**

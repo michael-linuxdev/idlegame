@@ -88,9 +88,28 @@ benutzt – alle Kapitel 4–50 sind einzeln handgezeichnet (`art/chapters/<id>.
 0,2–0,8). Einen gemeinsamen Hebel für Kapitel 13–50 gibt es deshalb nicht; es sind 47 Dateien mit
 je zehn Motiven.
 
+## Runde 5 (2026-11-13): Hauptgarten vollständig
+Alles, was auf der Hauptgarten-Karte steht, hat jetzt die dunkle Kontur (`runde5-hauptgarten.png`:
+früher Garten, voll bei Tag, Nacht und im Winter).
+- **Kulisse** (`MapBackdrop.tsx`): Omas Laube in allen drei Zuständen (Licht-/Schattenseite, Fenster
+  mit Rahmen und Kreuz, Schornstein mit Kappe), Regentonne, Teich mit Steinrand, Bäume, Hecke,
+  Jägerzaun mit Tor, Bank, Blumeninseln, Wildbüsche, Lichterkette, Schmetterlinge und die Deko der
+  Gartenstile. Die Strichstärke rechnet `ink(perU)` aus der Größe des Stücks auf der Karte, damit
+  Laube und Teich so kräftig wirken wie die Bereiche (Kontur 2 im plot-Raster = 0,48 u).
+- **Wildnis und geräumter Platz** (`PlotArt.tsx`): dieselbe dunkle Kontur, etwas dünner (1,6);
+  Farben bleiben gedeckt, damit gebaute Bereiche daneben kräftiger wirken.
+- **Kleinteile** – Deko (16), Gartenbewohner (12), Fest-Deko, Jonas und Ilse: Jede gefüllte Form
+  erbt die Kontur vom `<svg>` (`inkProps` in `theme/ink.ts`, `paint-order: stroke`). Schatten,
+  Lichtschein und halbtransparente Flächen tragen `stroke="none"`; bei den Bewohnern auch Augen und
+  kleine Flecken.
+- Leistungsgrenze: Hauptgarten 1595 SVG-Elemente (Grenze 2500). Vergleichsbilder: 8× Hauptgarten,
+  Laube, Deko.
+- **Nicht umgestellt:** Kiesweg und Rasen (Fläche ohne Kontur, so gewollt), Pfützen und Wetter,
+  Briefumschlag an der Laube, Winterruhe-Szene der Saisonende-Zeremonie (`WinterScene.tsx`).
+
 ## Als Nächstes
 1. Gemeinsame Kapitel-Teile (`HandParts.tsx`, `art/chapters/partsA…I.tsx`: Dach, Figur, Glashaus,
    Fels, Nadelbaum …) auf Kontur umstellen – der größte verbleibende Hebel, wirkt in vielen Kapiteln.
 2. Kapitel 4–12 einzeln, in Spielreihenfolge (Bauernhof zuerst); Kapitel 13–50 danach.
-3. Wildnis und geräumte Plätze im Hauptgarten (`PlotArt.tsx`) und im Weinberg.
+3. Wildnis und freie Plätze im Weinberg.
 4. Aufräumen: unbenutzten `ChapterAreaArt` entfernen (eigener Schritt, Tests hängen daran).

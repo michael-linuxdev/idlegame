@@ -1,5 +1,6 @@
 import { memo } from 'react'
 import { ArtSvg } from '../theme/ArtSvg'
+import { inkProps } from '../theme/ink'
 import { P } from '../theme/art/palette'
 
 /**
@@ -12,14 +13,14 @@ export const HelperWalker = memo(function HelperWalker({ variant = 'garden' }: {
   return (
     <div className="helper-track" aria-hidden="true">
     <div className={`helper-walker ${variant}`}>
-      <ArtSvg viewBox="0 0 48 40">
-        <ellipse cx="24" cy="37" rx="18" ry="2.6" fill="rgba(40,32,12,0.22)" />
+      <ArtSvg viewBox="0 0 48 40" {...inkProps(1.8)}>
+        <ellipse cx="24" cy="37" rx="18" ry="2.6" fill="rgba(40,32,12,0.22)" stroke="none" />
         {/* wheelbarrow */}
-        <path d="M4 20h20l-3 8H8z" fill={P.roof} stroke="#7a2e22" strokeWidth="1.2" strokeLinejoin="round" />
+        <path d="M4 20h20l-3 8H8z" fill={P.roof} />
         <circle cx="7" cy="18" r="3" fill={P.leafLight} />
         <circle cx="12" cy="17" r="3.2" fill={P.red} />
         <circle cx="17.5" cy="18" r="3" fill={P.yellow} />
-        <circle cx="10" cy="31" r="3.4" fill="#4a3a2a" stroke="#2a2018" strokeWidth="1" />
+        <circle cx="10" cy="31" r="3.4" fill="#4a3a2a" />
         <path d="M22 26l9 4" stroke={P.outlineWood} strokeWidth="1.8" strokeLinecap="round" />
         {/* Jonas: drei Laufbilder (hw-f1–3) beim Gehen, an den Bereichen gießt er (hw-pause) */}
         <g className="hw-walk">
@@ -38,14 +39,14 @@ export const HelperWalker = memo(function HelperWalker({ variant = 'garden' }: {
           <path d="M33 29l-1 7M35 29l1 7" stroke="#3d5a8a" strokeWidth="2.6" strokeLinecap="round" />
           {/* Gießkanne, Arm nach vorn, Tropfen */}
           <path d="M37 22l5 3" stroke={P.skin} strokeWidth="2.2" strokeLinecap="round" />
-          <path d="M40 24h6v5h-6z" fill={P.water} stroke={P.outline} strokeWidth=".6" />
+          <path d="M40 24h6v5h-6z" fill={P.water} />
           <path d="M46 25l2.6-2" stroke={P.water} strokeWidth="1.2" />
           <path d="M48.4 24.4v2M47.4 26v2" stroke={P.waterLight} strokeWidth=".9" strokeLinecap="round" />
         </g>
-        <rect x="30.5" y="17" width="7" height="13" rx="3" fill={P.leaf} stroke={P.leafDark} strokeWidth="1" />
-        <circle cx="34" cy="13" r="4" fill={P.skin} stroke={P.outlineSoft} strokeWidth=".8" />
-        <ellipse cx="34" cy="10" rx="6.5" ry="1.8" fill="#e8c770" stroke={P.outlineSoft} strokeWidth=".8" />
-        <path d="M30.8 9.8c.3-2.4 1.4-3.4 3.2-3.4s2.9 1 3.2 3.4z" fill="#f0d488" stroke={P.outlineSoft} strokeWidth=".8" />
+        <rect x="30.5" y="17" width="7" height="13" rx="3" fill={P.leaf} />
+        <circle cx="34" cy="13" r="4" fill={P.skin} />
+        <ellipse cx="34" cy="10" rx="6.5" ry="1.8" fill="#e8c770" />
+        <path d="M30.8 9.8c.3-2.4 1.4-3.4 3.2-3.4s2.9 1 3.2 3.4z" fill="#f0d488" />
       </ArtSvg>
     </div>
     </div>
@@ -57,8 +58,8 @@ function IlseWalker() {
   return (
     <div className="helper-track" aria-hidden="true">
     <div className="helper-walker ilse">
-      <ArtSvg viewBox="0 0 48 40">
-        <ellipse cx="24" cy="37" rx="14" ry="2.4" fill="rgba(40,32,12,0.22)" />
+      <ArtSvg viewBox="0 0 48 40" {...inkProps(1.8)}>
+        <ellipse cx="24" cy="37" rx="14" ry="2.4" fill="rgba(40,32,12,0.22)" stroke="none" />
         <g className="hw-walk">
           <g className="hw-f hw-f1">
             <path d="M22 30l-2 6M26 30l2 6" stroke="#4a3a2a" strokeWidth="2.2" strokeLinecap="round" />
@@ -77,12 +78,12 @@ function IlseWalker() {
           <path d="M14 28v4" stroke={P.leafDark} strokeWidth=".9" />
           <circle cx="14" cy="27.4" r="1.6" fill={P.pink} />
         </g>
-        <path d="M18 31l3-14h6l3 14z" fill="#3d5a8a" stroke="#2a3f63" strokeWidth=".8" />
+        <path d="M18 31l3-14h6l3 14z" fill="#3d5a8a" />
         <path d="M19 22h10" stroke={P.cream} strokeWidth="2" />
-        <circle cx="24" cy="12" r="4" fill="#f2d2b0" stroke={P.outlineSoft} strokeWidth=".7" />
+        <circle cx="24" cy="12" r="4" fill="#f2d2b0" />
         <path d="M19.6 12c0-4 2-6.2 4.4-6.2s4.4 2.2 4.4 6.2c-1-1.6-2.4-2.6-4.4-2.6s-3.4 1-4.4 2.6z" fill={P.roof} />
         <path d="M30 22l6 2" stroke="#f2d2b0" strokeWidth="2" strokeLinecap="round" />
-        <path d="M33 23h9l-1.4 6h-6.2z" fill={P.woodLight} stroke={P.outlineWood} strokeWidth=".8" />
+        <path d="M33 23h9l-1.4 6h-6.2z" fill={P.woodLight} />
         <circle cx="35.6" cy="22.4" r="1.6" fill="#d9483b" />
         <circle cx="39" cy="22.6" r="1.6" fill="#6b3a78" />
       </ArtSvg>

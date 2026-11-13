@@ -4,6 +4,7 @@ import type { Season } from './ambient'
 import { ArtSvg } from './ArtSvg'
 import { P, tone } from './art/palette'
 import { Shadow } from './art/parts'
+import { BOLD, boldDetail, boldLine } from './art/parts/style'
 /**
  * Plot states before a module exists:
  *  - WildPlot: overgrown corner (brambles / nettles / junk) — locked.
@@ -16,9 +17,10 @@ const VIEWBOX = '0 0 100 86'
 
 
 /*
- * Wildnis bleibt flach und gedeckt: niedrige Silhouette (Oberkante ≈ y 50),
- * dünne Umrisse (1–1,2) und entsättigte Farben — gebaute Bereiche sollen
- * daneben immer kräftiger wirken.
+ * Wildnis bleibt flach und gedeckt: niedrige Silhouette (Oberkante ≈ y 50)
+ * und entsättigte Farben — gebaute Bereiche sollen daneben immer kräftiger
+ * wirken. Die Kontur ist dieselbe dunkle wie überall (kräftiger Stil), nur
+ * etwas dünner (1,6 statt 2).
  */
 const W_OUT = tone('#5a6b48')
 const W_LEAF = tone('#7f9466')
@@ -32,8 +34,8 @@ function Brambles() {
       <path
         d="M18 75 C14 67 22 60 32 63 C36 55 50 54 55 60 C64 54 78 58 78 65 C85 67 85 74 80 75 Z"
         fill={W_LEAF}
-        stroke={W_OUT}
-        strokeWidth="1.2"
+        stroke={P.outline}
+        strokeWidth="1.6"
       />
       <path
         d="M24 70 C29 64 34 63 38 67 C43 60 50 60 54 65 C60 61 68 62 72 68"
@@ -59,7 +61,7 @@ function NettlesAndJunk() {
   return (
     <g>
       {/* old tyre */}
-      <ellipse cx="66" cy="70" rx="13" ry="5.4" fill={tone('#5a5a55')} stroke={tone('#3f3f3b')} strokeWidth="1.1" />
+      <ellipse cx="66" cy="70" rx="13" ry="5.4" fill={tone('#5a5a55')} stroke={P.outline} strokeWidth="1.6" />
       <ellipse cx="66" cy="69" rx="6.4" ry="2.2" fill={W_LEAF} />
       {/* nettles */}
       {[16, 25, 34, 43].map((x, i) => (
@@ -67,15 +69,15 @@ function NettlesAndJunk() {
           <path d={`M${x} 75 L${x + 1} ${56 + (i % 2) * 5}`} stroke={W_OUT} strokeWidth="1.1" />
           {[0, 1].map((k) => (
             <g key={k}>
-              <path d={`M${x + 1} ${61 + k * 6 + (i % 2) * 3} l-6 -3 l3 4 Z`} fill={W_LEAF} stroke={W_OUT} strokeWidth="0.8" />
-              <path d={`M${x + 1} ${59 + k * 6 + (i % 2) * 3} l6 -3 l-3 4 Z`} fill={W_LEAF_L} stroke={W_OUT} strokeWidth="0.8" />
+              <path d={`M${x + 1} ${61 + k * 6 + (i % 2) * 3} l-6 -3 l3 4 Z`} fill={W_LEAF} stroke={P.outline} strokeWidth="1.1" />
+              <path d={`M${x + 1} ${59 + k * 6 + (i % 2) * 3} l6 -3 l-3 4 Z`} fill={W_LEAF_L} stroke={P.outline} strokeWidth="1.1" />
             </g>
           ))}
         </g>
       ))}
       {/* broken crate */}
       <g transform="rotate(-10 76 58)">
-        <rect x="68" y="52" width="18" height="11" fill={tone('#a89276')} stroke={tone('#6e5c45')} strokeWidth="1.1" />
+        <rect x="68" y="52" width="18" height="11" fill={tone('#a89276')} stroke={P.outline} strokeWidth="1.6" />
         <path d="M68 56 H86 M68 60 H82" stroke={tone('#6e5c45')} strokeWidth="0.9" />
       </g>
       <path d="M10 75 Q30 70 50 74 T90 74" stroke={W_LEAF} strokeWidth="3" fill="none" strokeLinecap="round" />
@@ -87,10 +89,10 @@ function OvergrownHeap() {
   return (
     <g>
       {/* rubble + leaves heap */}
-      <path d="M22 75 C26 66 36 62 50 63 C64 62 75 67 78 75 Z" fill={tone('#a39678')} stroke={tone('#76694f')} strokeWidth="1.2" />
-      <circle cx="36" cy="70" r="3.8" fill={tone('#bdb39f')} stroke={tone('#857b66')} strokeWidth="0.9" />
-      <circle cx="61" cy="68" r="4.2" fill={tone('#c4bba8')} stroke={tone('#857b66')} strokeWidth="0.9" />
-      <rect x="43" y="68" width="11" height="4" rx="1" fill={tone('#b07a62')} stroke={tone('#7e5646')} strokeWidth="0.8" transform="rotate(14 48 68)" />
+      <path d="M22 75 C26 66 36 62 50 63 C64 62 75 67 78 75 Z" fill={tone('#a39678')} stroke={P.outline} strokeWidth="1.6" />
+      <circle cx="36" cy="70" r="3.8" fill={tone('#bdb39f')} stroke={P.outline} strokeWidth="1.1" />
+      <circle cx="61" cy="68" r="4.2" fill={tone('#c4bba8')} stroke={P.outline} strokeWidth="1.1" />
+      <rect x="43" y="68" width="11" height="4" rx="1" fill={tone('#b07a62')} stroke={P.outline} strokeWidth="1.1" transform="rotate(14 48 68)" />
       {/* weeds sprouting */}
       <path d="M24 64 C23 56 27 52 30 50 M74 63 C75 56 72 52 69 49 M50 58 C49 52 52 49 55 47" stroke={W_OUT} strokeWidth="1.4" fill="none" strokeLinecap="round" />
       <ellipse cx="30" cy="50" rx="4" ry="2.2" fill={W_LEAF_L} transform="rotate(-30 30 50)" />
@@ -107,11 +109,11 @@ function LeafPile() {
   return (
     <g>
       <g transform="rotate(-6 34 66)">
-        <rect x="16" y="62" width="30" height="5" rx="1" fill={tone('#a89276')} stroke={tone('#6e5c45')} strokeWidth="1" />
-        <rect x="16" y="69" width="30" height="4" rx="1" fill={tone('#a89276')} stroke={tone('#6e5c45')} strokeWidth="1" />
+        <rect x="16" y="62" width="30" height="5" rx="1" fill={tone('#a89276')} stroke={P.outline} strokeWidth="1.1" />
+        <rect x="16" y="69" width="30" height="4" rx="1" fill={tone('#a89276')} stroke={P.outline} strokeWidth="1.1" />
         <path d="M22 62 V73 M40 62 V73" stroke={tone('#6e5c45')} strokeWidth="1" />
       </g>
-      <path d="M40 75 C42 66 52 61 62 62 C72 61 82 67 84 75 Z" fill={tone('#9b8a63')} stroke={tone('#6f6249')} strokeWidth="1.1" />
+      <path d="M40 75 C42 66 52 61 62 62 C72 61 82 67 84 75 Z" fill={tone('#9b8a63')} stroke={P.outline} strokeWidth="1.6" />
       {[
         [50, 66, -20, tone('#b59a5c')],
         [60, 64, 15, tone('#a3794f')],
@@ -131,8 +133,8 @@ function FallenFruit() {
   return (
     <g>
       <ellipse cx="50" cy="72" rx="32" ry="5" fill={W_LEAF} opacity="0.8" />
-      <path d="M58 74 V62 C58 59 72 59 72 62 V74 Z" fill={tone('#9a8466')} stroke={tone('#6e5c45')} strokeWidth="1.1" />
-      <ellipse cx="65" cy="62" rx="7" ry="2.4" fill={tone('#c2ab86')} stroke={tone('#6e5c45')} strokeWidth="1" />
+      <path d="M58 74 V62 C58 59 72 59 72 62 V74 Z" fill={tone('#9a8466')} stroke={P.outline} strokeWidth="1.6" />
+      <ellipse cx="65" cy="62" rx="7" ry="2.4" fill={tone('#c2ab86')} stroke={P.outline} strokeWidth="1.1" />
       <path d="M62 62 a3 1 0 0 0 6 0" fill="none" stroke={tone('#9a8466')} strokeWidth="0.8" />
       {[22, 28, 34, 40, 46, 76, 82].map((x, i) => (
         <path key={x} d={`M${x} 74 q${i % 2 ? 2 : -2} -6 ${i % 2 ? 1 : -1} -${10 + (i % 3) * 2}`} stroke={W_OUT} strokeWidth="1" fill="none" />
@@ -143,7 +145,7 @@ function FallenFruit() {
         [52, 71],
         [80, 73],
       ].map(([x, y], i) => (
-        <circle key={i} cx={x} cy={y} r="2" fill={i % 2 ? tone('#b98c55') : tone('#b0695a')} stroke={tone('#7a4f40')} strokeWidth="0.6" />
+        <circle key={i} cx={x} cy={y} r="2" fill={i % 2 ? tone('#b98c55') : tone('#b0695a')} stroke={P.outline} strokeWidth="1.1" />
       ))}
     </g>
   )
@@ -153,12 +155,12 @@ function FallenFruit() {
 function BrokenFrame() {
   return (
     <g>
-      <path d="M18 74 L18 62 L70 58 L70 74 Z" fill={tone('#a89276')} stroke={tone('#6e5c45')} strokeWidth="1.1" />
-      <path d="M18 62 L44 60 L40 52 L22 54 Z" fill="rgba(214,232,236,0.45)" stroke={tone('#c9d6d8')} strokeWidth="1" />
+      <path d="M18 74 L18 62 L70 58 L70 74 Z" fill={tone('#a89276')} stroke={P.outline} strokeWidth="1.6" />
+      <path d="M18 62 L44 60 L40 52 L22 54 Z" fill="rgba(214,232,236,0.45)" stroke={P.outline} strokeWidth="1.1" />
       <path d="M44 60 L70 58 L58 50 Z" fill="none" stroke={tone('#c9d6d8')} strokeWidth="1" />
       <path d="M50 57 l5 -4 M60 56 l-3 -3" stroke={tone('#c9d6d8')} strokeWidth="0.8" />
       {/* Scherben */}
-      <path d="M74 72 l4 -2 l1 3 Z M80 74 l3 -1 l-1 2 Z" fill="rgba(214,232,236,0.7)" stroke={tone('#a8b6b8')} strokeWidth="0.6" />
+      <path d="M74 72 l4 -2 l1 3 Z M80 74 l3 -1 l-1 2 Z" fill="rgba(214,232,236,0.7)" stroke={P.outline} strokeWidth="1.1" />
       {[28, 38, 48, 60].map((x, i) => (
         <path key={x} d={`M${x} 64 q${i % 2 ? 3 : -3} -6 ${i % 2 ? 1 : -1} -${8 + (i % 2) * 3}`} stroke={W_OUT} strokeWidth="1.1" fill="none" />
       ))}
@@ -202,16 +204,16 @@ function WildExtra({ kind }: { kind: 'pot' | 'board' | 'flowers' }) {
     // zerbrochener Terrakotta-Topf
     return (
       <g>
-        <path d="M76 74 L74 66 H86 L84 74 Z" fill={tone('#b8836a')} stroke={tone('#7e5646')} strokeWidth="0.9" />
+        <path d="M76 74 L74 66 H86 L84 74 Z" fill={tone('#b8836a')} stroke={P.outline} strokeWidth="1.1" />
         <path d="M80 66 L82 70 L78 71" fill="none" stroke={tone('#7e5646')} strokeWidth="0.8" />
-        <path d="M88 74 l3 -3 l2 3 Z" fill={tone('#b8836a')} stroke={tone('#7e5646')} strokeWidth="0.7" />
+        <path d="M88 74 l3 -3 l2 3 Z" fill={tone('#b8836a')} stroke={P.outline} strokeWidth="1.1" />
       </g>
     )
   }
   if (kind === 'board') {
     return (
       <g transform="rotate(8 22 70)">
-        <rect x="8" y="68" width="22" height="4" rx="1" fill={tone('#a89276')} stroke={tone('#6e5c45')} strokeWidth="0.9" />
+        <rect x="8" y="68" width="22" height="4" rx="1" fill={tone('#a89276')} stroke={P.outline} strokeWidth="1.1" />
       </g>
     )
   }
@@ -297,16 +299,13 @@ function SeasonLayer({ season, cleared = false }: { season?: Season; cleared?: b
 
 /** Cleared & raked — the spot waits for its first planting. */
 export const ClearedPlot = memo(function ClearedPlot({ season }: { season?: Season }) {
+  const line = boldLine()
+  const detail = boldDetail()
   return (
     <ArtSvg className="plot-art plot-cleared" viewBox={VIEWBOX}>
       <Shadow rx={40} />
-      <path
-        d="M10 70 L22 40 L78 40 L90 70 Z"
-        fill={tone('#8a5a3b')}
-        stroke={tone('#5e3b25')}
-        strokeWidth="2"
-        strokeLinejoin="round"
-      />
+      <path d="M10 70 L22 40 L78 40 L90 70 Z" fill={tone('#8a5a3b')} {...line} />
+      <path d="M13.4 68 L23.6 42 H34 L26 68 Z" fill={P.white} opacity="0.1" />
       {[0, 1, 2, 3, 4].map((i) => (
         <path
           key={i}
@@ -317,16 +316,19 @@ export const ClearedPlot = memo(function ClearedPlot({ season }: { season?: Seas
         />
       ))}
       {/* string line + stakes */}
-      <rect x="18" y="30" width="3" height="16" rx="1" fill={P.woodLight} />
-      <rect x="79" y="30" width="3" height="16" rx="1" fill={P.woodLight} />
+      <path d="M19.5 33 Q50 37 80.5 33" stroke={P.outline} strokeWidth="2.4" fill="none" />
       <path d="M19.5 33 Q50 37 80.5 33" stroke={tone('#f2f0e0')} strokeWidth="1.2" fill="none" />
+      <rect x="17.6" y="29" width="3.8" height="17" rx="1" fill={P.woodLight} {...detail} />
+      <rect x="78.6" y="29" width="3.8" height="17" rx="1" fill={P.woodLight} {...detail} />
       {/* seed bag */}
       <g transform="translate(58 46)">
-        <path d="M0 4 L14 4 L13 20 L1 20 Z" fill={P.paper} stroke={tone('#8a7350')} strokeWidth="1.2" />
-        <rect x="3" y="9" width="8" height="6" rx="1" fill={tone('#7bb35a')} />
+        <path d="M0 4 L14 4 L13 20 L1 20 Z" fill={P.paper} {...detail} />
+        <rect x="3" y="9" width="8" height="6" rx="1" fill={tone('#7bb35a')} stroke={P.outline} strokeWidth={BOLD.hair} />
       </g>
       {/* rake */}
+      <path d="M28 64 L44 34" stroke={P.outline} strokeWidth="4.6" strokeLinecap="round" />
       <path d="M28 64 L44 34" stroke={tone('#a77d4c')} strokeWidth="2.6" strokeLinecap="round" />
+      <path d="M38 30 L50 38" stroke={P.outline} strokeWidth="4.6" strokeLinecap="round" />
       <path d="M38 30 L50 38" stroke={P.metal} strokeWidth="2.6" strokeLinecap="round" />
       <SeasonLayer season={season} cleared />
     </ArtSvg>
