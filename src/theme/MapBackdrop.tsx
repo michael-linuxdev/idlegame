@@ -168,6 +168,51 @@ const pct = (v: string) => Number.parseFloat(v)
 const MAIN_PATH =
   'M50 104 C50 97 52 91 50 85 S44 75 47 67 S54 57 49 51 S45 42 49 37 L50 31'
 
+/** Horizont der Karte in Prozent: darüber Himmel und Hügel, darunter der Garten. */
+const HORIZON = 20
+
+/** Halbe Wegbreite in Prozent der Kartenbreite: vorn am Tor breit, hinten an der Laube schmal. */
+function pathHalfWidth(y: number): number {
+  const k = Math.min(1, Math.max(0, (y - 31) / (104 - 31)))
+  return 1.5 + k * 3.3
+}
+
+/** Punkte entlang MAIN_PATH (Bézier-Stücke ausgewertet), von vorn nach hinten. */
+function mainPathPoints(): [number, number][] {
+  const segs: [number, number][][] = [
+    [[50, 104], [50, 97], [52, 91], [50, 85]],
+    [[50, 85], [48, 79], [44, 75], [47, 67]],
+    [[47, 67], [50, 59], [54, 57], [49, 51]],
+    [[49, 51], [44, 45], [45, 42], [49, 37]],
+  ]
+  const pts: [number, number][] = []
+  for (const [a, b, c, d] of segs) {
+    for (let i = 0; i < 8; i++) {
+      const t = i / 8
+      const m = 1 - t
+      pts.push([
+        m * m * m * a![0] + 3 * m * m * t * b![0] + 3 * m * t * t * c![0] + t * t * t * d![0],
+        m * m * m * a![1] + 3 * m * m * t * b![1] + 3 * m * t * t * c![1] + t * t * t * d![1],
+      ])
+    }
+  }
+  pts.push([49, 37], [50, 31])
+  return pts
+}
+
+/** Der Hauptweg als Fläche, die nach hinten schmaler wird; `grow` verbreitert sie für den Rand. */
+function taperedPath(grow = 1): string {
+  const pts = mainPathPoints()
+  const left = pts.map(([x, y]) => `${(x - pathHalfWidth(y) * grow).toFixed(2)} ${y.toFixed(2)}`)
+  const right = pts.map(([x, y]) => `${(x + pathHalfWidth(y) * grow).toFixed(2)} ${y.toFixed(2)}`).reverse()
+  return `M${left.join(' L')} L${right.join(' L')} Z`
+}
+
+/** Breite eines Stichwegs in px: hinten schmaler als vorn. */
+function stubWidth(y: number): number {
+  return 7 + ((y - 30) / 55) * 8
+}
+
 function stubPath(x: number, y: number): string {
   const yy = y + 2.5
   const toX = x < 50 ? 47 : 51
@@ -563,6 +608,8 @@ function Particles({ ambient }: { ambient: Ambient }) {
 export const MapBackdrop = memo(function MapBackdrop({ stage, ambient, skin, fest, weather }: Props) {
   const grass = useSvgId('gg-grass')
   const light = useSvgId('gg-light')
+  const sky = useSvgId('gg-sky')
+  const clip = useSvgId('gg-pathclip')
   // Ein Platz, ein Stück: Gartenstil-Deko vor Fest-Deko vor Blumeninseln und Wildbüschen
   const skinSpots = (skin && SKIN_SPOTS[skin]) || []
   const taken = [...skinSpots, ...festSpots(fest, skin, skinSpots)]
@@ -580,55 +627,71 @@ export const MapBackdrop = memo(function MapBackdrop({ stage, ambient, skin, fes
             <stop offset="55%" style={{ stopColor: 'var(--g-grass)' }} />
             <stop offset="100%" style={{ stopColor: 'var(--g-grass-near)' }} />
           </linearGradient>
+          <linearGradient id={sky} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#a9d8ef" />
+            <stop offset="100%" stopColor="#e6f5ee" />
+          </linearGradient>
+          <clipPath id={clip}>
+            <path d={taperedPath()} />
+          </clipPath>
           <radialGradient id={light} cx="62%" cy="38%" r="70%">
             <stop offset="0%" stopColor="#fffbe0" stopOpacity="0.32" />
             <stop offset="100%" stopColor="#fffbe0" stopOpacity="0" />
           </radialGradient>
         </defs>
-        <rect width="100" height="100" fill={`url(#${grass})`} />
-        {/* mowing stripes */}
-        {Array.from({ length: 9 }, (_, i) => (
-          <rect
-            key={i}
-            x={i * 12 - 4}
-            y="0"
-            width="6"
-            height="100"
-            fill={P.white}
-            opacity="0.045"
-          />
+        {/* Kulisse hinter dem Garten: Himmel, ferne Hügel, nahe Hügel mit Obstbäumen */}
+        <rect width="100" height={HORIZON + 1} fill={`url(#${sky})`} />
+        <ellipse cx="50" cy="5.4" rx="9" ry="0.9" fill="#ffffff" opacity="0.75" />
+        <ellipse cx="57" cy="6.6" rx="6" ry="0.7" fill="#ffffff" opacity="0.6" />
+        <ellipse cx="84" cy="17.4" rx="7" ry="0.6" fill="#ffffff" opacity="0.55" />
+        <path d="M0 16 Q10 13.4 22 15.6 T46 14.6 T70 16 T100 13.6 V21 H0 Z" fill="#a9cdb9" />
+        <path d="M0 18.2 Q16 15.6 34 17.8 T66 17 T100 18.4 V21 H0 Z" fill="var(--g-grass-far)" />
+        <path d="M0 18.2 Q16 15.6 34 17.8 T66 17 T100 18.4 V21 H0 Z" fill="#3f7a5a" opacity="0.28" />
+        {[6, 11, 15, 27, 31, 62, 68, 73, 88, 93].map((x, i) => (
+          <ellipse key={x} cx={x} cy={17.5 + (i % 3) * 0.25} rx="1.5" ry="0.55" fill="#3f7a5a" opacity="0.5" />
         ))}
-        <rect width="100" height="100" fill={`url(#${light})`} />
+        <rect y={HORIZON} width="100" height={100 - HORIZON} fill={`url(#${grass})`} />
+        {/* Mähstreifen laufen auf den Fluchtpunkt hinter der Laube zu */}
+        {Array.from({ length: 9 }, (_, i) => {
+          const x0 = i * 12 - 4
+          const top = (x: number) => (50 + (x - 50) * 0.42).toFixed(2)
+          return <path key={i} d={`M${top(x0)} ${HORIZON} L${top(x0 + 6)} ${HORIZON} L${x0 + 6} 100 L${x0} 100 Z`} fill={P.white} opacity="0.05" />
+        })}
+        {/* sanfte Bodenwellen */}
+        <path d="M0 37 Q24 33.6 50 36 T100 34.4 V39.4 Q76 37.6 50 40 T0 41 Z" fill="#2f5a22" opacity="0.06" />
+        <path d="M0 62 Q30 58.4 56 61 T100 59.6 V64.6 Q74 62.6 52 65.4 T0 66.4 Z" fill="#2f5a22" opacity="0.06" />
+        <rect y={HORIZON} width="100" height={100 - HORIZON} fill={`url(#${light})`} />
 
-        {/* path edge, then gravel */}
+        {/* Wegrand, dann Kies: der Hauptweg wird nach hinten schmaler */}
         <g fill="none" strokeLinecap="round" strokeLinejoin="round">
           {GENERATORS.map((g) => (
             <path
               key={`e-${g.id}`}
               d={stubPath(pct(g.slot.left), pct(g.slot.top))}
               stroke="var(--g-path-edge)"
-              strokeWidth="18"
+              strokeWidth={stubWidth(pct(g.slot.top)) + 5}
               vectorEffect="non-scaling-stroke"
             />
           ))}
-          <path d={MAIN_PATH} stroke="var(--g-path-edge)" strokeWidth="30" vectorEffect="non-scaling-stroke" />
+          <path d={taperedPath(1.28)} fill="var(--g-path-edge)" />
           {GENERATORS.map((g) => (
             <path
               key={`p-${g.id}`}
               d={stubPath(pct(g.slot.left), pct(g.slot.top))}
               stroke="var(--g-path)"
-              strokeWidth="13"
+              strokeWidth={stubWidth(pct(g.slot.top))}
               vectorEffect="non-scaling-stroke"
             />
           ))}
-          <path d={MAIN_PATH} stroke="var(--g-path)" strokeWidth="24" vectorEffect="non-scaling-stroke" />
+          <path d={taperedPath()} fill="var(--g-path)" />
           <path
             d={MAIN_PATH}
             stroke="var(--g-path-speck)"
-            strokeWidth="24"
+            strokeWidth="60"
             strokeDasharray="1 5"
             vectorEffect="non-scaling-stroke"
             opacity="0.7"
+            clipPath={`url(#${clip})`}
           />
         </g>
       </ArtSvg>
@@ -639,13 +702,13 @@ export const MapBackdrop = memo(function MapBackdrop({ stage, ambient, skin, fes
       <div className="garden-hedge">
         <Hecke />
       </div>
-      <Decor className="decor-tree" left="-3%" top="17%" w={30}>
+      <Decor className="decor-tree" left="-1%" top="19.5%" w={21}>
         <Baum tone={1} season={ambient.season} />
       </Decor>
-      <Decor className="decor-tree" left="103%" top="14%" w={32}>
+      <Decor className="decor-tree" left="101%" top="18.5%" w={23}>
         <Baum tone={0} season={ambient.season} />
       </Decor>
-      <Decor className="decor-laube" left="50%" top="26.5%" w={22}>
+      <Decor className="decor-laube" left="50%" top="25.6%" w={26}>
         <Laube stage={stage} />
         <span className="laube-glow" />
       </Decor>
@@ -653,10 +716,10 @@ export const MapBackdrop = memo(function MapBackdrop({ stage, ambient, skin, fes
         <Regentonne />
       </Decor>
 
-      <Decor className="decor-tree" left="-5%" top="76%" w={28}>
+      <Decor className="decor-tree" left="-6%" top="76%" w={33}>
         <Baum tone={2} season={ambient.season} />
       </Decor>
-      <Decor className="decor-tree" left="104%" top="64%" w={26}>
+      <Decor className="decor-tree" left="105%" top="64%" w={30}>
         <Baum tone={1} season={ambient.season} />
       </Decor>
       <Decor className="decor-teich" left="92%" top="66%" w={24}>

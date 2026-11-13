@@ -82,12 +82,13 @@
   height: auto;
 }
 
+/* Hecke = hintere Gartengrenze am Horizont (MapBackdrop HORIZON = 20 %) */
 .garden-hedge {
   position: absolute;
   left: 0;
   right: 0;
-  top: 0;
-  height: calc(var(--u) * 11);
+  top: 18.2%;
+  height: calc(var(--u) * 6);
 }
 
 .garden-hedge > svg,

@@ -138,6 +138,17 @@ Der freie, noch nicht angelegte Platz bekommt die Bereichs-ID (`ChapterArtEntry.
   Test `src/test/mapSpots.test.ts`.
 - **Pfützen:** in der Bodenebene und auf freien Stellen (siehe oben).
 
+## Probestück Horizont (2026-11-14) – **nur auf dem Branch, noch nicht entschieden**
+Anlass: Vergleich mit Lichtwarte (Tiefe durch Horizont, Wahrzeichen am Fluchtpunkt, Weg mit
+Perspektive). Bilder vorher/nachher: `probe-horizont-tag.png`, `-nacht.png`, `-frueh.png`.
+- Kulisse über dem Garten (`MapBackdrop.tsx`, `HORIZON` = 20 %): Himmel, zwei Hügelketten, die
+  Hecke als hintere Gartengrenze am Horizont statt am oberen Bildrand.
+- Hauptweg als Fläche, die zur Laube hin schmaler wird (`taperedPath`); Stichwege hinten dünner.
+- Laube größer (22 → 26 u) als Fluchtpunkt; Bäume hinten kleiner, vorn größer; Mähstreifen laufen
+  auf den Fluchtpunkt zu; zwei sanfte Bodenwellen.
+- Offen: Nachthimmel (Mond, Sterne), Jahreszeiten der Hügel, Lichthof für ausgebaute Bereiche,
+  kleinere gesperrte Plätze. Plätze der Bereiche, Deko und Pfützen sind unverändert.
+
 ## Als Nächstes
 1. Gemeinsame Kapitel-Teile (`HandParts.tsx`, `art/chapters/partsA…I.tsx`: Dach, Figur, Glashaus,
    Fels, Nadelbaum …) auf Kontur umstellen – der größte verbleibende Hebel, wirkt in vielen Kapiteln.
