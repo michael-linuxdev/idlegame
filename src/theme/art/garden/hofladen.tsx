@@ -85,26 +85,30 @@ export function Hofladen({ t }: { t: number }) {
       {season === 'autumn' ? (
         <g>
           {/* Kürbisse vor dem Stand */}
-          <Pumpkin x={x + 9} y={77} r={5.4} />
-          <Pumpkin x={x + w - 12} y={78} r={4.4} c={P.amber} />
+          <Pumpkin x={x - 3} y={72} r={5} />
+          <Pumpkin x={x + 7} y={73.4} r={4} c={P.amber} />
         </g>
       ) : null}
       {t >= 3 ? (
         <g className={t === 3 ? 't-new' : undefined} style={{ ["--i" as string]: 3 }}>
           {/* Kreidetafel */}
+          <g transform="translate(0 -4.5)">
           <Rod d="M85.5 81 L89 62 M98.5 81 L95 62" c={P.woodLight} w={1.5} />
           <rect x="85" y="58" width="14" height="16" rx="1.2" fill={tone('#2f3b2f')} stroke={OUT} strokeWidth={BOLD.contour} />
           <rect x="85" y="58" width="14" height="16" rx="1.2" fill="none" stroke={P.woodLight} strokeWidth="0.9" />
           <path d="M88 63 H96 M88 67 H93.5 M88 70.5 H95" stroke={P.cream} strokeWidth="1.1" strokeLinecap="round" />
+          </g>
         </g>
       ) : null}
       {t >= 4 ? (
         <g className={t === 4 ? 't-new' : undefined} style={{ ["--i" as string]: 4 }}>
           {/* Blumeneimer */}
+          <g transform="translate(0 -5.5)">
           <Flower x={3.6} y={72} c={P.pink} />
           <Flower x={9.4} y={70} c={P.yellow} />
           <path d="M0.6 71 H12.4 L11 82 H2 Z" fill={P.metal} {...detail} />
           <rect x="2.6" y="72.4" width="2" height="8.2" fill={P.white} opacity="0.3" />
+          </g>
         </g>
       ) : null}
       {t >= 5 ? (

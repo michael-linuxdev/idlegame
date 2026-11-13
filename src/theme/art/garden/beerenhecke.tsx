@@ -54,7 +54,7 @@ export function Beerenhecke({ t }: { t: number }) {
       {t === 1 ? (
         <g className="t-new" style={{ ["--i" as string]: 3 }}>
           <Bush x={44} y={76} r={14} berry={berries[0]} />
-          <Bush x={66} y={77} r={8} />
+          <Bush x={66} y={76} r={8} />
         </g>
       ) : null}
       {t === 2 ? (
@@ -67,28 +67,30 @@ export function Beerenhecke({ t }: { t: number }) {
         <g className={t === 3 ? 't-new' : undefined} style={{ ["--i" as string]: 5 }}>
           <Bush x={25} y={75} r={t >= 4 ? 14.5 : 13.5} berry={berries[0]} />
           <Bush x={75} y={75} r={t >= 4 ? 14.5 : 13.5} berry={berries[2]} />
-          <Bush x={50} y={77} r={t >= 4 ? 17 : 15.5} berry={berries[1]} />
+          <Bush x={50} y={76} r={t >= 4 ? 17 : 15.5} berry={berries[1]} />
         </g>
       ) : null}
       {t >= 4 ? (
         <g className={t === 4 ? 't-new' : undefined} style={{ ["--i" as string]: 0 }}>
           {/* Pflückkorb */}
+          <g transform="translate(0 -4.5)">
           <path d="M83.5 71 q7.5 -12 15 0" fill="none" stroke={OUT} strokeWidth={BOLD.contour} strokeLinecap="round" />
           {[86.5, 91, 95.5].map((x, i) => (
             <circle key={x} cx={x} cy={70.4 - (i % 2)} r="2.4" fill={P.berry} stroke={OUT} strokeWidth={BOLD.hair} />
           ))}
           <path d="M82 71 h18 l-2.6 10 h-12.8 z" fill={P.woodLight} {...detail} />
           <path d="M83.4 75 h15.4" stroke={OUT} strokeWidth={BOLD.hair} opacity="0.45" />
+          </g>
         </g>
       ) : null}
       {t >= 5 ? (
         <g className={t === 5 ? 't-new' : undefined} style={{ ["--i" as string]: 1 }}>
           {/* Marmeladentisch */}
-          <Post x={3} y={82} h={10} w={2.6} />
-          <Post x={17} y={82} h={10} w={2.6} />
-          <rect x="-1" y="68.5" width="22" height="4" rx="1" fill={P.wood} {...detail} />
-          <Jar x={5} y={68.5} c={P.berry} s={1.15} />
-          <Jar x={14} y={68.5} c={tone('#3b1d4a')} s={1.15} />
+          <Post x={3} y={76.5} h={10} w={2.6} />
+          <Post x={17} y={76.5} h={10} w={2.6} />
+          <rect x="-1" y="63" width="22" height="4" rx="1" fill={P.wood} {...detail} />
+          <Jar x={5} y={63} c={P.berry} s={1.15} />
+          <Jar x={14} y={63} c={tone('#3b1d4a')} s={1.15} />
         </g>
       ) : null}
     </g>

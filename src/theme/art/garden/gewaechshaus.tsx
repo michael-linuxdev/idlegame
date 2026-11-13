@@ -101,14 +101,14 @@ export function Gewaechshaus({ t }: { t: number }) {
       </Grow>
       {t >= 4 ? (
         <g className={t === 4 ? 't-new' : undefined} style={{ ["--i" as string]: 3 }}>
-          <CitrusPot x={7} y={79} s={0.72} fruit={P.red} />
-          <CitrusPot x={93} y={79} s={0.72} fruit={P.amber} />
+          <CitrusPot x={7} y={76.5} s={0.72} fruit={P.red} />
+          <CitrusPot x={93} y={76.5} s={0.72} fruit={P.amber} />
         </g>
       ) : null}
       {t >= 5 ? (
         <g className={t === 5 ? 't-new' : undefined} style={{ ["--i" as string]: 4 }}>
-          <Flower x={20} y={81} c={P.red} />
-          <Flower x={80} y={81} c={P.pink} />
+          <Flower x={16} y={77} c={P.red} />
+          <Flower x={84} y={77} c={P.pink} />
         </g>
       ) : null}
     </g>

@@ -60,12 +60,14 @@ export function Kraeuterspirale({ t }: { t: number }) {
       {t >= 4 ? (
         <g className={t === 4 ? 't-new' : undefined} style={{ ["--i" as string]: 1 }}>
           {/* Wasserstelle am Fuß der Spirale */}
-          <ellipse cx="82" cy="73" rx="14" ry="6" fill={P.stoneLight} {...line} />
-          <ellipse cx="82" cy="73" rx="10.4" ry="3.9" fill={P.pond} stroke={OUT} strokeWidth={BOLD.hair} />
-          <path d="M76 72 h5" stroke={P.white} strokeWidth="1.1" strokeLinecap="round" opacity="0.7" />
-          <ellipse cx="86.5" cy="73.6" rx="3" ry="1.4" fill={LEAF} stroke={OUT} strokeWidth={BOLD.hair} />
+          <ellipse cx="84" cy="69" rx="13" ry="5.6" fill={P.stoneLight} {...line} />
+          <ellipse cx="84" cy="69" rx="9.6" ry="3.6" fill={P.pond} stroke={OUT} strokeWidth={BOLD.hair} />
+          <path d="M78 68 h5" stroke={P.white} strokeWidth="1.1" strokeLinecap="round" opacity="0.7" />
+          <ellipse cx="88" cy="69.6" rx="3" ry="1.4" fill={LEAF} stroke={OUT} strokeWidth={BOLD.hair} />
         </g>
       ) : null}
+      {/* Die Mauer endet über der Schild-Zone (SIGN_ZONE_Y) */}
+      <g transform={`translate(0 ${t <= 1 ? -4 : t === 2 ? -6 : t === 3 ? -4 : -8})`}>
       <Grow s={t === 3 ? 0.9 : 1} cx={46}>
         {t <= 1 ? (
           <g>
@@ -124,13 +126,14 @@ export function Kraeuterspirale({ t }: { t: number }) {
           </g>
         ) : null}
       </Grow>
+      </g>
       {season === 'spring' ? (
         <g>
           {/* Frühblüher am Fuß der Mauer */}
           {[
-            [12, 74, P.yellow],
-            [22, 79, P.white],
-            [60, 80, P.lilac],
+            [10, 72, P.yellow],
+            [16, 76, P.white],
+            [92, 76, P.lilac],
           ].map(([x, y, c], i) => (
             <circle key={i} cx={x as number} cy={y as number} r="2" fill={c as string} stroke={OUT} strokeWidth={BOLD.hair} />
           ))}
@@ -139,13 +142,15 @@ export function Kraeuterspirale({ t }: { t: number }) {
       {t >= 5 ? (
         <g className={t === 5 ? 't-new' : undefined} style={{ ["--i" as string]: 2 }}>
           {/* Gartenzwerg */}
-          <rect x="5" y="70" width="10" height="8" rx="2" fill={P.denim} {...detail} />
-          <circle cx="10" cy="66" r="4.2" fill={P.skinLight} {...detail} />
-          <path d="M6 66.5 Q10 77 14 66.5 Z" fill={P.white} stroke={OUT} strokeWidth={BOLD.hair} strokeLinejoin="round" />
-          <path d="M4.6 63.6 L10 48 L15.4 63.6 Z" fill={P.roof} {...detail} />
-          <Flower x={93} y={62} c={P.yellow} />
-          <Flower x={22} y={81} c={P.lavender} />
-          <Flower x={68} y={83} c={P.white} />
+          <g transform="translate(0 -3)">
+            <rect x="5" y="70" width="10" height="8" rx="2" fill={P.denim} {...detail} />
+            <circle cx="10" cy="66" r="4.2" fill={P.skinLight} {...detail} />
+            <path d="M6 66.5 Q10 77 14 66.5 Z" fill={P.white} stroke={OUT} strokeWidth={BOLD.hair} strokeLinejoin="round" />
+            <path d="M4.6 63.6 L10 48 L15.4 63.6 Z" fill={P.roof} {...detail} />
+          </g>
+          <Flower x={95} y={58} c={P.yellow} />
+          <Flower x={2.6} y={62} c={P.lavender} />
+          <Flower x={18.6} y={76} c={P.white} />
         </g>
       ) : null}
     </g>

@@ -17,6 +17,7 @@ import type { FestId } from '../game/fests'
 import type { Weather } from '../game/gardenLife'
 import { WeatherLayer } from '../components/WeatherLayer'
 import { FestDecor, FestSkinDecor } from './FestDecor'
+import { festSpots, spotsCollide, type Spot } from './festItems'
 import { useSvgId } from './svgId'
 import { ArtSvg } from './ArtSvg'
 import { P, tone } from './art/palette'
@@ -124,55 +125,41 @@ function Kuerbisse() {
   )
 }
 
+/** Plätze der Gartenstil-Deko (haben Vorrang vor Fest-Deko und Blumeninseln). */
+const SKIN_SPOTS: Record<string, readonly (Spot & { kind: 'sonnenblume' | 'kirschbaum' | 'lavendel' | 'kuerbisse' })[]> = {
+  'skin-bauerngarten': [4, 9, 14, 86, 91, 96].map((x, i) => ({ left: x, top: 92 - (i % 2) * 1.5, w: 5, kind: 'sonnenblume' as const })),
+  'skin-bluetenmeer': [
+    { left: 94, top: 40, w: 20, kind: 'kirschbaum' },
+    { left: 6, top: 62, w: 18, kind: 'kirschbaum' },
+    { left: 72, top: 92, w: 16, kind: 'lavendel' },
+  ],
+  'skin-goldherbst': [
+    { left: 72, top: 92, w: 11, kind: 'kuerbisse' },
+    { left: 9, top: 62, w: 11, kind: 'kuerbisse' },
+    { left: 92, top: 46, w: 10, kind: 'kuerbisse' },
+  ],
+}
+
 /** Extra decor per Gartenstil — purely cosmetic. */
 function SkinDecor({ skin }: { skin?: string }) {
-  if (skin === 'skin-bauerngarten') {
-    return (
-      <>
-        {[4, 9, 14, 86, 91, 96].map((x, i) => (
-          <Decor key={x} className="decor-skin" left={`${x}%`} top={`${92 - (i % 2) * 1.5}%`} w={5}>
-            <Sonnenblume />
-          </Decor>
-        ))}
-      </>
-    )
-  }
-  if (skin === 'skin-bluetenmeer') {
-    return (
-      <>
-        <Decor className="decor-skin" left="94%" top="40%" w={20}>
-          <Kirschbaum />
+  const spots = (skin && SKIN_SPOTS[skin]) || []
+  if (!spots.length) return null
+  return (
+    <>
+      {spots.map((sp) => (
+        <Decor key={`${sp.left}/${sp.top}`} className="decor-skin" left={`${sp.left}%`} top={`${sp.top}%`} w={sp.w}>
+          {sp.kind === 'sonnenblume' ? <Sonnenblume /> : sp.kind === 'kirschbaum' ? <Kirschbaum /> : sp.kind === 'lavendel' ? <Lavendel /> : <Kuerbisse />}
         </Decor>
-        <Decor className="decor-skin" left="6%" top="62%" w={18}>
-          <Kirschbaum />
-        </Decor>
-        <Decor className="decor-skin" left="72%" top="92%" w={16}>
-          <Lavendel />
-        </Decor>
+      ))}
+      {skin === 'skin-bluetenmeer' ? (
         <div className="ambient-particles p-petal skin-petals">
           {Array.from({ length: 6 }, (_, i) => (
             <span key={i} style={{ left: `${(i * 17 + 9) % 100}%`, animationDelay: `${-i * 3}s` }} />
           ))}
         </div>
-      </>
-    )
-  }
-  if (skin === 'skin-goldherbst') {
-    return (
-      <>
-        <Decor className="decor-skin" left="72%" top="92%" w={11}>
-          <Kuerbisse />
-        </Decor>
-        <Decor className="decor-skin" left="9%" top="62%" w={11}>
-          <Kuerbisse />
-        </Decor>
-        <Decor className="decor-skin" left="92%" top="46%" w={10}>
-          <Kuerbisse />
-        </Decor>
-      </>
-    )
-  }
-  return null
+      ) : null}
+    </>
+  )
 }
 
 const pct = (v: string) => Number.parseFloat(v)
@@ -526,28 +513,28 @@ function Schmetterling({ hue }: { hue: string }) {
 
 /** Wild clumps vanish one by one as the garden is angelegt. */
 const WILD_CLUMPS = [
-  { left: '47%', top: '77%', until: 1 },
-  { left: '7%', top: '63%', until: 2 },
-  { left: '92%', top: '47%', until: 3 },
-  { left: '56%', top: '57%', until: 4 },
-  { left: '6%', top: '37%', until: 5 },
-  { left: '93%', top: '37%', until: 6 },
-  { left: '8%', top: '51%', until: 7 },
+  { left: 47, top: 77, until: 1 },
+  { left: 7, top: 63, until: 2 },
+  { left: 92, top: 47, until: 3 },
+  { left: 56, top: 57, until: 4 },
+  { left: 6, top: 37, until: 5 },
+  { left: 93, top: 37, until: 6 },
+  { left: 8, top: 51, until: 7 },
 ]
 
 /** Flower clusters bloom in as the garden grows. */
 const FLOWERS = [
-  { left: '72%', top: '91%', from: 1 },
-  { left: '51%', top: '75%', from: 2 },
-  { left: '7%', top: '63%', from: 3 },
-  { left: '56%', top: '57%', from: 4 },
-  { left: '92%', top: '59%', from: 4 },
-  { left: '92%', top: '47%', from: 5 },
-  { left: '56%', top: '50%', from: 6 },
-  { left: '8%', top: '51%', from: 7 },
-  { left: '6%', top: '37%', from: 8 },
-  { left: '93%', top: '37%', from: 9 },
-  { left: '10%', top: '82%', from: 10 },
+  { left: 72, top: 91, from: 1 },
+  { left: 51, top: 75, from: 2 },
+  { left: 7, top: 63, from: 3 },
+  { left: 56, top: 57, from: 4 },
+  { left: 92, top: 59, from: 4 },
+  { left: 92, top: 47, from: 5 },
+  { left: 56, top: 50, from: 6 },
+  { left: 8, top: 51, from: 7 },
+  { left: 6, top: 37, from: 8 },
+  { left: 93, top: 37, from: 9 },
+  { left: 10, top: 82, from: 10 },
 ]
 
 /** Seasonal particles — a handful of transform-only elements. */
@@ -576,6 +563,10 @@ function Particles({ ambient }: { ambient: Ambient }) {
 export const MapBackdrop = memo(function MapBackdrop({ stage, ambient, skin, fest, weather }: Props) {
   const grass = useSvgId('gg-grass')
   const light = useSvgId('gg-light')
+  // Ein Platz, ein Stück: Gartenstil-Deko vor Fest-Deko vor Blumeninseln und Wildbüschen
+  const skinSpots = (skin && SKIN_SPOTS[skin]) || []
+  const taken = [...skinSpots, ...festSpots(fest, skin, skinSpots)]
+  const free = (left: number, top: number, w: number) => !taken.some((sp) => spotsCollide(sp, { left, top, w }))
   return (
     <div className="garden-ground" aria-hidden="true" data-stage={stage}>
       <ArtSvg
@@ -677,13 +668,13 @@ export const MapBackdrop = memo(function MapBackdrop({ stage, ambient, skin, fes
         </Decor>
       ) : null}
 
-      {WILD_CLUMPS.filter((c) => stage < c.until).map((c, i) => (
-        <Decor key={`w${i}`} className="decor-wild" left={c.left} top={c.top} w={11}>
+      {WILD_CLUMPS.filter((c) => stage < c.until && free(c.left, c.top, 11)).map((c, i) => (
+        <Decor key={`w${i}`} className="decor-wild" left={`${c.left}%`} top={`${c.top}%`} w={11}>
           <WildBusch seed={i} />
         </Decor>
       ))}
-      {FLOWERS.filter((f) => stage >= f.from).map((f, i) => (
-        <Decor key={`f${i}`} className="decor-flowers" left={f.left} top={f.top} w={9}>
+      {FLOWERS.filter((f) => stage >= f.from && free(f.left, f.top, 9)).map((f, i) => (
+        <Decor key={`f${i}`} className="decor-flowers" left={`${f.left}%`} top={`${f.top}%`} w={9}>
           <Blumen seed={i} />
         </Decor>
       ))}
@@ -710,7 +701,7 @@ export const MapBackdrop = memo(function MapBackdrop({ stage, ambient, skin, fes
       ) : null}
 
       <SkinDecor skin={skin} />
-      {fest ? <FestDecor fest={fest} /> : null}
+      {fest ? <FestDecor fest={fest} skin={skin} blocked={skinSpots} /> : null}
       {fest ? <FestSkinDecor skin={skin} fest={fest} /> : null}
 
       <div className="garden-fence">

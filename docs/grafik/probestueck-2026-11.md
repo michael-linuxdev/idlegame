@@ -125,6 +125,19 @@ Der freie, noch nicht angelegte Platz bekommt die Bereichs-ID (`ChapterArtEntry.
   (`scripts/store/`). Das App-Icon (`docs/store/app-icon-1024.png`, `public/pwa-*.png`,
   `apple-touch-icon.png`) ist ebenfalls neu gerendert (`scripts/generate-pwa-icons.py`).
 
+## Überlagerungen auf der Karte (2026-11-14, Screenshot eines Testers)
+- **Schild-Zone:** Die acht neuen Bereiche hatten Vordergrund-Teile (Schubkarre, Kisten, Töpfe,
+  Tafel, unterste Mauer der Kräuterspirale) unterhalb von `SIGN_ZONE_Y` = 72 gezeichnet – sie
+  lagen auf oder hinter dem Schild. Alles endet jetzt bei y ≤ 78 (nachgemessen im Grafikbogen,
+  alle Stufen und Jahreszeiten).
+- **Ein Platz, ein Stück:** Blumeninseln, Wildbüsche, Fest-Deko und Gartenstil-Deko teilten sich
+  dieselben Randplätze (gemessen: 27 Überlagerungen über 9 Feste × 8 Gartenstile). Die Fest-Deko
+  ist jetzt Daten (`theme/festItems.tsx`, Zeichnungen in `festArt.tsx`); `MapBackdrop` zeigt je
+  Platz nur ein Stück, Rangfolge Gartenstil > Fest > Blumen > Wildnis. Zwei Laternen und der
+  Adventskranz standen in Bereichen und sind versetzt. Nachgemessen: 0 Überlagerungen.
+  Test `src/test/mapSpots.test.ts`.
+- **Pfützen:** in der Bodenebene und auf freien Stellen (siehe oben).
+
 ## Als Nächstes
 1. Gemeinsame Kapitel-Teile (`HandParts.tsx`, `art/chapters/partsA…I.tsx`: Dach, Figur, Glashaus,
    Fels, Nadelbaum …) auf Kontur umstellen – der größte verbleibende Hebel, wirkt in vielen Kapiteln.

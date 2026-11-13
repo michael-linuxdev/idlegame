@@ -75,7 +75,7 @@ export function Kompost({ t, producing }: { t: number; producing: boolean }) {
       {t === 2 ? (
         <g className="t-new" style={{ ["--i" as string]: 2 }}>
           <Bin x={20} w={40} top={48} />
-          <Heap x={64} w={24} base={76} tall={0.55} />
+          <Heap x={64} w={24} base={75} tall={0.55} />
         </g>
       ) : null}
       {t >= 3 ? (
@@ -105,26 +105,28 @@ export function Kompost({ t, producing }: { t: number; producing: boolean }) {
               </g>
             )}
           </Grow>
-          {t === 3 ? <Fork x={86} y={77} /> : null}
+          {t === 3 ? <Fork x={86} y={75} /> : null}
         </g>
       ) : null}
       {t >= 4 ? (
         <g className={t === 4 ? 't-new' : undefined} style={{ ["--i" as string]: 5 }}>
-          {/* Schubkarre mit fertiger Erde */}
+          {/* Schubkarre mit fertiger Erde (steht über der Schild-Zone) */}
+          <g transform="translate(0 -6.5)">
           <Rod d="M19 75 L31 82 M22 70 L33 72" c={P.woodLight} w={1.5} />
           <ellipse cx="14" cy="67.5" rx="10" ry="3" fill={P.compost} {...detail} />
           <path d="M2 67 H26 L21 77 H7 Z" fill={P.roof} {...line} />
           <path d="M17 68 H24.5 L20.4 76 H17 Z" fill={OUT} opacity="0.16" />
           <circle cx="9" cy="80" r="4" fill={P.charcoal} {...detail} />
           <circle cx="9" cy="80" r="1.3" fill={P.stoneLight} />
+          </g>
         </g>
       ) : null}
       {t >= 5 ? (
         <g className={t === 5 ? 't-new' : undefined} style={{ ["--i" as string]: 0 }}>
           {/* Eimer mit Komposterde */}
-          <ellipse cx="93" cy="69.5" rx="5.6" ry="2" fill={P.compost} {...detail} />
-          <path d="M87 69 H99 L97.6 80 H88.4 Z" fill={P.metal} {...detail} />
-          <rect x="88.6" y="70.4" width="2" height="8.4" fill={P.white} opacity="0.3" />
+          <ellipse cx="93" cy="65.5" rx="5.6" ry="2" fill={P.compost} {...detail} />
+          <path d="M87 65 H99 L97.6 76 H88.4 Z" fill={P.metal} {...detail} />
+          <rect x="88.6" y="66.4" width="2" height="8.4" fill={P.white} opacity="0.3" />
         </g>
       ) : null}
       {producing && t >= 2 ? <Steam x={t === 2 ? 38 : 46} y={t >= 5 ? 44 : 38} /> : null}

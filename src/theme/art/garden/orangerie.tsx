@@ -31,8 +31,8 @@ export function Orangerie({ t }: { t: number }) {
     return (
       <g>
         <Shadow rx={30} />
-        <CitrusPot x={44} y={79} s={1.9} />
-        <CitrusPot x={73} y={78} s={1.1} fruit={P.amber} />
+        <CitrusPot x={44} y={77} s={1.9} />
+        <CitrusPot x={73} y={76} s={1.1} fruit={P.amber} />
       </g>
     )
   }
@@ -46,8 +46,8 @@ export function Orangerie({ t }: { t: number }) {
         <path d="M36 75 V33.5 M50 75 V29 M64 75 V33.5 M22 55 H78" stroke={IRON} strokeWidth={BOLD.detail} />
         <Rod d="M22 75 V46 Q50 12 78 46 V75" c={IRON} w={2.2} />
         {winter ? <SnowCap d="M32 34 Q50 20 68 34" w={3.2} /> : null}
-        <CitrusPot x={37} y={79} s={1.25} />
-        <CitrusPot x={64} y={79} s={1.25} fruit={P.amber} />
+        <CitrusPot x={37} y={77} s={1.25} />
+        <CitrusPot x={64} y={77} s={1.25} fruit={P.amber} />
       </g>
     )
   }
@@ -96,16 +96,16 @@ export function Orangerie({ t }: { t: number }) {
       </Grow>
       {t >= 3 ? (
         <g className={t === 3 ? 't-new' : undefined} style={{ ["--i" as string]: 2 }}>
-          <CitrusPot x={t >= 5 ? 93.5 : 91} y={81} s={0.85} fruit={P.amber} />
+          <CitrusPot x={t >= 5 ? 93.5 : 91} y={77} s={0.85} fruit={P.amber} />
         </g>
       ) : null}
       {t >= 5 ? (
         <g className={t === 5 ? 't-new' : undefined} style={{ ["--i" as string]: 3 }}>
           {/* Springbrunnen */}
-          <path d="M8 79 q-5 -9 0 -12 M8 79 q5 -9 0 -12" stroke={P.waterLight} strokeWidth="1.5" fill="none" strokeLinecap="round" />
-          <ellipse cx="8" cy="79" rx="10" ry="3.6" fill={P.stoneLight} {...detail} />
-          <ellipse cx="8" cy="78.6" rx="7" ry="2" fill={P.pond} stroke={OUT} strokeWidth={BOLD.hair} />
-          <Rod d="M8 78.5 V71" c={P.stoneLight} w={1.6} />
+          <path d="M8 74 q-5 -9 0 -12 M8 74 q5 -9 0 -12" stroke={P.waterLight} strokeWidth="1.5" fill="none" strokeLinecap="round" />
+          <ellipse cx="8" cy="74" rx="10" ry="3.6" fill={P.stoneLight} {...detail} />
+          <ellipse cx="8" cy="73.6" rx="7" ry="2" fill={P.pond} stroke={OUT} strokeWidth={BOLD.hair} />
+          <Rod d="M8 73.5 V66" c={P.stoneLight} w={1.6} />
         </g>
       ) : null}
     </g>

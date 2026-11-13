@@ -137,16 +137,16 @@ export function Gemuesebeet({ t }: { t: number }) {
       {t >= 4 ? (
         <g className={t === 4 ? 't-new' : undefined} style={{ ["--i" as string]: 4 }}>
           {/* Gießkanne */}
-          <Rod d="M92 71 L98.5 64.5" c={P.water} w={1.6} />
-          <path d="M84 67 h9 v10 h-9 z" fill={P.water} {...detail} />
-          <path d="M85 67 q3.5 -6.5 7 0" fill="none" stroke={OUT} strokeWidth={BOLD.detail} strokeLinecap="round" />
-          <rect x="85" y="68" width="2.2" height="8" fill={P.white} opacity="0.3" />
+          <Rod d="M94 69 L99 64" c={P.water} w={1.6} />
+          <path d="M88 66 h8 v9.4 h-8 z" fill={P.water} {...detail} />
+          <path d="M88.8 66 q3.2 -6 6.4 0" fill="none" stroke={OUT} strokeWidth={BOLD.detail} strokeLinecap="round" />
+          <rect x="89" y="67" width="2" height="7.4" fill={P.white} opacity="0.3" />
         </g>
       ) : null}
       {t >= 5 ? (
         <g className={t === 5 ? 't-new' : undefined} style={{ ["--i" as string]: 5 }}>
-          <Pumpkin x={8} y={72} r={7} />
-          <Pumpkin x={20} y={77} r={4.4} c={P.amber} />
+          <Pumpkin x={8} y={70} r={7} />
+          <Pumpkin x={19.5} y={73.6} r={4.2} c={P.amber} />
           <Flower x={3} y={62} c={P.pink} />
           <Flower x={15} y={64} c={P.yellow} />
         </g>

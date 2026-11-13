@@ -36,33 +36,33 @@ export function Obstwiese({ t }: { t: number }) {
         <g className="t-new" style={{ ["--i" as string]: 5 }}>
           <Tree x={50} y={75} r={17} trunk={17} fruit={P.red} />
           <Tuft x={40} y={77} />
-          <Tuft x={61} y={78} />
+          <Tuft x={61} y={76.5} />
         </g>
       ) : null}
       {t === 3 ? (
         <g className="t-new" style={{ ["--i" as string]: 2 }}>
           <Tree x={34} y={75} r={18.5} trunk={19} fruit={P.red} />
-          <Tree x={73} y={76} r={13} trunk={13} fruit={PEAR} />
-          <Tuft x={22} y={78} />
-          <Tuft x={84} y={79} />
-          <Crate x={53} y={81} fruit={P.red} s={1.1} />
+          <Tree x={73} y={75} r={13} trunk={13} fruit={PEAR} />
+          <Tuft x={22} y={76.5} />
+          <Tuft x={86} y={77} />
+          <Crate x={54} y={76.5} fruit={P.red} s={1.1} />
         </g>
       ) : null}
       {t >= 4 ? (
         <g className={t === 4 ? 't-new' : undefined} style={{ ["--i" as string]: 3 }}>
           {t >= 5 ? <g className={t === 5 ? 't-new' : undefined} style={{ ["--i" as string]: 0 }}><Tree x={52} y={66} r={17} trunk={24} fruit={P.plum} /></g> : null}
           <Tree x={27} y={75} r={20} trunk={21} fruit={P.red} />
-          <Tree x={76} y={76} r={17} trunk={18} fruit={PEAR} />
+          <Tree x={77} y={75} r={17} trunk={18} fruit={PEAR} />
           {/* Leiter */}
-          <Rod d="M62 78 L68 42 M70 78 L76 42" c={P.woodLight} w={1.5} />
+          <Rod d="M62 76.5 L68 42 M70 76.5 L76 42" c={P.woodLight} w={1.5} />
           <path d="M63.4 70 H71 M64.7 62 H72.3 M66 54 H73.7 M67.3 46.5 H75" stroke={OUT} strokeWidth={BOLD.detail + 0.4} strokeLinecap="round" />
-          <Tuft x={8} y={78} />
-          <Crate x={55} y={83} fruit={P.red} s={1.15} />
+          <Tuft x={7} y={76.5} />
+          <Crate x={52} y={76.5} fruit={P.red} s={1.1} />
           {!winter ? (
             <g>
               {/* Fallobst */}
-              <Fruit cx={18} cy={80} r={2.3} c={P.red} />
-              <Fruit cx={88} cy={81} r={2.3} c={PEAR} />
+              <Fruit cx={14} cy={75.4} r={2.3} c={P.red} />
+              <Fruit cx={95} cy={75.4} r={2.3} c={PEAR} />
             </g>
           ) : null}
           {t >= 5 ? (
@@ -70,8 +70,8 @@ export function Obstwiese({ t }: { t: number }) {
               {/* Schaukel am großen Apfelbaum */}
               <path d="M34 58 V70 M44 56 V70" stroke={OUT} strokeWidth={BOLD.detail} strokeLinecap="round" />
               <rect x="31.5" y="69" width="15" height="3.6" rx="1.2" fill={P.woodLight} {...detail} />
-              <Crate x={87.5} y={84} fruit={PEAR} s={1.15} />
-              <Crate x={55} y={73.6} fruit={P.plum} s={1.05} />
+              <Crate x={89} y={77} fruit={PEAR} s={1} />
+              <Crate x={52} y={66.6} fruit={P.plum} s={1.05} />
             </g>
           ) : null}
         </g>
