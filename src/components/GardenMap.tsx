@@ -64,7 +64,7 @@ type GameApi = ReturnType<typeof useGame>
 interface Props {
   game: GameApi
   highlightId?: string | null
-  onOpenTab?: (tab: Tab) => void
+  onOpenTab?: (tab: Tab, via?: { from: string; mode?: 'truhe' | 'season' }) => void
   unreadLetters?: number
   onOpenNotebook?: () => void
   extras: ExtrasState
@@ -393,8 +393,8 @@ export function GardenMap({
   }
 
   function openPrestigeCta() {
-    logPlaytest('tab_open', { tab: 'prestige', from: 'map_cta' })
-    onOpenTab?.('prestige')
+    // „Omas Truhe: n Käufe“ springt direkt zur Truhe (sie liegt unter Saisonende und Jonas)
+    onOpenTab?.('prestige', { from: 'map_cta', mode: prestigeCta?.spend ? 'truhe' : 'season' })
   }
 
   function onUpgradeBought(deltaCost: number) {

@@ -314,8 +314,26 @@ export function EventPills({ game, season, order, onOpenFest }: Props) {
           <ul>
             {hidden.map((p) => (
               <li key={p.key}>
-                <span className="hud-pill-icon" aria-hidden="true">{p.icon}</span>
-                <span>{p.detail?.line ?? p.aria ?? t.ux.pills.names[p.key] ?? p.label}</span>
+                {p.onClick ? (
+                  // Was sich öffnen lässt (Festladen …), bleibt auch hinter „+N“ erreichbar
+                  <button
+                    type="button"
+                    className={`hud-rest-open pill-${p.key}`}
+                    onClick={() => {
+                      markSeen(p.key)
+                      setShowAll(false)
+                      p.onClick?.()
+                    }}
+                  >
+                    <span className="hud-pill-icon" aria-hidden="true">{p.icon}</span>
+                    <span>{p.aria ?? t.ux.pills.names[p.key] ?? p.label}</span>
+                  </button>
+                ) : (
+                  <>
+                    <span className="hud-pill-icon" aria-hidden="true">{p.icon}</span>
+                    <span>{p.detail?.line ?? p.aria ?? t.ux.pills.names[p.key] ?? p.label}</span>
+                  </>
+                )}
               </li>
             ))}
           </ul>

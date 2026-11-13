@@ -527,6 +527,23 @@
   gap: 0.4rem;
 }
 
+.hud-rest-open {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.2rem 0.5rem;
+  border: 1.5px solid #c9b48a;
+  border-radius: 0.7rem;
+  background: #fffaf0;
+  color: inherit;
+  font: inherit;
+  font-weight: 800;
+  text-align: left;
+  cursor: pointer;
+}
+
 .hud-claim:active {
   transform: translateY(2px);
   box-shadow: 0 1px 0 #b8862a;

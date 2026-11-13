@@ -157,6 +157,9 @@ try {
     const p = await ctx.newPage()
     p.on('pageerror', (e) => errors.push(e.message))
     await p.goto(URL + '?fest=advent&kapitel2=1&kapitel3=1')
+    // An Tagen mit vielen Ereignissen (Ernte-Wochenende, Wetter …) liegt das Fest hinter „+n“
+    await p.locator('.pill-fest, .pill-more').first().waitFor()
+    if (!(await p.locator('.pill-fest').isVisible())) await p.locator('.pill-more').click()
     await p.locator('.pill-fest').click()
     await p.getByText(T.fest.names.advent).first().waitFor()
     await p.locator('.fest-sheet .upgrade-hud-close').click()
