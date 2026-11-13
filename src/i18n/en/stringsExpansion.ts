@@ -67,6 +67,7 @@ export const expansionStrings = {
     chipOff: 'Break',
     toggleAria: (on: boolean) => (on ? 'Pause the garden helper' : 'Let the garden helper keep working'),
     report: (n: number) => `Jonas upgraded ${n}× while you were away`,
+    bought: (name: string) => `Jonas upgraded: ${name}`,
     areasTitle: 'What Jonas may upgrade',
     areasHint:
       'Tap an area to lock it for Jonas — then he won’t upgrade it any more, not even while you’re away. That way you can save up for an area yourself. Tap again to unlock it.',

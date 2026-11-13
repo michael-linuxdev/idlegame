@@ -561,9 +561,9 @@ export const strings = {
 
   prestige: {
     title: 'Saisonende',
-    introBefore: 'Der Garten geht in die Winterruhe. Du behältst',
+    introBefore: 'Du fängst das Gartenjahr neu an und bekommst dafür',
     introAfter:
-      'für das nächste Gartenjahr. Beete und Ernte dieser Saison ruhen bis zum Frühling.',
+      '— damit kaufst du in Omas Truhe Verbesserungen, die für immer bleiben. So wächst jedes neue Jahr schneller als das letzte.',
     erbstuecke: 'Erbstücke:',
     multiplier: 'Erbe-Bonus:',
     runs: 'Jahre geschafft:',
@@ -588,7 +588,7 @@ export const strings = {
     emptyShop: 'Nach dem ersten Saisonende öffnet sich Omas Truhe.',
     shopTitle: 'Omas Truhe',
     shopIntro:
-      'Erbstücke aus vergangenen Saisons machen jedes neue Gartenjahr stärker. Weitere Schätze finden sich beim Neuanlegen.',
+      'Erbstücke gibt es bei jedem Saisonende neu — gib sie hier ruhig aus. Was du kaufst, bleibt für immer.',
     shopReady: (n: number) =>
       n === 1
         ? 'Du kannst 1 Verbesserung mit Erbstücken kaufen — beim Neuanlegen kommen mehr.'

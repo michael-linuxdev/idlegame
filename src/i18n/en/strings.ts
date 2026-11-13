@@ -565,9 +565,9 @@ export const strings: Strings = {
 
   prestige: {
     title: 'Season’s End',
-    introBefore: 'The garden goes into its winter rest. You keep',
+    introBefore: 'You start the garden year over and get',
     introAfter:
-      'for the next garden year. This season’s beds and harvest rest until spring.',
+      'for it — spend them in Grandma’s Chest on boosts that stay forever. That way every new year grows faster than the last.',
     erbstuecke: 'Heirlooms:',
     multiplier: 'Heirloom bonus:',
     runs: 'Years completed:',
@@ -592,7 +592,7 @@ export const strings: Strings = {
     emptyShop: 'Grandma’s Chest opens after your first Season’s End.',
     shopTitle: 'Grandma’s Chest',
     shopIntro:
-      'Heirlooms from past seasons make every new garden year stronger. More treasures turn up as you replant.',
+      'You get new heirlooms at every Season’s End — go ahead and spend them here. Whatever you buy stays forever.',
     shopReady: (n: number) =>
       n === 1
         ? 'You can buy 1 boost with your heirlooms — more turn up as you replant.'
