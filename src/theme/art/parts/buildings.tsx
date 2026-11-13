@@ -30,8 +30,8 @@ export function Jar({ x, y, c = P.honey, lid = P.paper, s = 1 }: { x: number; y:
 export function Pennant({ x, y, h = 12, c = P.roof, s = 1 }: { x: number; y: number; h?: number; c?: string; s?: number }) {
   return (
     <Place x={x} y={y} s={s}>
-      <path d={`M0 0 V${-h}`} stroke={P.outlineWood} strokeWidth={STROKE.detail} />
-      <path d={`M0 ${-h} l7 2.2 l-7 2.2 z`} fill={c} />
+      <path d={`M0 0 V${-h}`} stroke={P.outline} strokeWidth={STROKE.detail} />
+      <path d={`M0 ${-h} l7 2.2 l-7 2.2 z`} fill={c} stroke={P.outline} strokeWidth={STROKE.hair} strokeLinejoin="round" />
       <circle cx="0" cy={-h - 0.8} r="0.9" fill={P.brass} />
     </Place>
   )
@@ -41,8 +41,8 @@ export function Pennant({ x, y, h = 12, c = P.roof, s = 1 }: { x: number; y: num
 export function Barrel({ x, y, s = 1 }: { x: number; y: number; s?: number }) {
   return (
     <Place x={x} y={y} s={s}>
-      <rect x="-4" y="-10" width="8" height="10" rx="2.6" fill={P.woodMid} stroke={P.outlineWood} strokeWidth={STROKE.detail} />
-      <path d="M-4 -7 H4 M-4 -3 H4" stroke={P.outlineWood} strokeWidth={STROKE.hair} />
+      <rect x="-4" y="-10" width="8" height="10" rx="2.6" fill={P.woodMid} stroke={P.outline} strokeWidth={STROKE.detail} />
+      <path d="M-4 -7 H4 M-4 -3 H4" stroke={P.outline} strokeWidth={STROKE.hair} />
     </Place>
   )
 }
@@ -64,8 +64,8 @@ export function Lantern({ x, y, s = 1 }: { x: number; y: number; s?: number }) {
 export function OmaSign({ x, y, s = 1 }: { x: number; y: number; s?: number }) {
   return (
     <Place x={x} y={y} s={s} className="art-oma-sign">
-      <path d="M0 0 V-9" stroke={P.outlineWood} strokeWidth="1.2" />
-      <rect x="-4.6" y="-13" width="9.2" height="5.6" rx="1" fill={P.canvas} stroke={P.outlineWood} strokeWidth={STROKE.hair * 1.4} />
+      <path d="M0 0 V-9" stroke={P.outline} strokeWidth={STROKE.detail * 1.3} />
+      <rect x="-4.6" y="-13" width="9.2" height="5.6" rx="1" fill={P.canvas} stroke={P.outline} strokeWidth={STROKE.hair * 1.4} />
       <path d="M0 -8.6 c-2.6 -1.6 -2.2 -3.4 -0.9 -3.4 c0.5 0 0.8 0.3 0.9 0.6 c0.1 -0.3 0.4 -0.6 0.9 -0.6 c1.3 0 1.7 1.8 -0.9 3.4z" fill={P.red} />
     </Place>
   )
@@ -79,7 +79,7 @@ export function GardenLamp({ x, y, s = 1 }: { x: number; y: number; s?: number }
   return (
     <Place x={x} y={y} s={s} className="art-lamp">
       <circle cx="0" cy="-15" r="7" fill={P.lamp} className="art-glow" />
-      <path d="M0 0 V-13" stroke={P.outlineWood} strokeWidth="1.3" />
+      <path d="M0 0 V-13" stroke={P.outline} strokeWidth={STROKE.detail * 1.4} />
       <path d="M-2.4 -12 H2.4 L1.8 -17.5 H-1.8 Z" fill={P.lamp} stroke={P.outline} strokeWidth={STROKE.detail} />
       <path d="M-2.6 -17.5 H2.6 L0 -20 Z" fill={P.outline} />
     </Place>
@@ -90,7 +90,7 @@ export function GardenLamp({ x, y, s = 1 }: { x: number; y: number; s?: number }
 export function Pinwheel({ x, y, s = 1 }: { x: number; y: number; s?: number }) {
   return (
     <Place x={x} y={y} s={s}>
-      <path d="M0 0 V-16" stroke={P.outlineWood} strokeWidth="1.2" />
+      <path d="M0 0 V-16" stroke={P.outline} strokeWidth={STROKE.detail * 1.3} />
       <g transform="translate(0 -16)">
         <g className="ma-spin">
           {[0, 90, 180, 270].map((a, i) => (
