@@ -122,12 +122,10 @@ Der freie, noch nicht angelegte Platz bekommt die Bereichs-ID (`ChapterArtEntry.
 - **Kapitel-Baukasten entfernt:** `ChapterAreaArt` und die Bereichs-Angaben in
   `chapterArtSpecs.ts` (834 → 256 Zeilen) sind weg; die Datei enthält nur noch die Kulissen.
 - **Store-Material erneuert:** 6 Screenshots je Sprache und beide Feature-Grafiken
-  (`scripts/store/`). Das App-Icon (`docs/store/app-icon-1024.png`, `public/pwa-*.png`) ist
-  **nicht** neu gerendert – es zeigt noch den alten Stil; neu rendern mit
-  `scripts/art/render-icon.mjs`, wenn das Icon mitziehen soll.
+  (`scripts/store/`). Das App-Icon (`docs/store/app-icon-1024.png`, `public/pwa-*.png`,
+  `apple-touch-icon.png`) ist ebenfalls neu gerendert (`scripts/generate-pwa-icons.py`).
 
 ## Als Nächstes
 1. Gemeinsame Kapitel-Teile (`HandParts.tsx`, `art/chapters/partsA…I.tsx`: Dach, Figur, Glashaus,
    Fels, Nadelbaum …) auf Kontur umstellen – der größte verbleibende Hebel, wirkt in vielen Kapiteln.
 2. Kapitel 4–12 einzeln, in Spielreihenfolge (Bauernhof zuerst); Kapitel 13–50 danach.
-3. App-Icon im neuen Stil rendern (Entscheidung offen).
