@@ -8,6 +8,8 @@ export function WelcomeBack({
   amount,
   awayMs,
   helped,
+  rateFrom = 0,
+  rateTo = 0,
   beds = [],
   ready = [],
   onClaim,
@@ -16,7 +18,11 @@ export function WelcomeBack({
 }: {
   amount: number
   awayMs: number
-  helped: boolean
+  /** Jonas' Ausbauten in der Abwesenheit (0 = keine) */
+  helped: number
+  /** Ernte/s vor und nach der Abwesenheit – gezeigt, wenn Jonas sie gesteigert hat */
+  rateFrom?: number
+  rateTo?: number
   /** Bis zu 3 Beete, die nach dem Einsammeln bezahlbar sind */
   beds?: { id: string; name: string }[]
   /** Was inzwischen fertig ist (fertige Texte) */
@@ -27,15 +33,28 @@ export function WelcomeBack({
   onLater: () => void
 }) {
   useDismiss(onLater)
+  // Korb leer: Jonas hat die ganze Offline-Ernte verbaut – der Zettel zeigt, was daraus wurde
+  const empty = amount <= 0.01
+  const grew = helped > 0 && rateFrom > 0 && rateTo > rateFrom * 1.01
   return (
     <div className="welcome-layer" role="presentation" onClick={onLater}>
       <div className="welcome-card" role="dialog" aria-modal="true" aria-labelledby="welcome-title" onClick={(e) => e.stopPropagation()}>
         <h2 id="welcome-title">{t.ux.welcomeBack.title}</h2>
         <p>{t.ux.welcomeBack.away(formatAway(awayMs))}</p>
-        <p className="welcome-amount">
-          <IconBasket /> {t.ux.welcomeBack.harvest(formatErnte(amount))}
-        </p>
-        {helped ? <p className="welcome-helper">{t.ux.welcomeBack.helper}</p> : null}
+        {empty ? null : (
+          <p className="welcome-amount">
+            <IconBasket /> {t.ux.welcomeBack.harvest(formatErnte(amount))}
+          </p>
+        )}
+        {helped > 0 ? (
+          <p className={`welcome-helper${empty ? ' welcome-helper--main' : ''}`}>
+            {t.helper.report(helped)}
+            {empty ? `. ${t.ux.welcomeBack.helperSpent}` : ''}
+          </p>
+        ) : null}
+        {grew ? (
+          <p className="welcome-rate">{t.ux.welcomeBack.rate(formatErnte(rateFrom), formatErnte(rateTo))}</p>
+        ) : null}
         {ready.length > 0 ? (
           <p className="welcome-ready">
             {t.ux.welcomeBack.readyTitle} {ready.join(', ')}
@@ -56,7 +75,7 @@ export function WelcomeBack({
           </>
         ) : null}
         <button type="button" className="btn buy welcome-claim" onClick={onClaim} autoFocus>
-          {t.ux.welcomeBack.claim}
+          {empty ? t.ux.welcomeBack.ok : t.ux.welcomeBack.claim}
         </button>
       </div>
     </div>

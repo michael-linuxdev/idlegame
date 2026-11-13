@@ -87,6 +87,7 @@ export function useGame() {
     setOfflineGained,
     offlineAwayMs,
     setOfflineAwayMs,
+    offlineRateFrom,
     stateRef,
     nowTick,
   } = useGameLoop()
@@ -456,6 +457,7 @@ export function useGame() {
     // Banner shows what really waits (gone after e.g. a Saisonende)
     offlineGained: offlineGained != null && state.offlinePending > 0.01 ? state.offlinePending : null,
     offlineAwayMs,
+    offlineRateFrom,
     dismissOffline,
     playerLevel,
     achievementRows,
