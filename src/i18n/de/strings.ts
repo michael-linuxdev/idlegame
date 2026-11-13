@@ -639,6 +639,8 @@ export const strings = {
 
   longLoop: {
     title: 'Tiefer Winter',
+    pillReady: 'Tiefer Winter möglich',
+    pillReadyAria: 'Tiefer Winter ist möglich — im Saison-Tab ansehen',
     intro:
       'Wenn alle Ecken offen sind, kann der Garten einen langen Winter ruhen. Danach fängst du im ersten Gartenjahr neu an — mit Sprösslingen, die für immer bleiben.',
     sprouts: 'Sprösslinge',

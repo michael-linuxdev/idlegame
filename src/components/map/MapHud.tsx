@@ -25,6 +25,7 @@ interface Props {
   onOpenMult: () => void
   onOpenFest: () => void
   onOpenLetter?: (() => void) | null
+  onOpenDeep?: (() => void) | null
 }
 
 export function MapHud({
@@ -42,6 +43,7 @@ export function MapHud({
   onOpenMult,
   onOpenFest,
   onOpenLetter,
+  onOpenDeep,
 }: Props) {
   const { state, rate, playerLevel } = game
   return (
@@ -112,6 +114,7 @@ export function MapHud({
         order={orderPill}
         onOpenFest={onOpenFest}
         onOpenLetter={onOpenLetter}
+        onOpenDeep={onOpenDeep}
       />
       )}
     </header>

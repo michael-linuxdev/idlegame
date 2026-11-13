@@ -643,6 +643,8 @@ export const strings: Strings = {
 
   longLoop: {
     title: 'Deep Winter',
+    pillReady: 'Deep Winter possible',
+    pillReadyAria: 'Deep Winter is possible — view it in the Season tab',
     intro:
       'Once every corner is open, the garden can rest through a long winter. Afterwards you start again in garden year one — with seedlings that stay forever.',
     sprouts: 'Seedlings',

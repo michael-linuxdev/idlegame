@@ -48,6 +48,8 @@ interface Props {
   onOpenFest?: () => void
   /** Ungelesener Brief von Oma: öffnet das Notizbuch (der Umschlag an der Laube liegt oft unter dem HUD) */
   onOpenLetter?: (() => void) | null
+  /** Tiefer Winter ist möglich: springt im Saison-Tab dorthin (sonst steht es nur ganz unten im Tab) */
+  onOpenDeep?: (() => void) | null
 }
 
 const WEATHER_ICON = {
@@ -69,7 +71,7 @@ function loadSeen(): string[] {
 }
 
 /** Compact event bar — every timed bonus is one small pill, never a card. */
-export function EventPills({ game, season, order, onOpenFest, onOpenLetter }: Props) {
+export function EventPills({ game, season, order, onOpenFest, onOpenLetter, onOpenDeep }: Props) {
   const [open, setOpen] = useState<string | null>(null)
   const [showAll, setShowAll] = useState(false)
   const [seen, setSeen] = useState<string[]>(loadSeen)
@@ -94,6 +96,18 @@ export function EventPills({ game, season, order, onOpenFest, onOpenLetter }: Pr
       aria: t.notebook.newLetterAria,
       claim: true,
       onClick: onOpenLetter,
+    })
+  }
+
+  if (onOpenDeep) {
+    pills.push({
+      key: 'deep',
+      icon: <IconSnow />,
+      label: t.longLoop.pillReady,
+      aria: t.longLoop.pillReadyAria,
+      // wie etwas Abholbares einsortieren, sonst rutscht es an vollen Tagen hinter „+N“
+      claim: true,
+      onClick: onOpenDeep,
     })
   }
 

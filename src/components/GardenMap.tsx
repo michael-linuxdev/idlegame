@@ -64,7 +64,7 @@ type GameApi = ReturnType<typeof useGame>
 interface Props {
   game: GameApi
   highlightId?: string | null
-  onOpenTab?: (tab: Tab, via?: { from: string; mode?: 'truhe' | 'season' }) => void
+  onOpenTab?: (tab: Tab, via?: { from: string; mode?: 'truhe' | 'season' | 'deep' }) => void
   unreadLetters?: number
   onOpenNotebook?: () => void
   extras: ExtrasState
@@ -576,6 +576,11 @@ export function GardenMap({
         onOpenMult={() => setMultOpen(true)}
         onOpenFest={() => setFestOpen(true)}
         onOpenLetter={unreadLetters > 0 && onOpenNotebook ? onOpenNotebook : null}
+        onOpenDeep={
+          canDeepReset(state.saisonenden) && game.deepRestMs <= 0
+            ? () => onOpenTab?.('prestige', { from: 'map_pill', mode: 'deep' })
+            : null
+        }
       />
 
       <FloatPops items={pops} onDone={removePop} />

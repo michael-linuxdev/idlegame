@@ -63,3 +63,15 @@ ausgewerteten Zeitraum noch nicht aktiv – gespielt wurde auf `c376ce4`).
 
 Beide verlieren ab Tag 3–4 Spielzeit, aus entgegengesetzten Gründen: zu schnell durch bzw. noch
 nicht drin.
+
+## Rückmeldung Tester 1 (2026-11-13) → Umsetzung
+- **Tiefer Winter 2: „nicht gesehen“.** Dass der Tiefe Winter möglich ist, stand nur ganz unten im
+  Saison-Tab (nach Saisonende, Jonas und Truhe); auf der Karte gab es nur den einmaligen Hinweis
+  beim allerersten Mal. → **Umgesetzt:** Sobald Gartenjahr und Ruhezeit passen, steht in der
+  Ereignis-Leiste die Pille „Tiefer Winter möglich“. Sie öffnet den Saison-Tab direkt beim
+  Abschnitt „Tiefer Winter“ (`EventPills` `onOpenDeep`, `tab_open` mit `from: map_pill`,
+  `mode: deep`). Sie löst nichts aus – der Knopf mit Bestätigung bleibt, wo er ist.
+- **Saison-Karten: „Wirkung schwer einzuschätzen, keine Lust auf Commitment“.** Bestätigt Befund 2.
+  → Offen (Design-Entscheidung). Die Karte verlangt drei Abwägungen auf einmal (welcher Bereich
+  billiger, welcher teurer, wie viel spart das) und gilt eine ganze Saison ohne Rückweg.
+

@@ -19,7 +19,7 @@ interface Props {
   game: GameApi
   highlight?: boolean
   /** Beim Öffnen zu diesem Abschnitt springen (n zählt hoch, damit derselbe Sprung erneut auslöst) */
-  focus?: { to: 'truhe'; n: number } | null
+  focus?: { to: 'truhe' | 'deep'; n: number } | null
   /** Jump to an open chapter */
   onOpenChapter?: (id: ChapterId) => void
 }
