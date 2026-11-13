@@ -115,9 +115,19 @@ Der freie, noch nicht angelegte Platz bekommt die Bereichs-ID (`ChapterArtEntry.
 - Bausteine in `art/chapters/site.tsx` (`BuildSite`, `PastureSite`, `PostSite`). Kapitel 4–50
   zeigen weiter das neutrale Erdbeet mit Schild (`ChapterReady`).
 
+## Reste und Aufräumen (2026-11-13)
+- **Grafik-Reste im Hauptgarten:** Pfützen, Windhalme und Blätter (`WeatherLayer.tsx`), Briefumschlag
+  an der Laube, Winterruhe-Szene im Saison-Tab (`WinterScene.tsx`) mit dunkler Kontur. Im Weinberg
+  auch Wildnis und Rebpfähle. Im Bild geprüft: alle neun Feste, Regen, Wind, Jonas.
+- **Kapitel-Baukasten entfernt:** `ChapterAreaArt` und die Bereichs-Angaben in
+  `chapterArtSpecs.ts` (834 → 256 Zeilen) sind weg; die Datei enthält nur noch die Kulissen.
+- **Store-Material erneuert:** 6 Screenshots je Sprache und beide Feature-Grafiken
+  (`scripts/store/`). Das App-Icon (`docs/store/app-icon-1024.png`, `public/pwa-*.png`) ist
+  **nicht** neu gerendert – es zeigt noch den alten Stil; neu rendern mit
+  `scripts/art/render-icon.mjs`, wenn das Icon mitziehen soll.
+
 ## Als Nächstes
 1. Gemeinsame Kapitel-Teile (`HandParts.tsx`, `art/chapters/partsA…I.tsx`: Dach, Figur, Glashaus,
    Fels, Nadelbaum …) auf Kontur umstellen – der größte verbleibende Hebel, wirkt in vielen Kapiteln.
 2. Kapitel 4–12 einzeln, in Spielreihenfolge (Bauernhof zuerst); Kapitel 13–50 danach.
-3. Wildnis im Weinberg; Rebpfähle (freier Platz) haben noch dünne Striche.
-4. Aufräumen: unbenutzten `ChapterAreaArt` entfernen (eigener Schritt, Tests hängen daran).
+3. App-Icon im neuen Stil rendern (Entscheidung offen).

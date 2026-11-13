@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { CHAPTERS, chapterDef, emptyChapters } from '../game/chapters'
 import { createInitialState, syncChaptersOpen, type GameState } from '../game/state'
-import { CHAPTER_ART } from '../theme/chapterArtSpecs'
 import { strings } from '../i18n/de/strings'
 
 describe('Kapitel 2–50', () => {
@@ -13,12 +12,11 @@ describe('Kapitel 2–50', () => {
     }
   })
 
-  it('every area has German copy and (for 4–12) an art spec', () => {
+  it('every area has German copy', () => {
     for (const c of CHAPTERS) {
       const copy = c.id === 'obstwiese' ? strings.orchard.areas : (strings.chapters[c.id] as unknown as { areas: Record<string, { name: string }> }).areas
       for (const a of c.areas) {
         expect((copy as Record<string, { name: string }>)[a.id]?.name, `${c.id}.${a.id}`).toBeTruthy()
-        if (c.number >= 4) expect(CHAPTER_ART[c.id]?.areas[a.id], `art ${c.id}.${a.id}`).toBeDefined()
       }
     }
   })
