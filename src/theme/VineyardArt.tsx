@@ -11,6 +11,7 @@ import { P } from './art/palette'
 import { Barrel, Crate, Lantern, Pennant, Shadow } from './art/parts'
 import { ArchDoor, GableRoof, Pane, Wall } from './art/parts/bold'
 import { BOLD, boldDetail, boldLine } from './art/parts/style'
+import { BuildSite } from './art/chapters/site'
 
 const GRAPE: Record<string, string> = {
   riesling: '#c9d36a',
@@ -379,7 +380,8 @@ export const VineyardArt = memo(function VineyardArt({
 }, sameTierProps)
 
 /** Unplanted terrace spot: stakes, waiting for vines. */
-export function VineyardStakes() {
+export function VineyardStakes({ id }: { id?: string }) {
+  if (id === 'trockenmauer' || id === 'wingerthaus' || id === 'kelter' || id === 'weinkeller' || id === 'strausse' || id === 'weinfest') return <BuildSite />
   return (
     <ArtSvg viewBox="0 0 80 72">
       <ellipse cx="40" cy="62" rx="26" ry="5" fill={P.outlineSoft} opacity="0.45" />

@@ -12,6 +12,7 @@ import { P } from './art/palette'
 import { Barrel, Crate, Jar, Pennant, Shadow, seeded } from './art/parts'
 import { ArchDoor, GableRoof, Pane, Wall } from './art/parts/bold'
 import { BOLD, boldDetail, boldLine } from './art/parts/style'
+import { BuildSite, PastureSite, PostSite } from './art/chapters/site'
 
 /** Strichstärken × K im Kapitel-Raster. */
 const K = 0.85
@@ -388,8 +389,14 @@ export const OrchardArt = memo(function OrchardArt({
   }
 }, sameTierProps)
 
-/** Sapling marker for an unlocked but unplanted orchard spot. */
-export function OrchardSapling() {
+/**
+ * Freier, noch nicht angelegter Platz: Setzling für die Obstbäume, abgesteckte
+ * Weide für die Schafe, Pfahl fürs Wildbienenhotel, Bauplatz für die Gebäude.
+ */
+export function OrchardSapling({ id }: { id?: string }) {
+  if (id === 'schafe') return <PastureSite />
+  if (id === 'wildbienen') return <PostSite />
+  if (id === 'mosterei' || id === 'doerrhaus' || id === 'obstmarkt') return <BuildSite />
   return (
     <ArtSvg viewBox="0 0 80 72">
       <ellipse cx="40" cy="62" rx="16" ry="5" fill={P.soil} opacity="0.75" stroke={OUT} strokeWidth={D} />

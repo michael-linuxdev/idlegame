@@ -81,7 +81,7 @@ function ChapterBlock({ chapter }: { chapter: (typeof CHAPTERS)[number] }) {
               <art.wild seed={i} />
             </div>
             <div className="as-cell">
-              <art.ready />
+              <art.ready id={a.id} />
             </div>
             {TIER_LEVELS.map((lv) => (
               <div className="as-cell" key={lv}>

@@ -12,8 +12,8 @@ export interface ChapterArtEntry {
   area: ComponentType<AreaArtProps>
   /** Gesperrte, verwilderte Ecke */
   wild: ComponentType<{ seed?: number }>
-  /** Frei, aber noch nicht angelegt */
-  ready: ComponentType
+  /** Frei, aber noch nicht angelegt; `id` = Bereich (Setzling für Bäume, Bauplatz für Gebäude …) */
+  ready: ComponentType<{ id?: string }>
   /** Kulisse der Kapitel-Karte */
   backdrop: ComponentType<{ stage: number }>
 }

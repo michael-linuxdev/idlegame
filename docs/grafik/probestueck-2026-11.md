@@ -107,9 +107,17 @@ früher Garten, voll bei Tag, Nacht und im Winter).
 - **Nicht umgestellt:** Kiesweg und Rasen (Fläche ohne Kontur, so gewollt), Pfützen und Wetter,
   Briefumschlag an der Laube, Winterruhe-Szene der Saisonende-Zeremonie (`WinterScene.tsx`).
 
+## Freie Plätze je Bereich (2026-11-13, Rückmeldung: „Schafe und Gebäude sollten nicht aus einem Setzling entstehen“)
+Der freie, noch nicht angelegte Platz bekommt die Bereichs-ID (`ChapterArtEntry.ready` nimmt `id`).
+- **Streuobstwiese:** Setzling nur für die fünf Obstbäume; Schafe = abgesteckte Weide mit Heu,
+  Wildbienen = Pfahl mit vorgebohrten Klötzen, Mosterei/Dörrhaus/Obstmarkt = Bauplatz.
+- **Weinberg:** Rebpfähle nur für die vier Rebsorten; Trockenmauer, Häuser und Weinfest = Bauplatz.
+- Bausteine in `art/chapters/site.tsx` (`BuildSite`, `PastureSite`, `PostSite`). Kapitel 4–50
+  zeigen weiter das neutrale Erdbeet mit Schild (`ChapterReady`).
+
 ## Als Nächstes
 1. Gemeinsame Kapitel-Teile (`HandParts.tsx`, `art/chapters/partsA…I.tsx`: Dach, Figur, Glashaus,
    Fels, Nadelbaum …) auf Kontur umstellen – der größte verbleibende Hebel, wirkt in vielen Kapiteln.
 2. Kapitel 4–12 einzeln, in Spielreihenfolge (Bauernhof zuerst); Kapitel 13–50 danach.
-3. Wildnis und freie Plätze im Weinberg.
+3. Wildnis im Weinberg; Rebpfähle (freier Platz) haben noch dünne Striche.
 4. Aufräumen: unbenutzten `ChapterAreaArt` entfernen (eigener Schritt, Tests hängen daran).

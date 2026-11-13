@@ -280,7 +280,7 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
                   {!unlocked ? (
                     <art.wild seed={index} />
                   ) : ready ? (
-                    <art.ready />
+                    <art.ready id={a.id} />
                   ) : (
                     <art.area id={a.id} level={level} season={ambient.season} />
                   )}
@@ -452,7 +452,7 @@ function ChapterSheet({
               {!unlocked ? (
                 <art.wild seed={0} />
               ) : level === 0 ? (
-                <art.ready />
+                <art.ready id={area} />
               ) : (
                 <art.area id={area} level={level} season={ambient.season} />
               )}
