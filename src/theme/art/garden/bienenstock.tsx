@@ -80,7 +80,7 @@ export function Bienenstock({ t, producing }: { t: number; producing: boolean })
         </g>
       ) : null}
       {t <= 2 ? (
-        <g transform={`translate(50 68) scale(${t <= 1 ? 1.3 : 1.55}) translate(-50 -68)`}>
+        <g transform={`translate(50 68) scale(${t <= 1 ? 1.7 : 1.5}) translate(-50 -68)`}>
           <Hive x={38.5} y={68} stories={t} />
         </g>
       ) : null}

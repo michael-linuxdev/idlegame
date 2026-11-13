@@ -2,7 +2,7 @@
  * Kapitel 3 — Weinberg: art for the ten areas (five growth tiers) and the
  * terraced backdrop with the river.
  */
-import { memo, type ReactNode } from 'react'
+import { memo } from 'react'
 import { useSvgId } from './svgId'
 import { moduleTier, sameTierProps } from './tiers'
 import type { Season } from './ambient'
@@ -26,13 +26,6 @@ const D = BOLD.detail * K
 const H = BOLD.hair * K
 const line = boldLine(K)
 const detail = boldDetail(K)
-
-/** Jede Stufe ist sichtbar mehr Bauwerk: Gebäude wachsen von 74 % auf volle Größe (Fußpunkt bleibt). */
-const GROW = [0.74, 0.83, 0.9, 0.96, 1]
-function Grow({ tier, children }: { tier: number; children: ReactNode }) {
-  const s = GROW[Math.min(5, Math.max(1, tier)) - 1]!
-  return s === 1 ? <>{children}</> : <g transform={`translate(40 66) scale(${s}) translate(-40 -66)`}>{children}</g>
-}
 
 /** Traube: eine geschlossene Form mit Kontur und Glanzpunkt. Fußpunkt = Stielansatz. */
 function Bunch({ x, y, c }: { x: number; y: number; c: string }) {
@@ -77,13 +70,6 @@ function Vines({ id, tier, season }: { id: string; tier: number; season?: Season
       {Array.from({ length: rows }, (_, i) => rows - 1 - i).map((r) => (
         <VineRow key={r} x0={9 + r * 4} x1={71 - r * 4} y={61 - r * 11.5} leaf={leaf} grape={grape} bunches={bunches} snow={season === 'winter'} />
       ))}
-      {tier >= 4 ? (
-        <g>
-          {/* Rosenstock am Zeilenende (zeigt Mehltau früh an) */}
-          <ellipse cx="74" cy="60.5" rx="4.6" ry="5.4" fill={P.leafDark} {...detail} />
-          {season === 'winter' ? null : [[72.6, 58.4], [75.6, 60.6], [73.4, 63]].map(([x, y]) => <circle key={y} cx={x} cy={y} r="1.5" fill={P.red} stroke={P.outline} strokeWidth={H} />)}
-        </g>
-      ) : null}
       {tier >= 4 && bunches > 0 ? <Crate x={13} y={67} s={0.6} fruit={grape} /> : null}
       {tier >= 5 ? <Pennant x={69} y={24} s={0.9} /> : null}
     </ArtSvg>
@@ -139,7 +125,6 @@ function Trockenmauer({ tier }: { tier: number }) {
 function Wingerthaus({ tier }: { tier: number }) {
   return (
     <ArtSvg viewBox="0 0 80 72">
-      <Grow tier={tier}>
       <Shadow grid="chapter" rx={26} />
       {tier >= 4 ? <Barrel x={19} y={66} s={1.05} /> : null}
       <Wall x={26} y={39} w={28} h={27} fill={P.paper} k={K} />
@@ -157,14 +142,6 @@ function Wingerthaus({ tier }: { tier: number }) {
           <path d="M60.6 58.4q1.6-3.4 5-3.6" fill="none" stroke={P.white} strokeWidth={D} strokeLinecap="round" opacity=".35" />
         </g>
       ) : null}
-      {tier >= 4 ? (
-        <g>
-          {/* Schornstein mit Rauch */}
-          <rect x="45.5" y="24" width="4.6" height="9" fill={P.stone} {...detail} />
-          <circle cx="48.5" cy="19" r="2.4" fill={P.white} opacity=".7" />
-          <circle cx="51" cy="14" r="3" fill={P.white} opacity=".45" />
-        </g>
-      ) : null}
       {tier >= 5 ? (
         <g>
           {/* Bank vor dem Haus */}
@@ -174,7 +151,6 @@ function Wingerthaus({ tier }: { tier: number }) {
           <Pennant x={40} y={20.5} s={0.9} />
         </g>
       ) : null}
-    </Grow>
     </ArtSvg>
   )
 }
@@ -183,7 +159,6 @@ function Wingerthaus({ tier }: { tier: number }) {
 function Kelter({ tier }: { tier: number }) {
   return (
     <ArtSvg viewBox="0 0 80 72">
-      <Grow tier={tier}>
       <Shadow grid="chapter" cx={tier >= 2 ? 40 : 29} rx={tier >= 2 ? 36 : 27} />
       <Wall x={9} y={39} w={40} h={27} fill={P.paper} k={K} />
       {/* Fachwerk */}
@@ -209,7 +184,6 @@ function Kelter({ tier }: { tier: number }) {
       {tier >= 3 ? <Crate x={45} y={67} s={0.62} fruit={P.plum} /> : null}
       {tier >= 4 ? <Barrel x={76} y={66.5} s={0.95} /> : null}
       {tier >= 5 ? <Pennant x={29} y={22.5} s={0.9} /> : null}
-    </Grow>
     </ArtSvg>
   )
 }
@@ -219,7 +193,6 @@ function Weinkeller({ tier }: { tier: number }) {
   const spots = [11, 68, 20, 59]
   return (
     <ArtSvg viewBox="0 0 80 72">
-      <Grow tier={tier}>
       <Shadow grid="chapter" rx={36} />
       <path d="M4 66Q40 4 76 66z" fill={P.leafLight} {...line} />
       <path d="M40 36Q62 40 73 65H40z" fill={P.outline} opacity=".1" />
@@ -230,19 +203,6 @@ function Weinkeller({ tier }: { tier: number }) {
       <path d="M31 66V50a9 9 0 0 1 18 0v16z" fill={P.woodDark} {...detail} />
       <path d="M40 41.6V66M35.5 43.4V66M44.5 43.4V66" stroke={P.outline} strokeWidth={H} opacity=".55" />
       <circle cx="42.6" cy="56" r="1.2" fill="none" stroke={P.brass} strokeWidth=".9" />
-      {tier >= 3 ? (
-        <g>
-          {/* Stützmauern links und rechts vom Portal */}
-          <path d="M17 66V58q4-3 9-2v10zM54 56q5-1 9 2v8h-9z" fill={P.stone} {...detail} />
-        </g>
-      ) : null}
-      {tier >= 4 ? (
-        <g>
-          {/* Lüftungskamin auf dem Hügel */}
-          <rect x="55" y="33" width="5" height="9" rx="1" fill={P.stoneLight} {...detail} />
-          <path d="M53.6 33h7.8" stroke={P.outline} strokeWidth={C} strokeLinecap="round" />
-        </g>
-      ) : null}
       {spots.slice(0, Math.min(4, tier)).map((x) => (
         <Barrel key={x} x={x} y={66.5} s={1.05} />
       ))}
@@ -252,7 +212,6 @@ function Weinkeller({ tier }: { tier: number }) {
           <Pennant x={40} y={22} s={0.9} />
         </g>
       ) : null}
-    </Grow>
     </ArtSvg>
   )
 }
@@ -261,7 +220,6 @@ function Weinkeller({ tier }: { tier: number }) {
 function Strausse({ tier }: { tier: number }) {
   return (
     <ArtSvg viewBox="0 0 80 72">
-      <Grow tier={tier}>
       <Shadow grid="chapter" rx={37} />
       <Wall x={20} y={39} w={40} h={27} fill={P.paper} k={K} />
       <GableRoof x={20} y={40} w={40} h={18} fill={P.roof} over={4.5} k={K} />
@@ -303,7 +261,6 @@ function Strausse({ tier }: { tier: number }) {
           <Pennant x={40} y={22.5} s={0.9} />
         </g>
       ) : null}
-    </Grow>
     </ArtSvg>
   )
 }
@@ -312,7 +269,6 @@ function Weinfest({ tier }: { tier: number }) {
   const colors = [P.tomato, P.yellow, P.waterDeep, P.leafLight]
   return (
     <ArtSvg viewBox="0 0 80 72">
-      <Grow tier={tier}>
       <Shadow grid="chapter" rx={36} />
       {/* Festzelt: zwei Masten, gestreiftes Dach, Wimpelkette */}
       <rect x="8.4" y="32" width="3.2" height="34" rx=".8" fill={P.woodMid} {...detail} />
@@ -345,7 +301,6 @@ function Weinfest({ tier }: { tier: number }) {
           <Pennant x={40} y={17} s={0.9} />
         </g>
       ) : null}
-    </Grow>
     </ArtSvg>
   )
 }
