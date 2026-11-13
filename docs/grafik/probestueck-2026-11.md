@@ -72,8 +72,25 @@ Alle zehn Bereiche sind jetzt im kräftigen Stil; der Garten ist wieder einheitl
   mit Kontur), `Pumpkin`.
 - Leistungsgrenze: Hauptgarten 1554 SVG-Elemente (Grenze 2500). Vergleichsbilder: 8× Hauptgarten.
 
+## Runde 4 (2026-11-13): Kapitel 2 Streuobstwiese
+Das erste Kapitel, das Spieler sehen, lag im alten flachen Stil zwischen Hauptgarten und Weinberg.
+Jetzt kräftig (`src/theme/OrchardArt.tsx`, Vergleichsbild `kapitel-obstwiese.png`):
+- **Eigene Kronenform je Obstart:** Apfel breit und rund, Birne hoch und schmal, Kirsche flacher
+  Schirm, Zwetschge aufrechtes Oval, Walnuss mächtig auf dickem Stamm. Bäume wachsen von 72 % auf
+  volle Größe.
+- Schafe mit Wolle als eine Form, Weidezaun, Tränke (Stufe 3), Unterstand (Stufe 4).
+- Wildbienenhotel, Mosterei (Scheunentor, Apfel im Giebel), Dörrhaus (schmal und hoch, Gestell mit
+  Apfelringen), Obstmarkt aus den Bausteinen `Wall`/`GableRoof`/`Pane`/`ArchDoor`.
+- Setzling und verwilderte Ecke haben die dunkle Kontur.
+
+**Befund:** Der Kapitel-Baukasten (`ChapterAreaArt` in `ChapterArt.tsx`) wird im Spiel nicht mehr
+benutzt – alle Kapitel 4–50 sind einzeln handgezeichnet (`art/chapters/<id>.tsx`, Striche fest
+0,2–0,8). Einen gemeinsamen Hebel für Kapitel 13–50 gibt es deshalb nicht; es sind 47 Dateien mit
+je zehn Motiven.
+
 ## Als Nächstes
-1. Kapitel-Baukasten (`ChapterArt.tsx`, `chapterArtSpecs.ts`) auf Kontur und Licht/Schatten
-   umstellen – hebt die Kapitel 13–50 gemeinsam.
-2. Handgezeichnete Kapitel 1–12 einzeln (Weinberg ist fertig).
-3. Wildnis und geräumte Plätze im Hauptgarten (`PlotArt.tsx`) haben noch die dünnen Striche.
+1. Gemeinsame Kapitel-Teile (`HandParts.tsx`, `art/chapters/partsA…I.tsx`: Dach, Figur, Glashaus,
+   Fels, Nadelbaum …) auf Kontur umstellen – der größte verbleibende Hebel, wirkt in vielen Kapiteln.
+2. Kapitel 4–12 einzeln, in Spielreihenfolge (Bauernhof zuerst); Kapitel 13–50 danach.
+3. Wildnis und geräumte Plätze im Hauptgarten (`PlotArt.tsx`) und im Weinberg.
+4. Aufräumen: unbenutzten `ChapterAreaArt` entfernen (eigener Schritt, Tests hängen daran).
