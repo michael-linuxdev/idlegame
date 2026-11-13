@@ -35,8 +35,8 @@ ausgewerteten Zeitraum noch nicht aktiv – gespielt wurde auf `c376ce4`).
    → Offen (Balance-Entscheidung): Stufen über 40 hinaus bzw. Stufen langsamer, und/oder in der
    Ruhezeit ein eigenes Ziel. Nach der Ruhezeit-Regel wäre der zweite Tiefe Winter seit 11-13
    ~11 Uhr möglich gewesen; um 18:55 gab es stattdessen ein normales Saisonende.
-2. **Saison-Karten werden seit dem 11-10 abends immer übersprungen:** 14× „keine“ in Folge (ab
-   11-10 20:55), davor wurde fast immer eine Karte gewählt (18 von 20). Fällt zeitlich mit
+2. **Saison-Karten werden seit dem 11-10 abends immer übersprungen:** 13× „keine“ in Folge (ab
+   11-10 20:55), davor wurde fast immer eine Karte gewählt (17 von 19). Fällt zeitlich mit
    „Saison-Karten: Ausbau statt Ertrag“ (#139) zusammen. → Offen; die neuen Karten wirken
    offenbar nicht lohnend oder sind schwerer einzuschätzen.
 3. **Karten-Knopf → Saison-Tab → sofort zurück – auch hier.** 7× `map_cta`, 6× nach 2–5 s ohne
