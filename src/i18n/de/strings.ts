@@ -96,15 +96,14 @@ export const strings = {
 
   // Hinweis zur Testphase beim ersten Start der installierten App (game/distribution.ts TEST_PHASE)
   testPhase: {
-    title: 'Willkommen in der Testphase',
-    intro: 'Gartenerbe wird gerade getestet. Damit wir das Spiel verbessern können, zeichnet die App auf, wie gespielt wird:',
+    title: 'Testphase',
+    intro: 'Die App merkt sich, wie du spielst — damit wir das Spiel verbessern können.',
     points: [
-      'welche Spielaktionen du wann machst (z. B. Ausbauen, Saisonende, Menü),',
-      'wie lange und wie oft du spielst, dazu ein Fortschritts-Stand pro Tag.',
-      'Alles bleibt auf deinem Gerät. Nichts wird automatisch gesendet — du kannst das Log selbst exportieren und weitergeben.',
+      'Nur Spielaktionen und Spielzeit.',
+      'Alles bleibt auf deinem Gerät. Nichts wird gesendet.',
     ],
     checkbox: 'Aufzeichnung erlauben',
-    later: 'Du kannst das jederzeit ändern: Menü → Einstellungen → Playtest-Log.',
+    later: 'Änderbar unter Menü → Einstellungen.',
     confirm: 'Verstanden',
   },
 
@@ -561,9 +560,9 @@ export const strings = {
 
   prestige: {
     title: 'Saisonende',
-    introBefore: 'Der Garten geht in die Winterruhe. Du behältst',
+    introBefore: 'Du fängst das Gartenjahr neu an und bekommst dafür',
     introAfter:
-      'für das nächste Gartenjahr. Beete und Ernte dieser Saison ruhen bis zum Frühling.',
+      '— damit kaufst du in Omas Truhe Verbesserungen, die für immer bleiben. So wächst jedes neue Jahr schneller als das letzte.',
     erbstuecke: 'Erbstücke:',
     multiplier: 'Erbe-Bonus:',
     runs: 'Jahre geschafft:',
@@ -575,6 +574,9 @@ export const strings = {
     laterPayout: (n: number) => `in ~10 Minuten wären es ${n}`,
     erbstueckeAmount: (n: number) => `+${erb(n)}`,
     claimReset: (n: number) => `Winterruhe · +${erb(n)}`,
+    gainBefore: 'Mit diesen Erbstücken kannst du gleich danach',
+    gainValue: (mult: string) => `Ernte ${mult}`,
+    gainAfter: 'kaufen — für immer.',
     claimResetRebuild: (n: number, mods: number) =>
       mods > 0
         ? `Winterruhe · +${erb(n)} — Truhe öffnet nach ~${mods} Ausbauten`
@@ -588,7 +590,7 @@ export const strings = {
     emptyShop: 'Nach dem ersten Saisonende öffnet sich Omas Truhe.',
     shopTitle: 'Omas Truhe',
     shopIntro:
-      'Erbstücke aus vergangenen Saisons machen jedes neue Gartenjahr stärker. Weitere Schätze finden sich beim Neuanlegen.',
+      'Erbstücke gibt es bei jedem Saisonende neu — gib sie hier ruhig aus. Was du kaufst, bleibt für immer.',
     shopReady: (n: number) =>
       n === 1
         ? 'Du kannst 1 Verbesserung mit Erbstücken kaufen — beim Neuanlegen kommen mehr.'
@@ -639,6 +641,8 @@ export const strings = {
 
   longLoop: {
     title: 'Tiefer Winter',
+    pillReady: 'Tiefer Winter möglich',
+    pillReadyAria: 'Tiefer Winter ist möglich — im Saison-Tab ansehen',
     intro:
       'Wenn alle Ecken offen sind, kann der Garten einen langen Winter ruhen. Danach fängst du im ersten Gartenjahr neu an — mit Sprösslingen, die für immer bleiben.',
     sprouts: 'Sprösslinge',
@@ -939,7 +943,7 @@ export const strings = {
     skip: 'Tipps überspringen',
     welcome: {
       title: 'Mein liebes Enkelkind,',
-      body: 'der Garten gehört jetzt dir. Er ist ziemlich verwildert — aber unter den Brombeeren steckt gute Erde. Fang beim Gemüsebeet an. Deine Oma',
+      body: 'der Garten gehört jetzt dir. Fang beim Gemüsebeet an. Deine Oma',
       cta: 'Zum Garten',
     },
     tendBed: {
@@ -965,7 +969,7 @@ export const strings = {
     },
     prestigeTeaser: {
       title: 'Wenn es Winter wird',
-      body: 'Am Saisonende ruht der Garten. Was du gelernt hast, bleibt als Erbstück — und jedes Gartenjahr wird reicher.',
+      body: 'Am Saisonende fängst du neu an und bekommst Erbstücke. Damit wächst jedes Gartenjahr schneller.',
       cta: 'Danke, Oma',
       skipLabel: 'Schließen',
     },
@@ -1225,8 +1229,8 @@ export const strings = {
     visitor: 'Besuch im Garten! Tipp Gäste an — sie bringen immer eine Kleinigkeit mit.',
     order: 'Eine Bestellung für den Hofladen. Fahr die Ernte ein, solange sie offen ist, und tipp dann auf „Abliefern“.',
     variety: 'Eine neue Sorte! Im Notizbuch unter „Pflanzenbuch“ siehst du alle — jede bringt für immer etwas mehr Ernte.',
-    season: 'Die Saison kann enden. Im Winter ruht der Garten, aber du nimmst Erbstücke mit — damit wird jedes Gartenjahr reicher.',
-    truhe: 'In Omas Truhe warten Schätze. Tausch deine Erbstücke gegen Boni, die jeden Winter überdauern.',
+    season: 'Die Saison kann enden: Du fängst neu an und bekommst Erbstücke — damit wächst das nächste Jahr schneller.',
+    truhe: 'Gib deine Erbstücke in Omas Truhe aus — die Boni bleiben für immer, und neue Erbstücke gibt es jedes Saisonende.',
     weekly: 'Neu: Omas Wochenplan. Tipp unten links auf „Heute“ — dort stehen sieben Aufgaben für diese Woche.',
     deep: 'Alle Ecken sind offen. Wenn du magst, kann der Garten jetzt einen Tiefen Winter ruhen — für Sprösslinge, die für immer bleiben.',
     bulkMax: 'Neu: „Max“. Damit baust du dieses Beet so oft aus, wie deine Ernte gerade reicht — ein Tipp statt vieler.',
@@ -1241,7 +1245,7 @@ export const strings = {
     arcII: 'Neu in diesem Bogen: die Tauschpost. Oben unter „Tauschpost“ wählst du einen Weg für dieses Kapitel. Ilse entscheidet das nicht für dich.',
     arcIII: 'Neu in diesem Bogen: Wasser verteilen. Oben unter „Wasser“ gibst du den Bereichen Wasserpunkte. Ilse entscheidet das nicht für dich.',
     arcIV: 'Neu in diesem Bogen: ein Plan für morgen. Oben unter „Plan“ wählst du, ob das Kapitel jetzt oder während du weg bist mehr trägt. Ilse entscheidet das nicht für dich.',
-    helperAreas: 'Jonas hilft jetzt mit. Du bestimmst, was er ausbauen darf: Unter „Saison“ → Gartenhelfer → „Was Jonas ausbauen darf“ kannst du einzelne Bereiche sperren und wieder freigeben.',
+    helperAreas: 'Jonas baut jetzt für dich aus — mit deiner Ernte. Willst du selbst sparen? Tipp einen Bereich an und schalte „Jonas baut hier aus“ ab.',
   },
 
   backup: {

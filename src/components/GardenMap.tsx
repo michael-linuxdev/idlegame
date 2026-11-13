@@ -64,7 +64,7 @@ type GameApi = ReturnType<typeof useGame>
 interface Props {
   game: GameApi
   highlightId?: string | null
-  onOpenTab?: (tab: Tab, via?: { from: string; mode?: 'truhe' | 'season' }) => void
+  onOpenTab?: (tab: Tab, via?: { from: string; mode?: 'truhe' | 'season' | 'deep' }) => void
   unreadLetters?: number
   onOpenNotebook?: () => void
   extras: ExtrasState
@@ -207,6 +207,23 @@ export function GardenMap({
   const pushPop = useCallback((text: string, kind?: FloatPopItem['kind']) => {
     setPops((list) => [...list.slice(-4), { id: (list.at(-1)?.id ?? 0) + 1, text, kind }])
   }, [])
+
+  // Jonas' Käufe zeigen: sonst sinkt die Ernte beim Sparen scheinbar von selbst
+  // (Rückmeldung Testerin 2026-11-13). Höchstens ein Hinweis alle 4 s.
+  const ownedSeen = useRef(state.owned)
+  const playerBuyAt = useRef(0)
+  const jonasPopAt = useRef(0)
+  useEffect(() => {
+    const prev = ownedSeen.current
+    ownedSeen.current = state.owned
+    if (prev === state.owned || !state.helperOn || state.helperLevel <= 0) return
+    const now = Date.now()
+    if (now - playerBuyAt.current < 500 || now - jonasPopAt.current < 4000) return
+    const bought = GENERATORS.find((g) => (state.owned[g.id] ?? 0) > (prev[g.id] ?? 0))
+    if (!bought) return
+    jonasPopAt.current = now
+    pushPop(t.helper.bought(bought.name), 'upgrade')
+  }, [state.owned, state.helperOn, state.helperLevel, pushPop])
 
   const removePop = useCallback((id: number) => {
     setPops((list) => list.filter((p) => p.id !== id))
@@ -408,6 +425,7 @@ export function GardenMap({
   }
 
   function onUpgradeBought(deltaCost: number) {
+    playerBuyAt.current = Date.now()
     track('upgrades')
     playSfx('upgrade')
     pushPop(`−${formatErnte(deltaCost)}`, 'upgrade')
@@ -576,6 +594,11 @@ export function GardenMap({
         onOpenMult={() => setMultOpen(true)}
         onOpenFest={() => setFestOpen(true)}
         onOpenLetter={unreadLetters > 0 && onOpenNotebook ? onOpenNotebook : null}
+        onOpenDeep={
+          canDeepReset(state.saisonenden) && game.deepRestMs <= 0
+            ? () => onOpenTab?.('prestige', { from: 'map_pill', mode: 'deep' })
+            : null
+        }
       />
 
       <FloatPops items={pops} onDone={removePop} />

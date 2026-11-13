@@ -10,7 +10,7 @@
 export const MAX_EVENT_PILLS = 3
 
 /** Feste Reihenfolge für Pillen ohne Restzeit. */
-export const PILL_PRIORITY = ['season', 'order', 'erntefest', 'fest', 'card', 'challenge', 'weather', 'wheel'] as const
+export const PILL_PRIORITY = ['deep', 'season', 'order', 'erntefest', 'fest', 'card', 'challenge', 'weather', 'wheel'] as const
 
 export interface PillLike {
   key: string

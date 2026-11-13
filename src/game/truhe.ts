@@ -498,6 +498,49 @@ export function countAffordableTruheBuysAfterPrestige(args: {
   )
 }
 
+/** Truhen-Gegenstände, die die Ernte/s für immer erhöhen (prestigeMultiplier). */
+const YIELD_GAIN: Partial<Record<TruheItemId, number>> = { gartenschere: 0.05, strohhut: 0.02, rosenbogen: 0.015 }
+
+/**
+ * Ehrliche Vorschau fürs Saisonende: Um welchen Faktor steigt die Ernte/s,
+ * wenn man die Erbstücke (Bestand + Auszahlung) direkt nach dem Saisonende in
+ * die Ertrags-Gegenstände steckt, die dann sofort frei sind? Gekauft wird
+ * immer der Rang mit dem meisten Ertrag je Erbstück. Ränge, die sich erst
+ * beim Neuanlegen öffnen, zählen nicht mit — die Zahl ist also eine Untergrenze.
+ * 1 = nichts kaufbar.
+ */
+export function yieldGainAfterPrestige(args: {
+  upgrades: TruheUpgrades
+  erbstuecke: number
+  ernteSeason: number
+  saisonenden: number
+  probe?: boolean
+}): number {
+  const postPrestiges = args.saisonenden + 1
+  const owned = postPrestigeStartOwned(args.upgrades)
+  let wallet = args.erbstuecke + erbstueckePayout(args.ernteSeason, args.saisonenden, args.probe)
+  const ranks = { ...args.upgrades }
+  const items = TRUHE_ITEMS.filter((i) => YIELD_GAIN[i.id] != null)
+  for (let guard = 0; guard < 200; guard++) {
+    let best: TruheItem | null = null
+    let bestValue = 0
+    for (const item of items) {
+      const rank = ranks[item.id]
+      const cost = item.cost(rank)
+      if (cost > wallet || !truheRankUnlocked(item, rank, 0, owned, postPrestiges)) continue
+      const value = YIELD_GAIN[item.id]! / cost
+      if (value > bestValue) {
+        best = item
+        bestValue = value
+      }
+    }
+    if (!best) break
+    wallet -= best.cost(ranks[best.id])
+    ranks[best.id] += 1
+  }
+  return prestigeMultiplier(ranks) / prestigeMultiplier(args.upgrades)
+}
+
 /** Approx. module levels still needed for the nearest locked Truhe rank. */
 export function modulesToNextTruheUnlock(
   upgrades: TruheUpgrades,

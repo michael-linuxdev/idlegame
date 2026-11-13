@@ -187,13 +187,13 @@ export default function App() {
   }, [])
 
   // Saison-Tab: wohin er beim Öffnen springt (Karten-Knopf „Omas Truhe“ → Truhe)
-  const [seasonFocus, setSeasonFocus] = useState<{ to: 'truhe'; n: number } | null>(null)
+  const [seasonFocus, setSeasonFocus] = useState<{ to: 'truhe' | 'deep'; n: number } | null>(null)
   const tabRef = useRef(tab)
-  const onTabChange = useCallback((next: Tab, via?: { from: string; mode?: 'truhe' | 'season' }) => {
+  const onTabChange = useCallback((next: Tab, via?: { from: string; mode?: 'truhe' | 'season' | 'deep' }) => {
     // genau ein Log-Eintrag je Wechsel, mit Herkunft (vorher doppelt beim Karten-Knopf)
     if (tabRef.current !== next || via) logPlaytest('tab_open', { tab: next, ...via })
     tabRef.current = next
-    setSeasonFocus((f) => (next === 'prestige' && via?.mode === 'truhe' ? { to: 'truhe', n: (f?.n ?? 0) + 1 } : null))
+    setSeasonFocus((f) => (next === 'prestige' && (via?.mode === 'truhe' || via?.mode === 'deep') ? { to: via.mode, n: (f?.n ?? 0) + 1 } : null))
     setTab(next)
   }, [])
   // Deko/Kreuzen liegen auf der Garten-Karte: aus Markt oder Saison erst dorthin wechseln

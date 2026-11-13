@@ -100,15 +100,14 @@ export const strings: Strings = {
 
   // Test-phase notice on the first start of the installed app (game/distribution.ts TEST_PHASE)
   testPhase: {
-    title: 'Welcome to the test phase',
-    intro: 'Heirloom Garden is being tested right now. To help us improve the game, the app records how it is played:',
+    title: 'Test phase',
+    intro: 'The app remembers how you play — so we can improve the game.',
     points: [
-      'which game actions you take and when (e.g. upgrades, Season’s End, menu),',
-      'how long and how often you play, plus one progress snapshot per day.',
-      'Everything stays on your device. Nothing is sent automatically — you can export the log yourself and pass it on.',
+      'Only game actions and play time.',
+      'Everything stays on your device. Nothing is sent.',
     ],
     checkbox: 'Allow recording',
-    later: 'You can change this any time: Menu → Settings → Playtest log.',
+    later: 'Change it under Menu → Settings.',
     confirm: 'Got it',
   },
 
@@ -565,9 +564,9 @@ export const strings: Strings = {
 
   prestige: {
     title: 'Season’s End',
-    introBefore: 'The garden goes into its winter rest. You keep',
+    introBefore: 'You start the garden year over and get',
     introAfter:
-      'for the next garden year. This season’s beds and harvest rest until spring.',
+      'for it — spend them in Grandma’s Chest on boosts that stay forever. That way every new year grows faster than the last.',
     erbstuecke: 'Heirlooms:',
     multiplier: 'Heirloom bonus:',
     runs: 'Years completed:',
@@ -579,6 +578,9 @@ export const strings: Strings = {
     laterPayout: (n: number) => `in ~10 minutes it would be ${n}`,
     erbstueckeAmount: (n: number) => `+${erb(n)}`,
     claimReset: (n: number) => `Winter rest · +${erb(n)}`,
+    gainBefore: 'With these heirlooms you can buy',
+    gainValue: (mult: string) => `harvest ${mult}`,
+    gainAfter: 'right afterwards — for good.',
     claimResetRebuild: (n: number, mods: number) =>
       mods > 0
         ? `Winter rest · +${erb(n)} — chest opens after ~${mods} upgrades`
@@ -592,7 +594,7 @@ export const strings: Strings = {
     emptyShop: 'Grandma’s Chest opens after your first Season’s End.',
     shopTitle: 'Grandma’s Chest',
     shopIntro:
-      'Heirlooms from past seasons make every new garden year stronger. More treasures turn up as you replant.',
+      'You get new heirlooms at every Season’s End — go ahead and spend them here. Whatever you buy stays forever.',
     shopReady: (n: number) =>
       n === 1
         ? 'You can buy 1 boost with your heirlooms — more turn up as you replant.'
@@ -643,6 +645,8 @@ export const strings: Strings = {
 
   longLoop: {
     title: 'Deep Winter',
+    pillReady: 'Deep Winter possible',
+    pillReadyAria: 'Deep Winter is possible — view it in the Season tab',
     intro:
       'Once every corner is open, the garden can rest through a long winter. Afterwards you start again in garden year one — with seedlings that stay forever.',
     sprouts: 'Seedlings',
@@ -943,7 +947,7 @@ export const strings: Strings = {
     skip: 'Skip tips',
     welcome: {
       title: 'My dear grandchild,',
-      body: 'the garden is yours now. It’s rather overgrown — but under the brambles there’s good soil. Start with the vegetable patch. Love, Grandma',
+      body: 'the garden is yours now. Start with the vegetable patch. Love, Grandma',
       cta: 'To the garden',
     },
     tendBed: {
@@ -969,7 +973,7 @@ export const strings: Strings = {
     },
     prestigeTeaser: {
       title: 'When winter comes',
-      body: 'At Season’s End the garden rests. What you’ve learned stays with you as heirlooms — and every garden year grows richer.',
+      body: 'At Season’s End you start over and get heirlooms. They make every garden year grow faster.',
       cta: 'Thank you, Grandma',
       skipLabel: 'Close',
     },
@@ -1229,8 +1233,8 @@ export const strings: Strings = {
     visitor: 'Someone’s visiting the garden! Tap your guests — they always bring a little something.',
     order: 'An order for the farm shop. Bring in the harvest while it’s open, then tap “Deliver”.',
     variety: 'A new variety! You’ll find them all in the notebook under “Plant Book” — each one brings a little more harvest forever.',
-    season: 'The season can end now. The garden rests over winter, but you take heirlooms with you — and every garden year grows richer.',
-    truhe: 'Treasures are waiting in Grandma’s Chest. Trade your heirlooms for bonuses that last through every winter.',
+    season: 'The season can end now: you start over and get heirlooms — they make next year grow faster.',
+    truhe: 'Spend your heirlooms in Grandma’s Chest — the bonuses stay forever, and you get new heirlooms every Season’s End.',
     weekly: 'New: Grandma’s Weekly Plan. Tap “Today” in the bottom left — you’ll find seven tasks for this week there.',
     deep: 'Every corner is open. If you like, the garden can now rest through a Deep Winter — for seedlings that stay forever.',
     bulkMax: 'New: “Max”. Upgrades this bed as many times as your harvest allows — one tap instead of many.',
@@ -1245,7 +1249,7 @@ export const strings: Strings = {
     arcII: 'New in this arc: the seed post. Up top under “Seed post” you pick a way for this chapter. Ilse won’t decide this for you.',
     arcIII: 'New in this arc: sharing the water. Up top under “Water” you give the areas water points. Ilse won’t decide this for you.',
     arcIV: 'New in this arc: a plan for tomorrow. Up top under “Plan” you choose whether the chapter yields more now or while you’re away. Ilse won’t decide this for you.',
-    helperAreas: 'Jonas is helping now. You decide what he may upgrade: under “Season” → Garden Helper → “What Jonas may upgrade” you can lock and unlock single areas.',
+    helperAreas: 'Jonas now upgrades for you — with your harvest. Want to save up yourself? Tap an area and switch off “Jonas upgrades here”.',
   },
 
   backup: {
