@@ -5,17 +5,23 @@ import { ArtSvg } from '../theme/ArtSvg'
 import { P } from '../theme/art/palette'
 
 /**
- * Wetter auf der Karte (nur Darstellung): Pfützen mit Regenringen bei Regen,
- * umgewehte Halme und wirbelnde Blätter bei Wind. Folgt dem Tageswetter
+ * Wetter auf der Karte (nur Darstellung): Pfützen mit Regenringen bei Regen
+ * (`ground`: in der Bodenebene der Kulisse), umgewehte Halme und wirbelnde
+ * Blätter bei Wind (über der Karte). Folgt dem Tageswetter
  * (weatherAt) wie die Wetter-Pille. `?wetter=regen|wind` erzwingt es für Tests
  * (weatherOverride in theme/ambient.ts).
  */
+/**
+ * Pfützen liegen auf freien Stellen: ausgemessen gegen Bereiche mit Schild,
+ * Blumeninseln, Wildbüsche, Dekoplätze, Teich, Bank und die Deko aller neun
+ * Feste. Sie gehören zum Boden (MapBackdrop zeichnet sie unter aller Deko).
+ */
 const PUDDLES = [
-  { left: 50, top: 50, w: 13 },
-  { left: 41, top: 66, w: 15 },
-  { left: 57, top: 79, w: 12 },
-  { left: 25, top: 56, w: 10 },
-  { left: 80, top: 49, w: 10 },
+  { left: 80, top: 37, w: 10 },
+  { left: 54, top: 53, w: 11 },
+  { left: 40, top: 67, w: 11 },
+  { left: 56, top: 87.5, w: 12 },
+  { left: 31.5, top: 90.5, w: 12 },
 ]
 const TUFTS = [
   { left: 12, top: 52 },
@@ -26,11 +32,13 @@ const TUFTS = [
   { left: 36, top: 44 },
 ]
 
-export const WeatherLayer = memo(function WeatherLayer({ weather, season }: { weather: Weather; season: Season }) {
+export const WeatherLayer = memo(function WeatherLayer({ weather, season, ground = false }: { weather: Weather; season: Season; ground?: boolean }) {
   if (weather === 'regen') {
+    // Pfützen zeichnet nur die Bodenebene, sonst lägen sie über Laternen und Beeten
+    if (!ground) return null
     const frozen = season === 'winter'
     return (
-      <div className="weather-layer weather-regen" aria-hidden="true">
+      <div className="weather-layer weather-regen weather-ground" aria-hidden="true">
         {PUDDLES.map((p, i) => (
           <div key={i} className="weather-puddle" style={{ left: `${p.left}%`, top: `${p.top}%`, width: `calc(var(--u) * ${p.w})` }}>
             <ArtSvg viewBox="0 0 40 14">
@@ -43,7 +51,7 @@ export const WeatherLayer = memo(function WeatherLayer({ weather, season }: { we
       </div>
     )
   }
-  if (weather === 'wind') {
+  if (weather === 'wind' && !ground) {
     return (
       <div className="weather-layer weather-wind" aria-hidden="true">
         {TUFTS.map((p, i) => (

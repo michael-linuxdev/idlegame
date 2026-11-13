@@ -341,6 +341,11 @@ html.idle .module-art * {
   pointer-events: none;
 }
 
+/* Pfützen in der Bodenebene: kein eigener z-index, damit alle Deko darüber liegt */
+.weather-layer.weather-ground {
+  z-index: auto;
+}
+
 .weather-puddle,
 .weather-tuft,
 .weather-leaf {

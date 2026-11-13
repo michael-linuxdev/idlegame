@@ -194,6 +194,7 @@ export function GardenMap({
   }, [])
   const signsAll = useSignsAlways()
   const ambient = useAmbient()
+  const mapWeather = game.features.has('weather') || weatherOverride() ? (weatherOverride() ?? weatherAt(game.nowTick)) : undefined
   const harvest = useHarvestFlight()
   const { seen: seenHints, markSeen } = useHints()
   const [visitorPresent, setVisitorPresent] = useState(false)
@@ -729,10 +730,9 @@ export function GardenMap({
             ambient={ambient}
             skin={skinClass}
             fest={festAt(game.nowTick).id}
+            weather={mapWeather}
           />
-          {game.features.has('weather') || weatherOverride() ? (
-            <WeatherLayer weather={weatherOverride() ?? weatherAt(game.nowTick)} season={ambient.season} />
-          ) : null}
+          {mapWeather ? <WeatherLayer weather={mapWeather} season={ambient.season} /> : null}
           <DecorLayer game={game} season={ambient.season} editing={decorEdit} onDone={() => setDecorEdit(false)} />
           {state.helperLevel > 0 && state.helperOn ? (
             <>

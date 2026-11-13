@@ -14,6 +14,8 @@ import { memo, type CSSProperties, type ReactNode } from 'react'
 import { GENERATORS } from '../game/generators'
 import type { Ambient } from './ambient'
 import type { FestId } from '../game/fests'
+import type { Weather } from '../game/gardenLife'
+import { WeatherLayer } from '../components/WeatherLayer'
 import { FestDecor, FestSkinDecor } from './FestDecor'
 import { useSvgId } from './svgId'
 import { ArtSvg } from './ArtSvg'
@@ -29,6 +31,8 @@ interface Props {
   skin?: string
   /** Running saisonales Fest → map decoration */
   fest?: FestId
+  /** Tageswetter: Pfützen liegen in der Bodenebene, unter aller Deko */
+  weather?: Weather
 }
 
 /**
@@ -569,7 +573,7 @@ function Particles({ ambient }: { ambient: Ambient }) {
 }
 
 /** Memoized: re-renders only when the stage or ambient mood changes. */
-export const MapBackdrop = memo(function MapBackdrop({ stage, ambient, skin, fest }: Props) {
+export const MapBackdrop = memo(function MapBackdrop({ stage, ambient, skin, fest, weather }: Props) {
   const grass = useSvgId('gg-grass')
   const light = useSvgId('gg-light')
   return (
@@ -637,6 +641,8 @@ export const MapBackdrop = memo(function MapBackdrop({ stage, ambient, skin, fes
           />
         </g>
       </ArtSvg>
+
+      {weather ? <WeatherLayer weather={weather} season={ambient.season} ground /> : null}
 
       {/* far edge: hedge behind the HUD, Laube at the end of the path */}
       <div className="garden-hedge">

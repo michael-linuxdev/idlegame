@@ -1,6 +1,7 @@
 // Store-Screenshots (1290×2796, iPhone 6,7″) in einer Sprache.
 // Usage: npm run build && (npx vite preview --port 4175 &) && node scripts/store/screenshots.cjs docs/store/screenshots [de|en]
 // Englisch: node scripts/store/screenshots.cjs docs/store/screenshots-en en
+// Das Wetter ist fest auf Sonne gestellt (keine Pfützen); das laufende Fest folgt dem Kalender.
 const { chromium } = require('playwright')
 const OUT = process.argv[2]
 const LANG = process.argv[3] === 'en' ? 'en' : 'de'
@@ -30,7 +31,7 @@ async function scene(b, name, { owned, extra = {}, ftue = false, ambient = 'day-
     sessionStorage.setItem('seed', '1')
   }, [JSON.stringify(st), ftue])
   const p = await ctx.newPage()
-  await p.goto(`http://localhost:4175/?lang=${LANG}&ambient=${ambient}`)
+  await p.goto(`http://localhost:4175/?lang=${LANG}&ambient=${ambient}&wetter=sonne`)
   await p.waitForTimeout(1600)
   // hide transient banners/events for clean shots
   await p.addStyleTag({ content: '.hud-pills-wrap,.float-pops,.hud-toast,.weather-card,.oma-hint,.oma-note,.welcome-back{display:none!important}' })
