@@ -29,7 +29,7 @@ export function Huehnerstall({ t }: { t: number }) {
         </g>
       ) : null}
       {t <= 2 ? (
-        <g>
+        <g transform={t === 1 ? 'translate(50 77) scale(0.76) translate(-50 -77)' : undefined}>
           {/* Nurdach-Stall: Giebelwand, darüber zwei kräftige Dachbretter */}
           <path d="M29 75 L50 36 L71 75 Z" fill={WOOD} {...line} />
           <path d="M50 39 L69 74 H50 Z" fill={OUT} opacity="0.15" />
@@ -39,10 +39,17 @@ export function Huehnerstall({ t }: { t: number }) {
           <path d="M28 68 L46 35" fill="none" stroke={P.white} strokeWidth={BOLD.detail} strokeLinecap="round" opacity="0.4" />
           {winter ? <SnowCap d="M38 51 L50 29.5 L62 51" w={4} /> : null}
           <ArchDoor x={43.5} y={75} w={13} h={18} fill={OUT} />
-          {t >= 2 ? <path d="M40 76.5 H60" stroke={P.woodLight} strokeWidth="2.4" strokeLinecap="round" /> : null}
+          {t >= 2 ? (
+            <g>
+              <path d="M40 76.5 H60" stroke={P.woodLight} strokeWidth="2.4" strokeLinecap="round" />
+              {/* Tränke */}
+              <path d="M78 71 h12 l-1.6 6 h-8.8 z" fill={P.metal} {...detail} />
+              <path d="M79.6 72.4 h8.8" stroke={P.waterLight} strokeWidth="1.6" strokeLinecap="round" />
+            </g>
+          ) : null}
         </g>
       ) : (
-        <g>
+        <g transform={t === 3 ? 'translate(50 77) scale(0.82) translate(-50 -77)' : t === 4 ? 'translate(50 77) scale(0.92) translate(-50 -77)' : undefined}>
           {/* Stall auf Stelzen */}
           <Post x={28} y={77} h={19} />
           <Post x={72} y={77} h={19} />
