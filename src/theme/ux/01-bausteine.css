@@ -419,6 +419,18 @@ html.idle .plot-canbuy {
   color: #2f7a2a !important;
 }
 
+.welcome-helper--main {
+  margin: 0.6rem 0 0.3rem !important;
+  font-weight: 800;
+  color: var(--ge-ink) !important;
+}
+
+.welcome-rate {
+  font-family: var(--ge-font-metric);
+  font-weight: 800;
+  color: #2f7a2a !important;
+}
+
 .welcome-claim {
   width: 100%;
   margin-top: 0.7rem;

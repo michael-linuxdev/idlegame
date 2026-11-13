@@ -64,7 +64,7 @@ type GameApi = ReturnType<typeof useGame>
 interface Props {
   game: GameApi
   highlightId?: string | null
-  onOpenTab?: (tab: Tab) => void
+  onOpenTab?: (tab: Tab, via?: { from: string; mode?: 'truhe' | 'season' }) => void
   unreadLetters?: number
   onOpenNotebook?: () => void
   extras: ExtrasState
@@ -168,7 +168,11 @@ export function GardenMap({
     return () => ro.disconnect()
   }, [])
   // Welcome-back card: once per app start, only after a real break
-  const [welcomeDone, setWelcomeDone] = useState(false)
+  // Jede neue Rückkehr (≥ 5 min) bekommt ihren Zettel, nicht nur die erste nach dem App-Start:
+  // gemerkt wird, für welche Abwesenheit er schon weggetippt wurde
+  const [welcomeDoneFor, setWelcomeDoneFor] = useState<number | null>(null)
+  const welcomeDone = welcomeDoneFor === game.offlineAwayMs
+  const setWelcomeDone = (_done: true) => setWelcomeDoneFor(game.offlineAwayMs)
   /** First minutes: only Ernte, goal, Gießen and the menu — events come once Kompost grows */
   const earlyGame = !game.features.has('events')
   const previewDef = previewSkin ? COSMETICS.find((c) => c.id === previewSkin) ?? null : null
@@ -328,10 +332,16 @@ export function GardenMap({
   }, [playerLevel.level, pushPop])
 
   function claimOffline() {
-    harvest.launch(document.querySelector('.hud-claim'))
     const amount = game.offlineGained ?? 0
+    if (amount <= 0.01) {
+      // Zettel ohne Korb (Jonas hat alles verbaut): nur bestätigen
+      game.dismissOffline(state.helperReport)
+      game.ackHelperReport()
+      return
+    }
+    harvest.launch(document.querySelector('.hud-claim'))
     const xp = xpFromOfflineClaim(amount)
-    game.dismissOffline()
+    game.dismissOffline(state.helperReport)
     playSfx('claim')
     pushPop(`+${formatErnte(amount)}`, 'claim')
     const toast =
@@ -393,8 +403,8 @@ export function GardenMap({
   }
 
   function openPrestigeCta() {
-    logPlaytest('tab_open', { tab: 'prestige', from: 'map_cta' })
-    onOpenTab?.('prestige')
+    // „Omas Truhe: n Käufe“ springt direkt zur Truhe (sie liegt unter Saisonende und Jonas)
+    onOpenTab?.('prestige', { from: 'map_cta', mode: prestigeCta?.spend ? 'truhe' : 'season' })
   }
 
   function onUpgradeBought(deltaCost: number) {
@@ -565,6 +575,7 @@ export function GardenMap({
         onOpenProgress={() => setProgressOpen(true)}
         onOpenMult={() => setMultOpen(true)}
         onOpenFest={() => setFestOpen(true)}
+        onOpenLetter={unreadLetters > 0 && onOpenNotebook ? onOpenNotebook : null}
       />
 
       <FloatPops items={pops} onDone={removePop} />
@@ -587,11 +598,13 @@ export function GardenMap({
         />
       ) : null}
       {multOpen ? <MultSheet rows={multRows} onClose={() => setMultOpen(false)} /> : null}
-      {!welcomeDone && !hintsBlocked && !photoMode && game.offlineGained != null && game.offlineAwayMs >= 5 * 60_000 ? (
+      {!welcomeDone && !hintsBlocked && !photoMode && (game.offlineGained != null || state.helperReport > 0) && game.offlineAwayMs >= 5 * 60_000 ? (
         <WelcomeBack
-          amount={game.offlineGained}
+          amount={game.offlineGained ?? 0}
           awayMs={game.offlineAwayMs}
-          helped={state.helperReport > 0}
+          helped={state.helperReport}
+          rateFrom={game.offlineRateFrom}
+          rateTo={game.rate}
           beds={GENERATORS.filter(
             (g) => game.unlocked(g.id) && game.costOf(g.id) <= state.ernte + (game.offlineGained ?? 0),
           )

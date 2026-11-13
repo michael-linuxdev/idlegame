@@ -244,16 +244,18 @@ export function useShopActions({ setState, offlineGained, setOfflineGained, offl
     setState((s) => claimQuestReward(s, questId))
   }, [setState])
 
-  const dismissOffline = useCallback(() => {
+  /** helper = Jonas' Ausbauten in der Abwesenheit (nur fürs Log; auch bei leerem Korb) */
+  const dismissOffline = useCallback((helper = 0) => {
     const amount = offlineGained ?? 0
     const awayMs = offlineAwayMs
     setOfflineGained(null)
     setOfflineAwayMs(0)
     // Skip logging false claims (awayMs≈0 / sub-threshold) so they don't dilute the offline hook.
-    if (amount > 0.01 && awayMs >= MIN_OFFLINE_CLAIM_AWAY_MS) {
+    if ((amount > 0.01 || helper > 0) && awayMs >= MIN_OFFLINE_CLAIM_AWAY_MS) {
       logPlaytest('offline_claim', {
         amount: Math.round(amount * 100) / 100,
         awayMs,
+        ...(helper > 0 ? { helper } : {}),
       })
     }
     // Always empty the basket into the wallet; XP only for real absences

@@ -12,6 +12,7 @@ import {
   IconWind,
   IconFertilizer,
   IconFestival,
+  IconLetter,
   IconFlag,
   IconSnow,
   IconSun,
@@ -45,6 +46,8 @@ interface Props {
   order?: { label: string; detail: string; ratio: number; claim: boolean; onClaim: () => void; msLeft?: number } | null
   /** Open the Festladen */
   onOpenFest?: () => void
+  /** Ungelesener Brief von Oma: öffnet das Notizbuch (der Umschlag an der Laube liegt oft unter dem HUD) */
+  onOpenLetter?: (() => void) | null
 }
 
 const WEATHER_ICON = {
@@ -66,7 +69,7 @@ function loadSeen(): string[] {
 }
 
 /** Compact event bar — every timed bonus is one small pill, never a card. */
-export function EventPills({ game, season, order, onOpenFest }: Props) {
+export function EventPills({ game, season, order, onOpenFest, onOpenLetter }: Props) {
   const [open, setOpen] = useState<string | null>(null)
   const [showAll, setShowAll] = useState(false)
   const [seen, setSeen] = useState<string[]>(loadSeen)
@@ -82,6 +85,17 @@ export function EventPills({ game, season, order, onOpenFest }: Props) {
   }
   const { erntefest, erntefestVisible, erntefestGoalDone, erntefestGoalClaimed, state, eventMult, flash } = game
   const pills: Pill[] = []
+
+  if (onOpenLetter) {
+    pills.push({
+      key: 'letter',
+      icon: <IconLetter />,
+      label: t.notebook.newLetter,
+      aria: t.notebook.newLetterAria,
+      claim: true,
+      onClick: onOpenLetter,
+    })
+  }
 
   if (order) {
     pills.push({
@@ -314,8 +328,26 @@ export function EventPills({ game, season, order, onOpenFest }: Props) {
           <ul>
             {hidden.map((p) => (
               <li key={p.key}>
-                <span className="hud-pill-icon" aria-hidden="true">{p.icon}</span>
-                <span>{p.detail?.line ?? p.aria ?? t.ux.pills.names[p.key] ?? p.label}</span>
+                {p.onClick ? (
+                  // Was sich öffnen lässt (Festladen …), bleibt auch hinter „+N“ erreichbar
+                  <button
+                    type="button"
+                    className={`hud-rest-open pill-${p.key}`}
+                    onClick={() => {
+                      markSeen(p.key)
+                      setShowAll(false)
+                      p.onClick?.()
+                    }}
+                  >
+                    <span className="hud-pill-icon" aria-hidden="true">{p.icon}</span>
+                    <span>{p.aria ?? t.ux.pills.names[p.key] ?? p.label}</span>
+                  </button>
+                ) : (
+                  <>
+                    <span className="hud-pill-icon" aria-hidden="true">{p.icon}</span>
+                    <span>{p.detail?.line ?? p.aria ?? t.ux.pills.names[p.key] ?? p.label}</span>
+                  </>
+                )}
               </li>
             ))}
           </ul>

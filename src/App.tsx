@@ -186,11 +186,15 @@ export default function App() {
     setHoldInstall(hold)
   }, [])
 
-  const onTabChange = useCallback((next: Tab) => {
-    setTab((prev) => {
-      if (prev !== next) logPlaytest('tab_open', { tab: next })
-      return next
-    })
+  // Saison-Tab: wohin er beim Öffnen springt (Karten-Knopf „Omas Truhe“ → Truhe)
+  const [seasonFocus, setSeasonFocus] = useState<{ to: 'truhe'; n: number } | null>(null)
+  const tabRef = useRef(tab)
+  const onTabChange = useCallback((next: Tab, via?: { from: string; mode?: 'truhe' | 'season' }) => {
+    // genau ein Log-Eintrag je Wechsel, mit Herkunft (vorher doppelt beim Karten-Knopf)
+    if (tabRef.current !== next || via) logPlaytest('tab_open', { tab: next, ...via })
+    tabRef.current = next
+    setSeasonFocus((f) => (next === 'prestige' && via?.mode === 'truhe' ? { to: 'truhe', n: (f?.n ?? 0) + 1 } : null))
+    setTab(next)
   }, [])
   // Deko/Kreuzen liegen auf der Garten-Karte: aus Markt oder Saison erst dorthin wechseln
   const openMapSheet = (sheet: 'decor' | 'cross') => {
@@ -228,6 +232,7 @@ export default function App() {
           <PrestigePanel
             game={game}
             highlight={ftueHighlight === 'prestige'}
+            focus={seasonFocus}
             onOpenChapter={(id) => {
               goPlot(id)
               onTabChange('garten')

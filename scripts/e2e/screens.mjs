@@ -167,6 +167,8 @@ try {
     await p.locator('.today-sheet').waitFor()
     await check(p, 'heute')
     await p.keyboard.press('Escape')
+    // An Tagen mit vielen Ereignissen liegt das Fest hinter „+n“
+    if (!(await p.locator('.pill-fest').first().isVisible())) await p.locator('.pill-more').click()
     await p.locator('.pill-fest').first().click()
     await p.locator('.fest-sheet').waitFor()
     await check(p, 'fest')

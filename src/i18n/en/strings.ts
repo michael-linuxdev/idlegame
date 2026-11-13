@@ -595,8 +595,8 @@ export const strings: Strings = {
       'Heirlooms from past seasons make every new garden year stronger. More treasures turn up as you replant.',
     shopReady: (n: number) =>
       n === 1
-        ? '1 treasure ready — more turn up as you replant.'
-        : `${n} treasures ready — more turn up as you replant.`,
+        ? 'You can buy 1 boost with your heirlooms — more turn up as you replant.'
+        : `You can buy ${n} boosts with your heirlooms — more turn up as you replant.`,
     shopWaiting: (name: string, nextRank: number, pct: number) =>
       `Next up: ${name} rank ${nextRank} (${pct}%) — keep upgrading.`,
     shopUnlockAria: (name: string) => `Progress towards ${name}`,
@@ -612,8 +612,8 @@ export const strings: Strings = {
     max: 'Max',
     costErbstuecke: (n: number) => erb(n),
     spendCta: (n: number) =>
-      n === 1 ? 'Grandma’s Chest · 1 treasure ready' : `Grandma’s Chest · ${n} treasures ready`,
-    spendAria: 'Open Grandma’s Chest — treasures ready',
+      `Grandma’s Chest · spend heirlooms (${n})`,
+    spendAria: 'Open Grandma’s Chest — spend heirlooms',
     keepTitle: 'Stays',
     loseTitle: 'Rests until spring',
     keepItems: ['Heirlooms & chest', 'Seeds, garden styles, streak', 'Garden years'],

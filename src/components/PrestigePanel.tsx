@@ -18,6 +18,8 @@ type GameApi = ReturnType<typeof useGame>
 interface Props {
   game: GameApi
   highlight?: boolean
+  /** Beim Öffnen zu diesem Abschnitt springen (n zählt hoch, damit derselbe Sprung erneut auslöst) */
+  focus?: { to: 'truhe'; n: number } | null
   /** Jump to an open chapter */
   onOpenChapter?: (id: ChapterId) => void
 }
@@ -35,7 +37,7 @@ function shopRowPriority(
 
 const JUMPS = ['season', 'helper', 'truhe', 'deep', 'generation']
 
-export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
+export function PrestigePanel({ game, highlight, focus, onOpenChapter }: Props) {
   const { state, nextPrestige, canPrestige, prestige, multiplier, prestigeMin, prestigeProgress } =
     game
   // Jump chips only for sections that are on screen for this player
@@ -46,6 +48,14 @@ export function PrestigePanel({ game, highlight, onOpenChapter }: Props) {
     )
     return () => cancelAnimationFrame(id)
   }, [state.saisonenden, state.tiefeWinter, state.generation, state.helperLevel])
+  // Vom Karten-Knopf „Omas Truhe“: gleich bei der Truhe landen, nicht oben beim Saisonende
+  useEffect(() => {
+    if (!focus) return
+    const id = requestAnimationFrame(() =>
+      document.getElementById(`jump-${focus.to}`)?.scrollIntoView({ block: 'start' }),
+    )
+    return () => cancelAnimationFrame(id)
+  }, [focus])
   // Untere Leiste nur, wenn der Winterruhe-Knopf oben nicht zu sehen ist (sonst doppelt)
   const mainCta = useRef<HTMLButtonElement>(null)
   const [mainCtaVisible, setMainCtaVisible] = useState(true)

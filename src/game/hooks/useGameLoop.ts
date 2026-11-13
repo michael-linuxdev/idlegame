@@ -36,10 +36,15 @@ export function useGameLoop() {
   const [boot] = useState(() => {
     const loaded = loadState()
     const awayMs = Math.max(0, Date.now() - loaded.lastSeen)
-    let next = applyOfflineCatchup(countSession(loaded, awayMs)).state
-    const banner = awayMs >= MIN_OFFLINE_CLAIM_AWAY_MS && next.offlinePending > 0.01
+    const long = awayMs >= MIN_OFFLINE_CLAIM_AWAY_MS
+    const rateFrom = productionPerSecond(loaded)
+    // Jonas' Bericht gilt je Rückkehr: ein alter, nie bestätigter zählt nicht mit
+    let next = applyOfflineCatchup(countSession(long ? { ...loaded, helperReport: 0 } : loaded, awayMs)).state
+    const banner = long && next.offlinePending > 0.01
     if (!banner) next = creditOfflinePending(next)
-    return { state: maybeStartFlashEvent(next), awayMs: banner ? awayMs : 0, pending: banner ? next.offlinePending : null }
+    // Zettel auch, wenn Jonas die ganze Offline-Ernte verbaut hat (Korb leer)
+    const note = banner || (long && next.helperReport > 0)
+    return { state: maybeStartFlashEvent(next), awayMs: note ? awayMs : 0, pending: banner ? next.offlinePending : null, rateFrom }
   })
   const [state, setState] = useState<GameState>(boot.state)
   // „Neu“-Abzeichen: bestehende Spieler kennen schon, was offen ist
@@ -64,6 +69,8 @@ export function useGameLoop() {
   })
   const [offlineGained, setOfflineGained] = useState<number | null>(boot.pending)
   const [offlineAwayMs, setOfflineAwayMs] = useState<number>(boot.awayMs)
+  /** Ernte/s vor dem Nachholen – der Zettel zeigt, was Jonas daraus gemacht hat */
+  const [offlineRateFrom, setOfflineRateFrom] = useState<number>(boot.rateFrom)
 
   const stateRef = useRef(state)
   const dirtySaveRef = useRef(false)
@@ -150,9 +157,15 @@ export function useGameLoop() {
       document.documentElement.classList.remove('tab-hidden')
       setState((s) => {
         const awayMs = Math.max(0, Date.now() - s.lastSeen)
-        let next = applyOfflineCatchup(countSession(s, awayMs)).state
-        if (next.offlinePending > 0.01 && awayMs >= MIN_OFFLINE_CLAIM_AWAY_MS) {
+        const long = awayMs >= MIN_OFFLINE_CLAIM_AWAY_MS
+        if (long) setOfflineRateFrom(productionPerSecond(s))
+        let next = applyOfflineCatchup(countSession(long ? { ...s, helperReport: 0 } : s, awayMs)).state
+        if (next.offlinePending > 0.01 && long) {
           setOfflineGained(next.offlinePending)
+          setOfflineAwayMs(awayMs)
+        } else if (long && next.helperReport > 0 && s.offlinePending <= 0) {
+          // Jonas hat alles verbaut: Zettel ohne Korb
+          next = creditOfflinePending(next)
           setOfflineAwayMs(awayMs)
         } else if (next.offlinePending > 0) {
           // short switch: a waiting banner grows, otherwise straight into the wallet
@@ -192,6 +205,7 @@ export function useGameLoop() {
     setOfflineGained,
     offlineAwayMs,
     setOfflineAwayMs,
+    offlineRateFrom,
     stateRef,
     nowTick,
   }

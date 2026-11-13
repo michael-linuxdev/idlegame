@@ -591,8 +591,8 @@ export const strings = {
       'Erbstücke aus vergangenen Saisons machen jedes neue Gartenjahr stärker. Weitere Schätze finden sich beim Neuanlegen.',
     shopReady: (n: number) =>
       n === 1
-        ? '1 Schatz bereit — beim Neuanlegen kommen mehr.'
-        : `${n} Schätze bereit — beim Neuanlegen kommen mehr.`,
+        ? 'Du kannst 1 Verbesserung mit Erbstücken kaufen — beim Neuanlegen kommen mehr.'
+        : `Du kannst ${n} Verbesserungen mit Erbstücken kaufen — beim Neuanlegen kommen mehr.`,
     shopWaiting: (name: string, nextRank: number, pct: number) =>
       `Als Nächstes: ${name} Rang ${nextRank} (${pct}%) — weiter ausbauen.`,
     shopUnlockAria: (name: string) => `Fortschritt bis ${name}`,
@@ -608,8 +608,8 @@ export const strings = {
     max: 'Max',
     costErbstuecke: (n: number) => erb(n),
     spendCta: (n: number) =>
-      n === 1 ? 'Omas Truhe · 1 Schatz bereit' : `Omas Truhe · ${n} Schätze bereit`,
-    spendAria: 'Omas Truhe öffnen — Schätze bereit',
+      `Omas Truhe · Erbstücke ausgeben (${n})`,
+    spendAria: 'Omas Truhe öffnen — Erbstücke ausgeben',
     keepTitle: 'Bleibt',
     loseTitle: 'Ruht bis Frühling',
     keepItems: ['Erbstücke & Truhe', 'Samen, Gartenstile, Serie', 'Gartenjahre'],
