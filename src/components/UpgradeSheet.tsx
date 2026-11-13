@@ -21,7 +21,7 @@ import {
 import { efficiencyMult, type BranchKind } from '../game/branches'
 import { formatErnte, formatDecimal, formatRate } from '../game/format'
 import { playSfx } from '../game/sound'
-import { gatePrestiges, totalGardenMult } from '../game/state'
+import { gatePrestiges, helperIsPro, totalGardenMult } from '../game/state'
 import { t } from '../i18n'
 import { cardAreaMult } from '../game/seasonCards'
 import type { useGame } from '../game/useGame'
@@ -309,6 +309,23 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
             <p className="upgrade-hold-hint">
               {affordable ? (bulk === 1 ? t.upgrade.holdHint : '') : needMore > 0 ? t.upgrade.needMore(formatErnte(needMore)) : ''}
             </p>
+
+            {/* Jonas' Sperre dort, wo man spart: sonst kauft er einem das Ziel weg */}
+            {owned >= 1 && game.state.helperLevel > 0 && !helperIsPro(game.state.helperLevel) ? (
+              <button
+                type="button"
+                role="switch"
+                aria-checked={!game.state.helperBlocked.includes(def.id)}
+                className={`jonas-here${game.state.helperBlocked.includes(def.id) ? '' : ' on'}`}
+                onClick={() => game.switchHelperArea(def.id)}
+              >
+                <span className="jonas-here-box" aria-hidden="true" />
+                <span className="jonas-here-text">
+                  <span>{t.helper.here}</span>
+                  <small>{game.state.helperBlocked.includes(def.id) ? t.helper.hereOff : t.helper.hereOn}</small>
+                </span>
+              </button>
+            ) : null}
 
             {owned >= 1 ? (
               <button

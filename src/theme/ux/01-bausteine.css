@@ -443,6 +443,23 @@ html.idle .plot-canbuy {
   color: #3f7a30;
 }
 
+.prestige-gain {
+  margin: 0.5rem 0 0.4rem;
+  padding: 0.45rem 0.7rem;
+  border-radius: 0.7rem;
+  background: #e3efd6;
+  color: #2c4a22;
+  font-weight: 700;
+  text-align: center;
+}
+
+.prestige-gain strong {
+  font-family: var(--ge-font-metric);
+  font-size: 1.1em;
+  color: #2f7a2a;
+  white-space: nowrap;
+}
+
 /* —— Wildnis: how far until the next corner can be cleared —— */
 .plot-wild-progress {
   display: block;
@@ -540,4 +557,69 @@ html.idle .plot-canbuy {
 /* —— Kapitel-Karten: the goal area glows softly —— */
 .garden-plot.goal-target .plot-visual {
   filter: drop-shadow(0 0 7px rgba(255, 236, 140, 0.95));
+}
+
+/* —— Ausbau-Fenster: Jonas für diesen Bereich an/aus —— */
+.jonas-here {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  min-height: 2.9rem;
+  margin: 0.2rem 0 0.5rem;
+  padding: 0.35rem 0.7rem;
+  border: 1.5px solid #c9b48a;
+  border-radius: 0.8rem;
+  background: #fffaf0;
+  color: var(--ge-ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.jonas-here-box {
+  flex: none;
+  position: relative;
+  width: 2.5rem;
+  height: 1.4rem;
+  border-radius: 999px;
+  background: #b9ad97;
+  transition: background 0.15s;
+}
+
+.jonas-here-box::after {
+  content: '';
+  position: absolute;
+  top: 0.15rem;
+  left: 0.15rem;
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.15s;
+}
+
+.jonas-here.on .jonas-here-box {
+  background: #2f7a2a;
+}
+
+.jonas-here.on .jonas-here-box::after {
+  transform: translateX(1.1rem);
+}
+
+.jonas-here-text {
+  display: grid;
+  font-weight: 800;
+}
+
+.jonas-here-text small {
+  font-weight: 600;
+  color: var(--ge-ink-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jonas-here-box,
+  .jonas-here-box::after {
+    transition: none;
+  }
 }

@@ -4,7 +4,7 @@ import { GENERATORS } from '../game/generators'
 import { IconHelper } from '../theme/icons'
 import { type ChapterId } from '../game/chapters'
 import { PRESTIGE_MIN_MODULES_ONLINE, erbstueckePayout, modulesOnlineCount, prestigeBlockReason, isProbeYear } from '../game/economy'
-import { TRUHE_ITEMS, PRESTIGE_BRANCHES, countAffordableTruheBuys, countAffordableTruheBuysAfterPrestige, truheRankUnlocked, truheRankUnlockNeed, truheUnlockProgress, modulesToNextTruheUnlock, nextLockedTruheUnlock, postPrestigeStartOwned } from '../game/truhe'
+import { TRUHE_ITEMS, PRESTIGE_BRANCHES, yieldGainAfterPrestige, countAffordableTruheBuys, countAffordableTruheBuysAfterPrestige, truheRankUnlocked, truheRankUnlockNeed, truheUnlockProgress, modulesToNextTruheUnlock, nextLockedTruheUnlock, postPrestigeStartOwned } from '../game/truhe'
 import { formatEta, formatErnte, formatDecimal, formatMult } from '../game/format'
 import { t } from '../i18n'
 import { CHALLENGE_IDS } from '../game/challenges'
@@ -107,6 +107,15 @@ export function PrestigePanel({ game, highlight, focus, onOpenChapter }: Props) 
       postPrestigeStartOwned(state.truhe),
       state.saisonenden + 1,
     ) ?? 0
+
+  // Was das Saisonende bringt, als Zahl: Ernte/s-Faktor durch die sofort kaufbaren Truhen-Ränge
+  const yieldGain = yieldGainAfterPrestige({
+    upgrades: state.truhe,
+    erbstuecke: state.erbstuecke,
+    ernteSeason: state.ernteSeason,
+    saisonenden: state.saisonenden,
+    probe: isProbeYear(state),
+  })
 
   let claimLabel: string
   if (canPrestige) {
@@ -229,6 +238,11 @@ export function PrestigePanel({ game, highlight, focus, onOpenChapter }: Props) 
 
         {!canPrestige && prestigeProgress.ratio < 0.05 && block === 'ernte' ? (
           <p className="panel-empty">{t.prestige.emptyGate}</p>
+        ) : null}
+        {canPrestige && yieldGain >= 1.01 ? (
+          <p className="prestige-gain">
+            {t.prestige.gainBefore} <strong>{t.prestige.gainValue(formatMult(yieldGain))}</strong> {t.prestige.gainAfter}
+          </p>
         ) : null}
         <button
           ref={mainCta}

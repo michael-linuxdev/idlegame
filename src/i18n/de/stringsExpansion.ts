@@ -68,6 +68,9 @@ export const expansionStrings = {
     toggleAria: (on: boolean) => (on ? 'Gartenhelfer pausieren' : 'Gartenhelfer weiterarbeiten lassen'),
     report: (n: number) => `Jonas hat ${n}× ausgebaut, während du weg warst`,
     bought: (name: string) => `Jonas baut aus: ${name}`,
+    here: 'Jonas baut hier aus',
+    hereOn: 'Er nimmt dafür deine Ernte.',
+    hereOff: 'Gesperrt — du sparst selbst.',
     areasTitle: 'Was Jonas ausbauen darf',
     areasHint:
       'Tippe einen Bereich an, um ihn für Jonas zu sperren — dann baut er ihn nicht mehr aus, auch nicht, wenn du weg bist. So kannst du selbst für einen Bereich sparen. Nochmal tippen gibt ihn wieder frei.',
