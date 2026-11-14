@@ -103,14 +103,14 @@ function Cypress({ x, y, s = 1 }: { x: number; y: number; s?: number }) {
   )
 }
 
-/** Provenzalisches Haus: Putz, Ziegeldach, Fensterläden. */
+/** Fenster mit Läden; offen mit Blumenkasten (Provence). */
 function Shutter({ x, y, open }: { x: number; y: number; open: boolean }) {
   return (
     <g>
       <Pane x={x} y={y} w={6} h={7} k={K} />
       <rect x={x - 2} y={y} width="1.8" height="7" fill={P.denim} {...detail} />
       <rect x={x + 6.2} y={y} width="1.8" height="7" fill={P.denim} {...detail} />
-      {open ? null : <rect x={x} y={y} width="6" height="7" fill={P.denim} opacity=".5" />}
+      {open ? <rect x={x - 0.6} y={y + 7.6} width="7.2" height="2" rx=".6" fill={P.pink} stroke={P.outline} strokeWidth={H} /> : <rect x={x} y={y} width="6" height="7" fill={P.denim} opacity=".5" />}
     </g>
   )
 }
