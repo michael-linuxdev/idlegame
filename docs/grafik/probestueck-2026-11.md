@@ -223,6 +223,10 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   Kontur, Olivenbäume mit knorrigem Stamm, Rosmarin hinter einer Trockenmauer, Feigenbaum,
   Destillerie mit Kupferkessel und Seifenmanufaktur mit blauen Fensterläden, Marktstände, Mas
   mit Zypressen und Kletterrose, Lavendelfest.
+- **Kapitel 11 Japangarten** (`kapitel-11-japangarten.png`): Teehang mit Pflückerin, Moosgarten
+  mit Fächerahorn, Bambus mit Knoten, Kirschallee, Koiteich mit Steinrand und Bambusrinne,
+  Zen-Garten mit geharktem Kies und Zaun, Teehaus mit geschwungenem Doppeldach, Bonsai-Bank,
+  rote Brücke, Laternenweg mit Torii; Steinlaternen leuchten ab Stufe 3.
 
 ## Als Nächstes
 1. ~~Gemeinsame Kapitel-Teile auf Kontur~~ – erledigt über `hand-art` (oben), wirkt in allen Kapiteln.
