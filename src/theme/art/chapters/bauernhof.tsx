@@ -163,7 +163,7 @@ export function Bauernhof({ id, tier, season }: { id: string; tier: number; seas
             </g>
           ))}
           {/* Stufe 4: eine Kuh wartet am Melkhaus */}
-          {tier >= 4 ? <Cow x={9} y={58} /> : null}
+          {tier >= 4 ? <Cow x={11} y={49} /> : null}
         </Svg>
       )
     case 'kaeserei':

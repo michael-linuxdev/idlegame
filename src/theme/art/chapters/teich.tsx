@@ -123,10 +123,10 @@ export function Teich({ id, tier, season }: { id: string; tier: number; season?:
           {tier >= 2 ? (
             <g>
               {[0, 1, 2].map((i) => (
-                <circle key={i} cx={12 + i * 3.4} cy={62} r="1.8" fill={P.woodLight} stroke={P.outlineWood} strokeWidth=".5" />
+                <circle key={i} cx={66 + i * 3.4} cy={62} r="1.8" fill={P.woodLight} stroke={P.outlineWood} strokeWidth=".5" />
               ))}
               {[0, 1].map((i) => (
-                <circle key={i} cx={13.7 + i * 3.4} cy={59} r="1.8" fill={P.woodLight} stroke={P.outlineWood} strokeWidth=".5" />
+                <circle key={i} cx={67.7 + i * 3.4} cy={59} r="1.8" fill={P.woodLight} stroke={P.outlineWood} strokeWidth=".5" />
               ))}
             </g>
           ) : null}
