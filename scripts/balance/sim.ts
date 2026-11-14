@@ -34,6 +34,7 @@
  *  Ausgabe: „chapters: K2@d… K13@d…“ und der Garten-Bonus aller Kapitel
  *
  * Entscheidungen (Runde 4, Paket 2):
+ *  SEASON_ASAP=1      jede Saison sofort an der Schwelle beenden (statt am Rendite-Gipfel)
  *  CARD=best|bestAway|random|none  Saison-Karte (Standard best: höchste Vorschau;
  *                     bestAway: Ruhiges/Fleißiges Jahr nach dem Offline-Anteil des Profils)
  *  WEATHER=best|safe|risk|random  Wetter-Entscheidung in jeder Sitzung, sobald
@@ -508,7 +509,8 @@ export function run(profile: Profile, hours: number) {
       const payout = erbstueckePayout(s.ernteSeason, s.saisonenden, probe)
       const rate = payout / Math.max(1, runMin)
       bestPayoutRate = Math.max(bestPayoutRate, rate)
-      const ready = profile === 'engaged' ? rate < bestPayoutRate * 0.92 : payout >= 1.6 * payoutAtGate(s.saisonenden, probe) || runMin > 60 * 30
+      // SEASON_ASAP=1: jede Saison sofort an der Schwelle beenden (Kurz-Saisons, Befund 2026-11-13)
+      const ready = process.env.SEASON_ASAP ? true : profile === 'engaged' ? rate < bestPayoutRate * 0.92 : payout >= 1.6 * payoutAtGate(s.saisonenden, probe) || runMin > 60 * 30
       if (ready) {
         runs.push({
           dur: (clock - runStart) / 1000,

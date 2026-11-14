@@ -37,6 +37,8 @@ export const BALANCE = {
   prestigeLateGrowth: 1.12,
   payoutBase: 100,
   payoutGrowth: 1.12,
+  /** f(r) = 2·(r/4)^exp bis r = 4; 0,5 = √r (bis 2026-11-14) */
+  payoutCurveExp: 0.5,
   /**
    * Probe-Winter (2026-11-09): nur Gartenjahr 1 hat eine eigene, niedrige
    * Schwelle, damit das erste Saisonende in die erste Sitzung fällt
@@ -74,7 +76,7 @@ export function prestigeMinErnte(saisonenden: number, probe = false): number {
 /** Payout curve over r = ernte / gate. */
 function payoutCurve(r: number): number {
   if (r <= 0) return 0
-  if (r <= 4) return Math.sqrt(r)
+  if (r <= 4) return 2 * Math.pow(r / 4, BALANCE.payoutCurveExp)
   return 2 + 0.5 * Math.log2(r / 4)
 }
 
