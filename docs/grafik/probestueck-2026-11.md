@@ -184,9 +184,14 @@ ersten vier Bereiche).
   aus – wie die Bauwerke im Weinberg.
 - Keine zusätzlichen SVG-Elemente außer einer Gruppe je Bereich; Leistungsgrenze unverändert.
   Vergleichsbilder (`art-baseline/kapitel-*.png`) erneuert.
-- Nicht enthalten: eigene Silhouetten je Bereich und mehr Neues je Stufe, wie es Weinberg und
-  Hauptgarten von Hand bekommen haben. Das bleibt Handarbeit je Kapitel.
+- **Kapitel 4–12 einzeln durchgesehen:** Die meisten Bereiche zeigen schon je Stufe etwas Neues.
+  Flach waren fünf; die sind nachgezeichnet: Bauernhof (Heuscheune: Heuboden, Anbau, Heuwagen ·
+  Melkhaus: Bank, Vordach, Kuh, Schornstein · Käserei: Regal, Schild, Kellereingang, Laib),
+  Imkerei (Wachszieherei: Tür mit Schild, Tauchbottich, Schornstein), Teich (Räucherei:
+  Holzstapel, Glut, Verkaufstisch, zweite Esse). Neue Farben nur aus der Palette.
+- Nicht enthalten: ganz neue Silhouetten je Bereich, wie sie der Weinberg bekommen hat.
 
 ## Als Nächstes
 1. ~~Gemeinsame Kapitel-Teile auf Kontur~~ – erledigt über `hand-art` (oben), wirkt in allen Kapiteln.
-2. Kapitel 4–12 einzeln nachzeichnen (eigene Silhouetten, mehr Neues je Stufe), Bauernhof zuerst.
+2. ~~Kapitel 4–12 einzeln~~ – flache Bereiche nachgezeichnet (oben).
+3. Kapitel 13–50 auf flache Bereiche durchsehen (die Kontur haben sie schon).
