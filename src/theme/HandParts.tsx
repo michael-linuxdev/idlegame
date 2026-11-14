@@ -6,11 +6,25 @@ import { OmaSign } from './art/parts'
 
 const V = '0 0 80 72'
 
-/** Rahmen der Kapitel-Grafik (80×72); ab Stufe 5 steht Omas Schild am Rand. */
+/**
+ * Wachstum je Stufe im kräftigen Stil (2026-11-14): Stufe 1 bei 84 %, Stufe 5
+ * bei voller Größe, skaliert vom Fußpunkt (40, 66) aus — wie die Bauwerke im
+ * Weinberg. Ohne Stufe (Wildnis, Vorschau) volle Größe.
+ */
+export function growScale(tier: number): number {
+  return tier >= 1 ? 0.8 + 0.04 * Math.min(5, tier) : 1
+}
+
+/**
+ * Rahmen der Kapitel-Grafik (80×72); ab Stufe 5 steht Omas Schild am Rand.
+ * `hand-art` gibt allen gefüllten Flächen die dunkle Kontur des kräftigen
+ * Stils (garden.css), ohne zusätzliche SVG-Elemente.
+ */
 export function Svg({ children, tier = 0 }: { children: ReactNode; tier?: number }) {
+  const k = growScale(tier)
   return (
-    <ArtSvg viewBox={V}>
-      {children}
+    <ArtSvg viewBox={V} className="hand-art">
+      {k === 1 ? children : <g transform={`translate(${40 * (1 - k)} ${66 * (1 - k)}) scale(${k})`}>{children}</g>}
       {tier >= 5 ? <OmaSign x={6} y={64} s={0.8} /> : null}
     </ArtSvg>
   )

@@ -741,3 +741,21 @@ html.tab-hidden .module-art * {
     animation: none !important;
   }
 }
+
+/* —— Kapitel-Grafik im kräftigen Stil (2026-11-14) ——
+   Jede gefüllte Fläche der handgezeichneten Kapitel (HandParts `Svg`), die
+   schon eine (dünne) Kontur hatte — Körper, Gebäude, Dächer, Zäune —, bekommt
+   die dunkle Kontur; Flecken, Blätter und Punkte ohne Kontur bleiben, wie sie
+   sind. Die Kontur liegt hinter der Füllung (paint-order), so bleiben
+   kleine Details (Augen, Blüten, Punkte) lesbar, und sie ist bildschirmfest
+   (non-scaling-stroke), gleich dick in jedem Bereich. Ohne Kontur bleiben
+   Schatten (stroke="none"), halbtransparente Böden (opacity) und Flächen
+   mit rgba-Füllung. Weinberg und Streuobstwiese zeichnen ihre Kontur selbst. */
+.hand-art :is(path, rect, ellipse, circle, polygon)[fill][stroke]:not([fill='none']):not([opacity]):not([stroke='none']):not([fill^='rgba']):not(.no-ol) {
+  stroke: var(--art-outline, #3d2f1f);
+  stroke-width: 2.2px;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  paint-order: stroke fill;
+  vector-effect: non-scaling-stroke;
+}

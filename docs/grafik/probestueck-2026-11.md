@@ -169,7 +169,24 @@ Bilder: `kopfleiste-vorher-nachher.png` (bisher · neu Tag · neu Nacht), `kopfl
 - **Kapitel:** Der Bonus für den Garten steht als kurze Plakette „+0,4 %“ (voller Text für
   Screenreader und als `title`), die Rate ohne Währungsnamen („2/s“, das Symbol zeigt die Währung).
 
+## Kapitel im kräftigen Stil: Kontur und Wachstum für alle (2026-11-14)
+Bild: `kapitel-kontur.png` (je links vorher, rechts nachher: Bauernhof, Alm, Japangarten, die
+ersten vier Bereiche).
+- **Ein Hebel für alle 56 handgezeichneten Kapitel** (Kapitel 4–50 außer Weinberg und Obstwiese,
+  die eigene Grafik haben): Alle zeichnen über den Rahmen `Svg` aus `HandParts.tsx`. Der Rahmen
+  trägt jetzt die Klasse `hand-art`; eine CSS-Regel (`garden.css`) gibt jeder gefüllten Fläche,
+  die schon eine dünne Kontur hatte (Körper, Gebäude, Dächer, Zäune, Steine), die dunkle Kontur
+  `P.outline`. Flecken, Blätter, Punkte und Blüten ohne Kontur bleiben, wie sie gezeichnet sind.
+  Die Kontur liegt hinter der Füllung (`paint-order`) und ist bildschirmfest
+  (`non-scaling-stroke`), so bleiben kleine Teile lesbar. Ohne Kontur: Schatten
+  (`stroke="none"`), halbtransparente Böden, rgba-Flächen (Glas).
+- **Wachstum je Stufe** (`growScale`): Stufe 1 bei 84 %, Stufe 5 bei voller Größe, vom Fußpunkt
+  aus – wie die Bauwerke im Weinberg.
+- Keine zusätzlichen SVG-Elemente außer einer Gruppe je Bereich; Leistungsgrenze unverändert.
+  Vergleichsbilder (`art-baseline/kapitel-*.png`) erneuert.
+- Nicht enthalten: eigene Silhouetten je Bereich und mehr Neues je Stufe, wie es Weinberg und
+  Hauptgarten von Hand bekommen haben. Das bleibt Handarbeit je Kapitel.
+
 ## Als Nächstes
-1. Gemeinsame Kapitel-Teile (`HandParts.tsx`, `art/chapters/partsA…I.tsx`: Dach, Figur, Glashaus,
-   Fels, Nadelbaum …) auf Kontur umstellen – der größte verbleibende Hebel, wirkt in vielen Kapiteln.
-2. Kapitel 4–12 einzeln, in Spielreihenfolge (Bauernhof zuerst); Kapitel 13–50 danach.
+1. ~~Gemeinsame Kapitel-Teile auf Kontur~~ – erledigt über `hand-art` (oben), wirkt in allen Kapiteln.
+2. Kapitel 4–12 einzeln nachzeichnen (eigene Silhouetten, mehr Neues je Stufe), Bauernhof zuerst.
