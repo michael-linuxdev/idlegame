@@ -261,6 +261,11 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   Stammköpfen und Firstkreuz, Mühlstein, Kahnanleger auf Pfählen, Erlen mit Schatten, Gurken,
   Meerrettich, Holzschuppen mit Pfosten, Trachtenhaus mit Ostereierstrauch, Gurkenfest.
 
+- **Kapitel 20 Cottage-Garten** (`kapitel-20-cottagegarten.png`): Honigfarbene Kalksteinmauern mit
+  Deckstein und Fugen, Stockrosen mit Kontur, Wickenzaun aus Stangen, Eiche mit Schatten am
+  Teeplatz, Holzgewächshaus mit Rahmen und Glanz, Geißblattlaube, grüner Schuppen mit
+  Sprossenfenster, Dorfschau-Zelt.
+
 Damit sind die Kapitel 4–12 im Weinberg-Niveau. Kapitel 13–50 haben die gemeinsame Kontur und
 das Wachstum, aber noch ihre ursprüngliche Zeichnung.
 
