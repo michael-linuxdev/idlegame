@@ -203,6 +203,10 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   Linden mit Stamm/Krone/Blüten, Heide mit Wacholder und Strohkörben, Rapsfeld mit Beuten,
   Kirschhain mit Leiter, Insektenhotel, Honigschleuder im offenen Tor, Wachszieherei mit
   Trockengestell, Metkeller-Portal mit Fässern, Honigladen mit Schaufenster und Markise.
+- **Kapitel 6 Teich** (`kapitel-06-teich.png`): Teich mit Uferkante und Lichtreflex, Steg aus
+  Planken auf Pfählen, Mönch aus Stein am Karpfenteich, Bachbrücke und Anglerbank, Fischerhütte
+  auf Pfählen mit Netz, Räucherei aus Stein mit Fischstange, Kassenhäuschen am Bootsverleih,
+  Entenhaus auf dem Floß, Seefest-Bühne mit Baldachin.
 
 ## Als Nächstes
 1. ~~Gemeinsame Kapitel-Teile auf Kontur~~ – erledigt über `hand-art` (oben), wirkt in allen Kapiteln.
