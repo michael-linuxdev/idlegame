@@ -32,9 +32,15 @@ ausgewerteten Zeitraum noch nicht aktiv – gespielt wurde auf `c376ce4`).
      In der Wartezeit gibt es nur „noch ein Saisonende“. Kapitel 3 (Weinberg) braucht eine
      Generation, liegt also noch weiter weg; die Obstwiese bekam in 3 Tagen nur ~150 Ausbauten.
 
-   → Offen (Balance-Entscheidung): Stufen über 40 hinaus bzw. Stufen langsamer, und/oder in der
+   War offen (Balance-Entscheidung): Stufen über 40 hinaus bzw. Stufen langsamer, und/oder in der
    Ruhezeit ein eigenes Ziel. Nach der Ruhezeit-Regel wäre der zweite Tiefe Winter seit 11-13
    ~11 Uhr möglich gewesen; um 18:55 gab es stattdessen ein normales Saisonende.
+   → **Umgesetzt (2026-11-14), alle drei Hebel** (Zahlen: `docs/kapitel/balance-bericht.md`
+   „Plateau ab Tag 3“): Gärtnerstufe bis 100 mit Samen alle 5 Stufen (Kurve bis 40 unverändert;
+   wer schon bei 40 stand, steigt mit den weiter gesammelten EP sofort auf), Ruhezeit nach dem
+   1./2. Tiefen Winter 1/2 Tage statt 3, und der Wintervorrat (ein Sprössling je Saisonende in
+   der Ruhezeit, höchstens 6). Das `prestige`-Ereignis schreibt `vorrat` mit; ob er Saisonenden
+   in der Ruhezeit auslöst, zeigt das nächste Log.
 2. **Saison-Karten werden seit dem 11-10 abends immer übersprungen:** 13× „keine“ in Folge (ab
    11-10 20:55), davor wurde fast immer eine Karte gewählt (17 von 19). Fällt zeitlich mit
    „Saison-Karten: Ausbau statt Ertrag“ (#139) zusammen. → Offen; die neuen Karten wirken

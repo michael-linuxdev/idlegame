@@ -234,3 +234,34 @@ Casual nach zwei Jahren ≥ K20. Den größten Vorteil hat, wer täglich spielt
 (Dauerspieler −25 Tage bis K13) — genau das war das Ziel: aktive Spieler hatten
 von der Ruhezeit bisher nichts. Casual spielt selten genug, dass sein Tiefer
 Winter ohnehin nach der Ruhezeit kommt. Der Deckel musste nicht gesenkt werden.
+
+## Plateau ab Tag 3 (2026-11-14)
+
+**Anlass:** Playtest Tester 1 (`docs/playtest/2026-11-13-befunde-tester1.md`, Befund 1):
+Spielzeit 322 → 114 → 19 → 16 min, weil Stufe 40 nach zwei Tagen erreicht war und die Ruhezeit
+nach dem ersten Tiefen Winter drei Tage ohne neues Ziel ließ.
+
+**Regeln:**
+- **Gärtnerstufe bis 100** (`progression.ts`): Kurve bis 40 unverändert (Test), darüber
+  13 840 EP + 400 je Stufe; +0,25 % Ertrag je Stufe über 40 (Stufe 100: +27 % insgesamt statt
+  +12 %); alle 5 Stufen Samen (45: 20 … 100: 75, zusammen 570). Die EP wurden auch über 40
+  weitergezählt, ein Spieler bei 40 steigt mit dem Update sofort auf.
+- **Ruhezeit wächst mit** (`longLoop.restMsFor`): nach dem 1. Tiefen Winter 1 Tag, nach dem 2.
+  zwei Tage, ab dem 3. und in jeder späteren Generation 3 Tage. Die Verkürzung durch „Heute“
+  ist höchstens ein Sechstel der Ruhezeit (3 Tage: 12 h wie bisher, 1 Tag: 4 h).
+- **Wintervorrat** (`longLoop.WINTERVORRAT`, `state/prestige.ts`): Jedes Saisonende in der
+  Ruhezeit legt einen Sprössling zurück, höchstens 6; der nächste Tiefe Winter zahlt ihn
+  zusätzlich aus (mit Wurzelwerk) und leert ihn, die Weitergabe an die nächste Generation auch.
+  Neues Feld `wintervorrat` (Startwert 0, `saveFields.ts`).
+
+**Simulator** (`GEN=1 CHAPTERS=1 CHAPTER_MANUAL=0 SUMMARY=1`, vorher = 7394644):
+
+| Profil | vorher | nachher |
+|---|---|---|
+| Dauerspieler, 30 Tage | Tiefe Winter d2 d6 d9 d13; K3 Tag 9, K4 Tag 25 | Tiefe Winter d2 d4 d6 d10; K3 Tag 6, K4 Tag 21 |
+| Regular, 5 Jahre | K3 Tag 17, K13 Tag 312, K50 Tag 1782 | K3 Tag 15, K13 Tag 309, K50 Tag 1781 |
+
+Der Anfang wird schneller, die Taktung der Kapitel 13–50 bleibt (≤ 3 Tage früher). Der
+Wintervorrat ist beim Dauerspieler klein gegen die Auszahlung (+6 bei ~+150); er soll vor allem
+sichtbar machen, dass „noch ein Saisonende“ in der Wartezeit zählt. Die Stufen über 40 rechnet
+der Simulator nicht mit (der Ertrags-Bonus ist höchstens +15 %).
