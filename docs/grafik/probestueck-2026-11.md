@@ -219,6 +219,10 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   Kuhglocken und Tränke, Sennhütte aus Blockholz auf Steinsockel mit Schindeldach, Edelweiß am
   Fels mit Gipfelkreuz, Enzianhang mit Schild, Bergbach mit Brücke und Mühlrad, Käsekeller mit
   Reiferegal, Seilbahn mit Tal- und Bergstation, Gipfelhütte mit Kreuz, Almfest mit Maibaum.
+- **Kapitel 10 Lavendel** (`kapitel-10-lavendel.png`): Lavendel- und Sonnenblumenfelder mit
+  Kontur, Olivenbäume mit knorrigem Stamm, Rosmarin hinter einer Trockenmauer, Feigenbaum,
+  Destillerie mit Kupferkessel und Seifenmanufaktur mit blauen Fensterläden, Marktstände, Mas
+  mit Zypressen und Kletterrose, Lavendelfest.
 
 ## Als Nächstes
 1. ~~Gemeinsame Kapitel-Teile auf Kontur~~ – erledigt über `hand-art` (oben), wirkt in allen Kapiteln.
