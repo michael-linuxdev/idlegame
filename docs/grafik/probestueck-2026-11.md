@@ -215,6 +215,10 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   Sprossen und Lichtreflex (Palmen-, Kakteen-, Orchideenhaus), Victoria-Becken mit Glasbogen,
   Rosenbögen aus Holz mit Bank, Steingarten, Arboretum mit Nadel-, Laub- und Fächerbaum,
   Farnschlucht mit Wasserfall und Brücke, Herbarium mit Säulen, Glaskuppel mit Palmen.
+- **Kapitel 9 Alm** (`kapitel-09-alm.png`): Almhang mit Heinzen und Sense, Kreuzzaun mit
+  Kuhglocken und Tränke, Sennhütte aus Blockholz auf Steinsockel mit Schindeldach, Edelweiß am
+  Fels mit Gipfelkreuz, Enzianhang mit Schild, Bergbach mit Brücke und Mühlrad, Käsekeller mit
+  Reiferegal, Seilbahn mit Tal- und Bergstation, Gipfelhütte mit Kreuz, Almfest mit Maibaum.
 
 ## Als Nächstes
 1. ~~Gemeinsame Kapitel-Teile auf Kontur~~ – erledigt über `hand-art` (oben), wirkt in allen Kapiteln.
