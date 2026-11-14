@@ -315,6 +315,10 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   Chuño-Matten und Säcke, Lehmspeicher, Alpakaweide, Bergkanal mit Schieber, Webstuhl und
   Garnknäuel, Kartoffelpark mit Tafel, Erdofen.
 
+- **Kapitel 31 Milpa** (`kapitel-31-milpa.png`): Felder mit Mais, Bohnen und Kürbis, Chilipflanzen
+  und Ristra, Amaranth, Agaven mit Blütenstange, Comal-Küche mit Ofen und Metate, Maisspeicher mit
+  Kolbenschnüren, Melipona-Stämme, Saatkrüge auf dem Regal, Marktstände, Festtafel und Papel picado.
+
 Damit sind die Kapitel 4–12 im Weinberg-Niveau. Kapitel 13–50 haben die gemeinsame Kontur und
 das Wachstum, aber noch ihre ursprüngliche Zeichnung.
 
