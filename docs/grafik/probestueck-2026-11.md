@@ -227,8 +227,16 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   mit Fächerahorn, Bambus mit Knoten, Kirschallee, Koiteich mit Steinrand und Bambusrinne,
   Zen-Garten mit geharktem Kies und Zaun, Teehaus mit geschwungenem Doppeldach, Bonsai-Bank,
   rote Brücke, Laternenweg mit Torii; Steinlaternen leuchten ab Stufe 3.
+- **Kapitel 12 Gartenschau** (`kapitel-12-gartenschau.png`): Eingangstor mit Steinpfeilern,
+  Blütenbogen und Fahnen, Blumenkorso-Wagen, Rosenbögen in der Tiefe, Heckenlabyrinth,
+  Wasserspiele, Aussichtsturm aus Holz, gestreiftes Festzelt, Seebühne mit Muschel,
+  Ehrenpavillon mit goldener Kuppel, Gedenkgarten mit Stein und Bank.
+
+Damit sind die Kapitel 4–12 im Weinberg-Niveau. Kapitel 13–50 haben die gemeinsame Kontur und
+das Wachstum, aber noch ihre ursprüngliche Zeichnung.
 
 ## Als Nächstes
 1. ~~Gemeinsame Kapitel-Teile auf Kontur~~ – erledigt über `hand-art` (oben), wirkt in allen Kapiteln.
 2. ~~Kapitel 4–12 einzeln~~ – flache Bereiche nachgezeichnet (oben).
-3. Kapitel 13–50 auf flache Bereiche durchsehen (die Kontur haben sie schon).
+3. ~~Kapitel 13–50 auf flache Bereiche durchsehen~~ – erledigt (Veredelungstisch).
+4. Kapitel 4–12 im Weinberg-Niveau – erledigt (oben). Als Nächstes Kapitel 13 ff. in Spielreihenfolge.
