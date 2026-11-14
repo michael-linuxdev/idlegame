@@ -265,3 +265,17 @@ Der Anfang wird schneller, die Taktung der Kapitel 13–50 bleibt (≤ 3 Tage fr
 Wintervorrat ist beim Dauerspieler klein gegen die Auszahlung (+6 bei ~+150); er soll vor allem
 sichtbar machen, dass „noch ein Saisonende“ in der Wartezeit zählt. Die Stufen über 40 rechnet
 der Simulator nicht mit (der Ertrags-Bonus ist höchstens +15 %).
+
+## Saison-Karten ohne Gegenspieler (2026-11-14)
+
+Bereichs-Karten machen nur noch ihren Bereich billiger (`CARD_AUSBAU`: −30 %, Aufschlag 0 statt
+−40 %/+25 %). Simulator (`GEN=1 CHAPTERS=1 CHAPTER_MANUAL=0`, `AUSBAU=…`):
+
+| Variante | Dauerspieler 30 Tage | Regular 90 Tage |
+|---|---|---|
+| vorher −40 %/+25 % | K3 Tag 6, K4 Tag 21 | K7 Tag 90 |
+| −40 % ohne Aufschlag | K3 Tag 6, K4 Tag 21 | K7 Tag 90 |
+| **−30 % ohne Aufschlag** | K3 Tag 7, K4 Tag 23 | K7 Tag 89 |
+
+Die Karten sind für den Takt ein kleiner Hebel (± 1–2 Tage, im Rauschen). −30 % ist eine klare,
+runde Zahl und ohne Nachteil keine Falle mehr.

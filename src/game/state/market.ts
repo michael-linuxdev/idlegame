@@ -37,7 +37,7 @@ import {
   weekKey,
 } from '../monetization'
 import { XP_PER_DAILY } from '../progression'
-import type { SeasonCardId } from '../seasonCards'
+import { CARD_SWITCH_MS, type SeasonCardId } from '../seasonCards'
 import { collectReadyAchievements } from './buy'
 import type { ChapterId } from '../chapters'
 import { chapterOpen, chapterPerSecond, tickChapters } from './chapters'
@@ -347,12 +347,36 @@ export function abortChallenge(state: GameState): GameState {
   return state.challenge ? { ...state, challenge: null } : state
 }
 
-/** Saison-Karte wählen (aus dem Angebot) oder `null` = ohne Karte weiter. */
-export function pickSeasonCard(state: GameState, id: SeasonCardId | null): GameState {
+/**
+ * Saison-Karte wählen (aus dem Angebot) oder `null` = ohne Karte weiter.
+ * Danach darf das Thema CARD_SWITCH_MS lang einmal kostenlos gewechselt werden
+ * (auch von „ohne Thema“ zu einer Karte).
+ */
+export function pickSeasonCard(state: GameState, id: SeasonCardId | null, now = Date.now()): GameState {
   if (state.seasonCardOffer.length === 0) return state
   if (id && !state.seasonCardOffer.some((o) => o.id === id)) return state
   const offer = id ? state.seasonCardOffer.find((o) => o.id === id) : undefined
-  return { ...state, seasonCard: id, seasonCardAusbau: offer?.ausbau === true, seasonCardOffer: [] }
+  return {
+    ...state,
+    seasonCard: id,
+    seasonCardAusbau: offer?.ausbau === true,
+    seasonCardChoices: state.seasonCardOffer,
+    seasonCardSwitchUntil: now + CARD_SWITCH_MS,
+    seasonCardOffer: [],
+  }
+}
+
+/** Darf das Thema gerade noch gewechselt werden? */
+export function canSwitchSeasonCard(state: GameState, now = Date.now()): boolean {
+  return state.seasonCardOffer.length === 0 && state.seasonCardChoices.length > 0 && now < state.seasonCardSwitchUntil
+}
+
+/** Thema einmal wechseln (nur im Wechsel-Fenster, nur zu einer der angebotenen Karten). */
+export function switchSeasonCard(state: GameState, id: SeasonCardId, now = Date.now()): GameState {
+  if (!canSwitchSeasonCard(state, now) || id === state.seasonCard) return state
+  const choice = state.seasonCardChoices.find((o) => o.id === id)
+  if (!choice) return state
+  return { ...state, seasonCard: id, seasonCardAusbau: choice.ausbau === true, seasonCardChoices: [], seasonCardSwitchUntil: 0 }
 }
 
 /** Eine neue Sitzung beginnt erst nach dieser Pause (Neuladen zählt nicht). */

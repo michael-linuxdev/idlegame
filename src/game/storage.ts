@@ -3,7 +3,7 @@ import { dayKey, weekKey, type CosmeticId } from './monetization'
 import { createInitialState, STORAGE_KEY, type GameState } from './state'
 import { freePlaytestSpace } from './playtestLog'
 import { getSaveBlock, setSaveBlock } from './saveGuard'
-import { seasonCardDef, type SeasonCardId } from './seasonCards'
+import { seasonCardDef, type CardOffer } from './seasonCards'
 import { isChallengeId } from './challenges'
 import {
   COSMETIC_IDS,
@@ -51,6 +51,21 @@ export function migrateSave(raw: Raw): Raw {
 export function parseSave(raw: unknown): GameState | null {
   if (!isRecord(raw)) return null
   return parseGameState(migrateSave(raw))
+}
+
+/** Angebotene Saison-Karten (Angebot und Wechsel-Auswahl); `ernte` ab 2026-11-14. */
+function parseCardOffers(raw: unknown): CardOffer[] {
+  if (!Array.isArray(raw)) return []
+  return (raw as unknown[])
+    .filter((o): o is Record<string, unknown> & { id: string } => isRecord(o) && typeof o.id === 'string')
+    .map((o) => ({
+      id: seasonCardDef(o.id)?.id,
+      preview: typeof o.preview === 'number' && Number.isFinite(o.preview) ? o.preview : 1,
+      ...(o.ausbau === true ? { ausbau: true } : {}),
+      ...(typeof o.ernte === 'number' && Number.isFinite(o.ernte) && o.ernte > 0 ? { ernte: o.ernte } : {}),
+    }))
+    .filter((o): o is CardOffer => o.id != null)
+    .slice(0, 3)
 }
 
 function parseGameState(parsed: Record<string, unknown>): GameState {
@@ -288,17 +303,10 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
     seasonCard: seasonCardDef(parsed.seasonCard as string)?.id ?? null,
     // Runde 4: ältere Stände → false = die laufende Karte wirkt wie vorher (Ertrag)
     seasonCardAusbau: parsed.seasonCardAusbau === true,
-    seasonCardOffer: Array.isArray(parsed.seasonCardOffer)
-      ? (parsed.seasonCardOffer as unknown[])
-          .filter((o): o is { id: string; preview: number; ausbau?: boolean } => isRecord(o) && typeof o.id === 'string')
-          .map((o) => ({
-            id: seasonCardDef(o.id)?.id,
-            preview: typeof o.preview === 'number' && Number.isFinite(o.preview) ? o.preview : 1,
-            ...(o.ausbau === true ? { ausbau: true } : {}),
-          }))
-          .filter((o): o is { id: SeasonCardId; preview: number; ausbau?: boolean } => o.id != null)
-          .slice(0, 3)
-      : [],
+    seasonCardOffer: parseCardOffers(parsed.seasonCardOffer),
+    // 2026-11-14: Wechsel-Fenster nach der Wahl (ältere Stände: keins)
+    seasonCardChoices: parseCardOffers(parsed.seasonCardChoices),
+    seasonCardSwitchUntil: typeof parsed.seasonCardSwitchUntil === 'number' && Number.isFinite(parsed.seasonCardSwitchUntil) ? parsed.seasonCardSwitchUntil : 0,
     lastSeasonCard: typeof parsed.lastSeasonCard === 'string' ? parsed.lastSeasonCard.slice(0, 32) : '',
     // Omas Herausforderungen (2026-11-09; ältere Stände: keine)
     challenge: isChallengeId(parsed.challenge) ? parsed.challenge : null,

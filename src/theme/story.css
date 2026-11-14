@@ -734,6 +734,40 @@
   width: 100%;
 }
 
+/* Omas Tipp: grün umrandet, mit Plakette; im Wechsel-Fenster das gewählte Thema */
+.season-card.tip {
+  border-color: #5f9e45;
+  background: #f4fbec;
+  box-shadow: 0 0 0 2px color-mix(in srgb, #5f9e45 25%, transparent);
+}
+
+.season-card.current {
+  border-color: #8a7350;
+  background: #f6efe0;
+}
+
+.season-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.season-card-badge {
+  flex: none;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background: #5f9e45;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.season-card-badge.current {
+  background: #8a7350;
+}
+
 @keyframes story-fade-in {
   from {
     opacity: 0;
@@ -790,4 +824,22 @@
 .restore-offer .backup-list {
   padding-left: 0;
   margin: 0.6rem 0;
+}
+
+/* Saison-Tab: Thema in den ersten Minuten noch wechselbar */
+.card-switch-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem 0.8rem;
+  margin: 0 0 0.8rem;
+  padding: 0.5rem 0.7rem;
+  border-radius: 12px;
+  background: rgba(95, 158, 69, 0.12);
+  font-weight: 700;
+}
+
+.card-switch-btn {
+  flex: none;
 }

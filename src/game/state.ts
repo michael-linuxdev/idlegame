@@ -125,6 +125,8 @@ export {
   chooseNextChallenge,
   abortChallenge,
   pickSeasonCard,
+  switchSeasonCard,
+  canSwitchSeasonCard,
   SESSION_GAP_MS,
   countSession,
   waterRefillsLeft,

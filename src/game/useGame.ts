@@ -63,6 +63,7 @@ import {
   syncAlbum,
   turboMult,
   expansionGardenMult,
+  canSwitchSeasonCard,
 } from './state'
 import type { ChapterId } from './chapters'
 import { challengeAllowsWater } from './challenges'
@@ -115,6 +116,7 @@ export function useGame() {
     chooseChallenge,
     stopChallenge,
     chooseSeasonCard,
+    changeSeasonCard,
     buildProject,
     crossStart,
     crossSkip,
@@ -350,6 +352,9 @@ export function useGame() {
     crossStart,
     buildProject,
     pickSeasonCard: chooseSeasonCard,
+    switchSeasonCard: changeSeasonCard,
+    /** Thema darf noch einmal gewechselt werden (seasonCards.CARD_SWITCH_MS nach der Wahl) */
+    cardSwitchLeftMs: canSwitchSeasonCard(state, nowTick) ? state.seasonCardSwitchUntil - nowTick : 0,
     chooseChallenge,
     stopChallenge,
     challengesOpen: challengesOpen(state),

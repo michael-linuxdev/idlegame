@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { CARD_AUSBAU, cardCostMult, cardPreview, cardSaving, offerSeasonCards, SEASON_CARDS, SEASON_CARDS_FROM_PRESTIGES, spendShares } from '../game/seasonCards'
-import { createInitialState, createPostPrestigeState, lineCostMult, pickSeasonCard, productionPerSecond } from '../game/state'
+import { CARD_AUSBAU, CARD_SWITCH_MS, bestCardOffer, cardCostMult, cardPreview, cardSaving, offerSeasonCards, offerValue, SEASON_CARDS, SEASON_CARDS_FROM_PRESTIGES, spendShares, type CardOffer } from '../game/seasonCards'
+import { canSwitchSeasonCard, createInitialState, createPostPrestigeState, lineCostMult, pickSeasonCard, productionPerSecond, switchSeasonCard } from '../game/state'
 import { parseSave } from '../game/storage'
 
 const NOW = 1_800_000_000_000
@@ -75,7 +75,8 @@ describe('Saison-Karten', () => {
 describe('Ausbau statt Ertrag (Runde 4)', () => {
   const owned = { gemuesebeet: 80, kompost: 70, kraeuterspirale: 60, beerenhecke: 50, obstwiese: 40, bienenstock: 30, huehnerstall: 20 }
 
-  it('Bereichs-Karte: Ausbau des Bereichs billiger, des Gegenspielers teurer, Ertrag unverändert', () => {
+  it('Bereichs-Karte: nur der eigene Bereich billiger, kein Gegenspieler teurer (2026-11-14), Ertrag unverändert', () => {
+    expect(CARD_AUSBAU.surcharge).toBe(0)
     const base = { ...createInitialState(NOW), owned: { ...createInitialState(NOW).owned, ...owned } }
     const card = { ...base, seasonCard: 'kraeuterjahr' as const, seasonCardAusbau: true }
     expect(lineCostMult(card, 'kraeuterspirale') / lineCostMult(base, 'kraeuterspirale')).toBeCloseTo(1 - CARD_AUSBAU.discount, 10)
@@ -114,5 +115,50 @@ describe('Ausbau statt Ertrag (Runde 4)', () => {
     if (area) expect(pickSeasonCard(after, area.id).seasonCardAusbau).toBe(true)
     const flat = after.seasonCardOffer.find((o) => !o.ausbau)
     if (flat) expect(pickSeasonCard(after, flat.id).seasonCardAusbau).toBe(false)
+  })
+})
+
+describe('Omas Tipp und Wechsel (2026-11-14)', () => {
+  const offer: CardOffer[] = [
+    { id: 'gutesJahr', preview: 1.05, ernte: 1e9 },
+    { id: 'kraeuterjahr', preview: 1 / (1 - 0.12), ausbau: true, ernte: 1e9 },
+    { id: 'ruhigesJahr', preview: 0.8, ernte: 1e9 },
+  ]
+  it('Tipp = was mit dem letzten Garten am meisten gebracht hätte, nie „Ruhiges Jahr“', () => {
+    expect(offerValue(offer[1]!)).toBeCloseTo(0.12, 10)
+    expect(bestCardOffer(offer)).toBe('kraeuterjahr')
+    expect(bestCardOffer([offer[2]!])).toBeNull()
+  })
+  it('das Angebot kennt die Ernte der letzten Saison (für „≈ 1,2 Mrd gespart“)', () => {
+    const s = { ...createInitialState(NOW), owned: { ...createInitialState(NOW).owned, ...owned }, saisonenden: SEASON_CARDS_FROM_PRESTIGES, ernteSeason: 5e8 }
+    const after = createPostPrestigeState(s, NOW)
+    expect(after.seasonCardOffer.length).toBeGreaterThan(0)
+    for (const o of after.seasonCardOffer) expect(o.ernte).toBe(5e8)
+    // älteres Angebot ohne Ernte lädt weiter
+    const raw = { ...(parseSave({})! as unknown as Record<string, unknown>), seasonCardOffer: [{ id: 'gutesJahr', preview: 1.05 }] }
+    expect(parseSave(raw)!.seasonCardOffer).toEqual([{ id: 'gutesJahr', preview: 1.05 }])
+  })
+  it('einmal wechseln in den ersten Minuten, nur zu einer angebotenen Karte', () => {
+    const s = { ...createInitialState(NOW), seasonCardOffer: offer }
+    const picked = pickSeasonCard(s, 'gutesJahr', NOW)
+    expect(picked.seasonCardSwitchUntil).toBe(NOW + CARD_SWITCH_MS)
+    expect(canSwitchSeasonCard(picked, NOW + 1000)).toBe(true)
+    expect(switchSeasonCard(picked, 'tomatenjahr', NOW + 1000)).toBe(picked)
+    const switched = switchSeasonCard(picked, 'kraeuterjahr', NOW + 1000)
+    expect(switched.seasonCard).toBe('kraeuterjahr')
+    expect(switched.seasonCardAusbau).toBe(true)
+    expect(canSwitchSeasonCard(switched, NOW + 2000)).toBe(false)
+    // zu spät
+    expect(switchSeasonCard(picked, 'kraeuterjahr', NOW + CARD_SWITCH_MS)).toBe(picked)
+    // auch nach „ohne Thema“ darf man noch wählen
+    const skipped = pickSeasonCard(s, null, NOW)
+    expect(switchSeasonCard(skipped, 'gutesJahr', NOW + 1000).seasonCard).toBe('gutesJahr')
+  })
+  it('das Saisonende schließt das Wechsel-Fenster', () => {
+    const s = { ...createInitialState(NOW), seasonCardOffer: offer, saisonenden: SEASON_CARDS_FROM_PRESTIGES }
+    const picked = pickSeasonCard(s, 'gutesJahr', NOW)
+    const next = createPostPrestigeState(picked, NOW + 1000)
+    expect(next.seasonCardChoices).toEqual([])
+    expect(next.seasonCardSwitchUntil).toBe(0)
   })
 })

@@ -67,6 +67,8 @@ export function createInitialState(now = Date.now()): GameState {
     seasonCard: null,
     seasonCardAusbau: false,
     seasonCardOffer: [],
+    seasonCardChoices: [],
+    seasonCardSwitchUntil: 0,
     lastSeasonCard: '',
     challenge: null,
     challengeNext: null,
@@ -159,8 +161,10 @@ export function createPostPrestigeState(prev: GameState, now = Date.now()): Game
     lastSeasonCard: prev.seasonCard ?? prev.lastSeasonCard,
     seasonCardOffer:
       prev.saisonenden + 1 >= SEASON_CARDS_FROM_PRESTIGES
-        ? offerSeasonCards(prev.owned, prev.seasonCard ?? prev.lastSeasonCard)
+        ? offerSeasonCards(prev.owned, prev.seasonCard ?? prev.lastSeasonCard, Math.random, prev.ernteSeason)
         : [],
+    seasonCardChoices: [],
+    seasonCardSwitchUntil: 0,
     // Herausforderung bis zum Saisonende durchgehalten → geschafft
     challengesDone:
       prev.challenge && !prev.challengesDone.includes(prev.challenge)

@@ -230,11 +230,10 @@ export const strings = {
 
   seasonCards: {
     title: 'Ein Thema für dieses Gartenjahr',
-    intro: 'Oma hat jedes Jahr etwas anders gemacht. Such dir ein Thema aus — es gilt bis zum nächsten Saisonende.',
+    intro: 'Such dir ein Thema aus — es gilt bis zum nächsten Saisonende. In den ersten 5 Minuten kannst du noch einmal wechseln.',
     preview: (pct: number) => `mit deinem letzten Garten ≈ ${pct > 0 ? '+' : ''}${pct} % Ernte`,
     previewEven: 'mit deinem letzten Garten ≈ gleich viel Ernte',
     previewQuiet: 'lohnt sich, wenn du oft länger weg bist',
-    ausbauRule: 'Bereichs-Themen machen den Ausbau ihres Bereichs billiger und den des Gegenspielers teurer — nimm den Bereich, den du diese Saison hochziehen willst.',
     effectAusbau: (boost: string, off: number, dampen: string, plus: number) => (dampen ? `${boost} ausbauen −${off} % · ${dampen} +${plus} %` : `${boost} ausbauen −${off} %`),
     previewAusbau: (pct: number) => `mit deinem letzten Garten ≈ ${pct} % weniger Ernte für den Ausbau`,
     resultAusbau: (name: string, pct: number) => `Dein Thema „${name}“ hätte mit deinem Garten ≈ ${pct} % der Ausbaukosten gespart.`,
@@ -242,6 +241,15 @@ export const strings = {
     result: (name: string, pct: number) => `Dein Thema „${name}“ hat mit deinem Garten ≈ ${pct > 0 ? '+' : ''}${pct} % Ernte gebracht.`,
     resultAway: (name: string, active: number, away: number) => `Dein Thema „${name}“: beim Spielen ≈ ${active > 0 ? '+' : active < 0 ? '−' : ''}${Math.abs(active)} %, während du weg warst ≈ ${away > 0 ? '+' : away < 0 ? '−' : ''}${Math.abs(away)} % Ernte.`,
     skip: 'Ohne Thema weitergärtnern',
+    tip: 'Omas Tipp',
+    savedAmount: (amount: string) => `mit deinem letzten Garten ≈ ${amount} Ernte gespart`,
+    gainAmount: (amount: string) => `mit deinem letzten Garten ≈ +${amount} Ernte`,
+    switchTitle: 'Thema wechseln',
+    switchIntro: (clock: string) => `Noch ${clock} – du kannst einmal wechseln.`,
+    switchKeep: 'Thema behalten',
+    switchCurrent: 'gewählt',
+    switchButton: (clock: string) => `Thema wechseln · noch ${clock}`,
+    choosePill: 'Thema wählen',
     pill: (name: string) => name,
     cards: {
       tomatenjahr: { name: 'Tomatenjahr', effect: 'Gemüsebeet ×2 · Obstwiese ×0,8' },

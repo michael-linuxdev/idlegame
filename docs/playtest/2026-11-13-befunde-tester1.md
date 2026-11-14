@@ -78,6 +78,11 @@ nicht drin.
   Abschnitt „Tiefer Winter“ (`EventPills` `onOpenDeep`, `tab_open` mit `from: map_pill`,
   `mode: deep`). Sie löst nichts aus – der Knopf mit Bestätigung bleibt, wo er ist.
 - **Saison-Karten: „Wirkung schwer einzuschätzen, keine Lust auf Commitment“.** Bestätigt Befund 2.
-  → Offen (Design-Entscheidung). Die Karte verlangt drei Abwägungen auf einmal (welcher Bereich
+  War offen (Design-Entscheidung). Die Karte verlangt drei Abwägungen auf einmal (welcher Bereich
   billiger, welcher teurer, wie viel spart das) und gilt eine ganze Saison ohne Rückweg.
+  → **Umgesetzt (2026-11-14):** Bereichs-Karten ohne Gegenspieler (nur der eigene Bereich −30 %
+  statt −40 %/+25 %), Omas Tipp markiert die Karte, die mit dem letzten Garten am meisten gebracht
+  hätte, die Vorschau nennt Ernte statt Prozent („≈ 1,15 Mrd Ernte gespart“), und in den ersten
+  5 Minuten lässt sich das Thema einmal wechseln (Pille auf der Karte, Knopf im Saison-Tab).
+  `season_card` schreibt `tip` und `switched` mit.
 

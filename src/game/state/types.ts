@@ -112,6 +112,10 @@ export interface GameState {
   seasonCardAusbau: boolean
   /** Angebot nach dem Saisonende (leer = keine Wahl offen) */
   seasonCardOffer: CardOffer[]
+  /** Die drei angebotenen Karten, solange das Thema noch gewechselt werden darf (seasonCards.CARD_SWITCH_MS) */
+  seasonCardChoices: CardOffer[]
+  /** Bis wann das Thema einmal kostenlos gewechselt werden darf; 0 = nicht (mehr) */
+  seasonCardSwitchUntil: number
   /** Karte des Vorjahres (nie zweimal hintereinander) */
   lastSeasonCard: string
   /** Omas Herausforderung dieser Saison (challenges.ts), null = keine */

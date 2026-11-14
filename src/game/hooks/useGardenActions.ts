@@ -20,6 +20,7 @@ import {
   abortChallenge,
   chooseNextChallenge,
   pickSeasonCard,
+  switchSeasonCard,
   buyBranch,
   buyTruheItem,
   buyGenerator,
@@ -291,6 +292,10 @@ export function useGardenActions({ setState, stateRef }: UseGardenActionsDeps) {
     setState((s) => pickSeasonCard(s, id))
   }, [setState])
 
+  const changeSeasonCard = useCallback((id: SeasonCardId) => {
+    setState((s) => switchSeasonCard(s, id))
+  }, [setState])
+
   const buildProject = useCallback((id: ProjectId) => {
     setState((s) => {
       const next = buildProjectStage(s, id)
@@ -404,6 +409,7 @@ export function useGardenActions({ setState, stateRef }: UseGardenActionsDeps) {
     chooseChallenge,
     stopChallenge,
     chooseSeasonCard,
+    changeSeasonCard,
     buildProject,
     crossStart,
     crossSkip,

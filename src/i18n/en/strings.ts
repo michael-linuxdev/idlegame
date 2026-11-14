@@ -234,11 +234,10 @@ export const strings: Strings = {
 
   seasonCards: {
     title: 'A theme for this garden year',
-    intro: 'Grandma did something different every year. Pick a theme — it lasts until the next Season’s End.',
+    intro: 'Pick a theme — it lasts until the next Season’s End. You can switch once in the first 5 minutes.',
     preview: (pct: number) => `with your last garden ≈ ${pct > 0 ? '+' : ''}${pct} % harvest`,
     previewEven: 'with your last garden ≈ the same harvest',
     previewQuiet: 'pays off if you’re often away for a while',
-    ausbauRule: 'Area themes make upgrading their area cheaper and their counterpart dearer — pick the area you want to build up this season.',
     effectAusbau: (boost: string, off: number, dampen: string, plus: number) => (dampen ? `Upgrade ${boost} −${off} % · ${dampen} +${plus} %` : `Upgrade ${boost} −${off} %`),
     previewAusbau: (pct: number) => `with your last garden ≈ ${pct} % less harvest spent on upgrades`,
     resultAusbau: (name: string, pct: number) => `Your theme “${name}” would have saved ≈ ${pct} % of the upgrade costs with your garden.`,
@@ -246,6 +245,15 @@ export const strings: Strings = {
     result: (name: string, pct: number) => `Your theme “${name}” brought ≈ ${pct > 0 ? '+' : ''}${pct} % harvest with your garden.`,
     resultAway: (name: string, active: number, away: number) => `Your theme “${name}”: ≈ ${active > 0 ? '+' : active < 0 ? '−' : ''}${Math.abs(active)} % while playing, ≈ ${away > 0 ? '+' : away < 0 ? '−' : ''}${Math.abs(away)} % harvest while you were away.`,
     skip: 'Keep gardening without a theme',
+    tip: 'Grandma’s tip',
+    savedAmount: (amount: string) => `with your last garden ≈ ${amount} harvest saved`,
+    gainAmount: (amount: string) => `with your last garden ≈ +${amount} harvest`,
+    switchTitle: 'Switch theme',
+    switchIntro: (clock: string) => `${clock} left – you can switch once.`,
+    switchKeep: 'Keep theme',
+    switchCurrent: 'chosen',
+    switchButton: (clock: string) => `Switch theme · ${clock} left`,
+    choosePill: 'Pick a theme',
     pill: (name: string) => name,
     cards: {
       tomatenjahr: { name: 'Year of Tomatoes', effect: 'Vegetable Patch ×2 · Fruit Trees ×0.8' },

@@ -22,6 +22,7 @@ import {
 import { festAt } from '../../game/fests'
 import { selectPills } from '../../game/hudPills'
 import { cardEffectText } from '../cardEffect'
+import { openCardSwitch } from '../../game/cardSwitch'
 
 type GameApi = ReturnType<typeof useGame>
 
@@ -259,15 +260,35 @@ export function EventPills({ game, season, order, onOpenFest, onOpenLetter, onOp
     })
   }
 
+  // In den ersten Minuten nach der Wahl öffnet die Pille das Wechsel-Fenster
+  const switchLeft = game.cardSwitchLeftMs
   if (state.seasonCard) {
     const card = t.seasonCards.cards[state.seasonCard]
     const effect = cardEffectText(state.seasonCard, state.seasonCardAusbau)
+    pills.push(
+      switchLeft > 0
+        ? {
+            key: 'card',
+            icon: <IconSprout />,
+            label: card.name,
+            aria: `${card.name}: ${effect}. ${t.seasonCards.switchButton(formatClock(switchLeft))}`,
+            onClick: openCardSwitch,
+          }
+        : {
+            key: 'card',
+            icon: <IconSprout />,
+            label: card.name,
+            aria: `${card.name}: ${effect}`,
+            detail: { line: `${card.name} · ${effect}`, ratio: 0, aria: effect },
+          },
+    )
+  } else if (switchLeft > 0) {
     pills.push({
       key: 'card',
       icon: <IconSprout />,
-      label: card.name,
-      aria: `${card.name}: ${effect}`,
-      detail: { line: `${card.name} · ${effect}`, ratio: 0, aria: effect },
+      label: t.seasonCards.choosePill,
+      aria: `${t.seasonCards.choosePill}. ${t.seasonCards.switchButton(formatClock(switchLeft))}`,
+      onClick: openCardSwitch,
     })
   }
 

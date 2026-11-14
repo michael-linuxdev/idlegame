@@ -39,6 +39,9 @@ const ADDED_AFTER_V1: Record<string, unknown> = {
   festPlusKey: '',
   // Wintervorrat (2026-11-14, Plateau ab Tag 3): alte Stände haben noch nichts zurückgelegt
   wintervorrat: 0,
+  // Saison-Karten (2026-11-14): Wechsel-Fenster nach der Wahl, alte Stände haben keins
+  seasonCardChoices: [],
+  seasonCardSwitchUntil: 0,
 }
 
 /** Nur die Kapitel, die im alten Stand schon gespeichert waren (neue füllt parseChapters auf). */

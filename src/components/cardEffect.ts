@@ -10,7 +10,8 @@ export function cardEffectText(id: SeasonCardId, ausbau: boolean | undefined): s
   return t.seasonCards.effectAusbau(
     name(def.area.boost),
     Math.round(CARD_AUSBAU.discount * 100),
-    def.area.dampen ? name(def.area.dampen) : '',
+    // ohne Aufschlag (seit 2026-11-14) kein Gegenspieler im Text
+    def.area.dampen && CARD_AUSBAU.surcharge > 0 ? name(def.area.dampen) : '',
     Math.round(CARD_AUSBAU.surcharge * 100),
   )
 }

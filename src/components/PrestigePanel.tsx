@@ -5,7 +5,8 @@ import { IconHelper } from '../theme/icons'
 import { type ChapterId } from '../game/chapters'
 import { PRESTIGE_MIN_MODULES_ONLINE, erbstueckePayout, modulesOnlineCount, prestigeBlockReason, isProbeYear } from '../game/economy'
 import { TRUHE_ITEMS, PRESTIGE_BRANCHES, yieldGainAfterPrestige, countAffordableTruheBuys, countAffordableTruheBuysAfterPrestige, truheRankUnlocked, truheRankUnlockNeed, truheUnlockProgress, modulesToNextTruheUnlock, nextLockedTruheUnlock, postPrestigeStartOwned } from '../game/truhe'
-import { formatEta, formatErnte, formatDecimal, formatMult } from '../game/format'
+import { formatClock, formatEta, formatErnte, formatDecimal, formatMult } from '../game/format'
+import { openCardSwitch } from '../game/cardSwitch'
 import { t } from '../i18n'
 import { CHALLENGE_IDS } from '../game/challenges'
 import { WinterScene } from '../theme/WinterScene'
@@ -144,6 +145,15 @@ export function PrestigePanel({ game, highlight, focus, onOpenChapter }: Props) 
           {t.prestige.introAfter}
         </p>
       </header>
+
+      {game.cardSwitchLeftMs > 0 ? (
+        <div className="card-switch-row">
+          <span>{state.seasonCard ? t.seasonCards.cards[state.seasonCard].name : t.seasonCards.choosePill}</span>
+          <button type="button" className="btn ghost card-switch-btn" onClick={openCardSwitch}>
+            {t.seasonCards.switchButton(formatClock(game.cardSwitchLeftMs))}
+          </button>
+        </div>
+      ) : null}
 
       {jumps.length > 2 ? (
       <nav className="season-jumps" aria-label={t.ux.season.jump}>

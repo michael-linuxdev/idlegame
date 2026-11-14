@@ -65,7 +65,17 @@ export function seasonCardDef(id: string | null | undefined): SeasonCardDef | nu
  * werden (GameState.seasonCardAusbau); eine schon laufende Karte behält die
  * alte Ertrags-Regel.
  */
-export const CARD_AUSBAU = { discount: 0.4, surcharge: 0.25, minPreview: 1.03 }
+export const CARD_AUSBAU = { discount: 0.3, surcharge: 0, minPreview: 1.03 }
+
+/*
+ * 2026-11-14 (Playtest Tester 1: „Wirkung schwer einzuschätzen, keine Lust auf
+ * Commitment“): kein Gegenspieler mehr (surcharge 0), dafür −30 % statt −40 %
+ * — im Simulator gleicher Takt (docs/kapitel/balance-bericht.md). Dazu Omas Tipp
+ * (bestCardOffer) und ein kostenloser Wechsel in den ersten Minuten (CARD_SWITCH_MS).
+ */
+
+/** So lange nach der Wahl lässt sich das Thema einmal kostenlos wechseln. */
+export const CARD_SWITCH_MS = 5 * 60_000
 
 /** Kosten-Faktor eines Bereichs durch die aktive Karte (nur Ausbau-Regel). */
 export function cardCostMult(id: string | null, area: GeneratorId, ausbau: boolean): number {
@@ -142,6 +152,23 @@ export interface CardOffer {
   preview: number
   /** Bereichs-Karte nach der Ausbau-Regel (fehlt bei älteren Angeboten = alte Ertrags-Regel) */
   ausbau?: boolean
+  /** Ernte der Saison, nach der das Angebot kam (für „≈ 1,2 Mrd gespart“); fehlt bei älteren Angeboten */
+  ernte?: number
+}
+
+/** Was die Karte mit dem letzten Garten gebracht hätte: Anteil gesparter Ausbaukosten bzw. mehr Ernte (beim Spielen). */
+export function offerValue(o: CardOffer): number {
+  return o.ausbau ? 1 - 1 / o.preview : o.preview - 1
+}
+
+/** Omas Tipp: die Karte, die mit dem letzten Garten am meisten gebracht hätte (nie „Ruhiges Jahr“). */
+export function bestCardOffer(offer: CardOffer[]): SeasonCardId | null {
+  let best: CardOffer | null = null
+  for (const o of offer) {
+    if (o.id === 'ruhigesJahr' || offerValue(o) <= 0) continue
+    if (!best || offerValue(o) > offerValue(best)) best = o
+  }
+  return best?.id ?? null
 }
 
 /**
@@ -153,6 +180,7 @@ export function offerSeasonCards(
   owned: Partial<Record<GeneratorId, number>>,
   last: string | null,
   rng = Math.random,
+  ernte?: number,
 ): CardOffer[] {
   const pool = SEASON_CARDS.filter((c) => c.id !== last)
     .filter((c) => !c.area || (owned[c.area.boost] ?? 0) > 0)
@@ -175,5 +203,5 @@ export function offerSeasonCards(
     out.push(left[i])
     left.splice(i, 1)
   }
-  return out
+  return ernte != null && ernte > 0 ? out.map((o) => ({ ...o, ernte })) : out
 }
