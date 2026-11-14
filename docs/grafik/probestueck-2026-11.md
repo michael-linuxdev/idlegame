@@ -291,6 +291,11 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   Storchennestern, Schöpfrad mit Becken, Korkstapel, weißes Lehmhaus mit Schornstein,
   Korkbienenstöcke, Korkwerkstatt, Korkfest.
 
+- **Kapitel 26 Paprikafelder** (`kapitel-26-paprikafelder.png`): Paprikaschnüre, Kalocsa-Blumen,
+  Robinien mit Kronenlicht, Trockenhaus, Mühlstein und Säcke, Kalocsa-Stube, Schwengelbrunnen mit
+  Holzpfosten, Tomatenkiste, Bienenkasten, Schilfscheunen-Karren, Marktstand mit Pfosten und
+  Festkessel mit Kontur.
+
 Damit sind die Kapitel 4–12 im Weinberg-Niveau. Kapitel 13–50 haben die gemeinsame Kontur und
 das Wachstum, aber noch ihre ursprüngliche Zeichnung.
 
