@@ -236,6 +236,10 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   Kräuterleiter vor einer Ziegelmauer mit Fugen, Regentonnen am Fallrohr, Wurmkisten-Turm,
   Saatgut-Bibliothek auf dem Pfahl, Lastenrad, Lehmofen, blauer Werkstatt-Schuppen, Hoffest.
 
+- **Kapitel 14 Klostergarten** (`kapitel-14-klostergarten.png`): Kreuzgang mit Arkaden, Quitten
+  mit Leiter, Heilpflanzen im Buchsbeet, Brunnenhaus mit Haspel, Bienenmauer aus Bruchstein,
+  Schwesterngarten, Kräuterboden, Klosterküche, Saatgutregister, Glockenturm mit Uhr und Kreuz.
+
 Damit sind die Kapitel 4–12 im Weinberg-Niveau. Kapitel 13–50 haben die gemeinsame Kontur und
 das Wachstum, aber noch ihre ursprüngliche Zeichnung.
 
