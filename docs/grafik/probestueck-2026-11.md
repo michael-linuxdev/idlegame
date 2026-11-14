@@ -207,6 +207,10 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   Planken auf Pfählen, Mönch aus Stein am Karpfenteich, Bachbrücke und Anglerbank, Fischerhütte
   auf Pfählen mit Netz, Räucherei aus Stein mit Fischstange, Kassenhäuschen am Bootsverleih,
   Entenhaus auf dem Floß, Seefest-Bühne mit Baldachin.
+- **Kapitel 7 Kräutergarten** (`kapitel-07-kraeuter.png`): Kamillenbeet mit Gießkanne und Korb,
+  Minze im Hochbeet, Ringelblumen im Steinring, Johanniskraut mit Trockengestell, Salbei auf der
+  Pflanzbank mit Frühbeet, Fachwerk-Trockenboden mit Leiter, Destille unter dem Schutzdach,
+  Salbenküche mit Arbeitstisch, Teestube mit Tischen, Apothekergarten mit Sonnenuhr und Rosenbogen.
 
 ## Als Nächstes
 1. ~~Gemeinsame Kapitel-Teile auf Kontur~~ – erledigt über `hand-art` (oben), wirkt in allen Kapiteln.
