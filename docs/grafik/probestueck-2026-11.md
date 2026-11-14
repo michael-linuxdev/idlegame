@@ -191,6 +191,15 @@ ersten vier Bereiche).
   Holzstapel, Glut, Verkaufstisch, zweite Esse). Neue Farben nur aus der Palette.
 - Nicht enthalten: ganz neue Silhouetten je Bereich, wie sie der Weinberg bekommen hat.
 
+## Kapitel im Weinberg-Niveau (ab 2026-11-14, in Spielreihenfolge)
+Jedes Kapitel wird neu gezeichnet: Gebäude aus `art/parts/bold.tsx` (Licht oben links, Schatten
+rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rahmen `Svg` bekommt
+`bold` (eigene Konturen statt der CSS-Kontur); alte Tierzeichnungen tragen `hand-art` weiter.
+- **Kapitel 4 Bauernhof** (`kapitel-04-bauernhof.png`, links vorher, rechts nachher): Koppelzäune
+  und Tränken, Unterstand, Kletterfels mit Brett, Schweinehütte, Gänsehäuschen am Teich,
+  Kartoffelsäcke und Vogelscheuche, Scheune mit Anbau/Heuboden/Heuwagen, Melkhaus, Käserei mit
+  Fachwerk und Reiferegal, Hofbäckerei mit Lehmofen, Marktstände mit Markisen und Wimpelkette.
+
 ## Als Nächstes
 1. ~~Gemeinsame Kapitel-Teile auf Kontur~~ – erledigt über `hand-art` (oben), wirkt in allen Kapiteln.
 2. ~~Kapitel 4–12 einzeln~~ – flache Bereiche nachgezeichnet (oben).

@@ -20,10 +20,12 @@ function growScale(tier: number): number {
  * `hand-art` gibt allen gefüllten Flächen die dunkle Kontur des kräftigen
  * Stils (garden.css), ohne zusätzliche SVG-Elemente.
  */
-export function Svg({ children, tier = 0 }: { children: ReactNode; tier?: number }) {
+export function Svg({ children, tier = 0, bold = false }: { children: ReactNode; tier?: number; bold?: boolean }) {
   const k = growScale(tier)
   return (
-    <ArtSvg viewBox={V} className="hand-art">
+    // `bold`: Bereich ist im kräftigen Stil neu gezeichnet und setzt seine Konturen selbst
+    // (Teile mit alter Zeichnung darin können `<g className="hand-art">` tragen)
+    <ArtSvg viewBox={V} className={bold ? 'bold-art' : 'hand-art'}>
       {k === 1 ? children : <g transform={`translate(${40 * (1 - k)} ${66 * (1 - k)}) scale(${k})`}>{children}</g>}
       {tier >= 5 ? <OmaSign x={6} y={64} s={0.8} /> : null}
     </ArtSvg>
