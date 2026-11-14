@@ -51,6 +51,10 @@ ausgewerteten Zeitraum noch nicht aktiv – gespielt wurde auf `c376ce4`).
 4. **Kurz-Saisons lohnen sich:** 11-12 drei Saisonenden in 12 min (17:30, 17:36, 17:42) mit 3460,
    1159 und 933 Erbstücken – nach der Nacht-Ernte reichen 6 min für rund ein Drittel der Auszahlung
    eines ganzen Tages. → Offen; prüfen, ob das gewollt ist.
+   → **Geprüft (2026-11-14):** Im Simulator lohnen Kurz-Saisons (≈ 3–4 Tage Vorsprung bis
+   Kapitel 4). Eine steilere Erbstück-Kurve hilft kaum und straft Schwellen-Beender; der Treiber
+   ist die Zahl der Gartenjahre (Tiefer Winter, Sprösslinge). Unverändert gelassen, Details und
+   möglicher Hebel in `docs/kapitel/balance-bericht.md` „Kurz-Saisons“.
 5. **Einzelkauf-Grind bleibt:** Median 31 Ausbauten/min, Spitze 412/min, 26 Minuten mit > 150.
    `best_buy_tap` 0×. (Offener Punkt seit 2026-11-08.)
    → **Umgesetzt (2026-11-14), ohne neue Knöpfe** („×5“/„Max“ bleiben raus): Gedrückthalten

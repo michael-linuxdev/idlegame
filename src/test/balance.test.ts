@@ -25,16 +25,21 @@ describe('Saisonende gate + payout', () => {
     expect(g(k + 1) / g(k)).toBeCloseTo(BALANCE.prestigeLateGrowth, 5)
   })
 
-  it('pays the base at the gate, √ up to 2× at 4× gate, then flattens', () => {
+  it('an der Schwelle die Basis (Kurve payoutCurveExp), 2× bei 4× Schwelle, dann flacher', () => {
     for (const p of [0, 3, 12]) {
       const gate = prestigeMinErnte(p)
       const base = payoutAtGate(p)
-      expect(erbstueckePayout(gate, p)).toBe(base)
+      expect(erbstueckePayout(gate, p)).toBe(Math.floor(base * 2 * Math.pow(0.25, BALANCE.payoutCurveExp)))
+      expect(erbstueckePayout(gate * 2, p)).toBeGreaterThan(erbstueckePayout(gate, p))
       expect(erbstueckePayout(gate * 4, p)).toBe(base * 2)
       const at16 = erbstueckePayout(gate * 16, p)
       expect(at16).toBeGreaterThan(base * 2)
       expect(at16).toBeLessThanOrEqual(base * 3)
     }
+  })
+
+  it('Probejahr (Gartenjahr 1) zahlt an der Schwelle wie bisher die volle Basis', () => {
+    expect(erbstueckePayout(prestigeMinErnte(0, true), 0, true)).toBe(payoutAtGate(0, true))
   })
 
   it('cannot end the season below the gate', () => {

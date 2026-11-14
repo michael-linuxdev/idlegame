@@ -23,8 +23,8 @@ export const OFFLINE_DECAY_RATE = 0.5
  * Saisonende balance knobs (tuned with scripts/balance/sim.ts).
  *  - gate(p)   = prestigeBase · prestigeGrowth^min(p, knee) · lateGrowth^max(0, p − knee)
  *  - payout    = payoutBase · payoutGrowth^p · f(ernte / gate)
- *    f(r) = √r up to r = 4 (2× base), then +0.5 per doubling — staying a
- *    bit longer pays, spamming at the gate pays the base, nothing explodes.
+ *    f(r) = 2·(r/4)^payoutCurveExp up to r = 4 (2× base), then +0.5 per
+ *    doubling — staying a bit longer pays, nothing explodes.
  * Mutable on purpose so the simulator can sweep values; the game never
  * writes to it.
  */
@@ -37,7 +37,13 @@ export const BALANCE = {
   prestigeLateGrowth: 1.12,
   payoutBase: 100,
   payoutGrowth: 1.12,
-  /** f(r) = 2·(r/4)^exp bis r = 4; 0,5 = √r (bis 2026-11-14) */
+  /**
+   * f(r) = 2·(r/4)^exp bis r = 4; 0,5 = √r. Geprüft 2026-11-14 (Kurz-Saisons):
+   * 0,75/1,0 kürzen die Auszahlung an der Schwelle um 29/50 %, verkleinern den
+   * Vorsprung für „sofort beenden“ aber kaum (4 → 3/1 Tage bis Kapitel 4), weil
+   * die Zahl der Gartenjahre den Tiefen Winter treibt, nicht die Erbstücke.
+   * Deshalb unverändert (docs/kapitel/balance-bericht.md). Probejahr immer √r.
+   */
   payoutCurveExp: 0.5,
   /**
    * Probe-Winter (2026-11-09): nur Gartenjahr 1 hat eine eigene, niedrige
@@ -74,9 +80,9 @@ export function prestigeMinErnte(saisonenden: number, probe = false): number {
 }
 
 /** Payout curve over r = ernte / gate. */
-function payoutCurve(r: number): number {
+function payoutCurve(r: number, probe = false): number {
   if (r <= 0) return 0
-  if (r <= 4) return 2 * Math.pow(r / 4, BALANCE.payoutCurveExp)
+  if (r <= 4) return 2 * Math.pow(r / 4, probe ? 0.5 : BALANCE.payoutCurveExp)
   return 2 + 0.5 * Math.log2(r / 4)
 }
 
@@ -87,7 +93,7 @@ function payoutCurve(r: number): number {
 export function erbstueckePayout(ernteSeason: number, saisonenden = 0, probe = false): number {
   if (ernteSeason <= 0) return 0
   const r = ernteSeason / Math.max(1, prestigeMinErnte(saisonenden, probe))
-  return Math.floor(payoutAtGate(saisonenden, probe) * payoutCurve(r))
+  return Math.floor(payoutAtGate(saisonenden, probe) * payoutCurve(r, probe))
 }
 
 export function modulesOnlineCount(

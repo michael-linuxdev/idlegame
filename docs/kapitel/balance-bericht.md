@@ -279,3 +279,28 @@ Bereichs-Karten machen nur noch ihren Bereich billiger (`CARD_AUSBAU`: −30 %, 
 
 Die Karten sind für den Takt ein kleiner Hebel (± 1–2 Tage, im Rauschen). −30 % ist eine klare,
 runde Zahl und ohne Nachteil keine Falle mehr.
+
+## Kurz-Saisons (2026-11-14)
+
+**Anlass:** Tester 1 machte nach der Nacht-Ernte drei Saisonenden in 12 min (3460, 1159, 933
+Erbstücke). Frage: Lohnt „sofort an der Schwelle beenden“ mehr als längere Saisons?
+
+**Messung** (Dauerspieler, 30 Tage, `GEN=1 CHAPTERS=1 CHAPTER_MANUAL=0`; neuer Schalter
+`SEASON_ASAP=1` beendet jede Saison an der Schwelle, sonst am Rendite-Gipfel):
+
+| Auszahlungskurve bis 4× Schwelle | Rendite-Gipfel | sofort beenden |
+|---|---|---|
+| √r (Exponent 0,5, gilt) | 560 Saisons, 8 Tiefe Winter, K4 Tag 23 | 724 Saisons, 10 Tiefe Winter, K4 Tag 19 |
+| Exponent 0,75 (an der Schwelle −29 %) | 536–597 Saisons, K4 Tag 21–23 | 720 Saisons, 10 Tiefe Winter, K4 Tag 19–20 |
+| Exponent 1,0 (an der Schwelle −50 %) | 563 Saisons, 9 Tiefe Winter, K4 Tag 21 | 709 Saisons, 10 Tiefe Winter, K4 Tag 20 |
+
+Regular über 5 Jahre: K13 Tag 308, K50 Tag 1778–1780 bei allen drei Exponenten.
+
+**Befund:** Kurz-Saisons sind die stärkere Strategie (≈ 3–4 Tage bis Kapitel 4 im ersten
+Monat). Der Grund sind nicht die Erbstücke, sondern die Zahl der Gartenjahre: Sie öffnet den
+Tiefen Winter (ab Gartenjahr 15) und erhöht dessen Sprösslinge (`sproutPayout`). Eine steilere
+Erbstück-Kurve straft Spieler, die an der Schwelle beenden, ändert am Vorsprung aber wenig –
+deshalb bleibt √r. Knopf `payoutCurveExp` und Schalter `SEASON_ASAP` bleiben für spätere Messungen.
+
+**Offen (Design-Entscheidung):** Wenn Kurz-Saisons nicht lohnen sollen, müsste der Hebel an
+den Gartenjahren ansetzen (z. B. Sprösslinge nach Saison-Ernte statt nach Saison-Zahl).
