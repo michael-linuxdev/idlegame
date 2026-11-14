@@ -296,6 +296,11 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   Holzpfosten, Tomatenkiste, Bienenkasten, Schilfscheunen-Karren, Marktstand mit Pfosten und
   Festkessel mit Kontur.
 
+- **Kapitel 27 Aranfelder** (`kapitel-27-aranfelder.png`): Kalkpflaster mit Spalten, Seetang,
+  Currachs mit Doppelstrich-Rudern, Papageitaucher, Kartoffelfurchen, Burrenblumen, Strickstube mit
+  Spinnrad und Wäschegestell, Klippe mit Wegpfosten, Hafenmole mit Pollern und Leuchthaus, Céilí-
+  Haus mit Kontur.
+
 Damit sind die Kapitel 4–12 im Weinberg-Niveau. Kapitel 13–50 haben die gemeinsame Kontur und
 das Wachstum, aber noch ihre ursprüngliche Zeichnung.
 
