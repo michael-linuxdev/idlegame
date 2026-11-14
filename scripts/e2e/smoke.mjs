@@ -817,7 +817,8 @@ try {
   }
 
   // 17 — Saison-Karten „Ausbau statt Ertrag“ (Runde 4): Angebot zeigt Ausbau-Wirkung und Ersparnis,
-  //      Wählen speichert die Karte mit der Ausbau-Regel (Kosten: Unit-Test seasonCards.test.ts)
+  //      Wählen speichert die Karte mit der Ausbau-Regel (Kosten: Unit-Test seasonCards.test.ts);
+  //      seit 2026-11-14 mit Omas Tipp und einmaligem Wechsel im Saison-Tab
   {
     const ctx = await browser.newContext({ ...devices['iPhone 13'], reducedMotion: 'reduce' })
     await ctx.addInitScript(() => {
@@ -840,8 +841,10 @@ try {
     const sheet = p.locator('.season-card-sheet')
     await sheet.waitFor()
     const text = await sheet.innerText()
-    assert(text.includes(T.seasonCards.ausbauRule), 'card picker explains the Ausbau rule')
     assert(text.includes(T.seasonCards.previewAusbau(7)), `Ausbau card shows its saving (${text})`)
+    // Omas Tipp (2026-11-14): die Karte, die mit dem letzten Garten am meisten gebracht hätte
+    assert((await p.locator('.season-card.tip').count()) === 1, 'one card marked as Omas Tipp')
+    assert((await p.locator('.season-card.tip').innerText()).includes(T.seasonCards.tip), 'tip badge text')
     await p.screenshot({ path: `e2e-screens/saisonkarten-${LANG}.png` })
     // Wählen: die Karte gilt nach der Ausbau-Regel (gespeichert alle 4 s)
     await p.locator('.season-card').first().click()
@@ -852,6 +855,20 @@ try {
       return { card: s.seasonCard, ausbau: s.seasonCardAusbau }
     })
     assert(saved.card === 'kraeuterjahr' && saved.ausbau === true, `card saved with the Ausbau rule (${JSON.stringify(saved)})`)
+    // Wechsel in den ersten Minuten: Knopf im Saison-Tab öffnet die Auswahl, ein Tipp wechselt
+    await p.locator('.tabbar .tab-prestige').click()
+    await p.locator('.card-switch-btn').click()
+    await sheet.waitFor()
+    assert((await p.locator('.season-card.current').count()) === 1, 'current theme marked in switch mode')
+    await p.locator('.season-card').filter({ hasText: T.seasonCards.cards.gutesJahr.name }).click()
+    await sheet.waitFor({ state: 'detached' })
+    await p.waitForTimeout(4500)
+    const switched = await p.evaluate(() => {
+      const s = JSON.parse(localStorage.getItem('gartenerbe-spielstand-v1') || '{}')
+      return { card: s.seasonCard, until: s.seasonCardSwitchUntil }
+    })
+    assert(switched.card === 'gutesJahr' && switched.until === 0, `switched once (${JSON.stringify(switched)})`)
+    assert((await p.locator('.card-switch-btn').count()) === 0, 'no second switch')
     await ctx.close()
   }
 
