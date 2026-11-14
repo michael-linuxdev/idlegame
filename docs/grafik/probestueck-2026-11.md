@@ -266,6 +266,11 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   Teeplatz, Holzgewächshaus mit Rahmen und Glanz, Geißblattlaube, grüner Schuppen mit
   Sprossenfenster, Dorfschau-Zelt.
 
+- **Kapitel 21 Tulpenfelder** (`kapitel-21-tulpenfelder.png`): Zwiebelbeete mit Kontur (Blüten ohne
+  zusätzliche Hüllen, Leistungsgrenze bleibt), Windmühle mit Galerie und Flügelgittern,
+  Zwiebelscheune mit Lattenrosten, Grachtenhäuser mit Treppengiebel und Tür, Zugbrücke,
+  Fahrradstall, Versteigerung mit Uhr, Hausboot, Tulpenmarkt.
+
 Damit sind die Kapitel 4–12 im Weinberg-Niveau. Kapitel 13–50 haben die gemeinsame Kontur und
 das Wachstum, aber noch ihre ursprüngliche Zeichnung.
 
