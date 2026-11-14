@@ -1,6 +1,6 @@
 /** Kapitel-Grafik (Bauernhof, Imkerei, Teich): imkerei. */
 import type { Season } from '../../ambient'
-import { Svg, Window, Hive, Bees, House } from '../../HandParts'
+import { Svg, Window, Hive, Bees, House, Smoke } from '../../HandParts'
 import { BlossomTree, Shadow } from '../parts'
 import { P } from '../palette'
 
@@ -117,8 +117,31 @@ export function Imkerei({ id, tier, season }: { id: string; tier: number; season
       return (
         <Svg tier={tier}>
           <Shadow grid="chapter" rx={30} />
+          {/* Stufe 5: Schornstein mit Rauch (das Wachs wird erwärmt) */}
+          {tier >= 5 ? (
+            <g>
+              <rect x="30" y="30" width="4" height="10" fill={P.stone} stroke={P.outlineStone} strokeWidth=".6" />
+              <Smoke x={32} y={28} />
+            </g>
+          ) : null}
           <House x={10} w={30} h={20} wall="#f5e6b8" roof="#c49a3a" />
           <Window x={16} y={50} lit={tier >= 2} />
+          {/* Stufe 3: Tür mit Kerzen-Schild */}
+          {tier >= 3 ? (
+            <g>
+              <rect x="27" y="53" width="7" height="11" fill={P.bark} stroke="#4a3a2a" strokeWidth=".5" />
+              <path d="M24 46h8" stroke={P.outlineWood} strokeWidth=".7" />
+              <rect x="26" y="47" width="4" height="4" rx=".6" fill="#f5e08a" stroke={P.brass} strokeWidth=".5" />
+              <path d="M28 47v-1.4" stroke={P.orange} strokeWidth=".8" />
+            </g>
+          ) : null}
+          {/* Stufe 4: Tauchbottich mit flüssigem Wachs */}
+          {tier >= 4 ? (
+            <g>
+              <path d="M40 64l1-7h8l1 7z" fill={P.stoneDark} stroke={P.outlineStone} strokeWidth=".6" />
+              <ellipse cx="45" cy="57" rx="4" ry="1.2" fill="#f5e08a" stroke={P.brass} strokeWidth=".4" />
+            </g>
+          ) : null}
           <path d="M46 40h28" stroke={P.outlineWood} strokeWidth="1.6" />
           <path d="M48 40v24M72 40v24" stroke={P.outlineWood} strokeWidth="1.4" />
           {Array.from({ length: Math.min(8, 2 + tier) }, (_, i) => (

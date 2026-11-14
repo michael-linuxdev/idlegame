@@ -116,9 +116,37 @@ export function Teich({ id, tier, season }: { id: string; tier: number; season?:
         <Svg tier={tier}>
           <Shadow grid="chapter" rx={30} />
           <House x={20} w={26} h={22} wall={P.outlineSoft} roof="#4a3a2a" steep={11} />
-          <rect x="38" y="30" width="5" height="12" fill={P.outlineWood} />
+          <rect x="38" y="30" width="5" height="12" fill={P.outlineWood} stroke={P.outline} strokeWidth=".5" />
           <Smoke x={40} y={28} />
-          <rect x="27" y="50" width="9" height="14" fill="#3a2a1a" />
+          <rect x="27" y="50" width="9" height="14" fill="#3a2a1a" stroke={P.outline} strokeWidth=".5" />
+          {/* Stufe 2: Holzstapel fürs Räuchern */}
+          {tier >= 2 ? (
+            <g>
+              {[0, 1, 2].map((i) => (
+                <circle key={i} cx={12 + i * 3.4} cy={62} r="1.8" fill={P.woodLight} stroke={P.outlineWood} strokeWidth=".5" />
+              ))}
+              {[0, 1].map((i) => (
+                <circle key={i} cx={13.7 + i * 3.4} cy={59} r="1.8" fill={P.woodLight} stroke={P.outlineWood} strokeWidth=".5" />
+              ))}
+            </g>
+          ) : null}
+          {/* Stufe 3: Fenster mit Glut; Stufe 4: Verkaufstisch mit Fischkiste */}
+          {tier >= 3 ? <rect x="22" y="48" width="4" height="4" fill={P.orange} stroke="#4a3a2a" strokeWidth=".5" /> : null}
+          {tier >= 4 ? (
+            <g>
+              <rect x="48" y="56" width="14" height="2" fill={P.woodMid} stroke={P.outlineWood} strokeWidth=".5" />
+              <path d="M50 58v6M60 58v6" stroke={P.outlineWood} strokeWidth=".8" />
+              <rect x="50" y="53" width="8" height="3" fill={P.woodLight} stroke={P.outlineWood} strokeWidth=".5" />
+              <path d="M51.5 54.5h2M55 54.5h2" stroke="#c4783a" strokeWidth="1" />
+            </g>
+          ) : null}
+          {/* Stufe 5: zweite Esse */}
+          {tier >= 5 ? (
+            <g>
+              <rect x="24" y="34" width="4" height="9" fill={P.outlineWood} stroke={P.outline} strokeWidth=".5" />
+              <Smoke x={26} y={32} />
+            </g>
+          ) : null}
           {Array.from({ length: Math.min(5, tier + 1) }, (_, i) => (
             <g key={i}>
               <path d={`M${52 + i * 5} 40v3`} stroke={P.outlineWood} strokeWidth=".4" />
