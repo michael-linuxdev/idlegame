@@ -248,7 +248,6 @@ export const expansionStrings = {
     cost: (action: string, cost: string, cur: string) => `${action} · ${cost} ${cur}`,
     needMore: (n: string, cur: string) => `Noch ${n} ${cur}`,
     level: (n: number) => `Stufe ${n}`,
-    rate: (r: string, cur: string) => `${r} ${cur}/s`,
     goal: (name: string) => `Pflegen: ${name}`,
     goalPlant: (name: string) => `Pflanzen: ${name}`,
     unlockedToast: (n: number, name: string) => `Kapitel ${n} freigeschaltet: ${name}!`,

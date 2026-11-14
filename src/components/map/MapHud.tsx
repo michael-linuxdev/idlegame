@@ -1,9 +1,12 @@
-/** Kopfzeile der Gartenkarte: Gärtnerstufe, Korb mit Ernte, Ziel-Zeile, Ereignis-Pillen. Teil von GardenMap. */
+/**
+ * Kopfzeile der Gartenkarte: Gärtnerstufe, Korb mit Ernte, Ziel-Zeile, Ereignis-Pillen. Teil von GardenMap.
+ * Samen und Erbstücke stehen an den Tabs Markt und Saison (AppNav), nicht hier.
+ */
 import type { ComponentProps, Ref } from 'react'
 import { formatErnte, formatMult, formatRate } from '../../game/format'
 import type { useGame } from '../../game/useGame'
 import { t } from '../../i18n'
-import { IconBasket, IconChest, IconSeeds } from '../../theme/icons'
+import { IconBasket } from '../../theme/icons'
 import { EventPills } from '../hud/EventPills'
 import { GoalStrip, type HudGoal } from '../hud/GoalStrip'
 
@@ -89,20 +92,6 @@ export function MapHud({
           <span className="hud-rate">
             {formatRate(rate)}
             {totalMult > 1 ? <span className="hud-mult"> {formatMult(totalMult)}</span> : null}
-          </span>
-          <span className="hud-sub">
-            {state.erbstuecke > 0 ? (
-              <span className="hud-sub-item" title={t.resources.erbstuecke}>
-                <IconChest /> {formatErnte(state.erbstuecke)}
-                <span className="sr-only"> {t.resources.erbstuecke}</span>
-              </span>
-            ) : null}
-            {!earlyGame ? (
-              <span className="hud-sub-item hud-reveal" title={t.resources.samen}>
-                <IconSeeds /> {formatErnte(state.samen)}
-                <span className="sr-only"> {t.resources.samen}</span>
-              </span>
-            ) : null}
           </span>
         </button>
       </div>

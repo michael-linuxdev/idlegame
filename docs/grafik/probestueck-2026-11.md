@@ -153,8 +153,21 @@ vorher/nachher `probe-horizont-*.png`.
 - **Ferne Wildnis kleiner:** gesperrte Plätze, die noch nicht als Nächstes dran sind, sind auf 74 %
   verkleinert (`.wild-far`). Das Schild zeigte schon vorher nur der nächste Platz.
 - Plätze der Bereiche, Deko und Pfützen sind unverändert; Überlagerungen nachgemessen: 0.
-- Grenze: Die Kopfleiste verdeckt den größten Teil des Himmels. Mehr Horizont ginge nur, wenn die
-  Bereiche nach unten rücken.
+- Grenze war die Kopfleiste, die den größten Teil des Himmels verdeckte, siehe nächster Abschnitt.
+
+## Schlanke Kopfleiste (2026-11-14)
+Bilder: `kopfleiste-vorher-nachher.png` (bisher · neu Tag · neu Nacht), `kopfleiste-faelle.png`
+(große Zahlen auf 320 px, Englisch, Kapitel, Einstieg).
+- **Eine Zeile oben** (`hud.css`, `.hud-slim`, Hauptgarten und alle Kapitel): links die
+  Gartenstufe als Pille (Name + Stufe als grüne Plakette, Fortschritt als feine Linie), rechts
+  Ernte und Ernte/s nebeneinander auf einer Höhe. Die Kopfleiste endet bei etwa 12 % statt 17 %
+  der Höhe; Mond und Wolken sitzen im freien Streifen über den Hügeln.
+- **Samen und Erbstücke** stehen nicht mehr oben, sondern dort, wo man sie ausgibt: Erbstücke
+  unter „Saison“, Samen unter „Markt“ in der Tab-Leiste (`AppNav`, `.tabbar-count`). Samen erst ab
+  den Ereignissen (wie bisher oben), Erbstücke ab dem ersten.
+- **Wird es eng**, kürzt sich zuerst der Gartenname; die Zahlen rechts werden nie abgeschnitten.
+- **Kapitel:** Der Bonus für den Garten steht als kurze Plakette „+0,4 %“ (voller Text für
+  Screenreader und als `title`), die Rate ohne Währungsnamen („2/s“, das Symbol zeigt die Währung).
 
 ## Als Nächstes
 1. Gemeinsame Kapitel-Teile (`HandParts.tsx`, `art/chapters/partsA…I.tsx`: Dach, Figur, Glashaus,

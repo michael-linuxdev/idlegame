@@ -129,3 +129,33 @@
 .ftue-coach {
   bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom, 0px) + 4.6rem);
 }
+
+/* Bestand am Tab: Erbstücke an „Saison“, Samen an „Markt“ (dort gibt man sie aus).
+   Steht hier statt in der Kopfleiste, damit oben der Himmel frei bleibt. */
+.tabbar-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.12rem;
+  max-width: 100%;
+  margin-top: -0.05rem;
+  font-family: var(--ge-font-metric);
+  font-size: 0.6rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #8a7350;
+  white-space: nowrap;
+}
+
+.tabbar-btn.active .tabbar-count {
+  color: #3f7a30;
+}
+
+.tabbar-count-icon {
+  display: inline-flex;
+  line-height: 0;
+}
+
+.tabbar-count-icon svg {
+  width: 0.75rem;
+  height: 0.75rem;
+}

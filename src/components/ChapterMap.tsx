@@ -10,7 +10,7 @@ import {
   areaUnlocked, chapterDef, chapterLevels, chapterStage, type ChapterId } from '../game/chapters'
 import { milestonesReached, nextMilestone } from '../game/generators'
 import { MASTERY_BONUS, masteryMult, masteryProgress, masteryStars } from '../game/mastery'
-import { formatErnte, formatClock, formatDecimal } from '../game/format'
+import { formatErnte, formatClock, formatDecimal, formatRate } from '../game/format'
 import { playSfx } from '../game/sound'
 import { abschlussDue, bestChapterBuy, chapterAreaRates, chapterCareCostOf } from '../game/state'
 import { arcOf, areaFactor, arcRateMult } from '../game/arcRules'
@@ -156,12 +156,15 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
       <h1 id="chapter-heading" className="sr-only">
         {copy.title}
       </h1>
-      <header className="hud">
+      <header className="hud hud-slim">
         <div className="hud-row">
           <div className="hud-card hud-garden orchard-card">
             <span className="hud-stage">{copy.title}</span>
             <span className="orchard-bonus-row">
-              <span className="orchard-bonus">{t.chapterUi.bonus(bonusPct)}</span>
+              <span className="orchard-bonus" title={t.chapterUi.bonus(bonusPct)}>
+                <span aria-hidden="true">+{bonusPct} %</span>
+                <span className="sr-only">{t.chapterUi.bonus(bonusPct)}</span>
+              </span>
               {stage === def.areas.length ? <MasteryStars stars={mastery.stars} /> : null}
             </span>
           </div>
@@ -174,7 +177,7 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
               <span className="hud-amount-icon">{copy.icon}</span>
               {formatErnte(c.cur)}
             </span>
-            <span className="hud-rate">{t.chapterUi.rate(formatErnte(rate), copy.currency)}</span>
+            <span className="hud-rate">{formatRate(rate)}</span>
           </div>
         </div>
         <GoalStrip goal={goal} />

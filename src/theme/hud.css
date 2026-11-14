@@ -173,25 +173,6 @@
   color: #3f7a30;
 }
 
-.hud-sub {
-  display: flex;
-  gap: 0.55rem;
-  font-family: var(--ge-font-metric);
-  font-weight: 700;
-  font-size: 0.66rem;
-  color: var(--hud-ink-soft);
-}
-
-.hud-sub-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.15rem;
-}
-
-.hud-sub-item .g-icon {
-  font-size: 0.9rem;
-}
-
 /* Goal line */
 .hud-goal {
   position: relative;
@@ -736,10 +717,11 @@
   color: var(--ge-gruen-dunkel);
 }
 
-/* —— Schlanke Kopfleiste im Hauptgarten (Vorschlag 2026-11-14) ——
-   Eine Zeile oben: Gartenstufe als Pille, Ernte und Ernte/s nebeneinander.
-   Samen und Erbstücke stehen nicht mehr hier (sie gehören zu Markt und Saison).
-   Die Kapitel-Karte behält die bisherige Kopfleiste. */
+/* —— Schlanke Kopfleiste (Hauptgarten und Kapitel, 2026-11-14) ——
+   Eine Zeile oben: links die Gartenstufe als Pille, rechts Ernte und Ernte/s
+   nebeneinander auf einer Höhe. Samen und Erbstücke stehen an den Tabs Markt
+   und Saison (AppNav). Wird es eng, kürzt sich zuerst der Gartenname; die
+   Zahlen rechts werden nie abgeschnitten. */
 .hud-slim {
   gap: 0.3rem;
 }
@@ -755,13 +737,16 @@
 }
 
 .hud-slim .hud-garden {
+  flex: 0 1 auto;
   flex-direction: row;
   align-items: center;
   gap: 0.4rem;
-  max-width: 42%;
+  min-width: 2.6rem;
+  max-width: none;
 }
 
 .hud-slim .hud-stage {
+  flex: 0 1 auto;
   min-width: 0;
   font-size: 0.76rem;
 }
@@ -796,25 +781,43 @@
 }
 
 .hud-slim .hud-wallet {
+  flex: none;
   flex-direction: row;
-  align-items: baseline;
+  align-items: center;
   gap: 0.45rem;
   min-width: 0;
 }
 
 .hud-slim .hud-amount {
   font-size: 1.02rem;
+  line-height: 1;
 }
 
 .hud-slim .hud-amount-icon {
   font-size: 0.98rem;
-  align-self: center;
 }
 
-.hud-slim .hud-sub {
-  display: none;
+.hud-slim .hud-rate {
+  line-height: 1;
 }
 
 .hud-slim .hud-goal {
   min-height: 2.15rem;
+}
+
+/* Kapitel: Bonus für den Garten als kurze Plakette „+600 %“ (voller Text für
+   Screenreader und als title), die Meisterschafts-Sterne daneben */
+.hud-slim .orchard-card .orchard-bonus-row {
+  flex: none;
+  width: auto;
+}
+
+.hud-slim .orchard-card .orchard-bonus {
+  display: inline-flex;
+  align-items: center;
+  height: 1.25rem;
+  padding: 0 0.4rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, #5f9e45 16%, transparent);
+  white-space: nowrap;
 }

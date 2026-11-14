@@ -333,6 +333,8 @@ export default function App() {
         plotLabel={plotLabel}
         seasonReady={seasonReady}
         shopReady={game.giftReady}
+        erbstuecke={game.state.erbstuecke > 0 ? game.state.erbstuecke : null}
+        samen={game.features.has('events') ? game.state.samen : null}
         onOpenNotebook={() => openNotebook(null)}
         onOpenLegal={() => setLegalOpen(true)}
         onOpenBackup={() => setBackupOpen(true)}

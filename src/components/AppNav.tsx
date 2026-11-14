@@ -7,7 +7,8 @@ import { PlaytestLogControls } from './PlaytestLogControls'
 import { APP_VERSION, checkForUpdate, reloadNow } from '../game/appUpdate'
 import { setPref, setSignsAlways, usePref, useSignsAlways } from '../game/prefs'
 import { useDismiss } from '../game/overlays'
-import { IconBasket, IconFlag, IconNotebook, IconSnow, IconSprout } from '../theme/icons'
+import { IconBasket, IconChest, IconFlag, IconNotebook, IconSeeds, IconSnow, IconSprout } from '../theme/icons'
+import { formatErnte } from '../game/format'
 import { ArtSvg } from '../theme/ArtSvg'
 
 export type Tab = 'garten' | 'prestige' | 'clan' | 'shop'
@@ -45,6 +46,10 @@ interface Props {
   /** Red dots on the tab bar */
   seasonReady?: boolean
   shopReady?: boolean
+  /** Erbstücke (am Saison-Tab, dort gibt man sie aus); null = nicht zeigen */
+  erbstuecke?: number | null
+  /** Samen (am Markt-Tab); null = nicht zeigen */
+  samen?: number | null
 }
 
 /* —— small inline glyphs for the menu tiles —— */
@@ -144,6 +149,8 @@ export function AppNav({
   onToggleReminders,
   seasonReady = false,
   shopReady = false,
+  erbstuecke = null,
+  samen = null,
   clanOpen = true,
   newKeys,
   onTileOpen,
@@ -164,7 +171,7 @@ export function AppNav({
     return () => window.removeEventListener('gartenerbe-open-menu', onAsk)
   }, [])
 
-  function tabButton(id: Tab, icon: ReactNode, label: string, dot = false, ftue = false) {
+  function tabButton(id: Tab, icon: ReactNode, label: string, dot = false, ftue = false, count?: ReactNode) {
     const active = tab === id
     return (
       <button
@@ -182,7 +189,20 @@ export function AppNav({
           {dot ? <span className="tabbar-dot" aria-hidden="true" /> : null}
         </span>
         <span className="tabbar-label">{label}</span>
+        {count}
       </button>
+    )
+  }
+
+  function countLine(icon: ReactNode, value: number, name: string) {
+    return (
+      <span className="tabbar-count">
+        <span className="tabbar-count-icon" aria-hidden="true">
+          {icon}
+        </span>
+        {formatErnte(value)}
+        <span className="sr-only"> {name}</span>
+      </span>
     )
   }
 
@@ -190,8 +210,22 @@ export function AppNav({
     <>
       <nav className="tabbar" aria-label={t.nav.ariaLabel}>
         {tabButton('garten', <IconSprout />, plotLabel ?? t.nav.garten)}
-        {tabButton('prestige', <IconSnow />, t.nav.prestige, seasonReady, ftueHighlight === 'prestige')}
-        {tabButton('shop', <IconBasket />, t.nav.shop, shopReady)}
+        {tabButton(
+          'prestige',
+          <IconSnow />,
+          t.nav.prestige,
+          seasonReady,
+          ftueHighlight === 'prestige',
+          erbstuecke != null ? countLine(<IconChest />, erbstuecke, t.resources.erbstuecke) : null,
+        )}
+        {tabButton(
+          'shop',
+          <IconBasket />,
+          t.nav.shop,
+          shopReady,
+          false,
+          samen != null ? countLine(<IconSeeds />, samen, t.resources.samen) : null,
+        )}
         <button
           type="button"
           className={`tabbar-btn menu-fab${menuOpen ? ' active' : ''}${ftueHighlight === 'clan' ? ' ftue-tab' : ''}`}
