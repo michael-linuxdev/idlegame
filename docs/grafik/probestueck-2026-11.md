@@ -249,6 +249,10 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   Sonnendach, Obstgehölze mit Pfahl und Etikett, Alleebäume in Fluchtlinie, Heckenpflanzen,
   Containerplatz, Gießanlage mit Regnern, Packschuppen mit Wurzelballen, Hofverkauf, Pflanztag.
 
+- **Kapitel 17 Moorgarten** (`kapitel-17-moorgarten.png`): Moorwasser mit Torfrand, Moospolster,
+  Moosbeeren, Wollgras, Sonnentau, Birkenhain, Bohlenweg mit Pfosten, Beobachtungsturm,
+  Moorhütte mit Reetdach, Schnuckenstall mit Heidschnucken, Moorfest mit Laternen.
+
 Damit sind die Kapitel 4–12 im Weinberg-Niveau. Kapitel 13–50 haben die gemeinsame Kontur und
 das Wachstum, aber noch ihre ursprüngliche Zeichnung.
 
