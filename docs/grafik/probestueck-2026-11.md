@@ -245,6 +245,10 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   Spalierobst an der Ziegelmauer, Orangerie mit Bogenfenstern, Kaskade, Bosquet mit Tempelchen,
   Schlossgärtnerei mit Glashaus, Sommerkonzert unter der Muschel.
 
+- **Kapitel 16 Baumschule** (`kapitel-16-baumschule.png`): Saatbeete, Veredelungstisch mit
+  Sonnendach, Obstgehölze mit Pfahl und Etikett, Alleebäume in Fluchtlinie, Heckenpflanzen,
+  Containerplatz, Gießanlage mit Regnern, Packschuppen mit Wurzelballen, Hofverkauf, Pflanztag.
+
 Damit sind die Kapitel 4–12 im Weinberg-Niveau. Kapitel 13–50 haben die gemeinsame Kontur und
 das Wachstum, aber noch ihre ursprüngliche Zeichnung.
 
