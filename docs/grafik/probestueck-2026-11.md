@@ -301,6 +301,10 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   Spinnrad und Wäschegestell, Klippe mit Wegpfosten, Hafenmole mit Pollern und Leuchthaus, Céilí-
   Haus mit Kontur.
 
+- **Kapitel 28 Rosental** (`kapitel-28-rosental.png`): Destillierkessel, Häuser mit Dächern in Licht
+  und Schatten, Walnussallee, Imkerwagen mit Rädern, Bergquelle, Trockengestelle, Pflückkörbe,
+  Fläschchen und Festgirlande mit Pfosten.
+
 Damit sind die Kapitel 4–12 im Weinberg-Niveau. Kapitel 13–50 haben die gemeinsame Kontur und
 das Wachstum, aber noch ihre ursprüngliche Zeichnung.
 
