@@ -199,6 +199,10 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   und Tränken, Unterstand, Kletterfels mit Brett, Schweinehütte, Gänsehäuschen am Teich,
   Kartoffelsäcke und Vogelscheuche, Scheune mit Anbau/Heuboden/Heuwagen, Melkhaus, Käserei mit
   Fachwerk und Reiferegal, Hofbäckerei mit Lehmofen, Marktstände mit Markisen und Wimpelkette.
+- **Kapitel 5 Imkerei** (`kapitel-05-imkerei.png`): Bienenhaus mit wachsender Beutenreihe,
+  Linden mit Stamm/Krone/Blüten, Heide mit Wacholder und Strohkörben, Rapsfeld mit Beuten,
+  Kirschhain mit Leiter, Insektenhotel, Honigschleuder im offenen Tor, Wachszieherei mit
+  Trockengestell, Metkeller-Portal mit Fässern, Honigladen mit Schaufenster und Markise.
 
 ## Als Nächstes
 1. ~~Gemeinsame Kapitel-Teile auf Kontur~~ – erledigt über `hand-art` (oben), wirkt in allen Kapiteln.
