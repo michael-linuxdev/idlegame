@@ -653,14 +653,15 @@ export const MapBackdrop = memo(function MapBackdrop({ stage, ambient, skin, fes
             {[[38, 3.2], [44, 6.4], [62, 2.6], [66, 6.8], [49, 2], [74, 15], [82, 14.2], [90, 15.6], [96, 13.4], [70, 16.4], [6, 15.4], [14, 16.2]].map(([x, y], i) => (
               <ellipse key={i} cx={x} cy={y} rx={i % 3 ? 0.36 : 0.5} ry={i % 3 ? 0.17 : 0.24} fill="#ffffff" opacity={i % 2 ? 0.9 : 0.7} className={i % 4 === 0 ? 'fest-twinkle' : undefined} />
             ))}
-            <ellipse cx="55" cy="4.8" rx="2.5" ry="1.16" fill="#fff6d8" />
-            <ellipse cx="56" cy="4.4" rx="2.1" ry="0.98" fill={skyTop} />
+            <ellipse cx="86" cy="12.2" rx="2.5" ry="1.16" fill="#fff6d8" />
+            <ellipse cx="87" cy="11.8" rx="2.1" ry="0.98" fill="#8494c8" />
           </g>
         ) : (
           <g>
             <ellipse cx="50" cy="5.4" rx="9" ry="0.9" fill="#ffffff" opacity="0.75" />
             <ellipse cx="57" cy="6.6" rx="6" ry="0.7" fill="#ffffff" opacity="0.6" />
-            <ellipse cx="84" cy="17.4" rx="7" ry="0.6" fill="#ffffff" opacity="0.55" />
+            <ellipse cx="84" cy="12.6" rx="7" ry="0.7" fill="#ffffff" opacity="0.7" />
+            <ellipse cx="20" cy="13.4" rx="5" ry="0.5" fill="#ffffff" opacity="0.55" />
           </g>
         )}
         {/* ferne Hügel (im Winter verschneit), nahe Hügel mit Obstbäumen */}

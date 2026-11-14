@@ -47,7 +47,7 @@ export function MapHud({
 }: Props) {
   const { state, rate, playerLevel } = game
   return (
-    <header className="hud" ref={hudRef}>
+    <header className="hud hud-slim" ref={hudRef}>
       <div className="hud-row">
         <button
           type="button"
@@ -61,7 +61,8 @@ export function MapHud({
           <span className="hud-stage">{stageName}</span>
           <span className="hud-level">
             <span className="hud-level-label">
-              {t.level.short} {playerLevel.level}
+              <span className="sr-only">{t.level.short} </span>
+              {playerLevel.level}
             </span>
             <span className="hud-xp" aria-hidden="true">
               <span style={{ width: `${Math.round(playerLevel.ratio * 100)}%` }} />
