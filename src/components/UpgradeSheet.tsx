@@ -21,6 +21,8 @@ import {
 import { efficiencyMult, type BranchKind } from '../game/branches'
 import { formatErnte, formatDecimal, formatRate } from '../game/format'
 import { playSfx } from '../game/sound'
+import { holdLevels, holdNow } from '../game/holdBuy'
+import { logPlaytest } from '../game/playtestLog'
 import { gatePrestiges, helperIsPro, totalGardenMult } from '../game/state'
 import { t } from '../i18n'
 import { cardAreaMult } from '../game/seasonCards'
@@ -70,10 +72,15 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
   // „×5“ und „Max“ sind raus (Wunsch 2026-11-09): nur Einzelkauf, Gedrückthalten baut schnell weiter
   const modes: BulkMode[] = [1]
   const bulk: BulkMode = modes.includes(bulkPref) ? bulkPref : 1
-  const { markSeen } = useHints()
-  const newHint: HintId | null = null
+  const { seen: seenHints, markSeen } = useHints()
+  const holdStart = useRef(0)
+  const holdBought = useRef(0)
 
   function clearHold() {
+    if (holding.current && holdBought.current > 1) {
+      logPlaytest('hold_buy', { area: selectedId, levels: holdBought.current, ms: Math.round(holdNow() - holdStart.current) })
+    }
+    holdBought.current = 0
     holding.current = false
     if (holdTimer.current != null) {
       window.clearTimeout(holdTimer.current)
@@ -96,6 +103,8 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
   if (!def) return null
 
   const owned = game.state.owned[def.id] ?? 0
+  // Hinweis aufs beschleunigte Halten, sobald der Bereich ein paar Stufen hat
+  const newHint: HintId | null = owned >= 10 && !seenHints.includes('holdBuy') ? 'holdBuy' : null
   const unlocked = game.unlocked(def.id)
   const maxInfo = game.affordableLevels(def.id)
   const bulkCount = bulk === 'max' ? Math.max(1, maxInfo.count) : bulk
@@ -142,6 +151,23 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
     // buyGenerator no-ops when unaffordable — safe under hold spam.
     const paid = game.costOf(def!.id)
     game.buy(def!.id)
+    holdBought.current += 1
+    setFlash(true)
+    window.setTimeout(() => setFlash(false), 220)
+    onUpgraded?.(paid)
+  }
+
+  /** Ein Schritt beim Gedrückthalten: je länger gehalten, desto mehr Stufen (game/holdBuy.ts). */
+  function buyHoldStep() {
+    const n = holdLevels(holdNow() - holdStart.current)
+    if (n <= 1) {
+      buyUpgradeOnce()
+      return
+    }
+    const paid = game.costForLevels(def!.id, n)
+    const bought = game.buyMany(def!.id, n)
+    if (bought <= 0) return
+    holdBought.current += bought
     setFlash(true)
     window.setTimeout(() => setFlash(false), 220)
     onUpgraded?.(paid)
@@ -169,6 +195,8 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
       buyBulk()
       return
     }
+    holdStart.current = holdNow()
+    holdBought.current = 0
     buyUpgradeOnce()
     holding.current = true
     holdTimer.current = window.setTimeout(() => {
@@ -178,7 +206,7 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
           clearHold()
           return
         }
-        buyUpgradeOnce()
+        buyHoldStep()
       }, HOLD_REPEAT_MS)
     }, HOLD_START_MS)
   }

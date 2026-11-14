@@ -19,6 +19,7 @@ export type HintId =
   | 'bulk5'
   | 'buyAll'
   | 'helperAreas'
+  | 'holdBuy'
   | 'recipeNew'
   | 'festNew'
   | 'weatherNew'
@@ -51,6 +52,7 @@ export const HINT_ORDER: HintId[] = [
   'bulk5',
   'buyAll',
   'helperAreas',
+  'holdBuy',
 ]
 
 /** Omas Hinweis, wenn ein System neu freigeschaltet wird (featureUnlocks.ts). */

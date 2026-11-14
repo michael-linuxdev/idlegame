@@ -53,6 +53,10 @@ ausgewerteten Zeitraum noch nicht aktiv – gespielt wurde auf `c376ce4`).
    eines ganzen Tages. → Offen; prüfen, ob das gewollt ist.
 5. **Einzelkauf-Grind bleibt:** Median 31 Ausbauten/min, Spitze 412/min, 26 Minuten mit > 150.
    `best_buy_tap` 0×. (Offener Punkt seit 2026-11-08.)
+   → **Umgesetzt (2026-11-14), ohne neue Knöpfe** („×5“/„Max“ bleiben raus): Gedrückthalten
+   beschleunigt – erst einzeln, nach 1,5 s zwei, nach 3 s fünf Stufen je Schritt
+   (`game/holdBuy.ts`, Hauptgarten und Kapitel). 4 s Halten: 88 statt ≈ 34 Stufen. Omas Hinweis
+   „Gedrückt halten baut weiter …“ ab Stufe 10. Neues Log-Ereignis `hold_buy` (Stufen, Dauer).
 6. **Festladen in Serie:** 17 Käufe in ~25 s (10× Kapitel-Ernte, 7× Erbstücke, 11-12 08:55).
    Mehrfachkauf im Festladen bleibt offen (Punkt 5 aus 2026-11-11).
 7. **Viele Kurzbesuche:** 30 Besuche, 12 davon unter 40 s – nachsehen, einsammeln, schließen.

@@ -42,6 +42,7 @@ import { useAmbient } from '../theme/ambient'
 import { HelperWalker } from './HelperWalker'
 import { SpeechBubble } from './SpeechBubble'
 import { GoalStrip, type HudGoal } from './hud/GoalStrip'
+import { holdLevels, holdNow } from '../game/holdBuy'
 import { ArtSvg } from '../theme/ArtSvg'
 
 type GameApi = ReturnType<typeof useGame>
@@ -379,6 +380,8 @@ function ChapterSheet({
   const bulk = 1 as ChapterBulk
   const [flash, setFlash] = useState(false)
   const hold = useRef<number | null>(null)
+  const holdStart = useRef(0)
+  const holdBought = useRef(0)
 
   // Cost / count for the chosen amount
   let count = 1
@@ -424,7 +427,22 @@ function ChapterSheet({
 
   function once() {
     game.buyChapter(chapter, area)
+    holdBought.current += 1
     pop()
+  }
+
+  /** Gedrückthalten: je länger, desto mehr Stufen je Schritt (game/holdBuy.ts). */
+  function holdStep() {
+    const n = holdLevels(holdNow() - holdStart.current)
+    if (n <= 1) {
+      once()
+      return
+    }
+    const bought = game.buyChapterBulk(chapter, area, n)
+    if (bought > 0) {
+      holdBought.current += bought
+      pop()
+    }
   }
 
   function down(e: ReactPointerEvent) {
@@ -434,13 +452,19 @@ function ChapterSheet({
       if (game.buyChapterBulk(chapter, area, bulk === 5 ? 5 : Infinity) > 0) pop()
       return
     }
+    holdStart.current = holdNow()
+    holdBought.current = 0
     once()
-    hold.current = window.setInterval(once, 140)
+    hold.current = window.setInterval(holdStep, 140)
   }
 
   function up() {
-    if (hold.current != null) window.clearInterval(hold.current)
+    if (hold.current != null) {
+      window.clearInterval(hold.current)
+      if (holdBought.current > 1) logPlaytest('hold_buy', { chapter, area, levels: holdBought.current, ms: Math.round(holdNow() - holdStart.current) })
+    }
     hold.current = null
+    holdBought.current = 0
   }
 
   return (

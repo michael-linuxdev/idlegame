@@ -1259,6 +1259,7 @@ export const strings: Strings = {
     arcIII: 'New in this arc: sharing the water. Up top under “Water” you give the areas water points. Ilse won’t decide this for you.',
     arcIV: 'New in this arc: a plan for tomorrow. Up top under “Plan” you choose whether the chapter yields more now or while you’re away. Ilse won’t decide this for you.',
     helperAreas: 'Jonas now upgrades with your harvest – you can switch that off per area.',
+    holdBuy: 'Hold to keep upgrading – the longer you hold, the more levels at once.',
   },
 
   backup: {

@@ -1255,6 +1255,7 @@ export const strings = {
     arcIII: 'Neu in diesem Bogen: Wasser verteilen. Oben unter „Wasser“ gibst du den Bereichen Wasserpunkte. Ilse entscheidet das nicht für dich.',
     arcIV: 'Neu in diesem Bogen: ein Plan für morgen. Oben unter „Plan“ wählst du, ob das Kapitel jetzt oder während du weg bist mehr trägt. Ilse entscheidet das nicht für dich.',
     helperAreas: 'Jonas baut jetzt mit deiner Ernte aus – abschalten kannst du das je Bereich.',
+    holdBuy: 'Gedrückt halten baut weiter – je länger, desto mehr Stufen auf einmal.',
   },
 
   backup: {

@@ -23,6 +23,7 @@ export type PlaytestEventType =
   | 'flash_event'
   | 'daily_claim'
   | 'best_buy_tap'
+  | 'hold_buy'
   | 'generation'
   | 'buy_all'
   | 'fest_buy'
