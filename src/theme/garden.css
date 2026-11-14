@@ -149,6 +149,7 @@
 }
 
 .plot-visual {
+  position: relative;
   display: block;
   width: 100%;
   transform-origin: 50% 85%;
@@ -163,6 +164,31 @@
   display: block;
   width: 100%;
   height: auto;
+}
+
+/* Wildnis, die noch nicht dran ist: kleiner und blasser */
+.garden-plot.wild-far .plot-visual {
+  transform: scale(0.74);
+  opacity: 0.88;
+}
+
+/* Lichthof: ausgebaute Bereiche leuchten abends und nachts warm (wie die Fenster) */
+.garden-stage[data-daypart='evening'] .garden-plot.planted .plot-visual::before,
+.garden-stage[data-daypart='night'] .garden-plot.planted .plot-visual::before {
+  content: '';
+  position: absolute;
+  left: -9%;
+  right: -9%;
+  top: 2%;
+  bottom: -6%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 226, 150, 0.9), rgba(255, 220, 130, 0.42) 55%, rgba(255, 220, 130, 0));
+  pointer-events: none;
+}
+
+.garden-stage[data-daypart='evening'] .garden-plot.planted .plot-visual::before {
+  opacity: 0.55;
 }
 
 .garden-plot.selected .plot-visual {
@@ -181,7 +207,16 @@
   --sign-zone: calc(var(--u) * 3.36);
 }
 
+/* Plakette ebenfalls über der Grafik */
+.plot-badge {
+  position: relative;
+  z-index: 1;
+}
+
 .plot-sign {
+  /* über der Grafik (.plot-visual ist für den Lichthof positioniert) */
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;

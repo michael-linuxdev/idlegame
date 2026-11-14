@@ -138,16 +138,23 @@ Der freie, noch nicht angelegte Platz bekommt die Bereichs-ID (`ChapterArtEntry.
   Test `src/test/mapSpots.test.ts`.
 - **Pfützen:** in der Bodenebene und auf freien Stellen (siehe oben).
 
-## Probestück Horizont (2026-11-14) – **nur auf dem Branch, noch nicht entschieden**
+## Horizont und Tiefe (2026-11-14)
 Anlass: Vergleich mit Lichtwarte (Tiefe durch Horizont, Wahrzeichen am Fluchtpunkt, Weg mit
-Perspektive). Bilder vorher/nachher: `probe-horizont-tag.png`, `-nacht.png`, `-frueh.png`.
-- Kulisse über dem Garten (`MapBackdrop.tsx`, `HORIZON` = 20 %): Himmel, zwei Hügelketten, die
-  Hecke als hintere Gartengrenze am Horizont statt am oberen Bildrand.
-- Hauptweg als Fläche, die zur Laube hin schmaler wird (`taperedPath`); Stichwege hinten dünner.
-- Laube größer (22 → 26 u) als Fluchtpunkt; Bäume hinten kleiner, vorn größer; Mähstreifen laufen
-  auf den Fluchtpunkt zu; zwei sanfte Bodenwellen.
-- Offen: Nachthimmel (Mond, Sterne), Jahreszeiten der Hügel, Lichthof für ausgebaute Bereiche,
-  kleinere gesperrte Plätze. Plätze der Bereiche, Deko und Pfützen sind unverändert.
+Perspektive, Licht als Ebene). Bilder: `horizont-ausbau.png` (früh, Tag, Nacht, Winter),
+vorher/nachher `probe-horizont-*.png`.
+- **Kulisse** (`MapBackdrop.tsx`, `HORIZON` = 20 %): Himmel je Tageszeit (morgens, tags, abends,
+  nachts mit Mond und Sternen), ferne Hügel (im Winter verschneit), nahe Hügel mit Obstbäumen
+  (im Herbst bunt); die Hecke ist die hintere Gartengrenze am Horizont.
+- **Weg mit Perspektive:** Hauptweg als Fläche, die zur Laube hin schmaler wird (`taperedPath`);
+  Stichwege hinten dünner; Mähstreifen laufen auf den Fluchtpunkt zu; zwei Bodenwellen.
+- **Laube als Fluchtpunkt:** größer (22 → 26 u); Bäume hinten kleiner, vorn größer.
+- **Lichthof:** ausgebaute Bereiche leuchten abends und nachts warm (`garden.css`,
+  `.plot-visual::before`). Schild und Plakette liegen dafür ausdrücklich über der Grafik.
+- **Ferne Wildnis kleiner:** gesperrte Plätze, die noch nicht als Nächstes dran sind, sind auf 74 %
+  verkleinert (`.wild-far`). Das Schild zeigte schon vorher nur der nächste Platz.
+- Plätze der Bereiche, Deko und Pfützen sind unverändert; Überlagerungen nachgemessen: 0.
+- Grenze: Die Kopfleiste verdeckt den größten Teil des Himmels. Mehr Horizont ginge nur, wenn die
+  Bereiche nach unten rücken.
 
 ## Als Nächstes
 1. Gemeinsame Kapitel-Teile (`HandParts.tsx`, `art/chapters/partsA…I.tsx`: Dach, Figur, Glashaus,

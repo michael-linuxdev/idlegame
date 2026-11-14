@@ -61,6 +61,8 @@ export function GardenPlot({ def, game, selectedHere, animated, totalMult, hl, n
     (selectedHere ? ' selected' : '') +
     (animated ? ' anim' : '') +
     (!unlocked ? ' wild' : ready ? ' ready' : ' planted') +
+    // Ferne Wildnis: kleiner gezeichnet, bis sie als Nächstes dran ist — Gebautes wirkt daneben größer
+    (!unlocked && !nextWild && !selectedHere ? ' wild-far' : '') +
     (producing ? ' producing' : '') +
     (canBuy ? ' can-buy' : '') +
     (isBestBuy ? ' best-buy' : '') +

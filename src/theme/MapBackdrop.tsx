@@ -610,6 +610,12 @@ export const MapBackdrop = memo(function MapBackdrop({ stage, ambient, skin, fes
   const light = useSvgId('gg-light')
   const sky = useSvgId('gg-sky')
   const clip = useSvgId('gg-pathclip')
+  // Himmel je Tageszeit; die Abend-/Nachttönung (.ambient-tint) legt sich darüber
+  const night = ambient.daypart === 'night'
+  const [skyTop, skyLow] =
+    night ? ['#5a6fb0', '#a9b8e0'] : ambient.daypart === 'evening' ? ['#f2b98c', '#fde6c4'] : ambient.daypart === 'morning' ? ['#c4e2f0', '#fdf0d6'] : ['#a9d8ef', '#e6f5ee']
+  const winter = ambient.season === 'winter'
+  const autumn = ambient.season === 'autumn'
   // Ein Platz, ein Stück: Gartenstil-Deko vor Fest-Deko vor Blumeninseln und Wildbüschen
   const skinSpots = (skin && SKIN_SPOTS[skin]) || []
   const taken = [...skinSpots, ...festSpots(fest, skin, skinSpots)]
@@ -628,8 +634,8 @@ export const MapBackdrop = memo(function MapBackdrop({ stage, ambient, skin, fes
             <stop offset="100%" style={{ stopColor: 'var(--g-grass-near)' }} />
           </linearGradient>
           <linearGradient id={sky} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#a9d8ef" />
-            <stop offset="100%" stopColor="#e6f5ee" />
+            <stop offset="0%" stopColor={skyTop} />
+            <stop offset="100%" stopColor={skyLow} />
           </linearGradient>
           <clipPath id={clip}>
             <path d={taperedPath()} />
@@ -641,14 +647,28 @@ export const MapBackdrop = memo(function MapBackdrop({ stage, ambient, skin, fes
         </defs>
         {/* Kulisse hinter dem Garten: Himmel, ferne Hügel, nahe Hügel mit Obstbäumen */}
         <rect width="100" height={HORIZON + 1} fill={`url(#${sky})`} />
-        <ellipse cx="50" cy="5.4" rx="9" ry="0.9" fill="#ffffff" opacity="0.75" />
-        <ellipse cx="57" cy="6.6" rx="6" ry="0.7" fill="#ffffff" opacity="0.6" />
-        <ellipse cx="84" cy="17.4" rx="7" ry="0.6" fill="#ffffff" opacity="0.55" />
-        <path d="M0 16 Q10 13.4 22 15.6 T46 14.6 T70 16 T100 13.6 V21 H0 Z" fill="#a9cdb9" />
+        {night ? (
+          <g>
+            {/* Mond und Sterne: in der Lücke der Kopfleiste und im Streifen über der Hecke */}
+            {[[38, 3.2], [44, 6.4], [62, 2.6], [66, 6.8], [49, 2], [74, 15], [82, 14.2], [90, 15.6], [96, 13.4], [70, 16.4], [6, 15.4], [14, 16.2]].map(([x, y], i) => (
+              <ellipse key={i} cx={x} cy={y} rx={i % 3 ? 0.36 : 0.5} ry={i % 3 ? 0.17 : 0.24} fill="#ffffff" opacity={i % 2 ? 0.9 : 0.7} className={i % 4 === 0 ? 'fest-twinkle' : undefined} />
+            ))}
+            <ellipse cx="55" cy="4.8" rx="2.5" ry="1.16" fill="#fff6d8" />
+            <ellipse cx="56" cy="4.4" rx="2.1" ry="0.98" fill={skyTop} />
+          </g>
+        ) : (
+          <g>
+            <ellipse cx="50" cy="5.4" rx="9" ry="0.9" fill="#ffffff" opacity="0.75" />
+            <ellipse cx="57" cy="6.6" rx="6" ry="0.7" fill="#ffffff" opacity="0.6" />
+            <ellipse cx="84" cy="17.4" rx="7" ry="0.6" fill="#ffffff" opacity="0.55" />
+          </g>
+        )}
+        {/* ferne Hügel (im Winter verschneit), nahe Hügel mit Obstbäumen */}
+        <path d="M0 16 Q10 13.4 22 15.6 T46 14.6 T70 16 T100 13.6 V21 H0 Z" fill={winter ? '#eef3f6' : '#a9cdb9'} />
         <path d="M0 18.2 Q16 15.6 34 17.8 T66 17 T100 18.4 V21 H0 Z" fill="var(--g-grass-far)" />
-        <path d="M0 18.2 Q16 15.6 34 17.8 T66 17 T100 18.4 V21 H0 Z" fill="#3f7a5a" opacity="0.28" />
+        <path d="M0 18.2 Q16 15.6 34 17.8 T66 17 T100 18.4 V21 H0 Z" fill={winter ? '#ffffff' : '#3f7a5a'} opacity={winter ? 0.5 : 0.28} />
         {[6, 11, 15, 27, 31, 62, 68, 73, 88, 93].map((x, i) => (
-          <ellipse key={x} cx={x} cy={17.5 + (i % 3) * 0.25} rx="1.5" ry="0.55" fill="#3f7a5a" opacity="0.5" />
+          <ellipse key={x} cx={x} cy={17.5 + (i % 3) * 0.25} rx="1.5" ry="0.55" fill={winter ? '#8fa39a' : autumn ? (i % 2 ? '#c9762c' : '#b89a3a') : '#3f7a5a'} opacity={autumn ? 0.75 : 0.5} />
         ))}
         <rect y={HORIZON} width="100" height={100 - HORIZON} fill={`url(#${grass})`} />
         {/* Mähstreifen laufen auf den Fluchtpunkt hinter der Laube zu */}
