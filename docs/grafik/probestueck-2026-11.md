@@ -305,6 +305,11 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   und Schatten, Walnussallee, Imkerwagen mit Rädern, Bergquelle, Trockengestelle, Pflückkörbe,
   Fläschchen und Festgirlande mit Pfosten.
 
+- **Kapitel 29 Pistazienhain** (`kapitel-29-pistazien.png`): Inselboden mit Kontur, Mandelbäume,
+  Kapern, Steinterrassen, Kapelle, Röstofen mit Blechen, Zisterne, Inselhaus mit Baum und Töpfen,
+  Hafenmarkt, Säcke und Festtafel; Kaiki-Animation repariert (das Boot springt nicht mehr in die
+  Ecke).
+
 Damit sind die Kapitel 4–12 im Weinberg-Niveau. Kapitel 13–50 haben die gemeinsame Kontur und
 das Wachstum, aber noch ihre ursprüngliche Zeichnung.
 
