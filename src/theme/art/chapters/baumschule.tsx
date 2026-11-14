@@ -52,8 +52,22 @@ export function Baumschule({ id, tier, season }: AreaProps): ReactNode {
       return (
         <Svg tier={tier}>
           <Shadow grid="chapter" rx={30} />
+          {/* Stufe 3: Sonnendach über dem Tisch */}
+          {tier >= 3 ? (
+            <g>
+              <path d="M16 48V28M52 48V28" stroke={P.woodDark} strokeWidth="1.2" />
+              <path d="M12 30 L34 24 L56 30z" fill={P.canvas} stroke={P.outlineWood} strokeWidth=".6" />
+            </g>
+          ) : null}
           <rect x="14" y="48" width="40" height="3" fill={P.wood} stroke={P.outlineWood} strokeWidth=".4" />
           <path d="M18 51v13M50 51v13" stroke={P.woodDark} strokeWidth="1.4" />
+          {/* Stufe 2: Kiste mit Edelreisern unter dem Tisch */}
+          {tier >= 2 ? (
+            <g>
+              <rect x="24" y="57" width="12" height="7" fill={P.woodLight} stroke={P.outlineWood} strokeWidth=".5" />
+              <path d="M26 57l-1-4M29 57v-5M32 57l1-4" stroke={P.bark} strokeWidth=".8" />
+            </g>
+          ) : null}
           {Array.from({ length: Math.min(5, 1 + tier) }, (_, i) => (
             <g key={i}>
               <path d={`M${20 + i * 7} 48v-8`} stroke={P.bark} strokeWidth="1" />
