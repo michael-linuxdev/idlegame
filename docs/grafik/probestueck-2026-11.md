@@ -281,6 +281,11 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   Saftküche mit Kessel, Pfifferlinge, Holzstapel mit Stirnholz, Seesauna mit Steg auf Pfählen,
   Mittsommerstange mit Kränzen, Jedermannspfad.
 
+- **Kapitel 24 Patio** (`kapitel-24-patio.png`): Kieselpflaster mit Muster, Orangenhof mit
+  Wasserrinnen, Azulejo-Brunnen mit Fliesenband, weiße Geranienwand mit Terrakotta-Sims, Acequia mit
+  Schiebern, Jasminbogen, Granatapfelbaum mit Glanz, Galerie mit Bögen, Marmeladenküche, Rejas,
+  Patiofest-Kreuz.
+
 Damit sind die Kapitel 4–12 im Weinberg-Niveau. Kapitel 13–50 haben die gemeinsame Kontur und
 das Wachstum, aber noch ihre ursprüngliche Zeichnung.
 
