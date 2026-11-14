@@ -310,6 +310,11 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   Hafenmarkt, Säcke und Festtafel; Kaiki-Animation repariert (das Boot springt nicht mehr in die
   Ecke).
 
+- **Kapitel 30 Andenkartoffeln** (`kapitel-30-andenkartoffeln.png`): Hochlandboden mit Lichtkante,
+  Terrassenbeete mit Steinmauern, Knollen, Quinoa-Rispen und Garben, Sortenschild auf Pfosten,
+  Chuño-Matten und Säcke, Lehmspeicher, Alpakaweide, Bergkanal mit Schieber, Webstuhl und
+  Garnknäuel, Kartoffelpark mit Tafel, Erdofen.
+
 Damit sind die Kapitel 4–12 im Weinberg-Niveau. Kapitel 13–50 haben die gemeinsame Kontur und
 das Wachstum, aber noch ihre ursprüngliche Zeichnung.
 
