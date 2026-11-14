@@ -276,6 +276,11 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   Animation schob ihn aus dem Bild), Anleger und Bootsschuppen auf Pfählen, Granatäpfel, Salzgarten
   mit Priel, Gemüsekahn, Campanile mit Glockenstube, Inselfest.
 
+- **Kapitel 23 Beerenwald** (`kapitel-23-beerenwald.png`): Waldboden mit Moos und Schatten,
+  Heidelbeerhang, Preisel- und Moltebeeren, falunrote Hütte mit weißen Ecken, Ortgang und Flagge,
+  Saftküche mit Kessel, Pfifferlinge, Holzstapel mit Stirnholz, Seesauna mit Steg auf Pfählen,
+  Mittsommerstange mit Kränzen, Jedermannspfad.
+
 Damit sind die Kapitel 4–12 im Weinberg-Niveau. Kapitel 13–50 haben die gemeinsame Kontur und
 das Wachstum, aber noch ihre ursprüngliche Zeichnung.
 
