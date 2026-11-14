@@ -286,6 +286,11 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   Schiebern, Jasminbogen, Granatapfelbaum mit Glanz, Galerie mit Bögen, Marmeladenküche, Rejas,
   Patiofest-Kreuz.
 
+- **Kapitel 25 Korkeichenhain** (`kapitel-25-korkeichen.png`): Weide mit Kontur je Jahreszeit,
+  Schälplatz mit Leiter und Beil, Korkplatten, Eichelweide mit Gatter, Strommast mit
+  Storchennestern, Schöpfrad mit Becken, Korkstapel, weißes Lehmhaus mit Schornstein,
+  Korkbienenstöcke, Korkwerkstatt, Korkfest.
+
 Damit sind die Kapitel 4–12 im Weinberg-Niveau. Kapitel 13–50 haben die gemeinsame Kontur und
 das Wachstum, aber noch ihre ursprüngliche Zeichnung.
 
