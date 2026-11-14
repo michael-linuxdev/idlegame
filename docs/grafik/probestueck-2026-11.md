@@ -319,6 +319,10 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   und Ristra, Amaranth, Agaven mit Blütenstange, Comal-Küche mit Ofen und Metate, Maisspeicher mit
   Kolbenschnüren, Melipona-Stämme, Saatkrüge auf dem Regal, Marktstände, Festtafel und Papel picado.
 
+- **Kapitel 32 Kaffeewald** (`kapitel-32-kaffeewald.png`): Waldboden, Jebena, Rindenbienenkörbe,
+  Säcke, Erntekörbe, Trockenbetten mit Pfosten, Honigbaum mit Kronen, Waschbecken, Tukul-Zaun,
+  Röstpfanne, Zeremonientisch und Marktstand mit Kontur.
+
 Damit sind die Kapitel 4–12 im Weinberg-Niveau. Kapitel 13–50 haben die gemeinsame Kontur und
 das Wachstum, aber noch ihre ursprüngliche Zeichnung.
 
