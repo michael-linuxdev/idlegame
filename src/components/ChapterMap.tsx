@@ -79,7 +79,10 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
   const overlayOpen = useOverlayOpen()
   const signsAll = useSignsAlways()
   const stage = chapterStage(def, c)
-  const bonusPct = formatDecimal(def.gardenBonusPerLevel * chapterLevels(c) * 100, 1)
+  const bonusRaw = def.gardenBonusPerLevel * chapterLevels(c) * 100
+  const bonusPct = formatDecimal(bonusRaw, 1)
+  /** kurz für die Plakette: ab 10 % ohne Nachkommastelle */
+  const bonusShort = formatDecimal(bonusRaw, bonusRaw < 10 ? 1 : 0)
   const nextId = def.areas.find((a) => !areaUnlocked(a, c.owned))?.id ?? null
   const rate = game.chapterRate(chapter)
   const mastery = masteryProgress(def, c)
@@ -162,7 +165,7 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
             <span className="hud-stage">{copy.title}</span>
             <span className="orchard-bonus-row">
               <span className="orchard-bonus" title={t.chapterUi.bonus(bonusPct)}>
-                <span aria-hidden="true">+{bonusPct} %</span>
+                <span aria-hidden="true">+{bonusShort} %</span>
                 <span className="sr-only">{t.chapterUi.bonus(bonusPct)}</span>
               </span>
               {stage === def.areas.length ? <MasteryStars stars={mastery.stars} /> : null}

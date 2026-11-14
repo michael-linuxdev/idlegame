@@ -812,11 +812,36 @@
   width: auto;
 }
 
+.hud-slim .orchard-card {
+  gap: 0.3rem;
+  padding-right: 0.55rem;
+}
+
+.hud-slim .orchard-card .orchard-bonus-row {
+  gap: 0.2rem;
+}
+
+/* Lange Kapitel-Namen („The Pistachio Groves of Aegina“) brechen auf zwei
+   Zeilen um, statt abgeschnitten zu werden */
+.hud-slim .orchard-card .hud-stage {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.08;
+}
+
+.hud-slim .orchard-card .mastery-stars {
+  font-size: 0.66rem;
+  letter-spacing: -0.04em;
+}
+
 .hud-slim .orchard-card .orchard-bonus {
   display: inline-flex;
   align-items: center;
   height: 1.25rem;
-  padding: 0 0.4rem;
+  padding: 0 0.32rem;
   border-radius: 999px;
   background: color-mix(in srgb, #5f9e45 16%, transparent);
   white-space: nowrap;
