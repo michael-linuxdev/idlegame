@@ -728,7 +728,8 @@ try {
       const d = new Date(now)
       const day = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
       const owned = { gemuesebeet: 60, kompost: 40, kraeuterspirale: 30 }
-      const save = { owned, ernte: 1e6, saisonenden: 2, tiefeWinter: 1, tieferWinterAt: now - 3600_000, ruhezeitVerkuerzung: { ms: 4 * 3600_000, day }, lastSeen: now, saveVersion: 1, sessions: 12 }
+      // ab dem 3. Tiefen Winter ruht der Boden 3 Tage (nach dem 1./2.: 1/2 Tage, longLoop.restMsFor)
+      const save = { owned, ernte: 1e6, saisonenden: 2, tiefeWinter: 3, tieferWinterAt: now - 3600_000, ruhezeitVerkuerzung: { ms: 4 * 3600_000, day }, wintervorrat: 2, lastSeen: now, saveVersion: 1, sessions: 12 }
       localStorage.setItem('gartenerbe-spielstand-v1', JSON.stringify(save))
       localStorage.setItem('gartenerbe-ftue-v1', JSON.stringify({ beat: 'done', dismissed: true, completed: [], startedAt: 1 }))
       localStorage.setItem('gartenerbe-install-v1', JSON.stringify({ dismissed: true, installed: false, shown: true }))
@@ -745,6 +746,7 @@ try {
     const text = await panel.innerText()
     assert(text.includes(T.longLoop.restTodayCounted), 'rest panel: today already counted')
     assert(text.includes(T.longLoop.restEarned('4', '12')), `rest panel: earned 4 of 12 h (${text})`)
+    assert(text.includes(T.longLoop.vorrat(2, 6)), `rest panel: Wintervorrat 2 of 6 (${text})`)
     // 72 h − 1 h vorbei − 4 h verdient = 67 h
     assert(['67 h', '66 h 59', '66 h 58'].some((c) => text.includes(T.longLoop.restLeft(c))), `rest panel: time left (${text})`)
     await panel.scrollIntoViewIfNeeded()
