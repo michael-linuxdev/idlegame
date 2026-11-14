@@ -323,6 +323,10 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   Säcke, Erntekörbe, Trockenbetten mit Pfosten, Honigbaum mit Kronen, Waschbecken, Tukul-Zaun,
   Röstpfanne, Zeremonientisch und Marktstand mit Kontur.
 
+- **Kapitel 33 Reisterrassen** (`kapitel-33-reisterrassen.png`): Hang, Reisfelder, Quellhaus,
+  Wasserteiler mit Kanal, Teich, Blütenbaum, Bambusbrücke mit Geländer, Hangbeete, Flechtwerkstatt
+  mit Strohdach, Reisgarben, Obstkörbe, Tabletts, Festtisch und Trommel mit Kontur.
+
 Damit sind die Kapitel 4–12 im Weinberg-Niveau. Kapitel 13–50 haben die gemeinsame Kontur und
 das Wachstum, aber noch ihre ursprüngliche Zeichnung.
 
