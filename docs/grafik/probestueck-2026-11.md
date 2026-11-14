@@ -240,6 +240,11 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   mit Leiter, Heilpflanzen im Buchsbeet, Brunnenhaus mit Haspel, Bienenmauer aus Bruchstein,
   Schwesterngarten, Kräuterboden, Klosterküche, Saatgutregister, Glockenturm mit Uhr und Kreuz.
 
+- **Kapitel 15 Schlossgarten** (`kapitel-15-schlossgarten.png`): Parterre mit Broderie und
+  Buchskugeln, Spargelbeete, Kanalallee mit Kastenlinden und Schwänen, Heckentheater,
+  Spalierobst an der Ziegelmauer, Orangerie mit Bogenfenstern, Kaskade, Bosquet mit Tempelchen,
+  Schlossgärtnerei mit Glashaus, Sommerkonzert unter der Muschel.
+
 Damit sind die Kapitel 4–12 im Weinberg-Niveau. Kapitel 13–50 haben die gemeinsame Kontur und
 das Wachstum, aber noch ihre ursprüngliche Zeichnung.
 
