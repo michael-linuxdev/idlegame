@@ -257,6 +257,10 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   Sanddorn, Salzwiese mit Priel, Koogacker, Windschutzhecke, Strandrosen mit Wimpel, Kuttersteg
   auf Pfählen, Reetkate mit weißem Zaun, Friesenstube mit Fliesen, Leuchtturm, Biike-Feuer.
 
+- **Kapitel 19 Spreewald** (`kapitel-19-spreewald.png`): Blockhäuser aus liegenden Stämmen mit
+  Stammköpfen und Firstkreuz, Mühlstein, Kahnanleger auf Pfählen, Erlen mit Schatten, Gurken,
+  Meerrettich, Holzschuppen mit Pfosten, Trachtenhaus mit Ostereierstrauch, Gurkenfest.
+
 Damit sind die Kapitel 4–12 im Weinberg-Niveau. Kapitel 13–50 haben die gemeinsame Kontur und
 das Wachstum, aber noch ihre ursprüngliche Zeichnung.
 
