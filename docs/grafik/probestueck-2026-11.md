@@ -211,6 +211,10 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   Minze im Hochbeet, Ringelblumen im Steinring, Johanniskraut mit Trockengestell, Salbei auf der
   Pflanzbank mit Frühbeet, Fachwerk-Trockenboden mit Leiter, Destille unter dem Schutzdach,
   Salbenküche mit Arbeitstisch, Teestube mit Tischen, Apothekergarten mit Sonnenuhr und Rosenbogen.
+- **Kapitel 8 Botanischer Garten** (`kapitel-08-botanik.png`): Glashäuser mit dunklem Rahmen,
+  Sprossen und Lichtreflex (Palmen-, Kakteen-, Orchideenhaus), Victoria-Becken mit Glasbogen,
+  Rosenbögen aus Holz mit Bank, Steingarten, Arboretum mit Nadel-, Laub- und Fächerbaum,
+  Farnschlucht mit Wasserfall und Brücke, Herbarium mit Säulen, Glaskuppel mit Palmen.
 
 ## Als Nächstes
 1. ~~Gemeinsame Kapitel-Teile auf Kontur~~ – erledigt über `hand-art` (oben), wirkt in allen Kapiteln.
