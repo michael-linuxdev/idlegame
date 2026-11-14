@@ -232,6 +232,10 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   Wasserspiele, Aussichtsturm aus Holz, gestreiftes Festzelt, Seebühne mit Muschel,
   Ehrenpavillon mit goldener Kuppel, Gedenkgarten mit Stein und Bank.
 
+- **Kapitel 13 Stadtgarten** (`kapitel-13-stadtgarten.png`): Pflanzkisten, Paletten-Beete und
+  Kräuterleiter vor einer Ziegelmauer mit Fugen, Regentonnen am Fallrohr, Wurmkisten-Turm,
+  Saatgut-Bibliothek auf dem Pfahl, Lastenrad, Lehmofen, blauer Werkstatt-Schuppen, Hoffest.
+
 Damit sind die Kapitel 4–12 im Weinberg-Niveau. Kapitel 13–50 haben die gemeinsame Kontur und
 das Wachstum, aber noch ihre ursprüngliche Zeichnung.
 
