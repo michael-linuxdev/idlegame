@@ -271,6 +271,11 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   Zwiebelscheune mit Lattenrosten, Grachtenhäuser mit Treppengiebel und Tür, Zugbrücke,
   Fahrradstall, Versteigerung mit Uhr, Hausboot, Tulpenmarkt.
 
+- **Kapitel 22 Artischockeninsel** (`kapitel-22-artischocken.png`): Silbrige Artischocken mit
+  Knospen, Lagune mit Inseln und Wellen, Briccole, Seidenreiher (Fehler behoben: die Grasen-
+  Animation schob ihn aus dem Bild), Anleger und Bootsschuppen auf Pfählen, Granatäpfel, Salzgarten
+  mit Priel, Gemüsekahn, Campanile mit Glockenstube, Inselfest.
+
 Damit sind die Kapitel 4–12 im Weinberg-Niveau. Kapitel 13–50 haben die gemeinsame Kontur und
 das Wachstum, aber noch ihre ursprüngliche Zeichnung.
 
