@@ -11,7 +11,7 @@ const V = '0 0 80 72'
  * bei voller Größe, skaliert vom Fußpunkt (40, 66) aus — wie die Bauwerke im
  * Weinberg. Ohne Stufe (Wildnis, Vorschau) volle Größe.
  */
-export function growScale(tier: number): number {
+function growScale(tier: number): number {
   return tier >= 1 ? 0.8 + 0.04 * Math.min(5, tier) : 1
 }
 

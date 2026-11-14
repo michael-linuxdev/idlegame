@@ -98,15 +98,40 @@ export function Bauernhof({ id, tier, season }: { id: string; tier: number; seas
       return (
         <Svg tier={tier}>
           <Shadow grid="chapter" rx={34} />
+          {/* Stufe 3: Anbau links */}
+          {tier >= 3 ? (
+            <g>
+              <rect x="4" y="46" width="12" height="18" fill="#9a3530" stroke="#6e2a22" strokeWidth=".8" />
+              <path d="M2 47 L16 40 L16 47z" fill="#5a221c" stroke="#6e2a22" strokeWidth=".6" />
+              <rect x="7" y="54" width="6" height="10" fill={P.bark} stroke="#4a3a2a" strokeWidth=".5" />
+            </g>
+          ) : null}
           <rect x="14" y="34" width="40" height="30" fill="#b8403a" stroke="#6e2a22" strokeWidth=".8" />
-          <path d="M10 34 L34 16 L58 34z" fill="#6e2a22" />
-          <rect x="26" y="44" width="16" height="20" fill={P.cream} />
+          <path d="M10 34 L34 16 L58 34z" fill="#6e2a22" stroke="#4a1a14" strokeWidth=".6" />
+          <rect x="26" y="44" width="16" height="20" fill={P.cream} stroke="#6e2a22" strokeWidth=".6" />
           <path d="M26 44l16 20M42 44L26 64" stroke="#b8403a" strokeWidth="1.6" />
-          <rect x="30" y="26" width="8" height="6" fill="#d9b34a" />
-          {Array.from({ length: Math.min(4, tier) }, (_, i) => (
+          {/* Heuboden: ab Stufe 2 offen, mit Heu */}
+          {tier >= 2 ? (
+            <g>
+              <rect x="29" y="24" width="10" height="9" fill="#3a2418" stroke="#4a1a14" strokeWidth=".5" />
+              <path d="M29.5 33 q2-6 4.5-4 q2-4 4.5 0 q1 2 0 4z" fill="#e8c770" stroke="#b8962a" strokeWidth=".5" />
+            </g>
+          ) : (
+            <rect x="30" y="26" width="8" height="6" fill="#d9b34a" stroke="#6e2a22" strokeWidth=".5" />
+          )}
+          {/* Heuwagen ab Stufe 4 */}
+          {tier >= 4 ? (
+            <g>
+              <path d="M58 52h16l-1 5h-14z" fill={P.woodMid} stroke={P.outlineWood} strokeWidth=".6" />
+              <path d="M58 52 q8-10 16 0z" fill="#e8c770" stroke="#b8962a" strokeWidth=".6" />
+              <circle cx="61" cy="59" r="2.6" fill={P.woodLight} stroke={P.outlineWood} strokeWidth=".6" />
+              <circle cx="71" cy="59" r="2.6" fill={P.woodLight} stroke={P.outlineWood} strokeWidth=".6" />
+            </g>
+          ) : null}
+          {Array.from({ length: Math.min(tier >= 4 ? 2 : 4, tier) }, (_, i) => (
             <g key={i}>
-              <ellipse cx={60 + (i % 2) * 9} cy={61 - Math.floor(i / 2) * 7} rx="5" ry="4" fill="#e8c770" stroke="#b8962a" strokeWidth=".6" />
-              <path d={`M${57 + (i % 2) * 9} ${61 - Math.floor(i / 2) * 7}h6`} stroke="#c49a3a" strokeWidth=".6" />
+              <ellipse cx={60 + (i % 2) * 9} cy={(tier >= 4 ? 66 : 61) - Math.floor(i / 2) * 7} rx="5" ry="4" fill="#e8c770" stroke="#b8962a" strokeWidth=".6" />
+              <path d={`M${57 + (i % 2) * 9} ${(tier >= 4 ? 66 : 61) - Math.floor(i / 2) * 7}h6`} stroke="#c49a3a" strokeWidth=".6" />
             </g>
           ))}
           {tier >= 5 ? <path d="M34 16V9M31 9h6M34 9l3 -2" stroke="#4a3a2a" strokeWidth="1" /> : null}
@@ -117,16 +142,28 @@ export function Bauernhof({ id, tier, season }: { id: string; tier: number; seas
       return (
         <Svg tier={tier}>
           <Shadow grid="chapter" rx={30} />
+          {/* Stufe 5: Schornstein mit Rauch */}
+          {tier >= 5 ? (
+            <g>
+              <rect x="38" y="30" width="4" height="10" fill={P.stone} stroke={P.outlineStone} strokeWidth=".6" />
+              <Smoke x={40} y={28} />
+            </g>
+          ) : null}
           <House x={18} w={30} h={20} wall={P.cream} roof={P.outlineWood} />
-          <rect x="29" y="52" width="8" height="12" fill={P.bark} />
+          <rect x="29" y="52" width="8" height="12" fill={P.bark} stroke="#4a3a2a" strokeWidth=".5" />
           <Window x={21} y={50} lit={tier >= 3} />
+          {/* Stufe 3: Vordach über der Tür */}
+          {tier >= 3 ? <path d="M26 50 h14 l-2 -3 h-10z" fill="#8a5a3a" stroke={P.outlineWood} strokeWidth=".6" /> : null}
+          {/* Stufe 2: Bank vor dem Haus */}
+          {tier >= 2 ? <rect x="39" y="60" width="8" height="2" fill={P.woodMid} stroke={P.outlineWood} strokeWidth=".5" /> : null}
           {Array.from({ length: Math.min(4, tier) }, (_, i) => (
             <g key={i}>
               <path d={`M${54 + i * 6} 64v-9l1-2h3l1 2v9z`} fill="#c9d0d8" stroke="#6a7a8a" strokeWidth=".6" />
               <rect x={54.6 + i * 6} y="51.6" width="3.8" height="1.4" fill="#6a7a8a" />
             </g>
           ))}
-          {tier >= 4 ? <circle cx="12" cy="60" r="4" fill="none" stroke={P.outlineSoft} strokeWidth="1.2" /> : null}
+          {/* Stufe 4: eine Kuh wartet am Melkhaus */}
+          {tier >= 4 ? <Cow x={9} y={58} /> : null}
         </Svg>
       )
     case 'kaeserei':
@@ -135,12 +172,30 @@ export function Bauernhof({ id, tier, season }: { id: string; tier: number; seas
           <Shadow grid="chapter" rx={30} />
           <House x={12} w={34} h={22} wall="#f3e6c8" roof="#a5531a" timber />
           <Window x={38} y={48} lit={tier >= 3} />
-          <rect x="50" y="48" width="22" height="2" fill={P.outlineSoft} />
-          <rect x="50" y="57" width="22" height="2" fill={P.outlineSoft} />
-          <path d="M51 48v16M71 48v16" stroke={P.outlineSoft} strokeWidth="1.4" />
+          {/* Stufe 3: Schild mit Käseecke */}
+          {tier >= 3 ? (
+            <g>
+              <path d="M14 40h8" stroke={P.outlineWood} strokeWidth=".8" />
+              <path d="M16 40v2M20 40v2" stroke={P.outlineWood} strokeWidth=".5" />
+              <path d="M15 42h6l-3 5z" fill={P.yellow} stroke="#b8862a" strokeWidth=".5" />
+            </g>
+          ) : null}
+          {/* Regal: ab Stufe 2 zwei Böden */}
+          <rect x="50" y="57" width="22" height="2" fill={P.outlineSoft} stroke={P.outlineWood} strokeWidth=".4" />
+          {tier >= 2 ? <rect x="50" y="48" width="22" height="2" fill={P.outlineSoft} stroke={P.outlineWood} strokeWidth=".4" /> : null}
+          <path d={`M51 ${tier >= 2 ? 48 : 57}v16M71 ${tier >= 2 ? 48 : 57}v16`} stroke={P.outlineSoft} strokeWidth="1.4" />
           {Array.from({ length: Math.min(6, tier + 1) }, (_, i) => (
-            <ellipse key={i} cx={55 + (i % 3) * 6} cy={i < 3 ? 46 : 55} rx="2.8" ry="1.8" fill={P.yellow} stroke="#b8862a" strokeWidth=".5" />
+            <ellipse key={i} cx={55 + (i % 3) * 6} cy={i < 3 ? 55 : 46} rx="2.8" ry="1.8" fill={P.yellow} stroke="#b8862a" strokeWidth=".5" />
           ))}
+          {/* Stufe 4: Kellereingang aus Bruchstein vor dem Haus (links steht ab Stufe 5 Omas Schild) */}
+          {tier >= 4 ? (
+            <g>
+              <path d="M22 64v-6a5 5 0 0 1 10 0v6z" fill={P.stone} stroke={P.outlineStone} strokeWidth=".7" />
+              <path d="M24.5 64v-5a2.5 2.5 0 0 1 5 0v5z" fill="#3a2a1e" stroke={P.outlineStone} strokeWidth=".4" />
+            </g>
+          ) : null}
+          {/* Stufe 5: großer Laib vor der Tür */}
+          {tier >= 5 ? <ellipse cx="47" cy="64" rx="4" ry="2.4" fill="#e8b84a" stroke="#b8862a" strokeWidth=".6" /> : null}
         </Svg>
       )
     case 'hofbaeckerei':
