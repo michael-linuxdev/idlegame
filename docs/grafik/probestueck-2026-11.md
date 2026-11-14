@@ -332,6 +332,10 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   Trockenmatten, Hausboot und Steg mit Pfosten, Gewürzlager mit Säcken, Pookalam mit Öllampe;
   Hausboot-Animation repariert (das Boot bleibt an seinem Platz).
 
+- **Kapitel 35 Dattel-Oase** (`kapitel-35-oase.png`): Oasenboden, Dattelkörbe, Messing-Teekanne,
+  Teppiche, Gersten- und Minzbeete, Khettara-Schächte mit Haspel und Wasserlauf, Ksar-Mauer und Tor,
+  Brunnen mit Fliesenhof und Kissen, Webstuhl, Kletterseil, Nomadenzelt mit Laternen.
+
 Damit sind die Kapitel 4–12 im Weinberg-Niveau. Kapitel 13–50 haben die gemeinsame Kontur und
 das Wachstum, aber noch ihre ursprüngliche Zeichnung.
 
