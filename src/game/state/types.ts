@@ -211,6 +211,8 @@ export interface GameState {
   tieferWinterAt: number
   /** Verdiente Verkürzung der laufenden Ruhezeit (Runde 4, longLoop.creditRestDay); beim Tiefen Winter wieder 0 */
   ruhezeitVerkuerzung: RestCut
+  /** Wintervorrat: Sprösslinge aus Saisonenden in der Ruhezeit (longLoop.WINTERVORRAT); zahlt der nächste Tiefe Winter aus */
+  wintervorrat: number
   /** Bogen-Regeln der Kapitel 13–49 (Runde 4, game/arcRules.ts): Wahl je Kapitel; fehlt = keine Wahl (neutral) */
   bogenWahl: BogenWahl
   /** Abschluss-Szene von Kapitel 50 (Omas Schrebergarten) gesehen — einmalig, übersteht jeden Reset */
@@ -304,6 +306,7 @@ export interface ExpansionSlice {
   weinleseAt: number
   tieferWinterAt: number
   ruhezeitVerkuerzung: RestCut
+  wintervorrat: number
   bogenWahl: BogenWahl
   abschlussSeen: boolean
   milestoneRecord: Record<string, number>
@@ -351,6 +354,7 @@ export function emptyExpansion(now = Date.now()): ExpansionSlice {
     weinleseAt: 0,
     tieferWinterAt: 0,
     ruhezeitVerkuerzung: { ...EMPTY_REST_CUT },
+    wintervorrat: 0,
     bogenWahl: {},
     abschlussSeen: false,
     milestoneRecord: {},
@@ -400,6 +404,7 @@ export function pickExpansion(s: GameState): ExpansionSlice {
     weinleseAt: s.weinleseAt,
     tieferWinterAt: s.tieferWinterAt,
     ruhezeitVerkuerzung: s.ruhezeitVerkuerzung,
+    wintervorrat: s.wintervorrat,
     bogenWahl: s.bogenWahl,
     abschlussSeen: s.abschlussSeen,
     milestoneRecord: { ...s.milestoneRecord },

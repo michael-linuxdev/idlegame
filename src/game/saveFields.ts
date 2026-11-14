@@ -14,7 +14,7 @@ import { emptyRecipe, ILSE_RANKS, type ContestResult, type Recipe, type SkyEvent
 import { VARIETIES, type WheelBuff } from './gardenLife'
 import { EMPTY_LEGACY, type LegacyUpgrades } from './generations'
 import { GENERATOR_IDS, GENERATOR_IDS as GEN_IDS } from './generators'
-import { EMPTY_DEEP_META, EMPTY_REST_CUT, REST_CUT, emptyLongLoopSlice, type DeepMetaUpgrades, type RestCut } from './longLoop'
+import { EMPTY_DEEP_META, EMPTY_REST_CUT, REST_CUT, WINTERVORRAT, emptyLongLoopSlice, type DeepMetaUpgrades, type RestCut } from './longLoop'
 import { COSMETICS, dayKey, type CosmeticId } from './monetization'
 import { parseProjects } from './projects'
 import { emptyQuestProgress, type QuestProgress } from './quests'
@@ -177,6 +177,8 @@ export function parseExpansion(parsed: Record<string, unknown>): ExpansionSlice 
     tieferWinterAt: parseNum(parsed.tieferWinterAt),
     // Runde 4 (Paket 3): ältere Stände → keine Verkürzung, eine laufende Ruhezeit bleibt gleich lang
     ruhezeitVerkuerzung: parseRestCut(parsed.ruhezeitVerkuerzung),
+    // 2026-11-14: ältere Stände → leerer Wintervorrat
+    wintervorrat: Math.min(WINTERVORRAT.max, parseNonNegInt(parsed.wintervorrat)),
     // Runde 4 (Paket 4): ältere Stände → keine Wahl, jedes Kapitel trägt wie vorher
     bogenWahl: parseBogenWahl(parsed.bogenWahl),
     abschlussSeen: parsed.abschlussSeen === true,

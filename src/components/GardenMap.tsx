@@ -7,7 +7,7 @@ import { computeBestBuy } from '../game/bestBuy'
 import { GENERATORS, milestoneMult, milestonesReached, type GeneratorId } from '../game/generators'
 import { formatErnte, formatEta, formatMult } from '../game/format'
 import { computeNextGoal } from '../game/nextGoal'
-import { xpFromOfflineClaim } from '../game/progression'
+import { levelRewardAt, xpFromOfflineClaim } from '../game/progression'
 import { logPlaytest } from '../game/playtestLog'
 import { playSfx } from '../game/sound'
 import { multBreakdown } from '../game/state'
@@ -341,7 +341,8 @@ export function GardenMap({
       setLevelPulse(true)
       playSfx('level')
       logPlaytest('level_up', { level: playerLevel.level })
-      pushPop(t.hud.levelUp(playerLevel.level), 'upgrade')
+      const reward = levelRewardAt(playerLevel.level)
+      pushPop(reward ? `${t.hud.levelUp(playerLevel.level)} ${reward.label()}` : t.hud.levelUp(playerLevel.level), 'upgrade')
       const timer = window.setTimeout(() => setLevelPulse(false), 900)
       prevLevel.current = playerLevel.level
       return () => window.clearTimeout(timer)

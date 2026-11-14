@@ -99,7 +99,7 @@ import {
   buyDeepUpgrade,
 } from '../../src/game/state'
 import { moduleTier } from '../../src/theme/tiers'
-import { DEEP_SHOP, REST_CUT, canDeepNow, sproutPayout } from '../../src/game/longLoop'
+import { DEEP_SHOP, REST_CUT, canDeepNow, restMsFor, sproutPayout } from '../../src/game/longLoop'
 import { LEGACY_SHOP } from '../../src/game/generations'
 import { CHAPTER_BONUS, CHAPTERS, chaptersGardenMult, totalChapterLevels } from '../../src/game/chapters'
 import { bestChapterBuy, buyChapterArea, buyIlse, openChapters, buildProjectStage, claimRewardedAd, weatherPreview, bestWeatherChoice, decideWeather, chapterAreaRates, chooseArcRule } from '../../src/game/state'
@@ -541,7 +541,7 @@ export function run(profile: Profile, hours: number) {
         for (const g of GENERATORS) lastLevel[g.id] = s.owned[g.id] ?? 0
         // Rendite des Tiefen Winters: Sprösslinge je Tag seit dem letzten
         let deepNow = false
-        if (canDeepNow(s.saisonenden, s.tieferWinterAt, clock, s.ruhezeitVerkuerzung.ms)) {
+        if (canDeepNow(s.saisonenden, s.tieferWinterAt, clock, s.ruhezeitVerkuerzung.ms, restMsFor(s))) {
           const sproutRate = sproutPayout(s.saisonenden) / Math.max(0.25, (clock - lastDeepAt) / 86400000)
           bestSproutRate = Math.max(bestSproutRate, sproutRate)
           deepNow = deepByRate

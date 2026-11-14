@@ -4,6 +4,7 @@ import { yearLetterFor } from '../../game/notebook'
 import { WHEEL_SEGMENTS, type WheelKind } from '../../game/gardenLife'
 import { playSfx } from '../../game/sound'
 import { t } from '../../i18n'
+import { WINTERVORRAT } from '../../game/longLoop'
 import { IconChest, IconSnow, IconSprout } from '../../theme/icons'
 import { ArtSvg } from '../../theme/ArtSvg'
 import type { SeasonCardId } from '../../game/seasonCards'
@@ -18,6 +19,8 @@ export interface SeasonEnd {
   generation?: number
   /** Saison-Karte des Jahres, das gerade endet: was sie mit diesem Garten gebracht hat */
   card?: { id: SeasonCardId; preview: number; offline?: number; saving?: number }
+  /** Wintervorrat nach diesem Saisonende, wenn er gerade gewachsen ist */
+  vorrat?: number
 }
 
 interface Props {
@@ -124,6 +127,9 @@ export function SeasonCeremony({ event, onDone, onSpin }: Props) {
                   )
                 : t.seasonCards.result(t.seasonCards.cards[event.card.id].name, Math.round((event.card.preview - 1) * 100))}
             </p>
+          ) : null}
+          {event.vorrat != null ? (
+            <p className="season-corner season-vorrat">{t.longLoop.vorratGained(event.vorrat, WINTERVORRAT.max)}</p>
           ) : null}
           {onSpin && !event.deep ? <LuckyWheel onSpin={onSpin} onDone={onDone} /> : (
             <button type="button" className="btn buy" onClick={onDone}>

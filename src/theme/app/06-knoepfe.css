@@ -263,3 +263,36 @@
 .rest-panel .rest-rule {
   font-size: 0.82rem;
 }
+
+/* Wintervorrat: sechs Plätze, gefüllte grün */
+.rest-vorrat {
+  margin: 0.5rem 0 0.4rem;
+  padding: 0.45rem 0.6rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.rest-panel .rest-vorrat {
+  margin-bottom: 0;
+}
+
+.rest-vorrat p {
+  margin: 0.15rem 0;
+}
+
+.rest-vorrat-bar {
+  display: flex;
+  gap: 0.3rem;
+  margin: 0.3rem 0;
+}
+
+.rest-vorrat-bar span {
+  flex: 1;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: rgba(95, 158, 69, 0.2);
+}
+
+.rest-vorrat-bar span.on {
+  background: linear-gradient(90deg, #5f9e45, #8fcf5f);
+}

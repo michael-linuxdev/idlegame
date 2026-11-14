@@ -37,6 +37,8 @@ const ADDED_AFTER_V1: Record<string, unknown> = {
   // der letzte Export in localStorage `gartenerbe-sicherung-v1` (docs/sicherung.md)
   // Festladen Plus (2026-11-10): alte Stände haben ihn in keinem Fest gekauft
   festPlusKey: '',
+  // Wintervorrat (2026-11-14, Plateau ab Tag 3): alte Stände haben noch nichts zurückgelegt
+  wintervorrat: 0,
 }
 
 /** Nur die Kapitel, die im alten Stand schon gespeichert waren (neue füllt parseChapters auf). */

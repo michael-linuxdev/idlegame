@@ -56,6 +56,29 @@ export function canDeepReset(saisonenden: number): boolean {
 export const DEEP_REST_MS = 3 * 86_400_000
 
 /**
+ * Die Ruhezeit wächst am Anfang mit (2026-11-14, Playtest Tester 1: nach dem
+ * ersten Tiefen Winter drei Tage ohne neues Ziel): nach dem 1. Tiefen Winter
+ * 1 Tag, nach dem 2. 2 Tage, ab dem 3. und in jeder späteren Generation 3 Tage.
+ * Die Taktung der Kapitel 13–50 bleibt damit unverändert.
+ */
+export function restMsFor(s: { tiefeWinter: number; generation: number }): number {
+  if (s.generation > 0 || s.tiefeWinter >= 3) return DEEP_REST_MS
+  return Math.max(1, s.tiefeWinter) * 86_400_000
+}
+
+/**
+ * Wintervorrat (2026-11-14): Jedes Saisonende, solange die Ruhezeit läuft, legt
+ * einen Sprössling für den nächsten Tiefen Winter zurück (höchstens max). So
+ * lohnt „noch ein Saisonende“ in der Wartezeit sichtbar.
+ */
+export const WINTERVORRAT = { perSeason: 1, max: 6 }
+
+/** Höchste Verkürzung einer Ruhezeit: 12 h, bei kürzeren Ruhezeiten ein Sechstel davon. */
+export function restCutCap(restMs: number): number {
+  return Math.min(REST_CUT.capMs, Math.floor(restMs / 6))
+}
+
+/**
  * Ruhezeit verkürzen (Runde 4, Paket 3): Jeder erledigte Tag der „Heute“-Karte
  * (Tägliche Gartenrunde abgeholt und alle Tagesziele abgeholt) verkürzt die
  * **laufende** Ruhezeit um REST_CUT.dayMs, zusammen höchstens REST_CUT.capMs —
@@ -78,15 +101,15 @@ export interface RestCut {
 export const EMPTY_REST_CUT: RestCut = { ms: 0, day: '' }
 
 /** Restliche Ruhezeit in ms (0 = Tiefer Winter möglich, sobald das Gartenjahr reicht). */
-export function deepRestLeft(tieferWinterAt: number, now: number, cutMs = 0): number {
+export function deepRestLeft(tieferWinterAt: number, now: number, cutMs = 0, restMs = DEEP_REST_MS): number {
   if (!(tieferWinterAt > 0)) return 0
-  const cut = Math.min(REST_CUT.capMs, Math.max(0, cutMs))
-  return Math.max(0, tieferWinterAt + DEEP_REST_MS - cut - now)
+  const cut = Math.min(restCutCap(restMs), Math.max(0, cutMs))
+  return Math.max(0, tieferWinterAt + restMs - cut - now)
 }
 
 /** Gartenjahr reicht und die Ruhezeit ist vorbei. */
-export function canDeepNow(saisonenden: number, tieferWinterAt: number, now: number, cutMs = 0): boolean {
-  return canDeepReset(saisonenden) && deepRestLeft(tieferWinterAt, now, cutMs) <= 0
+export function canDeepNow(saisonenden: number, tieferWinterAt: number, now: number, cutMs = 0, restMs = DEEP_REST_MS): boolean {
+  return canDeepReset(saisonenden) && deepRestLeft(tieferWinterAt, now, cutMs, restMs) <= 0
 }
 
 /**
@@ -94,12 +117,13 @@ export function canDeepNow(saisonenden: number, tieferWinterAt: number, now: num
  * läuft. Tage zählen nur vorwärts: Wer die Uhr zurückstellt, bekommt einen
  * „neuen“ Tag mit kleinerem Datum — der zählt nicht.
  */
-export function creditRestDay(cut: RestCut, tieferWinterAt: number, day: string, now: number): RestCut {
+export function creditRestDay(cut: RestCut, tieferWinterAt: number, day: string, now: number, restMs = DEEP_REST_MS): RestCut {
   if (!(tieferWinterAt > 0) || now < tieferWinterAt) return cut
   if (cut.day && day <= cut.day) return cut
-  if (cut.ms >= REST_CUT.capMs) return cut
-  if (deepRestLeft(tieferWinterAt, now, cut.ms) <= 0) return cut
-  return { ms: Math.min(REST_CUT.capMs, cut.ms + REST_CUT.dayMs), day }
+  const cap = restCutCap(restMs)
+  if (cut.ms >= cap) return cut
+  if (deepRestLeft(tieferWinterAt, now, cut.ms, restMs) <= 0) return cut
+  return { ms: Math.min(cap, cut.ms + REST_CUT.dayMs), day }
 }
 
 export function deepYieldMult(d: DeepMetaUpgrades): number {

@@ -1,4 +1,4 @@
-import { gateSeasons, deepRestLeft } from './longLoop'
+import { gateSeasons, deepRestLeft, restMsFor } from './longLoop'
 import { useCallback } from 'react'
 import { ALBUM_GOALS, albumProgress } from './album'
 import { erbstueckePayout, TAP_COOLDOWN_MS, isProbeYear } from './economy'
@@ -194,7 +194,7 @@ export function useGame() {
   const clanBoostActive =
     state.vereinBoostExpiresAt > nowTick && vereinMult > 1
   // Ruhezeit nach dem Tiefen Winter (Prestige-Panel)
-  const deepRestMs = deepRestLeft(state.tieferWinterAt, nowTick, state.ruhezeitVerkuerzung.ms)
+  const deepRestMs = deepRestLeft(state.tieferWinterAt, nowTick, state.ruhezeitVerkuerzung.ms, restMsFor(state))
   const clanBoostMsLeft = clanBoostActive
     ? Math.max(0, state.vereinBoostExpiresAt - nowTick)
     : 0

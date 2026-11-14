@@ -5,7 +5,7 @@ import { FEST_EARN } from '../fests'
 import { varietyForSeasonEnd } from '../gardenLife'
 import { legacySproutMult } from '../generations'
 import { GENERATORS } from '../generators'
-import { DEEP_SHOP, type DeepMetaId, canDeepNow, deepStartErbstuecke, sproutPayout } from '../longLoop'
+import { DEEP_SHOP, type DeepMetaId, WINTERVORRAT, canDeepNow, deepRestLeft, deepStartErbstuecke, restMsFor, sproutPayout } from '../longLoop'
 import { collectReadyAchievements } from './buy'
 import { syncChaptersOpen } from './chapters'
 import { createPostPrestigeState } from './create'
@@ -51,13 +51,29 @@ export function doPrestige(state: GameState): GameState {
   const next = createPostPrestigeState(
     variety ? { ...state, collection: [...state.collection, variety] } : state,
   )
-  const withErbstuecke = { ...next, erbstuecke: state.erbstuecke + gain, lastVariety: variety }
+  const withErbstuecke = {
+    ...next,
+    erbstuecke: state.erbstuecke + gain,
+    lastVariety: variety,
+    wintervorrat: wintervorratAfterSeasonEnd(state),
+  }
   return albumCount(collectReadyAchievements(earnFest(withErbstuecke, FEST_EARN.seasonEnd)), 'seasons')
 }
 
-/** Sprösslinge for a Tiefer Winter now (incl. Wurzelwerk). */
+/** Läuft gerade die Ruhezeit nach einem Tiefen Winter? */
+export function restRunning(state: GameState, now = Date.now()): boolean {
+  return deepRestLeft(state.tieferWinterAt, now, state.ruhezeitVerkuerzung.ms, restMsFor(state)) > 0
+}
+
+/** Wintervorrat nach einem Saisonende: +1, solange die Ruhezeit läuft (höchstens WINTERVORRAT.max). */
+export function wintervorratAfterSeasonEnd(state: GameState, now = Date.now()): number {
+  if (!restRunning(state, now)) return state.wintervorrat
+  return Math.min(WINTERVORRAT.max, state.wintervorrat + WINTERVORRAT.perSeason)
+}
+
+/** Sprösslinge for a Tiefer Winter now (incl. Wintervorrat and Wurzelwerk). */
 export function deepSproutPayout(state: GameState): number {
-  return Math.floor(sproutPayout(state.saisonenden) * legacySproutMult(state.legacy))
+  return Math.floor((sproutPayout(state.saisonenden) + state.wintervorrat) * legacySproutMult(state.legacy))
 }
 
 /** Sprösslings-Laden purchase. */
@@ -81,7 +97,7 @@ export function buyDeepUpgrade(state: GameState, id: DeepMetaId): GameState {
  * their boosts, Samen, Gartenstile, Gärtnerstufe and streaks stay.
  */
 export function doDeepReset(state: GameState, now = Date.now()): GameState {
-  if (!canDeepNow(state.saisonenden, state.tieferWinterAt, now, state.ruhezeitVerkuerzung.ms)) return state
+  if (!canDeepNow(state.saisonenden, state.tieferWinterAt, now, state.ruhezeitVerkuerzung.ms, restMsFor(state))) return state
   const sprouts = deepSproutPayout(state)
   const fresh = createPostPrestigeState({
     ...state,
@@ -99,6 +115,7 @@ export function doDeepReset(state: GameState, now = Date.now()): GameState {
       tieferWinterAt: now,
       // Neue Ruhezeit: verdiente Verkürzung beginnt wieder bei 0
       ruhezeitVerkuerzung: { ms: 0, day: '' },
+      wintervorrat: 0,
     }),
   )
 }

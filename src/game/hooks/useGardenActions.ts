@@ -126,6 +126,7 @@ export function useGardenActions({ setState, stateRef }: UseGardenActionsDeps) {
     deep?: boolean
     generation?: number
     card?: { id: SeasonCardId; preview: number; offline?: number; saving?: number }
+    vorrat?: number
   } | null>(null)
 
   const prestige = useCallback(() => {
@@ -133,10 +134,13 @@ export function useGardenActions({ setState, stateRef }: UseGardenActionsDeps) {
       const gain = erbstueckePayout(s.ernteSeason, s.saisonenden, isProbeYear(s))
       const next = doPrestige(s)
       if (next !== s) {
+        const vorratGrew = next.wintervorrat > s.wintervorrat
         logPlaytest('prestige', {
           run: next.saisonenden,
           erbstuecke: gain,
           wallet: next.erbstuecke,
+          // Wintervorrat (Saisonende in der Ruhezeit nach dem Tiefen Winter)
+          vorrat: vorratGrew ? next.wintervorrat : undefined,
           // Herausforderung: geschafft (lief bis hier) bzw. ab jetzt aktiv
           challengeDone: s.challenge ?? undefined,
           challenge: next.challenge ?? undefined,
@@ -149,7 +153,7 @@ export function useGardenActions({ setState, stateRef }: UseGardenActionsDeps) {
           : def.area && s.seasonCardAusbau
             ? { id: def.id, preview: 1, saving: cardSaving(def.id, s.owned) }
             : { id: def.id, preview: cardPreview(def.id, s.owned), offline: def.offline }
-        setSeasonEnd({ year: next.saisonenden + 1, gained: gain, card })
+        setSeasonEnd({ year: next.saisonenden + 1, gained: gain, card, vorrat: vorratGrew ? next.wintervorrat : undefined })
       }
       return next
     })

@@ -34,6 +34,7 @@ export function doGeneration(state: GameState, now = Date.now()): GameState {
     erbstuecke: 0,
     truhe: { ...EMPTY_TRUHE },
     sproesslinge: 0,
+    wintervorrat: 0,
     sproesslingLaden: { ...EMPTY_DEEP_META },
     tiefeWinter: 0,
     generation: state.generation + 1,

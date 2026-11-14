@@ -7,8 +7,19 @@
 import { t } from '../i18n'
 import type { CosmeticId } from './monetization'
 
-/** Soft cap so late levels stay reachable without exploding. */
-export const MAX_PLAYER_LEVEL = 40
+/**
+ * Obergrenze der Gärtnerstufe. Bis 2026-11-14 war bei 40 Schluss (nach zwei
+ * Tagen erreicht, danach kein Aufstieg mehr — Playtest Tester 1). Die Kurve bis
+ * 40 bleibt unverändert, damit niemand eine Stufe verliert; darüber wächst sie
+ * linear (LATE_LEVEL_STEP) und gibt alle 5 Stufen Samen.
+ */
+export const MAX_PLAYER_LEVEL = 100
+
+/** Letzte Stufe der ursprünglichen Kurve. */
+export const CLASSIC_MAX_LEVEL = 40
+
+/** Mehrbedarf je Stufe über CLASSIC_MAX_LEVEL. */
+export const LATE_LEVEL_STEP = 400
 
 /** XP awarded when buying a module upgrade (online / +1). */
 export const XP_PER_UPGRADE = 8
@@ -25,7 +36,8 @@ export function xpFromOfflineClaim(gained: number): number {
 /** XP needed to advance from `level` → `level + 1`. */
 export function xpForLevel(level: number): number {
   const L = Math.max(1, Math.min(MAX_PLAYER_LEVEL, level))
-  return Math.floor(40 + 25 * L + 8 * L * L)
+  const C = Math.min(L, CLASSIC_MAX_LEVEL)
+  return Math.floor(40 + 25 * C + 8 * C * C) + LATE_LEVEL_STEP * Math.max(0, L - CLASSIC_MAX_LEVEL)
 }
 
 /** Derive level + bar fill from lifetime XP. */
@@ -56,11 +68,13 @@ export function levelProgress(xp: number): {
 
 /**
  * Permanent global Ertrag/s bonus from Spieler-Level.
- * +0.5 % per level above 1, soft-capped at +12 % (Lv 25).
+ * +0.5 % per level above 1 up to Lv 25 (+12 %), then nothing until Lv 40,
+ * then +0.25 % per level above 40 (Lv 100: +27 % in total).
  */
 export function levelProductionMult(level: number): number {
   const ranks = Math.max(0, Math.min(24, level - 1))
-  return 1 + ranks * 0.005
+  const late = Math.max(0, Math.min(MAX_PLAYER_LEVEL, level) - CLASSIC_MAX_LEVEL)
+  return 1 + ranks * 0.005 + late * 0.0025
 }
 
 export type LevelRewardKind = 'ernte' | 'erbstuecke' | 'samen' | 'cosmetic'
@@ -118,7 +132,18 @@ export const LEVEL_REWARDS: LevelRewardDef[] = [
     cosmeticId: 'bluetenmeer',
     label: () => t.level.rewards.cosmetic(t.cosmetics.bluetenmeer.name),
   },
+  // Über Stufe 40: alle 5 Stufen Samen (45: 20 … 100: 75)
+  ...Array.from({ length: (MAX_PLAYER_LEVEL - CLASSIC_MAX_LEVEL) / 5 }, (_, i): LevelRewardDef => {
+    const level = CLASSIC_MAX_LEVEL + 5 * (i + 1)
+    const amount = 15 + 5 * (i + 1)
+    return { level, kind: 'samen', amount, label: () => t.level.rewards.samen(amount) }
+  }),
 ]
+
+/** Belohnung genau dieser Stufe (für die Aufstiegs-Meldung). */
+export function levelRewardAt(level: number): LevelRewardDef | undefined {
+  return LEVEL_REWARDS.find((r) => r.level === level)
+}
 
 /** Module unlock OR-gates by Spieler-Level (theme-agnostic IDs). */
 export const LEVEL_MODULE_GATES: Partial<Record<string, number>> = {

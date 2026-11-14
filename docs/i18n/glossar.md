@@ -42,6 +42,7 @@ Offen: Markenrecherche (siehe oben). Ausweichtitel, falls belegt:
 | Winterruhe | **Winter Rest** | Winter Sleep, Dormancy | Ruhig, nicht technisch. |
 | Tiefer Winter (2. Prestige) | **Deep Winter** | Hard Winter | Wörtlich, stimmungsvoll. |
 | Sprösslinge (Währung Tiefer Winter) | **Seedlings** | Sprouts, Shoots | Gärtnerisch korrekt; „Sprouts“ klingt nach Rosenkohl. |
+| Wintervorrat (Sprösslinge aus der Ruhezeit) | **Winter Reserve** | Winter Store | „Seed Store“ ist schon Saatgutvorrat. |
 | Generation | **Generation** | — | Gleich. |
 | Vermächtnis (Währung Generation) | **Legacy** | Bequest | „Bequest“ ist juristisch-kühl. |
 | Familienschatz | **Family Treasures** | Family Heritage | Warm, „Treasures“ passt zum Laden. |

@@ -1,6 +1,6 @@
 /** Tiefer Winter (Sprösslinge, Sprösslings-Laden) und Oma Ilse. Teil von PrestigePanel. */
 import { useState } from 'react'
-import { DEEP_GATE_YEAR, DEEP_SHOP, REST_CUT, canDeepReset } from '../../game/longLoop'
+import { DEEP_GATE_YEAR, DEEP_SHOP, REST_CUT, WINTERVORRAT, canDeepReset } from '../../game/longLoop'
 import { restStatus } from '../../game/state/rest'
 import { CHAPTERS, type ChapterId } from '../../game/chapters'
 import { ILSE_RANKS } from '../../game/extrasCore'
@@ -25,7 +25,7 @@ export function DeepWinterBlock({ game, onOpenChapter }: { game: GameApi; onOpen
         {t.longLoop.title}
       </h3>
       <p className="muted">{t.longLoop.intro}</p>
-      {restLeft > 0 ? <RestPanel game={game} /> : null}
+      {restLeft > 0 ? <RestPanel game={game} /> : game.state.wintervorrat > 0 ? <VorratPanel game={game} /> : null}
       <dl className="season-stats">
         <div>
           <dt>{t.longLoop.sprouts}</dt>
@@ -196,6 +196,25 @@ function RestPanel({ game }: { game: GameApi }) {
         {r.earnedMs >= r.capMs ? t.longLoop.restCapReached : r.countedToday ? t.longLoop.restTodayCounted : t.longLoop.restToday(hours(r.todayMs))}
       </p>
       <p className="muted rest-rule">{t.longLoop.restRule(hours(REST_CUT.dayMs), hours(r.capMs))}</p>
+      <VorratPanel game={game} />
+    </div>
+  )
+}
+
+/** Wintervorrat (2026-11-14): Sprösslinge aus Saisonenden in der Ruhezeit, für den nächsten Tiefen Winter. */
+function VorratPanel({ game }: { game: GameApi }) {
+  const n = game.state.wintervorrat
+  return (
+    <div className="rest-vorrat">
+      <p className="rest-vorrat-count">
+        <strong>{t.longLoop.vorrat(n, WINTERVORRAT.max)}</strong>
+      </p>
+      <div className="rest-vorrat-bar" aria-hidden="true">
+        {Array.from({ length: WINTERVORRAT.max }, (_, i) => (
+          <span key={i} className={i < n ? 'on' : undefined} />
+        ))}
+      </div>
+      <p className="muted">{n >= WINTERVORRAT.max ? t.longLoop.vorratFull : t.longLoop.vorratHint}</p>
     </div>
   )
 }
