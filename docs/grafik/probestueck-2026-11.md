@@ -365,6 +365,10 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   Kräuterschnecke mit Teich, Schulküche, Gartenhütte mit Regal, Pausenbeet mit Erdbeeren, Festbude
   mit Ballons.
 
+- **Kapitel 42 Waldgarten** (`kapitel-42-waldgarten.png`): Waldboden, Kronenschicht, Haselsträucher,
+  Johannisbeeren, Bärlauch, Beinwell und Minze, Walderdbeeren, Pilzstämme mit Gestell, Rankstangen,
+  Weidenteich mit Schilf, Lehrpfad und Festtafel mit Lampions.
+
 Damit sind die Kapitel 4–12 im Weinberg-Niveau. Kapitel 13–50 haben die gemeinsame Kontur und
 das Wachstum, aber noch ihre ursprüngliche Zeichnung.
 
