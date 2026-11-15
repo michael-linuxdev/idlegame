@@ -379,6 +379,11 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   mit Pumpe und Regenrinnen, Mischkultur, Windhecke, Wetterstation mit Wetterhütte und Solarpaneel,
   Lehrküche mit Pfosten und Herd, Infotafel.
 
+- **Kapitel 45 Wildblumenband** (`kapitel-45-wildblumenband.png`): Blühstreifen-Band, Totholzstapel
+  mit Käfer und Igel, Sandarium, Feldrain mit Ähren, Feldhecke, Tümpel mit Schilf, Libelle und
+  Kescher, Steinriegel mit Eidechse, Mähgutwagen und Saatsack, Grünbrücke mit Auto und Reh,
+  Bestäuberfest.
+
 Damit sind die Kapitel 4–12 im Weinberg-Niveau. Kapitel 13–50 haben die gemeinsame Kontur und
 das Wachstum, aber noch ihre ursprüngliche Zeichnung.
 
