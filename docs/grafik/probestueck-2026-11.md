@@ -351,6 +351,10 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   Glühwurmgrotte, Kūmara-Hügel und Pātaka, Wasserfall mit Becken, Anzuchttisch mit Schalen,
   Hanghütte mit Kamin, Matariki-Feuerstelle.
 
+- **Kapitel 39 Kimchi-Garten** (`kapitel-39-kimchigarten.png`): Feldboden mit Licht und Frostrand,
+  Kohlreihen, Rettich, Sesam, Perilla, Krugpodest mit Onggi, Chilimatten, Hanok-Hof mit Steinweg,
+  Kimjang-Wanne mit Kohlhälften, Kakibaum, Mond, Chuseok-Tablett mit Songpyeon und Laternen.
+
 Damit sind die Kapitel 4–12 im Weinberg-Niveau. Kapitel 13–50 haben die gemeinsame Kontur und
 das Wachstum, aber noch ihre ursprüngliche Zeichnung.
 
