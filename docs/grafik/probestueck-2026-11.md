@@ -341,6 +341,11 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   mit Stangen, Dorfplatz mit Bänken, Genossenschaftshaus mit Waage, Schokowerkstatt mit Topf,
   Trommel, Kente-Wimpel und Festtopf.
 
+- **Kapitel 37 Buschgarten** (`kapitel-37-buschgarten.png`): Roter Boden mit Grasinsel,
+  Fingerlimetten mit umrandeten Früchten, Zitronenmyrte, Salzbusch, Wellblechtank mit Hahn,
+  Wasserloch mit Felsen und Schilf, Mahlstein mit Saathaufen, Saatguthütte mit Gläsern, Regentank-
+  Haus mit Dachrinne, Feuerstelle mit Bänken.
+
 Damit sind die Kapitel 4–12 im Weinberg-Niveau. Kapitel 13–50 haben die gemeinsame Kontur und
 das Wachstum, aber noch ihre ursprüngliche Zeichnung.
 
