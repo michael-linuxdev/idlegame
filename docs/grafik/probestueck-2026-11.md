@@ -336,6 +336,11 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   Teppiche, Gersten- und Minzbeete, Khettara-Schächte mit Haspel und Wasserlauf, Ksar-Mauer und Tor,
   Brunnen mit Fliesenhof und Kissen, Webstuhl, Kletterseil, Nomadenzelt mit Laternen.
 
+- **Kapitel 36 Kakaogarten** (`kapitel-36-kakaogarten.png`): Boden mit Lichtkante, Jutesäcke,
+  Gärhaufen auf Bananenblättern, Bohnenkisten, Trockengestelle mit Doppelstrich-Beinen, Yamshügel
+  mit Stangen, Dorfplatz mit Bänken, Genossenschaftshaus mit Waage, Schokowerkstatt mit Topf,
+  Trommel, Kente-Wimpel und Festtopf.
+
 Damit sind die Kapitel 4–12 im Weinberg-Niveau. Kapitel 13–50 haben die gemeinsame Kontur und
 das Wachstum, aber noch ihre ursprüngliche Zeichnung.
 
