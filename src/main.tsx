@@ -3,12 +3,14 @@ import { createRoot } from 'react-dom/client'
 import { registerSW } from 'virtual:pwa-register'
 import App from './App'
 import { ErrorBoundary } from './components/ErrorBoundary'
+import { markUpdateReady, watchForUpdates } from './game/appUpdate'
 import { reloadForNewVersion } from './game/chunkReload'
 import { logPlaytest } from './game/playtestLog'
 import { startSaveLock } from './game/saveGuard'
 import { storedSaveState } from './game/storage'
 import { listBackups, withTimeout } from './game/autoBackup'
-import { initLocale } from './i18n'
+import { initLocale, t } from './i18n'
+import { deliver } from './game/notify'
 import './theme/fonts'
 import './index.css'
 
@@ -33,7 +35,20 @@ function startGame() {
   } catch {
     /* nicht unterstützt */
   }
-  registerSW({ immediate: true })
+  // Neue Version: nicht von selbst neu laden, sondern „Update verfügbar“ zeigen (game/appUpdate.ts)
+  const updateSW = registerSW({
+    immediate: true,
+    onNeedRefresh: () => {
+      markUpdateReady(() => void updateSW(true))
+      // App im Hintergrund und Erinnerungen erlaubt: auch als Benachrichtigung
+      if (document.visibilityState === 'hidden') deliver(t.appUpdate.available, t.appUpdate.availableBody, 'update')
+    },
+    onRegisteredSW: (_url, reg) => {
+      if (reg) watchForUpdates(reg)
+    },
+  })
+  // Test-Zugang: ?update=1 zeigt den Hinweis ohne neue Version
+  if (new URLSearchParams(location.search).get('update') === '1') markUpdateReady(() => {})
   // Vite meldet fehlgeschlagenes Vorladen alter Bündel nach einem Update: einmal neu laden
   window.addEventListener('vite:preloadError', (e) => {
     if (reloadForNewVersion()) e.preventDefault()

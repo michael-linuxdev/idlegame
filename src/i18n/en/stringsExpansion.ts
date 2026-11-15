@@ -576,6 +576,9 @@ export const expansionStrings = {
     offline: 'No connection — please try again later.',
     unsupported: 'Updates arrive automatically the next time you start.',
     now: 'Update now',
+    available: 'Update available.',
+    availableBody: 'Your garden stays just as it is.',
+    later: 'Later',
     version: (v: string) => `Version ${v}`,
   },
 } as const

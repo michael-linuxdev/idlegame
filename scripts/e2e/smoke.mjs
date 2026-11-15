@@ -973,6 +973,40 @@ try {
     }
   }
 
+  // 19 — „Update verfügbar“ (?update=1): Hinweis mit „Jetzt aktualisieren“, „Später“ blendet ihn aus,
+  //      im Menü bleibt er stehen; der Tipp lädt neu, der Spielstand bleibt
+  {
+    const ctx = await browser.newContext({ ...devices['iPhone 13'], reducedMotion: 'reduce' })
+    await ctx.addInitScript(() => {
+      if (sessionStorage.getItem('seed')) return
+      localStorage.setItem('gartenerbe-spielstand-v1', JSON.stringify({ owned: { gemuesebeet: 20 }, ernte: 1e4, samen: 77, saisonenden: 2, sessions: 5, lastSeen: Date.now(), saveVersion: 1 }))
+      localStorage.setItem('gartenerbe-ftue-v1', JSON.stringify({ beat: 'done', dismissed: true, completed: [], startedAt: 1 }))
+      localStorage.setItem('gartenerbe-install-v1', JSON.stringify({ dismissed: true, installed: false, shown: true }))
+      localStorage.setItem('gartenerbe-hints-v1', JSON.stringify(['season', 'truhe', 'deep', 'visitor', 'order', 'variety', 'weekly', 'crossNew']))
+      sessionStorage.setItem('seed', '1')
+    })
+    const p = await ctx.newPage()
+    p.on('pageerror', (err) => errors.push(err.message))
+    await p.goto(URL + '?update=1')
+    await p.locator('.update-banner').waitFor()
+    assert((await p.locator('.update-banner').innerText()).includes(T.appUpdate.available), 'banner says an update is available')
+    if (LANG === 'de') await p.screenshot({ path: 'e2e-screens/update-verfuegbar.png' })
+    await p.locator('.update-banner').getByRole('button', { name: T.appUpdate.later }).click()
+    assert((await p.locator('.update-banner').count()) === 0, '"later" hides the banner')
+    // ohne ?update=1 kommt kein Hinweis
+    await p.goto(URL)
+    await p.locator('.garden-map').waitFor()
+    assert((await p.locator('.update-banner').count()) === 0, 'no banner without a new version')
+    // „Jetzt aktualisieren“ lädt neu; der Garten ist danach derselbe
+    await p.goto(URL + '?update=1')
+    await p.locator('.update-banner').getByRole('button', { name: T.appUpdate.now }).click()
+    await p.waitForEvent('load', { timeout: 8000 })
+    await p.locator('.garden-map').waitFor()
+    const s = await p.evaluate(() => JSON.parse(localStorage.getItem('gartenerbe-spielstand-v1')))
+    assert(s.samen === 77 && s.saisonenden === 2 && s.owned.gemuesebeet >= 20, `save survives the update reload (${s.samen} ${s.saisonenden})`)
+    await ctx.close()
+  }
+
   // 11 — Sprache: Erkennung, Live-Umschalter, gespeicherte Wahl, ?lang=
   {
     const seed = () => {

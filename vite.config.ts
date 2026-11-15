@@ -41,7 +41,9 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
+      // 'prompt': eine neue Version wartet auf „Jetzt aktualisieren“ (src/game/appUpdate.ts)
+      // und lädt nicht mehr mitten im Spiel von selbst neu
+      registerType: 'prompt',
       includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
       manifest: {
         ...APP,

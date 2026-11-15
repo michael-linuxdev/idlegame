@@ -898,7 +898,7 @@ export const strings: Strings = {
     },
     gartenmonat: {
       name: 'Garden Month',
-      blurb: '30 days: the Garden Week premium track, every bonus without ads and a monthly style to keep.',
+      blurb: '30 days, no subscription: the Garden Week premium track, every bonus without ads and a monthly style to keep.',
       label: '30 days',
     },
   },
