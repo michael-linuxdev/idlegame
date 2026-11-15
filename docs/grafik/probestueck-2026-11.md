@@ -389,6 +389,11 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   Balkone mit Geländer und Kästen, Nistkästen, Sensorstäbe und Solarpaneel, Fensterbänke mit
   Bechern, Hofcafé mit Markise, Lichterketten und Stern.
 
+- **Kapitel 47 Solawi-Hof** (`kapitel-47-solawihof.png`): Acker mit Furchen, Kohl, Möhren,
+  Bohnenstangen, Folientunnel, Abholraum mit Tafel und Waage, Erdkeller, Hühnermobil mit Zaun,
+  Saatgutstauden und Siebe, Versammlungsscheune, Werkzeugscheune mit Schubkarre, Vogelscheuche,
+  Kuchentisch.
+
 Damit sind die Kapitel 4–12 im Weinberg-Niveau. Kapitel 13–50 haben die gemeinsame Kontur und
 das Wachstum, aber noch ihre ursprüngliche Zeichnung.
 
