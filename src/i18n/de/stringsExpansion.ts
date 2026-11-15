@@ -130,7 +130,7 @@ export const expansionStrings = {
     needMore: (n: string) => `Noch ${obst(n)}`,
     level: (n: number) => `Stufe ${n}`,
     rate: (r: string) => `${r} Obst/s`,
-    teaser: 'Nach dem ersten Tiefen Winter wartet Kapitel 2: Opas Streuobstwiese.',
+    teaser: 'Ab dem 6. Gartenjahr wartet Kapitel 2: Opas Streuobstwiese.',
     unlockedToast: 'Kapitel 2 freigeschaltet: Opas Streuobstwiese!',
     goal: (name: string) => `Pflegen: ${name}`,
     goalPlant: (name: string) => `Pflanzen: ${name}`,
@@ -138,9 +138,9 @@ export const expansionStrings = {
       title: 'Ein Brief aus der Truhe',
       body: [
         'Mein Schatz,',
-        'wenn du diesen Brief findest, hast du den Garten durch einen ganzen tiefen Winter gebracht. Dann bist du so weit.',
+        'wenn du diesen Brief findest, hast du den Garten schon durch ein paar Winter gebracht. Dann bist du so weit.',
         'Hinter dem Dorf, wo der Feldweg zum Bach abbiegt, liegt Opas Streuobstwiese. Er hat jeden Baum dort selbst gepflanzt — Äpfel, Birnen, eine krumme Zwetschge, die nie aufgeben wollte.',
-        'Seit er nicht mehr ist, hat sich keiner gekümmert. Schneid die alten Bäume, setz junge dazu, hol die Schafe zurück. Was dort wächst, macht auch unseren Garten stärker.',
+        'Seit er nicht mehr ist, hat sich keiner gekümmert. Schneid die alten Bäume, setz junge dazu, hol die Schafe zurück. Was dort wächst, macht auch unseren Garten stärker — sobald er seinen ersten tiefen Winter hinter sich hat.',
         'Deine Oma',
       ],
       cta: 'Zur Wiese',
@@ -242,6 +242,10 @@ export const expansionStrings = {
     chipGarden: 'Garten',
     walletAria: (amount: string, cur: string, rate: string) => `${amount} ${cur}, ${rate} pro Sekunde`,
     bonus: (pct: string) => `+${pct} % Ernte im Garten`,
+    /** Vor dem ersten Tiefen Winter: der Garten-Bonus der Kapitel zählt noch nicht */
+    bonusLater: (pct: string) => `+${pct} % Ernte im Garten — zählt ab dem ersten Tiefen Winter`,
+    /** Im Abschnitt „Tiefer Winter“, solange der Bonus noch wartet */
+    bonusWaiting: (pct: string) => `Nach dem ersten Tiefen Winter zählt der Bonus deiner Grundstücke: +${pct} % Ernte im Garten.`,
     locked: (prev: string) => `Ab ${prev} Stufe 10`,
     plant: 'Pflanzen',
     upgrade: 'Pflegen',
@@ -278,7 +282,7 @@ export const expansionStrings = {
       currency: 'Obst',
       chip: 'Obstwiese',
       to: 'Zur Streuobstwiese',
-      teaser: 'Nach dem ersten Tiefen Winter wartet Kapitel 2: Opas Streuobstwiese.',
+      teaser: 'Ab dem 6. Gartenjahr wartet Kapitel 2: Opas Streuobstwiese.',
     },
     weinberg: {
       title: 'Weinberg',

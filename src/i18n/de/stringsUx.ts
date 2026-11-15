@@ -83,6 +83,11 @@ export const uxStrings = {
     rate: (from: string, to: string) => `Ernte pro Sekunde: ${from} → ${to}`,
     ok: 'Schön!',
     claim: 'Einsammeln',
+    /** Korb verdoppeln: mit Werbung bzw. (Werbefrei) als Bonus des Tages */
+    doubleAd: 'Werbung ansehen: Korb ×2',
+    doubleFree: 'Korb ×2 (Bonus)',
+    doubleLeft: (n: number, max: number) => `Freiwillig · heute noch ${n} von ${max} Boni`,
+    doubled: (amount: string) => `Korb verdoppelt: +${amount} Ernte`,
     bedsTitle: 'Danach kannst du gleich ausbauen:',
     readyTitle: 'Inzwischen fertig:',
     ready: {

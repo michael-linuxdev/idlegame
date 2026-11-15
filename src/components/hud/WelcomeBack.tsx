@@ -12,6 +12,7 @@ export function WelcomeBack({
   rateTo = 0,
   beds = [],
   ready = [],
+  double,
   onClaim,
   onBed,
   onLater,
@@ -27,6 +28,8 @@ export function WelcomeBack({
   beds?: { id: string; name: string }[]
   /** Was inzwischen fertig ist (fertige Texte) */
   ready?: string[]
+  /** Korb verdoppeln (Werbung bzw. Werbefrei-Bonus); fehlt = nicht angeboten */
+  double?: { adFree: boolean; left: number; max: number; onDouble: () => void }
   onClaim: () => void
   /** Einsammeln und gleich dieses Beet öffnen */
   onBed?: (id: string) => void
@@ -77,6 +80,14 @@ export function WelcomeBack({
         <button type="button" className="btn buy welcome-claim" onClick={onClaim} autoFocus>
           {empty ? t.ux.welcomeBack.ok : t.ux.welcomeBack.claim}
         </button>
+        {double && !empty ? (
+          <>
+            <button type="button" className="btn ghost welcome-double" onClick={double.onDouble}>
+              {double.adFree ? t.ux.welcomeBack.doubleFree : t.ux.welcomeBack.doubleAd}
+            </button>
+            <p className="welcome-double-note">{t.ux.welcomeBack.doubleLeft(double.left, double.max)}</p>
+          </>
+        ) : null}
       </div>
     </div>
   )

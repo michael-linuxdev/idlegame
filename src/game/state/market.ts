@@ -11,6 +11,10 @@ import { TAP_COOLDOWN_MS } from '../economy'
 import { ERNTEFEST_GOAL, ERNTEFEST_GOAL_REWARD, erntefestWindowKey, isErntefestActive } from '../events'
 import { CONTEST_KG } from '../extrasCore'
 import {
+  GARTENMONAT_MS,
+  GARTENMONAT_RENEW_MS,
+  AD_BONUS_PER_DAY,
+  OFFLINE_DOUBLE_MIN_AWAY_MS,
   AD_ERNTE_MINUTES,
   AD_SAMEN,
   type AdChoice,
@@ -21,6 +25,7 @@ import {
   CLAN_BOOST,
   CLAN_BOOST_MAX,
   COSMETICS,
+  cosmeticOwned,
   type CosmeticId,
   DAILY_SKIP_CAP_HOURS,
   MARKET_GIFT_SAMEN,
@@ -169,7 +174,12 @@ export function buyCosmetic(state: GameState, id: CosmeticId, now = Date.now()):
 }
 
 export function equipCosmetic(state: GameState, id: CosmeticId, now = Date.now()): GameState {
-  if (!state.ownedCosmetics.includes(id)) return state
+  if (!cosmeticOwned(state.ownedCosmetics, id)) return state
+  // Lichtstimmung der Grundstücke: eigener Platz, Omas Garten bleibt wie er ist
+  if (COSMETICS.find((c) => c.id === id)?.scope === 'chapter') {
+    if (state.equippedChapterCosmetic === id) return state
+    return { ...state, equippedChapterCosmetic: id, lastSeen: now }
+  }
   if (state.equippedCosmetic === id) return state
   return { ...state, equippedCosmetic: id, lastSeen: now }
 }
@@ -206,11 +216,36 @@ export function buyYieldBoost(state: GameState, now = Date.now()): GameState {
   }
 }
 
+/** Restzeit des Gartenmonats (0 = keiner). */
+export function gartenmonatMsLeft(state: GameState, now = Date.now()): number {
+  return Math.max(0, state.gartenmonatExpiresAt - now)
+}
+
+/** Kaufen/verlängern geht, wenn keiner läuft oder höchstens eine Woche übrig ist. */
+export function gartenmonatRenewable(state: GameState, now = Date.now()): boolean {
+  return gartenmonatMsLeft(state, now) <= GARTENMONAT_RENEW_MS
+}
+
+/** Bonus ohne Werbung: Werbefrei gekauft oder ein Gartenmonat läuft. */
+export function adFreeNow(state: GameState, now = Date.now()): boolean {
+  return state.adsRemoved || gartenmonatMsLeft(state, now) > 0
+}
+
+/** Premium-Reihe der Gartenwoche: Gartenmonat (oder der alte Wochen-Pass dieser Woche). */
+export function gartenwochePremiumNow(state: GameState, now = Date.now()): boolean {
+  return state.gartenwochePremium || gartenmonatMsLeft(state, now) > 0
+}
+
 export function mockBuyOffer(state: GameState, offer: ShopOfferDef, now = Date.now()): GameState {
   let next = syncMonetization(state, now)
   if (offer.once && next.ownedOfferIds.includes(offer.id)) return state
   if (offer.kind === 'removeAds' && next.adsRemoved) return state
   if (offer.kind === 'gartenwochePlus' && next.gartenwochePremium) return state
+  if (offer.kind === 'gartenmonat') {
+    if (!gartenmonatRenewable(next, now)) return state
+    // verlängern: die Restzeit bleibt erhalten
+    return { ...next, gartenmonatExpiresAt: Math.max(now, next.gartenmonatExpiresAt) + GARTENMONAT_MS, lastSeen: now }
+  }
   if (offer.kind === 'festPlus') {
     next = syncFest(next, now)
     if (next.festPlusKey === next.festKey) return state
@@ -247,8 +282,46 @@ export function mockBuyOfferById(state: GameState, id: string, now = Date.now())
   return mockBuyOffer(state, offer, now)
 }
 
+/** Boni, die heute noch gehen (Markt-Bonus und verdoppelter Korb zusammen). */
+export function adBonusLeft(state: GameState, now = Date.now()): number {
+  const used = state.werbeBonusDay === dayKey(now) ? state.werbeBoni : 0
+  return Math.max(0, AD_BONUS_PER_DAY - used)
+}
+
+function countAdBonus(state: GameState, now: number): Pick<GameState, 'werbeBonusDay' | 'werbeBoni'> {
+  const today = dayKey(now)
+  return { werbeBonusDay: today, werbeBoni: (state.werbeBonusDay === today ? state.werbeBoni : 0) + 1 }
+}
+
+/** Willkommens-Zettel: Darf der Korb verdoppelt werden? (nicht in der ersten Saison, erst nach 30 min) */
+export function offlineDoubleReady(state: GameState, amount: number, awayMs: number, now = Date.now()): boolean {
+  if (!(amount > 0.01) || awayMs < OFFLINE_DOUBLE_MIN_AWAY_MS) return false
+  if (state.saisonenden < 1 && state.tiefeWinter === 0 && state.generation === 0) return false
+  return adBonusLeft(state, now) > 0
+}
+
+/**
+ * Korb verdoppeln (nach der Werbung bzw. sofort mit Werbefrei): dieselbe
+ * Menge noch einmal. Zählt als Bonus des Tages, ohne die Markt-Abklingzeit.
+ */
+export function claimOfflineDouble(state: GameState, amount: number, now = Date.now()): GameState {
+  if (!(amount > 0.01) || !Number.isFinite(amount) || adBonusLeft(state, now) <= 0) return state
+  let next = syncMonetization(state, now)
+  next = withEventProgress(next, amount, now)
+  return {
+    ...next,
+    ...countAdBonus(next, now),
+    ernte: next.ernte + amount,
+    ernteSeason: next.ernteSeason + amount,
+    ernteLifetime: next.ernteLifetime + amount,
+    rewardedAdClaims: next.rewardedAdClaims + 1,
+    gartenwocheXp: Math.min(GARTENWOCHE_MAX_XP, next.gartenwocheXp + GARTENWOCHE_AD_XP),
+    lastSeen: now,
+  }
+}
+
 export type RewardedAdResult =
-  | { ok: false; reason: 'cooldown' }
+  | { ok: false; reason: 'cooldown' | 'limit' }
   | {
       ok: true
       state: GameState
@@ -276,6 +349,8 @@ export function claimRewardedAd(
   if (!rewardedAdReady(next.lastRewardedAdAt, now)) {
     return { ok: false, reason: 'cooldown' }
   }
+  if (adBonusLeft(next, now) <= 0) return { ok: false, reason: 'limit' }
+  next = { ...next, ...countAdBonus(next, now) }
   const chapter = choice === 'ernte' && plot !== 'garden' && chapterOpen(next, plot) ? plot : undefined
   const samenGained = choice === 'samen' ? AD_SAMEN : 0
   if (chapter) {
@@ -432,7 +507,7 @@ export function claimGartenwocheTier(
   const def = GARTENWOCHE_TIERS.find((row) => row.tier === tier)
   if (!def) return state
   if (next.gartenwocheXp < def.xp) return state
-  if (track === 'premium' && !next.gartenwochePremium) return state
+  if (track === 'premium' && !gartenwochePremiumNow(next, now)) return state
   const claimed =
     track === 'free' ? next.gartenwocheClaimedFree : next.gartenwocheClaimedPremium
   if (claimed.includes(tier)) return state

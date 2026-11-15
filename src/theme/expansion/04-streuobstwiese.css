@@ -11,6 +11,12 @@
   color: #3f7a30;
 }
 
+/* Bonus zählt erst ab dem ersten Tiefen Winter */
+.orchard-bonus--later {
+  color: var(--ge-ink-faint);
+  text-decoration: underline dotted;
+}
+
 .orchard-stage {
   --g-grass: #93c167;
 }

@@ -244,9 +244,10 @@ export default function App() {
           <ShopPanel
             game={game}
             plot={chapterShown ?? 'garden'}
-            onPreview={(id) => {
+            onPreview={(id, scope) => {
               setPreviewSkin(id)
-              setPlot('garden')
+              // Lichtstimmung: auf dem Grundstück zeigen, das gerade offen ist (sonst das erste)
+              setPlot(scope === 'chapter' ? (chapterShown ?? game.openChapters[0] ?? 'garden') : 'garden')
               onTabChange('garten')
             }}
           />
@@ -270,7 +271,17 @@ export default function App() {
         className={`app-main${tab === 'garten' || wide ? ' map-mode' : ''}`}
         tabIndex={tab === 'garten' || wide ? undefined : 0}
       >
-        {(tab === 'garten' || wide) && chapterShown ? <ChapterMap key={chapterShown} game={game} chapter={chapterShown} onGo={goPlot} /> : null}
+        {(tab === 'garten' || wide) && chapterShown ? <ChapterMap
+            key={chapterShown}
+            game={game}
+            chapter={chapterShown}
+            onGo={goPlot}
+            previewSkin={previewSkin}
+            onEndPreview={() => {
+              setPreviewSkin(null)
+              onTabChange('shop')
+            }}
+          /> : null}
         {(tab === 'garten' || wide) && !chapterShown ? (
           <GardenMap
             game={game}
@@ -312,7 +323,7 @@ export default function App() {
 
       {/* Testphase: Hinweis zur Aufzeichnung beim ersten Start der installierten App (game/distribution.ts) */}
       <TestPhaseNotice />
-      {/* Testphase: Bonus-Werbung sperrt das Spiel 30 oder 60 s (game/testWallet.ts) */}
+      {/* Testphase: Bonus-Werbung sperrt das Spiel 15 oder 30 s (game/testWallet.ts) */}
       <AdOverlay ad={game.adPlaying?.blocking ? game.adPlaying : null} onCancel={game.cancelAd} />
       {/* Web-Fassung: Vollbild-Hinweis „Zuerst installieren“ (Store-Fassung: aus, siehe game/distribution.ts) */}
       <InstallGate hasProgress={game.state.totalUpgrades > 1 || game.state.saisonenden > 0 || game.state.tiefeWinter > 0} />

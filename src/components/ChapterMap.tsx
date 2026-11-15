@@ -13,7 +13,7 @@ import { milestonesReached, nextMilestone } from '../game/generators'
 import { MASTERY_BONUS, masteryMult, masteryProgress, masteryStars } from '../game/mastery'
 import { formatErnte, formatClock, formatDecimal, formatRate } from '../game/format'
 import { playSfx } from '../game/sound'
-import { abschlussDue, bestChapterBuy, chapterAreaRates, chapterCareCostOf } from '../game/state'
+import { abschlussDue, bestChapterBuy, chapterAreaRates, chapterBonusActive, chapterCareCostOf } from '../game/state'
 import { arcOf, areaFactor, arcRateMult } from '../game/arcRules'
 import { useHints, type HintId } from '../game/hints'
 import { useOverlayOpen } from '../game/overlays'
@@ -28,6 +28,8 @@ import { ChapterCritters } from './ChapterCritters'
 import { AbschlussScene } from './AbschlussScene'
 import { PlotButtons } from './PlotPicker'
 import { useSignsAlways } from '../game/prefs'
+import { COSMETICS, type CosmeticId } from '../game/monetization'
+import { SkinPreview } from './hud/SkinPreview'
 import {
   IconGrapes,
   IconIlse,
@@ -53,10 +55,13 @@ interface Props {
   chapter: ChapterId
   /** Go to another plot ('garden' or a chapter) */
   onGo: (plot: 'garden' | ChapterId) => void
+  /** Lichtstimmung aus dem Markt zur Probe (Vorschau) */
+  previewSkin?: CosmeticId | null
+  onEndPreview?: () => void
 }
 
 /** Kapitel-Karte: own wallet, goal, ten areas — Streuobstwiese, Weinberg, … */
-export function ChapterMap({ game, chapter, onGo }: Props) {
+export function ChapterMap({ game, chapter, onGo, previewSkin, onEndPreview }: Props) {
   const { state } = game
   const def = chapterDef(chapter)
   const c = state.chapters[chapter]
@@ -81,8 +86,13 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
   const overlayOpen = useOverlayOpen()
   const signsAll = useSignsAlways()
   const stage = chapterStage(def, c)
+  // Lichtstimmung der Grundstücke (Gartenstil für alle Kapitel) bzw. ihre Vorschau aus dem Markt
+  const previewDef = previewSkin ? COSMETICS.find((k) => k.id === previewSkin && k.scope === 'chapter') ?? null : null
+  const lightClass = (previewDef ?? COSMETICS.find((k) => k.id === state.equippedChapterCosmetic))?.accentClass ?? ''
   const bonusRaw = def.gardenBonusPerLevel * chapterLevels(c) * 100
   const bonusPct = formatDecimal(bonusRaw, 1)
+  // Vor dem ersten Tiefen Winter wartet der Garten-Bonus noch (blass, mit Erklärung)
+  const bonusText = chapterBonusActive(state) ? t.chapterUi.bonus(bonusPct) : t.chapterUi.bonusLater(bonusPct)
   /** kurz für die Plakette: ab 10 % ohne Nachkommastelle */
   const bonusShort = formatDecimal(bonusRaw, bonusRaw < 10 ? 1 : 0)
   const nextId = def.areas.find((a) => !areaUnlocked(a, c.owned))?.id ?? null
@@ -166,9 +176,9 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
           <div className="hud-card hud-garden orchard-card">
             <span className="hud-stage">{copy.title}</span>
             <span className="orchard-bonus-row">
-              <span className="orchard-bonus" title={t.chapterUi.bonus(bonusPct)}>
+              <span className={`orchard-bonus${chapterBonusActive(state) ? '' : ' orchard-bonus--later'}`} title={bonusText}>
                 <span aria-hidden="true">+{bonusShort} %</span>
-                <span className="sr-only">{t.chapterUi.bonus(bonusPct)}</span>
+                <span className="sr-only">{bonusText}</span>
               </span>
               {stage === def.areas.length ? <MasteryStars stars={mastery.stars} /> : null}
             </span>
@@ -252,7 +262,7 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
         ) : null}
       </div>
 
-      <div className={`garden-stage orchard-stage stage-${chapter}`} data-daypart={ambient.daypart} data-season={ambient.season}>
+      <div className={`garden-stage orchard-stage stage-${chapter} ${lightClass}`} data-daypart={ambient.daypart} data-season={ambient.season}>
         <div className="garden-map" role="application" aria-label={copy.title}>
           <art.backdrop stage={stage} />
           <ChapterCritters chapter={chapter} daypart={ambient.daypart} season={ambient.season} />
@@ -343,6 +353,7 @@ export function ChapterMap({ game, chapter, onGo }: Props) {
         <OmaHint id={`arc${arc}` as HintId} onOk={() => markSeen(`arc${arc}` as HintId)} />
       ) : null}
       {!c.introSeen ? <ChapterIntro chapter={chapter} onDone={() => game.seeChapterIntro(chapter)} /> : null}
+      {previewDef ? <SkinPreview game={game} skin={previewDef} onEnd={onEndPreview} /> : null}
       {chapter === 'omasgarten' && abschlussDue(state) && !selected ? <AbschlussScene onDone={game.seeAbschluss} /> : null}
     </section>
   )

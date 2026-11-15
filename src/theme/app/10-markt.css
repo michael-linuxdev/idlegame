@@ -152,6 +152,18 @@
   background: linear-gradient(145deg, #e8d9a8, #8a7348);
 }
 
+.cosmetic-swatch.skin-morgentau { background: linear-gradient(145deg, #f1f1e6, #8fc7a0); }
+.cosmetic-swatch.skin-lavendelweg { background: linear-gradient(145deg, #e9e0f1, #9b7fc0); }
+.cosmetic-swatch.skin-heidegarten { background: linear-gradient(145deg, #efdcc4, #b06f8a); }
+.cosmetic-swatch.skin-moosgarten { background: linear-gradient(145deg, #d5d9d6, #588943); }
+.cosmetic-swatch.skin-kiesgarten { background: linear-gradient(145deg, #f6efdf, #a2b98f); }
+.cosmetic-swatch.skin-mondgarten { background: linear-gradient(145deg, #e4ecf4, #689c93); }
+.cosmetic-swatch.skin-lichtTag { background: linear-gradient(145deg, #cfe9ff, #84bd62); }
+.cosmetic-swatch.skin-lichtMorgen { background: linear-gradient(145deg, #eef6f4, #9ccfc0); }
+.cosmetic-swatch.skin-lichtAbend { background: linear-gradient(145deg, #ffe2a8, #c9903f); }
+.cosmetic-swatch.skin-lichtHerbst { background: linear-gradient(145deg, #f0c98a, #b8652c); }
+.cosmetic-swatch.skin-lichtMond { background: linear-gradient(145deg, #dfe6f2, #5f7f9a); }
+
 .cosmetic-tag {
   margin-left: 0.4rem;
   font-size: 0.7rem;
@@ -163,4 +175,13 @@
 
 .shop-list {
   margin-top: 0.35rem;
+}
+
+/* Gartenmonat läuft: Restzeit (Markt, Gartenwoche und Samen-Reiter) */
+.shop-gartenmonat {
+  margin: 0.2rem 0 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--ge-gruen-dunkel);
+  list-style: none;
 }

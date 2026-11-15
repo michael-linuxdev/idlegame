@@ -10,7 +10,7 @@ import { computeNextGoal } from '../game/nextGoal'
 import { levelRewardAt, xpFromOfflineClaim } from '../game/progression'
 import { logPlaytest } from '../game/playtestLog'
 import { playSfx } from '../game/sound'
-import { multBreakdown } from '../game/state'
+import { adBonusLeft, multBreakdown, offlineDoubleReady } from '../game/state'
 import { t } from '../i18n'
 import type { useGame } from '../game/useGame'
 import type { Tab } from './AppNav'
@@ -47,7 +47,8 @@ import { IconHelper } from '../theme/icons'
 import { PlotButtons } from './PlotPicker'
 import { useSignsAlways } from '../game/prefs'
 import type { ChapterId } from '../game/chapters'
-import { COSMETICS, type CosmeticId } from '../game/monetization'
+import { AD_BONUS_PER_DAY, COSMETICS, type CosmeticId } from '../game/monetization'
+import { SkinPreview } from './hud/SkinPreview'
 import { SpeechBubble } from './SpeechBubble'
 import { CrossSheet, DecorSheet, FestSheet, ProgressSheet, TodaySheet } from './lazy'
 import { GardenPlot } from './map/GardenPlot'
@@ -175,7 +176,7 @@ export function GardenMap({
   const setWelcomeDone = (_done: true) => setWelcomeDoneFor(game.offlineAwayMs)
   /** First minutes: only Ernte, goal, Gießen and the menu — events come once Kompost grows */
   const earlyGame = !game.features.has('events')
-  const previewDef = previewSkin ? COSMETICS.find((c) => c.id === previewSkin) ?? null : null
+  const previewDef = previewSkin ? COSMETICS.find((c) => c.id === previewSkin && !c.scope) ?? null : null
   const skinClass = previewDef?.accentClass ?? equippedCosmetic?.accentClass ?? 'skin-wiese'
   const [todayOpen, setTodayOpen] = useState(false)
   const decorOpen = sheet === 'decor'
@@ -349,6 +350,17 @@ export function GardenMap({
     }
     prevLevel.current = playerLevel.level
   }, [playerLevel.level, pushPop])
+
+  // Korb verdoppelt (nach der Werbung): Zettel schließen und wie gewohnt einsammeln
+  const [doubledAmount, setDoubledAmount] = useState(0)
+  useEffect(() => {
+    if (doubledAmount <= 0) return
+    setDoubledAmount(0)
+    setWelcomeDone(true)
+    pushPop(t.ux.welcomeBack.doubled(formatErnte(doubledAmount)), 'claim')
+    claimOffline()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [doubledAmount])
 
   function claimOffline() {
     const amount = game.offlineGained ?? 0
@@ -651,30 +663,24 @@ export function GardenMap({
             setWelcomeDone(true)
             claimOffline()
           }}
+          double={
+            offlineDoubleReady(state, game.offlineGained ?? 0, game.offlineAwayMs, game.nowTick)
+              ? {
+                  adFree: game.adFree,
+                  left: adBonusLeft(state, game.nowTick),
+                  max: AD_BONUS_PER_DAY,
+                  onDouble: () => {
+                    const amount = game.offlineGained ?? 0
+                    game.watchOfflineDouble(amount, game.adFree, () => setDoubledAmount(amount))
+                  },
+                }
+              : undefined
+          }
           onLater={() => setWelcomeDone(true)}
         />
       ) : null}
 
-      {previewDef ? (
-        <div className="preview-banner" role="status">
-          <span>{t.preview.banner(previewDef.name)}</span>
-          <button
-            type="button"
-            className="btn buy"
-            disabled={game.state.samen < previewDef.cost || game.state.ownedCosmetics.includes(previewDef.id)}
-            onClick={() => {
-              game.purchaseCosmetic(previewDef.id)
-              game.setEquippedCosmetic(previewDef.id)
-              onEndPreview?.()
-            }}
-          >
-            {t.preview.buy(previewDef.cost)}
-          </button>
-          <button type="button" className="btn ghost" onClick={onEndPreview}>
-            {t.preview.back}
-          </button>
-        </div>
-      ) : null}
+      {previewDef ? <SkinPreview game={game} skin={previewDef} onEnd={onEndPreview} /> : null}
 
       {photoMode ? (
         <PhotoOverlay
