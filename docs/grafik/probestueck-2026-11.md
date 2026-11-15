@@ -398,6 +398,12 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   Saatgutgläser, Sortenschau, Erzählzelt, Briefstation mit Pfosten und Briefkasten, Pflanzenregal
   mit Töpfen, Weltküche mit Dach, Theke und Töpfen, Musikbühne, Archivwagen mit Rädern und Deichsel.
 
+- **Kapitel 49 Weltgartenschau** (`kapitel-49-weltgartenschau.png`): Rasen- und Pflasterboden,
+  Länderbeete mit Steinrand und Fähnchen, Zukunftshalle mit Grünbogen, Pflanzkübeln und Solarpaneel,
+  Gondelbahn mit Masten, Wasserlichter-Becken und Fontänen, Saatguttempel mit Kuppel, Säulen und
+  Regalen, Kinderwald, Familienpavillon mit Bilderrahmen, Aussichtssteg mit Geländer und Pfosten,
+  Eröffnungsband mit Schere.
+
 Damit sind die Kapitel 4–12 im Weinberg-Niveau. Kapitel 13–50 haben die gemeinsame Kontur und
 das Wachstum, aber noch ihre ursprüngliche Zeichnung.
 
