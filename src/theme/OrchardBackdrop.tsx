@@ -5,64 +5,15 @@
  *
  * Bis 2026-11-15: Farbverlauf, zwei Linien als Bach und 40 Punkte als Blumen.
  */
-import { memo, type ReactNode } from 'react'
+import { memo } from 'react'
 import { useSvgId } from './svgId'
 import { ArtSvg } from './ArtSvg'
 import { P } from './art/palette'
+import { Deco, FlowerPatch, Stones, Tuft } from './MeadowDeco'
 
 const OUT = P.outline
 const PATH = 'M50 100 C46 90 40 86 44 78 C48 70 58 68 54 58 C50 50 40 48 46 40 C50 34 52 30 50 23'
 const STREAM = 'M101 57 C93 60 91 66 92 72 C93 80 86 84 85 91 C84.4 95 84 98 83 101'
-
-/** Kleinteil auf der Wiese: Mittelpunkt in Prozent, Breite in --u (nicht verzerrt). */
-function Deco({ left, top, w, children }: { left: number; top: number; w: number; children: ReactNode }) {
-  return (
-    <div className="garden-decor orchard-deco" style={{ left: `${left}%`, top: `${top}%`, width: `calc(var(--u) * ${w})` }}>
-      {children}
-    </div>
-  )
-}
-
-function Tuft({ tone = 0 }: { tone?: number }) {
-  return (
-    <ArtSvg viewBox="0 0 40 24">
-      <path
-        d="M4 22 l3 -10 l3 7 l2.5 -14 l3.5 13 l3 -9 l3 9 l3 -12 l3 12 l2.5 -6 l2.5 10 z"
-        fill={tone ? '#8cc763' : '#a9dc7e'}
-        stroke="#3f7a30"
-        strokeWidth="1.5"
-        strokeLinejoin="round"
-      />
-      <path d="M12.5 5 l1.6 12 M27 7 l1 11" stroke="#3f7a30" strokeWidth=".9" opacity=".4" fill="none" />
-    </ArtSvg>
-  )
-}
-
-const BLOOM = [P.white, P.yellow, P.pink, P.lilac, P.red]
-
-/** Blumeninsel: niedriges Polster mit einzelnen Blüten (Kontur, gelbe Mitte). */
-function FlowerPatch({ seed }: { seed: number }) {
-  const spots: [number, number][] = [
-    [12, 15],
-    [22, 9],
-    [31, 16],
-    [40, 10],
-    [48, 17],
-    [26, 19],
-  ]
-  return (
-    <ArtSvg viewBox="0 0 60 28">
-      <path d="M3 24 Q6 12 18 12 Q24 4 33 9 Q44 5 49 13 Q58 15 57 24 Z" fill="#74b052" stroke={OUT} strokeWidth="1.6" strokeLinejoin="round" />
-      <path d="M8 22 Q11 15 19 15 Q25 9 32 12" fill="none" stroke="#9fd07d" strokeWidth="2.2" strokeLinecap="round" opacity=".8" />
-      {spots.map(([x, y], i) => (
-        <g key={i}>
-          <circle cx={x} cy={y} r="3.4" fill={BLOOM[(i + seed) % BLOOM.length]} stroke={OUT} strokeWidth="1.2" />
-          <circle cx={x} cy={y} r="1.1" fill={(i + seed) % BLOOM.length === 1 ? P.orange : P.yellow} />
-        </g>
-      ))}
-    </ArtSvg>
-  )
-}
 
 function Reeds() {
   return (
@@ -79,17 +30,6 @@ function Reeds() {
         <rect key={x} x={x - 1.9} y={y - 1} width="3.8" height="9" rx="1.9" fill={P.bark} stroke={OUT} strokeWidth="1.2" />
       ))}
       <path d="M2 43 q3 -9 5 0 M24 43 q2 -8 4 0" fill="#84bd5c" stroke={OUT} strokeWidth="1.2" strokeLinejoin="round" />
-    </ArtSvg>
-  )
-}
-
-function Stones() {
-  return (
-    <ArtSvg viewBox="0 0 40 20">
-      <ellipse cx="13" cy="12" rx="10" ry="6.4" fill={P.stone} stroke={OUT} strokeWidth="1.6" />
-      <ellipse cx="29" cy="13.5" rx="7" ry="4.6" fill={P.stoneLight} stroke={OUT} strokeWidth="1.6" />
-      <path d="M6 10 q4 -4 9 -3" fill="none" stroke={P.white} strokeWidth="1.6" strokeLinecap="round" opacity=".45" />
-      <path d="M8 16 q6 3 12 0" fill="none" stroke={OUT} strokeWidth="1" opacity=".3" />
     </ArtSvg>
   )
 }
@@ -220,7 +160,7 @@ export const OrchardBackdrop = memo(function OrchardBackdrop({ stage }: { stage:
 
       {TUFTS.map(([x, y, tone]) => (
         <Deco key={`t${x}-${y}`} left={x} top={y} w={7}>
-          <Tuft tone={tone} />
+          <Tuft fill={tone ? '#8cc763' : '#a9dc7e'} />
         </Deco>
       ))}
       {PATCHES.map(([x, y, from], i) =>

@@ -5,15 +5,37 @@ import type { BackdropSpec } from '../../chapterArtSpecs'
 import { ArtSvg } from '../../ArtSvg'
 import { useSvgId } from '../../svgId'
 import { P } from '../palette'
+import { Deco, FlowerPatch, Pond, Relief, Sky, Stones, Stream, Tuft } from '../../MeadowDeco'
 import { GroundExtrasArc1, HorizonExtrasArc1 } from './backdropArc1'
 import { GroundExtrasArc2, HorizonExtrasArc2 } from './backdropArc2'
 import { GroundExtrasArc3, HorizonExtrasArc3 } from './backdropArc3'
 import { GroundExtrasArc4, HorizonExtrasArc4 } from './backdropArc4'
 import { GroundExtrasFinale, HorizonExtrasFinale } from './backdropFinale'
 
+/** Plätze am Rand, zwischen den Rand-Motiven der Kapitel (y ≈ 44 und 72). Prozent der Karte. */
+const MEADOW_TUFTS: readonly [number, number][] = [
+  [6, 34],
+  [93, 53],
+  [5, 59],
+  [94, 84],
+  [7, 85],
+  [50, 96.5],
+]
+/** Blumeninseln: [x, y, ab so vielen angelegten Bereichen] */
+const MEADOW_PATCHES: readonly [number, number, number][] = [
+  [92, 60, 1],
+  [8, 52, 3],
+  [91, 91, 5],
+  [9, 91, 7],
+  [93, 27, 9],
+]
+
 export const ChapterBackdrop = memo(function ChapterBackdrop({ spec, stage }: { spec: BackdropSpec; stage: number }) {
   const [far, mid, near] = spec.grass
   const id = useSvgId('cb-grass')
+  const skyId = useSvgId('cb-sky')
+  // Gepflasterte Karten (Hof, Patio, Dach, Fassade): keine Wiesen-Kleinteile
+  const paved = Boolean(spec.cityYard || spec.andalusia || spec.rooftop || spec.livingWall)
   return (
     <div className="garden-ground chapter-ground" aria-hidden="true" data-stage={stage}>
       <ArtSvg className="garden-ground-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -24,7 +46,9 @@ export const ChapterBackdrop = memo(function ChapterBackdrop({ spec, stage }: { 
             <stop offset="100%" stopColor={near} />
           </linearGradient>
         </defs>
-        <rect width="100" height="100" fill={`url(#${id})`} />
+        <rect width="100" height="100" fill={`url(#${id})`} stroke="none" />
+        <Sky id={skyId} />
+        <Relief />
         {spec.stripes
           ? Array.from({ length: 10 }, (_, i) => (
               <path key={i} d={`M0 ${28 + i * 7.4} Q50 ${25 + i * 7.4} 100 ${28 + i * 7.4}`} stroke={spec.stripes} strokeWidth="3" fill="none" vectorEffect="non-scaling-stroke" opacity="0.35" />
@@ -200,25 +224,23 @@ export const ChapterBackdrop = memo(function ChapterBackdrop({ spec, stage }: { 
         <GroundExtrasArc3 spec={spec} />
         <GroundExtrasArc4 spec={spec} />
         <GroundExtrasFinale spec={spec} stage={stage} />
-        {spec.water === 'lake' ? <ellipse cx="50" cy="62" rx="16" ry="7" fill={P.water} opacity="0.9" /> : null}
-        {spec.water === 'river' ? (
-          <path d="M100 58 C90 64 96 72 86 78 C78 84 84 92 76 100" stroke={P.water} strokeWidth="14" fill="none" vectorEffect="non-scaling-stroke" />
-        ) : null}
+        {spec.water === 'lake' ? <Pond cx={50} cy={62} rx={16} ry={7} /> : null}
+        {spec.water === 'river' ? <Stream d="M101 57 C93 60 91 66 92 72 C93 80 86 84 85 91 C84.4 95 84 98 83 101" /> : null}
         {spec.way ? (
           <ChapterPath style={spec.way} color={spec.path} />
         ) : (
-          <path
-            d="M50 100 C46 90 40 86 44 78 C48 70 58 68 54 58 C50 50 40 48 46 40 C50 34 52 30 50 22"
-            stroke={spec.path}
-            strokeWidth="14"
-            fill="none"
-            vectorEffect="non-scaling-stroke"
-            opacity="0.9"
-          />
+          <g fill="none" strokeLinecap="round">
+            {(
+              [
+                [P.outline, 19, 0.28],
+                [spec.path, 14, 1],
+                [P.white, 5, 0.2],
+              ] as const
+            ).map(([c, w, o], i) => (
+              <path key={i} d="M50 100 C46 90 40 86 44 78 C48 70 58 68 54 58 C50 50 40 48 46 40 C50 34 52 30 50 22" stroke={c} strokeWidth={w} opacity={o} vectorEffect="non-scaling-stroke" />
+            ))}
+          </g>
         )}
-        {Array.from({ length: 30 }, (_, i) => (
-          <circle key={i} cx={(i * 37) % 100} cy={26 + ((i * 53) % 72)} r="0.4" fill={[P.white, P.yellow, P.lilac][i % 3]} opacity={stage >= i % 10 ? 0.8 : 0.2} />
-        ))}
       </ArtSvg>
       <div className="garden-hedge orchard-hills">
         <ArtSvg viewBox="0 0 400 60" preserveAspectRatio="none">
@@ -248,7 +270,7 @@ export const ChapterBackdrop = memo(function ChapterBackdrop({ spec, stage }: { 
               ))}
             </g>
           ) : null}
-          <path d="M0 60 V30 Q60 8 140 26 T280 18 T400 24 V60z" fill={spec.hills[0]} />
+          <path d="M0 60 V30 Q60 8 140 26 T280 18 T400 24 V60z" fill={spec.hills[0]} stroke={P.outline} strokeWidth="1.8" strokeOpacity=".5" vectorEffect="non-scaling-stroke" />
           {spec.cityYard ? (
             <g>
               {[0, 56, 300, 352].map((x, i) => (
@@ -445,9 +467,37 @@ export const ChapterBackdrop = memo(function ChapterBackdrop({ spec, stage }: { 
               <path d="M334 16 a4 3 0 0 1 8 0" fill="#9aa8b6" />
             </g>
           ) : null}
-          <path d="M0 60 V42 Q90 26 180 40 T400 34 V60z" fill={spec.hills[1]} />
+          <path d="M0 60 V42 Q90 26 180 40 T400 34 V60z" fill={spec.hills[1]} stroke={P.outline} strokeWidth="2" strokeOpacity=".55" vectorEffect="non-scaling-stroke" />
+          <path d="M0 50 Q90 36 180 48 T400 43" fill="none" stroke={P.white} strokeWidth="2" opacity=".14" />
         </ArtSvg>
       </div>
+      {/* Kleinteile am Kartenrand: Grasbüschel, Steine; Blumeninseln kommen mit dem Ausbau */}
+      {paved
+        ? null
+        : MEADOW_TUFTS.map(([x, y], i) => (
+            <Deco key={`t${i}`} left={x} top={y} w={6.4}>
+              <Tuft fill={spec.grass[0]} edge={spec.hills[1]} />
+            </Deco>
+          ))}
+      {paved
+        ? null
+        : MEADOW_PATCHES.map(([x, y, from], i) =>
+            stage >= from ? (
+              <Deco key={`p${i}`} left={x} top={y} w={8.4}>
+                <FlowerPatch seed={i} fill={spec.grass[2]} light={spec.grass[0]} />
+              </Deco>
+            ) : null,
+          )}
+      {paved ? null : (
+        <>
+          <Deco left={4.5} top={96} w={5.4}>
+            <Stones />
+          </Deco>
+          <Deco left={95} top={33} w={4.6}>
+            <Stones />
+          </Deco>
+        </>
+      )}
       <div className="ambient-tint" />
     </div>
   )

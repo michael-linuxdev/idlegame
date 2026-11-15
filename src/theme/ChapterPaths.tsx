@@ -14,8 +14,11 @@ const NS = { vectorEffect: 'non-scaling-stroke' as const, fill: 'none', strokeLi
 function Way({ d, color, w, edge, edgeW = 3 }: { d: string; color: string; w: number; edge?: string; edgeW?: number }) {
   return (
     <g>
+      {/* kräftiger Stil: dunkle Kontur unter dem Rand, helle Spur in der Mitte */}
+      <path d={d} stroke={P.outline} strokeWidth={w + (edge ? edgeW : 0) + 2.6} {...NS} opacity=".3" />
       {edge ? <path d={d} stroke={edge} strokeWidth={w + edgeW} {...NS} /> : null}
       <path d={d} stroke={color} strokeWidth={w} {...NS} />
+      <path d={d} stroke={P.white} strokeWidth={w * 0.34} {...NS} opacity=".2" />
     </g>
   )
 }

@@ -8,6 +8,7 @@ import { moduleTier, sameTierProps } from './tiers'
 import type { Season } from './ambient'
 import { ArtSvg } from './ArtSvg'
 import { P } from './art/palette'
+import { Deco, FlowerPatch, Relief, Sky, Tuft } from './MeadowDeco'
 import { Barrel, Crate, Lantern, Pennant, Shadow } from './art/parts'
 import { ArchDoor, GableRoof, Pane, Wall } from './art/parts/bold'
 import { BOLD, boldDetail, boldLine } from './art/parts/style'
@@ -413,6 +414,7 @@ export function VineyardWild({ seed = 0 }: { seed?: number }) {
 
 export const VineyardBackdrop = memo(function VineyardBackdrop({ stage }: { stage: number }) {
   const slope = useSvgId('vg-slope')
+  const sky = useSvgId('vg-sky')
   return (
     <div className="garden-ground vineyard-ground" aria-hidden="true" data-stage={stage}>
       <ArtSvg className="garden-ground-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -424,6 +426,8 @@ export const VineyardBackdrop = memo(function VineyardBackdrop({ stage }: { stag
           </linearGradient>
         </defs>
         <rect width="100" height="100" fill={`url(#${slope})`} />
+        <Sky id={sky} />
+        <Relief />
         {/* terraces */}
         {[38, 50, 62, 75, 88].map((y, i) => (
           <g key={y}>
@@ -432,26 +436,68 @@ export const VineyardBackdrop = memo(function VineyardBackdrop({ stage }: { stag
           </g>
         ))}
         {/* switchback path */}
-        <path
-          d="M50 100 L42 92 L58 82 L42 70 L58 58 L44 46 L54 34 L50 24"
-          stroke="#d9c79a"
-          strokeWidth="14"
-          fill="none"
-          strokeLinejoin="round"
-          vectorEffect="non-scaling-stroke"
-        />
+        {(
+          [
+            [P.outline, 19, 0.3],
+            ['#b89c66', 17, 1],
+            ['#e3d2a6', 13.5, 1],
+            [P.white, 4.5, 0.25],
+          ] as const
+        ).map(([c, w, o], i) => (
+          <path key={i} d="M50 100 L42 92 L58 82 L42 70 L58 58 L44 46 L54 34 L50 24" stroke={c} strokeWidth={w} opacity={o} fill="none" strokeLinejoin="round" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+        ))}
         {/* river at the foot */}
-        <path d="M0 97 Q30 93 60 97 T100 95 V100 H0z" fill={P.water} />
-        <path d="M0 98 Q30 95 60 98 T100 97" stroke="#a9d6ee" strokeWidth="2" fill="none" vectorEffect="non-scaling-stroke" className="orchard-stream" strokeDasharray="4 6" />
+        {/* Fluss am Hangfuß: Kiesufer mit Kontur, helle Strömung, wandernde Glanzlichter */}
+        <path d="M0 95.6 Q30 91.6 60 95.6 T100 93.6 V100 H0z" fill="#d6c79a" stroke={P.outline} strokeWidth="1.6" strokeOpacity=".5" vectorEffect="non-scaling-stroke" />
+        <path d="M0 97 Q30 93 60 97 T100 95 V100 H0z" fill={P.water} stroke={P.waterDeep} strokeWidth="2.4" vectorEffect="non-scaling-stroke" />
+        <path d="M0 98.6 Q30 95.4 60 98.6 T100 97.4" stroke={P.waterLight} strokeWidth="5" fill="none" vectorEffect="non-scaling-stroke" opacity=".7" />
+        <path d="M0 98 Q30 95 60 98 T100 97" stroke={P.white} strokeWidth="1.8" fill="none" vectorEffect="non-scaling-stroke" className="orchard-stream" strokeDasharray="7 21" opacity=".8" />
       </ArtSvg>
       <div className="garden-hedge orchard-hills">
         <ArtSvg viewBox="0 0 400 60" preserveAspectRatio="none">
-          <path d="M0 60 V22 Q60 2 140 18 T280 10 T400 16 V60z" fill="#8a9a5a" />
-          <path d="M0 60 V40 Q90 22 180 36 T400 30 V60z" fill="#7a8a4c" />
-          <path d="M300 30 h14 v-10 l7 -6 l7 6 v10 h4 v12 h-32z" fill={P.paper} />
-          <path d="M318 14 v-6" stroke={P.outlineWood} strokeWidth="2" />
+          <path d="M0 60 V22 Q60 2 140 18 T280 10 T400 16 V60z" fill="#a3b46e" />
+          {/* Rebzeilen am fernen Hang */}
+          {[30, 70, 110, 190, 230].map((x, i) => (
+            <path key={x} d={`M${x} ${30 - (i % 2) * 3} q14 -6 28 0`} fill="none" stroke="#6f8a44" strokeWidth="2.4" strokeLinecap="round" opacity=".7" />
+          ))}
+          {/* Weinort: Kirche mit Turmhelm, zwei Häuser */}
+          <path d="M292 44 V26 h18 V44 Z" fill={P.paper} />
+          <path d="M288 27 L301 16 L314 27 Z" fill={P.roof} />
+          <path d="M312 44 V30 h20 V44 Z" fill={P.cream} />
+          <path d="M309 31 L322 21 L335 31 Z" fill={P.roof} />
+          <path d="M276 44 V18 h10 V44 Z" fill={P.paper} />
+          <path d="M274 19 L281 4 L288 19 Z" fill={P.stoneDark} />
+          <path d="M281 4 v-5" stroke={P.outline} strokeWidth="1.6" />
+          <rect x="279" y="24" width="4" height="6" rx="2" fill={P.woodDark} />
+          <rect x="297" y="32" width="5" height="6" fill={P.woodDark} />
+          <rect x="319" y="35" width="5" height="9" fill={P.woodDark} />
+          <path d="M0 60 V40 Q90 22 180 36 T400 30 V60z" fill="#7f9550" />
+          <path d="M0 48 Q90 32 180 44 T400 39" fill="none" stroke={P.white} strokeWidth="2" opacity=".14" />
         </ArtSvg>
       </div>
+      {(
+        [
+          [5, 33],
+          [95, 44],
+          [4, 56],
+          [96, 67],
+          [5, 80],
+        ] as const
+      ).map(([x, y]) => (
+        <Deco key={`${x}-${y}`} left={x} top={y} w={6.4}>
+          <Tuft fill="#c3d184" edge="#5f7a3a" />
+        </Deco>
+      ))}
+      {stage >= 3 ? (
+        <Deco left={94} top={55} w={8.4}>
+          <FlowerPatch seed={1} fill="#8fa457" light="#c3d184" />
+        </Deco>
+      ) : null}
+      {stage >= 6 ? (
+        <Deco left={7} top={68} w={8.4}>
+          <FlowerPatch seed={3} fill="#8fa457" light="#c3d184" />
+        </Deco>
+      ) : null}
       <div className="ambient-tint" />
     </div>
   )

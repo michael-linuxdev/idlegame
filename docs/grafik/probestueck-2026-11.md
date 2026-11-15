@@ -436,3 +436,22 @@ Paint-Zeichnung.“ Die Bereiche waren schon im kräftigen Stil, die Kulisse nic
   Laubbögen statt Ringen; Herbst in Gold mit einzelnen orangefarbenen Blättern statt Oliv.
 - Herbst-Filter der Hügel nur noch leicht (die Scheune bleibt rot).
 
+## Kulissen der Kapitel 3–50 (2026-11-15)
+Rückmeldung: „Die anderen Kapitel brauchen dieselbe Qualität.“ Die Bereiche waren schon im
+kräftigen Stil; angehoben ist jetzt die Kulisse aller Kapitel (`kapitel-kulissen-2026-11-15.png`).
+Die Kapitel 4–50 teilen sich `art/chapters/backdrop.tsx`, darum wirkt jede Änderung überall.
+- **Gemeinsame Teile** in `src/theme/MeadowDeco.tsx`: Himmel mit Wolken, Bodenwellen, Bach und
+  Teich mit Ufer, Grasbüschel, Blumeninsel, Steine (nicht verzerrt, in den Farben des Kapitels).
+- **Horizont:** Himmel hinter den Hügeln, Hügel mit Kontur und Lichtkante; jede gefüllte Form am
+  Horizont und auf dem Boden bekommt per CSS die dunkle Kontur (`04-streuobstwiese.css`, Formen
+  mit eigenem Strich bleiben). Der Herbst-Filter färbt die Horizonte nur noch leicht — vorher
+  wurden Stadt, Patio und Dorf rosa.
+- **Wege:** alle Wegformen (`ChapterPaths.tsx`, `Way`) mit dunkler Kontur und heller Spur.
+- **Wiese:** Blumeninseln (kommen mit dem Ausbau) und Grasbüschel am Rand statt 30 Punkten;
+  auf gepflasterten Karten (Hof, Patio, Dach, Fassade) keine.
+- **Weinberg:** Himmel, Rebzeilen am fernen Hang, Weinort mit Kirche, Weg mit Kontur, Fluss mit
+  Kiesufer.
+- Nicht Teil davon: eigene handgezeichnete Kulissen je Kapitel wie bei der Streuobstwiese
+  (eigener Zaun, eigenes Gewässer) — die Rand-Motive der Kapitel sind dieselben wie vorher,
+  nur mit Kontur.
+
