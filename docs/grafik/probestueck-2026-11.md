@@ -374,6 +374,11 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   mit Tresorrad, Sortengarten, Schubladenarchiv, Versandtresen mit Lastenrad, Infowand und
   Wegweiser, Festtisch mit Ballons.
 
+- **Kapitel 44 Klimagarten** (`kapitel-44-klimagarten.png`): Boden mit Licht, Trockenbeet mit
+  Lavendel, Salbei und Fetthenne, Schwammfläche mit Wasserglanz, Mulchweg, Schattenbaum, Zisterne
+  mit Pumpe und Regenrinnen, Mischkultur, Windhecke, Wetterstation mit Wetterhütte und Solarpaneel,
+  Lehrküche mit Pfosten und Herd, Infotafel.
+
 Damit sind die Kapitel 4–12 im Weinberg-Niveau. Kapitel 13–50 haben die gemeinsame Kontur und
 das Wachstum, aber noch ihre ursprüngliche Zeichnung.
 
