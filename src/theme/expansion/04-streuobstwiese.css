@@ -31,6 +31,15 @@
   height: 100%;
 }
 
+/* Herbst: die Hügel der Streuobstwiese nur leicht ins Gelbe (die Scheune bleibt rot) */
+.garden-stage[data-season='autumn'] .orchard-ground .orchard-hills > svg {
+  filter: hue-rotate(-16deg) saturate(1.08);
+}
+
+.orchard-deco > svg {
+  overflow: visible;
+}
+
 .orchard-stream {
   animation: orchard-stream 6s linear infinite;
 }

@@ -420,3 +420,19 @@ Animationen (Reiher, Kaiki, Hausboot), bei denen CSS die Position überschrieb.
 2. ~~Kapitel 4–12 einzeln~~ – flache Bereiche nachgezeichnet (oben).
 3. ~~Kapitel 13–50 auf flache Bereiche durchsehen~~ – erledigt (Veredelungstisch).
 4. Kapitel 4–12 im Weinberg-Niveau – erledigt (oben). Als Nächstes Kapitel 13 ff. in Spielreihenfolge.
+
+## Streuobstwiese: Kulisse und Bäume (2026-11-15)
+Rückmeldung: „Der Hauptgarten sieht nett aus, die Obstwiese (außer den Gebäuden) wie eine
+Paint-Zeichnung.“ Die Bereiche waren schon im kräftigen Stil, die Kulisse nicht
+(`kapitel-02-obstwiese.png`).
+- **Kulisse** (`src/theme/OrchardBackdrop.tsx`): Himmel mit Wolken, drei Hügelstaffeln mit
+  Baumreihen und Opas Scheune (Bretterwand, rotes Dach mit Schattenseite, Tor); Feldweg mit
+  ausgefahrenen Spuren und Grasnarbe; Bach mit Uferböschung, Kiesrand, heller Mitte und
+  wandernden Glanzlichtern, dazu Schilf und Steine; Blumeninseln (je mehr Bereiche, desto
+  mehr), Grasbüschel, Maulwurfshügel; Koppelzaun mit Pfosten und zwei Riegeln. Vorher:
+  Farbverlauf, zwei Linien als Bach, 40 Punkte als Blumen.
+- **Obstbäume** (`FruitTree` in `OrchardArt.tsx`): Stamm mit Wurzelansatz und Astgabel, Krone
+  in drei Tönen (dunkle Unterseite, Laubballen im Licht von oben links) mit kleinen
+  Laubbögen statt Ringen; Herbst in Gold mit einzelnen orangefarbenen Blättern statt Oliv.
+- Herbst-Filter der Hügel nur noch leicht (die Scheune bleibt rot).
+
