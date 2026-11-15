@@ -1,4 +1,5 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useSwipeClose } from './useSwipeClose'
 import { logPlaytest } from '../game/playtestLog'
 import { LOCALES, setLocale, t, useLocale } from '../i18n'
 import { MuteToggle } from './MuteToggle'
@@ -320,6 +321,8 @@ function MenuSheet({
 }) {
   const [page, setPage] = useState<'main' | 'settings'>('main')
   useDismiss(() => (page === 'settings' ? setPage('main') : onClose()))
+  const sheetRef = useRef<HTMLDivElement>(null)
+  useSwipeClose(sheetRef, onClose)
 
   const tiles: { key: string; icon: ReactNode; label: string; dot?: boolean; ftue?: boolean; on?: () => void }[] = [
     { key: 'notebook', icon: <IconNotebook />, label: t.notebook.title, dot: unreadLetters > 0, on: onOpenNotebook },
@@ -340,6 +343,7 @@ function MenuSheet({
   return (
     <div className="nav-sheet-layer" role="presentation" onClick={onClose}>
       <div
+        ref={sheetRef}
         className="nav-sheet nav-menu"
         role="dialog"
         aria-modal="true"

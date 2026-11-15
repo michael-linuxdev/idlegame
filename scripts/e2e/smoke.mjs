@@ -33,6 +33,27 @@ import { rolldown } from 'rolldown'
 const LANG = process.env.E2E_LANG === 'en' ? 'en' : 'de'
 
 /** Texte der gewählten Sprache direkt aus src/i18n (gebündelt, keine Kopie). */
+/** Wischt ein Fenster mit synthetischen Touch-Ereignissen um dy px nach unten (Wegwischen, 2026-11-15). */
+async function swipeDown(p, selector, dy, steps = 8) {
+  await p.evaluate(
+    async ({ selector, dy, steps }) => {
+      const el = document.querySelector(selector)
+      const r = el.getBoundingClientRect()
+      const x = r.left + r.width / 2
+      const y0 = r.top + 30
+      const touch = (y) => new Touch({ identifier: 1, target: el, clientX: x, clientY: y })
+      el.dispatchEvent(new TouchEvent('touchstart', { touches: [touch(y0)], bubbles: true, cancelable: true }))
+      // wie ein ruhiger Finger: ein Schritt je Bild (sonst zählt es als schneller Wisch)
+      for (let i = 1; i <= steps; i++) {
+        await new Promise((r) => setTimeout(r, 40))
+        el.dispatchEvent(new TouchEvent('touchmove', { touches: [touch(y0 + (dy * i) / steps)], bubbles: true, cancelable: true }))
+      }
+      el.dispatchEvent(new TouchEvent('touchend', { touches: [], bubbles: true, cancelable: true }))
+    },
+    { selector, dy, steps },
+  )
+}
+
 async function loadStrings(lang) {
   const bundle = await rolldown({ input: `src/i18n/${lang}/strings.ts`, logLevel: 'silent' })
   const { output } = await bundle.generate({ format: 'esm' })
@@ -385,6 +406,15 @@ try {
       await p.waitForTimeout(300)
       assert((await p.locator('.upgrade-hud').count()) === 0, 'Zurück closes the Ausbau window')
       assert(p.url().startsWith(URL), 'Zurück stays in the app')
+      // Wegwischen: kurz gezogen federt zurück, weit gezogen schließt (Menü und Ausbauen)
+      await p.locator('.garden-plot.planted').first().dispatchEvent('click')
+      await p.locator('.upgrade-hud').waitFor()
+      await swipeDown(p, '.upgrade-hud', 40)
+      await p.waitForTimeout(400)
+      assert((await p.locator('.upgrade-hud').count()) === 1, 'short swipe keeps the Ausbau window')
+      await swipeDown(p, '.upgrade-hud', 220)
+      await p.waitForTimeout(500)
+      assert((await p.locator('.upgrade-hud').count()) === 0, 'swipe down closes the Ausbau window')
       await p.locator('.hud-wallet').click()
       await p.locator('.mult-sheet').waitFor()
       await p.screenshot({ path: `${SHOTS}/boni.png` })
@@ -394,6 +424,11 @@ try {
       await p.screenshot({ path: `${SHOTS}/menu.png` })
       await p.keyboard.press('Escape')
       assert((await p.locator('.nav-sheet').count()) === 0, 'Escape closes the menu')
+      await p.locator('.menu-fab').click()
+      await p.locator('.nav-sheet').waitFor()
+      await swipeDown(p, '.nav-sheet', 240)
+      await p.waitForTimeout(500)
+      assert((await p.locator('.nav-sheet').count()) === 0, 'swipe down closes the menu')
       for (const tab of ['prestige', 'shop']) {
         await p.locator(`.tabbar .tab-${tab}`).click()
         await p.waitForTimeout(300)

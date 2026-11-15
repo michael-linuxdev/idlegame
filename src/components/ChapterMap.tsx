@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
 import { useDismiss } from '../game/overlays'
+import { useSwipeClose } from './useSwipeClose'
 import { careNamesFor } from '../theme/careNames'
 import {
   CHAPTER_CARE_MAX,
@@ -361,6 +362,8 @@ function ChapterSheet({
   onClose: () => void
 }) {
   useDismiss(onClose)
+  const hudRef = useRef<HTMLDivElement>(null)
+  useSwipeClose(hudRef, onClose)
   const def = chapterDef(chapter)
   const a = def.areas.find((x) => x.id === area)!
   const copy = chapterCopy(chapter)
@@ -470,6 +473,7 @@ function ChapterSheet({
   return (
     <div className="upgrade-hud-layer" role="presentation" onClick={onClose}>
       <div
+        ref={hudRef}
         className={`upgrade-hud gc-card chapter-card${flash ? ' upgrade-flash' : ''}`}
         role="dialog"
         aria-modal="true"

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
+import { useSwipeClose } from './useSwipeClose'
 import { useDismiss } from '../game/overlays'
 import { careNamesFor } from '../theme/careNames'
 import { ModuleArt } from '../theme/ModuleArt'
@@ -62,6 +63,8 @@ function saveBulk(mode: BulkMode) {
 
 export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
   useDismiss(onClose)
+  const hudRef = useRef<HTMLDivElement>(null)
+  useSwipeClose(hudRef, onClose)
   const def = GENERATORS.find((g) => g.id === selectedId)
   const [flash, setFlash] = useState(false)
   const holdTimer = useRef<number | null>(null)
@@ -218,6 +221,7 @@ export function UpgradeSheet({ game, selectedId, onClose, onUpgraded }: Props) {
   return (
     <div className="upgrade-hud-layer" role="presentation" onClick={onClose}>
       <div
+        ref={hudRef}
         className={`upgrade-hud gc-card${flash ? ' upgrade-flash' : ''}`}
         role="dialog"
         aria-modal="true"
