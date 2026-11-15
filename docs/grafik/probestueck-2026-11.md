@@ -346,6 +346,11 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   Wasserloch mit Felsen und Schilf, Mahlstein mit Saathaufen, Saatguthütte mit Gläsern, Regentank-
   Haus mit Dachrinne, Feuerstelle mit Bänken.
 
+- **Kapitel 38 Farngarten** (`kapitel-38-farngarten.png`): Waldboden mit Laub und Pfütze, Baumfarne,
+  Kōwhai- und Pōhutukawa-Baum, Tūī, Kauripfad mit Schild, Hängebrücke mit Holzpfosten,
+  Glühwurmgrotte, Kūmara-Hügel und Pātaka, Wasserfall mit Becken, Anzuchttisch mit Schalen,
+  Hanghütte mit Kamin, Matariki-Feuerstelle.
+
 Damit sind die Kapitel 4–12 im Weinberg-Niveau. Kapitel 13–50 haben die gemeinsame Kontur und
 das Wachstum, aber noch ihre ursprüngliche Zeichnung.
 
