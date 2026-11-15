@@ -83,6 +83,10 @@ export const uxStrings = {
     rate: (from: string, to: string) => `Harvest per second: ${from} → ${to}`,
     ok: 'Lovely!',
     claim: 'Collect',
+    doubleAd: 'Watch an ad: basket ×2',
+    doubleFree: 'Basket ×2 (bonus)',
+    doubleLeft: (n: number, max: number) => `Optional · ${n} of ${max} bonuses left today`,
+    doubled: (amount: string) => `Basket doubled: +${amount} harvest`,
     bedsTitle: 'Afterwards you can upgrade right away:',
     readyTitle: 'Ready in the meantime:',
     ready: {

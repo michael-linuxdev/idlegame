@@ -6,6 +6,13 @@
  *  - engaged: plays continuously, buys the best ROI upgrade every few
  *    seconds, waters whenever ready, saisonenden near the payout-rate peak.
  *  - casual:  short sessions every few hours, offline catch-up in between.
+ *  - occasional: Gelegenheitsspielerin nach dem Playtest-Log von Testerin 2
+ *    (docs/playtest/2026-11-13-befunde.md): 3 Besuche von 4 min am Tag, kauft
+ *    ~20 Ausbauten je Minute statt des besten Kaufs im 5-s-Takt, schiebt das
+ *    Saisonende auf den nächsten Besuch, geht einmal am Tag an Omas Truhe und
+ *    schaut bei jedem zweiten Besuch eine Werbung (10 min Ernte).
+ *    HOARD=1: gibt (wie im Log vor dem Truhen-Fix) keine Erbstücke aus,
+ *    außer für Jonas.
  *
  * Build + run:  npm run balance   (see package.json)
  *
@@ -31,6 +38,8 @@
  *  ADS=n              Werbung (Ernte-Wahl, 10 min Ernte) höchstens n-mal je
  *                     Sitzung, sobald die Abklingzeit um ist · ADS=all: ohne
  *                     Grenze (Werbefrei: alle 3 min, ganze Sitzung)
+ *  OFFLINE_AD=1       bei jeder Rückkehr den Korb verdoppeln (Willkommens-Zettel,
+ *                     höchstens AD_BONUS_PER_DAY Boni am Tag) · OFFLINE_AD=0: nie
  *  Ausgabe: „chapters: K2@d… K13@d…“ und der Garten-Bonus aller Kapitel
  *
  * Entscheidungen (Runde 4, Paket 2):
@@ -102,8 +111,8 @@ import {
 import { moduleTier } from '../../src/theme/tiers'
 import { DEEP_SHOP, REST_CUT, canDeepNow, restMsFor, sproutPayout } from '../../src/game/longLoop'
 import { LEGACY_SHOP } from '../../src/game/generations'
-import { CHAPTER_BONUS, CHAPTERS, chaptersGardenMult, totalChapterLevels } from '../../src/game/chapters'
-import { bestChapterBuy, buyChapterArea, buyIlse, openChapters, buildProjectStage, claimRewardedAd, weatherPreview, bestWeatherChoice, decideWeather, chapterAreaRates, chooseArcRule } from '../../src/game/state'
+import { CHAPTER_BONUS, CHAPTERS, OBSTWIESE, chaptersGardenMult, totalChapterLevels } from '../../src/game/chapters'
+import { claimOfflineDouble, offlineDoubleReady, bestChapterBuy, buyChapterArea, buyIlse, openChapters, buildProjectStage, claimRewardedAd, weatherPreview, bestWeatherChoice, decideWeather, chapterAreaRates, chooseArcRule } from '../../src/game/state'
 import { arcOf, bestChoice } from '../../src/game/arcRules'
 import { PROJECTS } from '../../src/game/projects'
 import { MASTERY_BONUS, masteryStars, totalMasteryStars } from '../../src/game/mastery'
@@ -143,6 +152,8 @@ if (process.env.CARD_TUNE) {
   }
 }
 
+// OBSTWIESE_AT=99: Kapitel 2 erst mit dem ersten Tiefen Winter (Regel bis 2026-11-15)
+if (process.env.OBSTWIESE_AT) OBSTWIESE.fromSeasons = Number(process.env.OBSTWIESE_AT)
 const PLAY_CHAPTERS = !!(process.env.CHAPTERS || process.env.SIM_ALL_CHAPTERS)
 // Formel-Vergleich für den Kapitel-Bonus (nur Simulator): product | sum | soft | log
 if (process.env.CHAPTER_BONUS_MODE) CHAPTER_BONUS.mode = process.env.CHAPTER_BONUS_MODE as typeof CHAPTER_BONUS.mode
@@ -155,7 +166,7 @@ if (process.env.MASTERY_PER_STAR) MASTERY_BONUS.perStar = Number(process.env.MAS
  * die auf die Abwesenheit wirken (Ruhiges/Fleißiges Jahr), zählt der Anteil
  * der Ernte, die dieses Profil offline einfährt (grob aus dem Sitzungsmuster).
  */
-const OFFLINE_SHARE: Record<Profile, number> = { engaged: 0.33, regular: 0.85, casual: 0.95 }
+const OFFLINE_SHARE: Record<Profile, number> = { engaged: 0.33, regular: 0.85, casual: 0.95, occasional: 0.98 }
 function cardValue(o: { id: string; preview: number }, profile: Profile): number {
   const def = SEASON_CARDS.find((c) => c.id === o.id)
   if (!def?.offline) return o.preview
@@ -223,13 +234,22 @@ Math.random = () => {
   return seed / 4294967296
 }
 
-type Profile = 'engaged' | 'regular' | 'casual'
+type Profile = 'engaged' | 'regular' | 'casual' | 'occasional'
 
 /** Session pattern per profile (local hours 08–23; nights offline). */
 const SESSIONS: Record<Profile, { every: number; len: number } | null> = {
   engaged: null, // plays continuously 08–24
   regular: { every: 120, len: 15 },
   casual: { every: 180, len: 4 },
+  occasional: { every: 300, len: 4 }, // 8, 13 und 18 Uhr = 12 min am Tag (Testerin 2: 13,4)
+}
+
+/** Gewohnheiten der Gelegenheitsspielerin (Playtest-Log Testerin 2, 5 Tage). */
+export const OCCASIONAL = {
+  /** Ausbauten je Minute (Log: 1246 in 67 min = 19) */
+  buysPerMin: 20,
+  /** Werbung in jedem n-ten Besuch (Log: 11 in 16 Besuchen) */
+  adEverySession: 2,
 }
 
 interface Milestone {
@@ -390,6 +410,14 @@ export function run(profile: Profile, hours: number) {
   const adsPerSession = process.env.ADS === 'all' ? Infinity : Number(process.env.ADS ?? 0)
   let adsThisSession = 0
   let adClaims = 0
+  // Gelegenheitsspielerin: Besuche zählen, Kauf-Tempo, Truhe einmal am Tag
+  const occasional = profile === 'occasional'
+  let sessionNo = 1
+  let gateSession = -1
+  let buyBudget = 0
+  let truheDay = ''
+  let awaySince = clock
+  let doubles = 0
 
   const note = (label: string) => milestones.push({ t: (clock - start) / 1000, label })
 
@@ -399,7 +427,17 @@ export function run(profile: Profile, hours: number) {
       const { state, gained } = applyOfflineCatchup(s, clock)
       s = claimOfflineReward(state, gained, clock)
       adsThisSession = 0
+      sessionNo += 1
+      // Korb verdoppeln im Willkommens-Zettel: OFFLINE_AD=1 bei jeder Rückkehr,
+      // die Gelegenheitsspielerin bei jedem zweiten Besuch (statt der Markt-Werbung)
+      const wantsDouble = process.env.OFFLINE_AD === '0' ? false : process.env.OFFLINE_AD ? true : occasional && sessionNo % OCCASIONAL.adEverySession === 0
+      if (wantsDouble && offlineDoubleReady(s, gained, clock - awaySince, clock)) {
+        s = claimOfflineDouble(s, gained, clock)
+        doubles += 1
+        adsThisSession = 1
+      }
     }
+    if (!active && wasActive) awaySince = clock
     wasActive = active
     if (!active) {
       clock += 60_000
@@ -448,7 +486,8 @@ export function run(profile: Profile, hours: number) {
       }
     }
     if (s.lastTapAt <= 0 || clock - s.lastTapAt >= 5 * 60_000) s = water(s)
-    if (adsThisSession < adsPerSession) {
+    const adLimit = occasional && process.env.ADS == null ? (sessionNo % OCCASIONAL.adEverySession === 0 ? 1 : 0) : adsPerSession
+    if (adsThisSession < adLimit) {
       const r = claimRewardedAd(s, 'ernte', clock)
       if (r.ok) {
         s = r.state
@@ -457,8 +496,25 @@ export function run(profile: Profile, hours: number) {
       }
     }
     // LAZY=1: the player never buys areas himself — Jonas does all of it
-    if (!process.env.LAZY || s.helperLevel === 0) s = buyBest(s)
-    s = spendErbstuecke(s)
+    if (occasional) {
+      buyBudget = Math.min(40, buyBudget + (dt / 60) * OCCASIONAL.buysPerMin)
+      const n = Math.floor(buyBudget)
+      if (n > 0) {
+        const before = s.totalUpgrades
+        s = buyBest(s, n)
+        buyBudget -= s.totalUpgrades - before
+      }
+      // Truhe: einmal am Tag (HOARD=1: nie, nur Jonas)
+      const today = new Date(clock).toDateString()
+      if (process.env.HOARD) s = hireJonas(s)
+      else if (today !== truheDay) {
+        truheDay = today
+        s = spendErbstuecke(s)
+      }
+    } else {
+      if (!process.env.LAZY || s.helperLevel === 0) s = buyBest(s)
+      s = spendErbstuecke(s)
+    }
     // Kapitel nur alle 60 s Spielzeit (Laufzeit); Ilse läuft ohnehin im Takt mit
     if (PLAY_CHAPTERS && Math.floor(activeSec / 60) !== Math.floor((activeSec - dt) / 60)) {
       s = playChapters(s)
@@ -500,6 +556,7 @@ export function run(profile: Profile, hours: number) {
     if (process.env.TRACE && s.saisonenden === 0 && Math.round((clock - start) / 1000) % 900 === 0)
       note(`trace ernte ${fmtN(s.ernteSeason)} rate ${fmtN(productionPerSecond(s, clock))}/s`)
     if (canPrestigeNow(s) && gateAt < 0) {
+      gateSession = sessionNo
       gateAt = clock
       note(`gate reached (season ${s.saisonenden + 1})`)
     }
@@ -510,7 +567,7 @@ export function run(profile: Profile, hours: number) {
       const rate = payout / Math.max(1, runMin)
       bestPayoutRate = Math.max(bestPayoutRate, rate)
       // SEASON_ASAP=1: jede Saison sofort an der Schwelle beenden (Kurz-Saisons, Befund 2026-11-13)
-      const ready = process.env.SEASON_ASAP ? true : profile === 'engaged' ? rate < bestPayoutRate * 0.92 : payout >= 1.6 * payoutAtGate(s.saisonenden, probe) || runMin > 60 * 30
+      const ready = process.env.SEASON_ASAP ? true : occasional ? sessionNo > gateSession : profile === 'engaged' ? rate < bestPayoutRate * 0.92 : payout >= 1.6 * payoutAtGate(s.saisonenden, probe) || runMin > 60 * 30
       if (ready) {
         runs.push({
           dur: (clock - runStart) / 1000,
@@ -579,7 +636,9 @@ export function run(profile: Profile, hours: number) {
             note(`GENERATION #${s.generation}`)
           }
         }
-        s = spendErbstuecke(s)
+        if (!occasional) s = spendErbstuecke(s)
+        else if (process.env.HOARD) s = hireJonas(s)
+        else truheDay = ''
         for (const g of GENERATORS) lastLevel[g.id] = s.owned[g.id] ?? 0
         runStart = clock
         runActiveStart = activeSec
@@ -589,7 +648,7 @@ export function run(profile: Profile, hours: number) {
     }
   }
   const chapters = CHAPTERS.filter((d) => chapterDays[d.id] != null).map((d) => ({ number: d.number, id: d.id, day: chapterDays[d.id]! }))
-  return { s, milestones, runs, hours, stageByDay, deeps, gens, chapters, adClaims, restDays, density: eventDensity(events, profile) }
+  return { s, milestones, runs, hours, stageByDay, deeps, gens, chapters, adClaims, doubles, restDays, density: eventDensity(events, profile) }
 }
 
 /** Abstände zwischen bedeutsamen Ereignissen in aktiver Spielzeit. */
@@ -617,7 +676,7 @@ export function eventDensity(events: number[], profile: Profile) {
 function report(profile: Profile, hours: number) {
   seed = 12345
   clock = startAt()
-  const { s, milestones, runs, stageByDay, deeps, gens, chapters, adClaims, restDays, density } = run(profile, hours)
+  const { s, milestones, runs, stageByDay, deeps, gens, chapters, adClaims, doubles, restDays, density } = run(profile, hours)
   const dn = (sec: number) => (Number.isFinite(sec) ? (sec >= 120 ? `${Math.round(sec / 60)}m` : `${Math.round(sec)}s`) : '-')
   if (process.env.SUMMARY) {
     const act = runs.map((r) => Math.round(r.active / 60))
@@ -635,6 +694,7 @@ function report(profile: Profile, hours: number) {
     console.log(
       `  density s1 median ${dn(density.s1Median)} max ${dn(density.s1Max)} · later median ${dn(density.laterMedian)} p90 ${dn(density.laterP90)} | active mins ${act.slice(0, 14).join(' ')} | longest active ${longest}m (year ${act.indexOf(longest, 1) + 1})`,
     )
+    if (adClaims || doubles) console.log(`  bonus: ${adClaims} Markt, ${doubles} Korb ×2`)
     if (process.env.HELPER_DAYS) console.log(`  jonas ranks bought: ${helperDays.map((d, i) => `R${i + 1}@d${d}`).join(' ')} | year ${s.saisonenden + 1} | deep ${s.tiefeWinter} | gen ${s.generation}`)
     if (process.env.GEN) console.log(`  generations: ${gens.map((d, i) => `G${i + 1}@d${d}`).join(' ')}`)
     if (PLAY_CHAPTERS)

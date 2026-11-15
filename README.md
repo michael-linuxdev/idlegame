@@ -36,7 +36,7 @@ npm run build && npm run screens -- en     # Jedes Fenster im iPhone-13-Format �
 npm run build && npm run art:update        # Vergleichsbilder nach gewollter Grafik-Änderung erneuern
 node scripts/art/shots.mjs <ordner>        # Spielfeld-Screenshots Tag/Abend/Nacht + 4 Jahreszeiten
 npm test                                   # Vitest (Format, Balance-Formeln, Gartenjahre, Notizbuch)
-SUMMARY=1 npm run balance -- regular 336   # Balance-Simulator (engaged | regular | casual, Stunden)
+SUMMARY=1 npm run balance -- regular 336   # Balance-Simulator (engaged | regular | casual | occasional, Stunden)
 WEATHER=best DECISIONS=1 SUMMARY=1 npm run balance -- regular 8760   # … mit Wetter-Entscheidungen, zählt jede Wahl
 TASKS=1 ARC=best GEN=1 CHAPTERS=1 CHAPTER_MANUAL=0 SUMMARY=1 npm run balance -- regular 43800   # … Tagesziele (Ruhezeit) und Bogen-Regeln
 npm run build && python3 scripts/generate-pwa-icons.py   # App-Icons aus den echten Bausteinen (?artsheet=icon, Pillow)

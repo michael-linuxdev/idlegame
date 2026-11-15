@@ -436,6 +436,20 @@ html.idle .plot-canbuy {
   margin-top: 0.7rem;
 }
 
+/* Korb verdoppeln (Werbung / Werbefrei-Bonus) — bewusst leiser als „Einsammeln“ */
+.welcome-double {
+  width: 100%;
+  margin-top: 0.45rem;
+  min-height: 2.75rem;
+}
+
+.welcome-double-note {
+  margin: 0.25rem 0 0;
+  font-size: 0.78rem;
+  text-align: center;
+  color: var(--ge-ink-faint);
+}
+
 .prestige-eta {
   margin: 0.3rem 0 0;
   font-size: 0.85rem;

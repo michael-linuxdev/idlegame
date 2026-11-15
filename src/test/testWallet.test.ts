@@ -75,9 +75,9 @@ describe('Testgeld (Testphase)', () => {
     expect(walletLeftCents(readWallet(NOV))).toBe(TEST_START_CENTS)
   })
 
-  it('Werbung dauert 30 oder 60 Sekunden', () => {
-    expect(pickTestAdSeconds(0.1)).toBe(30)
-    expect(pickTestAdSeconds(0.9)).toBe(60)
+  it('Werbung dauert 15 oder 30 Sekunden', () => {
+    expect(pickTestAdSeconds(0.1)).toBe(15)
+    expect(pickTestAdSeconds(0.9)).toBe(30)
   })
 
   it('Preise je Sprache formatiert', () => {

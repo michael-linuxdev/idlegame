@@ -909,6 +909,70 @@ try {
     await ctx.close()
   }
 
+  // 18 — Bindung/Markt (2026-11-15): Korb verdoppeln im Willkommens-Zettel, Obstwiese ab Gartenjahr 6
+  //      (Bonus wartet auf den Tiefen Winter), Lichtstimmung auf dem Grundstück
+  {
+    const seed = (extra) => {
+      if (sessionStorage.getItem('seed')) return
+      const owned = { gemuesebeet: 60, kompost: 40, kraeuterspirale: 30, beerenhecke: 20 }
+      const obstwiese = { cur: 500, curLifetime: 500, owned: { apfel: 30, birne: 12 }, openedAt: 0, introSeen: true, care: {} }
+      const save = { owned, ernte: 1000, samen: 900, saisonenden: 5, sessions: 9, lastSeen: Date.now() - 6 * 3600_000, saveVersion: 1, chapters: { obstwiese }, ...extra }
+      localStorage.setItem('gartenerbe-spielstand-v1', JSON.stringify(save))
+      localStorage.setItem('gartenerbe-ftue-v1', JSON.stringify({ beat: 'done', dismissed: true, completed: [], startedAt: 1 }))
+      localStorage.setItem('gartenerbe-install-v1', JSON.stringify({ dismissed: true, installed: false, shown: true }))
+      localStorage.setItem('gartenerbe-hints-v1', JSON.stringify(['season', 'truhe', 'deep', 'visitor', 'order', 'variety', 'weekly', 'crossNew']))
+      sessionStorage.setItem('seed', '1')
+    }
+    const saved = (p) => p.evaluate(() => JSON.parse(localStorage.getItem('gartenerbe-spielstand-v1')))
+    // a) mit Werbung: die Werbung sperrt, Abbrechen lässt den Zettel und den Korb stehen
+    {
+      const ctx = await browser.newContext({ ...devices['iPhone 13'], reducedMotion: 'reduce' })
+      await ctx.addInitScript(seed, {})
+      const p = await ctx.newPage()
+      p.on('pageerror', (err) => errors.push(err.message))
+      await p.goto(URL)
+      await p.locator('.welcome-card').waitFor()
+      if (LANG === 'de') await p.screenshot({ path: 'e2e-screens/korb-verdoppeln.png' })
+      await p.getByRole('button', { name: T.ux.welcomeBack.doubleAd }).click()
+      await p.locator('.ad-box').waitFor()
+      await p.getByRole('button', { name: T.testAd.cancel }).click()
+      assert((await p.locator('.welcome-card').count()) === 1, 'cancelled ad keeps the welcome note')
+      await ctx.close()
+    }
+    // b) Werbefrei: sofort verdoppelt, zählt als Bonus des Tages; Obstwiese ist offen, ihr Bonus wartet
+    {
+      const ctx = await browser.newContext({ ...devices['iPhone 13'], reducedMotion: 'reduce' })
+      await ctx.addInitScript(seed, { adsRemoved: true, ownedCosmetics: ['wiese', 'lichtAbend'], equippedChapterCosmetic: 'lichtAbend' })
+      const p = await ctx.newPage()
+      p.on('pageerror', (err) => errors.push(err.message))
+      await p.goto(URL)
+      await p.locator('.welcome-card').waitFor()
+      const basket = await p.evaluate(() => {
+        // Korb = angezeigte Menge; geprüft wird über den Spielstand
+        return document.querySelector('.welcome-amount')?.textContent ?? ''
+      })
+      assert(basket.length > 0, 'welcome note shows the basket')
+      await p.getByRole('button', { name: T.ux.welcomeBack.doubleFree }).click()
+      await p.locator('.welcome-card').waitFor({ state: 'detached' })
+      await p.waitForTimeout(4500) // Autosave
+      const s = await saved(p)
+      assert(s.werbeBoni === 1 && typeof s.werbeBonusDay === 'string' && s.werbeBonusDay.length > 0, `doubling counts as a bonus (${s.werbeBoni})`)
+      assert(s.chapters.obstwiese.openedAt > 0, 'Obstwiese opens in garden year 6 without a Tiefer Winter')
+      assert(s.tiefeWinter === 0 && s.saisonenden === 5 && s.samen >= 900, `nothing else changed (${s.tiefeWinter} ${s.saisonenden} ${s.samen})`)
+      // Grundstück: Lichtstimmung liegt auf der Karte, der Garten-Bonus ist als „später“ markiert
+      await p.locator('.plot-switch').click()
+      await p.locator('.chapter-obstwiese .garden-stage.skin-lichtAbend').waitFor()
+      assert((await p.locator('.orchard-bonus--later').count()) === 1, 'chapter bonus is marked as waiting')
+      if (LANG === 'de') await p.screenshot({ path: 'e2e-screens/obstwiese-frueh.png' })
+      // Markt: zwei Gruppen von Stilen, die Lichtstimmung ist aktiv
+      await p.locator('.tabbar .tab-shop').click()
+      await p.getByRole('tab', { name: T.shop.tabs.styles }).click()
+      assert((await p.locator('.cosmetic-group').count()) === 2, 'garden styles and light moods are listed')
+      await p.locator('.cosmetic-group').last().getByText(T.cosmetics.lichtAbend.name).waitFor()
+      await ctx.close()
+    }
+  }
+
   // 11 — Sprache: Erkennung, Live-Umschalter, gespeicherte Wahl, ?lang=
   {
     const seed = () => {

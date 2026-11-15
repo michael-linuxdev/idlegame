@@ -70,7 +70,8 @@ export const FEATURES: FeatureDef[] = [
   { id: 'decor', open: (c) => decorUnlocked(c) },
   { id: 'album', open: (c) => c.saisonenden >= 1 || c.tiefeWinter > 0 || c.generation > 0 },
   { id: 'cross', open: (c) => crossingUnlocked(c.collection) },
-  { id: 'projects', open: (c) => c.openChapters > 0 },
+  // Großprojekte brauchen zwei Kapitel-Währungen: nicht schon mit der frühen Obstwiese (ab Gartenjahr 6)
+  { id: 'projects', open: (c) => c.openChapters > 1 || (c.openChapters > 0 && (c.tiefeWinter > 0 || c.generation > 0)) },
 ]
 
 export function openFeatures(c: FeatureCtx): Set<FeatureId> {

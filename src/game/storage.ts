@@ -7,6 +7,7 @@ import { seasonCardDef, type CardOffer } from './seasonCards'
 import { isChallengeId } from './challenges'
 import {
   COSMETIC_IDS,
+  CHAPTER_COSMETIC_IDS,
   isRecord,
   parseOwned,
   parseUpgrades,
@@ -103,6 +104,7 @@ function parseGameState(parsed: Record<string, unknown>): GameState {
   if (
     typeof parsed.equippedCosmetic === 'string' &&
     COSMETIC_IDS.has(parsed.equippedCosmetic as CosmeticId) &&
+    !CHAPTER_COSMETIC_IDS.has(parsed.equippedCosmetic as CosmeticId) &&
     ownedCosmetics.includes(parsed.equippedCosmetic as CosmeticId)
   ) {
     equippedCosmetic = parsed.equippedCosmetic as CosmeticId

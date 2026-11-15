@@ -64,6 +64,11 @@ import {
   turboMult,
   expansionGardenMult,
   canSwitchSeasonCard,
+  adBonusLeft,
+  adFreeNow,
+  gartenmonatMsLeft,
+  gartenmonatRenewable,
+  gartenwochePremiumNow,
 } from './state'
 import type { ChapterId } from './chapters'
 import { challengeAllowsWater } from './challenges'
@@ -162,6 +167,7 @@ export function useGame() {
     adPlaying,
     adResult,
     watchRewardedAd,
+    watchOfflineDouble,
     cancelAd,
     claimGift,
     buyWaterRefill,
@@ -206,7 +212,14 @@ export function useGame() {
   const yieldBoostMsLeft = yieldBoostActive
     ? Math.max(0, state.yieldBoostExpiresAt - nowTick)
     : 0
-  const adReady = rewardedAdReady(state.lastRewardedAdAt, nowTick)
+  const adBonusesLeft = adBonusLeft(state, nowTick)
+  // Bonus ohne Werbung (Werbefrei oder Gartenmonat), Premium-Reihe, Restzeit des Gartenmonats
+  const adFree = adFreeNow(state, nowTick)
+  const gartenwochePremium = gartenwochePremiumNow(state, nowTick)
+  const gartenmonatLeftMs = gartenmonatMsLeft(state, nowTick)
+  const gartenmonatCanBuy = gartenmonatRenewable(state, nowTick)
+  // bereit = Abklingzeit um und das Tageslimit noch nicht erreicht
+  const adReady = adBonusesLeft > 0 && rewardedAdReady(state.lastRewardedAdAt, nowTick)
   const adCooldownMs = rewardedAdCooldownMsLeft(state.lastRewardedAdAt, nowTick)
   const gartenwocheXpReady = state.gartenwocheXpDay !== dayKey(nowTick)
 
@@ -393,6 +406,11 @@ export function useGame() {
     yieldBoostMsLeft,
     yieldBoostMult,
     adReady,
+    adBonusesLeft,
+    adFree,
+    gartenwochePremium,
+    gartenmonatLeftMs,
+    gartenmonatCanBuy,
     adCooldownMs,
     gartenwocheXpReady,
     skipHoursRemaining: skipLeft,
@@ -431,6 +449,7 @@ export function useGame() {
     purchaseOffer,
     purchaseYieldBoost,
     watchRewardedAd,
+    watchOfflineDouble,
     cancelAd,
     adWatching,
     adPlaying,

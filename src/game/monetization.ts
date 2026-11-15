@@ -40,6 +40,32 @@ export type CosmeticId =
   | 'festSommer'
   | 'festErntedank'
   | 'festAdvent'
+  // Hauptgarten, seit 2026-11-15 (mehr Ziele für Samen)
+  | 'morgentau'
+  | 'lavendelweg'
+  | 'heidegarten'
+  | 'moosgarten'
+  | 'kiesgarten'
+  | 'mondgarten'
+  // Lichtstimmungen für die Grundstücke (alle Kapitel), seit 2026-11-15
+  | 'lichtTag'
+  | 'lichtMorgen'
+  | 'lichtAbend'
+  | 'lichtHerbst'
+  | 'lichtMond'
+  // Monatsstile: je Gartenmonat der nächste, nicht mit Samen zu kaufen
+  | 'monatSchneegloeckchen'
+  | 'monatKrokus'
+  | 'monatTulpe'
+  | 'monatFlieder'
+  | 'monatPfingstrose'
+  | 'monatRose'
+  | 'monatSonnenblume'
+  | 'monatDahlie'
+  | 'monatAster'
+  | 'monatHagebutte'
+  | 'monatEfeu'
+  | 'monatChristrose'
 
 export interface CosmeticDef {
   id: CosmeticId
@@ -51,6 +77,29 @@ export interface CosmeticDef {
   accentClass: string
   /** Fest-Gartenstil — only sold in that fest's shop */
   fest?: boolean
+  /** 'chapter' = Lichtstimmung für alle Grundstücke (Kapitel); fehlt = Omas Garten */
+  scope?: 'chapter'
+  /** Monatsstil: kommt nur mit dem Gartenmonat (der Reihe nach, ohne Frist), nicht für Samen */
+  monat?: boolean
+}
+
+/** Lichtstimmung, die jeder hat (Grundstücke ohne Stil). */
+export const DEFAULT_CHAPTER_COSMETIC: CosmeticId = 'lichtTag'
+
+function cosmetic(id: CosmeticId, cost: number, scope?: 'chapter', monat?: boolean): CosmeticDef {
+  return {
+    id,
+    get name() {
+      return t.cosmetics[id].name
+    },
+    get blurb() {
+      return t.cosmetics[id].blurb
+    },
+    cost,
+    accentClass: `skin-${id}`,
+    scope,
+    monat,
+  }
 }
 
 export const COSMETICS: CosmeticDef[] = [
@@ -146,7 +195,46 @@ export const COSMETICS: CosmeticDef[] = [
     accentClass: 'skin-festAdvent',
     fest: true,
   },
+  // Preise steigen: zusammen 2400 Samen ≈ fünf Wochen Gratis-Einkommen (docs/store/preise.md)
+  cosmetic('morgentau', 250),
+  cosmetic('lavendelweg', 300),
+  cosmetic('heidegarten', 350),
+  cosmetic('moosgarten', 400),
+  cosmetic('kiesgarten', 500),
+  cosmetic('mondgarten', 600),
+  // Lichtstimmungen: einmal kaufen, gilt auf allen Grundstücken
+  cosmetic('lichtTag', 0, 'chapter'),
+  cosmetic('lichtMorgen', 300, 'chapter'),
+  cosmetic('lichtAbend', 300, 'chapter'),
+  cosmetic('lichtHerbst', 400, 'chapter'),
+  cosmetic('lichtMond', 500, 'chapter'),
+  // Monatsstile (Reihenfolge = Reihenfolge der Gartenmonate); „Preis“ nur als Wert, nicht kaufbar
+  cosmetic('monatSchneegloeckchen', 300, undefined, true),
+  cosmetic('monatKrokus', 300, undefined, true),
+  cosmetic('monatTulpe', 300, undefined, true),
+  cosmetic('monatFlieder', 300, undefined, true),
+  cosmetic('monatPfingstrose', 300, undefined, true),
+  cosmetic('monatRose', 300, undefined, true),
+  cosmetic('monatSonnenblume', 300, undefined, true),
+  cosmetic('monatDahlie', 300, undefined, true),
+  cosmetic('monatAster', 300, undefined, true),
+  cosmetic('monatHagebutte', 300, undefined, true),
+  cosmetic('monatEfeu', 300, undefined, true),
+  cosmetic('monatChristrose', 300, undefined, true),
 ]
+
+/** Der Monatsstil, den der nächste Gartenmonat bringt (null = alle zwölf schon da). */
+export function nextMonatStyle(owned: readonly CosmeticId[]): CosmeticDef | null {
+  return COSMETICS.find((c) => c.monat && !owned.includes(c.id)) ?? null
+}
+/** Sind alle Monatsstile da, gibt der Gartenmonat stattdessen Samen */
+export const GARTENMONAT_FALLBACK_SAMEN = 150
+
+/** Gehört der Stil dem Spieler? (kostenlose Stile immer) */
+export function cosmeticOwned(owned: readonly CosmeticId[], id: CosmeticId): boolean {
+  const def = COSMETICS.find((c) => c.id === id)
+  return !!def && (def.cost <= 0 || owned.includes(id))
+}
 
 export type TimeSkipId = 'harvestHour' | 'growthDay'
 
@@ -211,7 +299,9 @@ export type ShopOfferKind =
   | 'grantSamen'
   | 'removeAds'
   | 'cosmeticPack'
+  /** Wochen-Pass, bis 2026-11-15 verkauft — nicht mehr im Angebot (ersetzt durch 'gartenmonat') */
   | 'gartenwochePlus'
+  | 'gartenmonat'
   | 'starterBundle'
   | 'festPlus'
 
@@ -342,21 +432,30 @@ export const SHOP_OFFERS: ShopOfferDef[] = [
     section: 'cosmetics',
   },
   {
-    id: 'gartenwochePlus',
-    kind: 'gartenwochePlus',
+    // Gartenmonat: 30 Tage Premium-Reihe der Gartenwoche + Bonus ohne Werbung.
+    // Ersetzt seit 2026-11-15 den Wochen-Pass („gartenwochePlus“, 1,99 € je Woche:
+    // kaum mehr als eine mittlere Samentüte). Wer den Wochen-Pass schon hat,
+    // behält ihn bis zum Ende seiner Woche (Feld gartenwochePremium).
+    id: 'gartenmonat',
+    kind: 'gartenmonat',
     get name() {
-      return t.packs.gartenwochePlus.name
+      return t.packs.gartenmonat.name
     },
     get blurb() {
-      return t.packs.gartenwochePlus.blurb
+      return t.packs.gartenmonat.blurb
     },
     get label() {
-      return t.packs.gartenwochePlus.label
+      return t.packs.gartenmonat.label
     },
     once: false,
     section: 'gartenwoche',
   },
 ]
+
+/** Gartenmonat: Laufzeit je Kauf */
+export const GARTENMONAT_MS = 30 * 86_400_000
+/** Verlängern geht erst, wenn höchstens so viel übrig ist */
+export const GARTENMONAT_RENEW_MS = 7 * 86_400_000
 
 export type RewardedAdRewardKind = 'skipCrumb' | 'samenCrumb' | 'yieldCrumb'
 
@@ -374,6 +473,15 @@ export type AdChoice = 'ernte' | 'samen'
 export const AD_ERNTE_MINUTES = 10
 /** Samen choice */
 export const AD_SAMEN = 6
+
+/**
+ * Boni je Kalendertag — Markt-Bonus (Werbung oder Werbefrei) und verdoppelter
+ * Korb zusammen. Playtest 2026-11-10: mit Werbefrei 65 Boni in zwei Tagen,
+ * bis zu 10 je Stunde — „10 min Ernte alle 3 min“ war der Hauptkreislauf.
+ */
+export const AD_BONUS_PER_DAY = 8
+/** Korb verdoppeln im Willkommens-Zettel: erst nach so langer Abwesenheit */
+export const OFFLINE_DOUBLE_MIN_AWAY_MS = 30 * 60 * 1000
 
 /** Markt-Tagesgeschenk: once per calendar day, free */
 export const MARKET_GIFT_SAMEN = 3

@@ -198,9 +198,20 @@ export function turboMult(state: GameState, now = Date.now()): number {
   return state.turboEndsAt > now ? TURBO_MULT : 1
 }
 
+/**
+ * Der Garten-Bonus der Kapitel zählt erst ab dem ersten Tiefen Winter. Die
+ * Streuobstwiese öffnet seit 2026-11-15 schon nach dem 5. Saisonende; ohne
+ * diese Grenze liefe der Garten bis zum ersten Tiefen Winter ~40 % schneller
+ * (docs/kapitel/balance-bericht.md „Obstwiese früher“). Wer schon einen
+ * Tiefen Winter hat, merkt keinen Unterschied.
+ */
+export function chapterBonusActive(state: { tiefeWinter: number; generation: number }): boolean {
+  return state.tiefeWinter > 0 || state.generation > 0
+}
+
 /** Permanent multipliers from Kapitel 2 and Generationen (shown in HUD). */
 export function expansionGardenMult(state: GameState): number {
-  return chaptersGardenMult(state.chapters) * legacyGardenMult(state.legacy) * residentsMult(state.residentsSeen) * hybridsMult(state.hybrids) * projectsMult(state.projects)
+  return (chapterBonusActive(state) ? chaptersGardenMult(state.chapters) : 1) * legacyGardenMult(state.legacy) * residentsMult(state.residentsSeen) * hybridsMult(state.hybrids) * projectsMult(state.projects)
 }
 
 export function productionPerSecond(state: GameState, now = Date.now()): number {

@@ -7,7 +7,7 @@
  * an entry here, copy in strings (chapters.<id>), art and a backdrop — no
  * new state or reducer code.
  *
- *  Kapitel 2 · Streuobstwiese — after the first Tiefer Winter
+ *  Kapitel 2 · Streuobstwiese — after the 5th Saisonende (or the first Tiefer Winter)
  *  Kapitel 3 · Weinberg       — after the first Generation
  *  Kapitel 4–12               — Generation N and the previous chapter's
  *                               8th area planted (staggered over months)
@@ -94,7 +94,16 @@ export interface ChapterDef {
   unlock: (s: UnlockCtx) => boolean
 }
 
+/**
+ * Kapitel 2 öffnet nach so vielen Saisonenden (ab dem 6. Gartenjahr) — oder
+ * wie bisher mit dem ersten Tiefen Winter. Bis 2026-11-15 nur der Tiefe
+ * Winter: eine Gelegenheitsspielerin sah so wochenlang kein Kapitel
+ * (docs/kapitel/balance-bericht.md „Obstwiese früher“).
+ */
+export const OBSTWIESE = { fromSeasons: 5 }
+
 export interface UnlockCtx {
+  saisonenden: number
   tiefeWinter: number
   generation: number
   chapters: Record<string, { owned: Record<string, number>; openedAt: number }>
@@ -276,7 +285,7 @@ export const CHAPTERS: ChapterDef[] = [
       1,
     ),
     gardenBonusPerLevel: 0.004,
-    unlock: (s) => s.tiefeWinter >= 1 || s.generation >= 1,
+    unlock: (s) => s.saisonenden >= OBSTWIESE.fromSeasons || s.tiefeWinter >= 1 || s.generation >= 1,
   },
   {
     id: 'weinberg',

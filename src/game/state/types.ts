@@ -21,7 +21,7 @@ import type { WheelBuff } from '../gardenLife'
 import { EMPTY_LEGACY, type LegacyUpgrades } from '../generations'
 import type { GeneratorId } from '../generators'
 import { EMPTY_REST_CUT, type DeepMetaUpgrades, type RestCut } from '../longLoop'
-import { type CosmeticId, weekKey } from '../monetization'
+import { type CosmeticId, DEFAULT_CHAPTER_COSMETIC, weekKey } from '../monetization'
 import type { ProjectId } from '../projects'
 import type { QuestProgress } from '../quests'
 import type { ResidentId, ResidentVisit } from '../residents'
@@ -251,6 +251,14 @@ export interface GameState {
   festBought: Record<string, number>
   /** Fest-Schlüssel, für den „Festladen Plus“ gekauft wurde ('' = nie) */
   festPlusKey: string
+  /** Tag (dayKey) des Bonus-Zählers: Markt-Bonus und verdoppelter Korb zusammen */
+  werbeBonusDay: string
+  /** Boni an werbeBonusDay (höchstens AD_BONUS_PER_DAY) */
+  werbeBoni: number
+  /** Lichtstimmung der Grundstücke (alle Kapitel); 'lichtTag' = ohne */
+  equippedChapterCosmetic: CosmeticId
+  /** Gartenmonat (Premium-Reihe + Bonus ohne Werbung) läuft bis dahin; 0 = keiner */
+  gartenmonatExpiresAt: number
 }
 
 /** Gartenhelfer ranks: Erbstücke cost and time between two Ausbauten. */
@@ -330,6 +338,14 @@ export interface ExpansionSlice {
   festTokens: number
   festBought: Record<string, number>
   festPlusKey: string
+  /** Tag (dayKey) des Bonus-Zählers: Markt-Bonus und verdoppelter Korb zusammen */
+  werbeBonusDay: string
+  /** Boni an werbeBonusDay (höchstens AD_BONUS_PER_DAY) */
+  werbeBoni: number
+  /** Lichtstimmung der Grundstücke (alle Kapitel); 'lichtTag' = ohne */
+  equippedChapterCosmetic: CosmeticId
+  /** Gartenmonat (Premium-Reihe + Bonus ohne Werbung) läuft bis dahin; 0 = keiner */
+  gartenmonatExpiresAt: number
 }
 
 export function emptyExpansion(now = Date.now()): ExpansionSlice {
@@ -378,6 +394,10 @@ export function emptyExpansion(now = Date.now()): ExpansionSlice {
     festTokens: 0,
     festBought: {},
     festPlusKey: '',
+    werbeBonusDay: '',
+    werbeBoni: 0,
+    equippedChapterCosmetic: DEFAULT_CHAPTER_COSMETIC,
+    gartenmonatExpiresAt: 0,
   }
 }
 
@@ -428,6 +448,10 @@ export function pickExpansion(s: GameState): ExpansionSlice {
     festTokens: s.festTokens,
     festBought: { ...s.festBought },
     festPlusKey: s.festPlusKey,
+    werbeBonusDay: s.werbeBonusDay,
+    werbeBoni: s.werbeBoni,
+    equippedChapterCosmetic: s.equippedChapterCosmetic,
+    gartenmonatExpiresAt: s.gartenmonatExpiresAt,
   }
 }
 

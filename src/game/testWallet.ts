@@ -6,7 +6,7 @@
  * tatsächlich ausgegeben würde.
  *
  * Dazu läuft die Bonus-Werbung in der Testphase so lange wie eine echte
- * (30 oder 60 Sekunden) und sperrt das Spiel währenddessen (AdOverlay.tsx).
+ * (15 oder 30 Sekunden) und sperrt das Spiel währenddessen (AdOverlay.tsx).
  *
  * Nur aktiv, solange TEST_PHASE gilt und es noch keine echten Käufe gibt
  * (STORE_ENABLED). Das Guthaben liegt bewusst NICHT im Spielstand
@@ -34,13 +34,15 @@ export const OFFER_PRICE_CENTS: Readonly<Record<string, number>> = {
   samen150: 249,
   samen500: 699,
   cosmeticPackLeaf: 299,
-  removeAds: 399,
-  gartenwochePlus: 199,
+  // bis 2026-11-15: 3,99 € — mit dem Tageslimit der Boni das dauerhafte Ankerprodukt
+  removeAds: 599,
+  gartenmonat: 499,
   festPlus: 399,
 }
 
 /** Bonus-Werbung in der Testphase: so lange sperrt sie das Spiel (Sekunden). */
-export const TEST_AD_SECONDS = [30, 60] as const
+// bis 2026-11-15: 30/60 s — bei Besuchen von 1–2 min kostete das die halbe Spielzeit
+export const TEST_AD_SECONDS = [15, 30] as const
 
 const KEY = 'gartenerbe-testgeld-v1'
 
@@ -127,7 +129,7 @@ export function offerPriceCents(offerId: string): number | null {
   return OFFER_PRICE_CENTS[offerId] ?? null
 }
 
-/** Länge der nächsten Test-Werbung (zufällig 30 oder 60 s). */
+/** Länge der nächsten Test-Werbung (zufällig 15 oder 30 s). */
 export function pickTestAdSeconds(rand = Math.random()): number {
   return rand < 0.5 ? TEST_AD_SECONDS[0] : TEST_AD_SECONDS[1]
 }

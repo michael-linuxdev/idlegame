@@ -42,6 +42,13 @@ const ADDED_AFTER_V1: Record<string, unknown> = {
   // Saison-Karten (2026-11-14): Wechsel-Fenster nach der Wahl, alte Stände haben keins
   seasonCardChoices: [],
   seasonCardSwitchUntil: 0,
+  // Tageslimit der Boni (2026-11-15): alte Stände haben heute noch keinen Bonus gezählt
+  werbeBonusDay: '',
+  werbeBoni: 0,
+  // Lichtstimmung der Grundstücke (2026-11-15): alte Stände ohne Stil (Tageslicht)
+  equippedChapterCosmetic: 'lichtTag',
+  // Gartenmonat (2026-11-15, ersetzt den Wochen-Pass): alte Stände haben keinen
+  gartenmonatExpiresAt: 0,
 }
 
 /** Nur die Kapitel, die im alten Stand schon gespeichert waren (neue füllt parseChapters auf). */

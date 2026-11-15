@@ -7,6 +7,9 @@ import {
   GARTENWOCHE_TIERS,
   CLAN_BOOST,
   COSMETICS,
+  GARTENMONAT_FALLBACK_SAMEN,
+  nextMonatStyle,
+  cosmeticOwned,
   type CosmeticId,
   DAILY_SKIP_CAP_HOURS,
   MARKET_GIFT_SAMEN,
@@ -18,7 +21,7 @@ import {
   type ShopOfferDef,
 } from '../game/monetization'
 import { t } from '../i18n'
-import { STORE_ENABLED } from '../game/monetization'
+import { AD_BONUS_PER_DAY, STORE_ENABLED } from '../game/monetization'
 import { TEST_MONTHLY_CENTS, TEST_WALLET_ENABLED, offerPriceCents, readWallet, walletLeftCents } from '../game/testWallet'
 import { TestPurchaseDialog } from './TestPurchaseDialog'
 import type { useGame } from '../game/useGame'
@@ -38,7 +41,7 @@ const TABS: Tab[] = OFFERS_VISIBLE ? ['free', 'boosts', 'styles', 'seeds'] : ['f
 interface Props {
   game: GameApi
   /** Gartenstil-Vorschau live on the map */
-  onPreview?: (id: CosmeticId) => void
+  onPreview?: (id: CosmeticId, scope?: 'chapter') => void
   /** Gerade gewählter Garten: nur er bekommt die Ernte der Werbung */
   plot?: AdPlot
 }
@@ -95,6 +98,11 @@ export function ShopPanel({ game, onPreview, plot = 'garden' }: Props) {
     yieldBoostMsLeft,
     yieldBoostMult,
     adReady,
+    adBonusesLeft,
+    adFree,
+    gartenwochePremium,
+    gartenmonatLeftMs,
+    gartenmonatCanBuy,
     adCooldownMs,
     adWatching,
     adResult,
@@ -131,7 +139,7 @@ export function ShopPanel({ game, onPreview, plot = 'garden' }: Props) {
 
   const offerOwned = (offer: ShopOfferDef) => {
     if (offer.kind === 'removeAds') return state.adsRemoved
-    if (offer.kind === 'gartenwochePlus') return state.gartenwochePremium
+    if (offer.kind === 'gartenmonat') return !gartenmonatCanBuy
     if (offer.once) return state.ownedOfferIds.includes(offer.id)
     return false
   }
@@ -140,7 +148,9 @@ export function ShopPanel({ game, onPreview, plot = 'garden' }: Props) {
   const removeAds = SHOP_OFFERS.filter((o) => o.section === 'removeAds')
   const currency = SHOP_OFFERS.filter((o) => o.section === 'currency')
   const cosmeticPacks = SHOP_OFFERS.filter((o) => o.section === 'cosmetics')
-  const gartenwochePlusOffer = SHOP_OFFERS.find((o) => o.kind === 'gartenwochePlus')
+  const gartenmonatOffer = SHOP_OFFERS.find((o) => o.kind === 'gartenmonat')
+  const nextMonat = nextMonatStyle(state.ownedCosmetics)
+  const gartenmonatDays = Math.ceil(gartenmonatLeftMs / 86_400_000)
 
   const rewardLabel = (kind: 'samen' | 'ernteSec', amount: number) =>
     kind === 'samen' ? t.shop.rewardSamen(amount) : t.shop.rewardErnteSec(amount)
@@ -164,7 +174,7 @@ export function ShopPanel({ game, onPreview, plot = 'garden' }: Props) {
           <span className="shop-wallet-label">{t.resources.samen}</span>
           <span className="shop-wallet-value">{formatErnte(state.samen)}</span>
         </div>
-        {state.adsRemoved ? (
+        {adFree ? (
           <div className="shop-wallet-chip ads-free">
             <span className="shop-wallet-label">{t.shop.adsRemovedBadge}</span>
             <span className="shop-wallet-value"><IconCheck /></span>
@@ -198,8 +208,8 @@ export function ShopPanel({ game, onPreview, plot = 'garden' }: Props) {
           </ul>
 
           <>
-              <h3 className="subhead">{state.adsRemoved ? t.shop.adFreeTitle : t.shop.adsTitle}</h3>
-              <p className="muted">{state.adsRemoved ? t.shop.adFreeIntro : t.shop.adsIntro}</p>
+              <h3 className="subhead">{adFree ? t.shop.adFreeTitle : t.shop.adsTitle}</h3>
+              <p className="muted">{adFree ? t.shop.adFreeIntro : t.shop.adsIntro}</p>
               {game.openChapters.length > 0 ? <p className="muted">{t.shop.adsPlotHint}</p> : null}
               <div className="shop-ad-box">
                 {adWatching ? (
@@ -210,17 +220,20 @@ export function ShopPanel({ game, onPreview, plot = 'garden' }: Props) {
                   <>
                     <p className="shop-ad-status">{t.shop.adsPick}</p>
                     <div className="shop-ad-choices">
-                      <button type="button" className="btn buy" onClick={() => watchRewardedAd('ernte', state.adsRemoved, adChapter ?? 'garden')}>
+                      <button type="button" className="btn buy" onClick={() => watchRewardedAd('ernte', adFree, adChapter ?? 'garden')}>
                         {adErnteLabel}
                       </button>
-                      <button type="button" className="btn buy" onClick={() => watchRewardedAd('samen', state.adsRemoved)}>
+                      <button type="button" className="btn buy" onClick={() => watchRewardedAd('samen', adFree)}>
                         {t.shop.adsSamen(AD_SAMEN)}
                       </button>
                     </div>
                   </>
+                ) : adBonusesLeft <= 0 ? (
+                  <p className="shop-ad-status">{t.shop.adsLimit(AD_BONUS_PER_DAY)}</p>
                 ) : (
                   <p className="shop-ad-status">{t.shop.adsCooldown(formatMsLeft(adCooldownMs))}</p>
                 )}
+                {adBonusesLeft > 0 ? <p className="muted shop-ad-left">{t.shop.adsLeft(adBonusesLeft, AD_BONUS_PER_DAY)}</p> : null}
                 {adResult && !adWatching ? (
                   <p className="shop-ad-toast" role="status" aria-live="polite">
                     {t.shop.adsGot(
@@ -239,6 +252,7 @@ export function ShopPanel({ game, onPreview, plot = 'garden' }: Props) {
             <>
               <h3 className="subhead">{t.shop.gartenwocheTitle}</h3>
               <p className="muted">{t.shop.gartenwocheIntro}</p>
+              {gartenmonatLeftMs > 0 ? <p className="shop-gartenmonat" role="status">{t.shop.gartenmonatLeft(gartenmonatDays)}</p> : null}
               <div className="shop-bp-header">
                 <div className="shop-wallet-chip">
                   <span className="shop-wallet-label">EP</span>
@@ -272,12 +286,12 @@ export function ShopPanel({ game, onPreview, plot = 'garden' }: Props) {
                         <button
                           type="button"
                           className="btn ghost"
-                          disabled={!state.gartenwochePremium || !xpOk || premClaimed}
+                          disabled={!gartenwochePremium || !xpOk || premClaimed}
                           onClick={() => gartenwocheClaimTier(tier.tier, 'premium')}
                         >
                           {premClaimed
                             ? t.shop.gartenwocheClaimed
-                            : !state.gartenwochePremium
+                            : !gartenwochePremium
                               ? t.shop.gartenwocheNeedPremium
                               : xpOk
                                 ? t.shop.gartenwocheClaim
@@ -358,10 +372,22 @@ export function ShopPanel({ game, onPreview, plot = 'garden' }: Props) {
       {tab === 'styles' ? (
         <div role="tabpanel">
           <p className="muted">{t.shop.skinsIntro}</p>
+          {(
+            [
+              { key: 'garden', title: t.shop.skinsGarden, intro: null, list: COSMETICS.filter((c) => !c.scope && ((!c.fest && !c.monat) || state.ownedCosmetics.includes(c.id))) },
+              // Lichtstimmungen erst, wenn es ein Grundstück gibt
+              ...(game.openChapters.length > 0
+                ? [{ key: 'chapter', title: t.shop.skinsChapters, intro: t.shop.skinsChaptersIntro, list: COSMETICS.filter((c) => c.scope === 'chapter') }]
+                : []),
+            ] as const
+          ).map((group) => (
+          <section key={group.key} className="cosmetic-group" aria-labelledby={`skins-${group.key}`}>
+          <h3 id={`skins-${group.key}`} className="subhead">{group.title}</h3>
+          {group.intro ? <p className="muted">{group.intro}</p> : null}
           <ul className="cosmetic-grid">
-            {COSMETICS.filter((c) => !c.fest || state.ownedCosmetics.includes(c.id)).map((skin) => {
-              const owned = state.ownedCosmetics.includes(skin.id)
-              const equipped = state.equippedCosmetic === skin.id
+            {group.list.map((skin) => {
+              const owned = cosmeticOwned(state.ownedCosmetics, skin.id)
+              const equipped = (skin.scope === 'chapter' ? state.equippedChapterCosmetic : state.equippedCosmetic) === skin.id
               const afford = state.samen >= skin.cost
               return (
                 <li key={skin.id} className={`cosmetic-card${equipped ? ' equipped' : ''}`}>
@@ -380,7 +406,7 @@ export function ShopPanel({ game, onPreview, plot = 'garden' }: Props) {
                   ) : (
                     <div className="cosmetic-actions">
                       {onPreview ? (
-                        <button type="button" className="btn ghost" onClick={() => onPreview(skin.id)}>
+                        <button type="button" className="btn ghost" onClick={() => onPreview(skin.id, skin.scope)}>
                           {t.preview.button}
                         </button>
                       ) : null}
@@ -394,6 +420,22 @@ export function ShopPanel({ game, onPreview, plot = 'garden' }: Props) {
               )
             })}
           </ul>
+          {group.key === 'garden' && nextMonat && OFFERS_VISIBLE ? (
+            <div className="cosmetic-card cosmetic-monat">
+              <div className={`cosmetic-swatch ${nextMonat.accentClass}`} aria-hidden="true" />
+              <div className="cosmetic-info">
+                <div className="laden-name">{nextMonat.name}</div>
+                <p className="laden-blurb">{t.shop.skinsMonat}</p>
+              </div>
+              {onPreview ? (
+                <button type="button" className="btn ghost" onClick={() => onPreview(nextMonat.id)}>
+                  {t.preview.button}
+                </button>
+              ) : null}
+            </div>
+          ) : null}
+          </section>
+          ))}
           {OFFERS_VISIBLE ? (
             <>
               <h3 className="subhead">{t.shop.cosmeticPacksTitle}</h3>
@@ -440,7 +482,9 @@ export function ShopPanel({ game, onPreview, plot = 'garden' }: Props) {
             {removeAds.map((offer) => (
               <OfferButton key={offer.id} offer={offer} owned={offerOwned(offer)} onBuy={() => buyOffer(offer)} />
             ))}
-            {gartenwochePlusOffer ? <OfferButton offer={gartenwochePlusOffer} owned={state.gartenwochePremium} onBuy={() => buyOffer(gartenwochePlusOffer)} /> : null}
+            {gartenmonatLeftMs > 0 ? <li className="shop-gartenmonat" role="status">{t.shop.gartenmonatLeft(gartenmonatDays)}</li> : null}
+            {gartenmonatOffer ? <li className="shop-gartenmonat-style">{nextMonat ? t.shop.gartenmonatStyle(nextMonat.name) : t.shop.gartenmonatSamen(GARTENMONAT_FALLBACK_SAMEN)}</li> : null}
+            {gartenmonatOffer ? <OfferButton offer={gartenmonatOffer} owned={!gartenmonatCanBuy} onBuy={() => buyOffer(gartenmonatOffer)} /> : null}
           </ul>
         </div>
       ) : null}

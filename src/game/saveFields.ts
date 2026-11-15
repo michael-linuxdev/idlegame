@@ -15,7 +15,7 @@ import { VARIETIES, type WheelBuff } from './gardenLife'
 import { EMPTY_LEGACY, type LegacyUpgrades } from './generations'
 import { GENERATOR_IDS, GENERATOR_IDS as GEN_IDS } from './generators'
 import { EMPTY_DEEP_META, EMPTY_REST_CUT, REST_CUT, WINTERVORRAT, emptyLongLoopSlice, type DeepMetaUpgrades, type RestCut } from './longLoop'
-import { COSMETICS, dayKey, type CosmeticId } from './monetization'
+import { COSMETICS, DEFAULT_CHAPTER_COSMETIC, cosmeticOwned, dayKey, type CosmeticId } from './monetization'
 import { parseProjects } from './projects'
 import { emptyQuestProgress, type QuestProgress } from './quests'
 import { parseResidentVisit, parseResidentsSeen } from './residents'
@@ -24,6 +24,7 @@ import { EMPTY_TRUHE, type TruheUpgrades } from './truhe'
 import { parseWeatherBuff } from './weatherEvents'
 
 export const COSMETIC_IDS = new Set(COSMETICS.map((c) => c.id))
+export const CHAPTER_COSMETIC_IDS = new Set(COSMETICS.filter((c) => c.scope === 'chapter').map((c) => c.id))
 
 export function isRecord(v: unknown): v is Record<string, unknown> {
   return typeof v === 'object' && v !== null
@@ -51,6 +52,12 @@ export function parseUpgrades(raw: unknown): TruheUpgrades {
     }
   }
   return base
+}
+
+/** Lichtstimmung der Grundstücke: nur ein Kapitel-Stil, der dem Spieler gehört. */
+export function parseChapterCosmetic(raw: unknown, owned: readonly CosmeticId[]): CosmeticId {
+  const def = typeof raw === 'string' ? COSMETICS.find((c) => c.id === raw) : undefined
+  return def?.scope === 'chapter' && cosmeticOwned(owned, def.id) ? def.id : DEFAULT_CHAPTER_COSMETIC
 }
 
 export function parseCosmetics(raw: unknown): CosmeticId[] {
@@ -200,6 +207,13 @@ export function parseExpansion(parsed: Record<string, unknown>): ExpansionSlice 
     festBought,
     // Festladen Plus (2026-11-10; ältere Stände → nicht gekauft)
     festPlusKey: typeof parsed.festPlusKey === 'string' ? parsed.festPlusKey.slice(0, 40) : '',
+    // 2026-11-15: ältere Stände → heute noch kein Bonus gezählt
+    werbeBonusDay: typeof parsed.werbeBonusDay === 'string' ? parsed.werbeBonusDay.slice(0, 16) : '',
+    werbeBoni: parseNonNegInt(parsed.werbeBoni),
+    // 2026-11-15: ältere Stände → Grundstücke ohne Lichtstimmung
+    // 2026-11-15: ältere Stände → kein Gartenmonat
+    gartenmonatExpiresAt: parseNum(parsed.gartenmonatExpiresAt),
+    equippedChapterCosmetic: parseChapterCosmetic(parsed.equippedChapterCosmetic, parseCosmetics(parsed.ownedCosmetics)),
   }
 }
 

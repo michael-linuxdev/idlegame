@@ -1,5 +1,5 @@
 /**
- * Testphase: Bonus-Werbung, die das Spiel wirklich sperrt (30 oder 60 s,
+ * Testphase: Bonus-Werbung, die das Spiel wirklich sperrt (15 oder 30 s,
  * game/testWallet.ts). Abbrechen geht jederzeit — dann ohne Belohnung.
  * Ob jemand durchhält oder abbricht, steht im Playtest-Log („test_ad“).
  */

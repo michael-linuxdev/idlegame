@@ -22,6 +22,7 @@ import {
   claimFlashEventGoal,
   claimQuestReward,
   claimRewardedAd,
+  claimOfflineDouble,
   claimMarketGift,
   refillWateringCan,
   clearLastSurprise,
@@ -104,11 +105,12 @@ export function useShopActions({ setState, offlineGained, setOfflineGained, offl
 
   // Optional ad: runs here (not in the Markt panel) so closing the panel
   // mid-ad can't swallow the reward; the result is shown afterwards.
-  // Testphase: the ad runs 30 or 60 s like a real one and locks the game
+  // Testphase: the ad runs 15 or 30 s like a real one and locks the game
   // (components/AdOverlay.tsx); it only counts down while the app is visible.
   const [adPlaying, setAdPlaying] = useState<{ choice: AdChoice; totalS: number; leftMs: number; blocking: boolean } | null>(null)
   const [adResult, setAdResult] = useState<{ choice: AdChoice; ernte: number; samen: number; chapter?: ChapterId; at: number } | null>(null)
-  const adRef = useRef<{ choice: AdChoice; plot: AdPlot; totalS: number; leftMs: number; blocking: boolean; last: number } | null>(null)
+  /** `double`: Korb verdoppeln (Willkommens-Zettel) statt Markt-Bonus — Menge und was danach passiert */
+  const adRef = useRef<{ choice: AdChoice; plot: AdPlot; totalS: number; leftMs: number; blocking: boolean; last: number; double?: { amount: number; onDone: () => void } } | null>(null)
   const adTimer = useRef<number | null>(null)
   const stopAdTimer = () => {
     if (adTimer.current != null) window.clearInterval(adTimer.current)
@@ -122,7 +124,17 @@ export function useShopActions({ setState, offlineGained, setOfflineGained, offl
     adRef.current = null
     setAdPlaying(null)
     if (!ad) return
-    if (ad.blocking) logPlaytest('test_ad', { result: 'done', seconds: ad.totalS, choice: ad.choice })
+    if (ad.blocking) logPlaytest('test_ad', { result: 'done', seconds: ad.totalS, choice: ad.choice, ...(ad.double ? { place: 'welcome' } : {}) })
+    if (ad.double) {
+      const { amount, onDone } = ad.double
+      setState((s) => {
+        const next = claimOfflineDouble(s, amount)
+        if (next !== s) logPlaytest('shop_tap', { action: 'offline_double', amount: Math.round(amount) })
+        return next
+      })
+      onDone()
+      return
+    }
     setState((s) => {
       const result = claimRewardedAd(s, ad.choice, Date.now(), ad.plot)
       if (!result.ok) return s
@@ -131,6 +143,29 @@ export function useShopActions({ setState, offlineGained, setOfflineGained, offl
       return result.state
     })
   }, [setState])
+
+  const startAd = useCallback((what: { choice: AdChoice; plot: AdPlot; double?: { amount: number; onDone: () => void } }) => {
+    const { choice } = what
+    const blocking = TEST_WALLET_ENABLED
+    const totalS = blocking ? pickTestAdSeconds() : Math.round(REWARDED_AD_DELAY_MS / 1000)
+    const ad = { ...what, totalS, leftMs: blocking ? totalS * 1000 : REWARDED_AD_DELAY_MS, blocking, last: Date.now() }
+    adRef.current = ad
+    setAdResult(null)
+    setAdPlaying({ choice, totalS, leftMs: ad.leftMs, blocking })
+    if (blocking) logPlaytest('test_ad', { result: 'start', seconds: totalS, choice, ...(what.double ? { place: 'welcome' } : {}) })
+    adTimer.current = window.setInterval(() => {
+      const cur = adRef.current
+      if (!cur) return
+      const now = Date.now()
+      const dt = now - cur.last
+      cur.last = now
+      // Im Hintergrund pausiert die Werbung (wie echte Werbung)
+      if (typeof document !== 'undefined' && document.visibilityState === 'hidden') return
+      cur.leftMs = Math.max(0, cur.leftMs - Math.min(dt, 1000))
+      if (cur.leftMs <= 0) finishAd()
+      else setAdPlaying({ choice: cur.choice, totalS: cur.totalS, leftMs: cur.leftMs, blocking: cur.blocking })
+    }, 250)
+  }, [finishAd])
 
   /** `plot`: der gerade gewählte Garten — nur er bekommt die Ernte. */
   const watchRewardedAd = useCallback((choice: AdChoice, adFree = false, plot: AdPlot = 'garden') => {
@@ -147,26 +182,26 @@ export function useShopActions({ setState, offlineGained, setOfflineGained, offl
       })
       return
     }
-    const blocking = TEST_WALLET_ENABLED
-    const totalS = blocking ? pickTestAdSeconds() : Math.round(REWARDED_AD_DELAY_MS / 1000)
-    const ad = { choice, plot, totalS, leftMs: blocking ? totalS * 1000 : REWARDED_AD_DELAY_MS, blocking, last: Date.now() }
-    adRef.current = ad
-    setAdResult(null)
-    setAdPlaying({ choice, totalS, leftMs: ad.leftMs, blocking })
-    if (blocking) logPlaytest('test_ad', { result: 'start', seconds: totalS, choice })
-    adTimer.current = window.setInterval(() => {
-      const cur = adRef.current
-      if (!cur) return
-      const now = Date.now()
-      const dt = now - cur.last
-      cur.last = now
-      // Im Hintergrund pausiert die Werbung (wie echte Werbung)
-      if (typeof document !== 'undefined' && document.visibilityState === 'hidden') return
-      cur.leftMs = Math.max(0, cur.leftMs - Math.min(dt, 1000))
-      if (cur.leftMs <= 0) finishAd()
-      else setAdPlaying({ choice: cur.choice, totalS: cur.totalS, leftMs: cur.leftMs, blocking: cur.blocking })
-    }, 250)
-  }, [finishAd, setState])
+    startAd({ choice, plot })
+  }, [setState, startAd])
+
+  /**
+   * Willkommens-Zettel: Werbung ansehen und den Korb verdoppeln. `onDone`
+   * läuft nach der Werbung (mit Werbefrei sofort) — dort sammelt die Karte ein.
+   */
+  const watchOfflineDouble = useCallback((amount: number, adFree: boolean, onDone: () => void) => {
+    if (adRef.current) return
+    if (adFree) {
+      setState((s) => {
+        const next = claimOfflineDouble(s, amount)
+        if (next !== s) logPlaytest('shop_tap', { action: 'offline_double', amount: Math.round(amount), adFree: true })
+        return next
+      })
+      onDone()
+      return
+    }
+    startAd({ choice: 'ernte', plot: 'garden', double: { amount, onDone } })
+  }, [setState, startAd])
 
   /** Testphase: Werbung abbrechen — keine Belohnung, keine Abklingzeit. */
   const cancelAd = useCallback(() => {
@@ -285,6 +320,7 @@ export function useShopActions({ setState, offlineGained, setOfflineGained, offl
     adPlaying,
     adResult,
     watchRewardedAd,
+    watchOfflineDouble,
     cancelAd,
     claimGift,
     buyWaterRefill,

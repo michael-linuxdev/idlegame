@@ -2,7 +2,8 @@
 import { useState } from 'react'
 import { DEEP_GATE_YEAR, DEEP_SHOP, REST_CUT, WINTERVORRAT, canDeepReset } from '../../game/longLoop'
 import { restStatus } from '../../game/state/rest'
-import { CHAPTERS, type ChapterId } from '../../game/chapters'
+import { CHAPTERS, chaptersGardenMult, type ChapterId } from '../../game/chapters'
+import { chapterBonusActive } from '../../game/state'
 import { ILSE_RANKS } from '../../game/extrasCore'
 import { formatClock, formatDecimal, formatErnte } from '../../game/format'
 import { IconIlse } from '../../theme/icons'
@@ -19,6 +20,8 @@ export function DeepWinterBlock({ game, onOpenChapter }: { game: GameApi; onOpen
   const deepOpen = yearOk && restLeft <= 0
   const [deepArmed, setDeepArmed] = useState(false)
   const deepPayout = game.deepSprouts
+  // Garten-Bonus der Kapitel, der mit dem ersten Tiefen Winter zu zählen beginnt
+  const waitingBonus = chapterBonusActive(state) ? 0 : (chaptersGardenMult(state.chapters) - 1) * 100
   return (
     <section className="long-loop-block deep-winter" id="jump-deep" aria-labelledby="deep-winter">
       <h3 id="deep-winter" className="subhead">
@@ -55,6 +58,7 @@ export function DeepWinterBlock({ game, onOpenChapter }: { game: GameApi; onOpen
         )
       })}
       {CHAPTERS.every((c) => game.openChapters.includes(c.id)) ? <p className="orchard-teaser">{t.chapterUi.allFound}</p> : null}
+      {waitingBonus >= 0.1 ? <p className="orchard-teaser">{t.chapterUi.bonusWaiting(formatDecimal(waitingBonus, waitingBonus < 10 ? 1 : 0))}</p> : null}
       <IlseBlock game={game} />
       <div className="prestige-preview">
         <div className="prestige-preview-card keep">
