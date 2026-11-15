@@ -66,6 +66,9 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        // Erstinstallation: die Seite sofort übernehmen (offline ab dem ersten Laden).
+        // Eine neue Version wartet trotzdem auf „Jetzt aktualisieren“ (kein skipWaiting).
+        clientsClaim: true,
       },
     }),
   ],
