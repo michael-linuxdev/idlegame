@@ -404,8 +404,13 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   Regalen, Kinderwald, Familienpavillon mit Bilderrahmen, Aussichtssteg mit Geländer und Pfosten,
   Eröffnungsband mit Schere.
 
-Damit sind die Kapitel 4–12 im Weinberg-Niveau. Kapitel 13–50 haben die gemeinsame Kontur und
-das Wachstum, aber noch ihre ursprüngliche Zeichnung.
+- **Kapitel 50 Omas Schrebergarten** (`kapitel-50-omasgarten.png`): Eigener Boden mit Kontur,
+  Radieschenbeet mit Holzkante und Bohnenstangen, Brombeerranken, Kompostkisten und Schubkarre,
+  Kräuterspirale mit Topf, Beerenhecke mit Pfosten und Draht, Opas Apfelbaum mit Leiter, Kiste und
+  Schaukel, Bienenkasten und Imkerhut, Hühnerstall mit Zaun und Hahn, Altfenster-Glashaus, Laube mit
+  Rosen und Lichterkette, Omas Bank mit Schatten.
+
+Damit sind die Kapitel 4–12 im Weinberg-Niveau.
 
 ## Als Nächstes
 1. ~~Gemeinsame Kapitel-Teile auf Kontur~~ – erledigt über `hand-art` (oben), wirkt in allen Kapiteln.
