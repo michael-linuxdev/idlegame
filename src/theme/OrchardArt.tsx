@@ -42,17 +42,17 @@ function Rod({ d, c = P.woodLight, w = 1.3 }: { d: string; c?: string; w?: numbe
 
 type Blob = readonly [number, number, number]
 /** Jede Obstart hat eine eigene Kronenform (Kreise x, y, r) und Stammbreite. */
-const FRUIT: Partial<Record<string, { fruit: string; crown: string; crownD: string; r: number; trunk: number; blobs: readonly Blob[] }>> = {
+const FRUIT: Partial<Record<string, { fruit: string; crown: string; crownD: string; crownL: string; r: number; trunk: number; blobs: readonly Blob[] }>> = {
   // Apfel: breit und rund
-  apfel: { fruit: '#d9483b', crown: '#6ca848', crownD: '#4f8a34', r: 2.1, trunk: 3.2, blobs: [[40, 27, 18], [27, 32, 12], [53, 31, 12], [40, 19, 13]] },
+  apfel: { fruit: '#d9483b', crown: '#6ca848', crownD: '#4a8432', crownL: '#8fc765', r: 2.1, trunk: 3.2, blobs: [[40, 27, 18], [27, 32, 12], [53, 31, 12], [40, 19, 13]] },
   // Birne: hoch und schmal
-  birne: { fruit: '#d8c84a', crown: P.leaf, crownD: '#477e32', r: 2, trunk: 2.8, blobs: [[40, 32, 14], [40, 20, 11.5], [40, 10, 7.5], [32, 36, 9], [48, 36, 9]] },
+  birne: { fruit: '#d8c84a', crown: P.leaf, crownD: '#437a30', crownL: '#86bd62', r: 2, trunk: 2.8, blobs: [[40, 32, 14], [40, 20, 11.5], [40, 10, 7.5], [32, 36, 9], [48, 36, 9]] },
   // Kirsche: flacher Schirm
-  kirsche: { fruit: '#9e1f2c', crown: '#79b452', crownD: '#5a913a', r: 1.6, trunk: 2.8, blobs: [[40, 25, 14], [25, 28, 11], [55, 28, 11], [33, 19, 10], [47, 19, 10]] },
+  kirsche: { fruit: '#9e1f2c', crown: '#79b452', crownD: '#558c37', crownL: '#9bd070', r: 1.6, trunk: 2.8, blobs: [[40, 25, 14], [25, 28, 11], [55, 28, 11], [33, 19, 10], [47, 19, 10]] },
   // Zwetschge: aufrechtes Oval
-  zwetschge: { fruit: '#5b3a78', crown: '#65a04a', crownD: '#4b8034', r: 1.9, trunk: 2.8, blobs: [[40, 29, 14.5], [40, 17, 12], [31, 32, 10], [49, 32, 10]] },
+  zwetschge: { fruit: '#5b3a78', crown: '#65a04a', crownD: '#477b32', crownL: '#88bf66', r: 1.9, trunk: 2.8, blobs: [[40, 29, 14.5], [40, 17, 12], [31, 32, 10], [49, 32, 10]] },
   // Walnuss: mächtige, weite Krone auf dickem Stamm
-  walnuss: { fruit: P.outlineSoft, crown: '#4f8f3c', crownD: '#386e2a', r: 1.9, trunk: 4.4, blobs: [[40, 25, 20], [24, 31, 13], [56, 31, 13], [30, 17, 12], [50, 17, 12], [40, 12, 12]] },
+  walnuss: { fruit: P.outlineSoft, crown: '#4f8f3c', crownD: '#356a28', crownL: '#72ad55', r: 1.9, trunk: 4.4, blobs: [[40, 25, 20], [24, 31, 13], [56, 31, 13], [30, 17, 12], [50, 17, 12], [40, 12, 12]] },
 }
 
 function FruitTree({ id, tier, season = 'summer' }: { id: OrchardId; tier: number; season?: Season }) {
@@ -60,9 +60,9 @@ function FruitTree({ id, tier, season = 'summer' }: { id: OrchardId; tier: numbe
   // Real calendar: blossom in spring, fruit in summer/autumn, bare + snow in winter
   const f =
     season === 'autumn'
-      ? { ...base, crown: '#a8a845', crownD: '#8a7a32' }
+      ? { ...base, crown: '#cdb646', crownD: '#a9822e', crownL: '#e6d36c' }
       : season === 'winter'
-        ? { ...base, crown: '#7a8a6a', crownD: '#5f6b52' }
+        ? { ...base, crown: '#8c9c80', crownD: '#6a7860', crownL: '#aab89e' }
         : base
   const fruits = Math.min(14, tier * 3)
   const pear = id === 'birne'
@@ -80,9 +80,17 @@ function FruitTree({ id, tier, season = 'summer' }: { id: OrchardId; tier: numbe
         </g>
       ) : null}
       <Grow tier={tier}>
-        <path d={`M${40 - tw} 66 L${40 - tw * 0.62} 44 Q40 38 ${40 + tw * 0.62} 44 L${40 + tw} 66 Z`} fill={P.bark} {...line} />
-        <path d={`M${40 + tw * 0.2} 46 L${40 + tw * 0.62} 44 L${40 + tw - 0.8} 65 H${40 + tw * 0.3} Z`} fill={OUT} opacity=".2" />
-        {/* Krone: eine geschlossene Form mit Kontur, Schatten rechts unten, Licht oben links */}
+        {/* Stamm mit Wurzelansatz, Astgabel und Schattenseite */}
+        <path
+          d={`M${40 - tw - 2.2} 66 Q${40 - tw} 62 ${40 - tw * 0.7} 54 L${40 - tw * 0.62} 44 Q40 38 ${40 + tw * 0.62} 44 L${40 + tw * 0.7} 54 Q${40 + tw} 62 ${40 + tw + 2.2} 66 Z`}
+          fill={P.bark}
+          {...line}
+        />
+        <path d={`M${40 + tw * 0.15} 45 L${40 + tw * 0.62} 44 L${40 + tw * 0.7} 54 Q${40 + tw} 62 ${40 + tw + 1.4} 65.2 H${40 + tw * 0.2} Z`} fill={OUT} opacity=".22" />
+        <path d={`M${40 - tw * 0.35} 62 V52 M${40 + tw * 0.05} 58 V49`} stroke={OUT} strokeWidth={H} strokeLinecap="round" opacity=".4" fill="none" />
+        <Rod d={`M${40 - tw * 0.3} 47 L${mx - mr * 0.5} ${my + mr * 0.55}`} c={P.bark} w={tw * 0.42} />
+        <Rod d={`M${40 + tw * 0.3} 47 L${mx + mr * 0.5} ${my + mr * 0.5}`} c={P.bark} w={tw * 0.42} />
+        {/* Krone: eine geschlossene Form mit Kontur; dunkle Unterseite, Laubballen im Licht von oben links */}
         {f.blobs.map(([x, y, r], i) => (
           <circle key={`o${i}`} cx={x} cy={y} r={r} fill={f.crownD} stroke={OUT} strokeWidth={C * 2} />
         ))}
@@ -90,9 +98,25 @@ function FruitTree({ id, tier, season = 'summer' }: { id: OrchardId; tier: numbe
           <circle key={`d${i}`} cx={x} cy={y} r={r} fill={f.crownD} />
         ))}
         {f.blobs.map(([x, y, r], i) => (
-          <circle key={`l${i}`} cx={x - r * 0.12} cy={y - r * 0.14} r={r * 0.8} fill={f.crown} />
+          <circle key={`m${i}`} cx={x - r * 0.16} cy={y - r * 0.2} r={r * 0.78} fill={f.crown} />
         ))}
-        <circle cx={mx - mr * 0.34} cy={my - mr * 0.5} r={mr * 0.3} fill={P.white} opacity="0.16" />
+        {f.blobs.map(([x, y, r], i) => (
+          <circle key={`l${i}`} cx={x - r * 0.34} cy={y - r * 0.4} r={r * 0.42} fill={f.crownL} />
+        ))}
+        {/* Laub: kleine Bögen statt glatter Fläche */}
+        {Array.from({ length: 5 + f.blobs.length * 2 }, (_, i) => {
+          const [bx, by, br] = f.blobs[i % f.blobs.length]!
+          const a = seeded(i + 31) * Math.PI * 2
+          const d = (0.15 + seeded(i + 47) * 0.6) * br
+          const x = bx + Math.cos(a) * d
+          const y = by + Math.sin(a) * d * 0.8
+          return <path key={`s${i}`} d={`M${x - 1.7} ${y} q1.7 2 3.4 0`} fill="none" stroke={OUT} strokeWidth={H} strokeLinecap="round" opacity=".3" />
+        })}
+        {season === 'autumn'
+          ? f.blobs.slice(0, 4).map(([x, y, r], i) => (
+              <circle key={`a${i}`} cx={x + r * (i % 2 ? 0.45 : -0.5)} cy={y + r * 0.25} r={1.5} fill={P.autumn} stroke={OUT} strokeWidth={H * 0.7} strokeOpacity=".5" />
+            ))
+          : null}
         {season === 'winter' ? (
           <g>
             <ellipse cx={f.blobs[f.blobs.length - 1]![0]} cy={f.blobs[f.blobs.length - 1]![1] - f.blobs[f.blobs.length - 1]![2] * 0.72} rx={f.blobs[f.blobs.length - 1]![2] * 0.8} ry="3" fill={P.white} />

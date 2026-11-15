@@ -183,6 +183,7 @@ Werkzeug: `npm run balance -- <engaged|regular|casual> <stunden>` — spielt die
     - **Samen-Senke:** sechs neue Gartenstile für Omas Garten, vier Lichtstimmungen für alle Grundstücke (zusammen 4 300 statt 400 Samen).
     - **Gartenmonat** (30 Tage, 4,99 €: Premium-Reihe, Bonus ohne Werbung, je Kauf der nächste von zwölf Monatsstilen) ersetzt den Wochen-Pass; Werbefrei 5,99 € statt 3,99 €. Preise: `docs/store/preise.md`.
     - Spielstand: neue Felder mit Startwert (`werbeBonusDay`, `werbeBoni`, `equippedChapterCosmetic`, `gartenmonatExpiresAt`), kein neues `SAVE_VERSION`.
+    - **Update verfügbar:** Eine neue Version lädt nicht mehr von selbst neu, sondern zeigt „Update verfügbar“ mit „Jetzt aktualisieren“ / „Später“ (Banner, Menü; im Hintergrund als Benachrichtigung). Gesucht wird beim Start, alle 30 min und beim Zurückkommen (`src/game/appUpdate.ts`). Gartenmonat ist ein Einmalkauf (kein Abo).
     - Offen: anonyme Messung mit Einwilligung, lokale Benachrichtigungen in der Store-Hülle, Kapitel 3+ für Gelegenheitsspieler (hängen an den Generationen).
 17. Multiplayer-Architektur (Kleingartenverein mit echtem Backend; Kürbis-Runde umstellen).
 18. Store-IAP, Impressum-Daten, Namensprüfung „Gartenerbe“ und „Heirloom Garden“, Store-Assets, Soft-Launch. Vor Launch: `STORE_ENABLED` prüfen (Platzhalter) **und `DISTRIBUTION = 'store'`** in `src/game/distribution.ts` (schaltet den Installations-Hinweis der Web-Fassung ab; ein Test erzwingt das, sobald eine Store-Hülle im Repo liegt).

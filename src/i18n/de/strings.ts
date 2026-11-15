@@ -898,7 +898,7 @@ export const strings = {
     },
     gartenmonat: {
       name: 'Gartenmonat',
-      blurb: '30 Tage: Premium-Reihe der Gartenwoche, jeder Bonus ohne Werbung und ein Monatsstil für immer.',
+      blurb: '30 Tage, kein Abo: Premium-Reihe der Gartenwoche, jeder Bonus ohne Werbung und ein Monatsstil für immer.',
       label: '30 Tage',
     },
   },

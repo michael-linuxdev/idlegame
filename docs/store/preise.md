@@ -55,9 +55,10 @@ nach Ablauf. Für Samen sind sie nicht zu haben. Sind alle zwölf da, gibt der
 Gartenmonat stattdessen 150 Samen. Der Markt zeigt den nächsten Stil mit
 Vorschau.
 
-Offen vor dem Store-Start: Gartenmonat als Abo (verlängert sich selbst) oder
-als einmaliger 30-Tage-Kauf anlegen — im Spiel ist es ein Kauf ohne
-automatische Verlängerung.
+**Entschieden (2026-11-15): Der Gartenmonat ist ein Einmalkauf, kein Abo.**
+Er verlängert sich nicht von selbst; im Store als verbrauchbarer Kauf
+(30 Tage) anlegen, nicht als Abonnement. Der Markt sagt das dazu („30 Tage,
+kein Abo“).
 
 ## Werbung (seit 2026-11-15)
 

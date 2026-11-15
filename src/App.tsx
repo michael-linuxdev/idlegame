@@ -24,6 +24,7 @@ import { TestPhaseNotice } from './components/TestPhaseNotice'
 import { AdOverlay } from './components/AdOverlay'
 import { bootPlaytestLog, logPlaytest } from './game/playtestLog'
 import { SaveGuardBanner } from './components/SaveGuardBanner'
+import { UpdateBanner } from './components/UpdateBanner'
 import { useGame } from './game/useGame'
 import { GENERATORS } from './game/generators'
 import { useNotebook, yearLetterFor, type NotebookEntryId } from './game/notebook'
@@ -267,6 +268,8 @@ export default function App() {
         <p>{t.rotate}</p>
       </div>
       <SaveGuardBanner />
+      {/* Neue Version liegt bereit — nicht während der Werbung oder der Saisonende-Zeremonie */}
+      <UpdateBanner hidden={Boolean(game.adPlaying) || Boolean(game.seasonEnd)} />
       <main
         className={`app-main${tab === 'garten' || wide ? ' map-mode' : ''}`}
         tabIndex={tab === 'garten' || wide ? undefined : 0}

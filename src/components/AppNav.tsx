@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react'
 import { useSwipeClose } from './useSwipeClose'
 import { logPlaytest } from '../game/playtestLog'
 import { LOCALES, setLocale, t, useLocale } from '../i18n'
 import { MuteToggle } from './MuteToggle'
 import { isAmbienceOn, setAmbienceOn } from '../game/ambience'
 import { PlaytestLogControls } from './PlaytestLogControls'
-import { APP_VERSION, checkForUpdate, reloadNow } from '../game/appUpdate'
+import { APP_VERSION, applyUpdate, checkForUpdate, reloadNow, subscribeUpdate, updateReady } from '../game/appUpdate'
 import { setPref, setSignsAlways, usePref, useSignsAlways } from '../game/prefs'
 import { useDismiss } from '../game/overlays'
 import { IconBasket, IconChest, IconFlag, IconNotebook, IconSeeds, IconSnow, IconSprout } from '../theme/icons'
@@ -487,6 +487,7 @@ function SettingsPage({ reminders, onToggleReminders }: { reminders: boolean; on
   const haptics = usePref('haptics')
   const [updateNote, setUpdateNote] = useState<string | null>(null)
   const [checking, setChecking] = useState(false)
+  const updateWaiting = useSyncExternalStore(subscribeUpdate, updateReady)
 
   async function onCheckUpdate() {
     if (checking) return
@@ -549,6 +550,14 @@ function SettingsPage({ reminders, onToggleReminders }: { reminders: boolean; on
                 {t.appUpdate.now}
               </button>
             ) : null}
+          </p>
+        ) : null}
+        {updateWaiting && !updateNote ? (
+          <p className="nav-update-note" role="status">
+            {t.appUpdate.available}
+            <button type="button" className="link-btn" onClick={() => applyUpdate()}>
+              {t.appUpdate.now}
+            </button>
           </p>
         ) : null}
         <p className="nav-version">{t.appUpdate.version(APP_VERSION)}</p>

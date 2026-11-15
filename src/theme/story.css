@@ -659,6 +659,17 @@
   flex: 1 1 14rem;
 }
 
+/* „Update verfügbar“: wie der Speicher-Hinweis, in Grün */
+.update-banner {
+  background: #eef6e6;
+  border-color: #5f9e45;
+  color: #24361c;
+}
+
+.update-banner .btn {
+  min-height: 2.75rem;
+}
+
 /* Fehlerbildschirm statt weißer Seite */
 .crash-screen {
   min-height: 100dvh;

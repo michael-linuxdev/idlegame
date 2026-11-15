@@ -41,7 +41,9 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: 'autoUpdate',
+      // 'prompt': eine neue Version wartet auf „Jetzt aktualisieren“ (src/game/appUpdate.ts)
+      // und lädt nicht mehr mitten im Spiel von selbst neu
+      registerType: 'prompt',
       includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
       manifest: {
         ...APP,
@@ -64,6 +66,9 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        // Erstinstallation: die Seite sofort übernehmen (offline ab dem ersten Laden).
+        // Eine neue Version wartet trotzdem auf „Jetzt aktualisieren“ (kein skipWaiting).
+        clientsClaim: true,
       },
     }),
   ],

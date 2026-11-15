@@ -578,6 +578,10 @@ export const expansionStrings = {
     offline: 'Keine Verbindung — später nochmal versuchen.',
     unsupported: 'Updates kommen automatisch beim nächsten Start.',
     now: 'Jetzt aktualisieren',
+    /** Neue Version liegt bereit (Banner, Menü, Benachrichtigung) */
+    available: 'Update verfügbar.',
+    availableBody: 'Dein Garten bleibt, wie er ist.',
+    later: 'Später',
     version: (v: string) => `Version ${v}`,
   },
 } as const
