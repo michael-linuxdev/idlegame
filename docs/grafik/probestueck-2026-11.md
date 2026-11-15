@@ -384,6 +384,11 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   Kescher, Steinriegel mit Eidechse, Mähgutwagen und Saatsack, Grünbrücke mit Auto und Reh,
   Bestäuberfest.
 
+- **Kapitel 46 Fassadengarten** (`kapitel-46-fassadengarten.png`): Fassade mit Sims und
+  Schattenkante, Moospolster, Hortensiendolden, Hopfendrähte und -ranken, Tropfschlauch und Tank,
+  Balkone mit Geländer und Kästen, Nistkästen, Sensorstäbe und Solarpaneel, Fensterbänke mit
+  Bechern, Hofcafé mit Markise, Lichterketten und Stern.
+
 Damit sind die Kapitel 4–12 im Weinberg-Niveau. Kapitel 13–50 haben die gemeinsame Kontur und
 das Wachstum, aber noch ihre ursprüngliche Zeichnung.
 
