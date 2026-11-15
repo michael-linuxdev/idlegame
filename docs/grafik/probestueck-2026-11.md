@@ -355,6 +355,11 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   Kohlreihen, Rettich, Sesam, Perilla, Krugpodest mit Onggi, Chilimatten, Hanok-Hof mit Steinweg,
   Kimjang-Wanne mit Kohlhälften, Kakibaum, Mond, Chuseok-Tablett mit Songpyeon und Laternen.
 
+- **Kapitel 40 Dachgarten** (`kapitel-40-dachgarten.png`): Kiesdach mit Licht und Schatten,
+  Hochbeete, Mauerpfeffer, Kräuterbalkon, Bienenhotel am Pfosten, Glaskuppel, Regentanks und
+  Treppenhaus, Solarpergola mit Platten, Geländer, Stadtsilhouette, Lastenaufzug, Dachcafé und
+  Saatgutschrank.
+
 Damit sind die Kapitel 4–12 im Weinberg-Niveau. Kapitel 13–50 haben die gemeinsame Kontur und
 das Wachstum, aber noch ihre ursprüngliche Zeichnung.
 
