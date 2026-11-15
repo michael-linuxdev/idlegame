@@ -93,4 +93,7 @@ nicht drin.
   hätte, die Vorschau nennt Ernte statt Prozent („≈ 1,15 Mrd Ernte gespart“), und in den ersten
   5 Minuten lässt sich das Thema einmal wechseln (Pille auf der Karte, Knopf im Saison-Tab).
   `season_card` schreibt `tip` und `switched` mit.
+  → **Nachgebessert (2026-11-15):** Rückmeldung „viel zu viel Text, was heißt ‚mit deinem letzten
+  Garten gespart‘?“. Die Vorschau-Zeile ist weg; jede Karte zeigt nur Name und eine Wirkung
+  („Hühnerstall 30 % billiger“), Einleitung in einer Zeile. Omas Tipp bleibt die Orientierung.
 

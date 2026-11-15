@@ -841,7 +841,9 @@ try {
     const sheet = p.locator('.season-card-sheet')
     await sheet.waitFor()
     const text = await sheet.innerText()
-    assert(text.includes(T.seasonCards.previewAusbau(7)), `Ausbau card shows its saving (${text})`)
+    // Kurze Karten (2026-11-15): Wirkung in einer Zeile, keine Vorschau-Zeile mehr
+    assert(/30\s%/.test(text), `Ausbau card shows its discount (${text})`)
+    assert((await p.locator('.season-card-preview').count()) === 0, 'no preview line')
     // Omas Tipp (2026-11-14): die Karte, die mit dem letzten Garten am meisten gebracht hätte
     assert((await p.locator('.season-card.tip').count()) === 1, 'one card marked as Omas Tipp')
     assert((await p.locator('.season-card.tip').innerText()).includes(T.seasonCards.tip), 'tip badge text')
