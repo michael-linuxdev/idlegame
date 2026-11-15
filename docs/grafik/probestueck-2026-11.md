@@ -360,6 +360,11 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   Treppenhaus, Solarpergola mit Platten, Geländer, Stadtsilhouette, Lastenaufzug, Dachcafé und
   Saatgutschrank.
 
+- **Kapitel 41 Schulgarten** (`kapitel-41-schulgarten.png`): Boden, Klassenbeete mit Radieschen und
+  Schildern, Gießplan, Kompostkisten mit Sieb, Insektenhotel, Weidentipi, Barfußpfad,
+  Kräuterschnecke mit Teich, Schulküche, Gartenhütte mit Regal, Pausenbeet mit Erdbeeren, Festbude
+  mit Ballons.
+
 Damit sind die Kapitel 4–12 im Weinberg-Niveau. Kapitel 13–50 haben die gemeinsame Kontur und
 das Wachstum, aber noch ihre ursprüngliche Zeichnung.
 
