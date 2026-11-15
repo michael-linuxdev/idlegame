@@ -410,7 +410,10 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   Schaukel, Bienenkasten und Imkerhut, Hühnerstall mit Zaun und Hahn, Altfenster-Glashaus, Laube mit
   Rosen und Lichterkette, Omas Bank mit Schatten.
 
-Damit sind die Kapitel 4–12 im Weinberg-Niveau.
+Damit sind alle Kapitel 4–50 im Weinberg-Niveau (2026-11-15). Ab Kapitel 26 haben Helfer die
+Ersetzungen vorbereitet (`boldify` + Paare); jedes Kapitel wurde gerendert, angesehen und mit den
+vollen Prüfungen (Test, Lint, Build, E2E) einzeln nach `main` gebracht. Nebenbei behoben: drei
+Animationen (Reiher, Kaiki, Hausboot), bei denen CSS die Position überschrieb.
 
 ## Als Nächstes
 1. ~~Gemeinsame Kapitel-Teile auf Kontur~~ – erledigt über `hand-art` (oben), wirkt in allen Kapiteln.
