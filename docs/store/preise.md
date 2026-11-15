@@ -39,8 +39,8 @@ Zeit sparen oder schmücken, nie nötig sein.
 | Samentüte M | 150 Samen | **2,49 €** | ~17 % günstiger je Samen |
 | Samentüte L | 500 Samen | **6,99 €** | ~29 % günstiger, ≈ eine Woche Spielen |
 | Blüten-Paket | Blütenmeer + Goldener Herbst | **2,99 €** | zwei Stile (Gegenwert ~350 Samen) |
-| Werbefrei | Bonus-Werbung weg, Belohnung bleibt | **3,99 €** | einmalig, üblich im Genre |
-| Gartenmonat | 30 Tage Premium-Reihe der Gartenwoche + jeder Bonus ohne Werbung | **4,99 € je 30 Tage** | ersetzt seit 2026-11-15 „Gartenwoche Premium“ (1,99 € je Woche brachte 120 Samen — kaum mehr als Samentüte M). Im Monat ~515 Samen aus der Premium-Reihe, wenn man spielt; verlängern geht in der letzten Woche, die Restzeit bleibt |
+| Werbefrei | Bonus-Werbung dauerhaft weg, Belohnung bleibt | **5,99 €** | einmalig; seit 2026-11-15 (vorher 3,99 €): mit dem Tageslimit der Boni das dauerhafte Ankerprodukt, teurer als ein Gartenmonat |
+| Gartenmonat | 30 Tage Premium-Reihe der Gartenwoche + jeder Bonus ohne Werbung + ein Monatsstil für immer | **4,99 € je 30 Tage** | ersetzt seit 2026-11-15 „Gartenwoche Premium“ (1,99 € je Woche brachte 120 Samen — kaum mehr als Samentüte M). Im Monat ~515 Samen aus der Premium-Reihe, wenn man spielt; verlängern geht in der letzten Woche, die Restzeit bleibt |
 | Festladen Plus | zehnfacher Vorrat im laufenden Fest (nur im Festladen) | **3,99 € je Fest** | für Dauerspieler mit vielen Festmarken; nur Mengen, nichts Exklusives |
 
 Grenzen, die das Spiel fair halten (schon im Code): Zeitsprünge max. 6 h am
@@ -48,11 +48,16 @@ Tag, höchstens **8 Boni am Tag** (Markt-Bonus und verdoppelter Korb zusammen,
 auch mit Werbefrei oder Gartenmonat — `AD_BONUS_PER_DAY`), Dünger und
 Vereinsfahne laufen ab, keine Erbstücke/Sprösslinge/Vermächtnis zu kaufen.
 
+**Monatsstile:** Zwölf Gartenstile für Omas Garten (Schneeglöckchen …
+Christrosen) gibt es nur mit dem Gartenmonat — je Kauf der nächste der Reihe,
+**ohne Frist und ohne Kalender** (kein Stil kann verpasst werden), er bleibt
+nach Ablauf. Für Samen sind sie nicht zu haben. Sind alle zwölf da, gibt der
+Gartenmonat stattdessen 150 Samen. Der Markt zeigt den nächsten Stil mit
+Vorschau.
+
 Offen vor dem Store-Start: Gartenmonat als Abo (verlängert sich selbst) oder
 als einmaliger 30-Tage-Kauf anlegen — im Spiel ist es ein Kauf ohne
-automatische Verlängerung. Werbefrei (3,99 €) ist mit dem Tageslimit kein
-„Ernte alle 3 Minuten“ mehr; 4,99 € wären vertretbar, der Preis ist aber
-unverändert.
+automatische Verlängerung.
 
 ## Werbung (seit 2026-11-15)
 

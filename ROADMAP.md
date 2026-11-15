@@ -1,6 +1,6 @@
 # Gartenerbe — Roadmap & Produktvermerke
 
-Stand: 2026-11-10 (Runde 4: Sichern, Bündeln, Belohnen, Unterscheiden).
+Stand: 2026-11-15 (Bindung & Markt; davor Runde 4: Sichern, Bündeln, Belohnen, Unterscheiden).
 
 ## Produkt
 
@@ -177,8 +177,15 @@ Werkzeug: `npm run balance -- <engaged|regular|casual> <stunden>` — spielt die
     - **Paket 5 (Nutzerentscheid):** Sturm — „Sichern“ kostet −8 % für 2 h, die Beerenhecke senkt die Schadens-Chance (50 % → 20 %); Spätfrost — Glas (Gewächshaus, Orangerie) hält 69 % des Schadens ab. Beide sind jetzt echte Entscheidungen. Saison-Karten „Faktor nach Anteil“ umgesetzt, gemessen, **weggelassen** (Hofladenjahr blieb bei ~90 %, kleine Bereiche bei ~0 %).
     - **Saison-Karten „Ausbau statt Ertrag“** (Nutzerentscheid): Bereichs-Themen verbilligen den Ausbau ihres Bereichs und verteuern den Gegenspieler; laufende alte Karten wirken weiter wie vorher (Feld `seasonCardAusbau`).
     - **Offen:** Cloud-Sicherung (iCloud/Play Games/Backend) braucht Store-Hülle bzw. Konto; Werte der Bogen-Regeln mit echten Ständen nachprüfen.
-16. Multiplayer-Architektur (Kleingartenverein mit echtem Backend; Kürbis-Runde umstellen).
-17. Store-IAP, Impressum-Daten, Namensprüfung „Gartenerbe“ und „Heirloom Garden“, Store-Assets, Soft-Launch. Vor Launch: `STORE_ENABLED` prüfen (Platzhalter) **und `DISTRIBUTION = 'store'`** in `src/game/distribution.ts` (schaltet den Installations-Hinweis der Web-Fassung ab; ein Test erzwingt das, sobald eine Store-Hülle im Repo liegt).
+16. ✅ **Bindung & Markt (2026-11-15):**
+    - **Obstwiese früher:** Kapitel 2 ab dem 6. Gartenjahr (nach dem 5. Saisonende) statt erst nach dem ersten Tiefen Winter; der Garten-Bonus der Kapitel zählt ab dem ersten Tiefen Winter. Simulator-Profil `occasional` (Gelegenheitsspielerin nach Testerin 2): Kapitel 2 an Tag 5 statt Tag 46. Zahlen: `docs/kapitel/balance-bericht.md` „Obstwiese früher“.
+    - **Bonus:** „Werbung ansehen: Korb ×2“ im Willkommens-Zettel; höchstens 8 Boni am Tag (Markt und Korb zusammen, auch mit Werbefrei); Test-Werbung 15/30 s.
+    - **Samen-Senke:** sechs neue Gartenstile für Omas Garten, vier Lichtstimmungen für alle Grundstücke (zusammen 4 300 statt 400 Samen).
+    - **Gartenmonat** (30 Tage, 4,99 €: Premium-Reihe, Bonus ohne Werbung, je Kauf der nächste von zwölf Monatsstilen) ersetzt den Wochen-Pass; Werbefrei 5,99 € statt 3,99 €. Preise: `docs/store/preise.md`.
+    - Spielstand: neue Felder mit Startwert (`werbeBonusDay`, `werbeBoni`, `equippedChapterCosmetic`, `gartenmonatExpiresAt`), kein neues `SAVE_VERSION`.
+    - Offen: anonyme Messung mit Einwilligung, lokale Benachrichtigungen in der Store-Hülle, Kapitel 3+ für Gelegenheitsspieler (hängen an den Generationen).
+17. Multiplayer-Architektur (Kleingartenverein mit echtem Backend; Kürbis-Runde umstellen).
+18. Store-IAP, Impressum-Daten, Namensprüfung „Gartenerbe“ und „Heirloom Garden“, Store-Assets, Soft-Launch. Vor Launch: `STORE_ENABLED` prüfen (Platzhalter) **und `DISTRIBUTION = 'store'`** in `src/game/distribution.ts` (schaltet den Installations-Hinweis der Web-Fassung ab; ein Test erzwingt das, sobald eine Store-Hülle im Repo liegt).
 
 ## 5-Jahres-Plan (Inhalt)
 
@@ -212,5 +219,5 @@ Konzept und Ideen-Bewertung: `docs/nach-kapitel-50.md`.
 
 - Echter Online-Wettbewerb für den Kürbis (mit Multiplayer-Backend).
 - Ilse-/Jonas-Geschichten als kurze Briefe im Notizbuch.
-- Gartenstile für Kapitel-Karten.
+- Gartenstile für Kapitel-Karten: als Lichtstimmungen umgesetzt (2026-11-15); eigene Stile je Kapitel offen.
 - Saisonaler Pass bleibt bewusst aus — Gartenwoche + Feste reichen.

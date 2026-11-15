@@ -53,6 +53,19 @@ export type CosmeticId =
   | 'lichtAbend'
   | 'lichtHerbst'
   | 'lichtMond'
+  // Monatsstile: je Gartenmonat der nächste, nicht mit Samen zu kaufen
+  | 'monatSchneegloeckchen'
+  | 'monatKrokus'
+  | 'monatTulpe'
+  | 'monatFlieder'
+  | 'monatPfingstrose'
+  | 'monatRose'
+  | 'monatSonnenblume'
+  | 'monatDahlie'
+  | 'monatAster'
+  | 'monatHagebutte'
+  | 'monatEfeu'
+  | 'monatChristrose'
 
 export interface CosmeticDef {
   id: CosmeticId
@@ -66,12 +79,14 @@ export interface CosmeticDef {
   fest?: boolean
   /** 'chapter' = Lichtstimmung für alle Grundstücke (Kapitel); fehlt = Omas Garten */
   scope?: 'chapter'
+  /** Monatsstil: kommt nur mit dem Gartenmonat (der Reihe nach, ohne Frist), nicht für Samen */
+  monat?: boolean
 }
 
 /** Lichtstimmung, die jeder hat (Grundstücke ohne Stil). */
 export const DEFAULT_CHAPTER_COSMETIC: CosmeticId = 'lichtTag'
 
-function cosmetic(id: CosmeticId, cost: number, scope?: 'chapter'): CosmeticDef {
+function cosmetic(id: CosmeticId, cost: number, scope?: 'chapter', monat?: boolean): CosmeticDef {
   return {
     id,
     get name() {
@@ -83,6 +98,7 @@ function cosmetic(id: CosmeticId, cost: number, scope?: 'chapter'): CosmeticDef 
     cost,
     accentClass: `skin-${id}`,
     scope,
+    monat,
   }
 }
 
@@ -192,7 +208,27 @@ export const COSMETICS: CosmeticDef[] = [
   cosmetic('lichtAbend', 300, 'chapter'),
   cosmetic('lichtHerbst', 400, 'chapter'),
   cosmetic('lichtMond', 500, 'chapter'),
+  // Monatsstile (Reihenfolge = Reihenfolge der Gartenmonate); „Preis“ nur als Wert, nicht kaufbar
+  cosmetic('monatSchneegloeckchen', 300, undefined, true),
+  cosmetic('monatKrokus', 300, undefined, true),
+  cosmetic('monatTulpe', 300, undefined, true),
+  cosmetic('monatFlieder', 300, undefined, true),
+  cosmetic('monatPfingstrose', 300, undefined, true),
+  cosmetic('monatRose', 300, undefined, true),
+  cosmetic('monatSonnenblume', 300, undefined, true),
+  cosmetic('monatDahlie', 300, undefined, true),
+  cosmetic('monatAster', 300, undefined, true),
+  cosmetic('monatHagebutte', 300, undefined, true),
+  cosmetic('monatEfeu', 300, undefined, true),
+  cosmetic('monatChristrose', 300, undefined, true),
 ]
+
+/** Der Monatsstil, den der nächste Gartenmonat bringt (null = alle zwölf schon da). */
+export function nextMonatStyle(owned: readonly CosmeticId[]): CosmeticDef | null {
+  return COSMETICS.find((c) => c.monat && !owned.includes(c.id)) ?? null
+}
+/** Sind alle Monatsstile da, gibt der Gartenmonat stattdessen Samen */
+export const GARTENMONAT_FALLBACK_SAMEN = 150
 
 /** Gehört der Stil dem Spieler? (kostenlose Stile immer) */
 export function cosmeticOwned(owned: readonly CosmeticId[], id: CosmeticId): boolean {

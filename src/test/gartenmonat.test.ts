@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { AD_BONUS_PER_DAY, GARTENMONAT_MS, GARTENMONAT_RENEW_MS, SHOP_OFFERS, shopOfferById } from '../game/monetization'
+import { AD_BONUS_PER_DAY, COSMETICS, GARTENMONAT_FALLBACK_SAMEN, GARTENMONAT_MS, GARTENMONAT_RENEW_MS, SHOP_OFFERS, nextMonatStyle, shopOfferById } from '../game/monetization'
 import {
   adBonusLeft,
   adFreeNow,
+  buyCosmetic,
+  equipCosmetic,
   claimGartenwocheTier,
   createInitialState,
   gartenmonatMsLeft,
@@ -25,6 +27,8 @@ describe('Gartenmonat', () => {
     expect(offer.kind).toBe('gartenmonat')
     expect(SHOP_OFFERS.some((o) => o.kind === 'gartenwochePlus')).toBe(false)
     expect(OFFER_PRICE_CENTS.gartenmonat).toBe(499)
+    // dauerhaft Werbefrei kostet mehr als ein Monat
+    expect(OFFER_PRICE_CENTS.removeAds).toBeGreaterThan(OFFER_PRICE_CENTS.gartenmonat!)
   })
 
   it('runs 30 days: premium track and bonus without ads, nothing else', () => {
@@ -52,6 +56,30 @@ describe('Gartenmonat', () => {
     expect(again.samen).toBe(s.samen + 20)
     // ohne Gartenmonat bleibt die Premium-Reihe zu
     expect(claimGartenwocheTier(base, 1, 'premium', now)).toBe(base)
+  })
+
+  it('brings the next monthly style each time — to keep, never for Samen; then Samen instead', () => {
+    const monat = COSMETICS.filter((c) => c.monat)
+    expect(monat).toHaveLength(12)
+    let s = mockBuyOffer(base, offer, now)
+    expect(s.ownedCosmetics).toContain(monat[0]!.id)
+    expect(nextMonatStyle(s.ownedCosmetics)?.id).toBe(monat[1]!.id)
+    // nicht für Samen zu haben
+    const rich = { ...base, samen: 9999 }
+    expect(buyCosmetic(rich, monat[0]!.id, now)).toBe(rich)
+    // der Stil bleibt nach Ablauf und lässt sich anlegen
+    const after = now + GARTENMONAT_MS + 1
+    expect(equipCosmetic(s, monat[0]!.id, after).equippedCosmetic).toBe(monat[0]!.id)
+    let t = now
+    for (let i = 1; i < 12; i++) {
+      t += GARTENMONAT_MS
+      s = mockBuyOffer(s, offer, t)
+      expect(s.ownedCosmetics, `Monat ${i + 1}`).toContain(monat[i]!.id)
+    }
+    expect(nextMonatStyle(s.ownedCosmetics)).toBeNull()
+    expect(s.samen).toBe(base.samen)
+    const more = mockBuyOffer(s, offer, t + GARTENMONAT_MS)
+    expect(more.samen).toBe(base.samen + GARTENMONAT_FALLBACK_SAMEN)
   })
 
   it('can only be extended in the last week; the rest carries over', () => {

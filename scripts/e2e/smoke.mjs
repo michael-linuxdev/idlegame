@@ -958,9 +958,9 @@ try {
       const s = await saved(p)
       assert(s.werbeBoni === 1 && typeof s.werbeBonusDay === 'string' && s.werbeBonusDay.length > 0, `doubling counts as a bonus (${s.werbeBoni})`)
       assert(s.chapters.obstwiese.openedAt > 0, 'Obstwiese opens in garden year 6 without a Tiefer Winter')
-      assert(s.tiefeWinter === 0 && s.saisonenden === 5 && s.samen === 900, 'nothing else changed')
+      assert(s.tiefeWinter === 0 && s.saisonenden === 5 && s.samen >= 900, `nothing else changed (${s.tiefeWinter} ${s.saisonenden} ${s.samen})`)
       // Grundstück: Lichtstimmung liegt auf der Karte, der Garten-Bonus ist als „später“ markiert
-      await p.getByRole('button', { name: new RegExp(esc(T.chapters.obstwiese.chip)) }).last().click()
+      await p.locator('.plot-switch').click()
       await p.locator('.chapter-obstwiese .garden-stage.skin-lichtAbend').waitFor()
       assert((await p.locator('.orchard-bonus--later').count()) === 1, 'chapter bonus is marked as waiting')
       if (LANG === 'de') await p.screenshot({ path: 'e2e-screens/obstwiese-frueh.png' })

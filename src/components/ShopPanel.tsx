@@ -7,6 +7,8 @@ import {
   GARTENWOCHE_TIERS,
   CLAN_BOOST,
   COSMETICS,
+  GARTENMONAT_FALLBACK_SAMEN,
+  nextMonatStyle,
   cosmeticOwned,
   type CosmeticId,
   DAILY_SKIP_CAP_HOURS,
@@ -147,6 +149,7 @@ export function ShopPanel({ game, onPreview, plot = 'garden' }: Props) {
   const currency = SHOP_OFFERS.filter((o) => o.section === 'currency')
   const cosmeticPacks = SHOP_OFFERS.filter((o) => o.section === 'cosmetics')
   const gartenmonatOffer = SHOP_OFFERS.find((o) => o.kind === 'gartenmonat')
+  const nextMonat = nextMonatStyle(state.ownedCosmetics)
   const gartenmonatDays = Math.ceil(gartenmonatLeftMs / 86_400_000)
 
   const rewardLabel = (kind: 'samen' | 'ernteSec', amount: number) =>
@@ -371,7 +374,7 @@ export function ShopPanel({ game, onPreview, plot = 'garden' }: Props) {
           <p className="muted">{t.shop.skinsIntro}</p>
           {(
             [
-              { key: 'garden', title: t.shop.skinsGarden, intro: null, list: COSMETICS.filter((c) => !c.scope && (!c.fest || state.ownedCosmetics.includes(c.id))) },
+              { key: 'garden', title: t.shop.skinsGarden, intro: null, list: COSMETICS.filter((c) => !c.scope && ((!c.fest && !c.monat) || state.ownedCosmetics.includes(c.id))) },
               // Lichtstimmungen erst, wenn es ein Grundstück gibt
               ...(game.openChapters.length > 0
                 ? [{ key: 'chapter', title: t.shop.skinsChapters, intro: t.shop.skinsChaptersIntro, list: COSMETICS.filter((c) => c.scope === 'chapter') }]
@@ -417,6 +420,20 @@ export function ShopPanel({ game, onPreview, plot = 'garden' }: Props) {
               )
             })}
           </ul>
+          {group.key === 'garden' && nextMonat && OFFERS_VISIBLE ? (
+            <div className="cosmetic-card cosmetic-monat">
+              <div className={`cosmetic-swatch ${nextMonat.accentClass}`} aria-hidden="true" />
+              <div className="cosmetic-info">
+                <div className="laden-name">{nextMonat.name}</div>
+                <p className="laden-blurb">{t.shop.skinsMonat}</p>
+              </div>
+              {onPreview ? (
+                <button type="button" className="btn ghost" onClick={() => onPreview(nextMonat.id)}>
+                  {t.preview.button}
+                </button>
+              ) : null}
+            </div>
+          ) : null}
           </section>
           ))}
           {OFFERS_VISIBLE ? (
@@ -466,6 +483,7 @@ export function ShopPanel({ game, onPreview, plot = 'garden' }: Props) {
               <OfferButton key={offer.id} offer={offer} owned={offerOwned(offer)} onBuy={() => buyOffer(offer)} />
             ))}
             {gartenmonatLeftMs > 0 ? <li className="shop-gartenmonat" role="status">{t.shop.gartenmonatLeft(gartenmonatDays)}</li> : null}
+            {gartenmonatOffer ? <li className="shop-gartenmonat-style">{nextMonat ? t.shop.gartenmonatStyle(nextMonat.name) : t.shop.gartenmonatSamen(GARTENMONAT_FALLBACK_SAMEN)}</li> : null}
             {gartenmonatOffer ? <OfferButton offer={gartenmonatOffer} owned={!gartenmonatCanBuy} onBuy={() => buyOffer(gartenmonatOffer)} /> : null}
           </ul>
         </div>

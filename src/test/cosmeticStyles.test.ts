@@ -26,7 +26,7 @@ describe('Gartenstile und Lichtstimmungen', () => {
   })
 
   it('there is enough to buy: more than five weeks of free Samen', () => {
-    const total = COSMETICS.filter((c) => !c.fest).reduce((n, c) => n + c.cost, 0)
+    const total = COSMETICS.filter((c) => !c.fest && !c.monat).reduce((n, c) => n + c.cost, 0)
     expect(total).toBeGreaterThanOrEqual(5 * 500)
   })
 

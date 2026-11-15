@@ -8,7 +8,7 @@ export function SkinPreview({ game, skin, onEnd }: { game: ReturnType<typeof use
   return (
     <div className="preview-banner" role="status">
       <span>{t.preview.banner(skin.name)}</span>
-      <button
+      {skin.monat ? null : <button
         type="button"
         className="btn buy"
         disabled={game.state.samen < skin.cost || cosmeticOwned(game.state.ownedCosmetics, skin.id)}
@@ -19,7 +19,7 @@ export function SkinPreview({ game, skin, onEnd }: { game: ReturnType<typeof use
         }}
       >
         {t.preview.buy(skin.cost)}
-      </button>
+      </button>}
       <button type="button" className="btn ghost" onClick={onEnd}>
         {t.preview.back}
       </button>

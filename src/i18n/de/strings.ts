@@ -787,6 +787,10 @@ export const strings = {
     /** Gartenstile: Omas Garten bzw. Lichtstimmung für alle Grundstücke (Kapitel) */
     skinsGarden: 'Omas Garten',
     skinsChapters: 'Grundstücke',
+    /** Monatsstil: kommt mit dem nächsten Gartenmonat */
+    skinsMonat: 'Mit dem nächsten Gartenmonat',
+    gartenmonatStyle: (name: string) => `Dein nächster Monatsstil: ${name}`,
+    gartenmonatSamen: (n: number) => `Alle Monatsstile gesammelt — stattdessen ${n} Samen.`,
     skinsChaptersIntro: 'Eine Lichtstimmung gilt auf allen deinen Grundstücken.',
     equipped: 'Aktiv',
     active: 'Aktiv',
@@ -894,7 +898,7 @@ export const strings = {
     },
     gartenmonat: {
       name: 'Gartenmonat',
-      blurb: '30 Tage: Premium-Reihe der Gartenwoche und jeder Bonus ohne Werbung.',
+      blurb: '30 Tage: Premium-Reihe der Gartenwoche, jeder Bonus ohne Werbung und ein Monatsstil für immer.',
       label: '30 Tage',
     },
   },
@@ -954,6 +958,18 @@ export const strings = {
     lichtAbend: { name: 'Abendgold', blurb: 'Warmes Licht kurz vor Feierabend.' },
     lichtHerbst: { name: 'Herbstlicht', blurb: 'Die Wiesen in Kupfer und Ocker.' },
     lichtMond: { name: 'Mondschein', blurb: 'Stilles, bläuliches Licht.' },
+    monatSchneegloeckchen: { name: 'Schneeglöckchen', blurb: 'Kühles Grün, Wege wie letzter Schnee.' },
+    monatKrokus: { name: 'Krokuswiese', blurb: 'Frisches Gras mit Tupfen in Lila und Gelb.' },
+    monatTulpe: { name: 'Tulpenzeit', blurb: 'Frühlingsgrün und Wege in Tulpenrot.' },
+    monatFlieder: { name: 'Fliederduft', blurb: 'Sanftes Grün, Wege in Flieder.' },
+    monatPfingstrose: { name: 'Pfingstrosen', blurb: 'Sattes Grün und Wege in Rosa.' },
+    monatRose: { name: 'Rosengarten', blurb: 'Dunkleres Grün, Wege wie Rosenblätter.' },
+    monatSonnenblume: { name: 'Sonnenblumen', blurb: 'Sommergras und Wege in Sonnengelb.' },
+    monatDahlie: { name: 'Dahlienbeet', blurb: 'Spätsommer in Orange und Rot.' },
+    monatAster: { name: 'Asternherbst', blurb: 'Mattes Grün, Wege in Astern-Violett.' },
+    monatHagebutte: { name: 'Hagebutten', blurb: 'Herbstgras und Wege in Hagebuttenrot.' },
+    monatEfeu: { name: 'Efeugrün', blurb: 'Dunkles Efeu-Grün, Wege aus grauem Stein.' },
+    monatChristrose: { name: 'Christrosen', blurb: 'Raureif-Grün und helle Winterwege.' },
   },
 
   clanBoost: {

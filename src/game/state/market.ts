@@ -11,6 +11,8 @@ import { TAP_COOLDOWN_MS } from '../economy'
 import { ERNTEFEST_GOAL, ERNTEFEST_GOAL_REWARD, erntefestWindowKey, isErntefestActive } from '../events'
 import { CONTEST_KG } from '../extrasCore'
 import {
+  GARTENMONAT_FALLBACK_SAMEN,
+  nextMonatStyle,
   GARTENMONAT_MS,
   GARTENMONAT_RENEW_MS,
   AD_BONUS_PER_DAY,
@@ -155,7 +157,7 @@ export function claimErntefestGoal(state: GameState, now = Date.now()): GameStat
 
 export function buyCosmetic(state: GameState, id: CosmeticId, now = Date.now()): GameState {
   const def = COSMETICS.find((c) => c.id === id)
-  if (!def) return state
+  if (!def || def.monat) return state
   if (state.ownedCosmetics.includes(id)) return state
   if (def.cost <= 0) {
     return {
@@ -244,7 +246,15 @@ export function mockBuyOffer(state: GameState, offer: ShopOfferDef, now = Date.n
   if (offer.kind === 'gartenmonat') {
     if (!gartenmonatRenewable(next, now)) return state
     // verlängern: die Restzeit bleibt erhalten
-    return { ...next, gartenmonatExpiresAt: Math.max(now, next.gartenmonatExpiresAt) + GARTENMONAT_MS, lastSeen: now }
+    // dazu der nächste Monatsstil (bleibt für immer); sind alle da, Samen
+    const style = nextMonatStyle(next.ownedCosmetics)
+    return {
+      ...next,
+      gartenmonatExpiresAt: Math.max(now, next.gartenmonatExpiresAt) + GARTENMONAT_MS,
+      ownedCosmetics: style ? [...next.ownedCosmetics, style.id] : next.ownedCosmetics,
+      samen: next.samen + (style ? 0 : GARTENMONAT_FALLBACK_SAMEN),
+      lastSeen: now,
+    }
   }
   if (offer.kind === 'festPlus') {
     next = syncFest(next, now)

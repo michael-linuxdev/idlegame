@@ -34,7 +34,8 @@ export const OFFER_PRICE_CENTS: Readonly<Record<string, number>> = {
   samen150: 249,
   samen500: 699,
   cosmeticPackLeaf: 299,
-  removeAds: 399,
+  // bis 2026-11-15: 3,99 € — mit dem Tageslimit der Boni das dauerhafte Ankerprodukt
+  removeAds: 599,
   gartenmonat: 499,
   festPlus: 399,
 }

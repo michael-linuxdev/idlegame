@@ -304,3 +304,47 @@ deshalb bleibt √r. Knopf `payoutCurveExp` und Schalter `SEASON_ASAP` bleiben f
 
 **Offen (Design-Entscheidung):** Wenn Kurz-Saisons nicht lohnen sollen, müsste der Hebel an
 den Gartenjahren ansetzen (z. B. Sprösslinge nach Saison-Ernte statt nach Saison-Zahl).
+
+## Obstwiese früher, Gelegenheits-Profil, Korb ×2 (2026-11-15)
+
+**Anlass:** Testerin 2 (67 min in 5 Tagen) hatte nach 5 Tagen 4 Saisonenden, 7 von 10 Bereichen
+und kein Kapitel. Alle Kapitel hingen am ersten Tiefen Winter.
+
+**Neues Profil `occasional`** (`scripts/balance/sim.ts`, nach ihrem Log): 3 Besuche von 4 min am
+Tag (8, 13, 18 Uhr), ~20 Ausbauten je Minute, Saisonende erst beim nächsten Besuch, Truhe einmal
+am Tag, bei jedem zweiten Besuch ein Bonus. `HOARD=1`: gibt keine Erbstücke aus (wie im Log vor
+dem Truhen-Fix). Abgleich über 5 Tage: Simulator 5 Saisonenden, 7 Bereiche, Auszahlungen
+261–641 — Log 4 Saisonenden, 7 Bereiche, 72–580. Das Profil `casual` (5 Besuche, bester Kauf im
+5-s-Takt) schafft dagegen 29 Saisons in 14 Tagen.
+
+**Regel:** Kapitel 2 öffnet nach dem **5. Saisonende** (ab Gartenjahr 6; `OBSTWIESE.fromSeasons`
+in `src/game/chapters.ts`) oder wie bisher mit dem ersten Tiefen Winter. Der **Garten-Bonus der
+Kapitel zählt erst ab dem ersten Tiefen Winter** (`chapterBonusActive`, `state/core.ts`); die
+Wiese zeigt ihn bis dahin blass, der Abschnitt „Tiefer Winter“ nennt, was er dann bringt.
+
+**Messung 14 Tage** (`CHAPTERS=1 SUMMARY=1`, Saisons · Tag von Kapitel 2 · Tiefe Winter):
+
+| | alt (nur Tiefer Winter) | ab Saisonende 5, Bonus sofort | **ab Saisonende 5, Bonus ab Tiefem Winter** |
+|---|---|---|---|
+| Dauerspieler | 239 · Tag 3 · Tag 3/5/8/12 | 307 · Tag 1 · Tag 2/3/5/9/13 | 272 · Tag 1 · Tag 2/3/5/10/14 |
+| Regular | 111 · Tag 9 · Tag 9/11/14 | 155 · Tag 2 · Tag 4/6/9/13 | **120 · Tag 2 · Tag 8/10/13** |
+| Casual | 29 · — · — | 52 · Tag 2 · — | 30 · Tag 2 · — |
+| Gelegenheit | 14 · — · — | 19 · Tag 5 · — | **14 · Tag 5 · —** |
+
+„Bonus sofort“ verworfen: Regular +40 % Saisons, erster Tiefer Winter Tag 4 statt 9 (ab
+Saisonende 3 genauso). Mit der Grenze bleibt das Tempo vor dem ersten Tiefen Winter; danach
+ist die Wiese schon ausgebaut, der Bonus kommt auf einmal statt über einige Tage (Dauerspieler
++14 % Saisons in 14 Tagen).
+
+**Gelegenheitsspielerin, 2 Jahre** (`GEN=1 CHAPTERS=1 CHAPTER_MANUAL=0`): Kapitel 2 an **Tag 5
+statt Tag 46**, Kapitel 3 Tag 117 (139), Kapitel 4 Tag 305 (323), Kapitel 5 Tag 496 (510),
+Kapitel 6 Tag 694 (712); erster Tiefer Winter Tag 47 (46). Die Kapitel ab 3 hängen an den
+Generationen und bleiben für sie weit weg — offen.
+
+**Korb ×2 und Tageslimit** (`OFFLINE_AD`, `ADS`; 14 Tage ohne Kapitel, Saisons): Regular ohne
+Bonus 65, Korb ×2 bei jeder Rückkehr 66, alle 8 Boni am Tag 73–79; Dauerspieler 137 / 142 / 134;
+Gelegenheit 14 in jedem Fall. Bis 2026-11-15 gab es kein Tageslimit (Werbefrei: alle 3 min).
+
+**Regular, 5 Jahre** (`TASKS=1 GEN=1 CHAPTERS=1 CHAPTER_MANUAL=0`, alt → neu): K2 Tag 9 → 1, K3 15 → 13,
+K4 28 → 26, K12 251 → 245, K13 296 → 289, K20 482 → 476, K30 811 → 807, K40 1215 → 1213,
+**K50 Tag 1701 → 1697**. Die Taktung ab Kapitel 13 bleibt (Abweichung ≤ 2,4 %).

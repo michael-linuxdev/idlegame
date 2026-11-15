@@ -103,6 +103,115 @@
   --g-path-speck: #8298b8;
 }
 
+/* Monatsstile (Gartenmonat) */
+.garden-stage.skin-monatSchneegloeckchen {
+  --g-grass-far: #b4d6b0;
+  --g-grass: #a2c99e;
+  --g-grass-near: #8cb689;
+  --g-path: #f7f8f2;
+  --g-path-edge: #d5dccf;
+  --g-path-speck: #9fb79a;
+}
+
+.garden-stage.skin-monatKrokus {
+  --g-grass-far: #a6d184;
+  --g-grass: #94c572;
+  --g-grass-near: #7fb15e;
+  --g-path: #f1ebf6;
+  --g-path-edge: #c4aee0;
+  --g-path-speck: #e9b93c;
+}
+
+.garden-stage.skin-monatTulpe {
+  --g-grass-far: #9fd27c;
+  --g-grass: #8dc66a;
+  --g-grass-near: #78b257;
+  --g-path: #f8e6dc;
+  --g-path-edge: #e7a79a;
+  --g-path-speck: #d9534f;
+}
+
+.garden-stage.skin-monatFlieder {
+  --g-grass-far: #a3c99a;
+  --g-grass: #92bd89;
+  --g-grass-near: #7da976;
+  --g-path: #efe4f3;
+  --g-path-edge: #c9a8d8;
+  --g-path-speck: #a678c0;
+}
+
+.garden-stage.skin-monatPfingstrose {
+  --g-grass-far: #96c77f;
+  --g-grass: #85ba6e;
+  --g-grass-near: #70a65b;
+  --g-path: #f9e3ea;
+  --g-path-edge: #e5a3bb;
+  --g-path-speck: #c95a86;
+}
+
+.garden-stage.skin-monatRose {
+  --g-grass-far: #8fc070;
+  --g-grass: #7eb35f;
+  --g-grass-near: #69a04d;
+  --g-path: #f6e9df;
+  --g-path-edge: #d9a48f;
+  --g-path-speck: #b8403a;
+}
+
+.garden-stage.skin-monatSonnenblume {
+  --g-grass-far: #b0c96a;
+  --g-grass: #9fbc58;
+  --g-grass-near: #89a847;
+  --g-path: #f6e6a8;
+  --g-path-edge: #e0bf55;
+  --g-path-speck: #b9892c;
+}
+
+.garden-stage.skin-monatDahlie {
+  --g-grass-far: #a2b866;
+  --g-grass: #91ab55;
+  --g-grass-near: #7c9745;
+  --g-path: #f3d9c4;
+  --g-path-edge: #d98a5f;
+  --g-path-speck: #b34a3a;
+}
+
+.garden-stage.skin-monatAster {
+  --g-grass-far: #a9b97a;
+  --g-grass: #98ac69;
+  --g-grass-near: #839857;
+  --g-path: #e9e2ef;
+  --g-path-edge: #b39ccc;
+  --g-path-speck: #7f66a8;
+}
+
+.garden-stage.skin-monatHagebutte {
+  --g-grass-far: #b3ae6c;
+  --g-grass: #a2a05b;
+  --g-grass-near: #8c8b4a;
+  --g-path: #efd9b8;
+  --g-path-edge: #c9824f;
+  --g-path-speck: #b8402c;
+}
+
+.garden-stage.skin-monatEfeu {
+  --g-grass-far: #7ea66a;
+  --g-grass: #6c9759;
+  --g-grass-near: #588347;
+  --g-path: #dfe3d6;
+  --g-path-edge: #a7b29a;
+  --g-path-speck: #6f7d63;
+}
+
+.garden-stage.skin-monatChristrose {
+  --g-grass-far: #b6cdb9;
+  --g-grass: #a5c0a8;
+  --g-grass-near: #90ad94;
+  --g-path: #f3f4f6;
+  --g-path-edge: #cfd6dc;
+  --g-path-speck: #a54a5e;
+}
+
 /*
  * Lichtstimmungen der Grundstücke (alle Kapitel): nur die Kulisse wird
  * getönt — sie steht still, der Filter kostet also einmal (docs/leistung.md).
