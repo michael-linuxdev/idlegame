@@ -369,6 +369,11 @@ rechts), eigene Silhouette je Bereich, jede Stufe bringt sichtbar Neues. Der Rah
   Johannisbeeren, Bärlauch, Beinwell und Minze, Walderdbeeren, Pilzstämme mit Gestell, Rankstangen,
   Weidenteich mit Schilf, Lehrpfad und Festtafel mit Lampions.
 
+- **Kapitel 43 Samenbank** (`kapitel-43-samenbank.png`): Boden, Vermehrungsbeete mit Etikett-
+  Steckern, Netzzelte, Reinigungsraum mit Sieben und Maschine, Keimlabor mit Mikroskop, Kühltresor
+  mit Tresorrad, Sortengarten, Schubladenarchiv, Versandtresen mit Lastenrad, Infowand und
+  Wegweiser, Festtisch mit Ballons.
+
 Damit sind die Kapitel 4–12 im Weinberg-Niveau. Kapitel 13–50 haben die gemeinsame Kontur und
 das Wachstum, aber noch ihre ursprüngliche Zeichnung.
 
